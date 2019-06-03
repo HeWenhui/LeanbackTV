@@ -14,6 +14,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -56,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
@@ -64,6 +66,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.Minimarket
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListStudentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
+import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
+import com.xueersi.parentsmeeting.widget.praise.entity.PraiseContentEntity;
+import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -110,6 +115,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isSmallChinese = false;
         }
         getInfo.setIsPrimarySchool(isPrimarySchool);
+        getInfo.setIsYouJiao(data.optInt("isYouJiao"));
         LiveVideoConfig.isScience = true;
         getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
@@ -284,6 +290,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
+
+            VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
+
+            videoConfigEntity.setDuration(data.optLong("duration"));
+            videoConfigEntity.setWaterMark(data.optLong("waterMark"));
+            getInfo.setVideoConfigEntity(videoConfigEntity);
 //            MediaPlayer.getIsNewIJK() = "1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC"));
 //            MediaPlayer.getIsNewIJK() = true;
             MediaPlayer.setIsNewIJK("1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC")));
@@ -306,6 +318,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             if (data.has("isAllowTeamPk")) {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
             }
+            // 解析幼教字段
+            getInfo.setPreschool(data.optInt("isYouJiao") == 1);
+
             getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
             getInfo.setIsAIPartner(data.optInt("isAIPartner"));
 
@@ -523,6 +538,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             //金话筒
             getInfo.setUseGoldMicroPhone(data.optInt("isGoldMicrophone"));
+            //超级演讲秀  注意空格
+            int isSuperSpeechShow = data.optInt("isSuperSpeechShow");
+            int _isSuperSpeechShow = data.optInt("isSuperSpeechShow ");
+            getInfo.setUseSuperSpeakerShow(isSuperSpeechShow == 0 ? _isSuperSpeechShow : isSuperSpeechShow);
             getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 getInfo.setIsNewProject(data.optInt("isNewProject", 0));
@@ -673,6 +692,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            if (status.has("groupSpeech")) {
+                JSONObject jsonObject = status.optJSONObject("groupSpeech");
+                coachStatusEntity.setGroupSpeechRoom(jsonObject.optString("voiceId"));
+                coachStatusEntity.setOnGroupSpeech(jsonObject.optString("onGroupSpeech"));
+            }
         }
         if (liveTopicJson.has("room_1")) {
             logger.i("主讲老师 parseLiveTopic liveTopicJson = " + liveTopicJson.toString());
@@ -708,7 +732,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             if (status.has("groupSpeech")) {
                 JSONObject jsonObject = status.optJSONObject("groupSpeech");
-                mainStatusEntity.setGroupSpeechRoom(jsonObject.optString("groupSpeechRoom"));
+                mainStatusEntity.setGroupSpeechRoom(jsonObject.optString("voiceId"));
                 mainStatusEntity.setOnGroupSpeech(jsonObject.optString("onGroupSpeech"));
             }
 
@@ -1973,6 +1997,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseTeanEnergyAndContribution", e.getMessage());
         }
         return entity;
     }
@@ -2034,6 +2059,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseStuPkResult", e.getMessage());
         }
         return entity;
     }
@@ -2505,5 +2531,107 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         return evenDriveEntity;
+    }
+
+    public SuperSpeakerRedPackageEntity parseSuperSpeakerSubmitEntity(ResponseEntity responseEntity) {
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        SuperSpeakerRedPackageEntity entity = new SuperSpeakerRedPackageEntity();
+        entity.setMoney(jsonObject.optString("gold"));
+        return entity;
+    }
+
+    /**
+     * 解析 出门测表扬榜数据
+     *
+     * @param responseEntity
+     * @return
+     */
+    public PraiseEntity parseTutorPraiseEntity(ResponseEntity  responseEntity) throws Exception {
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+       // JSONObject jsonObject = new JSONObject(data);
+        List<PraiseContentEntity> contentEntityList = new ArrayList<>();
+        PraiseContentEntity titleEntity = null;
+        PraiseContentEntity contentEntity = null;
+        PraiseEntity entity = new PraiseEntity();
+        entity.setContentEntityList(contentEntityList);
+       int gradle = jsonObject.optInt("grade");
+       int position = 0;
+//        int gradle = 2;
+        if (gradle ==PraiseConfig.GRADLE_SMALL) {
+          entity.setPraiseStyle(jsonObject.optInt("bizId"));
+            //entity.setPraiseStyle(1);
+        } else {
+            entity.setPraiseStyle(PraiseConfig.PRAISE_DARK);
+        }
+        entity.setPraiseName(jsonObject.optString("rankTitle"));
+        entity.setPraiseType(jsonObject.optInt("category"));
+        if(entity.getPraiseType() == PraiseConfig.PRAISE_TYPE_TALK) {
+            titleEntity = new PraiseContentEntity();
+            titleEntity.setViewType(PraiseConfig.VIEW_TYPE_TITLE);
+            titleEntity.setPraiseStyle(entity.getPraiseStyle());
+            titleEntity.setItemSpan(4);
+            titleEntity.setName("题目描述");
+            contentEntityList.add(titleEntity);
+            position = 1;
+            contentEntity = new PraiseContentEntity();
+            contentEntity.setPraiseStyle(entity.getPraiseStyle());
+            contentEntity.setOralQuestion(true);
+            contentEntity.setItemSpan(4);
+            contentEntity.setName(jsonObject.optString("desc"));
+            contentEntityList.add(contentEntity);
+        }
+        entity.setResultType(jsonObject.optInt("isInList"));
+        entity.setTeacherHeadImage(jsonObject.optString("counselorAvatar"));
+        entity.setTeacherName(jsonObject.optString("counselorName"));
+        entity.setEncouraging(jsonObject.optString("word"));
+        JSONArray array = jsonObject.optJSONArray("list");
+        if (array != null && array.length() > 0) {
+            JSONObject userListObject = null;
+            for (int i = 0; i < array.length(); i++) {
+                userListObject = array.optJSONObject(i);
+                String title = userListObject.optString("group");
+                if (!TextUtils.isEmpty(title)) {
+                    titleEntity = new PraiseContentEntity();
+                    titleEntity.setViewType(PraiseConfig.VIEW_TYPE_TITLE);
+                    titleEntity.setItemSpan(4);
+                    titleEntity.setName(title);
+                    titleEntity.setPraiseStyle(entity.getPraiseStyle());
+                    contentEntityList.add(titleEntity);
+                    position++;
+                }
+                parsePraiseContentEntity(entity,userListObject,contentEntityList,entity.getPraiseStyle(), position);
+            }
+        }
+        return entity;
+    }
+    /**
+     * 解析榜单内容
+     * @param jsonObject
+     * @param contentEntityList
+     */
+    private void parsePraiseContentEntity(  PraiseEntity entity,JSONObject jsonObject,List<PraiseContentEntity> contentEntityList,int style,int position) {
+        JSONArray array = jsonObject.optJSONArray("stus");
+        if (array != null && array.length() > 0) {
+            JSONObject userListObject = null;
+            PraiseContentEntity contentEntity = null;
+            for (int i = 0; i < array.length(); i++) {
+                userListObject = array.optJSONObject(i);
+                contentEntity = new PraiseContentEntity();
+                position++;
+                contentEntity.setName(userListObject.optString("name"));
+                if (userListObject.optInt("inList") == 1){
+                    entity.setPosition(position);
+                }
+                contentEntity.setStatus(userListObject.optInt("inList"));
+                contentEntity.setPraiseStyle(style);
+                contentEntityList.add(contentEntity);
+            }
+        } else {
+            PraiseContentEntity   contentEntity = new PraiseContentEntity();
+            contentEntity.setName(jsonObject.optString("msg"));
+            contentEntity.setItemSpan(4);
+            contentEntity.setPraiseStyle(style);
+            contentEntityList.add(contentEntity);
+        }
     }
 }

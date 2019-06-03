@@ -8,6 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -17,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.groupgame.pager.GroupG
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.ScienceStaticConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseEnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ChineseAiSubjectiveCoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ChineseAiSubjectiveCoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.EnglishH5CoursewareX5Pager;
@@ -65,6 +67,9 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
             mAnswerRankBll = mAnswerRankIRCBll.getAnswerRankBll();
         }
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
+        if(videoQuestionH5Entity.isTUtor()) {
+            setArts(LiveVideoSAConfig.ART_SEC);
+        }
         //应该是没有为null的时候
         if (liveGetInfo != null) {
             if (isArts == LiveVideoSAConfig.ART_CH) {
@@ -81,7 +86,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                     }
                 }
             }
-            if (liveGetInfo.isNewCourse()) {
+            if (liveGetInfo.isNewCourse() ||  LiveTopic.MODE_TRANING.equals(liveGetInfo.getMode())) {
                 if (isArts == LiveVideoSAConfig.ART_SEC) {
                     String educationstage = liveGetInfo.getEducationStage();
                     videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());

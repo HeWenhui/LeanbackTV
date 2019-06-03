@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,7 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.tal100.chatsdk.utils.ToastUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
@@ -43,7 +41,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -72,7 +69,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
-import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 import pl.droidsonroids.gif.GifDrawable;
 
 /**
@@ -320,7 +316,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         Date date = new Date();
         today = dateFormat.format(date);
         getTodayQues();
-        newCourseCache = new NewCourseCache(mContext, liveId);
+        newCourseCache = new NewCourseCache(mContext, liveId,"99999");
         addJavascriptInterface();
         wvSubjectWeb.getSettings().setLoadWithOverviewMode(false);
 //        wvSubjectWeb.getSettings().setDisplayZoomControls(false);
@@ -352,7 +348,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         CourseWebViewClient courseWebViewClient = new CourseWebViewClient();
         newCourseCache.setOnHttpCode(courseWebViewClient);
         wvSubjectWeb.setWebViewClient(courseWebViewClient);
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "99999", creattime, new StaticWeb.OnMessage() {
 
             @Override
             public void postMessage(String where, final JSONObject message, String origin) {
@@ -656,7 +652,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     }
                     NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
                             getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid,
-                            (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime);
+                            (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime,detailInfo.isTUtor());
                     isRefresh = 0;
                 }
             }
@@ -741,7 +737,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         subMitTime = System.currentTimeMillis();
         submitAnswer(isforce, nonce);
         NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1,
-                wvSubjectWeb.getUrl(), ispreload);
+                wvSubjectWeb.getUrl(), ispreload,detailInfo.isTUtor());
     }
 
     /**
@@ -919,7 +915,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      */
     private void onSubmitSuccess(int isforce) {
         NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), true,
-                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), "");
+                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), "",detailInfo.isTUtor());
     }
 
     /**
@@ -930,7 +926,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      */
     private void onSubmitError(int isforce, String errorMsg) {
         NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), false,
-                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg);
+                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg,detailInfo.isTUtor());
 
     }
 
@@ -1002,7 +998,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     showAnswerResult(0);
                 } else {
                     NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
-                            getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
+                            getSubtestid(), test.getPreviewPath(), ispreload, test.getId(),detailInfo.isTUtor());
                 }
             }
 
@@ -1192,7 +1188,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
                     }
                 }
-            } else if (WebInstertJs.indexStr().equals(url)) {
+            } else if (url.contains(WebInstertJs.indexStr())) {
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
                 logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
                 if (webResourceResponse != null) {

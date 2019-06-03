@@ -38,9 +38,12 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -379,6 +382,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
                                 vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                setVideoConfig();
                                 if (isChangeLine) {
                                     try {
                                         vPlayer.changeLine(changeLinePos, protocol);
@@ -531,6 +535,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return 0L;
     }
 
+    protected void setVideoConfig() {
+        if (videoConfigEntity != null) {
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+        }
+    }
+
     /** 切换线路使用位置 */
     protected int changeLinePos;
     /** 当前使用的协议 */
@@ -589,6 +599,27 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         }
 
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+    }
+
+    /**
+     *
+     */
+//    public void enableAutoSpeedPlay(long waterMark, long duration) {
+//        if (vPlayer != null) {
+//            vPlayer.enableAutoSpeedPlay(waterMark, duration);
+//        }
+////        if (mediaPlayer != null) {
+////            mediaPlayer.enableAutoSpeedPlay(waterMark, duration);
+////        }
+//    }
+    protected VideoConfigEntity videoConfigEntity;
+
+    public void enableAutoSpeedPlay(VideoConfigEntity videoConfigEntity) {
+        if (vPlayer != null && videoConfigEntity != null) {
+            this.videoConfigEntity = videoConfigEntity;
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+        }
+
     }
 
     /**
@@ -970,7 +1001,8 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
             vPlayer.seekTo(pos);
         }
-        mShareDataManager.put(mUri + VP.SESSION_LAST_POSITION_SUFIX, (long) 0, ShareDataManager.SHAREDATA_USER);//重置播放进度
+        //即使视频没有播放，也会存储这个位置
+        mShareDataManager.put(streamId + VP.SESSION_LAST_POSITION_SUFIX, (long) 0, ShareDataManager.SHAREDATA_USER);//重置播放进度
     }
 
     /** 设置播放器的界面布局 */
@@ -1062,8 +1094,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             }
             vPlayer.releaseSurface();
             //TODO 这个会影响暂停视频，返回后台继续播放。但是悬浮窗还需要
-            if (mIsPlayerEnable && vPlayer.needResume()) {
-                vPlayer.start();
+            PauseNotStopVideoInter onPauseNotStopVideo = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class);
+            //onPauseNotStopVideo 应该不会空
+            if (onPauseNotStopVideo == null || onPauseNotStopVideo.getPause()) {
+                if (mIsPlayerEnable && vPlayer.needResume()) {
+                    vPlayer.start();
+                }
             }
         }
     }

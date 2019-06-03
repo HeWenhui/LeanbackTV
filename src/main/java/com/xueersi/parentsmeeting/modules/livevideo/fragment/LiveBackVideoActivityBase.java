@@ -32,7 +32,7 @@ import org.greenrobot.eventbus.ThreadMode;
  *
  * @author 林玉强
  */
-public class LiveBackVideoActivityBase extends XesActivity {
+public abstract class LiveBackVideoActivityBase extends XesActivity {
     private String TAG = "LiveVideoActivityBaseLog";
     /** 当前界面是否横屏 */
     protected boolean mIsLand = false;
@@ -166,9 +166,10 @@ public class LiveBackVideoActivityBase extends XesActivity {
 
     }
 
-    protected LiveBackVideoFragmentBase getFragment() {
-        return new LiveBackVideoFragmentBase();
-    }
+    protected abstract LiveBackVideoFragmentBase getFragment();
+//    {
+//        return new LiveBackVideoFragmentBase();
+//    }
 
     /**
      * 改变界面加载数据状态

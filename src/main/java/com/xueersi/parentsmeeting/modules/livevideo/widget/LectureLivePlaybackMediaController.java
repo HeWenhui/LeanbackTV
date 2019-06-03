@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
@@ -28,7 +28,7 @@ public class LectureLivePlaybackMediaController extends LivePlaybackMediaControl
     /** 关闭滚屏点击事件 */
     private OnLockCheckedChange onLockCheckedChange;
 
-    public LectureLivePlaybackMediaController(Context context, MediaPlayerControl player) {
+    public LectureLivePlaybackMediaController(Context context, BackMediaPlayerControl player) {
         super(context, player);
     }
 

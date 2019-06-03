@@ -58,7 +58,7 @@ public class NbCourseCache {
             mNbCacheFileDir = new File(mResDir, resDir);
         }
         header.put("Access-Control-Allow-Origin", "*");
-        webInstertJs = new WebInstertJs(context);
+        webInstertJs = new WebInstertJs(context, "99999");
     }
 
 
@@ -95,7 +95,7 @@ public class NbCourseCache {
                         }
                         response = new WebResourceResponse(mimeType, "", inputStream);
                         response.setResponseHeaders(header);
-                       // Log.e("NbCourseCache", "====>return local resource:"+mimeType+":"+extension);
+                        // Log.e("NbCourseCache", "====>return local resource:"+mimeType+":"+extension);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -133,7 +133,7 @@ public class NbCourseCache {
             int index = url.lastIndexOf(File.separator);
             if (index != -1) {
                 String fileName = url.substring(index + 1, url.length());
-                 //Log.e("NbCourseCache", "======>getRootFile: filePath=" + fileName);
+                //Log.e("NbCourseCache", "======>getRootFile: filePath=" + fileName);
                 resultFile = new File(mNbCacheFileDir, fileName);
             }
         }

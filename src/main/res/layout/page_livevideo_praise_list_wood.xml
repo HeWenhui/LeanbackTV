@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:id="@id/rl_page_livevideo_praise_list_main_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_page_livevideo_praise_list_wood">
+
+
+    <RelativeLayout
+        android:id="@id/rl_page_livevideo_praise_list_content"
+        android:layout_width="378dp"
+        android:layout_height="340dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_page_livevideo_praise_list_wood_content">
+
+
+        <ImageView
+            android:id="@id/iv_page_livevideo_praise_list_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="54dp"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@id/tv_page_livevideo_praise_list_title"
+            android:layout_width="160dp"
+            android:layout_height="25dp"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            android:layout_marginTop="55dp"
+            android:textColor="#8E3D24"
+            android:gravity="center"
+            android:text="" />
+        <View
+            android:id="@id/v_livevideo_praise_list_content_line"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="90dp" />
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_page_livevideo_praise_list_sub_title"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/v_livevideo_praise_list_content_line"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="" />
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
+            android:id="@id/rv_livevideo_praise_list_content"
+            android:layout_below="@id/tv_page_livevideo_praise_list_sub_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="6.5dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="50dp"
+            android:scrollbarStyle="outsideOverlay"
+            android:paddingRight="8dp"
+            app:VerticalThumbDrawable="@drawable/rcl_fast_scoller_line_ffffc869_style"
+            app:VerticalTrackDrawable="@drawable/rcl_fastscroller_transparent" />
+
+    </RelativeLayout>
+
+
+
+    <ImageButton
+        android:id="@id/btn_page_livevideo_praise_list_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="11dp"
+        android:layout_marginRight="13dp"
+        android:background="@drawable/selector_page_livevideo_praise_list_wood_close_style" />
+
+    <RelativeLayout
+        android:layout_width="75dp"
+        android:layout_height="220dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@id/lav_livevideo_praise_list_practice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:lottie_fileName="praise_list/loop_star/tutor_stars.json"
+            app:lottie_imageAssetsFolder="praise_list/loop_star/images"
+            app:lottie_loop="true" />
+
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout
+            android:id="@id/fl_page_livevideo_praise_list_practice"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|center_horizontal"
+            app:auto_star="true">
+
+            <ImageView
+                android:id="@id/iv_page_livevideo_praise_list_practice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_page_livevideo_praise_list_wood_practice_style" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_page_livevideo_praise_list_practice_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="16dp"
+                android:textColor="#FFEDA5"
+                android:text="0"
+                android:textSize="11sp" />
+
+        </com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@id/ll_page_livevideo_praise_list_teacher_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:background="@color/transparent_60"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@id/iv_page_livevideo_praise_list_teacher_wood_left"
+                android:background="@drawable/bg_page_livevideo_praise_list_wood_teacher_hint_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_page_livevideo_praise_list_teacher_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingLeft="40dp"
+                android:minWidth="20dp"
+                android:layout_toRightOf="@id/iv_page_livevideo_praise_list_teacher_wood_left"
+                android:text=""
+                android:singleLine="true"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_page_livevideo_praise_list_wood_teacher_middle"
+                android:ellipsize="end"
+                android:textColor="#8E3D24"
+                android:textSize="15sp" />
+
+            <com.xueersi.ui.widget.CircleImageView
+                android:id="@id/iv_page_livevideo_praise_list_teacher_head_image"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_default_head_square"
+                app:border_color="#ffffff"
+                app:border_width="2dp" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_page_livevideo_praise_list_teacher_tip"
+                android:background="@drawable/bg_page_livevideo_praise_list_wood_teacher_hint_right" />
+        </RelativeLayout>
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_page_livevideo_praise_list_teacher_talk"
+            android:layout_width="294dp"
+            android:layout_height="75dp"
+            android:background="@drawable/bg_page_livevideo_praise_list_wood_teacher_talk"
+            android:paddingLeft="20dp"
+            android:paddingTop="30dp"
+            android:singleLine="true"
+            android:gravity="center_horizontal"
+            android:ellipsize="end"
+            android:paddingRight="20dp"
+            android:text=""
+            android:textColor="#8E3D24"
+            android:textSize="15dp" />
+
+    </LinearLayout>
+</RelativeLayout>

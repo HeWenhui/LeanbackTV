@@ -6,6 +6,7 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.VoiceBarrageMsgEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntity;
@@ -244,7 +245,7 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
         getInfo.setEducationStage(data.optString("educationStage", "1"));
         getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareHtml"));
         getInfo.setGetCourseWareHtmlZhongXueUrl(data.optString("getCourseWareHtmlZhongXueUrl"));
-        if (!data.has("getCourseWareHtml")){
+        if (!data.has("getCourseWareHtml")) {
             getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareWeb"));
             getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl"));
         }
@@ -258,5 +259,18 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
      */
     public void parseLiveGetInfoLibarts(JSONObject data, LiveGetInfo getInfo) {
 
+    }
+
+    /**
+     * 解析超级演讲家的视频上传
+     *
+     * @param responseEntity
+     * @return
+     */
+    public SuperSpeakerRedPackageEntity parseSuperSpeakerSubmitEntity(ResponseEntity responseEntity) {
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        SuperSpeakerRedPackageEntity entity = new SuperSpeakerRedPackageEntity();
+        entity.setMoney(jsonObject.optString("gold"));
+        return entity;
     }
 }

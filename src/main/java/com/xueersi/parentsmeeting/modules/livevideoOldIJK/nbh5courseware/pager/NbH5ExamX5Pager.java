@@ -321,7 +321,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         }else{
             sb.append("&testMode=1");
         }
-        Log.e("NbH5ExamX5Pager", "=====>showResultPager:" + sb.toString());
+        //Log.e("NbH5ExamX5Pager", "=====>showResultPager:" + sb.toString());
         wvSubjectWeb.loadUrl(sb.toString());
     }
 
@@ -443,11 +443,11 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                 showStepResult(correctNum, event.getResponseStr());
                 break;
             case NbCourseEvent.EVENT_TYPE_TOGGLEPACKUP:
-                Log.e("NbH5ExamX5Pager","======>onNbCourseEvent goback:"+wvSubjectWeb.canGoBack());
+                //Log.e("NbH5ExamX5Pager","======>onNbCourseEvent goback:"+wvSubjectWeb.canGoBack());
                 hideResult();
                 break;
             case NbCourseEvent.EVENT_TYPE_INTOTESTMODE:
-                Log.e("NbH5ExamX5Pager","======>onNbCourseEvent intoTestMode:");
+                //Log.e("NbH5ExamX5Pager","======>onNbCourseEvent intoTestMode:");
                 currentMode = MODE_TEST;
                 intoTestMode();
                 break;
@@ -457,7 +457,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                     JSONObject jsonObject = new JSONObject(data);
                     String highrightcount = jsonObject.optString("rightCount","0");
                     String goldcount =jsonObject.optString("highGold","0");
-                    Log.e("NbH5ExamX5Pager","======>onNbCourseEvent onPageResult:"+highrightcount+":"+goldcount);
+                   // Log.e("NbH5ExamX5Pager","======>onNbCourseEvent onPageResult:"+highrightcount+":"+goldcount);
                     NbCourseLog.sno7(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"1",highrightcount,goldcount);
                 }catch (Exception e){
                     e.printStackTrace();
@@ -677,7 +677,6 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 
     @Override
     public boolean onBack() {
-        Log.e("nbTrace","pager onBack:"+currentMode +":"+this);
         if(currentMode == MODE_TEST){
             hideLoadingView();
             endTestMode();
@@ -733,14 +732,14 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         StringBuilder sb = new StringBuilder();
         sb.append(testInfo.getUrl()).append("&token=").append(mCourseWareEntity.getNbToken()).append("&isexam=1");
         nbExamUrl =sb.toString();
-        Log.e("NbH5ExamX5Pager", "=====>LoadNbCourseWare url nbExamUrl:" + nbExamUrl);
+        //Log.e("NbH5ExamX5Pager", "=====>LoadNbCourseWare url nbExamUrl:" + nbExamUrl);
         sb.setLength(0);
         sb.append(testInfo.getUrl()).append("&token=").append(mCourseWareEntity.getNbToken()).append("&isexam=0");
         nbTestModeUrl = sb.toString();
-        Log.e("NbH5ExamX5Pager", "=====>LoadNbCourseWare nbTestModeUrl:" + nbTestModeUrl+":"+mCourseWareEntity.getExperimentType());
+        //Log.e("NbH5ExamX5Pager", "=====>LoadNbCourseWare nbTestModeUrl:" + nbTestModeUrl+":"+mCourseWareEntity.getExperimentType());
         btnSubmit.setText(currentMode == MODE_EXAM?"提交":"结束练习");
         tvTitle.setText(mCourseWareEntity.getExperimentName());
-        Log.e("NbH5ExamX5Pager","======>LoadNbCourseWare isAnswered:"+testInfo.isAnswer());
+        //Log.e("NbH5ExamX5Pager","======>LoadNbCourseWare isAnswered:"+testInfo.isAnswer());
         if (testInfo.isAnswer()) {
             hideLoadingView();
             showResult();
@@ -771,7 +770,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                     }
                 }
             }
-            Log.e("NbH5ExamX5Pager","=====>isPreLaod:"+resDir+":"+result);
+            //Log.e("NbH5ExamX5Pager","=====>isPreLaod:"+resDir+":"+result);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -787,6 +786,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView webView, WebResourceRequest request) {
             String url = request.getUrl() + "";
+            Log.e("nbTrac","======>X5Pager_InterceptRequest_old:"+url);
             if (url.contains(NB_COURSE_WARE_URL_KEY_WORD) || url.contains(".html")) {
                 if (!jsInserted) {
                     jsInserted = true;
@@ -805,7 +805,10 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                         XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
                     }
                 }
-            } else if (WebInstertJs.indexStr().equals(url)) {
+            }
+
+            if (url.contains(WebInstertJs.indexStr())) {
+                Log.e("nbTrac","======>X5Pager_InterceptRequest_old_insertJs called:");
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(webView, url);
                 logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
                 if (webResourceResponse != null) {
@@ -822,11 +825,10 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
             }
 
             //拦截资源请求，提供本地资源
-            Log.e("NbH5ExamPager","======>shouldInterceptRequest：refreshTimes="+refreshTimes);
             if(refreshTimes < LOCAL_RES_LOAD_TRY_TIMES){
                 WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(webView, url);
                 if (webResourceResponse != null) {
-                    Log.e("NbH5ExamPager","======>返回本地资源："+url);
+                    //Log.e("nbTrac","======>返回本地资源："+url);
                     logger.d("shouldInterceptRequest:url=" + url);
                     return webResourceResponse;
                 }

@@ -10,17 +10,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.endictation.entity.DictationConfig;
-import com.xueersi.parentsmeeting.modules.endictation.entity.DictationQuery;
-import com.xueersi.parentsmeeting.modules.endictation.entity.RecognizeFlow;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.worddictation.entity.WordStatisticInfo;
+import com.xueersi.parentsmeeting.share.business.dctx.DictationConfig;
+import com.xueersi.parentsmeeting.share.business.dctx.DictationQuery;
+import com.xueersi.parentsmeeting.share.business.dctx.RecognizeFlow;
 
 /**
  * Created by linyuqiang on 2018/9/4.
@@ -52,18 +57,21 @@ public class WordDictationBll implements WordDictationAction {
     @Override
     public void onStart(WordStatisticInfo wordStatisticInfo) {
         logger.d("onStart");
+
         Bundle bundle = new Bundle();
 
 
         if (DictationQuery.hasSavedRecord(activity,wordStatisticInfo.testid, liveGetInfo.getId())){
             // 已经有作答记录,直接查看结果
             RecognizeFlow savedData = DictationQuery.getLastRecord(activity);
-            bundle.putParcelable("data", savedData);
+            bundle.putSerializable("data", savedData);
+            bundle.putString("what","Result");
             XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
         }else {
             // 没有作答记录，直接进入引导页
             RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers);
-            bundle.putParcelable("data", recognizeFlow);
+            bundle.putSerializable("data", recognizeFlow);
+            bundle.putString("what","Launch");
             XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
         }
 
@@ -93,6 +101,7 @@ public class WordDictationBll implements WordDictationAction {
         public void onReceive(Context context, Intent intent) {
             final RecognizeFlow recognizeFlow = intent.getParcelableExtra("data");
             logger.d("onReceive:recognizeFlow=" + recognizeFlow);
+
             final View view = LayoutInflater.from(activity).inflate(R.layout.layout_word_dictation_complete, null);
             LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -104,7 +113,8 @@ public class WordDictationBll implements WordDictationAction {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable("data", recognizeFlow);
+                    bundle.putSerializable("data", recognizeFlow);
+                    bundle.putString("what","Result");
                     XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
                 }
             });

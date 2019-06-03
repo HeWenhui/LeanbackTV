@@ -18,7 +18,7 @@ import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
@@ -235,7 +235,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
                         showQuestion.onHide(questionEntity);
@@ -251,14 +251,14 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                 verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
-                MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
                     mediaPlayerControl.pause();
                 }
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         mediaPlayerControl.start();
                         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                         if (questionEntity.getvCategory() == 1001) {
@@ -312,7 +312,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
                         showQuestion.onHide(questionEntity);

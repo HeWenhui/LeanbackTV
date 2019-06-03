@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <!--集体发言,接麦通用-->
     <RelativeLayout
-        android:background="@drawable/livevideo_mic_psbg"
-        android:layout_centerInParent="true"
-        android:gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/livevideo_mic_psbg"
+        android:gravity="center">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@+id/tv_tip_detail"
-            android:textSize="25sp"
-            android:textColor="#7D553F"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:lineSpacingExtra="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:textColor="#7D553F"
+            android:textSize="25sp" />
 
     </RelativeLayout>
 

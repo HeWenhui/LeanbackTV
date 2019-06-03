@@ -22,6 +22,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
@@ -214,7 +215,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 try {
                     VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
                     if (detailInfo != null) {
-                        NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0);
+                        NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0,detailInfo.isTUtor());
                     }
                 } catch (Exception e) {
                     CrashReport.postCatchedException(e);
@@ -376,7 +377,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * @param resultFromVoice 是否是 本地语音答题（填空、选择）
      */
     private void onAnswerResult(ArtsAnswerResultEvent event, String result, boolean resultFromVoice) {
-        Log.e("AnswerResultBll", "======>onAnswerResult:" + result + ":" + resultFromVoice);
+        //Log.e("AnswerResultBll", "======>onAnswerResult:" + result + ":" + resultFromVoice);
         //boolean showAnswerResult = false;
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -410,7 +411,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             idList.add(testIds.getString(i));
                         }
                         mAnswerReulst.setIdArray(idList);
-                        Log.e("AnswerResultBll", "=======>parseAnswerResult:" + idList.size());
+                        //Log.e("AnswerResultBll", "=======>parseAnswerResult:" + idList.size());
                     }
 
                     int type = totalObject.optInt("type");
@@ -1080,8 +1081,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         AssetManager manager = context.getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/my_right/img_22.png"));
-//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/lottie/voice_answer/my_right/img_22.png"));
+//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(AssertUtil.open("Images/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
@@ -1106,8 +1107,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         AssetManager manager = context.getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/my_wrong/img_5.png"));
-//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/lottie/voice_answer/my_wrong/img_5.png"));
+//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(AssertUtil.open("Images/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);

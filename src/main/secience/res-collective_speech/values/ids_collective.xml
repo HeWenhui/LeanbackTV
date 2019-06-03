@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--集体发言-->
+    <!--<item name="swv_livevideo_gold_microphone_sound_wave" type="id" />-->
+    <item name="iv_livevideo_speechcollective_novolume" type="id" />
+    <item name="iv_livevideo_speechcollective_praise" type="id" />
+    <item name="rl_livevideo_speechcollective_noperm" type="id" />
+    <item name="tl_livevideo_speechcollective_noperm_tip1" type="id" />
+    <item name="tl_livevideo_speechcollective_noperm_tip2" type="id" />
+    <item name="tl_livevideo_speechcollective_noperm_tip3" type="id" />
+    <item name="tv_livevideo_speechcollective_noperm_click" type="id" />
+</resources>

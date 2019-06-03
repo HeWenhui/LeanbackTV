@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLan
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveMainMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallChineseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
@@ -38,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBl
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveTrainMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 
 import java.util.ArrayList;
@@ -132,7 +134,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public void setBaseLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
         this.baseLiveMediaControllerTop = controllerTop;
     }
-
 
     public View getView() {
         return rlLiveMessageContent;
@@ -250,23 +251,29 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         BaseLiveMessagePager liveMessagePager = null;
 
         //根据不同的直播类型创建不同皮肤
-        if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
-            // 语文
-            if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
-                liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
-                        null, baseLiveMediaControllerBottom, liveMessageLandEntities, null, HalfBodyLiveConfig.SKIN_TYPE_CH);
+        if(getInfo != null && getInfo.isPreschool()){
+            // 幼教
+            liveMessagePager = new PreSchoolLiveMainMsgPager(activity, this,
+                    null, baseLiveMediaControllerBottom,baseLiveMediaControllerTop,liveMessageLandEntities, null);
+        }else{
+            if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
+                // 语文
+                if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                    liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
+                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, null, HalfBodyLiveConfig.SKIN_TYPE_CH);
+                } else {
+                    liveMessagePager = new HalfBodyArtsLiveMsgPager(activity, this,
+                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                }
             } else {
-                liveMessagePager = new HalfBodyArtsLiveMsgPager(activity, this,
-                        null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-            }
-        } else {
-            // 理科
-            if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
-                liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
-                        null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop, liveMessageLandEntities, null);
-            } else {
-                liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
-                        null, baseLiveMediaControllerBottom, liveMessageLandEntities, null, 0);
+                // 理科
+                if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+                    liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
+                            null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop, liveMessageLandEntities, null);
+                } else {
+                    liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
+                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, null, 0);
+                }
             }
         }
 
@@ -342,7 +349,11 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                         , liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = chineseLiveMessagePager;
 
-            } else if (LiveVideoConfig.isPrimary) {
+            }else if(getInfo != null && getInfo.isPreschool()){
+                 PreSchoolLiveTrainMsgPager liveMessagePager = new PreSchoolLiveTrainMsgPager(activity, this, null,
+                    baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                    mLiveMessagePager = liveMessagePager;
+          } else if (LiveVideoConfig.isPrimary) {
                 LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
