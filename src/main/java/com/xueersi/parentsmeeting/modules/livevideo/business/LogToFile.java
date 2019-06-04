@@ -64,6 +64,7 @@ public class LogToFile {
 
     /**
      * 一些共有参数
+     *
      * @param key
      * @param value
      */
@@ -76,7 +77,15 @@ public class LogToFile {
 
     public void i(String message) {
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, stableLogHashMap, message);
+            liveOnLineLogs.getOnloadLogs(TAG, null, stableLogHashMap, message);
+        }
+        logger.i(message);
+//        liveThreadPoolExecutor.execute(new WriteThread(message));
+    }
+
+    public void i(String label, String message) {
+        if (liveOnLineLogs != null) {
+            liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message);
         }
         logger.i(message);
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
@@ -84,7 +93,15 @@ public class LogToFile {
 
     public void d(String message) {
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, stableLogHashMap, message);
+            liveOnLineLogs.getOnloadLogs(TAG, null, stableLogHashMap, message);
+        }
+        logger.d(message);
+//        liveThreadPoolExecutor.execute(new WriteThread(message));
+    }
+
+    public void d(String label, String message) {
+        if (liveOnLineLogs != null) {
+            liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message);
         }
         logger.d(message);
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
@@ -99,7 +116,14 @@ public class LogToFile {
 
     public void e(String message, Throwable e) {
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, stableLogHashMap, message, e);
+            liveOnLineLogs.getOnloadLogs(TAG, null, stableLogHashMap, message, e);
+        }
+        logger.e(message, e);
+    }
+
+    public void e(String label, String message, Throwable e) {
+        if (liveOnLineLogs != null) {
+            liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message, e);
         }
         logger.e(message, e);
     }

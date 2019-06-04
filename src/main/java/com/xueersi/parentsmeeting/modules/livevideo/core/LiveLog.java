@@ -81,18 +81,19 @@ public class LiveLog implements LiveOnLineLogs {
         while (!msg.isEmpty()) {
             PerGetInfoLog perGetInfoLog = msg.remove(0);
             if (perGetInfoLog.e != null) {
-                getOnloadLogs(perGetInfoLog.TAG, perGetInfoLog.stableLogHashMap, perGetInfoLog.str, perGetInfoLog.e);
+                getOnloadLogs(perGetInfoLog.TAG, perGetInfoLog.label, perGetInfoLog.stableLogHashMap, perGetInfoLog.str, perGetInfoLog.e);
             } else {
-                getOnloadLogs(perGetInfoLog.TAG, perGetInfoLog.stableLogHashMap, perGetInfoLog.str);
+                getOnloadLogs(perGetInfoLog.TAG, perGetInfoLog.label, perGetInfoLog.stableLogHashMap, perGetInfoLog.str);
             }
         }
     }
 
     @Override
-    public void getOnloadLogs(String TAG, StableLogHashMap stableLogHashMap, String str) {
+    public void getOnloadLogs(String TAG, String label, StableLogHashMap stableLogHashMap, String str) {
         if (mGetInfo == null) {
             PerGetInfoLog perGetInfoLog = new PerGetInfoLog();
             perGetInfoLog.TAG = TAG;
+            perGetInfoLog.label = label;
             perGetInfoLog.str = str;
             perGetInfoLog.stableLogHashMap = stableLogHashMap;
             msg.add(perGetInfoLog);
@@ -104,6 +105,9 @@ public class LiveLog implements LiveOnLineLogs {
 //        liveLogCallback.setParams(params);
         StableLogHashMap logHashMap = new StableLogHashMap();
         try {
+            if (label != null) {
+                logHashMap.put("label", "" + label);
+            }
             if (stableLogHashMap != null) {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
             }
@@ -127,10 +131,11 @@ public class LiveLog implements LiveOnLineLogs {
     }
 
     @Override
-    public void getOnloadLogs(String TAG, StableLogHashMap stableLogHashMap, String str, Throwable e) {
+    public void getOnloadLogs(String TAG, String label, StableLogHashMap stableLogHashMap, String str, Throwable e) {
         if (mGetInfo == null) {
             PerGetInfoLog perGetInfoLog = new PerGetInfoLog();
             perGetInfoLog.TAG = TAG;
+            perGetInfoLog.label = label;
             perGetInfoLog.str = str;
             perGetInfoLog.e = e;
             perGetInfoLog.stableLogHashMap = stableLogHashMap;
@@ -143,6 +148,9 @@ public class LiveLog implements LiveOnLineLogs {
 //        liveLogCallback.setParams(params);
         StableLogHashMap logHashMap = new StableLogHashMap();
         try {
+            if (label != null) {
+                logHashMap.put("label", "" + label);
+            }
             if (stableLogHashMap != null) {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
             }
@@ -182,6 +190,7 @@ public class LiveLog implements LiveOnLineLogs {
 
     class PerGetInfoLog {
         String TAG;
+        String label;
         String str;
         Throwable e;
         StableLogHashMap stableLogHashMap;
