@@ -572,7 +572,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("groupId", groupId);
         params.addBodyParam("startTime", startTime);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_ENGLISH_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
+        sendPost(LiveVideoSAConfig.URL_ENGLISH_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
     }
 
     /**
