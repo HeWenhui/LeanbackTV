@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.http.EvaluateResponseParser;
@@ -47,7 +48,9 @@ public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.paren
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
 
-        if (getInfo != null) {
+        if (getInfo != null   && !(getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC
+                && LiveVideoConfig.EDUCATION_STAGE_3.equals(mGetInfo.getEducationStage())
+                || LiveVideoConfig.EDUCATION_STAGE_4.equals(mGetInfo.getEducationStage()))) {
             if (getInfo.getEvaluateTeacherEntity() != null && getInfo.getEvaluateTeacherEntity().isEvaluateIsOpen()) {
                 mHttpManager = mLiveBll.getHttpManager();
                 mParser = new EvaluateResponseParser();

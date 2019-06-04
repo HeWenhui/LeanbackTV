@@ -10,7 +10,8 @@ public class FeedBackEntity {
     private String mainHeadImage;
     /** 主讲评价内容 */
     List<List<EvaluateContent>> mainContentList = new ArrayList<>();
-
+    /** 时间戳 */
+    private long evaluateTime;
     /** 辅导老师名 */
     private String tutorName;
     /** 辅导老师名 */
@@ -18,7 +19,8 @@ public class FeedBackEntity {
     /** 辅导评价内容 */
     List<List<EvaluateContent>> tutorContentList = new ArrayList<>();
 
-
+    /** 弹出对老师评价弹窗时间*/
+    private double evaluateTimePer;
     /** 是否打开 */
     private boolean isOpen;
     /** 是否有辅导老师 */
@@ -106,5 +108,21 @@ public class FeedBackEntity {
 
     public void setTutorContentList(List<List<EvaluateContent>> tutorContentList) {
         this.tutorContentList = tutorContentList;
+    }
+
+    public long getEvaluateTime() {
+        return evaluateTime;
+    }
+
+    public void setEvaluateTime(long evaluateTime) {
+        this.evaluateTime = evaluateTime;
+    }
+
+    public double getEvaluateTimePer() {
+        return evaluateTimePer;
+    }
+
+    public void setEvaluateTimePer(double evaluateTimePer) {
+        this.evaluateTimePer = evaluateTimePer;
     }
 }

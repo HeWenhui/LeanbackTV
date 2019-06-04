@@ -10,6 +10,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.EvaluateTeacherPager;
@@ -47,7 +48,10 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
 
-        if (getInfo != null) {
+        if (getInfo != null
+                && !(getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC
+                && LiveVideoConfig.EDUCATION_STAGE_3.equals(mGetInfo.getEducationStage())
+                || LiveVideoConfig.EDUCATION_STAGE_4.equals(mGetInfo.getEducationStage()))) {
             if (getInfo.getEvaluateTeacherEntity() != null && getInfo.getEvaluateTeacherEntity().isEvaluateIsOpen()) {
                 mHttpManager = mLiveBll.getHttpManager();
                 mParser = new EvaluateResponseParser();

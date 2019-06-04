@@ -16,6 +16,7 @@ import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.irc.QueIrcParse;
@@ -113,11 +114,12 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 mLogtf.d("showFeedBack => onPmSuccess: error = " + responseEntity.getJsonObject().toString());
-
+                FeedBackEntity entity = getHttpResponseParser().parseFeedBackContent(responseEntity);
+                LiveFeedBackPager pager = new LiveFeedBackPager(mContext,mLiveId,entity,mGetInfo,bottomContent,mLiveBll.getHttpManager());
+                bottomContent.addView(pager.getRootView());
             }
         });
-        LiveFeedBackPager pager = new LiveFeedBackPager(mContext,null,bottomContent);
-        bottomContent.addView(pager.getRootView());
+
     }
 
 
@@ -125,7 +127,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void initView(final RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
-      //  new android.os.Handler().postDelayed(new Runnable() {
+//        new android.os.Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
 //                showFeedBack(bottomContent);

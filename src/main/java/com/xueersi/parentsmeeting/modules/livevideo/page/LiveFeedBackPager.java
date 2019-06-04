@@ -1,30 +1,53 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
+
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.EvaluateContent;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.LiveTeacherFeedbackItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.RecyclerViewSpacesItemDecoration;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedbackTeacherBll;
 import com.xueersi.ui.adapter.RCommonAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.Call;
+
 public class LiveFeedBackPager extends LiveBasePager {
     RelativeLayout bottomContent;
+    LiveHttpManager mHttpManager;
+
     /** 主讲布局 */
     RecyclerView rvFeedbackContent;
     RCommonAdapter contentAdapter;
@@ -37,6 +60,7 @@ public class LiveFeedBackPager extends LiveBasePager {
 
 
     /** 辅导布局 */
+    RelativeLayout rlTutorContent;
     RecyclerView rvTutorContent;
     RCommonAdapter contentTutorAdapter;
     ImageView ivTutorHeader;
@@ -45,7 +69,8 @@ public class LiveFeedBackPager extends LiveBasePager {
     ImageView ivTutorStatus3;
     TextView tvTutorName;
     EditText etTutorFeedback;
-
+    TextView tvMainInputNum;
+    TextView tvTutorInputNum;
     List<EvaluateContent> mainFeedbackList;
 
     List<EvaluateContent> tutorFeedbackList;
@@ -54,7 +79,7 @@ public class LiveFeedBackPager extends LiveBasePager {
     FeedBackEntity mFeedbackEntity;
     /** 提交提示 */
     TextView tvSubmitHint;
-    ImageView ivSubmit;
+    TextView ivSubmit;
     ImageView ivClose;
 
     /** 不满意 */
@@ -66,6 +91,20 @@ public class LiveFeedBackPager extends LiveBasePager {
 
     int mainType = 1;
     int tutorType = 1;
+
+    LiveGetInfo mGetInfo;
+
+    String mainFeedback, mainIntput;
+    String tutorFeedback, tutorInput;
+    String liveId;
+    int redColor;
+    int greyColor;
+    NestedScrollView nestedScrollView;
+    TextView tvSubmitError;
+    ImageButton imgBtnSubmit;
+    public boolean isShow = false;
+    public boolean showEvaluate = false;
+    FeedBackTeacherInterface feedBackTeacherInterface;
 
     public LiveFeedBackPager(Context context) {
         super(context);
@@ -80,13 +119,20 @@ public class LiveFeedBackPager extends LiveBasePager {
         super(context, obj, isNewView);
     }
 
-    public LiveFeedBackPager(Context context, FeedBackEntity feedBackEntity, RelativeLayout
-            bottomContent) {
+    public LiveFeedBackPager(Context context, String liveId, FeedBackEntity feedBackEntity, LiveGetInfo getInfo,
+                             RelativeLayout
+                                     bottomContent, LiveHttpManager mHttpManager) {
         super(context, feedBackEntity, true);
         this.bottomContent = bottomContent;
+        this.mGetInfo = getInfo;
+        this.liveId = liveId;
+        this.mHttpManager = mHttpManager;
+        redColor = mContext.getResources().getColor(R.color.COLOR_FB5E50);
+        greyColor = mContext.getResources().getColor(R.color.COLOR_5E5E7F);
         setLayout(mView);
         mFeedbackEntity = feedBackEntity;
-        setContentData();
+        showEvaluate = true;
+        initData();
     }
 
     private void setLayout(View view) {
@@ -98,29 +144,36 @@ public class LiveFeedBackPager extends LiveBasePager {
 
     @Override
     public View initView() {
-        mView = View.inflate(mContext, R.layout.layout_live_video_feed_back, bottomContent);
+        mView = View.inflate(mContext, R.layout.layout_live_video_feed_back, null);
         rvFeedbackContent = mView.findViewById(R.id.rv_pager_live_teacher_feedback_content);
         rvTutorContent = mView.findViewById(R.id.rv_pager_live_teacher_feedback_tutor_content);
         ivMainHeader = mView.findViewById(R.id.iv_pager_live_teacher_feedback_main_head_image);
         tvMainName = mView.findViewById(R.id.tv_pager_live_teacher_feedback_main_name);
         ivStatus1 = mView.findViewById(R.id.iv_pager_live_teacher_feedback_main_status_1);
-        ivStatus1 = mView.findViewById(R.id.iv_pager_live_teacher_feedback_main_status_2);
-        ivStatus1 = mView.findViewById(R.id.iv_pager_live_teacher_feedback_main_status_3);
+        ivStatus2 = mView.findViewById(R.id.iv_pager_live_teacher_feedback_main_status_2);
+        ivStatus3 = mView.findViewById(R.id.iv_pager_live_teacher_feedback_main_status_3);
         etMainFeedback = mView.findViewById(R.id.et_pager_live_teacher_feedback_main_input_text);
 
-
+        rlTutorContent = mView.findViewById(R.id.rl_pager_live_teacher_feedback_tutor_content);
         ivTutorHeader = mView.findViewById(R.id.iv_pager_live_teacher_feedback_tutor_head_image);
         tvTutorName = mView.findViewById(R.id.tv_pager_live_teacher_feedback_tutor_name);
         ivTutorStatus1 = mView.findViewById(R.id.iv_pager_live_teacher_feedback_tutor_status_1);
-        ivTutorStatus1 = mView.findViewById(R.id.iv_pager_live_teacher_feedback_tutor_status_2);
-        ivTutorStatus1 = mView.findViewById(R.id.iv_pager_live_teacher_feedback_tutor_status_3);
+        ivTutorStatus2 = mView.findViewById(R.id.iv_pager_live_teacher_feedback_tutor_status_2);
+        ivTutorStatus3 = mView.findViewById(R.id.iv_pager_live_teacher_feedback_tutor_status_3);
         etTutorFeedback = mView.findViewById(R.id.et_pager_live_teacher_feedback_tutor_input_text);
         tvSubmitHint = mView.findViewById(R.id.tv_pager_live_teacher_feedback_bottom_submit_hint);
         ivSubmit = mView.findViewById(R.id.iv_pager_live_teacher_feedback_submit);
         ivClose = mView.findViewById(R.id.iv_pager_live_teacher_feedback_close);
+        nestedScrollView = mView.findViewById(R.id.nsv_pager_live_teacher_feedback_content);
+        tvSubmitError = mView.findViewById(R.id.tv_pager_live_teacher_feedback_submit_error);
+
+        tvMainInputNum = mView.findViewById(R.id.tv_pager_live_teacher_feedback_main_input_num);
+        tvTutorInputNum = mView.findViewById(R.id.tv_pager_live_teacher_feedback_tutor_input_num);
+        imgBtnSubmit = mView.findViewById(R.id.btn_pager_live_teacher_feedback_submit);
         GridLayoutManager manager = new GridLayoutManager(mContext, 3);
         rvFeedbackContent.setLayoutManager(manager);
-        rvTutorContent.setLayoutManager(manager);
+        GridLayoutManager manager2 = new GridLayoutManager(mContext, 3);
+        rvTutorContent.setLayoutManager(manager2);
 
         setRecyclerViewDecoration();
 //        mainFeedbackList = new ArrayList<String>();
@@ -130,8 +183,24 @@ public class LiveFeedBackPager extends LiveBasePager {
 //        mainFeedbackList.add("闲话有点多");
 //        mainFeedbackList.add("只会读课件");
 //        mainFeedbackList.add("课堂闷无聊");
-
+        setClickListener();
+        showEvaluate = true;
         return mView;
+
+    }
+
+    @Override
+    public boolean onUserBackPressed() {
+        if (showEvaluate) {
+            if (!isShow) {
+                isShow = feedBackTeacherInterface.showPager();
+            } else {
+                isShow = feedBackTeacherInterface.removeView();
+            }
+            return isShow;
+        } else {
+            return false;
+        }
     }
 
     public void setRecyclerViewDecoration() {
@@ -148,29 +217,39 @@ public class LiveFeedBackPager extends LiveBasePager {
     @Override
     public void initData() {
         super.initData();
-        setFeedStyleList(FEED_TYPE_1);
+        //  setFeedStyleList(FEED_TYPE_1);
 
-        tvMainName.setText(mFeedbackEntity.getMainName());
-        ImageLoader.with(mContext).load(mFeedbackEntity.getMainHeadImage()).
-                error(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivMainHeader);
-        if (mFeedbackEntity.isHaveInput()) {
-            etMainFeedback.setVisibility(View.VISIBLE);
+        tvMainName.setText(mGetInfo.getMainTeacherInfo().getTeacherName());
+        ivMainHeader.setImageResource(R.drawable.bg_live_video_feedback_main_head_image);
+
+        if (TextUtils.isEmpty(mGetInfo.getMainTeacherInfo().getTeacherImg())) {
+            ImageLoader.with(BaseApplication.getContext()).asCircle().load(R.drawable.bg_main_default_head_image)
+                    .placeHolder(R.drawable.bg_main_default_head_image).into(ivMainHeader);
         } else {
-            etMainFeedback.setVisibility(View.GONE);
-
+            ImageLoader.with(BaseApplication.getContext()).asCircle().load(mGetInfo.getMainTeacherInfo()
+                    .getTeacherImg())
+                    .placeHolder(R.drawable.bg_main_default_head_image).into(ivMainHeader);
         }
+
         if (mFeedbackEntity.isHaveTutor()) {
-            tvTutorName.setText(mFeedbackEntity.getTutorName());
-            ImageLoader.with(mContext).load(mFeedbackEntity.getTutorHeadImage()).
-                    error(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivTutorHeader);
-            if (mFeedbackEntity.isHaveInput()) {
-                etTutorFeedback.setVisibility(View.VISIBLE);
+            rlTutorContent.setVisibility(View.VISIBLE);
+            tvTutorName.setText(mGetInfo.getTeacherName());
+            ivTutorHeader.setImageResource(R.drawable.bg_live_video_feedback_tutor_head_image);
+            if (TextUtils.isEmpty(mGetInfo.getTeacherIMG())) {
+                ImageLoader.with(BaseApplication.getContext()).asCircle().load(R.drawable.bg_main_default_head_image)
+                        .placeHolder(R.drawable.bg_main_default_head_image).into(ivTutorHeader);
             } else {
-                etTutorFeedback.setVisibility(View.GONE);
+                ivMainHeader.setImageResource(R.drawable.bg_live_video_feedback_tutor_head_image);
+                ImageLoader.with(BaseApplication.getContext()).asCircle().load(mGetInfo.getTeacherIMG())
+                        .placeHolder(R.drawable.bg_main_default_head_image).into(ivTutorHeader);
             }
+
+        } else {
+            rlTutorContent.setVisibility(View.GONE);
+
         }
         // 设置反馈内容
-        setContentData();
+        //  setContentData();
     }
 
 
@@ -179,10 +258,19 @@ public class LiveFeedBackPager extends LiveBasePager {
      */
     private void setContentData() {
         if (mainFeedbackList != null && mainFeedbackList.size() > 0) {
+            if (mFeedbackEntity.isHaveInput()) {
+                etMainFeedback.setVisibility(View.VISIBLE);
+                tvMainInputNum.setVisibility(View.VISIBLE);
+            } else {
+                etMainFeedback.setVisibility(View.GONE);
+                tvMainInputNum.setVisibility(View.GONE);
+
+            }
             rvFeedbackContent.setVisibility(View.VISIBLE);
             if (contentAdapter == null) {
                 contentAdapter = new RCommonAdapter(mContext, mainFeedbackList);
-                contentAdapter.addItemViewDelegate(1, new LiveTeacherFeedbackItem(mContext));
+                contentAdapter.addItemViewDelegate(1, new LiveTeacherFeedbackItem(mContext, feedbackSelect,
+                        true, redColor, greyColor));
                 rvFeedbackContent.setAdapter(contentAdapter);
             } else {
                 contentAdapter.updateData(mainFeedbackList);
@@ -192,9 +280,18 @@ public class LiveFeedBackPager extends LiveBasePager {
 
         }
         if (tutorFeedbackList != null && tutorFeedbackList.size() > 0) {
+            if (mFeedbackEntity.isHaveInput() && mFeedbackEntity.isHaveTutor()) {
+                etTutorFeedback.setVisibility(View.VISIBLE);
+                tvTutorInputNum.setVisibility(View.VISIBLE);
+            } else {
+                etTutorFeedback.setVisibility(View.GONE);
+                tvTutorInputNum.setVisibility(View.GONE);
+
+            }
             if (contentTutorAdapter == null) {
                 contentTutorAdapter = new RCommonAdapter(mContext, tutorFeedbackList);
-                contentTutorAdapter.addItemViewDelegate(1, new LiveTeacherFeedbackItem(mContext));
+                contentTutorAdapter.addItemViewDelegate(1, new LiveTeacherFeedbackItem(mContext, feedbackSelect,
+                        false, redColor, greyColor));
                 rvTutorContent.setAdapter(contentTutorAdapter);
             } else {
                 contentTutorAdapter.updateData(tutorFeedbackList);
@@ -207,62 +304,207 @@ public class LiveFeedBackPager extends LiveBasePager {
     }
 
     private void setClickListener() {
-        ivSubmit.setOnClickListener(new View.OnClickListener() {
+        // 主讲输入监听
+        etMainFeedback.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                if (mFeedbackEntity.isHaveInput()) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                tvMainInputNum.setText(etMainFeedback.getText().toString().trim().length() + "/200");
+                if (etMainFeedback.getText().toString().trim().length() >= 196) {
+                    tvMainInputNum.setTextColor(redColor);
+                } else {
+                    tvMainInputNum.setTextColor(greyColor);
 
                 }
             }
         });
+        // 主讲输入监听
+        etTutorFeedback.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                tvTutorInputNum.setText(etTutorFeedback.getText().toString().trim().length() + "/200");
+                if (etTutorFeedback.getText().toString().trim().length() >= 196) {
+                    tvTutorInputNum.setTextColor(redColor);
+                } else {
+                    tvTutorInputNum.setTextColor(greyColor);
+
+                }
+            }
+        });
+
+        // 提交
+        ivSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainIntput = etMainFeedback.getText().toString();
+                tutorInput = etTutorFeedback.getText().toString();
+                if (checkContentSubmit()) {
+                    submitFeedback();
+                }
+            }
+        });
+        // 关闭
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                onClose();
             }
         });
+        // 主讲-不满意
         ivStatus1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setSelectData("", true);
                 setStyleData(FEED_TYPE_1, true);
             }
         });
+        // 主讲-有待提高
         ivStatus2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setSelectData("", true);
                 setStyleData(FEED_TYPE_2, true);
 
             }
         });
-
+        // 主讲-满意
         ivStatus3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setSelectData("", true);
                 setStyleData(FEED_TYPE_3, true);
 
             }
         });
+        // 辅导-不满意
         ivTutorStatus1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setSelectData("", false);
                 setStyleData(FEED_TYPE_1, false);
 
             }
         });
+        // 辅导-有待提交
         ivTutorStatus2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setSelectData("", false);
                 setStyleData(FEED_TYPE_2, false);
 
             }
         });
-        ivTutorStatus1.setOnClickListener(new View.OnClickListener() {
+        // 辅导-满意
+        ivTutorStatus3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setSelectData("", false);
                 setStyleData(FEED_TYPE_3, false);
 
             }
         });
+    }
+
+    private void onClose() {
+        if (onPagerClose != null) {
+            onPagerClose.onClose(this);
+        }
+        if (feedBackTeacherInterface != null) {
+            feedBackTeacherInterface.onClose();
+        }
+    }
+    CountDownTimer timer = new CountDownTimer(3000, 1000) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            String time = String.valueOf(millisUntilFinished / 1000);
+            onSubmitError(time + "s后退出直播间",true);
+        }
+
+        @Override
+        public void onFinish() {
+            if (feedBackTeacherInterface != null) {
+                feedBackTeacherInterface.onClose();
+            }
+        }
+    };
+    /**
+     * 提交反馈
+     */
+    private void submitFeedback() {
+        Drawable leftDraw = mContext.getResources().getDrawable(R.drawable.lspj_tanchuang_loading_icon_normal);
+        ivSubmit.setCompoundDrawablesWithIntrinsicBounds(leftDraw, null, null, null);
+
+        mHttpManager.saveScienceEvaluationTeacher(liveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo
+                        .getMainTeacherId(),
+                mainFeedback, mainIntput, mGetInfo.getTeacherId(), tutorFeedback,
+                tutorInput, mGetInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        XESToastUtils.showToast(mContext, "提交成功");
+                        timer.start();
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        onSubmitError(msg,false);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        onSubmitError(responseEntity.getErrorMsg(),false);
+                    }
+                });
+    }
+
+    private void onSubmitError(String text,boolean isSuccess) {
+        tvSubmitError.setText(text);
+        if (!isSuccess){
+            imgBtnSubmit.setVisibility(View.VISIBLE);
+            ivSubmit.setVisibility(View.GONE);
+        }
+        tvSubmitError.setVisibility(View.VISIBLE);
+        nestedScrollView.setVisibility(View.GONE);
+
+
+    }
+
+    /**
+     * 是否输入一个内容
+     *
+     * @return
+     */
+    private boolean checkContentSubmit() {
+        if ((TextUtils.isEmpty(mainFeedback) && TextUtils.isEmpty(mainIntput))
+                || (mFeedbackEntity.isHaveTutor() && TextUtils.isEmpty(tutorFeedback) && TextUtils.isEmpty
+                (tutorInput))) {
+            tvSubmitHint.setText("请输入文字建议或至少选择一个标签");
+            tvSubmitHint.setVisibility(View.VISIBLE);
+            return false;
+        } else {
+            tvSubmitHint.setVisibility(View.INVISIBLE);
+        }
+        return true;
     }
 
     /**
@@ -278,14 +520,19 @@ public class LiveFeedBackPager extends LiveBasePager {
                 ivStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_selected);
                 ivStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_normal);
                 ivStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_normal);
-            } else if (FEED_TYPE_1 == style) {
+                etMainFeedback.setHint("说说老师有哪里需要改进的吧");
+            } else if (FEED_TYPE_2 == style) {
                 ivStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_normal);
                 ivStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_selected);
                 ivStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_normal);
+                etMainFeedback.setHint("说说老师有哪里需要改进的吧");
+
             } else {
                 ivStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_normal);
                 ivStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_normal);
                 ivStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_slected);
+                etMainFeedback.setHint("谢谢你的肯定，说点什么夸夸你的老师吧");
+
             }
         } else {
             tutorType = style;
@@ -293,17 +540,23 @@ public class LiveFeedBackPager extends LiveBasePager {
                 ivTutorStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_selected);
                 ivTutorStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_normal);
                 ivTutorStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_normal);
-            } else if (FEED_TYPE_1 == style) {
+                etTutorFeedback.setHint("说说老师有哪里需要改进的吧");
+
+            } else if (FEED_TYPE_2 == style) {
                 ivTutorStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_normal);
                 ivTutorStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_selected);
                 ivTutorStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_normal);
+                etTutorFeedback.setHint("说说老师有哪里需要改进的吧");
+
             } else {
                 ivTutorStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_normal);
                 ivTutorStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_normal);
                 ivTutorStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_slected);
+                etTutorFeedback.setHint("谢谢你的肯定，说点什么夸夸你的老师吧");
+
             }
         }
-        setFeedStyleList(style);
+        setFeedStyleList(style, isMain);
     }
 
     /**
@@ -311,14 +564,69 @@ public class LiveFeedBackPager extends LiveBasePager {
      *
      * @param style
      */
-    private void setFeedStyleList(int style) {
-        if (mFeedbackEntity.getMainContentList() != null && mFeedbackEntity.getMainContentList().size() >= style) {
+    private void setFeedStyleList(int style, boolean isMain) {
+        if (mFeedbackEntity.getMainContentList() != null && mFeedbackEntity.getMainContentList().size() >= style &&
+                isMain) {
             mainFeedbackList = mFeedbackEntity.getMainContentList().get(style - 1);
-        }
-        if (mFeedbackEntity.getTutorContentList() != null && mFeedbackEntity.getTutorContentList().size() >= style) {
-            mainFeedbackList = mFeedbackEntity.getTutorContentList().get(style - 1);
+        } else if (mFeedbackEntity.getTutorContentList() != null && mFeedbackEntity.getTutorContentList().size() >=
+                style) {
+            tutorFeedbackList = mFeedbackEntity.getTutorContentList().get(style - 1);
         }
         setContentData();
     }
 
+    public interface FeedbackSelectInterface {
+        void onSelect(String text, boolean isMain);
+    }
+
+    public FeedbackSelectInterface feedbackSelect = new FeedbackSelectInterface() {
+        @Override
+        public void onSelect(String text, boolean isMain) {
+            setSelectData(text, isMain);
+        }
+    };
+
+    /**
+     * 评分选择
+     *
+     * @param text
+     * @param isMain
+     */
+    private void setSelectData(String text, boolean isMain) {
+        if (isMain) {
+            mainFeedback = text;
+        } else {
+            tutorFeedback = text;
+        }
+        if (isMain && mainFeedbackList != null && mainFeedbackList.size() > 0) {
+            for (int i = 0; i < mainFeedbackList.size(); i++) {
+                if (TextUtils.equals(text, mainFeedbackList.get(i).getText())) {
+                    mainFeedbackList.get(i).setSelectFlag(true);
+                } else {
+                    mainFeedbackList.get(i).setSelectFlag(false);
+
+                }
+            }
+            if (contentAdapter != null) {
+                contentAdapter.updateData(mainFeedbackList);
+            }
+        } else if (!isMain && tutorFeedbackList != null && tutorFeedbackList.size() > 0) {
+            for (int i = 0; i < tutorFeedbackList.size(); i++) {
+                if (TextUtils.equals(text, tutorFeedbackList.get(i).getText())) {
+                    tutorFeedbackList.get(i).setSelectFlag(true);
+                } else {
+                    tutorFeedbackList.get(i).setSelectFlag(false);
+
+                }
+            }
+            if (contentTutorAdapter != null) {
+                contentTutorAdapter.updateData(tutorFeedbackList);
+            }
+        }
+    }
+
+
+    public void setFeedbackSelectInterface(FeedBackTeacherInterface feedBackTeacherInterface) {
+        this.feedBackTeacherInterface = feedBackTeacherInterface;
+    }
 }

@@ -29,6 +29,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.EvaluateContent;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
@@ -2565,7 +2567,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             feedBackEntity = new FeedBackEntity();
             feedBackEntity.setHaveTutor(mainJson.optInt("isHavecounselor")==1);
             feedBackEntity.setHaveInput(mainJson.optInt("isHaveInput")==1);
-            JSONObject contentjson = mainJson.optJSONObject("evaluateContent");
+            feedBackEntity.setEvaluateTime(mainJson.optLong("evaluateTime"));
+            feedBackEntity.setEvaluateTimePer(mainJson.optDouble("evaluateTimePer"));
+            JSONObject contentjson = jsonObject.optJSONObject("evaluateContent");
             if(contentjson ==null) {
                 return null;
             }
@@ -2573,12 +2577,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             if (teacherJson == null) {
                 return null;
             }
-            parseFeedbackContent(teacherJson.optJSONArray("choose1"),true,feedBackEntity.getMainContentList());
+            parseFeedbackContent(teacherJson.optJSONArray("choose1"),false,feedBackEntity.getMainContentList());
             parseFeedbackContent(teacherJson.optJSONArray("choose2"),false,feedBackEntity.getMainContentList());
             parseFeedbackContent(teacherJson.optJSONArray("choose3"),false,feedBackEntity.getMainContentList());
             JSONObject tutorJson = contentjson.optJSONObject("tutorEvaluOption");
             if (teacherJson != null) {
-                parseFeedbackContent(tutorJson.optJSONArray("choose1"),true,feedBackEntity.getTutorContentList());
+                parseFeedbackContent(tutorJson.optJSONArray("choose1"),false,feedBackEntity.getTutorContentList());
                 parseFeedbackContent(tutorJson.optJSONArray("choose2"),false,feedBackEntity.getTutorContentList());
                 parseFeedbackContent(tutorJson.optJSONArray("choose3"),false,feedBackEntity.getTutorContentList());
             }
