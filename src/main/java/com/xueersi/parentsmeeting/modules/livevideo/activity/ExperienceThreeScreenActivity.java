@@ -221,7 +221,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onStartConnect() {
-            logger.i("=====>onStartConnect");
+            Log.i("expTess","onStartConnect");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onStartConnect();
             }
@@ -229,7 +229,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onConnect(IRCConnection connection) {
-            logger.i("=====>onConnect");
+            Log.i("expTess","onConnect");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onConnect();
             }
@@ -237,7 +237,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onRegister() {
-            logger.i("=====>onRegister");
+            Log.i("expTess","onRegister");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onRegister();
@@ -246,7 +246,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onDisconnect(IRCConnection connection, boolean isQuitting) {
-            logger.i("=====>onDisconnect");
+            Log.i("expTess","onDisconnect");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onDisconnect();
@@ -256,8 +256,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
-            logger.i("=====>onMessage");
-
+            Log.i("expTess","onMessage");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onMessage(target, sender, login, hostname, text, "");
             }
@@ -265,7 +264,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
-            Loger.i("ExperiencLvieAvtiv", "=====>onPrivateMessage:isSelf=" + isSelf);
+
+            Log.i("expTess","onPrivateMessage");
 
             if (isSelf && "T".equals(message)) {
                 runOnUiThread(new Runnable() {
@@ -287,14 +287,13 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
-            logger.i("=====>onChannelInfo");
-
+            Log.i("expTess","onChannelInfo channel"+channel);
         }
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice, String channelId) {
-            logger.i("=====>onNotice");
 
+            Log.i("expTess","onNotice");
             int type = -1;
             JSONObject data = null;
 
@@ -384,7 +383,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
-            logger.i("=====>onTopic");
+            Log.i("expTess","onTopic");
 
             /**
              *
@@ -417,7 +416,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onUserList(String channel, User[] users) {
-            logger.i("=====>onUserList start:" + peopleCount);
+            Log.i("expTess","onUserList");
             peopleCount.set(users.length, new Exception());
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onUserList(channel, users);
@@ -430,6 +429,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 if (user.getNick().startsWith(COUNTTEACHER_PREFIX)) {
                     // 辅导老师已在直播间
                     teacherNick = user.getNick();
+                    peopleCount.set(users.length-1, new Exception());
                     break;
                 }
             }
@@ -437,8 +437,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onJoin(String target, String sender, String login, String hostname) {
+            Log.i("expTess","onJoin");
 
-            logger.i("=====>onJoin start:" + peopleCount);
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onJoin(target, sender, login, hostname);
@@ -453,7 +453,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
-            logger.i("=====>onQuit start:" + peopleCount);
+            Log.i("expTess","onQuit");
             peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
@@ -641,7 +641,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             StableLogHashMap logHashMap = new StableLogHashMap("exitRoom");
             logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
             ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
-            super.onBackPressed();
+            finish();
         }
     }
 
@@ -750,8 +750,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     @Override
     protected void resultFailed(int arg1, int arg2) {
-        XESToastUtils.showToast(this, "resultFailed");
-        super.resultFailed(arg1, arg2);
+
         if (videoPlayState.isPlaying) {
 
             playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
@@ -770,8 +769,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     @Override
     protected void onPlayError() {
-        XESToastUtils.showToast(this, "onPlayError");
-
         if (videoPlayState.isPlaying) {
             playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
         }
@@ -783,7 +780,11 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         long t1 = TimeUtils.gennerSecond(currentPosition);
         long t2 = TimeUtils.gennerSecond(duration);
-        scanQuestion(currentPosition);
+
+        if (videoPlayState.protocol == MediaPlayer.VIDEO_PROTOCOL_MP4 ) {
+            scanQuestion(currentPosition);
+        }
+
 
         if (!videoPlayState.reported && videoPlayState.protocol == MediaPlayer.VIDEO_PROTOCOL_MP4 && t2 - t1 < 3 * 60) {
             reportToTeacher();
@@ -1094,6 +1095,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         int mode = expLiveInfo.getMode();
         boolean playVideo = false;
+
+        Log.i("expTess","onModeChanged mode=" +mode);
 
         if (mode == COURSE_STATE_1) {
             // 课前状态,辅导老师在直播间就播放直播
