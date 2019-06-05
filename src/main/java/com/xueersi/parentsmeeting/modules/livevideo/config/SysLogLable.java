@@ -15,4 +15,6 @@ public class SysLogLable {
     public static String receivedMessageOfTopic = "receivedMessageOfTopic";
     /** 接收到notice消息 */
     public static String receivedMessageOfNotic = "receivedMessageOfNotic";
+    /** 主讲辅导态切换 */
+    public static String switchLiveMode = "switchLiveMode";
 }
