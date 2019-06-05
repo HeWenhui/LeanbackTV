@@ -9,6 +9,7 @@ import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
@@ -232,7 +233,7 @@ public class IRCMessage implements IIRCMessage {
                     e.printStackTrace();
                 }
                 if (send) {
-                    mLogtf.d("onNotice:target=" + target + ",notice=" + notice);
+                    mLogtf.d(SysLogLable.receivedMessageOfNotic, "onNotice:target=" + target + ",notice=" + notice);
                 }
                 if (mIRCCallback != null) {
                     if (currentMode == null) {
@@ -259,7 +260,7 @@ public class IRCMessage implements IIRCMessage {
 
             @Override
             public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
-                mLogtf.d("onTopic:channel=" + channel + ",topic=" + topic);
+                mLogtf.d(SysLogLable.receivedMessageOfTopic, "onTopic:channel=" + channel + ",topic=" + topic);
                 if (mIRCCallback != null) {
                     //  如果不是专属老师
                     if (mChannels.length <= 1) {
@@ -489,7 +490,7 @@ public class IRCMessage implements IIRCMessage {
             String NICKKey = mConnection.connect(talkConfEntity.getHost(), Integer.parseInt(talkConfEntity.getPort()), "" + talkConfEntity.getPwd());
             connectError = false;
             //mConnection.joinChannel("#" + mChannel);
-            mLogtf.d("connect1:method=" + method + ",index=" + index + ",NICKKey=" + NICKKey + ",name=" + mConnection.getName()
+            mLogtf.d(SysLogLable.connectIRCSuccess, "connect1:method=" + method + ",index=" + index + ",NICKKey=" + NICKKey + ",name=" + mConnection.getName()
                     + ",server=" + mConnection.getServer() + ",port=" + talkConfEntity.getPort());
         } catch (NickAlreadyInUseException e) {
             try {
@@ -498,15 +499,15 @@ public class IRCMessage implements IIRCMessage {
                 String NICKKey = mConnection.connect(talkConfEntity.getHost(), Integer.parseInt(talkConfEntity.getPort()), "" + talkConfEntity.getPwd());
                 connectError = false;
                 //mConnection.joinChannel("#" + mChannel);
-                mLogtf.d("connect2-1:method=" + method + ",index=" + index + ",NICKKey=" + NICKKey + ",name=" + mConnection.getName() +
+                mLogtf.d(SysLogLable.connectIRCSuccess, "connect2-1:method=" + method + ",index=" + index + ",NICKKey=" + NICKKey + ",name=" + mConnection.getName() +
                         ",server=" + mConnection.getServer() + ",port=" + talkConfEntity.getPort());
             } catch (NickAlreadyInUseException e1) {
-                mLogtf.e("connect2-2", e1);
+                mLogtf.e(SysLogLable.connectIRCDidFailed, "connect2-2", e1);
             } catch (Exception e1) {
-                mLogtf.e("connecte2-3:method=" + method + ",name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
+                mLogtf.e(SysLogLable.connectIRCDidFailed, "connecte2-3:method=" + method + ",name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
             }
         } catch (Exception e) {
-            mLogtf.e("connect3:method=" + method + ",name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
+            mLogtf.e(SysLogLable.connectIRCDidFailed, "connect3:method=" + method + ",name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
         }
         if (connectError || !mConnection.isConnected()) {
             if (netWorkType != NetWorkHelper.NO_NETWORK && ircTalkConf != null) {
@@ -527,9 +528,8 @@ public class IRCMessage implements IIRCMessage {
                                 IpAddressUtil.USER_IP);
                     }
                 });
-
             }
-            mLogtf.d("connect4:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
+            mLogtf.d(SysLogLable.connectIrcServer, "connect4:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
             mHandler.postDelayed(new Runnable() {
 
                 @Override
@@ -545,7 +545,6 @@ public class IRCMessage implements IIRCMessage {
                     });
                 }
             }, 2000);
-
         }
     }
 
