@@ -106,10 +106,11 @@ public class LiveLog implements LiveOnLineLogs {
 //                mGetInfo.getStuId(), mGetInfo.getTeacherId(), mFileName, str, bz, liveLogCallback);
 //        liveLogCallback.setParams(params);
         StableLogHashMap logHashMap = new StableLogHashMap();
+        String eventid = LogConfig.LIVE_DEBUG_MESSAGE;
         try {
             if (logEntity != null) {
                 logHashMap.put("label", "" + logEntity.lable);
-                logHashMap.put("appeventid", "" + logEntity.liveEventId);
+                eventid = logEntity.liveEventId;
             }
             if (stableLogHashMap != null) {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
@@ -117,6 +118,7 @@ public class LiveLog implements LiveOnLineLogs {
         } catch (Exception err) {
             CrashReport.postCatchedException(new LiveException(TAG, err));
         }
+        logHashMap.put("liveeventid", "" + LogConfig.LIVE_DEBUG_MESSAGE);
         logHashMap.put("tag", "" + TAG);
         logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);
@@ -127,7 +129,7 @@ public class LiveLog implements LiveOnLineLogs {
         logHashMap.put("logindex", "" + logIndex++);
         logHashMap.put("nowlivetime", "" + (System.currentTimeMillis() - enterTime));
         logHashMap.put("teacherId", "" + mGetInfo.getTeacherId());
-        UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_DEBUG_MESSAGE, logHashMap.getData());
+        UmsAgentManager.umsAgentDebug(mContext, eventid, logHashMap.getData());
         if (AppConfig.DEBUG) {
             liveThreadPoolExecutor.execute(new WriteThread(TAG + "-" + str));
         }
@@ -150,10 +152,11 @@ public class LiveLog implements LiveOnLineLogs {
 //                mGetInfo.getStuId(), mGetInfo.getTeacherId(), mFileName, str, bz, liveLogCallback);
 //        liveLogCallback.setParams(params);
         StableLogHashMap logHashMap = new StableLogHashMap();
+        String eventid = LogConfig.LIVE_DEBUG_MESSAGE;
         try {
             if (logEntity != null) {
                 logHashMap.put("label", "" + logEntity.lable);
-                logHashMap.put("appeventid", "" + logEntity.liveEventId);
+                eventid = logEntity.liveEventId;
             }
             if (stableLogHashMap != null) {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
@@ -161,6 +164,7 @@ public class LiveLog implements LiveOnLineLogs {
         } catch (Exception err) {
             CrashReport.postCatchedException(new LiveException(TAG, err));
         }
+        logHashMap.put("liveeventid", "" + LogConfig.LIVE_DEBUG_MESSAGE);
         logHashMap.put("tag", "" + TAG);
         logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);
@@ -172,7 +176,7 @@ public class LiveLog implements LiveOnLineLogs {
         logHashMap.put("nowlivetime", "" + (System.currentTimeMillis() - enterTime));
         logHashMap.put("throwable", "" + Log.getStackTraceString(e));
         logHashMap.put("teacherId", "" + mGetInfo.getTeacherId());
-        UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_DEBUG_MESSAGE, logHashMap.getData());
+        UmsAgentManager.umsAgentDebug(mContext, eventid, logHashMap.getData());
         if (AppConfig.DEBUG) {
             liveThreadPoolExecutor.execute(new WriteThread(TAG + "-" + str));
         }
