@@ -30,6 +30,8 @@ public class SysLogLable {
     public static SysLogEntity didFinishLoadWithReuestURL = new SysLogEntity(ShellingScienceWebViewLog, "didFinishLoadWithReuestURL");
     /** 加载去壳课件失败 */
     public static SysLogEntity didFailLoadWithWithReuestURL = new SysLogEntity(ShellingScienceWebViewLog, "didFailLoadWithWithReuestURL");
+    /** 课件返回数据 */
+    public static SysLogEntity courseMessage = new SysLogEntity(ShellingScienceWebViewLog, "courseMessage");
     /** 切换加载在线课件 */
     public static SysLogEntity changeToOnlineLoad = new SysLogEntity(ShellingScienceWebViewLog, "changeToOnlineLoad");
     /** 提交答案失败 */
