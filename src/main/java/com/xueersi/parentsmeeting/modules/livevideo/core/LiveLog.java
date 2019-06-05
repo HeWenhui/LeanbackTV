@@ -10,6 +10,7 @@ import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SysLogEntity;
@@ -108,7 +109,7 @@ public class LiveLog implements LiveOnLineLogs {
         try {
             if (logEntity != null) {
                 logHashMap.put("label", "" + logEntity.lable);
-                logHashMap.put("liveenentid", "" + logEntity.liveEventId);
+                logHashMap.put("appeventid", "" + logEntity.liveEventId);
             }
             if (stableLogHashMap != null) {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
@@ -119,14 +120,14 @@ public class LiveLog implements LiveOnLineLogs {
         logHashMap.put("tag", "" + TAG);
         logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);
-        logHashMap.put("str", "" + str);
+        logHashMap.put("attachment", "" + str);
         logHashMap.put("prefix", "" + getPrefix);
         logHashMap.put("liveid", "" + mLiveId);
         logHashMap.put("type", "" + type);
         logHashMap.put("logindex", "" + logIndex++);
         logHashMap.put("nowlivetime", "" + (System.currentTimeMillis() - enterTime));
         logHashMap.put("teacherId", "" + mGetInfo.getTeacherId());
-        UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, logHashMap.getData());
+        UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_DEBUG_MESSAGE, logHashMap.getData());
         if (AppConfig.DEBUG) {
             liveThreadPoolExecutor.execute(new WriteThread(TAG + "-" + str));
         }
@@ -152,7 +153,7 @@ public class LiveLog implements LiveOnLineLogs {
         try {
             if (logEntity != null) {
                 logHashMap.put("label", "" + logEntity.lable);
-                logHashMap.put("liveenentid", "" + logEntity.liveEventId);
+                logHashMap.put("appeventid", "" + logEntity.liveEventId);
             }
             if (stableLogHashMap != null) {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
@@ -163,7 +164,7 @@ public class LiveLog implements LiveOnLineLogs {
         logHashMap.put("tag", "" + TAG);
         logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);
-        logHashMap.put("str", "" + str);
+        logHashMap.put("attachment", "" + str);
         logHashMap.put("prefix", "" + getPrefix);
         logHashMap.put("liveid", "" + mLiveId);
         logHashMap.put("type", "" + type);
@@ -171,7 +172,7 @@ public class LiveLog implements LiveOnLineLogs {
         logHashMap.put("nowlivetime", "" + (System.currentTimeMillis() - enterTime));
         logHashMap.put("throwable", "" + Log.getStackTraceString(e));
         logHashMap.put("teacherId", "" + mGetInfo.getTeacherId());
-        UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, logHashMap.getData());
+        UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_DEBUG_MESSAGE, logHashMap.getData());
         if (AppConfig.DEBUG) {
             liveThreadPoolExecutor.execute(new WriteThread(TAG + "-" + str));
         }
