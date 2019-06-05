@@ -392,6 +392,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         if (mGetInfo != null) {
             sbuilder.append(",pattern = " + mGetInfo.getPattern());
         }
+        logger.i(sbuilder.toString());
         mLogtf.d(sbuilder.toString());
         final File finalFile = new File(path);
         XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(activity);

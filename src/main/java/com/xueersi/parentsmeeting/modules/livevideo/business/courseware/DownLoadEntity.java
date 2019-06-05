@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
 
 import com.xueersi.common.network.download.DownloadListener;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ZipProg;
 
 import java.io.File;
 
@@ -57,6 +58,8 @@ public class DownLoadEntity<T extends DownloadListener> {
         /** 下载监听器 */
         private T downListener;
 
+        private ZipProg zipProg;
+
         public DownLoadBuilder setUrl(String url) {
             this.url = url;
             return this;
@@ -100,6 +103,15 @@ public class DownLoadEntity<T extends DownloadListener> {
 
         public T getDownLIstener() {
             return downListener;
+        }
+
+        public ZipProg getZipProg() {
+            return zipProg;
+        }
+
+        public DownLoadBuilder setZipProg(ZipProg zipProg) {
+            this.zipProg = zipProg;
+            return this;
         }
 
         public DownLoadBuilder setDownLIstener(T downLIstener) {
