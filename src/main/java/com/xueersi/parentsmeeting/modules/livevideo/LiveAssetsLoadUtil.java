@@ -49,7 +49,7 @@ public class LiveAssetsLoadUtil {
      */
     public static void loadAssertsResource(final Activity context, final LoadFileCallBack callback) {
 
-        if(LiveVideoConfig.assetsDownloadTag==true){
+        if(!LiveVideoConfig.assetsDownloadTag){
             if(callback!=null){
                 callback.success();
                 return;

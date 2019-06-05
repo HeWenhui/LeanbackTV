@@ -824,7 +824,7 @@ public class LiveVideoConfig {
      */
     public static final String SUPER_SPEAKER_VIDEO_PATH = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/superSpeaker/";
 
-    public static boolean assetsDownloadTag = true;
+    public static boolean assetsDownloadTag = false;
 
     public static DownLoadFileInfo getDownLoadFileInfo() {
         DownLoadFileInfo info = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
