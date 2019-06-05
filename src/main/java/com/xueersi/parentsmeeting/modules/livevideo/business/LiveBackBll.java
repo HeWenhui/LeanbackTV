@@ -353,11 +353,17 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         //解析性别
         liveGetInfo.setStuSex(mMyInfo.getSex() + "");
         liveGetInfo.setHeadImgPath(mMyInfo.getHeadImg());
+
+        LiveGetInfo.StudentLiveInfoEntity studentLiveInfoEntity = new LiveGetInfo.StudentLiveInfoEntity();
+        studentLiveInfoEntity.setClassId(mVideoEntity.getClassId());
+        studentLiveInfoEntity.setCourseId(mVideoEntity.getCourseId());
+
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = new LiveGetInfo.StudentLiveInfoEntity();
-            studentLiveInfo.setLearning_stage(mVideoEntity.getLearning_stage());
-            liveGetInfo.setStudentLiveInfo(studentLiveInfo);
+            studentLiveInfoEntity.setLearning_stage(mVideoEntity.getLearning_stage());
         }
+
+        mGetInfo.setStudentLiveInfo(studentLiveInfoEntity);
+
         liveGetInfo.setPattern(pattern);
         try {
             String getInfoStr = mVideoEntity.getGetInfoStr();
