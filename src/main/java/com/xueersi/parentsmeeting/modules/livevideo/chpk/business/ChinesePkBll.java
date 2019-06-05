@@ -1145,8 +1145,18 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 super.onFailure(call, e);
             }
         };
-
-        mHttpManager.getCHPkAdversary(isHalfBodyLiveRoom(), roomInitInfo.getStudentLiveInfo().getClassId(), getNewTeamId("startSelectAdversary"), roomInitInfo.getUseSkin(), callback);
+        String teamId = getNewTeamId("getPkAdversary");
+        if ("-1".equals(teamId)) {
+            runnables.add(new Runnable() {
+                @Override
+                public void run() {
+                    startSelectAdversary();
+                }
+            });
+            startTeamSelect(true);
+            return;
+        }
+        mHttpManager.getCHPkAdversary(isHalfBodyLiveRoom(), roomInitInfo.getStudentLiveInfo().getClassId(), getNewTeamId(teamId), roomInitInfo.getUseSkin(), callback);
 
     }
 

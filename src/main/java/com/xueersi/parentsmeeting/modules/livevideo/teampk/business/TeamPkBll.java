@@ -1255,8 +1255,19 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 获取PK 对手信息
      */
     private void getPkAdversary() {
+        String teamId = getNewTeamId("getPkAdversary");
+        if ("-1".equals(teamId)) {
+            runnables.add(new Runnable() {
+                @Override
+                public void run() {
+                    getPkAdversary();
+                }
+            });
+            startTeamSelect(true);
+            return;
+        }
         getTeamPkHttp().getPkAdversary(roomInitInfo.getStudentLiveInfo().getClassId(),
-                getNewTeamId("getPkAdversary"), new HttpCallBack() {
+                teamId, new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         TeamPkAdversaryEntity pkAdversaryEntity = mHttpResponseParser.
