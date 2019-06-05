@@ -107,8 +107,8 @@ public class LiveLog implements LiveOnLineLogs {
         StableLogHashMap logHashMap = new StableLogHashMap();
         try {
             if (logEntity != null) {
-                logHashMap.put("liveenentid", "" + logEntity.liveEventId);
                 logHashMap.put("label", "" + logEntity.lable);
+                logHashMap.put("liveenentid", "" + logEntity.liveEventId);
             }
             if (stableLogHashMap != null) {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
@@ -151,8 +151,8 @@ public class LiveLog implements LiveOnLineLogs {
         StableLogHashMap logHashMap = new StableLogHashMap();
         try {
             if (logEntity != null) {
-                logHashMap.put("liveenentid", "" + logEntity.liveEventId);
                 logHashMap.put("label", "" + logEntity.lable);
+                logHashMap.put("liveenentid", "" + logEntity.liveEventId);
             }
             if (stableLogHashMap != null) {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
