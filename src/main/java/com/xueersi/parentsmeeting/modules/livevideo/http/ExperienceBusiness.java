@@ -20,4 +20,11 @@ public class ExperienceBusiness extends BaseHttpBusiness {
         params.addBodyParam("expLiveId", "" + expLiveId);
         sendPost(url, params, callBack);
     }
+
+    public void expUserSign(String signInUrl, int expLiveId, String orderId,HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("expLiveId", "" + expLiveId);
+        params.addBodyParam("orderId", "" + orderId);
+        sendPost(signInUrl, params, callBack);
+    }
 }

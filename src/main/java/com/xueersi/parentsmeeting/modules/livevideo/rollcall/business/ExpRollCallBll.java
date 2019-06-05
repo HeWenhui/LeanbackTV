@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import org.json.JSONException;
@@ -32,16 +33,26 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
 
     private RollCallBll rollCallBll;
 
-    private LiveHttpManager mHttpManager;
+    private ExperienceBusiness mHttpManager;
 
     private IIRCMessage ircMessage;
 
-    public ExpRollCallBll(Activity activity, LiveBackBll liveBackBll, IIRCMessage ircMessage,LiveHttpManager mHttpManager) {
+    private String signInUrl;
+
+    private int expLiveId;
+
+    private String orderId;
+
+    public ExpRollCallBll(Activity activity, LiveBackBll liveBackBll, IIRCMessage ircMessage, String signInUrl, int expLiveId, String orderId) {
         super(activity, liveBackBll);
         this.rollCallBll = new RollCallBll(activity);
-        this.mHttpManager = mHttpManager;
+        this.mHttpManager = new ExperienceBusiness(activity);
         this.ircMessage = ircMessage;
         this.rollCallBll.setRollCallHttp(this);
+
+        this.signInUrl = signInUrl;
+        this.expLiveId = expLiveId;
+        this.orderId = orderId;
     }
 
 
@@ -59,7 +70,7 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
 
     @Override
     public void userSign(String enstuId, String liveId, String classId, String teacherId, HttpCallBack requestCallBack) {
-        mHttpManager.userSign(enstuId, liveId, classId, teacherId, requestCallBack);
+        mHttpManager.expUserSign(signInUrl, expLiveId, orderId, requestCallBack);
     }
 
     @Override
