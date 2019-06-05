@@ -366,7 +366,9 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                     } else {
                         mode = LiveTopic.MODE_CLASS;
                     }
+
                     boolean open = data.getBoolean("open");
+                    mExpIrcState.setChatOpen(open);
                     mLiveMessagePager.onopenchat(open, mode, true);
                 } catch (Exception e) {
                     e.printStackTrace();
