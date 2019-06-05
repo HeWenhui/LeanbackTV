@@ -20,9 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -55,13 +53,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBack
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SimpleLiveBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.ExpFeedbackDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.StudyResultDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
@@ -80,6 +78,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5Experi
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.ExperienceIrcState;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.ExpRollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -96,6 +95,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 主要功能： 课前直播；课中回放；课后直播；互动题；学习报告;(打点数据;禁言；签到；踢人；聊天；学习反馈;数据埋点;)
@@ -309,7 +309,40 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 return;
             }
 
-            if (type == XESCODE.GAG) {
+            // 老师聊天
+            if (type == XESCODE.TEACHER_MESSAGE) {
+                String name;
+                if (sourceNick.startsWith("t")) {
+                    name = "主讲老师";
+                    String teacherImg = "";
+                    String message = "";
+                    try {
+                        teacherImg = mGetInfo.getMainTeacherInfo().getTeacherImg();
+                        message = data.getString("msg");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    mLiveMessagePager.onMessage(target, sourceNick, "", "", message, teacherImg);
+                } else {
+                    name = "辅导老师";
+                    String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+                    String to = "";
+                    String message = "";
+
+                    try {
+                        to = data.optString("to", "All");
+                        message = data.getString("msg");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    if ("All".equals(to) || teamId.equals(to)) {
+                        String teacherIMG = mGetInfo.getTeacherIMG();
+                        mLiveMessagePager.onMessage(target, sourceNick, "", "", message, teacherIMG);
+                    }
+                }
+            } else if (type == XESCODE.GAG) {
                 // 禁言
                 try {
                     String id = data.getString("id");
@@ -321,12 +354,61 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            } else if (type == XESCODE.OPENCHAT) {
+
+                // 开关聊天区
+                try {
+                    String mode = "";
+
+                    if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
+                        mode = LiveTopic.MODE_TRANING;
+                    } else {
+                        mode = LiveTopic.MODE_CLASS;
+                    }
+                    boolean open = data.getBoolean("open");
+                    mLiveMessagePager.onopenchat(open, mode, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (type == XESCODE.ExpLive.XEP_MODE_CHANGE) {
+                try {
+                    int status = data.getInt("status");
+                    onNoticeStatus(status);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         @Override
         public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
             logger.i("=====>onTopic");
+
+            /**
+             *
+             }
+             */
+
+            try {
+                JSONObject json = new JSONObject(topic);
+
+                JSONArray disableSpeakingArray = json.getJSONArray("disable_speaking");
+                boolean selfDisable = false;
+
+                for (int i = 0; i < disableSpeakingArray.length(); i++) {
+                    JSONObject object = disableSpeakingArray.getJSONObject(i);
+                    String id = object.getString("id");
+
+                    if (id.equals("" + mIRCMessage.getNickname())) {
+                        selfDisable = true;
+                        break;
+                    }
+                }
+
+                mLiveMessagePager.onDisable(selfDisable, false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
 
@@ -432,7 +514,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     private LiveBackBll liveBackBll;
 
-    private LiveBll mLiveBll;
 
     /**
      * 签到业务
@@ -445,6 +526,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     LectureLivePlayBackBll lectureLivePlayBackBll;
 
     private LiveHttpManager mHttpManager;
+
+    private ExperienceIrcState mExpIrcState;
 
     private ExperienceBusiness expBusiness;
 
@@ -477,7 +560,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     private int savedWidth;
     private int savedHeight;
 
-    private int testMode = 0;
+    private boolean isStudyShow;
 
     /**
      * 播放器当前状态值
@@ -525,13 +608,18 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     }
 
     @Override
-    public void onDestroy() {
+    public void finish() {
         StableLogHashMap params = new StableLogHashMap("LiveFreePlayExit");
         params.put("liveid", playBackEntity.getLiveId());
         params.put("termid", playBackEntity.getChapterId());
         params.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_EXIT);
         ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_EXIT, params.getData());
         AppBll.getInstance().unRegisterAppEvent(this);
+
+        if (videoPlayState.isPlaying) {
+            stopPlayer();
+        }
+
         liveBackBll.onDestory();
         mLiveMessagePager = null;
         getHandler.removeCallbacks(null);
@@ -545,7 +633,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             }
         }.start();
 
-        super.onDestroy();
+        super.finish();
     }
 
     @Override
@@ -685,10 +773,10 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     @Override
     protected void playingPosition(long currentPosition, long duration) {
 
-        scanQuestion(currentPosition);
 
         long t1 = TimeUtils.gennerSecond(currentPosition);
         long t2 = TimeUtils.gennerSecond(duration);
+        scanQuestion(t1);
 
         if (!videoPlayState.reported && videoPlayState.protocol == MediaPlayer.VIDEO_PROTOCOL_MP4 && t2 - t1 < 3 * 60) {
             reportToTeacher();
@@ -763,18 +851,20 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         liveBackBll.setvPlayer(vPlayer);
         lectureLivePlayBackBll = new LectureLivePlayBackBll(this, "");
 
-        mLiveBll = new LiveBll(this, playBackEntity.getLiveId(), playBackEntity.getChapterId(), expLiveInfo.getLiveType(), 0);
-        mLiveBll.setSendMsgListener(new LiveBll.SendMsgListener() {
-            @Override
-            public void onMessageSend(String msg, String targetName) {
-                sendChatMessage(msg, targetName);
-            }
-        });
 
         liveMessageBll = new LiveMessageBll(this, 1);
         expBusiness = new ExperienceBusiness(this);
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", playBackEntity.getLiveId());
+        LiveVideoSAConfig liveVideoSAConfig = null;
+
+        if (isArts == 1) {
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
+        } else {
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
+        }
+
+        mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
 
         initlizeTalk();
 
@@ -782,9 +872,19 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(this, liveBackBll, playBackEntity.getChapterId()));
         liveBackBll.addBusinessBll(new EnglishH5ExperienceBll(this, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(this, liveBackBll));
-        expRollCallBll = new ExpRollCallBll(this, liveBackBll, mIRCMessage);
+        expRollCallBll = new ExpRollCallBll(this, liveBackBll, mIRCMessage, mHttpManager);
         liveBackBll.addBusinessBll(expRollCallBll);
+
         liveBackBll.onCreate();
+
+        RelativeLayout rlQuestionContent = findViewById(R.id.rl_course_video_live_question_contents);
+        rlQuestionContent.setVisibility(View.VISIBLE);
+        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+
+        for (LiveBackBaseBll businessBll : businessBlls) {
+            businessBll.initViewF(null, rlQuestionContent, new AtomicBoolean(mIsLand));
+        }
+
     }
 
     /**
@@ -832,31 +932,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         rlLiveMessageContent = new RelativeLayout(this);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlLiveMessageContent, params);
-
-        long before = System.currentTimeMillis();
-        QuestionBll questionBll = new QuestionBll(this, playBackEntity.getStuCourseId());
-        mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom, liveMessageLandEntities, null);
-        logger.d("initViewLive:time1=" + (System.currentTimeMillis() - before));
-
-
-        // 关联聊天人数
-        mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(liveMessageBll);
-
-        // TODO: 2018/8/11 设置ircState
-        //mLiveMessagePager.setLiveBll(mLiveBll);
-        mLiveMessagePager.setIrcState(mLiveBll);
-
-
-        mLiveMessagePager.onModeChange(mLiveBll.getMode());
-        mLiveMessagePager.setIsRegister(true);
-
-        // 03.22 设置统计日志的公共参数
-        mLiveMessagePager.setLiveTermId(playBackEntity.getLiveId(), playBackEntity.getChapterId());
-
-        // 隐藏锁屏按钮
-        mLiveMessagePager.hideclock();
-        rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
 
         String channel = IRC_CHANNEL_PREFIX + expChatId;
         String chatRoomUid = "s_" + mGetInfo.getLiveType() + "_" + expChatId + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
@@ -918,9 +993,36 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             });
         }
 
+
+        mExpIrcState = new ExperienceIrcState(mGetInfo, mGetInfo.getLiveTopic(), mIRCMessage, playBackEntity, mHttpManager);
+
+        QuestionBll questionBll = new QuestionBll(this, playBackEntity.getStuCourseId());
+        mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom, liveMessageLandEntities, null);
+        mLiveMessagePager.setGetInfo(mGetInfo);
+
+
+        // 关联聊天人数
+        mLiveMessagePager.setPeopleCount(peopleCount);
+        mLiveMessagePager.setMessageBll(liveMessageBll);
+
+        // TODO: 2018/8/11 设置ircState
+        //mLiveMessagePager.setLiveBll(mLiveBll);
+        mLiveMessagePager.setIrcState(mExpIrcState);
+
+
+        mLiveMessagePager.onModeChange(mExpIrcState.getMode());
+        mLiveMessagePager.setIsRegister(true);
+
+        // 03.22 设置统计日志的公共参数
+        mLiveMessagePager.setLiveTermId(playBackEntity.getLiveId(), playBackEntity.getChapterId());
+
+        // 隐藏锁屏按钮
+        mLiveMessagePager.hideclock();
+        rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
+
+
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
-
     }
 
     /**
@@ -947,8 +1049,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
                 JSONObject json = (JSONObject) responseEntity.getJsonObject();
                 int mode = json.getInt("mode");
-//                mode = testMode;
-                Log.i("tessPrint", "mode=" + mode);
 
                 if (expLiveInfo.getMode() != mode) {
                     expLiveInfo.setMode(mode);
@@ -957,45 +1057,28 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
                 if (mode != COURSE_STATE_4) {
                     getHandler.postDelayed(liveModeTask, getModeInterval());
+                } else if (!isStudyShow) {
+                    initStudyResult();
                 }
             }
         });
 
     }
 
-    /**
-     * 发生聊天消息
-     */
-    protected void sendChatMessage(String msg, String name) {
-        logger.i("====>sendMessage:" + msg + ":" + name + ":" + mGetInfo.getStuName());
 
-        if (!mLiveBll.openchat()) {
-            return;
-        }
+    protected void onNoticeStatus(final int status) {
 
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type", "" + XESCODE.TEACHER_MESSAGE);
-            if (StringUtils.isEmpty(name)) {
-                name = mGetInfo.getStuName();
+        Runnable action = new Runnable() {
+            @Override
+            public void run() {
+                if (expLiveInfo.getMode() != status) {
+                    expLiveInfo.setMode(status);
+                    onModeChanged();
+                }
             }
-            jsonObject.put("name", name);
-            jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
-            jsonObject.put("msg", msg);
+        };
 
-            if (haveTeam) {
-                LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-                String teamId = studentLiveInfo.getTeamId();
-                jsonObject.put("from", "android_" + teamId);
-                jsonObject.put("to", teamId);
-            }
-            lectureLivePlayBackBll.sendRecordInteract(playBackEntity.getInteractUrl(), playBackEntity.getChapterId(), 1);
-            mIRCMessage.sendMessage(jsonObject.toString());
-
-
-        } catch (Exception e) {
-            UmsAgentManager.umsAgentException(BaseApplication.getContext(), "ExperienceLiveVideoActivity " + "sendMessage", e);
-        }
+        getHandler.post(action);
     }
 
     /**
@@ -1084,6 +1167,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      * 初始化学习结果
      */
     protected void initStudyResult() {
+
+        isStudyShow = true;
 
         AbstractBusinessDataCallBack callBack = new AbstractBusinessDataCallBack() {
             @Override
@@ -1233,7 +1318,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                     if (playPosition == chatEntity.getvQuestionInsretTime()) {
                         logger.i("=====> teahcer close chat called begin");
                         mLiveMessagePager.onopenchat(false, "in-class", true);
-                        mLiveBll.setChatOpen(false);
+                        mExpIrcState.setChatOpen(false);
                         isRoomChatAvailable = false;
                         logger.i("=====> teahcer close chat called end 11111");
                     }
@@ -1244,7 +1329,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                     if (playPosition == chatEntity.getvQuestionInsretTime()) {
                         logger.i("=====> teahcer open chat called begin");
                         mLiveMessagePager.onopenchat(true, "in-class", true);
-                        mLiveBll.setChatOpen(true);
+                        mExpIrcState.setChatOpen(true);
                         isRoomChatAvailable = true;
                         logger.i("=====> teahcer open chat called  end 111111");
                     }
@@ -1277,10 +1362,10 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         if (!roomChatAvalible) {
             mLiveMessagePager.onopenchat(false, "in-class", isRoomChatAvailable);
-            mLiveBll.setChatOpen(false);
+            mExpIrcState.setChatOpen(false);
         } else {
             mLiveMessagePager.onopenchat(true, "in-class", !isRoomChatAvailable);
-            mLiveBll.setChatOpen(true);
+            mExpIrcState.setChatOpen(true);
         }
 
         return roomChatAvalible;

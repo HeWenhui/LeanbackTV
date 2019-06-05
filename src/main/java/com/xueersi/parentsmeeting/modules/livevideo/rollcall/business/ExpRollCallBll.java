@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
@@ -35,12 +36,14 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
 
     private IIRCMessage ircMessage;
 
-    public ExpRollCallBll(Activity activity, LiveBackBll liveBackBll, IIRCMessage ircMessage) {
+    public ExpRollCallBll(Activity activity, LiveBackBll liveBackBll, IIRCMessage ircMessage,LiveHttpManager mHttpManager) {
         super(activity, liveBackBll);
         this.rollCallBll = new RollCallBll(activity);
-        this.mHttpManager = new LiveHttpManager(activity);
+        this.mHttpManager = mHttpManager;
         this.ircMessage = ircMessage;
+        this.rollCallBll.setRollCallHttp(this);
     }
+
 
     @Override
     public void initView() {
@@ -51,7 +54,7 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
-        rollCallBll.onLiveInited(liveGetInfo, mRootView, mLiveType);
+        rollCallBll.setLiveGetInfo(liveGetInfo);
     }
 
     @Override

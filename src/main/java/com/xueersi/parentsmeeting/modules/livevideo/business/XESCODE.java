@@ -313,6 +313,7 @@ public interface XESCODE {
     int SUPER_SPEAKER_SEND_MESSAGE = 3004;
 
     interface ExpLive{
+        int XEP_MODE_CHANGE = 500;
         int XEP_BACK_FINISH = 501;
     }
 }
