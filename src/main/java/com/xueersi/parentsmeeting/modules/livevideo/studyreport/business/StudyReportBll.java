@@ -318,16 +318,20 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                 finalFile.delete();
             }
             logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
-            if (mGetInfo.getPattern() == 6) {
+            if (mGetInfo != null) {
+                if (mGetInfo.getPattern() == 6) {
+                    getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                } else if (mGetInfo.getPattern() == 1) {
+                    getHttpManager().sendWonderfulMoment(
+                            mGetInfo.getStuId(),
+                            mGetInfo.getId(),
+                            mGetInfo.getStuCouId(),
+                            String.valueOf(type),
+                            result.getHttpPath(),
+                            new UploadImageUrl(type, false));
+                }
+            } else {
                 getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
-            } else if (mGetInfo.getPattern() == 1) {
-                getHttpManager().sendWonderfulMoment(
-                        mGetInfo.getStuId(),
-                        mGetInfo.getId(),
-                        mGetInfo.getStuCouId(),
-                        String.valueOf(type),
-                        result.getHttpPath(),
-                        new UploadImageUrl(type, false));
             }
         }
 
@@ -384,15 +388,18 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     }
 
     private void uploadWonderMoment(final int type, String path) {
-        mLogtf.d("uploadWonderMoment:type=" + type + ",path=" + path);
+        StringBuilder sbuilder = new StringBuilder("uploadWonderMoment:type=" + type + ",path=" + path);
+        if (mGetInfo != null) {
+            sbuilder.append(",pattern = " + mGetInfo.getPattern());
+        }
+        mLogtf.d(sbuilder.toString());
         final File finalFile = new File(path);
         XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(activity);
         CloudUploadEntity uploadEntity = new CloudUploadEntity();
         uploadEntity.setFilePath(path);
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
         uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
-        xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesUploadListener(type, finalFile) {
-        });
+        xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesUploadListener(type, finalFile));
     }
 
     private void createPlugin() {
