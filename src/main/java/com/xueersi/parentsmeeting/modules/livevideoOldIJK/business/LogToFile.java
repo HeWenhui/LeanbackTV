@@ -6,6 +6,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.SysLogEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 
@@ -83,7 +84,7 @@ public class LogToFile {
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
-    public void i(String label, String message) {
+    public void i(SysLogEntity label, String message) {
         if (liveOnLineLogs != null) {
             liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message);
         }
@@ -99,7 +100,7 @@ public class LogToFile {
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
-    public void d(String label, String message) {
+    public void d(SysLogEntity label, String message) {
         if (liveOnLineLogs != null) {
             liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message);
         }
@@ -121,7 +122,7 @@ public class LogToFile {
         logger.e(message, e);
     }
 
-    public void e(String label, String message, Throwable e) {
+    public void e(SysLogEntity label, String message, Throwable e) {
         if (liveOnLineLogs != null) {
             liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message, e);
         }

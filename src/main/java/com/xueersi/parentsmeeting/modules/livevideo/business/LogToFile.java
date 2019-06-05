@@ -6,6 +6,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.SysLogEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -83,9 +84,9 @@ public class LogToFile {
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
-    public void i(String label, String message) {
+    public void i(SysLogEntity logEntity, String message) {
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message);
+            liveOnLineLogs.getOnloadLogs(TAG, logEntity, stableLogHashMap, message);
         }
         logger.i(message);
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
@@ -99,9 +100,9 @@ public class LogToFile {
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
-    public void d(String label, String message) {
+    public void d(SysLogEntity logEntity, String message) {
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message);
+            liveOnLineLogs.getOnloadLogs(TAG, logEntity, stableLogHashMap, message);
         }
         logger.d(message);
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
@@ -121,9 +122,9 @@ public class LogToFile {
         logger.e(message, e);
     }
 
-    public void e(String label, String message, Throwable e) {
+    public void e(SysLogEntity logEntity, String message, Throwable e) {
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message, e);
+            liveOnLineLogs.getOnloadLogs(TAG, logEntity, stableLogHashMap, message, e);
         }
         logger.e(message, e);
     }
