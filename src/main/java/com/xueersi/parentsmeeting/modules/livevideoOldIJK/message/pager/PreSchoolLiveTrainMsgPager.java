@@ -54,10 +54,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.CommonWordPsItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.PreSchoolHotwordItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
@@ -65,6 +63,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.BasePrimaryScienceMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionStatic;
@@ -1303,9 +1302,9 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         Loger.e("LiveMessagerPager", "=====>onMessage called");
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
