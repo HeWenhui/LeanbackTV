@@ -262,13 +262,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         StudentPkResultEntity resultEntity = mHttpResponseParser.parseStuPkResult(responseEntity);
 
-                        if(resultEntity != null && resultEntity.getMyTeamResultInfo() != null && resultEntity.getCompetitorResultInfo() != null){
+                        if (resultEntity != null && resultEntity.getMyTeamResultInfo() != null && resultEntity.getCompetitorResultInfo() != null) {
                             TeamPkBll.this.isWin = resultEntity.getMyTeamResultInfo().getEnergy() >= resultEntity
                                     .getCompetitorResultInfo().getEnergy();
                             showPkResultScene(resultEntity, PK_RESULT_TYPE_FINAL_PKRESULT);
                             TeamPkLog.showPkResult(mLiveBll, isWin);
-                        }else{
-                            XESToastUtils.showToast(mActivity,"获取场次pk结果失败");
+                        } else {
+                            XESToastUtils.showToast(mActivity, "获取场次pk结果失败");
                         }
                     }
 
@@ -389,14 +389,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                                     TeamEnergyAndContributionStarEntity entity = mHttpResponseParser
                                             .parseTeanEnergyAndContribution(responseEntity);
                                     //展示当前pk 结果
-                                    if(entity != null && entity.getMyTeamEngerInfo() != null && entity.getCompetitorEngerInfo() != null){
+                                    if (entity != null && entity.getMyTeamEngerInfo() != null && entity.getCompetitorEngerInfo() != null) {
                                         showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
                                         if (mLiveBll != null) {
                                             TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(), getNonce(), eventId,
                                                     entity.getMyTeamEngerInfo().getTeamName());
                                         }
-                                    }else{
-                                        XESToastUtils.showToast(mActivity,"获取贡献之星失败");
+                                    } else {
+                                        XESToastUtils.showToast(mActivity, "获取贡献之星失败");
                                     }
                                 }
                             });
@@ -410,14 +410,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                                     TeamEnergyAndContributionStarEntity entity = mHttpResponseParser
                                             .parseTeanEnergyAndContribution(responseEntity);
-                                    if(entity != null && entity.getCompetitorEngerInfo() != null && entity.getMyTeamEngerInfo() != null){
+                                    if (entity != null && entity.getCompetitorEngerInfo() != null && entity.getMyTeamEngerInfo() != null) {
                                         showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
                                         if (mLiveBll != null) {
                                             TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(), getNonce(), eventId,
                                                     entity.getMyTeamEngerInfo().getTeamName());
                                         }
-                                    }else{
-                                        XESToastUtils.showToast(mActivity,"获取贡献之星失败");
+                                    } else {
+                                        XESToastUtils.showToast(mActivity, "获取贡献之星失败");
                                     }
                                 }
                             });
@@ -472,10 +472,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     /**
      * 开启分队仪式
      *
-     * @param primary 小班体验
+     * @param primary             小班体验
+     * @param showTeamSelectScene
      */
-    public void startTeamSelect(boolean primary) {
-        getTeamInfo(primary);
+    public void startTeamSelect(boolean primary, boolean showTeamSelectScene) {
+        getTeamInfo(primary, showTeamSelectScene);
     }
 
     public void stopTeamSelect() {
@@ -501,9 +502,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     /**
      * 获取战队信息
      *
-     * @param primary 小班体验
+     * @param primary             小班体验
+     * @param showTeamSelectScene 显示分队仪式
      */
-    private void getTeamInfo(final boolean primary) {
+    private void getTeamInfo(final boolean primary, final boolean showTeamSelectScene) {
         HttpCallBack callBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -516,7 +518,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 } else {
                     teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
                 }
-                showTeamSelectScene(primary);
+                if (showTeamSelectScene) {
+                    showTeamSelectScene(primary);
+                }
                 if (primary) {
                     LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
                     logger.d("getTeamInfo:runnables=" + runnables.size());
@@ -1275,7 +1279,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     getPkAdversary();
                 }
             });
-            startTeamSelect(true);
+            startTeamSelect(true, false);
             return;
         }
         getTeamPkHttp().getPkAdversary(roomInitInfo.getStudentLiveInfo().getClassId(),
@@ -1284,23 +1288,23 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         TeamPkAdversaryEntity pkAdversaryEntity = mHttpResponseParser.
                                 parsePkAdversary(responseEntity);
-                           if(pkAdversaryEntity != null && pkAdversaryEntity.getSelf() != null && pkAdversaryEntity.getOpponent() != null){
-                               if (mLiveBll != null) {
-                                   try {
-                                       long teamId = Long.parseLong(pkAdversaryEntity.getOpponent().getTeamId());
-                                       long classId = Long.parseLong(pkAdversaryEntity.getOpponent().getClassId());
-                                       boolean isComputer = (teamId < 0 && classId < 0);
-                                       TeamPkLog.showOpponent(mLiveBll, isComputer, pkAdversaryEntity.getSelf().getTeamName(),
-                                               pkAdversaryEntity.getOpponent().getTeamName(), pkAdversaryEntity.getOpponent()
-                                                       .getTeamId(), pkAdversaryEntity.getOpponent().getClassId());
-                                   }catch (Exception e){
-                                       e.printStackTrace();
-                                   }
-                               }
-                               showPkResultScene(pkAdversaryEntity, PK_RESULT_TYPE_ADVERSARY);
-                           }else{
-                                XESToastUtils.showToast(mActivity,"pk对手信息获取失败");
-                           }
+                        if (pkAdversaryEntity != null && pkAdversaryEntity.getSelf() != null && pkAdversaryEntity.getOpponent() != null) {
+                            if (mLiveBll != null) {
+                                try {
+                                    long teamId = Long.parseLong(pkAdversaryEntity.getOpponent().getTeamId());
+                                    long classId = Long.parseLong(pkAdversaryEntity.getOpponent().getClassId());
+                                    boolean isComputer = (teamId < 0 && classId < 0);
+                                    TeamPkLog.showOpponent(mLiveBll, isComputer, pkAdversaryEntity.getSelf().getTeamName(),
+                                            pkAdversaryEntity.getOpponent().getTeamName(), pkAdversaryEntity.getOpponent()
+                                                    .getTeamId(), pkAdversaryEntity.getOpponent().getClassId());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            showPkResultScene(pkAdversaryEntity, PK_RESULT_TYPE_ADVERSARY);
+                        } else {
+                            XESToastUtils.showToast(mActivity, "pk对手信息获取失败");
+                        }
                     }
 
                     @Override
@@ -1433,7 +1437,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     nonce = data.optString("nonce", "");
                     teamSelectByNotice = true;
                     if ("on".equals(status)) {
-                        startTeamSelect(true);
+                        startTeamSelect(true, true);
                         TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
                     } else if ("off".equals(status)) {
                         //自动结束，不用教师端消息
@@ -1447,7 +1451,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     nonce = data.optString("nonce", "");
                     teamSelectByNotice = true;
                     if (OPEN_STATE_OPEN.equals(open)) {
-                        startTeamSelect(false);
+                        startTeamSelect(false, true);
                         TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
                     } else if (OPEN_STATE_CLOSE.equals(open)) {
                         stopTeamSelect();

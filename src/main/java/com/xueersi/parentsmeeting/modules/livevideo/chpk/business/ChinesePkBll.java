@@ -269,7 +269,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     /**
      * 开启分队仪式
      */
-    public void startTeamSelect(final boolean primary) {
+    public void startTeamSelect(final boolean primary, final boolean showTeamSelectScene) {
         logger.e("====>startTeamSelect:");
 
         prepareSelcting = true;
@@ -286,7 +286,9 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 } else {
                     teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
                 }
-                showTeamSelectScene();
+                if (showTeamSelectScene) {
+                    showTeamSelectScene();
+                }
                 prepareSelcting = false;
                 if (primary) {
                     LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
@@ -955,7 +957,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 nonce = data.optString("nonce", "");
 //                teamSelectByNotice = true;
                 if ("on".equals(status)) {
-                    startTeamSelect(true);
+                    startTeamSelect(true, true);
                     TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
                 } else if ("off".equals(status)) {
                     //自动结束，不用教师端消息
@@ -969,7 +971,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 open = data.optString("open");
                 nonce = data.optString("nonce", "");
                 if (OPEN_STATE_OPEN.equals(open)) {
-                    startTeamSelect(false);
+                    startTeamSelect(false, true);
                 } else if (OPEN_STATE_CLOSE.equals(open)) {
                     stopTeamSelect();
                 }
@@ -1154,7 +1156,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                     startSelectAdversary();
                 }
             });
-            startTeamSelect(true);
+            startTeamSelect(true, false);
             return;
         }
         mHttpManager.getCHPkAdversary(isHalfBodyLiveRoom(), roomInitInfo.getStudentLiveInfo().getClassId(), getNewTeamId(teamId), roomInitInfo.getUseSkin(), callback);
