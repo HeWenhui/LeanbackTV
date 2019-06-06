@@ -1681,6 +1681,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
+    /** 解析小组战队pk可能为空 */
     public TeamPkTeamInfoEntity parseTeamInfoPrimary(ResponseEntity responseEntity) {
         TeamPkTeamInfoEntity teamInfoEntity = new TeamPkTeamInfoEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
@@ -1752,12 +1753,15 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     MobAgent.httpResponseParserError(TAG, "parseTeamInfo.teamMembers", e.getMessage());
                 }
                 teamInfoEntity.setTeamInfo(teamInfo);
+                return teamInfoEntity;
+            } else {
+                MobAgent.httpResponseParserError(TAG, "parseTeamInfo", "teamInfo=" + teamObj);
             }
         } catch (Exception e) {
             e.printStackTrace();
             MobAgent.httpResponseParserError(TAG, "parseTeamInfo", e.getMessage());
         }
-        return teamInfoEntity;
+        return null;
     }
 
     /**
