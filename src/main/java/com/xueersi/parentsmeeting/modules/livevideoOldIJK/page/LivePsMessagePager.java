@@ -64,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.HotWordLog;
@@ -1350,9 +1351,9 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         Loger.e("LiveMessagerPager", "=====>onMessage called");
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);

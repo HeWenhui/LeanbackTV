@@ -4,6 +4,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
  * 直播日志变量
  */
 public class LogConfig {
+    /** 直播-调试日志 */
+    public static String LIVE_DEBUG_MESSAGE = "live_debug_message";
     /** 直播-接麦 */
     public static String LIVE_LINK_NEWMIC = "live_newmic";
     /** 解压错误-单个文件错误 */

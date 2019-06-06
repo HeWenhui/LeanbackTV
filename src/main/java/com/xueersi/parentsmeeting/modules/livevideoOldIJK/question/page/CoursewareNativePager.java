@@ -33,6 +33,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAndBackDebug;
@@ -134,6 +135,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private Button btCourseSubmit;
     /** 新课件缓存 */
     private NewCourseCache newCourseCache;
+    private StaticWeb staticWeb;
     /** 新课件是否是预加载 */
     private boolean ispreload;
     private LiveAndBackDebug liveAndBackDebug;
@@ -207,8 +209,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 //        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/");
         entranceTime = System.currentTimeMillis() / 1000;
         try {
-
-            NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType,detailInfo.isTUtor());
+            NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
         } catch (Exception e) {
             CrashReport.postCatchedException(e);
         }
@@ -312,7 +313,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         CourseWebViewClient courseWebViewClient = new CourseWebViewClient();
         newCourseCache.setOnHttpCode(courseWebViewClient);
         wvSubjectWeb.setWebViewClient(courseWebViewClient);
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, testid, creattime, new StaticWeb.OnMessage() {
+        staticWeb = new StaticWeb(mContext, wvSubjectWeb, testid, creattime, new StaticWeb.OnMessage() {
 
             @Override
             public void postMessage(String where, final JSONObject message, String origin) {
@@ -341,7 +342,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     e.printStackTrace();
                 }
             }
-        }), "xesApp");
+        });
+        wvSubjectWeb.addJavascriptInterface(staticWeb, "xesApp");
         btCoursePre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -353,7 +355,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("type", CourseMessage.SEND_getAnswer);
                     JSONObject resultData = new JSONObject();
                     jsonData.put("data", resultData);
-                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                    staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -370,7 +372,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("type", CourseMessage.SEND_getAnswer);
                     JSONObject resultData = new JSONObject();
                     jsonData.put("data", resultData);
-                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                    staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -385,7 +387,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("type", CourseMessage.SEND_getAnswer);
                     JSONObject resultData = new JSONObject();
                     jsonData.put("data", resultData);
-                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                    staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
                     CrashReport.postCatchedException(e);
                     mLogtf.e("btCourseSubmit", e);
@@ -624,7 +626,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             NewCourseSec.Test test = tests.get(currentIndex);
                             addJs = false;
                             loadJs = false;
-                            NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId(),detailInfo.isTUtor());
+                            NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId(), detailInfo.isTUtor());
                             wvSubjectWeb.loadUrl(test.getPreviewPath());
                         }
                     }
@@ -669,7 +671,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                                     resultData.put("isCanAnswer", 1);
                                     resultData.put("userAnswerContent", userAnswerContent2);
                                     jsonData.put("data", resultData);
-                                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                                    staticWeb.sendToCourseware(jsonData, "*");
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -680,7 +682,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (currentIndex >= 0 && currentIndex < tests.size()) {
                         pageid = tests.get(currentIndex).getId();
                     }
-                    NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid, (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime,detailInfo.isTUtor());
+                    NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid, (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime, detailInfo.isTUtor());
                     isRefresh = 0;
                 }
                 setViewEnable("onLoadComplete");
@@ -729,6 +731,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         logHashMap.put("closetype", "clickBackButton");
         logHashMap.put("isFinish", "" + isFinish);
         umsAgentDebugSys(eventId, logHashMap.getData());
+        mLogtf.d(SysLogLable.backButtonClick, "onBack:loadJs=" + loadJs);
     }
 
     @Override
@@ -757,16 +760,17 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         if (isFinish) {
             return;
         }
+        mLogtf.d(SysLogLable.ShellingCommit, "submitData:loadResult=" + loadResult);
         isFinish = true;
         resultGotByForceSubmit = !loadResult;
         if (loadResult) {
             //初中结果页是网页，需要调接口
             if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
                 wvSubjectWeb.loadUrl(jsClientSubmit);
-            } else if (detailInfo.isTUtor()){
+            } else if (detailInfo.isTUtor()) {
                 wvSubjectWeb.loadUrl(jsClientSubmit);
             }
-        }  else {
+        } else {
             getAnswerType = LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT;
             if (courseTipDialog != null) {
                 courseTipDialog.cancelDialog();
@@ -778,7 +782,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("type", CourseMessage.SEND_getAnswer);
                     JSONObject resultData = new JSONObject();
                     jsonData.put("data", resultData);
-                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                    staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
                     CrashReport.postCatchedException(e);
                     mLogtf.e("submitData", e);
@@ -805,7 +809,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             } else {
                 submitSec(isforce, nonce);
             }
-            NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1, wvSubjectWeb.getUrl(), ispreload,detailInfo.isTUtor());
+            NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1, wvSubjectWeb.getUrl(), ispreload, detailInfo.isTUtor());
         }
     }
 
@@ -1151,10 +1155,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
      * @param isforce
      */
     private void onSubmitSuccess(int isforce) {
+        mLogtf.d(SysLogLable.submitAnswerSuccess, "onSubmitSuccess:isforce=" + isforce);
         if (isArts == LiveVideoSAConfig.ART_EN) {
-            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), true, isforce == 2, ispreload, (System.currentTimeMillis() - subMitTime), "",detailInfo.isTUtor());
+            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), true, isforce == 2, ispreload, (System.currentTimeMillis() - subMitTime), "", detailInfo.isTUtor());
         } else {
-            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), true, isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), "",detailInfo.isTUtor());
+            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), true, isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), "", detailInfo.isTUtor());
         }
     }
 
@@ -1165,10 +1170,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
      * @param errorMsg
      */
     private void onSubmitError(int isforce, String errorMsg) {
+        mLogtf.d(SysLogLable.submitAnswertFailed, "onSubmitError:isforce=" + isforce + ",errorMsg=" + errorMsg);
         if (isArts == LiveVideoSAConfig.ART_EN) {
-            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), false, isforce == 2, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg,detailInfo.isTUtor());
+            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), false, isforce == 2, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg, detailInfo.isTUtor());
         } else {
-            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), false, isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg,detailInfo.isTUtor());
+            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), false, isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg, detailInfo.isTUtor());
         }
     }
 
@@ -1198,14 +1204,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 isLoadComplete = true;
                 preLoad.onStop();
                 try {
-                    mLogtf.d("onProgressChanged:loadJs=" + loadJs);
+                    mLogtf.d(SysLogLable.didFinishLoadWithReuestURL, "onProgressChanged:loadJs=" + loadJs);
                 } catch (Exception e) {
                     CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        StaticWeb.testCourseware(wvSubjectWeb);
+                        staticWeb.testCourseware();
                     }
                 }, 10);
             }
@@ -1263,13 +1269,15 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     NewCourseSec.Test test = tests.get(0);
                     currentIndex = 0;
                     wvSubjectWeb.loadUrl(test.getPreviewPath());
+                    staticWeb.setLoadUrl(test.getPreviewPath());
                     int type = newCourseCache.loadCourseWareUrl(test.getPreviewPath());
                     if (type != 0) {
                         ispreload = type == 1;
                     } else {
                         ispreload = true;
                     }
-                    NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId(),detailInfo.isTUtor());
+                    mLogtf.d(SysLogLable.loadCourseWareStart, "onDataSucess:type=" + type + ",url=" + test.getPreviewPath());
+                    NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId(), detailInfo.isTUtor());
                     //设置作答时间
                     if (isArts == LiveVideoSAConfig.ART_EN) {
                         setTimeEn(newCourseSec);
@@ -1704,6 +1712,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 logHashMap.put("testsource", "PlatformCourseware");
             }
             logHashMap.put("eventid", "" + LogConfig.LIVE_H5PLAT);
+            mLogtf.d(SysLogLable.didFailLoadWithWithReuestURL, "onReceivedError:errcode=" + logHashMap.getData().get("errcode") + ",url=" + url);
         }
 
         @Override
@@ -1721,6 +1730,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         rlCourseControl.setVisibility(View.GONE);
         if ((LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) && !detailInfo.isTUtor()) {
             //小学理科 走原生结果页
+            mLogtf.d(SysLogLable.fetchAnswerStart, "showScienceAnswerResult:isforce=" + isforce);
             englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0, new AbstractBusinessDataCallBack() {
                 @Override
                 public void onDataSucess(Object... objData) {
@@ -1730,7 +1740,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (allowTeamPk) {
                         mEnergyNum = isforce == 0 ? entity.getEnergy() : 0;
                     }
-
+                    mLogtf.d(SysLogLable.fetchAnswerSuccess, "showScienceAnswerResult:mGoldNum=" + mGoldNum + ",mEnergyNum=" + mEnergyNum);
                     // 对外暴露答题结果
                     broadCastAnswerRestult(entity);
 
@@ -1741,17 +1751,17 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         }
                     });
                     ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                    NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, 0,detailInfo.isTUtor());
+                    NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, 0, detailInfo.isTUtor());
                 }
             });
         } else {
             String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
             loadResult = true;
-            NewCourseLog.sno7(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload,detailInfo.isTUtor());
+            NewCourseLog.sno7(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, detailInfo.isTUtor());
             wvSubjectWeb.addJavascriptInterface(new MiddleResult(mContext) {
                 @Override
                 public void onResultPageLoaded(String data) {
-                    NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, (System.currentTimeMillis() - pagerStart),detailInfo.isTUtor());
+                    NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, (System.currentTimeMillis() - pagerStart), detailInfo.isTUtor());
                 }
             }, "xesApp");
             wvSubjectWeb.loadUrl(url);
