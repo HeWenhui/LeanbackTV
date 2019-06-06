@@ -452,6 +452,11 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                         screenHeight = screenWidth;
                         screenWidth = a;
                     }
+                    if (height > width) {
+                        int a = height;
+                        height = width;
+                        width = a;
+                    }
                     double dw = screenHeight * 1.0 / height;
                     double dh = screenWidth * 1.0 / width;
                     double dd = dw > dh ? dh : dw;
