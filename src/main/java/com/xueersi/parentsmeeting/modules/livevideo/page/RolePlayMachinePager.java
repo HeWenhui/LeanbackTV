@@ -698,7 +698,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 break;
         }
         mIse.prepar();
-        //mIse.cancel();
+        mIse.cancel();
         SpeechParamEntity param = new SpeechParamEntity();
         param.setStrEvaluator(spechMsg);
         param.setLocalSavePath(saveVideoFile.getAbsolutePath());
