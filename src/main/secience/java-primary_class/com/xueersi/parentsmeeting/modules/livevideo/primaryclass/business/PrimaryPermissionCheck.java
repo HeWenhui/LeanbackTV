@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.xueersi.common.permission.PermissionItem;
@@ -12,9 +13,9 @@ import java.util.List;
 
 public class PrimaryPermissionCheck {
 
-    public static int getStatus(Context context, final OnPermissionFinish onPermissionFinish) {
+    public static int getStatus(Activity activity, final OnPermissionFinish onPermissionFinish) {
         final List<PermissionItem> unList = new ArrayList<>();
-        List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(context, new
+        List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new
                 LiveActivityPermissionCallback() {
                     @Override
                     public void onFinish() {

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.primaryclass.business;
 
 import android.app.Activity;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -48,17 +49,28 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     public void onLiveInited(final LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         classId = getInfo.getStudentLiveInfo().getClassId();
-        int status = PrimaryPermissionCheck.getStatus(activity, new PrimaryPermissionCheck.OnPermissionFinish() {
-            @Override
-            public void onFinish(boolean allOk) {
-                getPrimaryClassHttp().reportUserAppStatus(classId, getInfo.getStuId(), allOk ? 1 : 0);
-            }
-        });
-        if (status == 1) {
-            getPrimaryClassHttp().reportUserAppStatus(classId, getInfo.getStuId(), 1);
-        }
+        permissionCheck();
 //        getMyTeamInfo();
         LiveEventBus.getDefault(mContext).register(this);
+    }
+
+    private void permissionCheck() {
+        mRootView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mRootView.getViewTreeObserver().removeOnPreDrawListener(this);
+                int status = PrimaryPermissionCheck.getStatus(activity, new PrimaryPermissionCheck.OnPermissionFinish() {
+                    @Override
+                    public void onFinish(boolean allOk) {
+                        getPrimaryClassHttp().reportUserAppStatus(classId, mGetInfo.getStuId(), allOk ? 1 : 0);
+                    }
+                });
+                if (status == 1) {
+                    getPrimaryClassHttp().reportUserAppStatus(classId, mGetInfo.getStuId(), 1);
+                }
+                return false;
+            }
+        });
     }
 
     private void getMyTeamInfo() {
