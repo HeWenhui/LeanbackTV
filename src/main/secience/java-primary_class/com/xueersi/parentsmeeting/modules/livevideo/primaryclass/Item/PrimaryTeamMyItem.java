@@ -76,8 +76,12 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     }
 
     public void onAddEnergy(boolean first, int energy) {
-        mLogtf.d("onAddEnergy:energy=" + energy);
-        totalEnergy += energy;
+        mLogtf.d("onAddEnergy:first=" + first + ",energy=" + energy);
+        if (first) {
+            totalEnergy = energy;
+        } else {
+            totalEnergy += energy;
+        }
         iv_livevideo_primary_team_energy.setText("" + totalEnergy);
         if (!first) {
             final View view = LayoutInflater.from(mContext).inflate(R.layout.item_primary_class_team_item_energy, rl_livevideo_primary_team_tip, false);
