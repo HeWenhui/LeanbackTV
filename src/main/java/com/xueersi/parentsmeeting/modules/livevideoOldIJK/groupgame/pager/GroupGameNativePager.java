@@ -917,6 +917,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void startTimer() {
+            handler.removeCallbacks(onCoursewareComeOnRunable);
+            isComeOnRunablePosted = false;
             handler.removeCallbacks(turnPageRunnable);
             presentTime = System.currentTimeMillis();
             singleCount = 0;
@@ -1372,7 +1374,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     /*  课件comeOn接口  */
     private void onCoursewareComeOn() {
-        XESToastUtils.showToast(mContext, "Come On!");
         logger.d("onCoursewareComeOn()");
         JSONObject jsonData = new JSONObject();
         try {

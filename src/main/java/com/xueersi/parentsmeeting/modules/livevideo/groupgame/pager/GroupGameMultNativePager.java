@@ -1111,6 +1111,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
             }
         }, 900);
+        handler.removeCallbacks(onCoursewareComeOnRunable);
+        isComeOnRunablePosted = false;
     }
 
     private void startSpeechRecognize() {
@@ -2272,7 +2274,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     /*  课件comeOn接口  */
     private void onCoursewareComeOn() {
-        XESToastUtils.showToast(mContext, "Come On!");
         logger.d("onCoursewareComeOn()");
         JSONObject jsonData = new JSONObject();
         try {
