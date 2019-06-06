@@ -138,6 +138,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     @Override
     public void onModeChange(final String mode) {
         this.mode = mode;
+        mLogtf.d("onModeChange:mode=" + mode);
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -316,6 +317,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         List<TeamMate> result;
         if (teamInfoEntity != null) {
             result = teamInfoEntity.getResult();
+            mLogtf.d("addItem:size=" + result.size());
         } else {
             result = new ArrayList<>();
         }
@@ -460,7 +462,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 basePrimaryTeamItem.didOfflineOfUid(true);
             } else {
                 userStat.put("" + uid, true);
-                logger.d("remoteUserJoinWitnUid:uid=" + uid);
+                mLogtf.d("remoteUserJoinWitnUid:uid=" + uid);
                 primaryClassInter.getMyTeamInfo();
             }
         }
@@ -541,7 +543,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
     @Override
     public void onMessage(int type, boolean open) {
-        logger.d("onMessage:type=" + type + ",open=" + open);
+        mLogtf.d("onMessage:type=" + type + ",open=" + open);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
             if (videoStatus != open) {
                 videoStatus = open;
@@ -589,7 +591,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
     @Override
     public void onMessage(boolean videoopen, boolean audioopen) {
-        logger.d("onMessage:videoopen=" + videoopen + ",audioopen=" + audioopen);
+        mLogtf.d("onMessage:videoopen=" + videoopen + ",audioopen=" + audioopen);
         if (videoStatus != videoopen) {
             videoStatus = videoopen;
             if (videoopen) {
