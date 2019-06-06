@@ -698,7 +698,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         param.setStrEvaluator(spechMsg);
         param.setLocalSavePath(saveVideoFile.getAbsolutePath());
         param.setMultRef(false);
-        param.setPcm(true);
         param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         mIse.startRecog(param, new RolePlayerPager.RoleEvaluatorListener() {
             @Override
