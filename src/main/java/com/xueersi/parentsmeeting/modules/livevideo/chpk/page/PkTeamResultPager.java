@@ -576,7 +576,7 @@ public class PkTeamResultPager extends BasePager {
 
         try {
             lottieEffectView.setVisibility(View.VISIBLE);
-            lottieEffectView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
+            lottieEffectView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext),"chinesePk_vsteam");
             lottieEffectView.setImageAssetDelegate(new ImageAssetDelegate() {
                 @Override
                 public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {

@@ -31,7 +31,7 @@ public class PrimaryClassHttp {
         this.liveHttpManager = liveHttpManager;
     }
 
-    public void reportUserAppStatus(String classId, String stuId, String status) {
+    public void reportUserAppStatus(String classId, String stuId, int status) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", "" + classId);
         params.addBodyParam("stuId", "" + stuId);

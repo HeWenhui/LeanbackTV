@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PkUpdatePkState;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.PrimaryClassInter;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.PrimaryPermissionCheck;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.http.PrimaryClassHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemPager;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemView;
@@ -47,7 +48,15 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     public void onLiveInited(final LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         classId = getInfo.getStudentLiveInfo().getClassId();
-        getPrimaryClassHttp().reportUserAppStatus(classId, getInfo.getStuId(), "1");
+        int status = PrimaryPermissionCheck.getStatus(activity, new PrimaryPermissionCheck.OnPermissionFinish() {
+            @Override
+            public void onFinish(boolean allOk) {
+                getPrimaryClassHttp().reportUserAppStatus(classId, getInfo.getStuId(), allOk ? 1 : 0);
+            }
+        });
+        if (status == 1) {
+            getPrimaryClassHttp().reportUserAppStatus(classId, getInfo.getStuId(), 1);
+        }
 //        getMyTeamInfo();
         LiveEventBus.getDefault(mContext).register(this);
     }

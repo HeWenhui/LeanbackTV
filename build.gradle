@@ -26,8 +26,6 @@ android {
             res.srcDirs += ['src/main/secience/res-teacher_praise']
             assets.srcDirs += ['src/main/secience/assets']
              assets.srcDirs += ['src/main/live_assets']
-            //assets.srcDirs += ['src/main/secience/assets']
-            // assets.srcDirs += ['src/main/live_assets']
             //小班体验
             java.srcDirs += ['src/main/chinese/java-primary_class']
             java.srcDirs += ['src/main/secience/java-primary_class']
