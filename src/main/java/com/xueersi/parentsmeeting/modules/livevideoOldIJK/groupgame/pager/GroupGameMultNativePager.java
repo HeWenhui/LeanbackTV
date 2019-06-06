@@ -1178,6 +1178,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             evaluatorIng.onResult(resultEntity);
                         }
                         handler.removeCallbacks(onCoursewareComeOnRunable);
+                        isComeOnRunablePosted = false;
                     }
                 }
             }
@@ -1188,8 +1189,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                float floatVolume = (float) volume * 3 / 90;
 //                groupSurfaceView.onVolumeUpdate(volume);
                 if (volume > 10) {
-                    handler.removeCallbacks(onCoursewareComeOnRunable);
-                    handler.postDelayed(onCoursewareComeOnRunable, 3000);
+                    if (!isComeOnRunablePosted) {
+                        handler.postDelayed(onCoursewareComeOnRunable, 3000);
+                        isComeOnRunablePosted = true;
+                    }
                 }
                 BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                 if (courseGroupItem != null) {
@@ -2290,10 +2293,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         postMessage(jsonData);
     }
 
+    private boolean isComeOnRunablePosted = false;
     private Runnable onCoursewareComeOnRunable = new Runnable() {
         @Override
         public void run() {
             onCoursewareComeOn();
+            isComeOnRunablePosted = false;
         }
     };
 

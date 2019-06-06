@@ -389,7 +389,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         });
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "99999", creattime, new StaticWeb.OnMessage() {
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "99999", creattime, new StaticWeb
+                .OnMessage() {
             @Override
             public void postMessage(String where, final JSONObject message, String origin) {
                 try {
@@ -556,6 +557,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     if (resultEntity.getNewSenIdx() >= 0) {
                         singleModeAction.onHitSentence(resultEntity);
                         handler.removeCallbacks(onCoursewareComeOnRunable);
+                        isComeOnRunablePosted = false;
                     }
                 }
             }
@@ -563,8 +565,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onVolumeUpdate(int volume) {
                 if (volume > 10) {
-                    handler.removeCallbacks(onCoursewareComeOnRunable);
-                    handler.postDelayed(onCoursewareComeOnRunable, 3000);
+                    if (!isComeOnRunablePosted) {
+                        handler.postDelayed(onCoursewareComeOnRunable, 3000);
+                        isComeOnRunablePosted = true;
+                    }
                 }
                 float fVolume = (float) volume / 10.0f;
                 logger.i("onVolumeUpdate = " + volume + ":" + fVolume);
@@ -1389,10 +1393,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         postMessage(jsonData);
     }
 
+    private boolean isComeOnRunablePosted = false;
     private Runnable onCoursewareComeOnRunable = new Runnable() {
         @Override
         public void run() {
             onCoursewareComeOn();
+            isComeOnRunablePosted = false;
         }
     };
 }
