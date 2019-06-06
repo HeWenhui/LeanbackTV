@@ -399,7 +399,11 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         CloudUploadEntity uploadEntity = new CloudUploadEntity();
         uploadEntity.setFilePath(path);
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
-        uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
+
+        uploadEntity.setCloudPath(mGetInfo.getIsArts() == 2 ? CloudDir.LIVE_ARTS_MOMENT : CloudDir.LIVE_SCIENCE_MOMENT);
+
+//            uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
+
         xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesUploadListener(type, finalFile));
     }
 
