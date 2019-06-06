@@ -21,10 +21,18 @@ public class ExperienceBusiness extends BaseHttpBusiness {
         sendPost(url, params, callBack);
     }
 
-    public void expUserSign(String signInUrl, int expLiveId, String orderId,HttpCallBack callBack) {
+    public void expUserSign(String signInUrl, int expLiveId, String orderId, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("expLiveId", "" + expLiveId);
         params.addBodyParam("orderId", "" + orderId);
         sendPost(signInUrl, params, callBack);
     }
+
+    public void visitTimeHeart(String heartUrl, String liveId , String termId, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", "" + liveId);
+        params.addBodyParam("termId", "" + termId);
+        sendPost(heartUrl, params, callBack);
+    }
+
 }
