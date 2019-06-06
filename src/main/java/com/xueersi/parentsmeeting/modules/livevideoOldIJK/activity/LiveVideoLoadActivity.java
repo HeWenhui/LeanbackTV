@@ -100,9 +100,13 @@ public class LiveVideoLoadActivity extends BaseActivity {
         }
         CREATE_TIMES++;
         mDataLoadEntity = new DataLoadEntity(this);
-        loadAssertsResource();
-        //initData();
-
+        if(LiveVideoConfig.assetsDownloadTag){
+            loadAssertsResource();
+        }else{
+            mDataLoadEntity.beginLoading();
+            DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
+            initData();
+        }
     }
 
 

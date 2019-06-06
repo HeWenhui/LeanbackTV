@@ -16,7 +16,7 @@ android {
             java.srcDirs += ['src/main/java-achievement']
             res.srcDirs += ['src/main/res-achievement']
             java.srcDirs += ['src/main/english/java-en_tcp']
-           // assets.srcDirs += ['src/main/english/assets']
+            assets.srcDirs += ['src/main/english/assets']
             java.srcDirs += ['src/main/java-core']
             //集体发言
             java.srcDirs += ['src/main/secience/java-collective_speech']
@@ -24,6 +24,8 @@ android {
             //老师点赞
             java.srcDirs += ['src/main/secience/java-teacher_praise']
             res.srcDirs += ['src/main/secience/res-teacher_praise']
+            assets.srcDirs += ['src/main/secience/assets']
+             assets.srcDirs += ['src/main/live_assets']
             //assets.srcDirs += ['src/main/secience/assets']
             // assets.srcDirs += ['src/main/live_assets']
             //小班体验
@@ -78,7 +80,7 @@ dependencies {
 
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
-    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rtcengine)
+//    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.rtcengine)
     //    implementation project(':library:agora')
     //implementation(rootProject.ext.xeslibraries.waveform) { changing = true }
     //implementation project(':library:waveform')
