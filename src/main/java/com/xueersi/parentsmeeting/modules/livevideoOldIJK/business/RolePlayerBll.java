@@ -735,7 +735,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 if (message.getRolePlayer().isSelfRole()) {
                     JSONObject objAn = new JSONObject();
                     objAn.put("sentenceNum", i);
-                    objAn.put("entranceTime", message.getMaxReadTime());
+                    objAn.put("entranceTime", message.getSelfValidSpeechTime());
                     objAn.put("score", message.getSpeechScore());
                     JSONObject objData = new JSONObject();
                     objData.put("cont_score", message.getFluency());
@@ -821,7 +821,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 if (message.getRolePlayer().isSelfRole()) {
                     JSONObject objAn = new JSONObject();
                     objAn.put("sentenceNum", i);
-                    objAn.put("entranceTime", message.getMaxReadTime());
+                    objAn.put("entranceTime", message.getSelfValidSpeechTime());
                     objAn.put("score", message.getSpeechScore());
                     JSONObject objData = new JSONObject();
                     objData.put("cont_score", message.getFluency());

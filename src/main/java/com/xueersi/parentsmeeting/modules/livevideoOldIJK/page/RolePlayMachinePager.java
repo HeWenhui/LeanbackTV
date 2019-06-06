@@ -698,6 +698,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         param.setStrEvaluator(spechMsg);
         param.setLocalSavePath(saveVideoFile.getAbsolutePath());
         param.setMultRef(false);
+        param.setPcm(true);
         param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         mIse.startRecog(param, new RolePlayerPager.RoleEvaluatorListener() {
             @Override
@@ -712,6 +713,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                     logger.i("测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration()
                             + "得分：" + resultEntity.getScore());
                     entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
+                    message.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
                     //mIsEvaluatoring = false;
                     message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                     message.setSpeechScore(resultEntity.getScore());

@@ -698,7 +698,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 break;
         }
         mIse.prepar();
-        mIse.cancel();
+        //mIse.cancel();
         SpeechParamEntity param = new SpeechParamEntity();
         param.setStrEvaluator(spechMsg);
         param.setLocalSavePath(saveVideoFile.getAbsolutePath());
@@ -717,6 +717,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                     logger.i("测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration()
                             + "得分：" + resultEntity.getScore());
                     entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
+                    message.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
                     //mIsEvaluatoring = false;
                     message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                     message.setSpeechScore(resultEntity.getScore());
