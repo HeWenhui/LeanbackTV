@@ -109,7 +109,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 是不是文理 */
     public boolean IS_SCIENCE = true;
     /** 是不是文科 */
-    private int isArts;
+    protected int isArts;
 
     protected BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     protected BaseLiveMediaControllerBottom liveMediaControllerBottom;
@@ -220,7 +220,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      *
      * @param activity
      */
-    private void addBusiness(Activity activity) {
+    protected void addBusiness(Activity activity) {
         //是文科
         BllConfigEntity[] bllConfigEntities;
         if (isArts == 1) {

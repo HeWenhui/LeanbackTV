@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.HalfBodyArtsLiveMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.HalfBodyLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.HalfBodyPrimaryLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.LiveMessageLandPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.LiveMessagePortPager;
@@ -257,13 +258,22 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }else{
             if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                 // 语文
-                liveMessagePager = new HalfBodyArtsLiveMsgPager(activity, this,
-                        null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                    liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
+                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, null, HalfBodyLiveConfig.SKIN_TYPE_CH);
+                } else {
+                    liveMessagePager = new HalfBodyArtsLiveMsgPager(activity, this,
+                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                }
             } else {
                 // 理科
-                liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
-                        null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop,
-                        liveMessageLandEntities, null);
+                if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+                    liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
+                            null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop, liveMessageLandEntities, null);
+                } else {
+                    liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
+                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, null, 0);
+                }
             }
         }
 

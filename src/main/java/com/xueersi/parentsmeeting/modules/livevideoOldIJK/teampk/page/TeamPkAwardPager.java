@@ -56,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCutImage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer;
@@ -606,9 +607,9 @@ public class TeamPkAwardPager extends TeamPkBasePager {
      * 获取学生宝箱信息
      */
     private void getStuChestInfo() {
-        teamPKBll.getmHttpManager().getStuChest(mIsWin ? 1 : 0, teamPKBll.getRoomInitInfo().getStudentLiveInfo()
+        teamPKBll.getTeamPkHttp().getStuChest(mIsWin ? 1 : 0, teamPKBll.getRoomInitInfo().getStudentLiveInfo()
                         .getClassId()
-                , teamPKBll.getRoomInitInfo().getStudentLiveInfo().getTeamId(),
+                , teamPKBll.getNewTeamId("getStuChestInfo"),
                 teamPKBll.getRoomInitInfo().getStuId(), teamPKBll.getLiveBll().getLiveId(),
                 teamPKBll.isAIPartner(),
                 new HttpCallBack() {
@@ -834,7 +835,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
                                 resultBitmap = ((GifDrawable) drawable).getFirstFrame();
                             }
                             if (resultBitmap != null) {
-                                Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
+                                Bitmap circleBitmap = LiveCutImage.scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
                                         resultBitmap.getHeight()) / 2);
                                 ivHead.setImageBitmap(circleBitmap);
                             }
@@ -909,20 +910,5 @@ public class TeamPkAwardPager extends TeamPkBasePager {
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
         }
-    }
-
-
-    public static Bitmap scaleBitmap(Bitmap input, int radius) {
-        Bitmap result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-        Rect src = new Rect(0, 0, input.getWidth(), input.getHeight());
-        Rect dst = new Rect(0, 0, radius * 2, radius * 2);
-        Path path = new Path();
-        path.addCircle(radius, radius, radius, Path.Direction.CCW);
-        canvas.clipPath(path);
-        Paint paint = new Paint();
-        paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        canvas.drawBitmap(input, src, dst, paint);
-        return result;
     }
 }

@@ -134,8 +134,8 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     //其他部分的献花
     public final static int OTHER_FLOWER = 2;
 
-    public BaseLiveMessagePager(Context context) {
-        super(context);
+    public BaseLiveMessagePager(Context context, boolean isNewView) {
+        super(context, isNewView);
         logger.setLogMethod(false);
         pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
         pool.setRejectedExecutionHandler(new RejectedExecutionHandler() {
@@ -149,6 +149,10 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         Resources resources = context.getResources();
         nameColors = new int[]{resources.getColor(R.color.COLOR_E74C3C), resources.getColor(R.color.COLOR_20ABFF),
                 resources.getColor(R.color.COLOR_666666), resources.getColor(R.color.COLOR_E74C3C)};
+    }
+
+    public BaseLiveMessagePager(Context context) {
+        this (context,true);
     }
 
     public void setMessageBll(LiveMessageBll messageBll) {
