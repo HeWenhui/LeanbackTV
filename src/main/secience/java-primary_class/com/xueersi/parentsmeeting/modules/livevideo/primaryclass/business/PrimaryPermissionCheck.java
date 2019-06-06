@@ -17,6 +17,8 @@ public class PrimaryPermissionCheck {
         final List<PermissionItem> unList = new ArrayList<>();
         List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new
                 LiveActivityPermissionCallback() {
+                    boolean onDeny = false;
+
                     @Override
                     public void onFinish() {
 
@@ -26,6 +28,7 @@ public class PrimaryPermissionCheck {
                     public void onDeny(String permission, int position) {
                         if (unList.size() > 0) {
                             unList.remove(0);
+                            onDeny = true;
                         }
                         if (unList.isEmpty()) {
                             onPermissionFinish.onFinish(false);
@@ -39,7 +42,11 @@ public class PrimaryPermissionCheck {
                             unList.remove(0);
                         }
                         if (unList.isEmpty()) {
-                            onPermissionFinish.onFinish(true);
+                            if (onDeny) {
+                                onPermissionFinish.onFinish(false);
+                            } else {
+                                onPermissionFinish.onFinish(true);
+                            }
                         }
                     }
                 }, PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
