@@ -296,6 +296,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 vwvSpeechbulWave.setLinearGradient(new LinearGradient(0, 0, vwvSpeechbulWave.getMeasuredWidth(), 0,
                         new int[]{0xFFEA9CF9, 0xFF9DBBFA, 0xFF80F9FD}, new float[]{0, 0.5f, 1.0f}, Shader.TileMode
                         .CLAMP));
+                vwvSpeechbulWave.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
         vwvSpeechbulWave.setBackColor(Color.TRANSPARENT);
@@ -358,6 +359,11 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         sendLayoutParams.rightMargin = SizeUtils.Dp2Px(mContext, 12);
         etSpeechbulWords.setLayoutParams(wordsLayoutParams);
         etSpeechbulWords.setFilters(new InputFilter[]{new InputFilter.LengthFilter(80)});
+
+        vwvSpeechbulWave.setLinearGradient(new LinearGradient(0, 0, vwvSpeechbulWave.getMeasuredWidth(), 0,
+                new int[]{0xFFFFFF, 0x74C3FF, 0x9F35FF, 0XF991F3, 0xFF8400, 0xFBD202}, new float[]{0, 0.2f, 0.4f,
+                0.6f, 0.8f, 1.0f}, Shader.TileMode
+                .CLAMP));
     }
 
     /**
@@ -633,6 +639,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             if (mDanmakuView == null) {
                 rlSpeechBulContent.addView(initDanmaku(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                         .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mDanmakuView.getLayoutParams();
+                layoutParams.topMargin = SizeUtils.Dp2Px(mContext, 10);
+                mDanmakuView.setLayoutParams(layoutParams);
             }
             rlSpeechBulContent.addView(initView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
