@@ -451,6 +451,13 @@ public class LiveVideoEnter {
         if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
                         .SP_APP_DEVICE_NOTICE, false,
                 ShareDataManager.SHAREDATA_USER)) {
+            Intent intent;
+            if (MediaPlayer.getIsNewIJK()) {
+                intent = new Intent(context, DeviceDetectionActivity.class);
+            } else {
+                intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
+            }
+            context.startActivity(intent);
             return false;
         }
 
@@ -463,18 +470,6 @@ public class LiveVideoEnter {
 
             @Override
             public void success() {
-
-                if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
-                                .SP_APP_DEVICE_NOTICE, false,
-                        ShareDataManager.SHAREDATA_USER)) {
-                    Intent intent;
-                    if (MediaPlayer.getIsNewIJK()) {
-                        intent = new Intent(context, DeviceDetectionActivity.class);
-                    } else {
-                        intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
-                    }
-                    context.startActivity(intent);
-                }
                 if (MediaPlayer.getIsNewIJK()) {
                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
                             where, VIDEO_REQUEST);
@@ -482,7 +477,6 @@ public class LiveVideoEnter {
                     com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
                             where, VIDEO_REQUEST);
                 }
-
             }
 
             @Override
@@ -560,12 +554,6 @@ public class LiveVideoEnter {
                     HalfBodyLiveExperienceActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
                 } else {
                     com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.HalfBodyLiveExperienceActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-                }
-
-                if (MediaPlayer.getIsNewIJK()) {
-                    ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-                } else {
-                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
                 }
             }
 

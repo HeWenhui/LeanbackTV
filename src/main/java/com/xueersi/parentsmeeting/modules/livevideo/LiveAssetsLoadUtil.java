@@ -49,6 +49,12 @@ public class LiveAssetsLoadUtil {
      */
     public static void loadAssertsResource(final Activity context, final LoadFileCallBack callback) {
 
+        if(!LiveVideoConfig.assetsDownloadTag){
+            if(callback!=null){
+                callback.success();
+                return;
+            }
+        }
 
         if (!XesPermission.checkPermissionNoAlert(ContextManager.getApplication(), PermissionConfig
                 .PERMISSION_CODE_STORAGE)) {
