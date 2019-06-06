@@ -252,7 +252,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onViewDetachedFromWindow(View v) {
                 if (mLogtf != null) {
-                    mLogtf.d("onViewDetachedFromWindow:reloadurl=" + wvSubjectWeb.getUrl() + ",,time=" + (System
+                    mLogtf.d("onViewDetachedFromWindow:time=" + (System
                             .currentTimeMillis() - before));
                 }
                 if (isArts == LiveVideoSAConfig.ART_EN) {
@@ -1248,8 +1248,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         XESToastUtils.showToast(mContext, "互动题为空");
                         return;
                     }
+                    NewCourseSec.Test test = tests.get(0);
+                    mLogtf.addCommon("loadUrl", "" + test.getPreviewPath());
                     if (isArts == LiveVideoSAConfig.ART_EN) {
-                        NewCourseSec.Test test = tests.get(0);
                         mLogtf.d("getCourseWareTests:oldtype=" + detailInfo.getArtType() + ",testType=" + test.getTestType());
                         if (StringUtils.isEmpty(detailInfo.getArtType()) || "0".equals(detailInfo.getArtType())) {
                             detailInfo.setArtType(test.getTestType());
@@ -1260,13 +1261,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     showControl();
                     if (quesJson != null) {
                         for (int i = 0; i < tests.size(); i++) {
-                            NewCourseSec.Test test = tests.get(i);
+                            NewCourseSec.Test test2 = tests.get(i);
                             JSONArray userAnswerContent = quesJson.optJSONArray("" + i);
-                            test.setUserAnswerContent(userAnswerContent);
+                            test2.setUserAnswerContent(userAnswerContent);
                         }
                     }
                     setNum(1);
-                    NewCourseSec.Test test = tests.get(0);
                     currentIndex = 0;
                     wvSubjectWeb.loadUrl(test.getPreviewPath());
                     staticWeb.setLoadUrl(test.getPreviewPath());
