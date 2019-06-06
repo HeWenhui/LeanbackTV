@@ -21,20 +21,20 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ActivityUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
 
 /**
  * @author lyqai
  * @date 2018/6/22
  */
 public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoView.SurfaceCallback,
-        MediaPlayerControl {
+        BackMediaPlayerControl {
 
     /** 播放器的控制对象 */
     protected MediaController2 mMediaController;
@@ -376,7 +376,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         if (isInitialized())
         // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
         {
-            vPlayer.getSpeed();
+            return vPlayer.getSpeed();
         }
         return 1.0f;
     }
@@ -407,6 +407,22 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     public void onShare() {
 
     }
+
+    @Override
+    public void startPlayVideo() {
+        playNewVideo();
+    }
+
+    @Override
+    public void setVideoStatus(int code, int status, String values) {
+
+    }
+
+    @Override
+    public int onVideoStatusChange(int code, int status) {
+        return 0;
+    }
+
 
     protected void updateRefreshImage() {
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false,

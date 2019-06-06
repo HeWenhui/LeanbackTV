@@ -38,7 +38,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputErr
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
@@ -356,7 +356,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     protected void initBll() {
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         //发布题目的时候，如果点击取消题目，不会跳过这段做题目的时间
-        ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, new MediaPlayerControl() {//zyy:
+        ProxUtil.getProxUtil().put(activity, BackMediaPlayerControl.class, new BackMediaPlayerControl() {//zyy:
             @Override
             public void start() {
                 logger.d("initBll:start:isFinishing=" + isFinishing);
@@ -454,6 +454,28 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             public void onShare() {
                 liveBackPlayVideoFragment.onShare();
             }
+
+            @Override
+            public void release() {
+
+            }
+
+            @Override
+            public void startPlayVideo() {
+
+            }
+
+            @Override
+            public void setVideoStatus(int code, int status, String values) {
+
+            }
+
+            @Override
+            public int onVideoStatusChange(int code, int status) {
+                return 0;
+            }
+
+
         });
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
         initBusiness();
@@ -584,7 +606,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 mIsLand.get());
     }
 
-    private void playNewVideo(Uri uri, String mSectionName) {
+    public void playNewVideo(Uri uri, String mSectionName) {
         liveBackVideoBll.playNewVideo(uri, mSectionName);
     }
 
@@ -946,7 +968,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      */
     @Override
     protected void seekTo(long pos) {
-        super.seekTo(pos);
+//        super.seekTo(pos);
         liveBackVideoBll.seekTo(pos);
     }
 //    @Override

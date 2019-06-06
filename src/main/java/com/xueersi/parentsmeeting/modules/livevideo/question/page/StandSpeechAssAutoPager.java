@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
@@ -38,6 +39,7 @@ import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.tal.speech.utils.SpeechUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.ResponseEntity;
@@ -50,6 +52,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -757,8 +760,13 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             try {
                 final JSONObject answers = new JSONObject();
                 JSONObject answers1 = new JSONObject();
-                entranceTime = System.currentTimeMillis() - entranceTime;
-                answers1.put("entranceTime", (int) (entranceTime / 1000));
+                try {
+                    answers1.put("entranceTimeLog", entranceTime + "," + System.currentTimeMillis());
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
+                long entranceTime2 = System.currentTimeMillis() - entranceTime;
+                answers1.put("entranceTime", resultEntity.getSpeechDuration());
                 answers1.put("score", score);
                 JSONObject detail = new JSONObject();
                 detail.put("cont_score", score);
@@ -1123,7 +1131,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //        vwvSpeectevalWave.setVisibility(View.INVISIBLE);
 //        vwvSpeectevalWave.stop();
         if (isEnd) {
-            forceSubmit();
+            forceSubmit(resultEntity);
 //            mView.postDelayed(new Runnable() {
 //                @Override
 //                public void run() {
@@ -1133,7 +1141,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         }
     }
 
-    private void forceSubmit() {
+    private void forceSubmit(ResultEntity resultEntity) {
         mLogtf.d("forceSubmit:haveAnswer=" + haveAnswer);
         if (haveAnswer) {
             speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
@@ -1142,7 +1150,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 final JSONObject answers = new JSONObject();
                 JSONObject answers1 = new JSONObject();
                 entranceTime = System.currentTimeMillis() - entranceTime;
-                answers1.put("entranceTime", (int) (entranceTime / 1000));
+                answers1.put("entranceTime", resultEntity.getSpeechDuration());
                 answers1.put("score", 0);
                 JSONObject detail = new JSONObject();
                 detail.put("cont_score", 0);
@@ -1449,9 +1457,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             InputStream inputStream = null;
             try {
                 if (isMe) {
-                    inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_11.png");
+                    inputStream = AssertUtil.open("live_stand/lottie/voice_answer/team_right/img_11.png");
                 } else {
-                    inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_1.png");
+                    inputStream = AssertUtil.open("live_stand/lottie/voice_answer/team_right/img_1.png");
                 }
                 Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                 Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config
@@ -1472,7 +1480,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         .measureText("a") / 2, paint);
                 lottieAnimationView.updateBitmap("image_1", creatBitmap);
                 headBack.recycle();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 if (inputStream != null) {
@@ -1499,7 +1507,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         }
                         InputStream inputStream = null;
                         try {
-                            inputStream = mContext.getAssets().open
+                            inputStream = AssertUtil.open
                                     ("live_stand/lottie/voice_answer/team_right/img_2.png");
                             Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                             Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(),
@@ -1519,7 +1527,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             scalHeadBitmap.recycle();
                             lottieAnimationView.updateBitmap("image_2", creatBitmap);
                             headBack.recycle();
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         } finally {
                             if (inputStream != null) {
@@ -1549,7 +1557,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             AssetManager manager = context.getAssets();
             Bitmap img7Bitmap;
             try {
-                img7Bitmap = BitmapFactory.decodeStream(manager.open
+                img7Bitmap = BitmapFactory.decodeStream(AssertUtil.open
                         ("live_stand/lottie/voice_answer/team_right/img_0.png"));
                 Bitmap creatBitmap = Bitmap.createBitmap(img7Bitmap.getWidth(), img7Bitmap.getHeight(), Bitmap.Config
                         .ARGB_8888);

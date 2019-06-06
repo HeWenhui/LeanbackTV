@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -31,8 +32,12 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SetVolumeListener;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -315,6 +320,19 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         }
     }
 
+    SetVolumeListener setVolumeListener;
+
+    public boolean setVolume(float left, float right, SetVolumeListener setVolumeListener) {
+        leftVolume = left;
+        rightVolume = right;
+        this.setVolumeListener = setVolumeListener;
+        if (isInitialized()) {
+            vPlayer.setVolume(left, right);
+            return true;
+        }
+        return false;
+    }
+
     Handler.Callback callback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -506,6 +524,21 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             }
             if (isInitialized()) {
                 vPlayer.setVolume(leftVolume, rightVolume);
+                try {
+                    if (setVolumeListener != null) {
+                        setVolumeListener.onSuccess(true);
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                }
+            } else {
+                try {
+                    if (setVolumeListener != null) {
+                        setVolumeListener.onSuccess(false);
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                }
             }
         }
 
@@ -813,8 +846,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             }
             vPlayer.releaseSurface();
             //TODO 这个会影响暂停视频，返回后台继续播放。但是悬浮窗还需要
-            if (mIsPlayerEnable && vPlayer.needResume()) {
-                vPlayer.start();
+            PauseNotStopVideoInter onPauseNotStopVideo = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class);
+            //onPauseNotStopVideo 应该不会空
+            if (onPauseNotStopVideo == null || onPauseNotStopVideo.getPause()) {
+                if (mIsPlayerEnable && vPlayer.needResume()) {
+                    vPlayer.start();
+                }
             }
         }
     }

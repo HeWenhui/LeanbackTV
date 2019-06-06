@@ -438,12 +438,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 // 理科回放
                 if (isPlayBack) {
                     // 半身直播体验课 试题url 拼接
-                    Log.e("HalfBodyExp", "=========>EnglishH5X5pager: called 22222:" + englishH5Entity.getLiveType()
-                            + ":" + mLoadUrls);
                     if (englishH5Entity.getLiveType() == LiveVideoConfig.ExperiencLiveType.HALF_BODY) {
                         mLoadUrls = englishH5Entity.getUrl();
-                        Log.e("HalfBodyExp", "=========>EnglishH5X5pager: called 5555:" + englishH5Entity.getLiveType()
-                                + ":" + mLoadUrls);
                     } else {
                         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                         // 一题多发的课件预加载(直播回放)
@@ -464,8 +460,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        String tutorId = liveId;
+                        if (!TextUtils.isEmpty(tutorId)) {
+                            tutorId=  tutorId.replace("_t","");
+                        }
                         String realurl = englishH5Entity.getDynamicurl();
-                        mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId +
+                        mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + tutorId + "&stuCouId=" + stuCouId +
                                 "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId +
                                 "&packageSource=" + packageSource + "&packageAttr=" + packageAttr +
                                 "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId +

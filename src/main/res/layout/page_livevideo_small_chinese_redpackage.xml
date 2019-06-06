@@ -3,13 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.6"
-        android:background="@color/COLOR_000000" />
+    android:layout_height="match_parent"
+    android:background="@color/COLOR_CC000000"
+    android:clickable="true">
 
     <ImageView
         android:id="@id/iv_livevideo_small_chinese_red_package_background"

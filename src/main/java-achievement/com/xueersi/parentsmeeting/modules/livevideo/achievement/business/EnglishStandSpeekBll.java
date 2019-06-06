@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
@@ -584,7 +585,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
         }
         s_language = new File(dir, "s_language");
         try {
-            InputStream inputStream = activity.getAssets().open("s_language");
+            InputStream inputStream = AssertUtil.open("s_language");
             FileOutputStream outputStream = new FileOutputStream(s_language);
             byte b[] = new byte[10240];
             int length = -1;

@@ -11,7 +11,7 @@ import javax.net.ssl.SSLSessionContext;
 
 public class WebTrustVerifier {
     private static String TAG = "WebTrustVerifier";
-    private static boolean trustVerifier = false;
+    private static boolean trustVerifier = true;
 
     /**
      * 网页证书认证

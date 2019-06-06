@@ -98,6 +98,9 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
                 pingPool.execute(new Runnable() {
                     @Override
                     public void run() {
+                        if (destory) {
+                            return;
+                        }
                         speakerRecognitionerInterface = SpeakerRecognitionerInterface.getInstance();
                         boolean result = speakerRecognitionerInterface.init();
                         logger.d("init:result=" + result + ",isStart=" + isStart);
@@ -208,6 +211,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
                         int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
 //                                byte[] pcm_data = toByteArray(mPCMBuffer, readSize);
 //                            logger.d("start:predict=" + readSize + ",pcm_data=" + pcm_data.length);
+                        //目前没有锁的必要了
                         synchronized (lock) {
                             if (destory) {
                                 return;
@@ -269,11 +273,17 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     @Override
     public void release() throws RemoteException {
         logger.d("release");
+        //目前没有锁的必要了
         synchronized (lock) {
             destory = true;
-            if (speakerRecognitionerInterface != null) {
-                speakerRecognitionerInterface.speakerRecognitionerFree();
-            }
+            pingPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (speakerRecognitionerInterface != null) {
+                        speakerRecognitionerInterface.speakerRecognitionerFree();
+                    }
+                }
+            });
         }
     }
 }

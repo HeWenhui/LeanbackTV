@@ -389,7 +389,6 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        Log.e("Arts","=======>onNotice:"+type+":"+isAvailable);
         if (isAvailable) {
             switch (type) {
                 case XESCODE.ARTS_PRAISE_START:

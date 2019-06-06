@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
@@ -180,7 +181,7 @@ public class GroupGameMVPPager extends LiveBasePager {
     public Bitmap creatGoldBitmap(int fireNum, String lottieId) {
         Bitmap bitmap;
         try {
-            bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
+            bitmap = BitmapFactory.decodeStream(AssertUtil.open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
 
@@ -194,7 +195,7 @@ public class GroupGameMVPPager extends LiveBasePager {
             bitmap.recycle();
             bitmap = creatBitmap;
             return bitmap;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.e("creatGoldBitmap", e);
         }
         return null;
@@ -208,7 +209,7 @@ public class GroupGameMVPPager extends LiveBasePager {
     public Bitmap creatFireBitmap(int fireNum, String lottieId) {
         Bitmap bitmap;
         try {
-            bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
+            bitmap = BitmapFactory.decodeStream(AssertUtil.open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
 
@@ -222,7 +223,7 @@ public class GroupGameMVPPager extends LiveBasePager {
             bitmap.recycle();
             bitmap = creatBitmap;
             return bitmap;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.e("creatFireBitmap", e);
         }
         return null;
@@ -237,7 +238,7 @@ public class GroupGameMVPPager extends LiveBasePager {
     public Bitmap creatNameBitmap(String name, String lottieId) {
         Bitmap bitmap;
         try {
-            bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
+            bitmap = BitmapFactory.decodeStream(AssertUtil.open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
             int width = bitmap.getWidth();
             int height = bitmap.getHeight();
             Bitmap creatBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -266,7 +267,7 @@ public class GroupGameMVPPager extends LiveBasePager {
             bitmap.recycle();
             bitmap = creatBitmap;
             return bitmap;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.e("creatNameBitmap", e);
         }
         return null;

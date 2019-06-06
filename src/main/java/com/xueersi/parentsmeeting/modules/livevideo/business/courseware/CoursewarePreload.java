@@ -85,7 +85,6 @@ public class CoursewarePreload {
     private CoursewareInfoEntity.NbCoursewareInfo mNbCoursewareInfo;
 
     public CoursewarePreload(Context context, int subject) {
-        Log.e("NbTrac", "=======>coursePrealod  inint new:");
         mContext = context;
 //        this.liveId = liveId;
         mSubject = subject;
@@ -192,7 +191,6 @@ public class CoursewarePreload {
      * 获取课件信息
      */
     public void getCoursewareInfo(String liveId) {
-        Log.e("NbTrac", "=======>coursePrealod  getCoursewareInfo new:" + liveId);
         executos.allowCoreThreadTimeOut(true);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
@@ -252,7 +250,6 @@ public class CoursewarePreload {
             if ("science".equals(arts) && coursewareInfoEntity != null) {
                 mNbCoursewareInfo = coursewareInfoEntity.getNbCoursewareInfo();
             }
-            Log.e("NbTrac", "=======>onPmSuccess():" + mNbCoursewareInfo);
             performDownLoad();
         }
 
@@ -280,7 +277,6 @@ public class CoursewarePreload {
 
     private void performDownLoad() {
         logger.i("" + courseWareInfos.size() + " " + subjectNum.get());
-        Log.e("NbTrac", "=======>performDownLoad() 000:" + courseWareInfos.size() + ":" + subjectNum.get());
         if (courseWareInfos.size() == subjectNum.get()) {
             logger.i("perform download ");
             AppBll.getInstance().registerAppEvent(CoursewarePreload.this);
@@ -649,13 +645,12 @@ public class CoursewarePreload {
         if (coursewareInfo == null) {
             return;
         }
-        File cacheDir = com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile.geCacheFile(mContext,
+        File cacheDir = LiveCacheFile.geCacheFile(mContext,
                 NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
         if (!cacheDir.exists()) {
             cacheDir.mkdirs();
         }
 
-        Log.e("NbTrac", "=====>downLoadNbResource 11111:" + cacheDir.exists());
         logger.i("nbresource download ");
         String tempIP = ips.get(0);
         String ip;
@@ -677,7 +672,6 @@ public class CoursewarePreload {
         String fileName = coursewareInfo.getResourceMd5() + ".zip";
         File save = new File(cacheDir, fileName);
         if (!fileIsExists(save.getAbsolutePath())) {
-            Log.e("NbTrac", "=====>downLoadNbResource nbresource zip url path:" + ip + url + " filename:" + fileName);
             DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(
                     ip + url,
                     cacheDir.getAbsolutePath(),
@@ -692,7 +686,7 @@ public class CoursewarePreload {
                 unZipDir.mkdirs();
             }
 
-            com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.PreLoadDownLoaderManager
+            PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager
                     .DownLoadInfoAndListener(
                     downLoadInfo,
 
@@ -711,9 +705,9 @@ public class CoursewarePreload {
                     "");
             if (!isPrecise.get()) {
                 //Log.e("NbDownLoad","=====>downLoadNbResource addToAutoDownloadPool");
-                com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
+                PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
             } else {
-                com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.PreLoadDownLoaderManager.addUrgentInfo(infoListener);
+                PreLoadDownLoaderManager.addUrgentInfo(infoListener);
             }
 
         }

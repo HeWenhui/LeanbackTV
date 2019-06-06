@@ -40,10 +40,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.UpdatePkState;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultFlayPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkBasePager;
@@ -88,6 +91,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 投票题 奖励能量
      */
     private static final int VOTE_ADD_ENERGY = 3;
+    /**
+     * 老师表扬 奖励能量
+     */
+    public static final int VOTE_TEACHER_PRAISE_ENERGY = 5;
     private Activity mActivity;
     /**
      * 战队PK rootView
@@ -246,10 +253,15 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         StudentPkResultEntity resultEntity = mHttpResponseParser.parseStuPkResult(responseEntity);
-                        TeamPkBll.this.isWin = resultEntity.getMyTeamResultInfo().getEnergy() >= resultEntity
-                                .getCompetitorResultInfo().getEnergy();
-                        showPkResultScene(resultEntity, PK_RESULT_TYPE_FINAL_PKRESULT);
-                        TeamPkLog.showPkResult(mLiveBll, isWin);
+
+                        if(resultEntity != null && resultEntity.getMyTeamResultInfo() != null && resultEntity.getCompetitorResultInfo() != null){
+                            TeamPkBll.this.isWin = resultEntity.getMyTeamResultInfo().getEnergy() >= resultEntity
+                                    .getCompetitorResultInfo().getEnergy();
+                            showPkResultScene(resultEntity, PK_RESULT_TYPE_FINAL_PKRESULT);
+                            TeamPkLog.showPkResult(mLiveBll, isWin);
+                        }else{
+                            XESToastUtils.showToast(mActivity,"获取场次pk结果失败");
+                        }
                     }
 
                     @Override
@@ -368,12 +380,16 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                                     TeamEnergyAndContributionStarEntity entity = mHttpResponseParser
                                             .parseTeanEnergyAndContribution(responseEntity);
-                                    showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
-                                    if (mLiveBll != null && entity != null) {
-                                        TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(), getNonce(), eventId,
-                                                entity.getMyTeamEngerInfo().getTeamName());
+                                    //展示当前pk 结果
+                                    if(entity != null && entity.getMyTeamEngerInfo() != null && entity.getCompetitorEngerInfo() != null){
+                                        showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
+                                        if (mLiveBll != null) {
+                                            TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(), getNonce(), eventId,
+                                                    entity.getMyTeamEngerInfo().getTeamName());
+                                        }
+                                    }else{
+                                        XESToastUtils.showToast(mActivity,"获取贡献之星失败");
                                     }
-
                                 }
                             });
 
@@ -386,12 +402,15 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                                     TeamEnergyAndContributionStarEntity entity = mHttpResponseParser
                                             .parseTeanEnergyAndContribution(responseEntity);
-                                    showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
-                                    if (mLiveBll != null && entity != null) {
-                                        TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(), getNonce(), eventId,
-                                                entity.getMyTeamEngerInfo().getTeamName());
+                                    if(entity != null && entity.getCompetitorEngerInfo() != null && entity.getMyTeamEngerInfo() != null){
+                                        showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
+                                        if (mLiveBll != null) {
+                                            TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(), getNonce(), eventId,
+                                                    entity.getMyTeamEngerInfo().getTeamName());
+                                        }
+                                    }else{
+                                        XESToastUtils.showToast(mActivity,"获取贡献之星失败");
                                     }
-
                                 }
                             });
         }
@@ -664,7 +683,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
         if (pkStateRootView != null) {
             pkStateRootView.setVisibility(View.VISIBLE);
-           // pkStateRootView.setTeamPkBll(this);
+            // pkStateRootView.setTeamPkBll(this);
             // 设置当前pk 状态,兼容 半身直播 主辅导态来回切换
             if (mCurrentPkState != null) {
                 pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
@@ -725,7 +744,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     public void showAnswerQuestionAward(int goldNum, int energyNum, String id) {
         TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity,
                 TeamPkAqResultPager.AWARD_TYPE_QUESTION, this);
-       // addPager(aqAwardPager);
+        // addPager(aqAwardPager);
         addTopLayerPager(aqAwardPager);
         aqAwardPager.setData(goldNum, energyNum);
         TeamPkLog.showAddPower(mLiveBll, id, energyNum + "");
@@ -738,6 +757,19 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         showVoteEnergyAnim(addEnergy, event.getVoteId());
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTeachPraiseUIColse(TeachPraiseRusltulCloseEvent event) {
+        int addEnergy = VOTE_TEACHER_PRAISE_ENERGY;
+        logger.d("onTeachPraiseUIColse:addEnergy=" + addEnergy);
+        showSpeechAnimSuc(addEnergy, event);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdatePkState(UpdatePkState event) {
+        logger.d("onUpdatePkState:event=" + event.getWhere());
+        updatePkStateLayout(true);
+    }
+
     /**
      * 展示 投票加能量 动画
      */
@@ -746,7 +778,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         //上报服务器 增加加能量
         mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
-                roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), new HttpCallBack() {
+                roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), voteId, new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 
@@ -758,6 +790,35 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         addTopLayerPager(aqAwardPager);
         aqAwardPager.setData(0, addEnergy);
         TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
+    }
+
+    private void showSpeechAnimSuc(final int addEnergy, final TeachPraiseRusltulCloseEvent event) {
+        final String voteId = event.getVoiceId();
+        logger.e("========> showSpeechAnimSuc:" + voteId + ":" + addEnergy);
+        //上报服务器 增加加能量
+        mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
+                roomInitInfo.getStudentLiveInfo().getTeamId(),
+                roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), voteId, new HttpCallBack(false) {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        boolean addBack = event.isAddBack();
+                        if (addBack) {
+                            TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_SPEECH,
+                                    TeamPkBll.this);
+                            //addPager(aqAwardPager);
+                            addTopLayerPager(aqAwardPager);
+                            aqAwardPager.setData(0, addEnergy);
+                        } else {
+                            int[] startPosition = event.getStartPosition();
+                            TeamPkAqResultFlayPager aqAwardPager = new TeamPkAqResultFlayPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_SPEECH,
+                                    TeamPkBll.this, startPosition);
+                            //addPager(aqAwardPager);
+                            addTopLayerFullPager(aqAwardPager);
+                            aqAwardPager.setData(0, addEnergy);
+                        }
+                        TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
+                    }
+                });
     }
 
     /**
@@ -798,6 +859,19 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         mTopLayerPager = pager;
     }
 
+    /**
+     * 添加顶层 UI 全屏
+     */
+    private void addTopLayerFullPager(TeamPkBasePager pager) {
+        if (mTopLayerPager != null) {
+            mTopLayerPager.onDestroy();
+        }
+        rlTopLayerContent.removeAllViews();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        rlTopLayerContent.addView(pager.getRootView(), params);
+        mTopLayerPager = pager;
+    }
 
     private void addPager(TeamPkBasePager aqAwardPager) {
         if (mFocusPager != null) {
@@ -889,7 +963,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             mFocusPager.onStop();
         }
 
-        if(mTopLayerPager != null){
+        if (mTopLayerPager != null) {
             mTopLayerPager.onStop();
         }
 
@@ -908,7 +982,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         if (mFocusPager != null) {
             mFocusPager.onResume();
         }
-        if(mTopLayerPager != null){
+        if (mTopLayerPager != null) {
             mTopLayerPager.onResume();
         }
         logger.e("======>onResume");
@@ -1062,19 +1136,23 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         TeamPkAdversaryEntity pkAdversaryEntity = mHttpResponseParser.
                                 parsePkAdversary(responseEntity);
-                        try {
-                            if (mLiveBll != null && pkAdversaryEntity.getOpponent() != null) {
-                                long teamId = Long.parseLong(pkAdversaryEntity.getOpponent().getTeamId());
-                                long classId = Long.parseLong(pkAdversaryEntity.getOpponent().getClassId());
-                                boolean isComputer = (teamId < 0 && classId < 0);
-                                TeamPkLog.showOpponent(mLiveBll, isComputer, pkAdversaryEntity.getSelf().getTeamName(),
-                                        pkAdversaryEntity.getOpponent().getTeamName(), pkAdversaryEntity.getOpponent()
-                                                .getTeamId(), pkAdversaryEntity.getOpponent().getClassId());
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        showPkResultScene(pkAdversaryEntity, PK_RESULT_TYPE_ADVERSARY);
+                           if(pkAdversaryEntity != null && pkAdversaryEntity.getSelf() != null && pkAdversaryEntity.getOpponent() != null){
+                               if (mLiveBll != null) {
+                                   try {
+                                       long teamId = Long.parseLong(pkAdversaryEntity.getOpponent().getTeamId());
+                                       long classId = Long.parseLong(pkAdversaryEntity.getOpponent().getClassId());
+                                       boolean isComputer = (teamId < 0 && classId < 0);
+                                       TeamPkLog.showOpponent(mLiveBll, isComputer, pkAdversaryEntity.getSelf().getTeamName(),
+                                               pkAdversaryEntity.getOpponent().getTeamName(), pkAdversaryEntity.getOpponent()
+                                                       .getTeamId(), pkAdversaryEntity.getOpponent().getClassId());
+                                   }catch (Exception e){
+                                       e.printStackTrace();
+                                   }
+                               }
+                               showPkResultScene(pkAdversaryEntity, PK_RESULT_TYPE_ADVERSARY);
+                           }else{
+                                XESToastUtils.showToast(mActivity,"pk对手信息获取失败");
+                           }
                     }
 
                     @Override
@@ -1240,7 +1318,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 case XESCODE.TEAM_PK_BLACK_RANK_LIST:
                     //closeStarts();
                     nonce = data.optString("nonce");
-                    TeamPkLog.receivePkStarList(mLiveBll,nonce,"1");
+                    TeamPkLog.receivePkStarList(mLiveBll, nonce, "1");
                     closeCurrentPager();
                     setNonce(nonce);
                     getProgressStudent();
@@ -1249,15 +1327,15 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 case XESCODE.TEAM_PK_STAR_RANK_LIST:
                     //关闭 幸运星页面
                     //closeClassChest();
-                    nonce = data.optString("nonce","");
-                    TeamPkLog.receivePkStarList(mLiveBll,nonce,"0");
+                    nonce = data.optString("nonce", "");
+                    TeamPkLog.receivePkStarList(mLiveBll, nonce, "0");
                     closeCurrentPager();
                     setNonce(nonce);
                     getStusStars();
                     break;
 
                 case XESCODE.TEAM_PK_PK_END:
-                    TeamPkLog.showPkFinished(mLiveBll,data.optString("nonce",""));
+                    TeamPkLog.showPkFinished(mLiveBll, data.optString("nonce", ""));
                     showPkEndToast();
                     break;
                 case XESCODE.TEACHER_PRAISE:
@@ -1382,7 +1460,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         List<TeamPkStar> data = mHttpResponseParser.parseTeamPkStar(responseEntity);
                         if (data != null && data.size() > 0) {
                             showStars(data);
-                            TeamPkLog.showPkStarList(mLiveBll,getNonce(),"0");
+                            TeamPkLog.showPkStarList(mLiveBll, getNonce(), "0");
                             if (TextUtils.isEmpty(mTeamName)) {
                                 mTeamName = data.get(0).getTeamName();
                             }
@@ -1432,7 +1510,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         List<TeamPkStuProgress> data = mHttpResponseParser.parseTeamPkProgressStu(responseEntity);
                         if (data != null && data.size() > 0) {
                             showStuProgressList(data);
-                            TeamPkLog.showPkStarList(mLiveBll,getNonce(),"1");
+                            TeamPkLog.showPkStarList(mLiveBll, getNonce(), "1");
                             if (TextUtils.isEmpty(mTeamName)) {
                                 mTeamName = data.get(0).getTeamName();
                             }

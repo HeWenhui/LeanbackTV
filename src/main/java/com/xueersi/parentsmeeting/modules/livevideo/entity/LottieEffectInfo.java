@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
 
 import java.io.BufferedReader;
@@ -104,7 +105,7 @@ public class LottieEffectInfo {
         } else {
             InputStream in = null;
             try {
-                in = context.getAssets().open(imgDir + File.separator + fileName);
+                in = AssertUtil.open(imgDir + File.separator + fileName);
                 resultBitMap = BitmapFactory.decodeStream(in);
                 in.close();
             } catch (Exception e) {
@@ -133,7 +134,7 @@ public class LottieEffectInfo {
         Bitmap resultBitMap = null;
         InputStream in = null;
         try {
-            in = context.getAssets().open(imgDir + File.separator + fileName);
+            in = AssertUtil.open(imgDir + File.separator + fileName);
             resultBitMap = BitmapFactory.decodeStream(in);
             in.close();
         } catch (Exception e) {
@@ -195,7 +196,7 @@ public class LottieEffectInfo {
         String jsonStr = null;
         BufferedReader reader = null;
         try {
-            InputStream in = context.getAssets().open(jsonFilePath);
+            InputStream in = AssertUtil.open(jsonFilePath);
             reader = new BufferedReader(new InputStreamReader(in));
             String line = null;
             StringBuilder sb = new StringBuilder();

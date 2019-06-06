@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -881,7 +882,13 @@ public class LiveRemarkBll {
             return;
         }
         countMap.clear();
-        for (VideoPointEntity entity : lst) {
+        for (int i = 0; i < lst.size(); i++) {
+            VideoPointEntity entity = lst.get(i);
+            if (LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == entity.getType()) {
+                lst.remove(i);
+                i--;
+                continue;
+            }
             if (countMap.get(entity.getType()) == null) {
                 countMap.put(entity.getType(), 1);
             } else {

@@ -18,8 +18,14 @@ import android.os.HandlerThread;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.yaaic.pircbot.NaiveTrustManager;
 
 import java.io.BufferedReader;
@@ -992,6 +998,14 @@ public abstract class PircBot implements ReplyConstants {
         } else if (command.equals("PRIVMSG") && _channelPrefixes.indexOf(target.charAt(0)) >= 0) {
             // This is a normal message to a channel.
             this.onMessage(target, sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2));
+            try {
+                StableLogHashMap stableLogHashMap = new StableLogHashMap("onMessage");
+                stableLogHashMap.put("target", "" + target);
+                stableLogHashMap.put("line", line);
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), LogConfig.LIVE_IRC_ONMESSAGE, stableLogHashMap.getData());
+            } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
         } else if (command.equals("PRIVMSG")) {
             // This is a private message to us.
             // XXX PircBot patch to pass target info to privmsg callback
