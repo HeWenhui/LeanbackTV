@@ -958,8 +958,9 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                     startTeamSelect(true);
                     TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
                 } else if ("off".equals(status)) {
-                    stopTeamSelect();
-                    TeamPkLog.receiveCreateTeam(mLiveBll, nonce, false);
+                    //自动结束，不用教师端消息
+//                    stopTeamSelect();
+//                    TeamPkLog.receiveCreateTeam(mLiveBll, nonce, false);
                 }
                 break;
             }
