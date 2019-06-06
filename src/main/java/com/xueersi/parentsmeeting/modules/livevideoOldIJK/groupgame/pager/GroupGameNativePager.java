@@ -563,6 +563,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onVolumeUpdate(int volume) {
                 if (volume > 10) {
+                    handler.removeCallbacks(onCoursewareComeOnRunable);
                     handler.postDelayed(onCoursewareComeOnRunable, 3000);
                 }
                 float fVolume = (float) volume / 10.0f;

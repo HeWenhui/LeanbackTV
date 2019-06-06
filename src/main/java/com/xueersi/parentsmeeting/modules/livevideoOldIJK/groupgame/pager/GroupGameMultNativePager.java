@@ -1188,6 +1188,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                float floatVolume = (float) volume * 3 / 90;
 //                groupSurfaceView.onVolumeUpdate(volume);
                 if (volume > 10) {
+                    handler.removeCallbacks(onCoursewareComeOnRunable);
                     handler.postDelayed(onCoursewareComeOnRunable, 3000);
                 }
                 BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
