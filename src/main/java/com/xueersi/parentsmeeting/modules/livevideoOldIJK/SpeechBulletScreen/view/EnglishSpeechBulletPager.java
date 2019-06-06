@@ -293,9 +293,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         vwvSpeechbulWave.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                vwvSpeechbulWave.setLinearGradient(new LinearGradient(0, 0, vwvSpeechbulWave.getMeasuredWidth(), 0,
-                        new int[]{0xFFEA9CF9, 0xFF9DBBFA, 0xFF80F9FD}, new float[]{0, 0.5f, 1.0f}, Shader.TileMode
-                        .CLAMP));
+                    vwvSpeechbulWave.setLinearGradient(new LinearGradient(0, 0, vwvSpeechbulWave.getMeasuredWidth(), 0,
+                            new int[]{0xFFEA9CF9, 0xFF9DBBFA, 0xFF80F9FD}, new float[]{0, 0.5f, 1.0f}, Shader.TileMode
+                            .CLAMP));
                 vwvSpeechbulWave.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
@@ -359,11 +359,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         sendLayoutParams.rightMargin = SizeUtils.Dp2Px(mContext, 12);
         etSpeechbulWords.setLayoutParams(wordsLayoutParams);
         etSpeechbulWords.setFilters(new InputFilter[]{new InputFilter.LengthFilter(80)});
-
-        vwvSpeechbulWave.setLinearGradient(new LinearGradient(0, 0, vwvSpeechbulWave.getMeasuredWidth(), 0,
-                new int[]{0xFFFFFF, 0x74C3FF, 0x9F35FF, 0XF991F3, 0xFF8400, 0xFBD202}, new float[]{0, 0.2f, 0.4f,
-                0.6f, 0.8f, 1.0f}, Shader.TileMode
-                .CLAMP));
     }
 
     /**
@@ -902,7 +897,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                             if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                                 onEvaluatorSuccess(resultEntity.getCurString(), true);
                             } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                            } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                                 onEvaluatorError(resultEntity);
                             } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                                 onEvaluatorSuccess(resultEntity.getCurString(), false);
@@ -1012,7 +1006,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 
         } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE) {
             logger.i("离线测评重新build，要取消到旧的！");
-            startEvaluator();
+            startTextInput("");
         } else {
             if (hasValidSpeechInput) {
                 startTextInput(tvSpeechbulTitle.getText().toString());
