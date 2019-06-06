@@ -61,7 +61,9 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private int stuid;
     private float scale;
     private PrimaryClassInter primaryClassInter;
-    private boolean videoStatus = false;
+    /** 视频默认开 */
+    private boolean videoStatus = true;
+    /** 音频默认开 */
     private boolean audioStatus = false;
     private PrimaryClassView primaryClassView;
 
@@ -261,8 +263,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 }
             }
         });
-        workerThread.setEnableLocalVideo(true);
-        workerThread.setEnableLocalAudio(false);
+        workerThread.setEnableLocalVideo(videoStatus);
+        workerThread.setEnableLocalAudio(audioStatus);
         workerThread.eventHandler().addEventHandler(listener);
         workerThread.start();
         tv_livevideo_primary_team_name.setText(teamInfoEntity.getTeamName());
