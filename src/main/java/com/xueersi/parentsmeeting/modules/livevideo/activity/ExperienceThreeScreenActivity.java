@@ -1163,6 +1163,10 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             ivTeacherNotpresent.setImageResource(R.drawable.live_course_open_late);
         }
 
+        if (videoPlayState.isPlaying) {
+            stopPlayer();
+        }
+
         if (mode == COURSE_STATE_1 || mode == COURSE_STATE_3) {
             if (ivTeacherNotpresent.getVisibility() != View.GONE) {
                 ivTeacherNotpresent.setVisibility(View.GONE);
@@ -1204,13 +1208,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
             if (rlFirstBackgroundView.getVisibility() != View.GONE) {
                 rlFirstBackgroundView.setVisibility(View.GONE);
-            }
-
-            if (videoPlayState.isPlaying) {
-                videoPlayState.isPlaying = false;
-                videoPlayState.videoPath = "";
-                videoPlayState.protocol = -1;
-                stopPlayer();
             }
         }
 
