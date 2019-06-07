@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.chpk.page.PkTeamResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.page.PkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -1149,7 +1150,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
         };
         String teamId = getNewTeamId("getPkAdversary");
-        if ("-1".equals(teamId)) {
+        if (TeamPkConfig.DEAF_TEAM_ID.equals(teamId)) {
             runnables.add(new Runnable() {
                 @Override
                 public void run() {
@@ -1274,10 +1275,13 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     public String getNewTeamId(String method) {
         String teamId;
         if (primaryClass) {
+            if (teamInfoEntity == null) {
+                return TeamPkConfig.DEAF_TEAM_ID;
+            }
             try {
                 teamId = teamInfoEntity.getTeamInfo().getTeamId();
             } catch (Exception e) {
-                teamId = "-1";
+                teamId = TeamPkConfig.DEAF_TEAM_ID;
                 CrashReport.postCatchedException(new LiveException(TAG + ":" + method, e));
             }
         } else {
