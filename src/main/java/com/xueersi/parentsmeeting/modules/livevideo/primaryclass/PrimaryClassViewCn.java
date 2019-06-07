@@ -26,8 +26,8 @@ public class PrimaryClassViewCn implements PrimaryClassView {
     }
 
     @Override
-    public int getBackImg() {
-        return R.drawable.bg_livevideo_priclass_normal_cn;
+    public void decorateBack(RelativeLayout rl_course_video_contentview) {
+        rl_course_video_contentview.setBackgroundResource(R.drawable.bg_livevideo_priclass_normal_cn);
     }
 
     @Override

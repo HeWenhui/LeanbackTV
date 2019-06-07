@@ -18,6 +18,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
@@ -112,7 +113,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     @Override
     public void initData() {
         super.initData();
-        logger.d("initData:primaryClassView=" + primaryClassView);
+        logger.d("initData:mode=" + mode);
         ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
         primaryClassView.decorateItemPager(mView);
         addItem();
@@ -123,6 +124,21 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
             ivPkState.setVisibility(View.VISIBLE);
             handler.postDelayed(ivPkStateRun, 10000);
+        }
+    }
+
+    @Override
+    public void onLiveInited(LiveGetInfo getInfo) {
+        logger.d("onLiveInited:mode=" + getInfo.getMode() + "," + mode);
+        if (!getInfo.getMode().equals(mode)) {
+            mode = getInfo.getMode();
+            if (LiveTopic.MODE_TRANING.equals(mode)) {
+                mView.setVisibility(View.INVISIBLE);
+            } else {
+                rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
+                ivPkState.setVisibility(View.VISIBLE);
+                handler.postDelayed(ivPkStateRun, 10000);
+            }
         }
     }
 

@@ -451,7 +451,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         if (LiveTopic.MODE_CLASS.equals(mode)) {
 //            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.VISIBLE);
             setImageViewWidth();
-            rl_course_video_contentview.setBackgroundResource(primaryClassView.getBackImg());
+            primaryClassView.decorateBack(rl_course_video_contentview);
         } else {
             lp.leftMargin = 0;
             lp.bottomMargin = 0;

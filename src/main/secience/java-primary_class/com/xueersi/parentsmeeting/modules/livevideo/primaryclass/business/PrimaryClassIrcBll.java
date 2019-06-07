@@ -52,6 +52,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
         permissionCheck();
 //        getMyTeamInfo();
         LiveEventBus.getDefault(mContext).register(this);
+        primaryItemView.onLiveInited(getInfo);
     }
 
     private void permissionCheck() {

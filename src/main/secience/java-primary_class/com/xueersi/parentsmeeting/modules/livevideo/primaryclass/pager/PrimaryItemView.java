@@ -1,8 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager;
 
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 
 public interface PrimaryItemView {
+
+    void onLiveInited(final LiveGetInfo getInfo);
+
     void onTeam(String uid, TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity);
 
     void updateTeam(TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity);
