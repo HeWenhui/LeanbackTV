@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         this.mode = mode;
         primaryClassView = ProxUtil.getProxUtil().get(mContext, PrimaryClassView.class);
         initData();
+        initListener();
     }
 
     public void setPrimaryClassInter(PrimaryClassInter primaryClassInter) {
@@ -122,6 +124,29 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             ivPkState.setVisibility(View.VISIBLE);
             handler.postDelayed(ivPkStateRun, 10000);
         }
+    }
+
+    @Override
+    public void initListener() {
+        super.initListener();
+        mView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                float x = motionEvent.getX();
+                float y = motionEvent.getY();
+                int top = cl_livevideo_primary_team_inter.getTop();
+                int left = cl_livevideo_primary_team_inter.getLeft();
+                int width = cl_livevideo_primary_team_inter.getWidth();
+                int height = cl_livevideo_primary_team_inter.getHeight();
+                logger.d("onTouch:x=" + x + ",y=" + y + ",top=" + top + ",left=" + left + ",width=" + width + ",height=" + height);
+                if (x >= left && x <= x + width && y >= top && y <= top + height) {
+
+                } else {
+                    cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                }
+                return false;
+            }
+        });
     }
 
     private Runnable ivPkStateRun = new Runnable() {
