@@ -3,9 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -33,7 +35,20 @@ public class StudyResultDialog extends Dialog implements View.OnClickListener {
 
     public StudyResultDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
+        setFullScreen();
         setContentView(R.layout.dialog_study_result);
+        WindowManager.LayoutParams attrs = getWindow().getAttributes();
+        attrs.width = WindowManager.LayoutParams.MATCH_PARENT;
+        attrs.height = WindowManager.LayoutParams.MATCH_PARENT;
+        getWindow().setAttributes(attrs);
+    }
+
+    private void setFullScreen() {
+        if (Build.VERSION.SDK_INT < 19) {
+            return;
+        }
+// 隐藏状态栏不占位
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     public void setOnClickListener(DialogInterface.OnClickListener clickListener) {

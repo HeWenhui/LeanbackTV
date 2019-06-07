@@ -30,6 +30,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
@@ -414,12 +415,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         public void onUserList(String channel, User[] users) {
             Log.i("expTess", "onUserList");
             peopleCount.set(users.length, new Exception());
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onUserList(channel, users);
-            }
-            logger.i("=====>onUserList end:" + peopleCount);
-
             int count = users != null ? users.length : 0;
+
             for (int index = 0; index < count; index++) {
                 User user = users[index];
                 if (user.getNick().startsWith(COUNTTEACHER_PREFIX)) {
@@ -429,36 +426,37 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                     break;
                 }
             }
+
+            if (mLiveMessagePager != null) {
+                mLiveMessagePager.onUserList(channel, users);
+            }
+            logger.i("=====>onUserList end:" + peopleCount);
         }
 
         @Override
         public void onJoin(String target, String sender, String login, String hostname) {
             Log.i("expTess", "onJoin");
-
-            peopleCount.set(peopleCount.get() + 1, new Exception(sender));
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onJoin(target, sender, login, hostname);
-            }
-
-            logger.i("=====>onJoin end:" + peopleCount);
             if (sender.startsWith(COUNTTEACHER_PREFIX)) {
                 // 辅导老师进来了
                 teacherNick = sender;
+            } else {
+                peopleCount.set(peopleCount.get() + 1, new Exception(sender));
+                if (mLiveMessagePager != null) {
+                    mLiveMessagePager.onJoin(target, sender, login, hostname);
+                }
             }
         }
 
         @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
             Log.i("expTess", "onQuit");
-            peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
-            }
-            logger.i("=====>onQuit end:" + peopleCount);
 
-            if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
+            if (!sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
                 // 辅导老师离开了
-
+                peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
+                if (mLiveMessagePager != null) {
+                    mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
+                }
             }
         }
 
@@ -510,10 +508,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      */
     private ExpRollCallBll expRollCallBll;
 
-    /**
-     * 我的课程业务层
-     */
-    LectureLivePlayBackBll lectureLivePlayBackBll;
 
     private LiveHttpManager mHttpManager;
 
@@ -549,6 +543,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     private int savedWidth;
     private int savedHeight;
+
+    private boolean isBackPressed;
 
     private boolean isStudyShow;
 
@@ -613,8 +609,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         liveBackBll.onDestory();
         mLiveMessagePager = null;
         getHandler.removeCallbacks(null);
-
         mIRCMessage.setCallback(null);
+
         new Thread() {
             @Override
             public void run() {
@@ -637,8 +633,15 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     @Override
     public void onBackPressed() {
+
         boolean userBackPressed = liveBackBll.onUserBackPressed();
-        if (!userBackPressed) {
+        if (userBackPressed) {
+            return;
+        }
+        if (!isStudyShow) {
+            isBackPressed = true;
+            initStudyResult();
+        } else {
             StableLogHashMap logHashMap = new StableLogHashMap("exitRoom");
             logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
             ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
@@ -732,41 +735,46 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     @Override
     protected void onPlayOpenSuccess() {
+
         if (videoPlayState.isPlaying) {
-            ivTeacherNotpresent.setVisibility(View.GONE);
+            seekToCurrent();
+        }
 
-            if (videoPlayState.protocol == MediaPlayer.VIDEO_PROTOCOL_MP4) {
-                // 如果是播放状态，并且是回放视频，seek到指定位置
-                long seekSecond = expAutoLive.getSeekTime();
-
-                if (seekSecond > 0) {
-                    seekTo(seekSecond * 1000);
+        Runnable action = new Runnable() {
+            @Override
+            public void run() {
+                if (rlFirstBackgroundView.getVisibility() != View.GONE) {
+                    rlFirstBackgroundView.setVisibility(View.GONE);
                 }
             }
-        }
+        };
+
+        rlFirstBackgroundView.postDelayed(action, 1500);
+
     }
 
     @Override
     protected void resultFailed(int arg1, int arg2) {
-        Log.i("expTess", "resultFailed " + arg2);
-        if (videoPlayState.isPlaying) {
 
-            if (arg2 != MediaErrorInfo.PLAY_COMPLETE) {
-                playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
+        if (arg2 == MediaErrorInfo.PLAY_COMPLETE) {
+            if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
+                ivTeacherNotpresent.setVisibility(View.VISIBLE);
             }
 
-            if (arg2 == MediaErrorInfo.PSChannelNotExist || arg2 == MediaErrorInfo.PLAY_COMPLETE) {
-                if (expLiveInfo.getMode() == COURSE_STATE_1) {
-                    ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                    ivTeacherNotpresent.setImageResource(R.drawable.live_course_open_late);
-                } else if (expLiveInfo.getMode() == COURSE_STATE_2) {
-                    ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                    ivTeacherNotpresent.setImageResource(R.drawable.live_course_wait_teacher);
-                } else if (expLiveInfo.getMode() == COURSE_STATE_3) {
-                    ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                    ivTeacherNotpresent.setImageResource(R.drawable.live_course_wait_teacher);
-                }
+            if (rlFirstBackgroundView.getVisibility() != View.GONE) {
+                rlFirstBackgroundView.setVisibility(View.GONE);
             }
+        } else if (videoPlayState.isPlaying) {
+
+            if (ivTeacherNotpresent.getVisibility() != View.GONE) {
+                ivTeacherNotpresent.setVisibility(View.GONE);
+            }
+
+            if (rlFirstBackgroundView.getVisibility() != View.VISIBLE) {
+                rlFirstBackgroundView.setVisibility(View.VISIBLE);
+            }
+
+            playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
         }
     }
 
@@ -862,8 +870,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         liveBackBll = new LiveBackBll(this, playBackEntity);
         liveBackBll.setStuCourId(playBackEntity.getStuCourseId());
         liveBackBll.setvPlayer(vPlayer);
-        lectureLivePlayBackBll = new LectureLivePlayBackBll(this, "");
-
 
         liveMessageBll = new LiveMessageBll(this, 1);
         expBusiness = new ExperienceBusiness(this);
@@ -928,10 +934,10 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         ivLoading = findViewById(R.id.iv_course_video_loading_bg);
         tvLoadingHint = findViewById(R.id.tv_course_video_loading_content);
 
+        tvLoadingHint.setText("正在加载视频");
+
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
-
-        tvLoadingHint.setText("获取课程信息");
 
         bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
@@ -1107,6 +1113,15 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         });
     }
 
+    protected void seekToCurrent() {
+        if (videoPlayState.protocol == MediaPlayer.VIDEO_PROTOCOL_MP4) {
+            // 如果是播放状态，并且是回放视频，seek到指定位置
+            long seekSecond = expAutoLive.getSeekTime();
+            if (seekSecond > 0) {
+                seekTo(seekSecond * 1000);
+            }
+        }
+    }
 
     protected void setNoticeMode(final int status) {
 
@@ -1130,56 +1145,76 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     protected void onModeChanged() {
 
         int mode = expLiveInfo.getMode();
-        boolean playVideo = false;
-        Log.i("expTess", "onModeChanged call mode=" + mode);
+
         if (mode == COURSE_STATE_1) {
             // 课前状态,辅导老师在直播间就播放直播
-            ivTeacherNotpresent.setVisibility(View.GONE);
             ivTeacherNotpresent.setImageResource(R.drawable.live_course_open_late);
-            playVideo = true;
         } else if (mode == COURSE_STATE_2) {
             // 课中状态,播放回放视频
-            ivTeacherNotpresent.setVisibility(View.GONE);
-            playVideo = true;
+            ivTeacherNotpresent.setImageResource(R.drawable.live_course_wait_teacher);
         } else if (mode == COURSE_STATE_3) {
             // 课后状态,辅导老师在直播间就播放直播
             ivTeacherNotpresent.setImageResource(R.drawable.live_course_wait_teacher);
-            playVideo = true;
         } else if (mode == COURSE_STATE_4) {
             // 结束状态
-            ivTeacherNotpresent.setVisibility(View.VISIBLE);
             ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         } else {
             // 等待状态
-            ivTeacherNotpresent.setVisibility(View.VISIBLE);
             ivTeacherNotpresent.setImageResource(R.drawable.live_course_open_late);
         }
 
-
-        if (playVideo) {
-            // mode = 2 是课中，播放回放视频；其他的播放辅导老师直播视频
-            String videoPath = mode == COURSE_STATE_2 ? getBackVideo() : getLiveVideo();
-            int protocol = mode == COURSE_STATE_2 ? MediaPlayer.VIDEO_PROTOCOL_MP4 : MediaPlayer.VIDEO_PROTOCOL_RTMP;
-
-            if (!videoPlayState.isPlaying || !videoPath.equals(videoPlayState.videoPath) || protocol != videoPlayState.protocol) {
-                videoPlayState.isPlaying = true;
-                videoPlayState.videoPath = videoPath;
-                videoPlayState.protocol = protocol;
-                setmDisplayName(playBackEntity.getPlayVideoName());
-                playPSVideo(videoPath, protocol);
+        if (mode == COURSE_STATE_1 || mode == COURSE_STATE_3) {
+            if (ivTeacherNotpresent.getVisibility() != View.GONE) {
+                ivTeacherNotpresent.setVisibility(View.GONE);
             }
+
+            if (rlFirstBackgroundView.getVisibility() != View.VISIBLE) {
+                rlFirstBackgroundView.setVisibility(View.VISIBLE);
+            }
+
+            String videoPath = getLiveVideo();
+            int protocol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+            videoPlayState.isPlaying = true;
+            videoPlayState.videoPath = videoPath;
+            videoPlayState.protocol = protocol;
+            setmDisplayName(playBackEntity.getPlayVideoName());
+            playPSVideo(videoPath, protocol);
+
+        } else if (mode == COURSE_STATE_2) {
+            if (ivTeacherNotpresent.getVisibility() != View.GONE) {
+                ivTeacherNotpresent.setVisibility(View.GONE);
+            }
+
+            if (rlFirstBackgroundView.getVisibility() != View.VISIBLE) {
+                rlFirstBackgroundView.setVisibility(View.VISIBLE);
+            }
+
+            String videoPath = getBackVideo();
+            int protocol = MediaPlayer.VIDEO_PROTOCOL_MP4;
+            videoPlayState.isPlaying = true;
+            videoPlayState.videoPath = videoPath;
+            videoPlayState.protocol = protocol;
+            setmDisplayName(playBackEntity.getPlayVideoName());
+            playPSVideo(videoPath, protocol);
         } else {
 
-            if (videoPlayState.isPlaying) {
-                stopPlayer();
+            if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
+                ivTeacherNotpresent.setVisibility(View.VISIBLE);
             }
 
-            videoPlayState.isPlaying = false;
-            videoPlayState.videoPath = "";
-            videoPlayState.protocol = -1;
+            if (rlFirstBackgroundView.getVisibility() != View.GONE) {
+                rlFirstBackgroundView.setVisibility(View.GONE);
+            }
+
+            if (videoPlayState.isPlaying) {
+                videoPlayState.isPlaying = false;
+                videoPlayState.videoPath = "";
+                videoPlayState.protocol = -1;
+                stopPlayer();
+            }
         }
 
-        if (mode == COURSE_STATE_4) {
+        if (mode == COURSE_STATE_4 && !isStudyShow) {
             initStudyResult();
         }
     }
@@ -1213,23 +1248,48 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      */
     protected void initStudyResult() {
 
-        if (isStudyShow) {
-            return;
-        }
-        isStudyShow = true;
-
-        AbstractBusinessDataCallBack callBack = new AbstractBusinessDataCallBack() {
+        HttpCallBack callBack = new HttpCallBack() {
             @Override
-            public void onDataSucess(Object... objData) {
-                // 获取到数据之后的逻辑处理
-                if (objData.length > 0) {
-                    ExperienceResult result = (ExperienceResult) objData[0];
-                    showStudyResult(result);
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                if (isStudyShow) {
+                    return;
+                }
+
+                ExperienceResult learn = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), ExperienceResult.class);
+
+                if (learn != null) {
+                    showStudyResult(learn);
+                } else if (isBackPressed) {
+                    finish();
+                }
+
+                isStudyShow = true;
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                isStudyShow = true;
+
+                if (isBackPressed) {
+                    finish();
                 }
             }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                isStudyShow = true;
+
+                if (isBackPressed) {
+                    finish();
+                }
+            }
+
         };
 
-        lectureLivePlayBackBll.getExperienceResult(playBackEntity.getChapterId(), playBackEntity.getLiveId(), callBack);
+        String planId = playBackEntity.getLiveId();
+        String orderId = playBackEntity.getChapterId();
+        String userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        expBusiness.getExperienceResult(planId, orderId, userId, callBack);
     }
 
     /**
@@ -1255,11 +1315,19 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                     ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                     cm.setText(result.getWechatNum());
                     Toast.makeText(getApplicationContext(), "您已复制老师微信号，快去添加吧!", Toast.LENGTH_LONG).show();
+
+                    if (isBackPressed) {
+                        finish();
+                    }
                 } else if (which == StudyResultDialog.BUTTON_APPLY) {
                     if (result.getUrl() != null) {
                         BrowserActivity.openBrowser(ExperienceThreeScreenActivity.this, result.getUrl());
                     } else {
                         Toast.makeText(getApplicationContext(), "数据异常", Toast.LENGTH_LONG).show();
+                    }
+
+                    if (isBackPressed) {
+                        finish();
                     }
                 }
             }
@@ -1286,8 +1354,13 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 dialog.cancel();
 
                 String closeType = "";
+
                 if (which == ExpFeedbackDialog.BUTTON_CLOSE) {
                     closeType = "2";
+
+                    if (isBackPressed) {
+                        finish();
+                    }
                 } else if (which == ExpFeedbackDialog.BUTTON_SUBMIT) {
                     closeType = "1";
 
@@ -1305,12 +1378,28 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
                     HttpCallBack callBack = new HttpCallBack() {
                         @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            if (isBackPressed) {
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            if (isBackPressed) {
+                                finish();
+                            }
+                        }
+
+                        @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            logger.d("sendFeedbackSuccess");
+                            if (isBackPressed) {
+                                finish();
+                            }
                         }
                     };
 
-                    lectureLivePlayBackBll.sendExperienceFeedback(UserBll.getInstance().getMyUserInfoEntity().getStuId(), playBackEntity.getLiveId(), playBackEntity.getSubjectId(), playBackEntity.getGradId(), playBackEntity.getChapterId(), expFeedbackDialog.getSuggest(), jsonArray, callBack);
+                    expBusiness.sendExperienceFeedback(playBackEntity.getLiveId(), playBackEntity.getSubjectId(), playBackEntity.getGradId(), playBackEntity.getChapterId(), expFeedbackDialog.getSuggest(), jsonArray, callBack);
                 }
 
                 StableLogHashMap logHashMap = new StableLogHashMap("afterClassFeedbackClose");
@@ -1375,12 +1464,12 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         boolean isCalling = json.getBoolean("isCalling");
 
         if (isCalling) {
-            ClassSignEntity classSignEntity = new ClassSignEntity();
-            classSignEntity.setStuName(mGetInfo.getStuName());
-            classSignEntity.setTeacherName(mGetInfo.getTeacherName());
-            classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
-            classSignEntity.setStatus(mGetInfo.getStudentLiveInfo().getSignStatus());
-            expRollCallBll.openSignAuto(classSignEntity);
+//            ClassSignEntity classSignEntity = new ClassSignEntity();
+//            classSignEntity.setStuName(mGetInfo.getStuName());
+//            classSignEntity.setTeacherName(mGetInfo.getTeacherName());
+//            classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
+//            classSignEntity.setStatus(mGetInfo.getStudentLiveInfo().getSignStatus());
+//            expRollCallBll.openSignAuto(classSignEntity);
         }
     }
 

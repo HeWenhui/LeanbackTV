@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -48,7 +49,12 @@ public class ExpFeedbackDialog extends Dialog implements View.OnClickListener {
 
     public ExpFeedbackDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
+        setFullScreen();
         setContentView(R.layout.dialog_exp_feedback);
+        WindowManager.LayoutParams attrs = getWindow().getAttributes();
+        attrs.width = WindowManager.LayoutParams.MATCH_PARENT;
+        attrs.height = WindowManager.LayoutParams.MATCH_PARENT;
+        getWindow().setAttributes(attrs);
 
         rgDifficulty = findViewById(R.id.rg_experience_feedback_difficulty);
         rgSatisficing = findViewById(R.id.rg_experience_feedback_satisficing);
@@ -105,6 +111,14 @@ public class ExpFeedbackDialog extends Dialog implements View.OnClickListener {
         imgbtnClose.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
 
+    }
+
+    private void setFullScreen() {
+        if (Build.VERSION.SDK_INT < 19) {
+            return;
+        }
+// 隐藏状态栏不占位
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     public String getDifficulty(){
