@@ -1629,7 +1629,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         getTeamPkHttp().getTeamPkStarStudents(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStudentLiveInfo().getCourseId(),
-                new HttpCallBack() {
+                getNewTeamId("getStusStars"), new HttpCallBack() {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

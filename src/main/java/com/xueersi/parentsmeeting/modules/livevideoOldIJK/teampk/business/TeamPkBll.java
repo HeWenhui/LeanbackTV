@@ -12,7 +12,6 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.toast.XesToast;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
@@ -1630,7 +1629,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         getTeamPkHttp().getTeamPkStarStudents(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStudentLiveInfo().getCourseId(),
-                new HttpCallBack() {
+                getNewTeamId("getStusStars"), new HttpCallBack() {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

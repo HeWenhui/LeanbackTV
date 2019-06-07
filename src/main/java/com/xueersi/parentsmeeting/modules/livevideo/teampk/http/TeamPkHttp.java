@@ -227,17 +227,18 @@ public class TeamPkHttp {
 
     /**
      * 小理战队PK 二期 获取明星榜
-     *
-     * @param liveId
+     *  @param liveId
      * @param classId
+     * @param teamId
      * @param requestCallBack
      */
-    public void getTeamPkStarStudents(String liveId, String classId, String courseId, HttpCallBack requestCallBack) {
+    public void getTeamPkStarStudents(String liveId, String classId, String courseId, String teamId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("courseId", courseId);
-        liveHttpManager.setDefaultParameter(params);
+        params.addBodyParam("teamId", teamId);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_GETSTARSTUDENTS, params, requestCallBack);
     }
 
