@@ -655,20 +655,20 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     @Override
     public void closeSpeechBullet(boolean hasTip) {
         logger.i("closeSpeechBullet");
-        //如果语音弹幕没有开启
-        if (!isShowingSpeechBullet) {
-            return;
-        }
-        isShowingSpeechBullet = false;
-
         if (hasTip) {
             mWeakHandler.removeCallbacks(showSpeechBulletRunnable);
             if (mDanmakuView != null) {
                 mDanmakuView.removeAllDanmakus(false);
+                latestDanmakuAddtime = -300;
+                danmakuAddCount = 0;
             }
             showStartSpeechBulletToast("老师关闭了语音弹幕");
             umsAgentDebugInterSno9();
         }
+        if (!isShowingSpeechBullet) {
+            return;
+        }
+        isShowingSpeechBullet = false;
 
         if (rlSpeechBulRoot != null && rlSpeechBulContent != null) {
             KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
