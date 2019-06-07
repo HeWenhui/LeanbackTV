@@ -42,6 +42,7 @@ import io.agora.rtc.plugin.rawdata.MediaDataObserverPlugin;
 import io.agora.rtc.plugin.rawdata.MediaDataVideoObserver;
 import io.agora.rtc.plugin.rawdata.MediaPreProcessing;
 
+
 /**
  * 学习报告截图
  *
@@ -320,15 +321,32 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
             if (mGetInfo != null) {
                 if (mGetInfo.getPattern() == 6) {
-                    getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                    //半身直播语文 isArts 为 0 ，useSkin为2
+                    if (mGetInfo.getIsArts() == 0 && mGetInfo.getUseSkin() == 2) {
+                        if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE) {
+                            getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                        }
+                    } else {
+                        getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                        logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
+                    }
                 } else if (mGetInfo.getPattern() == 1) {
-                    getHttpManager().sendWonderfulMoment(
-                            mGetInfo.getStuId(),
-                            mGetInfo.getId(),
-                            mGetInfo.getStuCouId(),
-                            String.valueOf(type),
-                            result.getHttpPath(),
-                            new UploadImageUrl(type, false));
+                    if ((type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
+                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
+                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE
+                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_WIN) && mGetInfo.getIsArts() == 2) {
+                        getHttpManager().sendWonderfulMoment(
+                                mGetInfo.getStuId(),
+                                mGetInfo.getId(),
+                                mGetInfo.getStuCouId(),
+                                String.valueOf(type),
+                                result.getHttpPath(),
+                                new UploadImageUrl(type, false));
+                    } else {
+                        logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
+                    }
                 }
             } else {
                 getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));

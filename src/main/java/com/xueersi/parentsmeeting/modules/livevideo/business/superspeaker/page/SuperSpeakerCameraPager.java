@@ -1,10 +1,15 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.Group;
 import android.view.Display;
@@ -432,6 +437,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 if (layoutParams != null) {
                     map.put(LAYOUT_SIZE, layoutParams.height + "-" + layoutParams.width);
                 }
+                camera1Utils.startPreView();
             } else {
                 initCamera = false;
                 map.put(ISuperSpeakerContract.INIT_CAMERA, String.valueOf(false));
@@ -542,6 +548,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                             UmsAgentManager.umsAgentDebug(mContext, ISuperSpeakerContract.SUPER_SPEAKER_EVNT_ID, map.getData());
                             logger.i(invisibleTime + "");
                         }
+                        sendVideoAlbum(StorageUtils.videoUrl);
 
                     }
                 }, new Consumer<Throwable>() {
@@ -549,6 +556,8 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
                         logger.e(throwable);
+                        StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.STOP_RECORD, throwable.toString());
+                        UmsAgentManager.umsAgentDebug(mContext, ISuperSpeakerContract.SUPER_SPEAKER_EVNT_ID, map.getData());
                     }
                 });
 
@@ -701,7 +710,33 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             logger.i("音量大小" + camera1Utils.getVolum() + "");
             bridge.submitSpeechShow(isForce, String.valueOf(camera1Utils.getVolum() - 20));
             removeCameraView();
+
         }
+    }
+
+    private void sendVideoAlbum(String videoUrl) {
+        File file = new File(videoUrl);
+        if (file == null) {
+            return;
+        }
+        //通知相册更新
+        ContentResolver localContentResolver = mContext.getContentResolver();
+        ContentValues localContentValues = getVideoContentValues(mContext, file, System.currentTimeMillis());
+        Uri localUri = localContentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, localContentValues);
+        mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri));
+    }
+
+    private ContentValues getVideoContentValues(Context paramContext, File paramFile, long paramLong) {
+        ContentValues localContentValues = new ContentValues();
+        localContentValues.put("title", paramFile.getName());
+        localContentValues.put("_display_name", paramFile.getName());
+        localContentValues.put("mime_type", "video/3gp");
+        localContentValues.put("datetaken", Long.valueOf(paramLong));
+        localContentValues.put("date_modified", Long.valueOf(paramLong));
+        localContentValues.put("date_added", Long.valueOf(paramLong));
+        localContentValues.put("_data", paramFile.getAbsolutePath());
+        localContentValues.put("_size", Long.valueOf(paramFile.length()));
+        return localContentValues;
     }
 
     //    @Override

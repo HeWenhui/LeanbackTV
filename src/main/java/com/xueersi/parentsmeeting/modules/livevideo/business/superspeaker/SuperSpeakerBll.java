@@ -47,8 +47,9 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
-//        if (AppConfig.DEBUG) {
-//        Observable.just(AppConfig.DEBUG).
+
+//        Observable.
+//                just(AppConfig.DEBUG).
 //                delay(2, TimeUnit.SECONDS).
 //                observeOn(AndroidSchedulers.mainThread()).
 //                subscribe(new Consumer<Boolean>() {
@@ -63,7 +64,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
 //                        }
 //                    }
 //                });
-
+//        if (AppConfig.DEBUG) {
 //                bottomContent.postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
@@ -396,6 +397,13 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     public void stopRecord() {
     }
 
+    /***
+     *  视频上传 成功的回调，已经放在{@link UploadVideoService}中进行上传
+     * @param videoUrl
+     * @param audioUrl
+     * @param averVocieDecibel
+     */
+    @Deprecated
     @Override
     public void uploadSucess(String videoUrl, String audioUrl, String averVocieDecibel) {
         getHttpManager().uploadSpeechShow(

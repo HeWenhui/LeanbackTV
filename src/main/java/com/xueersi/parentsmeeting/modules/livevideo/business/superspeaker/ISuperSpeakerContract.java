@@ -139,4 +139,5 @@ public interface ISuperSpeakerContract {
     String CAMERA_SIZE = "camera_size";
     String LAYOUT_SIZE = "layout_size";
     String CAMERA_INVISIBLE = "camera_invisible";
+    String STOP_RECORD = "stop_record";
 }

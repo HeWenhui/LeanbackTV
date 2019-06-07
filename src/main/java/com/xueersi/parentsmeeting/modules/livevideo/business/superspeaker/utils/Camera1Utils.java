@@ -81,16 +81,18 @@ public class Camera1Utils implements IRecordVideoView {
 //        Camera camera = Camera.open(MediaRecorder.VideoSource.CAMERA);
 //        camera = Camera.open(isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT);
         try {
-            camera.setPreviewDisplay(surfaceHolder);
+            camera.lock();
             Camera.Parameters parameters = camera.getParameters();
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            //有些手机不支持自动连续对焦
+            //Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO设置出错
+//            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            //
+//            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);//1连续对焦
+//            camera.cancelAutoFocus();// 2如果要实现连续的自动对焦，这一句必须加上
             cameraSize = getFitSize(parameters.getSupportedVideoSizes(), width, height);
+            parameters.setPreviewSize(cameraSize.width, cameraSize.height);
+            camera.setParameters(parameters);
             logger.i("cameraSize.height = " + cameraSize.height + " cameraSize.weight =" + cameraSize.width);
-            camera.startPreview();
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.e(e);
-            return false;
         } catch (Exception e) {
             e.printStackTrace();
             logger.e(e);
@@ -101,6 +103,19 @@ public class Camera1Utils implements IRecordVideoView {
 
         // int num = Camera.getNumberOfCameras();
         //  Log.d(TAG,"size:"+parameters.toString());
+    }
+
+    public void startPreView() {
+        if (camera == null) {
+            return;
+        }
+        try {
+            camera.setPreviewDisplay(surfaceHolder);
+            camera.startPreview();
+            camera.unlock();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // FIXME: 2019/5/14
@@ -200,7 +215,6 @@ public class Camera1Utils implements IRecordVideoView {
         volum = volumSum = volumNum = 0;
         mediarecorder = new MediaRecorder();// 创建mediarecorder对象
 //        mMediaRecorder.setCamera(mCamera);
-        camera.unlock();
         if (!isFacingBack) {
             mediarecorder.setCamera(camera);
         }
