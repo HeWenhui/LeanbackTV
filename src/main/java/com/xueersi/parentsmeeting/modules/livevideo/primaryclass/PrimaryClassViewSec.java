@@ -22,13 +22,20 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     }
 
     @Override
-    public int getKuangjia() {
-        return R.drawable.bg_live_primary_class_kuangjia_img_normal;
+    public void decorateFrame(ImageView imageView) {
+        imageView.setImageResource(R.drawable.bg_live_primary_class_kuangjia_img_normal);
     }
 
     @Override
     public int getBackImg() {
         return R.drawable.bg_livevideo_priclass_normal;
+    }
+
+    @Override
+    public void decorateNovideo(View view) {
+        view.setBackgroundColor(0x222222);
+        ImageView imageView = view.findViewById(R.id.iv_course_video_novideo);
+        imageView.setImageResource(R.drawable.bg_livevideo_paly_novidwo_bg);
     }
 
     @Override

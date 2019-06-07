@@ -7,9 +7,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public interface PrimaryClassView {
-    int getKuangjia();
 
     int getBackImg();
+
+    void decorateFrame(ImageView imageView);
+
+    void decorateNovideo(View view);
 
     void decorateRlContent(View view, int width, int height);
 

@@ -21,13 +21,20 @@ public class PrimaryClassViewCn implements PrimaryClassView {
     }
 
     @Override
-    public int getKuangjia() {
-        return R.drawable.bg_live_primary_class_kuangjia_img_normal_cn;
+    public void decorateFrame(ImageView imageView) {
+        imageView.setImageResource(R.drawable.bg_live_primary_class_kuangjia_img_normal_cn);
     }
 
     @Override
     public int getBackImg() {
         return R.drawable.bg_livevideo_priclass_normal_cn;
+    }
+
+    @Override
+    public void decorateNovideo(View view) {
+        view.setBackgroundColor(0x2D2D2D);
+        ImageView imageView = view.findViewById(R.id.iv_course_video_novideo);
+        imageView.setImageResource(R.drawable.bg_livevideo_paly_novidwo_bg);
     }
 
     @Override
@@ -119,7 +126,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         }
     }
 
-    /** {@link R.layout#item_primary_class_team_video }*/
+    /** {@link R.layout#item_primary_class_team_video } */
     @Override
     public void decorateItemMy(View view) {
         ImageView iv_livevideo_primary_team_energy = view.findViewById(R.id.iv_livevideo_primary_team_energy);
@@ -134,7 +141,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         iv_live_xuesheng_shipin_mid_daijiaru_normal.setImageResource(R.drawable.bg_lvie_xuesheng_shipin_mid_diaoxian_normal_cn);
     }
 
-    /** {@link R.layout#item_primary_class_team_other_video }*/
+    /** {@link R.layout#item_primary_class_team_other_video } */
     @Override
     public void decorateItemOther(View view) {
         RelativeLayout rl_livevideo_course_item_video_off = view.findViewById(R.id.rl_livevideo_course_item_video_off);
@@ -152,7 +159,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
 
     }
 
-    /** {@link R.layout#item_primary_class_team_empty_video }*/
+    /** {@link R.layout#item_primary_class_team_empty_video } */
     @Override
     public void decorateItemEmpty(View view) {
         view.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);

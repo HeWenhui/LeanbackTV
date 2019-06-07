@@ -103,6 +103,20 @@
 
         </FrameLayout>
 
+        <RelativeLayout
+            android:id="@id/rl_course_video_novideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:id="@id/iv_course_video_novideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/bg_livevideo_paly_novidwo_bg" />
+
+        </RelativeLayout>
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView
             android:id="@id/rl_live_halfbody_video_loading"

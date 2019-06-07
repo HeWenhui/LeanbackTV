@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="iv_live_primary_class_kuangjia_img_normal" type="id" />
+    <item name="rl_course_video_novideo" type="id" />
+    <item name="iv_course_video_novideo" type="id" />
 </resources>

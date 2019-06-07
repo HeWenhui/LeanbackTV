@@ -50,7 +50,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     //
     private RelativeLayout rlFirstBackgroundContent;
     private FrameLayout flFirstBackgroundContent;
-
+    private RelativeLayout rl_course_video_novideo;
     /**
      * 视频正在加载中根布局
      */
@@ -80,6 +80,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         this.isArts = isArts;
         this.rlContent = rlContent;
         flFirstBackgroundContent = mContentView.findViewById(R.id.fl_course_video_first_content);
+        rl_course_video_novideo = mContentView.findViewById(R.id.rl_course_video_novideo);
         rlFirstBackgroundContent = mContentView.findViewById(R.id.rl_course_video_first_content);
         ll_course_video_loading = mContentView.findViewById(R.id.ll_course_video_loading);
         iv_course_video_loading_bg = mContentView.findViewById(R.id.iv_course_video_loading_bg);
@@ -97,7 +98,8 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     }
 
     private void setKuangjia() {
-        ivLivePrimaryClassKuangjiaImgNormal.setImageResource(primaryClassView.getKuangjia());
+        primaryClassView.decorateFrame(ivLivePrimaryClassKuangjiaImgNormal);
+        primaryClassView.decorateNovideo(rl_course_video_novideo);
         setMargin();
     }
 
@@ -266,14 +268,39 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             setTeacherNotpresent(rlFirstBackgroundView);
             ivTeacherNotpresent.setVisibility(View.VISIBLE);
             setTeacherNotpresent(ivTeacherNotpresent);
+            rl_course_video_novideo.setVisibility(View.VISIBLE);
         }
         if (visible == View.GONE) {
             ivTeacherNotpresent.setVisibility(View.GONE);
             ivTecherState.setVisibility(View.INVISIBLE);
+            rl_course_video_novideo.setVisibility(View.GONE);
             //showVedioLoading(visible);
             if (ivVodeoLoading != null) {
                 ivVodeoLoading.setVisibility(View.INVISIBLE);
             }
+        }
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        liveVideoPoint.addVideoSizeChange(activity, new LiveVideoPoint.VideoSizeChange() {
+            @Override
+            public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
+                setNoView(liveVideoPoint);
+            }
+        });
+        setNoView(liveVideoPoint);
+    }
+
+    private void setNoView(LiveVideoPoint liveVideoPoint) {
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_course_video_novideo.getLayoutParams();
+        int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+        int topMargin = liveVideoPoint.y2;
+        int width = liveVideoPoint.x4 - liveVideoPoint.x3;
+        int height = liveVideoPoint.y3 - liveVideoPoint.y2;
+        if (lp.rightMargin != rightMargin || lp.topMargin != topMargin || width != lp.width || height != lp.height) {
+            lp.rightMargin = rightMargin;
+            lp.topMargin = topMargin;
+            lp.width = width;
+            lp.height = height;
+            LayoutParamsUtil.setViewLayoutParams(rl_course_video_novideo, lp);
         }
     }
 
@@ -322,6 +349,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
                     }
                     iv_course_video_loading_bg.setVisibility(View.GONE);
                     ll_course_video_loading.setVisibility(View.GONE);
+                    rl_course_video_novideo.setVisibility(View.GONE);
                 } else {
                     //辅导模式去掉外层的FrameLayout
                     ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();
