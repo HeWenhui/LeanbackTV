@@ -32,7 +32,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
 
     @Override
     public void decorateNovideo(View view) {
-        view.setBackgroundColor(0x2D2D2D);
+        view.setBackgroundColor(0xff2D2D2D);
         ImageView imageView = view.findViewById(R.id.iv_course_video_novideo);
         imageView.setImageResource(R.drawable.bg_livevideo_paly_novidwo_bg);
     }

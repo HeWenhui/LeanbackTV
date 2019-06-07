@@ -107,7 +107,8 @@
             android:id="@id/rl_course_video_novideo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true"
+            android:visibility="invisible">
 
             <ImageView
                 android:id="@id/iv_course_video_novideo"

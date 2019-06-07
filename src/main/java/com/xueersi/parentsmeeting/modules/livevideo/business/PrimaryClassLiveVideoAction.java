@@ -273,7 +273,18 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             setTeacherNotpresent(rlFirstBackgroundView);
             ivTeacherNotpresent.setVisibility(View.VISIBLE);
             setTeacherNotpresent(ivTeacherNotpresent);
-            rl_course_video_novideo.setVisibility(View.VISIBLE);
+            if (LiveTopic.MODE_TRANING.equals(mode)) {
+                rl_course_video_novideo.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (LiveTopic.MODE_TRANING.equals(mode)) {
+                            if (ivTeacherNotpresent.getVisibility() == View.VISIBLE) {
+                                rl_course_video_novideo.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                }, 2000);
+            }
         }
         if (visible == View.GONE) {
             ivTeacherNotpresent.setVisibility(View.GONE);
@@ -328,6 +339,12 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
                     setTeacherNotpresent(ivTeacherNotpresent);
                     mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View
                             .INVISIBLE);
+                    if (LiveTopic.MODE_TRANING.equals(mode)) {
+                        if (rl_course_video_novideo.getVisibility() != View.VISIBLE) {
+                            setNoView(LiveVideoPoint.getInstance());
+                            rl_course_video_novideo.setVisibility(View.VISIBLE);
+                        }
+                    }
                 }
             }
         });

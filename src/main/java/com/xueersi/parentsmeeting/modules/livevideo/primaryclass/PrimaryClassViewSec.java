@@ -33,7 +33,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
 
     @Override
     public void decorateNovideo(View view) {
-        view.setBackgroundColor(0x222222);
+        view.setBackgroundColor(0xff222222);
         ImageView imageView = view.findViewById(R.id.iv_course_video_novideo);
         imageView.setImageResource(R.drawable.bg_livevideo_paly_novidwo_bg);
     }
