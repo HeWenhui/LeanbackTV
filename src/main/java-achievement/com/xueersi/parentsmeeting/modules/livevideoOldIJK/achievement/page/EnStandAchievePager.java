@@ -29,9 +29,11 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -41,6 +43,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ViewUtil;
 import com.xueersi.ui.widget.CircleImageView;
+
+import net.grandcentrix.tray.core.ItemNotFoundException;
 
 import java.util.List;
 import java.util.Random;
@@ -74,6 +78,7 @@ public class EnStandAchievePager extends LiveBasePager {
     String ACHIEVE_LAYOUT_RIGHT = "1";
     RelativeLayout rlAchieveContent;
     ArtsExtLiveInfo mExtLiveInfo;
+    String LAYOUT_SUMMER_SIZE = "0";
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
@@ -83,6 +88,11 @@ public class EnStandAchievePager extends LiveBasePager {
         goldCount = mLiveGetInfo.getGoldCount();
         energyCount = enpkEnergy.me;
         activity = (Activity) context;
+        try {
+            LAYOUT_SUMMER_SIZE =  UmsAgentTrayPreference.getInstance().getString(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE);
+        } catch (ItemNotFoundException e) {
+            e.printStackTrace();
+        }
         initView();
         initData();
         initListener();
@@ -120,7 +130,7 @@ public class EnStandAchievePager extends LiveBasePager {
         } else {
             vsAchiveBottom2.inflate();
         }
-       // setRlAchieveContent();
+        setRlAchieveContent(null);
         setUserHeadImage();
         cbAchiveTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -163,7 +173,10 @@ public class EnStandAchievePager extends LiveBasePager {
      */
     public void setRlAchieveContent(ArtsExtLiveInfo extLiveInfo){
         mExtLiveInfo = extLiveInfo;
-        if(extLiveInfo!=null && ACHIEVE_LAYOUT_RIGHT.equals(extLiveInfo.getSummerCourseWareSize())) {
+        if(mExtLiveInfo!=null ){
+            LAYOUT_SUMMER_SIZE = mExtLiveInfo.getSummerCourseWareSize();
+        }
+        if(ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)) {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
             LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
             layoutParams.rightMargin = SizeUtils.Dp2Px(activity,10);
@@ -356,12 +369,12 @@ public class EnStandAchievePager extends LiveBasePager {
         lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.topMargin = cbAchiveTitle.getHeight() * 144 / 189;
-        if(mExtLiveInfo!=null && ACHIEVE_LAYOUT_RIGHT.equals(mExtLiveInfo.getSummerCourseWareSize())) {
+        if (ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)){
             lp.rightMargin = SizeUtils.Dp2Px(mContext,30);
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        } else {
+         } else {
             lp.leftMargin = SizeUtils.Dp2Px(mContext, 22);
-        }
+         }
         final ViewGroup viewGroup = (ViewGroup) mView;
         viewGroup.addView(lottieAnimationView, lp);
         lottieAnimationView.playAnimation();
