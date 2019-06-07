@@ -125,6 +125,9 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
             iv_livevideo_primary_team_voice_open.setVisibility(View.VISIBLE);
             if (audioStatus) {
                 voiceImageView.setVisibility(View.VISIBLE);
+                iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
+            } else {
+                iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
             }
         } else {
             rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
