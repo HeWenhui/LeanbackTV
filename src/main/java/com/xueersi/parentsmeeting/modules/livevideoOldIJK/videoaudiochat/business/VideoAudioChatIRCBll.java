@@ -9,7 +9,6 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;

@@ -137,16 +137,10 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
             liveMediaControllerBottom) {
         this.mMediaController = mMediaController;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
-        if (liveMediaControllerBottom instanceof LiveStandMediaControllerBottom) {
-            LiveStandMediaControllerBottom liveStandMediaControllerBottom = (LiveStandMediaControllerBottom)
-                    liveMediaControllerBottom;
-            liveStandMediaControllerBottom.addOnViewChange(onViewChange);
-        }
 
-        if(liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
-            LiveHalfBodyMediaControllerBottom liveHalfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
-                    liveMediaControllerBottom;
-            liveHalfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
+        if (liveMediaControllerBottom instanceof LiveUIStateReg) {
+            LiveUIStateReg liveUIStateReg = (LiveUIStateReg) liveMediaControllerBottom;
+            liveUIStateReg.addLiveUIStateListener(onViewChange);
         }
 
         rl_livevideo_common_rank = (Button) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank);

@@ -21,6 +21,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -133,16 +134,10 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
             liveMediaControllerBottom) {
         this.mMediaController = mMediaController;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
-        if (liveMediaControllerBottom instanceof LiveStandMediaControllerBottom) {
-            LiveStandMediaControllerBottom liveStandMediaControllerBottom = (LiveStandMediaControllerBottom)
-                    liveMediaControllerBottom;
-            liveStandMediaControllerBottom.addOnViewChange(onViewChange);
-        }
 
-        if (liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom) {
-            LiveHalfBodyMediaControllerBottom liveHalfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
-                    liveMediaControllerBottom;
-            liveHalfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
+        if (liveMediaControllerBottom instanceof LiveUIStateReg) {
+            LiveUIStateReg liveUIStateReg = (LiveUIStateReg) liveMediaControllerBottom;
+            liveUIStateReg.addLiveUIStateListener(onViewChange);
         }
 
         rl_livevideo_common_rank = (Button) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank);
