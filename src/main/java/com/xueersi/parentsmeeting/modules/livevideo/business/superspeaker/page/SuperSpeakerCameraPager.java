@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.TimeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.CustomVideoController2;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.io.File;
@@ -38,6 +39,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.LAYOUT_SIZE;
 import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.RECORD_VALID_TIME;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -417,13 +419,24 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         if (camera1Utils != null) {
             StorageUtils.videoUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
             logger.i(StorageUtils.videoUrl);
+            StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.VIDEO_URL, StorageUtils.videoUrl);
             if (camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.videoUrl)) {
                 initCamera = true;
                 //把视频按比例拉长
-                handleSize(camera1Utils.getCameraSize(), sfvVideo);
+                ViewGroup.LayoutParams layoutParams = handleSize(camera1Utils.getCameraSize(), sfvVideo);
+
+                map.put(ISuperSpeakerContract.CAMERA_SIZE,
+                        camera1Utils.getCameraSize().height + "-" +
+                                camera1Utils.getCameraSize().width)
+                        .put(ISuperSpeakerContract.INIT_CAMERA, String.valueOf(true));
+                if (layoutParams != null) {
+                    map.put(LAYOUT_SIZE, layoutParams.height + "-" + layoutParams.width);
+                }
             } else {
                 initCamera = false;
+                map.put(ISuperSpeakerContract.INIT_CAMERA, String.valueOf(false));
             }
+            UmsAgentManager.umsAgentDebug(mContext, ISuperSpeakerContract.SUPER_SPEAKER_EVNT_ID, map.getData());
         }
     }
 
@@ -433,8 +446,8 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
      * @param size
      * @param view
      */
-    private void handleSize(Camera.Size size, View view) {
-        if (size == null || view == null) return;
+    private ViewGroup.LayoutParams handleSize(Camera.Size size, View view) {
+        if (size == null || view == null) return null;
         int width = size.width;
         int height = size.height;
         if (width > 0 && height > 0) {
@@ -464,6 +477,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                     layoutParams.width = (int) (width * dd);
                     layoutParams.height = (int) (height * dd);
                     view.setLayoutParams(layoutParams);
+                    return layoutParams;
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.e(e);
@@ -471,6 +485,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
 
             }
         }
+        return null;
 
     }
 
@@ -494,7 +509,6 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         groupStop.setVisibility(View.GONE);
         groupSubmit.setVisibility(View.VISIBLE);
         groupRestart.setVisibility(View.VISIBLE);
-
         isInRecord = false;
         io.reactivex.Observable.
                 just(true).
@@ -518,9 +532,17 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
+                        long invisibleTime = System.currentTimeMillis();
                         sfvVideo.setVisibility(View.INVISIBLE);
+                        invisibleTime = System.currentTimeMillis() - invisibleTime;
                         customVideoController2.setVisibility(View.VISIBLE);
                         customVideoController2.startPlayVideo(StorageUtils.videoUrl, 0);
+                        if (invisibleTime > 1000) {
+                            StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.CAMERA_INVISIBLE, String.valueOf(invisibleTime));
+                            UmsAgentManager.umsAgentDebug(mContext, ISuperSpeakerContract.SUPER_SPEAKER_EVNT_ID, map.getData());
+                            logger.i(invisibleTime + "");
+                        }
+
                     }
                 }, new Consumer<Throwable>() {
                     @Override

@@ -43,11 +43,12 @@ public class SuperSpeakerPermissionPager extends SuperSpeakerCameraPager {
                         public void onGuarantee(String permission, int position) {
                             if (position == 0) {
                                 UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715019));
+                                performStartPreView(isFacingBack);
                             } else if (position == 1) {
                                 UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715021));
                             }
                             logger.i("permission = " + permission + " position = " + position);
-                            performStartPreView(isFacingBack);
+
                         }
                     },
                     PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
