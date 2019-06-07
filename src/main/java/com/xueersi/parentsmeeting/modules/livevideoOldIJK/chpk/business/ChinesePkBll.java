@@ -735,6 +735,11 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                                 logger.d("getTeamMates:mTeamMates=null");
                             }
                             LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
+                            logger.d("getMyTeamInfo:runnables=" + runnables.size());
+                            while (!runnables.isEmpty()) {
+                                Runnable runnable = runnables.remove(0);
+                                runnable.run();
+                            }
                         }
                     });
         } else {
