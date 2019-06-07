@@ -465,6 +465,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 } else {
                     tvSpeechbulSend.setEnabled(true);
                     tvSpeechbulSend.setAlpha(1.0f);
+                    tvSpeechbulSend.setTextColor(Color.WHITE);
                 }
                 tvSpeechbulCount.setText(repickStr.length() + "/" + MAX_INPUT_CHAR_NUMBER);
             }
@@ -1041,6 +1042,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         } else {
             tvSpeechbulSend.setEnabled(true);
             tvSpeechbulSend.setAlpha(1.0f);
+            tvSpeechbulSend.setTextColor(Color.WHITE);
         }
     }
 
