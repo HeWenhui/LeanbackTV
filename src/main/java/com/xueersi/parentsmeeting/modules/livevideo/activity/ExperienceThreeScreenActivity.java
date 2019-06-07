@@ -203,6 +203,14 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
     };
 
+    private final Runnable playDelayTask = new Runnable() {
+        @Override
+        public void run() {
+            if (videoPlayState.isPlaying)
+                playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
+        }
+    };
+
     // 体验课相关日志的埋点
     private final LiveAndBackDebug ums = new SimpleLiveBackDebug() {
         @Override
@@ -599,6 +607,11 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     @Override
     public void finish() {
+
+        getHandler.removeCallbacks(liveModeTask);
+        getHandler.removeCallbacks(liveHeartTask);
+        getHandler.removeCallbacks(playDelayTask);
+
         StableLogHashMap params = new StableLogHashMap("LiveFreePlayExit");
         params.put("liveid", playBackEntity.getLiveId());
         params.put("termid", playBackEntity.getChapterId());
@@ -612,7 +625,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         liveBackBll.onDestory();
         mLiveMessagePager = null;
-        getHandler.removeCallbacks(null);
         mIRCMessage.setCallback(null);
 
         new Thread() {
@@ -750,6 +762,10 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 if (rlFirstBackgroundView.getVisibility() != View.GONE) {
                     rlFirstBackgroundView.setVisibility(View.GONE);
                 }
+
+                if (ivTeacherNotpresent.getVisibility() != View.GONE) {
+                    ivTeacherNotpresent.setVisibility(View.GONE);
+                }
             }
         };
 
@@ -761,7 +777,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     protected void resultFailed(int arg1, int arg2) {
         Log.i("expTess", "resultFailed  error=" + arg2);
 
-        if (arg2 == MediaErrorInfo.PLAY_COMPLETE) {
+        if (arg2 == MediaErrorInfo.PLAY_COMPLETE || arg2 == MediaErrorInfo.PSChannelNotExist) {
             if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
             }
@@ -769,18 +785,35 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             if (rlFirstBackgroundView.getVisibility() != View.GONE) {
                 rlFirstBackgroundView.setVisibility(View.GONE);
             }
-        } else if (videoPlayState.isPlaying) {
 
-            if (ivTeacherNotpresent.getVisibility() != View.GONE) {
-                ivTeacherNotpresent.setVisibility(View.GONE);
+            getHandler.postDelayed(playDelayTask, 3 * 1000);
+
+        } else if (arg2 == MediaErrorInfo.PSChannelNotExist) {
+
+            if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
+                ivTeacherNotpresent.setVisibility(View.VISIBLE);
             }
 
-            if (rlFirstBackgroundView.getVisibility() != View.VISIBLE) {
-                rlFirstBackgroundView.setVisibility(View.VISIBLE);
+            if (rlFirstBackgroundView.getVisibility() != View.GONE) {
+                rlFirstBackgroundView.setVisibility(View.GONE);
             }
 
-            playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
+            getHandler.postDelayed(playDelayTask, 3 * 1000);
+
+        } else {
+            if (videoPlayState.isPlaying) {
+                if (ivTeacherNotpresent.getVisibility() != View.GONE) {
+                    ivTeacherNotpresent.setVisibility(View.GONE);
+                }
+
+                if (rlFirstBackgroundView.getVisibility() != View.VISIBLE) {
+                    rlFirstBackgroundView.setVisibility(View.VISIBLE);
+                }
+
+                playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
+            }
         }
+
     }
 
     @Override
@@ -1149,6 +1182,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      */
     protected void onModeChanged() {
 
+        getHandler.removeCallbacks(playDelayTask);
+
         int mode = expLiveInfo.getMode();
         Log.i("expTess", "onModeChanged execute mode=" + mode);
         if (mode == COURSE_STATE_1) {
@@ -1350,6 +1385,15 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             expFeedbackDialog.setCancelable(false);
         }
 
+        expFeedbackDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if (isBackPressed) {
+                    finish();
+                }
+            }
+        });
+
         expFeedbackDialog.setClickListener(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -1359,10 +1403,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
                 if (which == ExpFeedbackDialog.BUTTON_CLOSE) {
                     closeType = "2";
-
-                    if (isBackPressed) {
-                        finish();
-                    }
                 } else if (which == ExpFeedbackDialog.BUTTON_SUBMIT) {
                     closeType = "1";
 
@@ -1380,24 +1420,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
                     HttpCallBack callBack = new HttpCallBack() {
                         @Override
-                        public void onPmFailure(Throwable error, String msg) {
-                            if (isBackPressed) {
-                                finish();
-                            }
-                        }
-
-                        @Override
-                        public void onPmError(ResponseEntity responseEntity) {
-                            if (isBackPressed) {
-                                finish();
-                            }
-                        }
-
-                        @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            if (isBackPressed) {
-                                finish();
-                            }
+
                         }
                     };
 

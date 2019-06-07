@@ -593,7 +593,6 @@ public class LiveVideoEnter {
 
             }
         });
-
         return true;
     }
 
