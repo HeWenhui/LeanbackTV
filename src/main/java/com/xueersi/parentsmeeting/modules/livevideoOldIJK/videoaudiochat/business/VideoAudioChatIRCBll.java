@@ -6,7 +6,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
@@ -88,14 +88,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             videoChatBll.setVideoChatHttp(this);
             videoChatBll.onLiveInit(getInfo);
             videoChatAction = videoChatBll;
-            if (baseLiveMediaControllerBottom instanceof LiveStandMediaControllerBottom) {
-                LiveStandMediaControllerBottom liveStandMediaControllerBottom = (LiveStandMediaControllerBottom)
-                        baseLiveMediaControllerBottom;
-                liveStandMediaControllerBottom.addOnViewChange(onViewChange);
-            }
 
-            if(baseLiveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
-                LiveHalfBodyMediaControllerBottom halfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
+            if(baseLiveMediaControllerBottom instanceof LiveUIStateReg){
+                LiveUIStateReg halfBodyMediaControllerBottom = (LiveUIStateReg)
                         baseLiveMediaControllerBottom;
                 halfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
             }

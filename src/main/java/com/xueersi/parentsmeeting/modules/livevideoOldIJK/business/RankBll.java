@@ -28,8 +28,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.RankItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RankPage.SmallChineseRankPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
