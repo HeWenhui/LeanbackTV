@@ -1936,6 +1936,35 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
+     * 文科提交对老师评价
+     *
+     * @param liveId
+     * @param stuCouId
+     * @param teacherEvaluLevel
+     * @param teacherEvaluOption
+     * @param tutorEvaluLevel
+     * @param tutorEvaluOption
+     * @param requestCallBack
+     */
+    public void saveEvaluationTeacher(String liveId, String courseId, String teacherId, String teacherScore, String
+            teacherOption, String counselorId, String counselorScore, String
+                                                  counselorOption, String classId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        params.addBodyParam("teacherId", teacherId);
+        params.addBodyParam("teacherScore", teacherScore);
+        params.addBodyParam("teacherOption", teacherOption);
+        params.addBodyParam("counselorId", counselorId);
+        params.addBodyParam("teacherEvaluateContent", counselorScore);
+        params.addBodyParam("counselorEvaluateContent", counselorOption);
+        params.addBodyParam("classId", classId);
+        params.setWriteAndreadTimeOut(5);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_ARTS_EVALUATE_TEACHER, params, requestCallBack);
+    }
+
+
+    /**
      * 理科提交对老师评价
      *
      * @param liveId

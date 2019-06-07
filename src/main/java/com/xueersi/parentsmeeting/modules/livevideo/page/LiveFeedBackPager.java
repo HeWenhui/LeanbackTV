@@ -453,7 +453,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         Drawable leftDraw = mContext.getResources().getDrawable(R.drawable.lspj_tanchuang_loading_icon_normal);
         ivSubmit.setCompoundDrawablesWithIntrinsicBounds(leftDraw, null, null, null);
 
-        mHttpManager.saveScienceEvaluationTeacher(liveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo
+        mHttpManager.saveEvaluationTeacher(liveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo
                         .getMainTeacherId(),
                 mainFeedback, mainIntput, mGetInfo.getTeacherId(), tutorFeedback,
                 tutorInput, mGetInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
