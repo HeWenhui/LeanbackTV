@@ -1272,6 +1272,7 @@
     <item name="vs_livevideo_en_achive_bottom" type="id" />
     <item name="vs_livevideo_en_achive_bottom2" type="id" />
     <!--英语本场成就-战队pk-->
+    <item name="rl_livevideo_en_stand_achive__content" type="id" />
     <item name="cb_livevideo_en_stand_achive_title" type="id" />
     <item name="rl_livevideo_en_achive_stand_bg" type="id" />
     <item name="rl_livevideo_en_achive_stand_content" type="id" />

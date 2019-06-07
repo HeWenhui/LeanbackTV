@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnStandAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -52,6 +53,11 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
         logger.d("initView:rightMargin=" + lp.rightMargin);
 //        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         relativeLayout.addView(enAchievePager.getRootView(), lp);
+    }
+    public void setAchievementLayout(ArtsExtLiveInfo extLiveInfo){
+        if(enAchievePager!=null){
+            enAchievePager.setRlAchieveContent(extLiveInfo);
+        }
     }
 
     @Override

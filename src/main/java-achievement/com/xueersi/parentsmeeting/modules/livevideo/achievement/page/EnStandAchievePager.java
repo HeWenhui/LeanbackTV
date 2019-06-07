@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -64,9 +66,13 @@ public class EnStandAchievePager extends LiveBasePager {
     private int myTotal = 0;
     private int otherTotal = 0;
     private boolean firstCheck = false;
-    /**用户头像*/
+    /** 用户头像 */
     CircleImageView civUserImage;
     LinearLayout llImageContent;
+    String ACHIEVE_LAYOUT_RIGHT = "1";
+    RelativeLayout rlAchieveContent;
+    ArtsExtLiveInfo mExtLiveInfo;
+
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
@@ -93,6 +99,7 @@ public class EnStandAchievePager extends LiveBasePager {
         cbAchiveTitle = mView.findViewById(R.id.cb_livevideo_en_stand_achive_title);
         civUserImage = mView.findViewById(R.id.iv_livevideo_en_stand_achive_user_head_imge);
         llImageContent = mView.findViewById(R.id.ll_livevideo_en_stand_achive_user_head_imge);
+        rlAchieveContent = mView.findViewById(R.id.rl_livevideo_en_stand_achive__content);
         return mView;
     }
 
@@ -111,6 +118,7 @@ public class EnStandAchievePager extends LiveBasePager {
         } else {
             vsAchiveBottom2.inflate();
         }
+        //  setRlAchieveContent();
         setUserHeadImage();
         cbAchiveTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -122,38 +130,56 @@ public class EnStandAchievePager extends LiveBasePager {
                         setEngPro(pgAchivePk.getProgress());
                     }
                 }
-//                if (com.xueersi.common.config.AppConfig.DEBUG) {
-//                    Random random = new Random();
-//                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
-//                    int nextInt = random.nextInt();
-//                    int goldCount2 = goldCount + 1;
-//                    int energyCount2 = energyCount + 1;
-//                    if (nextInt % 3 == 0) {
-//                        goldCount2 += random.nextInt(20);
-//                        energyCount2 += random.nextInt(20);
-//                    } else if (nextInt % 3 == 1) {
-//                        goldCount2 += random.nextInt(20);
-//                    } else {
-//                        energyCount2 += random.nextInt(20);
-//                    }
-//                    starAndGoldEntity.setGoldCount(goldCount2);
-//                    StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
-//                    pkEnergy.me = energyCount2;
-//                    pkEnergy.myTeam = 20;
-//                    pkEnergy.opTeam = 12;
-//                    onGetStar(starAndGoldEntity);
-//                }
+                if (com.xueersi.common.config.AppConfig.DEBUG) {
+                    Random random = new Random();
+                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
+                    int nextInt = random.nextInt();
+                    int goldCount2 = goldCount + 1;
+                    int energyCount2 = energyCount + 1;
+                    if (nextInt % 3 == 0) {
+                        goldCount2 += random.nextInt(20);
+                        energyCount2 += random.nextInt(20);
+                    } else if (nextInt % 3 == 1) {
+                        goldCount2 += random.nextInt(20);
+                    } else {
+                        energyCount2 += random.nextInt(20);
+                    }
+                    starAndGoldEntity.setGoldCount(goldCount2);
+                    StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+                    pkEnergy.me = energyCount2;
+                    pkEnergy.myTeam = 20;
+                    pkEnergy.opTeam = 12;
+                    onGetStar(starAndGoldEntity);
+                }
             }
         });
 
-      
+
     }
-    /**设置头像*/
-    private void setUserHeadImage(){
+
+    /**
+     * 设置贡献之星
+     */
+    public void setRlAchieveContent(ArtsExtLiveInfo extLiveInfo) {
+        mExtLiveInfo = extLiveInfo;
+        if (extLiveInfo != null && ACHIEVE_LAYOUT_RIGHT.equals(extLiveInfo.getSummerCourseWareSize())) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlAchieveContent.getLayoutParams();
+            LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+            layoutParams.rightMargin = SizeUtils.Dp2Px(activity, 10);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
+            rlAchieveContent.setLayoutParams(layoutParams);
+            llImageContent.setVisibility(View.GONE);
+        }
+    }
+
+    /** 设置头像 */
+    private void setUserHeadImage() {
         String img = mLiveGetInfo.getStuImg();
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)llImageContent.getLayoutParams();
-        layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth -  LiveVideoPoint.getInstance().x4+ SizeUtils.Dp2Px(activity,10);
-        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) llImageContent.getLayoutParams();
+        layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x4 +
+                SizeUtils.Dp2Px(activity, 10);
+//        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
         llImageContent.setLayoutParams(layoutParams);
         ImageLoader.with(activity).load(img).into(civUserImage);
     }
@@ -180,10 +206,12 @@ public class EnStandAchievePager extends LiveBasePager {
         pgAchivePk.setProgress(progress);
         if (progressImageView == null) {
             progressImageView = new ImageView(activity);
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.pc_livevideo_enteampk_pkbar_fire_pic_nor);
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable
+                    .pc_livevideo_enteampk_pkbar_fire_pic_nor);
             progressImageView.setImageDrawable(bitmapDrawable);
             progressImageView.setVisibility(View.INVISIBLE);
-            rlAchiveStandBg.addView(progressImageView, bitmapDrawable.getIntrinsicWidth(), bitmapDrawable.getIntrinsicHeight());
+            rlAchiveStandBg.addView(progressImageView, bitmapDrawable.getIntrinsicWidth(), bitmapDrawable
+                    .getIntrinsicHeight());
             pgAchivePk.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
@@ -204,8 +232,10 @@ public class EnStandAchievePager extends LiveBasePager {
                 public boolean onPreDraw() {
                     progressImageView.getViewTreeObserver().removeOnPreDrawListener(this);
                     int[] loc = ViewUtil.getLoc(pgAchivePk, rlAchiveStandBg);
-                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) progressImageView.getLayoutParams();
-                    int leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
+                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) progressImageView
+                            .getLayoutParams();
+                    int leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk
+                            .getProgress() / pgAchivePk.getMax();
                     int topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2;
                     logger.d("initListener1:left=" + loc[0] + ",top=" + loc[1]);
                     if (lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
@@ -219,7 +249,8 @@ public class EnStandAchievePager extends LiveBasePager {
         } else {
             int[] loc = ViewUtil.getLoc(pgAchivePk, rlAchiveStandBg);
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) progressImageView.getLayoutParams();
-            lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
+            lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk
+                    .getProgress() / pgAchivePk.getMax();
             lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2;
             logger.d("initListener2:left=" + loc[0] + ",top=" + loc[1]);
             progressImageView.setLayoutParams(lp);
@@ -262,7 +293,8 @@ public class EnStandAchievePager extends LiveBasePager {
         final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
         energyCount = starAndGoldEntity.getPkEnergy().me;
         goldCount = starAndGoldEntity.getGoldCount();
-        mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",visibility=" + rlAchiveStandBg.getVisibility());
+        mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",visibility=" +
+                rlAchiveStandBg.getVisibility());
         if (rlAchiveStandBg.getVisibility() == View.VISIBLE) {
             return;
         }
@@ -288,7 +320,8 @@ public class EnStandAchievePager extends LiveBasePager {
         String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath, targetFileNames) {
             @Override
-            public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
+            public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int
+                    width, int height) {
                 if ("img_0.png".equals(fileName)) {
                     if (type == 1) {
                         Bitmap bitmap2 = createBitmap(energyCountAdd, width, height);
@@ -328,9 +361,15 @@ public class EnStandAchievePager extends LiveBasePager {
             }
         };
         lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.topMargin = cbAchiveTitle.getHeight() * 144 / 189;
-        lp.leftMargin = SizeUtils.Dp2Px(mContext,22);
+        if (mExtLiveInfo != null && ACHIEVE_LAYOUT_RIGHT.equals(mExtLiveInfo.getSummerCourseWareSize())) {
+            lp.rightMargin = SizeUtils.Dp2Px(mContext, 30);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        } else {
+            lp.leftMargin = SizeUtils.Dp2Px(mContext, 22);
+        }
         final ViewGroup viewGroup = (ViewGroup) mView;
         viewGroup.addView(lottieAnimationView, lp);
         lottieAnimationView.playAnimation();

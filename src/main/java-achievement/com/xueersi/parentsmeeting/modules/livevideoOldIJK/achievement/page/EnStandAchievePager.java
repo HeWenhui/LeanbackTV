@@ -33,6 +33,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
@@ -70,6 +71,9 @@ public class EnStandAchievePager extends LiveBasePager {
     /**用户头像*/
     CircleImageView civUserImage;
     LinearLayout llImageContent;
+    String ACHIEVE_LAYOUT_RIGHT = "1";
+    RelativeLayout rlAchieveContent;
+    ArtsExtLiveInfo mExtLiveInfo;
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
@@ -96,6 +100,7 @@ public class EnStandAchievePager extends LiveBasePager {
         cbAchiveTitle = mView.findViewById(R.id.cb_livevideo_en_stand_achive_title);
         civUserImage = mView.findViewById(R.id.iv_livevideo_en_stand_achive_user_head_imge);
         llImageContent = mView.findViewById(R.id.ll_livevideo_en_stand_achive_user_head_imge);
+        rlAchieveContent = mView.findViewById(R.id.rl_livevideo_en_stand_achive__content);
         return mView;
     }
 
@@ -115,6 +120,7 @@ public class EnStandAchievePager extends LiveBasePager {
         } else {
             vsAchiveBottom2.inflate();
         }
+       // setRlAchieveContent();
         setUserHeadImage();
         cbAchiveTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -126,31 +132,46 @@ public class EnStandAchievePager extends LiveBasePager {
                         setEngPro(pgAchivePk.getProgress());
                     }
                 }
-//                if (com.xueersi.common.config.AppConfig.DEBUG) {
-//                    Random random = new Random();
-//                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
-//                    int nextInt = random.nextInt();
-//                    int goldCount2 = goldCount + 1;
-//                    int energyCount2 = energyCount + 1;
-//                    if (nextInt % 3 == 0) {
-//                        goldCount2 += random.nextInt(20);
-//                        energyCount2 += random.nextInt(20);
-//                    } else if (nextInt % 3 == 1) {
-//                        goldCount2 += random.nextInt(20);
-//                    } else {
-//                        energyCount2 += random.nextInt(20);
-//                    }
-//                    starAndGoldEntity.setGoldCount(goldCount2);
-//                    StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
-//                    pkEnergy.me = energyCount2;
-//                    pkEnergy.myTeam = 20;
-//                    pkEnergy.opTeam = 12;
-//                    onGetStar(starAndGoldEntity);
-//                }
+                if (com.xueersi.common.config.AppConfig.DEBUG) {
+                    Random random = new Random();
+                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
+                    int nextInt = random.nextInt();
+                    int goldCount2 = goldCount + 1;
+                    int energyCount2 = energyCount + 1;
+                    if (nextInt % 3 == 0) {
+                        goldCount2 += random.nextInt(20);
+                        energyCount2 += random.nextInt(20);
+                    } else if (nextInt % 3 == 1) {
+                        goldCount2 += random.nextInt(20);
+                    } else {
+                        energyCount2 += random.nextInt(20);
+                    }
+                    starAndGoldEntity.setGoldCount(goldCount2);
+                    StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+                    pkEnergy.me = energyCount2;
+                    pkEnergy.myTeam = 20;
+                    pkEnergy.opTeam = 12;
+                    onGetStar(starAndGoldEntity);
+                }
             }
         });
 
        
+    }
+    /**
+     * 设置贡献之星
+     */
+    public void setRlAchieveContent(ArtsExtLiveInfo extLiveInfo){
+        mExtLiveInfo = extLiveInfo;
+        if(extLiveInfo!=null && ACHIEVE_LAYOUT_RIGHT.equals(extLiveInfo.getSummerCourseWareSize())) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
+            LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+            layoutParams.rightMargin = SizeUtils.Dp2Px(activity,10);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
+            rlAchieveContent.setLayoutParams(layoutParams);
+            llImageContent.setVisibility(View.GONE);
+        }
     }
 
     /**设置头像*/
@@ -158,7 +179,7 @@ public class EnStandAchievePager extends LiveBasePager {
         String img = mLiveGetInfo.getStuImg();
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)llImageContent.getLayoutParams();
         layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth -  LiveVideoPoint.getInstance().x4 + SizeUtils.Dp2Px(activity,10);
-        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
+//        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
         llImageContent.setLayoutParams(layoutParams);
         ImageLoader.with(activity).load(img).into(civUserImage);
     }
@@ -335,7 +356,12 @@ public class EnStandAchievePager extends LiveBasePager {
         lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.topMargin = cbAchiveTitle.getHeight() * 144 / 189;
-        lp.leftMargin = SizeUtils.Dp2Px(mContext,22);
+        if(mExtLiveInfo!=null && ACHIEVE_LAYOUT_RIGHT.equals(mExtLiveInfo.getSummerCourseWareSize())) {
+            lp.rightMargin = SizeUtils.Dp2Px(mContext,30);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        } else {
+            lp.leftMargin = SizeUtils.Dp2Px(mContext, 22);
+        }
         final ViewGroup viewGroup = (ViewGroup) mView;
         viewGroup.addView(lottieAnimationView, lp);
         lottieAnimationView.playAnimation();

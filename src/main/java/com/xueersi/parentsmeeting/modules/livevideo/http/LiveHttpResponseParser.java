@@ -2043,6 +2043,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
         info.setIsGroupGameCourseWare(data.optInt("isGroupGameCourseWare", -1));
+        info.setSummerCourseWareSize(data.optString("summerCourseWareSize"));
+
         return info;
     }
 

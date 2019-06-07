@@ -5,6 +5,7 @@
     android:layout_marginLeft="23dp">
 
     <RelativeLayout
+        android:id="@id/rl_livevideo_en_stand_achive__content"
         android:layout_width="177dp"
         android:layout_height="wrap_content">
 
@@ -122,28 +123,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="6dp"
             android:background="@drawable/selector_live_en_stand_achive_open"
             android:button="@null"
             android:checked="false" />
     </RelativeLayout>
 
     <LinearLayout
-        android:background="@drawable/bg_stand_livevideo_heads_right_normal"
+        android:id="@id/ll_livevideo_en_stand_achive_user_head_imge"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:id="@id/ll_livevideo_en_stand_achive_user_head_imge"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp">
+        android:background="@drawable/bg_stand_livevideo_heads_right_normal"
+        android:gravity="center">
+
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/iv_livevideo_en_stand_achive_user_head_imge"
-            app:border_color="@android:color/transparent"
-            app:border_width="0dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_default_head_square" />
+            android:src="@drawable/ic_default_head_square"
+            app:border_color="@android:color/transparent"
+            app:border_width="0dp" />
     </LinearLayout>
 
 </RelativeLayout>
