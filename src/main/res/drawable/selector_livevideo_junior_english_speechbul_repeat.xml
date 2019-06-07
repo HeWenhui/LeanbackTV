@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/livevideo_btn_disabled_junior_repeat" android:state_enabled="false"></item>
-    <item android:drawable="@drawable/livevideo_btn_pressed_junior_repeat" android:state_pressed="true"></item>
-    <item android:drawable="@drawable/shape_corners_20dp_1affffff"></item>
+    <item android:drawable="@drawable/livevideo_btn_junior_repeat_disabled" android:state_enabled="false" />
+    <item android:drawable="@drawable/livevideo_btn_junior_repeat_pressed" android:state_pressed="true" />
+    <item android:drawable="@drawable/livevideo_btn_junior_repeat_normal" />
 </selector>

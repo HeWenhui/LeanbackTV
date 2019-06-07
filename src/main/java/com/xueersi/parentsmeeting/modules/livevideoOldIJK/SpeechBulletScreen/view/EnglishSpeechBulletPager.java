@@ -293,9 +293,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         vwvSpeechbulWave.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                    vwvSpeechbulWave.setLinearGradient(new LinearGradient(0, 0, vwvSpeechbulWave.getMeasuredWidth(), 0,
-                            new int[]{0xFFEA9CF9, 0xFF9DBBFA, 0xFF80F9FD}, new float[]{0, 0.5f, 1.0f}, Shader.TileMode
-                            .CLAMP));
+                vwvSpeechbulWave.setLinearGradient(new LinearGradient(0, 0, vwvSpeechbulWave.getMeasuredWidth(), 0,
+                        new int[]{0xFFEA9CF9, 0xFF9DBBFA, 0xFF80F9FD}, new float[]{0, 0.5f, 1.0f}, Shader.TileMode
+                        .CLAMP));
                 vwvSpeechbulWave.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
@@ -352,7 +352,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         sendLayoutParams.width = SizeUtils.Dp2Px(mContext, 72);
         tvSpeechbulSend.setLayoutParams(sendLayoutParams);
         //输入框换肤
-        etSpeechbulWords.setBackgroundResource(R.drawable.shape_livevideo_junior_english_speechbul_words_bg);
+        etSpeechbulWords.setBackgroundResource(R.drawable.livevideo_btn_junior_repeat_normal);
         RelativeLayout.LayoutParams wordsLayoutParams = (RelativeLayout.LayoutParams) etSpeechbulWords
                 .getLayoutParams();
         sendLayoutParams.leftMargin = SizeUtils.Dp2Px(mContext, 12);
@@ -1066,7 +1066,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         if (isSmallEnglish) {
             view.setAlpha(0.6f);
         } else {
-            view.setTextColor(mContext.getResources().getColor(R.color.white));
+            view.setTextColor(Color.parseColor("#73FFFFFF"));
         }
     }
 
@@ -1084,8 +1084,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     private int DANMU_RADIUS = 16;//圆角半径
     private int DANMU_BACKGROUND_HEIGHT = 33;
     private String DANMU_TEXT_COLOR = "#72DAFB";
-    private Drawable DANMU_BACKGROUND = mContext.getResources().getDrawable(R.drawable
-            .bg_livevideo_send_flower_screen_bullet_background);
+    private Drawable DANMU_BACKGROUND = mContext.getResources().getDrawable(R.drawable.bg_livevideo_junior_danmaku);
     private long latestDanmakuAddtime = -300;
     private int danmakuAddCount = 0;
 
