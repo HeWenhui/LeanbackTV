@@ -289,7 +289,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 }
             }
         });
-        workerThread.setEnableLocalVideo(videoStatus);
+        workerThread.setEnableLocalVideo(true);
         workerThread.setEnableLocalAudio(audioStatus);
         workerThread.eventHandler().addEventHandler(listener);
         workerThread.start();

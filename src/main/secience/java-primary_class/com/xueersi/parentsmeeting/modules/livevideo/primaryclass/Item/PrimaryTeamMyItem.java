@@ -33,6 +33,8 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
         super.initViews(root);
         iv_livevideo_primary_team_energy = root.findViewById(R.id.tv_livevideo_primary_team_energy);
         primaryClassView.decorateItemMy(root);
+        //自己默认显示UFO
+        rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -98,6 +100,15 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
         }
     }
 
+    private boolean haveVideo = false;
+
+    @Override
+    public void doRenderRemoteUi(SurfaceView surfaceV) {
+        super.doRenderRemoteUi(surfaceV);
+        haveVideo = true;
+        rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
+    }
+
     @Override
     public void didOfflineOfUid(final boolean join) {
         logger.d("didOfflineOfUid:join=" + join + ",thread=" + Thread.currentThread());
@@ -106,6 +117,13 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
             public void run() {
                 rl_livevideo_course_item_video_off.setVisibility(join ? View.GONE : View.VISIBLE);
                 logger.d("didOfflineOfUid:join=" + join + ",visibility=" + rl_livevideo_course_item_video_off.getVisibility());
+                if (join) {
+                    if (!haveVideo) {
+                        rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    haveVideo = false;
+                }
             }
         });
 //        if (join) {

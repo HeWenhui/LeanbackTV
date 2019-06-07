@@ -137,6 +137,15 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         }
     }
 
+    private boolean haveVideo = false;
+
+    @Override
+    public void doRenderRemoteUi(SurfaceView surfaceV) {
+        super.doRenderRemoteUi(surfaceV);
+        rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
+        haveVideo = true;
+    }
+
     @Override
     public void didOfflineOfUid(final boolean join) {
         logger.d("didOfflineOfUid:join=" + join + ",thread=" + Thread.currentThread());
@@ -145,6 +154,13 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
             public void run() {
                 rl_livevideo_course_item_video_off.setVisibility(join ? View.GONE : View.VISIBLE);
                 logger.d("didOfflineOfUid:join=" + join + ",visibility=" + rl_livevideo_course_item_video_off.getVisibility());
+                if (join) {
+                    if (!haveVideo) {
+                        rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    haveVideo = false;
+                }
             }
         });
 //        if (join && entity.isLook()) {
