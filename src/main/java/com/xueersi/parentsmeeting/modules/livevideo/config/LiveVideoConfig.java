@@ -2,8 +2,15 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
 
 import android.os.Environment;
 
+import com.xueersi.common.base.XueErSiRunningEnvironment;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.util.LoadFileUtils;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.RunningEnvironment;
+import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 
 import java.util.HashMap;
 
@@ -484,7 +491,7 @@ public class LiveVideoConfig {
 
     public static final String URL_IS_GOLD_MICROPHONE = "https://app.chs.xueersi.com/LiveCourse/setGoldMicrophoneData";
 
-   /**NB加试实验**/
+    /**NB加试实验**/
     public static String URL_NB_LOGIN = "https://live.xueersi.com/science/LiveExam/stuLoginNB";
     /**上传NB 实验答题结果 **/
     public static String URL_NB_RESULT_UPLOAD = "https://live.xueersi.com/science/LiveExam/receiveNBResult";
@@ -498,5 +505,30 @@ public class LiveVideoConfig {
     public static final String SUPER_SPEAKER_SUBMIT_SPEECH_SHOW = "https://app.chs.xueersi.com/LiveCourse/submitSpeechShow";
     /** 超级演讲秀存储视频的地方 */
     public static final String SUPER_SPEAKER_VIDEO_PATH = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/superSpeaker/";
+
+    public static boolean assetsDownloadTag = true;
+
+    public static DownLoadFileInfo getDownLoadFileInfo(){
+        DownLoadFileInfo info = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
+        if (info == null) {
+            info = new DownLoadFileInfo();
+            info.fileName = "assets.zip";
+            info.fileMD5 = "0026c20e191b4adab347af523fc1e62c";
+            info.fileType = 0;
+            info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/1.0.1/assets.zip";
+            info.needManualDownload = true;
+            info.id = 0;
+        }
+        info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+        UmsAgentManager.umsAgentDebug(RunningEnvironment.sAppContext, LiveAssetsLoadUtil.TAG, "assets message:" + info.toString());
+
+        /*if (XueErSiRunningEnvironment.debug) {
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        } else {
+            info.dirPath  = LoadFileUtils.geCacheFile(RunningEnvironment.sAppContext, "downloadAssets").getAbsolutePath();
+        }*/
+        return info;
+    }
 
 }

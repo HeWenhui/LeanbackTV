@@ -191,7 +191,7 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
             }
 
             @Override
-            public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
+            public void onError(final String msg, final Object dataSource, AudioPlayerManager manager) {
                 super.onError(msg, dataSource, manager);
                 XESToastUtils.showToast(mContext,"音频播放失败");
                 if(isRolePlay){

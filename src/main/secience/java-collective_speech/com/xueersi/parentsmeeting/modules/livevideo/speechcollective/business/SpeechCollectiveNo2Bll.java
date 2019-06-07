@@ -348,7 +348,7 @@ public class SpeechCollectiveNo2Bll {
             if (volume > 1) {
                 if (!hasShowTip) {
                     handler.removeCallbacks(timeOut);
-                    handler.postDelayed(timeOut, 8000);
+//                    handler.postDelayed(timeOut, 8000);
                 }
                 if (tipIsShow) {
                     tipIsShow = false;
@@ -429,7 +429,12 @@ public class SpeechCollectiveNo2Bll {
             LiveEventBus.getDefault(context).unregister(teacherPraiseEventReg);
             teacherPraiseEventReg = null;
         }
-        EventBus.getDefault().post(new UpdatePkState(TAG + ":stop"));
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new UpdatePkState(TAG + ":stop"));
+            }
+        }, 1000);
     }
 
     public void onResume() {

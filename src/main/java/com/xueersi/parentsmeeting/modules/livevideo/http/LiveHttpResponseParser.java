@@ -1916,6 +1916,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseTeanEnergyAndContribution", e.getMessage());
         }
         return entity;
     }
@@ -1977,6 +1978,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseStuPkResult", e.getMessage());
         }
         return entity;
     }

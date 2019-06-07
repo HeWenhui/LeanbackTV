@@ -196,12 +196,15 @@ public class CourseWareHttpManager {
         String url = "";
         if (isTutor) {
             url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TUTOR_RESULT;
+            liveHttpManager.sendPost(url, httpRequestParams, httpCallBack);
         } else if (arts == LiveVideoSAConfig.ART_SEC) {
             url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT;
+            liveHttpManager.sendPost(url, httpRequestParams, httpCallBack);
         } else {
             url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT_CN;
+            liveHttpManager.sendGet(url, httpRequestParams, httpCallBack);
+
         }
-        liveHttpManager.sendPost(url, httpRequestParams, httpCallBack);
     }
 
     //语文主观题

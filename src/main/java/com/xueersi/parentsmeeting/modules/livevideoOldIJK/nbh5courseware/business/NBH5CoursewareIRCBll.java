@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.nbh5courseware.business;
 
 import android.app.Activity;
-import android.util.Log;
 import android.widget.RelativeLayout;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
