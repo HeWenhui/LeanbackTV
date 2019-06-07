@@ -39,6 +39,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -72,6 +73,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     public void setDefaultParameter(HttpRequestParams httpRequestParams) {
         for (String key : defaultKey.keySet()) {
+            Map<String, String> bodyParams = httpRequestParams.getBodyParams();
+            //不顶掉已经有的参数，比如战队pk teamId
+            if (bodyParams != null && bodyParams.containsKey(key)) {
+                logger.d("setDefaultParameter:key=" + key);
+                continue;
+            }
             String value = defaultKey.get(key);
             httpRequestParams.addBodyParam(key, value);
         }
@@ -1370,21 +1377,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 获取pk 对手信息
-     *
-     * @param classId
-     * @param teamId
-     */
-    @Deprecated
-    public void getPkAdversary(String classId, String teamId, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("classId", classId);
-        params.addBodyParam("teamId", teamId);
-        setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_TEMPK_MATCHTEAM, params, requestCallBack);
-    }
-
-    /**
      * 学生获取自己宝箱
      *
      * @param isWin
@@ -1429,7 +1421,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 投票 能量
-     *  @param liveId
+     *
+     * @param liveId
      * @param teamId
      * @param classId
      * @param stuId
@@ -1562,10 +1555,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void getCHPkAdversary(boolean isHalfBody, String classId, String teamId, int useSkin, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("useSkin", useSkin + "");
-        setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_MATCHTEAM(isHalfBody), params, requestCallBack);
     }
 

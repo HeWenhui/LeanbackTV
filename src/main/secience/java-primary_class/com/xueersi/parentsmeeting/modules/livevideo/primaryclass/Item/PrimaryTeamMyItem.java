@@ -133,27 +133,28 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     public void onOtherDis(int type, final boolean enable) {
         super.onOtherDis(type, enable);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (enable) {
-                        rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
-                        cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
-                    } else {
-                        rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
-                        cl_livevideo_course_item_video.setVisibility(View.GONE);
-                    }
-                }
-            });
-            cloudWorkerThreadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
-                    if (mRtcEngine != null) {
-                        mRtcEngine.enableLocalVideo(enable);
-                    }
-                }
-            });
+            //不屏蔽自己的视频
+//            handler.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (enable) {
+//                        rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
+//                        cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+//                    } else {
+//                        rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
+//                        cl_livevideo_course_item_video.setVisibility(View.GONE);
+//                    }
+//                }
+//            });
+//            cloudWorkerThreadPool.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+//                    if (mRtcEngine != null) {
+//                        mRtcEngine.enableLocalVideo(enable);
+//                    }
+//                }
+//            });
         } else {
             handler.post(new Runnable() {
                 @Override

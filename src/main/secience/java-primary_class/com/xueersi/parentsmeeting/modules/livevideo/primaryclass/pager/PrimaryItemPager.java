@@ -247,7 +247,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                             workerThread.execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    workerThread.getRtcEngine().setVideoEncoderConfiguration(200, 152, RTCEngine.RTCEngineVideoBitrate.VIDEO_BITRATE_100);
+                                    workerThread.getRtcEngine().setVideoEncoderConfiguration(PrimaryClassConfig.VIDEO_WIDTH, PrimaryClassConfig.VIDEO_HEIGHT, RTCEngine.RTCEngineVideoBitrate.VIDEO_BITRATE_100);
 //                            workerThread.getRtcEngine().enableAudioVolumeIndication(500, 3);
                                 }
                             });

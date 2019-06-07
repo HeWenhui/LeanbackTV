@@ -38,9 +38,9 @@ public class TeamPkHttp {
      */
     public void getTeamInfo(String id, String classId, String teamId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
-        liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_PKTEAMINFO, params, requestCallBack);
     }
 
@@ -56,12 +56,12 @@ public class TeamPkHttp {
     public void getStuChest(int isWin, String classId, String teamId, String stuId, String liveId, boolean
             isAIPartner, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("isWin", isWin + "");
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
-        liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost( liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
 
     }
@@ -76,9 +76,9 @@ public class TeamPkHttp {
      */
     public void stuPKResult(String liveId, String teamId, String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
-        liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_STUPKRESULT + "/" + liveId, params, requestCallBack);
     }
 
@@ -94,11 +94,11 @@ public class TeamPkHttp {
     public void getClassChestResult(String liveId, String stuId, String teamId, String classId, boolean isAIPartner,
                                     HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
-        liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_GETCLASSCHESTRESULT + "/" + liveId, params, requestCallBack);
     }
     /**
@@ -113,12 +113,12 @@ public class TeamPkHttp {
     public void addPersonAndTeamEnergy(String liveId, int addEnergy, String teamId, String classId, String stuId,
                                        String releaseId,HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("addEnergy", addEnergy + "");
         params.addBodyParam("releaseId", releaseId + "");
-        liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_ADDPERSONANDTEAMENERGY + "/" + liveId, params, requestCallBack);
     }
 
@@ -132,9 +132,9 @@ public class TeamPkHttp {
      */
     public void getTeamMates(String classId, String teamId, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
-        liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEAMPK_GETTEAMMATES, params, httpCallBack);
     }
 
@@ -146,9 +146,9 @@ public class TeamPkHttp {
      */
     public void getPkAdversary(String classId, String teamId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
-        liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_MATCHTEAM, params, requestCallBack);
     }
 
@@ -169,13 +169,13 @@ public class TeamPkHttp {
                                                     String ctId, String pSrc, HttpCallBack requestCallBack) {
 
         HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("tests", tests);
         params.addBodyParam("ctId", ctId);
         params.addBodyParam("pSrc", pSrc);
-        liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params,
                 requestCallBack);
     }
@@ -195,12 +195,12 @@ public class TeamPkHttp {
             testId,
                                                  String testPlan, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("testId", testId);
         params.addBodyParam("testPlan", testPlan);
-        liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR + "/" + liveId, params,
                 requestCallBack);
     }
@@ -218,10 +218,10 @@ public class TeamPkHttp {
     public void liveStuGoldAndTotalEnergy(String liveId, String teamId, String classId, String stuId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_LIVESTUGOLDANDTOTALENERGY + "/" + liveId, params, requestCallBack);
     }
 

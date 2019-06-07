@@ -1,8 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config;
 
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
+/**
+ * 小班体验的一些配置
+ *
+ * @author linyuqiang
+ */
 public class PrimaryClassConfig {
 
     /**
@@ -18,6 +22,12 @@ public class PrimaryClassConfig {
      */
     public final static String URL_LIVE_REPORT_NAUGHTY_BOY = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/reportNaughtyBoy";
 
+    /** 老师操作类型，视频 */
     public static int MMTYPE_VIDEO = 1;
+    /** 老师操作类型，音频 */
     public static int MMTYPE_AUDIO = 2;
+    /** 自己是视频宽度 */
+    public static int VIDEO_WIDTH = 320;
+    /** 自己是视频高度 */
+    public static int VIDEO_HEIGHT = 240;
 }

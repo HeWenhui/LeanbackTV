@@ -21,5 +21,5 @@ public interface TeamPkConfig {
 
     /**topic 中pk流程值：pk结束**/
     int TOPIC_PKSTEP_PK_END = 5;
-
+    String DEAF_TEAM_ID = "-1";
 }

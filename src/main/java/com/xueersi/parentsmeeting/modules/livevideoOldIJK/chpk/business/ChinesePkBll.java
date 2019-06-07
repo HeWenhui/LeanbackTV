@@ -1282,7 +1282,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         } else {
             teamId = roomInitInfo.getStudentLiveInfo().getTeamId();
         }
-        logger.d("getNewTeamId:teamId=" + teamId);
+        mLogtf.d("getNewTeamId:primaryClass=" + primaryClass + ",method=" + method + ",teamId=" + teamId);
         return teamId;
     }
 }

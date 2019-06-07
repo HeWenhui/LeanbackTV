@@ -1929,16 +1929,19 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     public String getNewTeamId(String method) {
         String teamId;
         if (primaryClass) {
+            if (teamInfoEntity == null) {
+                return TeamPkConfig.DEAF_TEAM_ID;
+            }
             try {
                 teamId = teamInfoEntity.getTeamInfo().getTeamId();
             } catch (Exception e) {
-                teamId = "-1";
+                teamId = TeamPkConfig.DEAF_TEAM_ID;
                 CrashReport.postCatchedException(new LiveException(TAG + ":" + method, e));
             }
         } else {
             teamId = roomInitInfo.getStudentLiveInfo().getTeamId();
         }
-        logger.d("getNewTeamId:teamId=" + teamId);
+        mLogtf.d("getNewTeamId:primaryClass=" + primaryClass + ",method=" + method + ",teamId=" + teamId);
         return teamId;
     }
 }
