@@ -397,15 +397,17 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
             Log.i("expTess", "onTopic");
 
+            if (!isFirstTopic) {
+                return;
+            }
+
             try {
                 JSONObject json = new JSONObject(topic);
+                isFirstTopic = true;
 
                 handleTopicSpeak(json);
-
                 handleTopicCall(json);
-
                 handleTopicChat(json);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -547,6 +549,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     private boolean isBackPressed;
 
     private boolean isStudyShow;
+
+    private boolean isFirstTopic;
 
     /**
      * 播放器当前状态值
@@ -755,6 +759,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     @Override
     protected void resultFailed(int arg1, int arg2) {
+        Log.i("expTess", "resultFailed  error=" + arg2);
 
         if (arg2 == MediaErrorInfo.PLAY_COMPLETE) {
             if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
@@ -1071,7 +1076,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
                 if (expLiveInfo.getMode() != mode) {
                     expLiveInfo.setMode(mode);
-                    Log.i("expTess", "onModeChanged http mode=" + mode);
+                    Log.i("expTess", "onModeChanged fresh mode=" + mode);
                     onModeChanged();
                 }
 
@@ -1145,7 +1150,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     protected void onModeChanged() {
 
         int mode = expLiveInfo.getMode();
-
+        Log.i("expTess", "onModeChanged execute mode=" + mode);
         if (mode == COURSE_STATE_1) {
             // 课前状态,辅导老师在直播间就播放直播
             ivTeacherNotpresent.setImageResource(R.drawable.live_course_open_late);
@@ -1448,6 +1453,10 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      */
     protected void handleTopicCall(JSONObject json) throws Exception {
 
+        if (expLiveInfo.getIsSignIn() == 2) {
+            return;
+        }
+
         if (!json.has("room_2")) {
             return;
         }
@@ -1461,12 +1470,12 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         boolean isCalling = json.getBoolean("isCalling");
 
         if (isCalling) {
-//            ClassSignEntity classSignEntity = new ClassSignEntity();
-//            classSignEntity.setStuName(mGetInfo.getStuName());
-//            classSignEntity.setTeacherName(mGetInfo.getTeacherName());
-//            classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
-//            classSignEntity.setStatus(mGetInfo.getStudentLiveInfo().getSignStatus());
-//            expRollCallBll.openSignAuto(classSignEntity);
+            ClassSignEntity classSignEntity = new ClassSignEntity();
+            classSignEntity.setStuName(mGetInfo.getStuName());
+            classSignEntity.setTeacherName(mGetInfo.getTeacherName());
+            classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
+            classSignEntity.setStatus(1);
+            expRollCallBll.openSignAuto(classSignEntity);
         }
     }
 

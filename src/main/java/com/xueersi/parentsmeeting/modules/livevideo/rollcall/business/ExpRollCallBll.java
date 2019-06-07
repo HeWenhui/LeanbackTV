@@ -56,6 +56,7 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
     }
 
     public void openSignAuto(ClassSignEntity classSignEntity) {
+        rollCallBll.onRollCall(false);
         rollCallBll.onRollCall(classSignEntity);
     }
 
