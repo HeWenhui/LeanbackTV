@@ -210,6 +210,8 @@ public class NewCourseCache {
         return file;
     }
 
+    int urlindex = 0;
+
     public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
         File file = null;
         int index = s.indexOf(coursewarePages);
@@ -251,6 +253,7 @@ public class NewCourseCache {
             try {
                 StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequest");
                 stableLogHashMap.put("url", s);
+                stableLogHashMap.put("urlindex", "" + (urlindex++));
                 stableLogHashMap.put("liveId", liveId);
                 stableLogHashMap.put("testid", testid);
                 stableLogHashMap.put("ispreload", "true");
@@ -279,6 +282,7 @@ public class NewCourseCache {
             try {
                 StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequest");
                 stableLogHashMap.put("url", s);
+                stableLogHashMap.put("urlindex", "" + (urlindex++));
                 stableLogHashMap.put("liveId", liveId);
                 stableLogHashMap.put("testid", testid);
                 stableLogHashMap.put("ispreload", "false");
