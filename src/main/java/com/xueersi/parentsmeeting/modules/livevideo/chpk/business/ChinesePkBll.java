@@ -1043,7 +1043,8 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         String status = "off";
         if (primaryClass) {
             try {
-                status = jsonObject.getString("split_team_status");
+                JSONObject room_2 = jsonObject.getJSONObject("room_2");
+                status = room_2.getString("split_team_status");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
