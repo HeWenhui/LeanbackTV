@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,7 +26,6 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     FeedBackEntity mFeedBackEntity;
     LiveFeedBackPager pager = null;
     EvaluateResponseParser mParser;
-
     public FeedbackTeacherBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
@@ -40,7 +40,8 @@ public class FeedbackTeacherBll extends LiveBaseBll {
         if (getInfo != null && (getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC
                 && (LiveVideoConfig.EDUCATION_STAGE_3.equals(mGetInfo.getEducationStage())
                 || LiveVideoConfig.EDUCATION_STAGE_4.equals(mGetInfo.getEducationStage())))) {
-            mParser = new EvaluateResponseParser();
+            mParser =new EvaluateResponseParser();
+
             new android.os.Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -56,20 +57,24 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     }
 
     private void showFeedBack(final RelativeLayout bottomContent) {
-        getHttpManager().getFeedBack(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), "0", new HttpCallBack() {
+        getHttpManager().getFeedBack(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), "0", new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 mLogtf.d("showFeedBack => onPmSuccess: error = " + responseEntity.getJsonObject().toString());
                 mFeedBackEntity = mParser.parseFeedBackContent(responseEntity);
 
-                pager = new LiveFeedBackPager(mContext, mLiveId, mFeedBackEntity, mGetInfo, bottomContent, mLiveBll
-                        .getHttpManager());
-             //   pager.setFeedbackSelectInterface(feedBackTeacherInterface);
+
             }
         });
 
     }
 
+    com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager.OnPagerClose onPagerClose = new com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager.OnPagerClose() {
+        @Override
+        public void onClose(com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager basePager) {
+            bottomContent.removeView(basePager.getRootView());
+        }
+    };
 
     private void quitLive() {
         logger.i("quit livevideo");
@@ -87,18 +92,22 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     }
 
     public boolean showFeedbackPager() {
-        if (pager != null && mFeedBackEntity != null) {
+//        if (pager != null && mFeedBackEntity != null) {
 
-//        if (pager!=null && mFeedBackEntity != null && System.currentTimeMillis() / 1000 > mFeedBackEntity
-// .getEvaluateTime()) {
+        if (pager!=null && mFeedBackEntity != null && System.currentTimeMillis() / 1000 > mFeedBackEntity.getEvaluateTime()) {
             logger.i("showEvaluateTeacher");
             logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mFeedBackEntity
                     .getEvaluateTime());
+            pager = new LiveFeedBackPager(mContext, mLiveId, mFeedBackEntity, mGetInfo, bottomContent, mLiveBll
+                    .getHttpManager());
+            pager.setOnPagerClose(onPagerClose);
+            pager.setFeedbackSelectInterface(feedBackTeacherInterface);
+
             liveFragment.stopPlayer();
             mLiveBll.onIRCmessageDestory();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mRootView.addView(pager.getRootView(), params);
+            bottomContent.addView(pager.getRootView(), params);
             return true;
         } else {
             return false;
@@ -106,10 +115,10 @@ public class FeedbackTeacherBll extends LiveBaseBll {
 
     }
 
-  FeedBackTeacherInterface feedBackTeacherInterface = new FeedBackTeacherInterface() {
+    FeedBackTeacherInterface feedBackTeacherInterface = new FeedBackTeacherInterface() {
         @Override
         public void onClose() {
-
+            quitLive();
         }
 
         @Override
@@ -125,11 +134,4 @@ public class FeedbackTeacherBll extends LiveBaseBll {
 
     };
 
-    public interface FeedBackTeacherInterface {
-        void onClose();
-
-        boolean removeView();
-
-        boolean showPager();
-    }
 }
