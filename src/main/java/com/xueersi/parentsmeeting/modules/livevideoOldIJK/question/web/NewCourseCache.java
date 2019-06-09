@@ -287,7 +287,6 @@ public class NewCourseCache {
                 stableLogHashMap.put("testid", testid);
                 stableLogHashMap.put("ispreload", "false");
                 stableLogHashMap.put("filepath", file.getPath());
-                stableLogHashMap.put("filelength", "" + file.length());
                 UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
             } catch (Exception e) {
                 CrashReport.postCatchedException(new LiveException(TAG, e));
