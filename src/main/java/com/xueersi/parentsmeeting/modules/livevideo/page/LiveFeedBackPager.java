@@ -520,8 +520,8 @@ public class LiveFeedBackPager extends LiveBasePager {
      * @return
      */
     private boolean checkContentSubmit() {
-        if ((mainFeedback.size() > 0 && TextUtils.isEmpty(mainIntput))
-                || (mFeedbackEntity.isHaveTutor() && tutorFeedback.size() > 0 && TextUtils.isEmpty
+        if ((mainFeedback.size() == 0 && TextUtils.isEmpty(mainIntput))
+                || (mFeedbackEntity.isHaveTutor() && tutorFeedback.size() == 0 && TextUtils.isEmpty
                 (tutorInput))) {
             tvSubmitHint.setText("请输入文字建议或至少选择一个标签");
             tvSubmitHint.setVisibility(View.VISIBLE);
