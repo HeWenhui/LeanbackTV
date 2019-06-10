@@ -139,6 +139,7 @@
                     android:paddingRight="10dp"
                     android:paddingBottom="18dp"
                     android:text=""
+                    android:maxLength="200"
                     android:textColor="@color/COLOR_5E5E7F"
                     android:textColorHint="@color/COLOR_8C8CA7"
                     android:textSize="12sp"
@@ -265,6 +266,7 @@
                     android:text=""
                     android:textColor="@color/COLOR_5E5E7F"
                     android:textColorHint="@color/COLOR_8C8CA7"
+                    android:maxLength="200"
                     android:textSize="12sp"
                     android:visibility="gone" />
 

@@ -94,8 +94,9 @@ public class LiveFeedBackPager extends LiveBasePager {
 
     LiveGetInfo mGetInfo;
 
-    String mainFeedback, mainIntput;
-    String tutorFeedback, tutorInput;
+    String mainIntput, tutorInput;
+    List<String> mainFeedback = new ArrayList<>();
+    List<String> tutorFeedback = new ArrayList<>();
     String liveId;
     int redColor;
     int greyColor;
@@ -369,7 +370,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivStatus1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelectData("", true);
+                mainFeedback.clear();
                 setStyleData(FEED_TYPE_1, true);
             }
         });
@@ -377,7 +378,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivStatus2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelectData("", true);
+                mainFeedback.clear();
                 setStyleData(FEED_TYPE_2, true);
 
             }
@@ -386,7 +387,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivStatus3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelectData("", true);
+                mainFeedback.clear();
                 setStyleData(FEED_TYPE_3, true);
 
             }
@@ -395,7 +396,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivTutorStatus1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelectData("", false);
+                tutorFeedback.clear();
                 setStyleData(FEED_TYPE_1, false);
 
             }
@@ -404,8 +405,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivTutorStatus2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelectData("", false);
-                setStyleData(FEED_TYPE_2, false);
+                tutorFeedback.clear();                setStyleData(FEED_TYPE_2, false);
 
             }
         });
@@ -413,8 +413,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivTutorStatus3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelectData("", false);
-                setStyleData(FEED_TYPE_3, false);
+                tutorFeedback.clear();                setStyleData(FEED_TYPE_3, false);
 
             }
         });
@@ -428,11 +427,12 @@ public class LiveFeedBackPager extends LiveBasePager {
             feedBackTeacherInterface.onClose();
         }
     }
+
     CountDownTimer timer = new CountDownTimer(3000, 1000) {
         @Override
         public void onTick(long millisUntilFinished) {
             String time = String.valueOf(millisUntilFinished / 1000);
-            onSubmitError(time + "s后退出直播间",true);
+            onSubmitError(time + "s后退出直播间", true);
         }
 
         @Override
@@ -442,6 +442,7 @@ public class LiveFeedBackPager extends LiveBasePager {
             }
         }
     };
+
     /**
      * 提交反馈
      */
@@ -451,7 +452,7 @@ public class LiveFeedBackPager extends LiveBasePager {
 
         mHttpManager.saveEvaluationTeacher(liveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo
                         .getMainTeacherId(),
-                mainFeedback, mainIntput, mGetInfo.getTeacherId(), tutorFeedback,
+                getFeedTextList(mainFeedback), mainIntput, mGetInfo.getTeacherId(), getFeedTextList(tutorFeedback),
                 tutorInput, mGetInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -462,20 +463,32 @@ public class LiveFeedBackPager extends LiveBasePager {
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
-                        onSubmitError(msg,false);
+                        onSubmitError(msg, false);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
-                        onSubmitError(responseEntity.getErrorMsg(),false);
+                        onSubmitError(responseEntity.getErrorMsg(), false);
                     }
                 });
     }
 
-    private void onSubmitError(String text,boolean isSuccess) {
+    private String getFeedTextList(List<String> list) {
+        String mainText = "";
+        for (int i = 0; i < list.size(); i++) {
+            if (i != 0) {
+                mainText = mainText + "," + list.get(i);
+            } else {
+                mainText = list.get(i);
+            }
+        }
+        return mainText;
+    }
+
+    private void onSubmitError(String text, boolean isSuccess) {
         tvSubmitError.setText(text);
-        if (!isSuccess){
+        if (!isSuccess) {
             imgBtnSubmit.setVisibility(View.VISIBLE);
             ivSubmit.setVisibility(View.GONE);
         }
@@ -491,8 +504,8 @@ public class LiveFeedBackPager extends LiveBasePager {
      * @return
      */
     private boolean checkContentSubmit() {
-        if ((TextUtils.isEmpty(mainFeedback) && TextUtils.isEmpty(mainIntput))
-                || (mFeedbackEntity.isHaveTutor() && TextUtils.isEmpty(tutorFeedback) && TextUtils.isEmpty
+        if ((mainFeedback.size() > 0 && TextUtils.isEmpty(mainIntput))
+                || (mFeedbackEntity.isHaveTutor() && tutorFeedback.size() > 0 && TextUtils.isEmpty
                 (tutorInput))) {
             tvSubmitHint.setText("请输入文字建议或至少选择一个标签");
             tvSubmitHint.setVisibility(View.VISIBLE);
@@ -590,13 +603,15 @@ public class LiveFeedBackPager extends LiveBasePager {
      */
     private void setSelectData(String text, boolean isMain) {
         if (isMain) {
-            mainFeedback = text;
+            mainFeedback.add(text);
         } else {
-            tutorFeedback = text;
+            tutorFeedback.add(text);
         }
+
         if (isMain && mainFeedbackList != null && mainFeedbackList.size() > 0) {
+
             for (int i = 0; i < mainFeedbackList.size(); i++) {
-                if (TextUtils.equals(text, mainFeedbackList.get(i).getText())) {
+                if (mainFeedback.contains(mainFeedbackList.get(i).getText())) {
                     mainFeedbackList.get(i).setSelectFlag(true);
                 } else {
                     mainFeedbackList.get(i).setSelectFlag(false);
@@ -608,7 +623,7 @@ public class LiveFeedBackPager extends LiveBasePager {
             }
         } else if (!isMain && tutorFeedbackList != null && tutorFeedbackList.size() > 0) {
             for (int i = 0; i < tutorFeedbackList.size(); i++) {
-                if (TextUtils.equals(text, tutorFeedbackList.get(i).getText())) {
+                if (tutorFeedback.contains(tutorFeedbackList.get(i).getText())) {
                     tutorFeedbackList.get(i).setSelectFlag(true);
                 } else {
                     tutorFeedbackList.get(i).setSelectFlag(false);
