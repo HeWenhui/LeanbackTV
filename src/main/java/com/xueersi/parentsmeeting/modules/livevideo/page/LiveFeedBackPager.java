@@ -359,6 +359,12 @@ public class LiveFeedBackPager extends LiveBasePager {
                 }
             }
         });
+        tvSubmitError.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                submitFeedback();
+            }
+        });
         // 关闭
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
