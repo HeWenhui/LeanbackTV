@@ -89,8 +89,8 @@ public class LiveFeedBackPager extends LiveBasePager {
     /** 满意 */
     int FEED_TYPE_3 = 3;
 
-    int mainType = 1;
-    int tutorType = 1;
+    int mainType = 0;
+    int tutorType = 0;
 
     LiveGetInfo mGetInfo;
 
@@ -520,15 +520,26 @@ public class LiveFeedBackPager extends LiveBasePager {
      * @return
      */
     private boolean checkContentSubmit() {
-        if ((mainFeedback.size() == 0 && TextUtils.isEmpty(mainIntput))
-                || (mFeedbackEntity.isHaveTutor() && tutorFeedback.size() == 0 && TextUtils.isEmpty
-                (tutorInput))) {
-            tvSubmitHint.setText("请输入文字建议或至少选择一个标签");
+        if(mainType ==0 || (mFeedbackEntity.isHaveTutor() && tutorType==0)) {
+            tvSubmitHint.setText("请选择一个满意度");
             tvSubmitHint.setVisibility(View.VISIBLE);
             return false;
-        } else {
-            tvSubmitHint.setVisibility(View.INVISIBLE);
         }
+        if(mFeedbackEntity.isHaveTutor()) {
+            if(mainFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() &&TextUtils.isEmpty(mainIntput))
+                    && tutorFeedback.size()==0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(tutorInput))){
+                tvSubmitHint.setText("请至少为一位老师做出文字评价或一个以上标签");
+                tvSubmitHint.setVisibility(View.VISIBLE);
+                return false;
+            }
+        } else {
+            if(mainFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(mainIntput))){
+                tvSubmitHint.setText("请至少选择一个标签或输入文字建议");
+                tvSubmitHint.setVisibility(View.VISIBLE);
+                return false;
+            }
+        }
+        tvSubmitHint.setVisibility(View.INVISIBLE);
         return true;
     }
 
