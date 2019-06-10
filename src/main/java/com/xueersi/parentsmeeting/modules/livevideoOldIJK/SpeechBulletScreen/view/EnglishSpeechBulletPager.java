@@ -300,7 +300,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             }
         });
         vwvSpeechbulWave.setBackColor(Color.TRANSPARENT);
-        setVideoLayout(LiveVideoPoint.getInstance());
         return mView;
     }
 
@@ -371,6 +370,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         } else {
             loadJuniorSkin();
         }
+        setVideoLayout(LiveVideoPoint.getInstance());
         ShareDataManager sdm = ShareDataManager.getInstance();
         showSpeechRecog = sdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false,
                 ShareDataManager.SHAREDATA_USER);
