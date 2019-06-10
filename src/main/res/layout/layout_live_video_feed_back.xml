@@ -366,6 +366,7 @@
     android:layout_width="200dp"
     android:orientation="vertical"
     android:gravity="center"
+    android:visibility="gone"
     android:layout_height="128dp">
     <ImageView
         android:background="@drawable/ic_live_video_feedback_submit_success"
