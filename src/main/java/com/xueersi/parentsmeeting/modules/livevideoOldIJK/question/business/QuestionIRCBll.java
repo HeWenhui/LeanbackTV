@@ -114,9 +114,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 mLogtf.d("showFeedBack => onPmSuccess: error = " + responseEntity.getJsonObject().toString());
-                FeedBackEntity entity = getHttpResponseParser().parseFeedBackContent(responseEntity);
-                LiveFeedBackPager pager = new LiveFeedBackPager(mContext,mLiveId,entity,mGetInfo,bottomContent,mLiveBll.getHttpManager());
-                bottomContent.addView(pager.getRootView());
+//                FeedBackEntity entity = getHttpResponseParser().parseFeedBackContent(responseEntity);
+//                LiveFeedBackPager pager = new LiveFeedBackPager(mContext,mLiveId,entity,mGetInfo,bottomContent,mLiveBll.getHttpManager());
+//                bottomContent.addView(pager.getRootView());
             }
         });
 
