@@ -66,7 +66,10 @@ public class FeedbackTeacherBll extends LiveBaseBll {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 mLogtf.d("showFeedBack => onPmSuccess: error = " + responseEntity.getJsonObject().toString());
                 mFeedBackEntity = mParser.parseFeedBackContent(responseEntity);
-
+                pager = new LiveFeedBackPager(mContext, mLiveId, mFeedBackEntity, mGetInfo, bottomContent, mLiveBll
+                        .getHttpManager());
+                pager.setOnPagerClose(onPagerClose);
+                pager.setFeedbackSelectInterface(feedBackTeacherInterface);
 
             }
         });
@@ -102,10 +105,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
             logger.i("showEvaluateTeacher");
             logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mFeedBackEntity
                     .getEvaluateTime());
-            pager = new LiveFeedBackPager(mContext, mLiveId, mFeedBackEntity, mGetInfo, bottomContent, mLiveBll
-                    .getHttpManager());
-            pager.setOnPagerClose(onPagerClose);
-            pager.setFeedbackSelectInterface(feedBackTeacherInterface);
+
             
             liveFragment.stopPlayer();
             mLiveBll.onIRCmessageDestory();
