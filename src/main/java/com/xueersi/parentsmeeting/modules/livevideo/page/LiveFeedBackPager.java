@@ -378,7 +378,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClose();
+               onClose();
             }
         });
         // 主讲-不满意

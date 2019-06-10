@@ -38,6 +38,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
     LiveHttpManager mHttpManager;
     EvaluateResponseParser mParser;
 
+    VideoLivePlayBackEntity mVideoEntity;
     public FeedbackTeacherLiveBackBll(Activity context, LiveBackBll liveBll) {
         super(context, liveBll);
     }
@@ -48,11 +49,12 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
             businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
         mHttpManager = liveBackBll.getmHttpManager();
+        this.mVideoEntity = mVideoEntity;
         mParser = new EvaluateResponseParser();
         if (liveGetInfo != null && (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC
                 && (LiveVideoConfig.EDUCATION_STAGE_3.equals(liveGetInfo.getEducationStage())
                 || LiveVideoConfig.EDUCATION_STAGE_4.equals(liveGetInfo.getEducationStage())))) {
-     //  if (liveGetInfo != null){
+    //   if (liveGetInfo != null){
             new android.os.Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -63,7 +65,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
     }
 
     private void showFeedBack(final RelativeLayout bottomContent) {
- //       try {
+//        try {
 //            JSONObject jsonObject = new JSONObject("{\"evluateConf\":{\"evaluateIsOpen\":1,\"evaluateTimePer\":0.7," +
 //                    "\"isHavecounselor\":1,\"popRate\":2,\"isHaveInput\":1,\"evaluateTime\":1559613630}," +
 //                    "\"evaluateContent\":{\"evaluateScore\":[\"不满意\",\"有待提高\",\"满意\"]," +
@@ -83,8 +85,11 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
+//        if(true) {
+//            return;
+//        }
 
-        mHttpManager.getFeedBack(liveGetInfo.getId(), liveGetInfo.getStudentLiveInfo().getCourseId(), "1", new
+        mHttpManager.getFeedBack(liveGetInfo.getId(), mVideoEntity.getCourseId(), "1", new
                 HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
