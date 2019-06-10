@@ -64,6 +64,9 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                     @Override
                     public void onFinish(boolean allOk) {
                         getPrimaryClassHttp().reportUserAppStatus(classId, mGetInfo.getStuId(), allOk ? 1 : 0);
+                        if (primaryItemView != null) {
+                            primaryItemView.onCheckPermission();
+                        }
                     }
                 });
                 if (status == 1) {

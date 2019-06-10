@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -67,6 +69,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     /** 用户交互，不看他 */
     private TextView tvPrimaryTeamInterLeft;
     private CloudWorkerThreadPool workerThread;
+    private boolean leaveChannel = true;
     private TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity;
     private HashMap<String, BasePrimaryTeamItem> courseGroupItemHashMap = new HashMap<>();
     /** 后进入用户的视频布局 */
@@ -222,6 +225,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     mView.setVisibility(View.INVISIBLE);
                     courseGroupItemHashMap.clear();
                     llPrimaryTeamContent.removeAllViews();
+                    leaveChannel = true;
                     if (workerThread != null) {
                         workerThread.leaveChannel();
                         workerThread.exit();
@@ -299,6 +303,30 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
     }
 
+    @Override
+    public void onCheckPermission() {
+        if (!leaveChannel) {
+            boolean camera = XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_CAMERA);
+            mLogtf.d("onCheckPermission:camera=" + camera);
+            if (camera) {
+                if (workerThread != null) {
+                    workerThread.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            RTCEngine mRtcEngine = workerThread.getRtcEngine();
+                            if (mRtcEngine != null) {
+                                mRtcEngine.enableLocalVideo(false);
+                                mRtcEngine.enableLocalVideo(true);
+//                                mRtcEngine.stopPreview();
+//                                mRtcEngine.startPreview();
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+
     private void joinChannel() {
         workerThread = new CloudWorkerThreadPool(mContext, teamInfoEntity.getToken());
         workerThread.setOnEngineCreate(new CloudWorkerThreadPool.OnEngineCreate() {
@@ -317,6 +345,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 //                            workerThread.getRtcEngine().enableAudioVolumeIndication(500, 3);
                                 }
                             });
+                            leaveChannel = false;
                             workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
                                 @Override
                                 public void onJoinChannel(int joinChannel) {

@@ -11,6 +11,8 @@ public interface PrimaryItemView {
 
     void updateTeam(TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity);
 
+    void onCheckPermission();
+
     void onModeChange(String mode);
 
     void onMessage(int type, boolean open);
