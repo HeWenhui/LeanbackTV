@@ -53,7 +53,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private ImageView iv_livevideo_primary_team_icon;
     private RelativeLayout mContentView;
     private PrimaryKuangjiaImageView ivLivePrimaryClassKuangjiaImgNormal;
-    private View cl_livevideo_primary_team_inter;
+    private View clPrimaryTeamInter;
+    private TextView tvPrimaryTeamInterLeft;
     private CloudWorkerThreadPool workerThread;
     private TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity;
     private HashMap<String, BasePrimaryTeamItem> courseGroupItemHashMap = new HashMap<>();
@@ -91,7 +92,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         iv_livevideo_primary_team_icon = view.findViewById(R.id.iv_livevideo_primary_team_icon);
         tv_livevideo_primary_team_name_mid = view.findViewById(R.id.tv_livevideo_primary_team_name_mid);
         tv_livevideo_primary_team_name = view.findViewById(R.id.tv_livevideo_primary_team_name);
-        cl_livevideo_primary_team_inter = view.findViewById(R.id.cl_livevideo_primary_team_inter);
+        clPrimaryTeamInter = view.findViewById(R.id.cl_livevideo_primary_team_inter);
+        tvPrimaryTeamInterLeft = clPrimaryTeamInter.findViewById(R.id.tv_livevideo_primary_team_inter_left);
         ivPkState = view.findViewById(R.id.iv_live_halfbody_pk_state);
         return view;
     }
@@ -154,15 +156,15 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     float x = motionEvent.getX();
                     float y = motionEvent.getY();
-                    int top = cl_livevideo_primary_team_inter.getTop();
-                    int left = cl_livevideo_primary_team_inter.getLeft();
-                    int width = cl_livevideo_primary_team_inter.getWidth();
-                    int height = cl_livevideo_primary_team_inter.getHeight();
+                    int top = clPrimaryTeamInter.getTop();
+                    int left = clPrimaryTeamInter.getLeft();
+                    int width = clPrimaryTeamInter.getWidth();
+                    int height = clPrimaryTeamInter.getHeight();
                     logger.d("onTouch:x=" + x + ",y=" + y + ",top=" + top + ",left=" + left + ",width=" + width + ",height=" + height);
                     if (x >= left && x <= x + width && y >= top && y <= top + height) {
 
                     } else {
-                        cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                        clPrimaryTeamInter.setVisibility(View.GONE);
                     }
                     return false;
                 }
@@ -190,7 +192,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                clPrimaryTeamInter.setVisibility(View.GONE);
                 hideInter(false);
                 if (LiveTopic.MODE_CLASS.equals(mode)) {
                     mView.setVisibility(View.VISIBLE);
@@ -422,23 +424,22 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     BasePrimaryTeamPeopleItem.OnNameClick onNameClick = new BasePrimaryTeamPeopleItem.OnNameClick() {
         @Override
         public void onNameClick(final TeamMate finalEntity, TextView tvName) {
-            if (cl_livevideo_primary_team_inter.getVisibility() == View.VISIBLE) {
-                cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+            if (clPrimaryTeamInter.getVisibility() == View.VISIBLE) {
+                clPrimaryTeamInter.setVisibility(View.GONE);
                 hideInter(false);
             } else {
-                cl_livevideo_primary_team_inter.setVisibility(View.VISIBLE);
+                clPrimaryTeamInter.setVisibility(View.VISIBLE);
                 hideInter(true);
                 int[] loc = ViewUtil.getLoc(tvName, (ViewGroup) mView);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) cl_livevideo_primary_team_inter.getLayoutParams();
-                lp.leftMargin = loc[0] - (cl_livevideo_primary_team_inter.getWidth() - tvName.getWidth()) / 2;
-                lp.topMargin = loc[1] - cl_livevideo_primary_team_inter.getHeight();
-                cl_livevideo_primary_team_inter.setLayoutParams(lp);
-                TextView tv_livevideo_primary_team_inter_left = cl_livevideo_primary_team_inter.findViewById(R.id.tv_livevideo_primary_team_inter_left);
-                tv_livevideo_primary_team_inter_left.setText(finalEntity.isLook() ? "不看ta" : "显示ta");
-                tv_livevideo_primary_team_inter_left.setOnClickListener(new View.OnClickListener() {
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) clPrimaryTeamInter.getLayoutParams();
+                lp.leftMargin = loc[0] - (clPrimaryTeamInter.getWidth() - tvName.getWidth()) / 2;
+                lp.topMargin = loc[1] - clPrimaryTeamInter.getHeight();
+                clPrimaryTeamInter.setLayoutParams(lp);
+                tvPrimaryTeamInterLeft.setText(finalEntity.isLook() ? "不看ta" : "显示ta");
+                tvPrimaryTeamInterLeft.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                        clPrimaryTeamInter.setVisibility(View.GONE);
                         hideInter(false);
                         BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + finalEntity.getId());
                         if (basePrimaryTeamItem != null) {
@@ -446,12 +447,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         }
                     }
                 });
-                final TextView tv_livevideo_primary_team_inter_right = cl_livevideo_primary_team_inter.findViewById(R.id.tv_livevideo_primary_team_inter_right);
+                final TextView tv_livevideo_primary_team_inter_right = clPrimaryTeamInter.findViewById(R.id.tv_livevideo_primary_team_inter_right);
                 tv_livevideo_primary_team_inter_right.setText("举报");
                 tv_livevideo_primary_team_inter_right.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                        clPrimaryTeamInter.setVisibility(View.GONE);
                         hideInter(false);
                         primaryClassInter.reportNaughtyBoy(finalEntity, new PrimaryClassInter.ReportNaughtyBoy() {
                             @Override
@@ -602,6 +603,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
             if (videoStatus != open) {
                 videoStatus = open;
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvPrimaryTeamInterLeft.setEnabled(videoStatus);
+                    }
+                });
                 if (open) {
                     if (mState == LiveBasePagerState.RESUMED) {
                         foreach(new ItemCall() {
@@ -649,6 +656,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         mLogtf.d("onMessage:videoopen=" + videoopen + ",audioopen=" + audioopen);
         if (videoStatus != videoopen) {
             videoStatus = videoopen;
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    tvPrimaryTeamInterLeft.setEnabled(videoStatus);
+                }
+            });
             if (videoopen) {
                 if (mState == LiveBasePagerState.RESUMED) {
                     foreach(new ItemCall() {

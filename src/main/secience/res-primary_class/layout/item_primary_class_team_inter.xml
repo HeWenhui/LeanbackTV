@@ -15,7 +15,7 @@
         android:layout_marginBottom="4dp"
         android:includeFontPadding="false"
         android:text="显示ta"
-        android:textColor="@color/white"
+        android:textColor="@color/selector_primary_inter_left"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
