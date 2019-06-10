@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/rl_pager_live_teacher_feedback_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -14,19 +15,19 @@
         android:background="@drawable/ic_live_video_feedback_title" />
 
     <android.support.v4.widget.NestedScrollView
-        android:layout_centerHorizontal="true"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:scrollbarThumbVertical="@drawable/shape_scrollbar_style_corners_4dp_fff9f9ff"
         android:id="@id/nsv_pager_live_teacher_feedback_content"
         android:layout_width="wrap_content"
-        android:scrollbarSize="6dp"
-        android:scrollbars="vertical"
-        android:scrollbarStyle="outsideOverlay"
         android:layout_height="match_parent"
         android:layout_above="@id/ll_pager_live_teacher_feedback_bottom"
         android:layout_below="@id/iv_pager_live_teacher_feedback_title"
-        android:layout_marginTop="10dp">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:scrollbarSize="6dp"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbarThumbVertical="@drawable/shape_scrollbar_style_corners_4dp_fff9f9ff"
+        android:scrollbars="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -37,35 +38,38 @@
 
 
             <RelativeLayout
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_width="581dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/bg_corners_stroke_fff9f9ff_solid_fff9f9ff_radius_4">
 
                 <RelativeLayout
                     android:id="@+id/rl_pager_live_teacher_feedback_main_head_image"
                     android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="26dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginBottom="14dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_height="55dp">
-                <com.xueersi.ui.widget.CircleImageView
-                    android:id="@id/iv_pager_live_teacher_feedback_main_head_image"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:background="@drawable/bg_main_default_head_image"
-                    app:border_color="@color/COLOR_FB5E50"
-                    app:border_width="2dp" />
-                <ImageView
-                    android:background="@drawable/ic_pager_live_teacher_feedback_main_head_image_tip"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_marginBottom="14dp">
+
+                    <com.xueersi.ui.widget.CircleImageView
+                        android:id="@id/iv_pager_live_teacher_feedback_main_head_image"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:background="@drawable/bg_main_default_head_image"
+                        app:border_color="@color/COLOR_FB5E50"
+                        app:border_width="2dp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/ic_pager_live_teacher_feedback_main_head_image_tip" />
 
                 </RelativeLayout>
+
                 <TextView
                     android:id="@id/tv_pager_live_teacher_feedback_main_name"
                     android:layout_width="88dp"
@@ -130,16 +134,16 @@
                     android:background="@drawable/bg_corners_stroke_ccededff_solid_ccededff_radius_4"
                     android:gravity="top|left"
                     android:hint="说说老师有那里可以改进的呢？"
+                    android:maxLength="200"
                     android:paddingLeft="8dp"
                     android:paddingTop="8dp"
-                    android:scrollbars="vertical"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="18dp"
                     android:scrollbarSize="6dp"
                     android:scrollbarStyle="insideInset"
                     android:scrollbarThumbVertical="@drawable/shape_scrollbar_style_corners_4dp_fff9f9ff"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="18dp"
+                    android:scrollbars="vertical"
                     android:text=""
-                    android:maxLength="200"
                     android:textColor="@color/COLOR_5E5E7F"
                     android:textColorHint="@color/COLOR_8C8CA7"
                     android:textSize="12sp"
@@ -164,31 +168,33 @@
                 android:layout_width="581dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/bg_corners_stroke_fff9f9ff_solid_fff9f9ff_radius_4"
                 android:visibility="visible">
 
                 <RelativeLayout
                     android:id="@id/rl_pager_live_teacher_feedback_tutor_head_image"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="26dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginBottom="14dp"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp">
-                <com.xueersi.ui.widget.CircleImageView
-                    android:id="@id/iv_pager_live_teacher_feedback_tutor_head_image"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    app:border_color="@color/COLOR_F47D00"
-                    app:border_width="2dp" />
+                    android:layout_marginBottom="14dp">
+
+                    <com.xueersi.ui.widget.CircleImageView
+                        android:id="@id/iv_pager_live_teacher_feedback_tutor_head_image"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        app:border_color="@color/COLOR_F47D00"
+                        app:border_width="2dp" />
+
                     <ImageView
-                        android:background="@drawable/ic_pager_live_teacher_feedback_tutor_head_image_tip"
-                        android:layout_centerHorizontal="true"
-                        android:layout_alignParentBottom="true"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/ic_pager_live_teacher_feedback_tutor_head_image_tip" />
                 </RelativeLayout>
 
                 <TextView
@@ -255,18 +261,18 @@
                     android:background="@drawable/bg_corners_stroke_ccededff_solid_ccededff_radius_4"
                     android:gravity="top|left"
                     android:hint="说说老师有那里可以改进的呢？"
+                    android:maxLength="200"
                     android:paddingLeft="8dp"
                     android:paddingTop="8dp"
-                    android:scrollbars="vertical"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="18dp"
                     android:scrollbarSize="6dp"
                     android:scrollbarStyle="insideInset"
                     android:scrollbarThumbVertical="@drawable/shape_scrollbar_style_corners_4dp_fff9f9ff"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="18dp"
+                    android:scrollbars="vertical"
                     android:text=""
                     android:textColor="@color/COLOR_5E5E7F"
                     android:textColorHint="@color/COLOR_8C8CA7"
-                    android:maxLength="200"
                     android:textSize="12sp"
                     android:visibility="gone" />
 
@@ -313,8 +319,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="20dp"
-            android:visibility="gone"
-            android:background="@drawable/selector_live_video_feed_back_submit_retry" />
+            android:background="@drawable/selector_live_video_feed_back_submit_retry"
+            android:visibility="gone" />
 
         <TextView
             android:id="@id/iv_pager_live_teacher_feedback_submit"
@@ -352,4 +358,26 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:background="@drawable/ic_live_video_feedback_close" />
+
+<LinearLayout
+    android:id="@id/ll_pager_live_teacher_feedback_submit_sucess"
+    android:background="@drawable/shape_big_question_result_rank"
+    android:layout_centerInParent="true"
+    android:layout_width="200dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_height="128dp">
+    <ImageView
+        android:background="@drawable/ic_live_video_feedback_submit_success"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textColor="@color/COLOR_5E5E7F"
+        android:text="提交成功"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
 </RelativeLayout>

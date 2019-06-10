@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -47,7 +48,7 @@ import okhttp3.Call;
 public class LiveFeedBackPager extends LiveBasePager {
     RelativeLayout bottomContent;
     LiveHttpManager mHttpManager;
-
+    RelativeLayout  rlFeedbackContent;
     /** 主讲布局 */
     RecyclerView rvFeedbackContent;
     RCommonAdapter contentAdapter;
@@ -105,6 +106,10 @@ public class LiveFeedBackPager extends LiveBasePager {
     ImageButton imgBtnSubmit;
     public boolean isShow = false;
     public boolean showEvaluate = false;
+    ImageView ivTitle;
+    LinearLayout llBottom;
+    LinearLayout llSubmitSucess;
+
     FeedBackTeacherInterface feedBackTeacherInterface;
 
     public LiveFeedBackPager(Context context) {
@@ -146,7 +151,11 @@ public class LiveFeedBackPager extends LiveBasePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.layout_live_video_feed_back, null);
+        rlFeedbackContent=  mView.findViewById(R.id.rl_pager_live_teacher_feedback_content);
         rvFeedbackContent = mView.findViewById(R.id.rv_pager_live_teacher_feedback_content);
+        ivTitle = mView.findViewById(R.id.iv_pager_live_teacher_feedback_title);
+        llBottom = mView.findViewById(R.id.ll_pager_live_teacher_feedback_bottom);
+        llSubmitSucess = mView.findViewById(R.id.ll_pager_live_teacher_feedback_submit_sucess);
         rvTutorContent = mView.findViewById(R.id.rv_pager_live_teacher_feedback_tutor_content);
         ivMainHeader = mView.findViewById(R.id.iv_pager_live_teacher_feedback_main_head_image);
         tvMainName = mView.findViewById(R.id.tv_pager_live_teacher_feedback_main_name);
@@ -445,8 +454,8 @@ public class LiveFeedBackPager extends LiveBasePager {
     CountDownTimer timer = new CountDownTimer(3000, 1000) {
         @Override
         public void onTick(long millisUntilFinished) {
-            String time = String.valueOf(millisUntilFinished / 1000);
-            onSubmitError(time + "s后退出直播间", true);
+//            String time = String.valueOf(millisUntilFinished / 1000);
+            //  onSubmitError(time + "s后退出直播间", true);
         }
 
         @Override
@@ -470,9 +479,14 @@ public class LiveFeedBackPager extends LiveBasePager {
                 tutorInput, mGetInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        XESToastUtils.showToast(mContext, "提交成功");
                         ivSubmit.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-
+                        ivTitle.setVisibility(View.GONE);
+                        nestedScrollView.setVisibility(View.GONE);
+                        tvSubmitError.setVisibility(View.GONE);
+                        llBottom.setVisibility(View.GONE);
+                        ivClose.setVisibility(View.GONE);
+                        rlFeedbackContent.setBackgroundColor(R.color.transparent_60);
+                        llSubmitSucess.setVisibility(View.VISIBLE);
                         timer.start();
                     }
 
@@ -520,20 +534,20 @@ public class LiveFeedBackPager extends LiveBasePager {
      * @return
      */
     private boolean checkContentSubmit() {
-        if(mainType ==0 && (mFeedbackEntity.isHaveTutor() && tutorType==0)) {
+        if (mainType == 0 && (mFeedbackEntity.isHaveTutor() && tutorType == 0)) {
             tvSubmitHint.setText("请选择一个满意度");
             tvSubmitHint.setVisibility(View.VISIBLE);
             return false;
         }
-        if(mFeedbackEntity.isHaveTutor()) {
-            if(mainFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() &&TextUtils.isEmpty(mainIntput))
-                    && tutorFeedback.size()==0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(tutorInput))){
+        if (mFeedbackEntity.isHaveTutor()) {
+            if (mainFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(mainIntput))
+                    && tutorFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(tutorInput))) {
                 tvSubmitHint.setText("请至少为一位老师做出文字评价或一个以上标签");
                 tvSubmitHint.setVisibility(View.VISIBLE);
                 return false;
             }
         } else {
-            if(mainFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(mainIntput))){
+            if (mainFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(mainIntput))) {
                 tvSubmitHint.setText("请至少选择一个标签或输入文字建议");
                 tvSubmitHint.setVisibility(View.VISIBLE);
                 return false;
@@ -636,7 +650,8 @@ public class LiveFeedBackPager extends LiveBasePager {
         }
         setSelect(isMain);
     }
-    private void setSelect(boolean isMain){
+
+    private void setSelect(boolean isMain) {
 
         if (isMain && mainFeedbackList != null && mainFeedbackList.size() > 0) {
 

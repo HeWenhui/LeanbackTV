@@ -1429,6 +1429,7 @@
     <item name="iv_livevideo_super_speaker_video_controller_bottom_guide" type="id" />
     <item name="iv_page_livevideo_praise_list_teacher_wood_left" type="id" />
     <!-- 教师反馈-->
+    <item name="rl_pager_live_teacher_feedback_content" type="id" />
 
     <item name="tv_item_live_teacher_feedback_text" type="id" />
     <item name="nsv_pager_live_teacher_feedback_content" type="id" />
@@ -1464,5 +1465,6 @@
     <item name="ll_pager_live_teacher_feedback_bottom" type="id" />
 
     <item name="rl_pager_live_teacher_feedback_tutor_head_image" type="id" />
+    <item name="ll_pager_live_teacher_feedback_submit_sucess" type="id" />
 
 </resources>
