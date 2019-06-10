@@ -405,7 +405,8 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivTutorStatus2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tutorFeedback.clear();                setStyleData(FEED_TYPE_2, false);
+                tutorFeedback.clear();
+                setStyleData(FEED_TYPE_2, false);
 
             }
         });
@@ -413,7 +414,8 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivTutorStatus3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tutorFeedback.clear();                setStyleData(FEED_TYPE_3, false);
+                tutorFeedback.clear();
+                setStyleData(FEED_TYPE_3, false);
 
             }
         });
@@ -457,6 +459,8 @@ public class LiveFeedBackPager extends LiveBasePager {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         XESToastUtils.showToast(mContext, "提交成功");
+                        ivSubmit.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+
                         timer.start();
                     }
 
