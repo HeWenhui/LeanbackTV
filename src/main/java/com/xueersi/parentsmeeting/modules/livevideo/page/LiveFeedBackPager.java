@@ -331,6 +331,7 @@ public class LiveFeedBackPager extends LiveBasePager {
                     tvMainInputNum.setTextColor(greyColor);
 
                 }
+                checkContentSubmit();
             }
         });
         // 主讲输入监听
@@ -354,6 +355,7 @@ public class LiveFeedBackPager extends LiveBasePager {
                     tvTutorInputNum.setTextColor(greyColor);
 
                 }
+                checkContentSubmit();
             }
         });
 
@@ -633,6 +635,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         @Override
         public void onSelect(String text, boolean isMain) {
             setSelectData(text, isMain);
+
         }
     };
 
@@ -652,7 +655,7 @@ public class LiveFeedBackPager extends LiveBasePager {
     }
 
     private void setSelect(boolean isMain) {
-
+        checkContentSubmit();
         if (isMain && mainFeedbackList != null && mainFeedbackList.size() > 0) {
 
             for (int i = 0; i < mainFeedbackList.size(); i++) {
