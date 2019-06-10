@@ -13,6 +13,7 @@
     <item name="rl_livevideo_primary_team_tip" type="id" />
     <item name="iv_livevideo_primary_team_energy" type="id" />
     <item name="tv_livevideo_primary_team_energy" type="id" />
+    <item name="tv_livevideo_primary_team_nocamera" type="id" />
     <item name="rl_livevideo_primary_team_voice_open" type="id" />
     <item name="iv_livevideo_primary_team_voice_open" type="id" />
     <item name="iv_livevideo_primary_team_voice_voice" type="id" />

@@ -561,7 +561,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
         @Override
         public void didOccurError(RTCEngine.RTCEngineErrorCode code) {
-
+            logger.d("didOccurError:code=" + code);
         }
 
         @Override

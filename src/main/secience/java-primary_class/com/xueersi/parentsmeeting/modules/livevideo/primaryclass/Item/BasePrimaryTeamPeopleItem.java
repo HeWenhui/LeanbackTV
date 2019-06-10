@@ -30,6 +30,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     protected ImageView iv_livevideo_course_item_video_ufo;
     protected RelativeLayout rl_livevideo_course_item_video_off;
     protected VoiceImageView voiceImageView;
+    protected TextView tv_livevideo_primary_team_nocamera;
     protected Handler handler = new Handler(Looper.getMainLooper());
     protected OnNameClick onNameClick;
     protected boolean videoStatus = false;
@@ -58,6 +59,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
         rl_livevideo_course_item_video_ufo = root.findViewById(R.id.rl_livevideo_course_item_video_ufo);
         iv_livevideo_course_item_video_ufo = root.findViewById(R.id.iv_livevideo_course_item_video_ufo);
         rl_livevideo_course_item_video_off = root.findViewById(R.id.rl_livevideo_course_item_video_off);
+        tv_livevideo_primary_team_nocamera = root.findViewById(R.id.tv_livevideo_primary_team_nocamera);
         voiceImageView.setUid(uid);
     }
 

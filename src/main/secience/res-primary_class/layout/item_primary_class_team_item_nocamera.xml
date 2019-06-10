@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/tv_livevideo_primary_team_nocamera"
+    android:layout_width="65dp"
+    android:layout_height="15dp"
+    android:layout_centerInParent="true"
+    android:background="@drawable/shape_primary_item_eneygy_add_back"
+    android:gravity="center"
+    android:includeFontPadding="false"
+    android:text="麦克风故障，请检查"
+    android:textColor="@color/white"
+    android:textSize="6sp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
