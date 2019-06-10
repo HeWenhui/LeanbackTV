@@ -847,7 +847,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     protected void resultFailed(int arg1, int arg2) {
         Log.i("expTess", "resultFailed  error=" + arg2);
 
-        if (arg2 == MediaErrorInfo.PLAY_COMPLETE || arg2 == MediaErrorInfo.PSChannelNotExist) {
+        if (arg2 == MediaErrorInfo.PLAY_COMPLETE) {
             if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
             }
@@ -856,8 +856,9 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 rlFirstBackgroundView.setVisibility(View.GONE);
             }
 
-            getHandler.postDelayed(playDelayTask, 3 * 1000);
-
+            if(expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_3) {
+                getHandler.postDelayed(playDelayTask, 3 * 1000);
+            }
         } else if (arg2 == MediaErrorInfo.PSChannelNotExist) {
 
             if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
