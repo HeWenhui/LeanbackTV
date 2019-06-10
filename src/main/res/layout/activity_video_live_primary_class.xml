@@ -115,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/bg_livevideo_paly_novidwo_bg" />
+                android:src="@drawable/bg_livevideo_paly_novidwo_bg_cn" />
 
         </RelativeLayout>
 
