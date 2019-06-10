@@ -91,6 +91,9 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
                         //     mLogtf.d("showFeedBack => onPmSuccess: error = " + responseEntity.getJsonObject()
                         // .toString());
                         mFeedBackEntity = mParser.parseFeedBackContent(responseEntity);
+                        if(mFeedBackEntity == null) {
+                            return;
+                        }
 
                         pager = new LiveFeedBackPager(mContext, liveGetInfo.getId(), mFeedBackEntity, liveGetInfo,
                                 bottomContent, mHttpManager);

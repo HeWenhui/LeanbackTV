@@ -66,6 +66,10 @@ public class FeedbackTeacherBll extends LiveBaseBll {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 mLogtf.d("showFeedBack => onPmSuccess: error = " + responseEntity.getJsonObject().toString());
                 mFeedBackEntity = mParser.parseFeedBackContent(responseEntity);
+                if(mFeedBackEntity == null) {
+                    return;
+                }
+
                 pager = new LiveFeedBackPager(mContext, mLiveId, mFeedBackEntity, mGetInfo, bottomContent, mLiveBll
                         .getHttpManager());
                 pager.setOnPagerClose(onPagerClose);

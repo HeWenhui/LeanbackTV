@@ -377,6 +377,7 @@ public class LiveFeedBackPager extends LiveBasePager {
             @Override
             public void onClick(View v) {
                 mainFeedback.clear();
+                setSelect(true);
                 setStyleData(FEED_TYPE_1, true);
             }
         });
@@ -385,6 +386,7 @@ public class LiveFeedBackPager extends LiveBasePager {
             @Override
             public void onClick(View v) {
                 mainFeedback.clear();
+                setSelect(true);
                 setStyleData(FEED_TYPE_2, true);
 
             }
@@ -394,6 +396,7 @@ public class LiveFeedBackPager extends LiveBasePager {
             @Override
             public void onClick(View v) {
                 mainFeedback.clear();
+                setSelect(true);
                 setStyleData(FEED_TYPE_3, true);
 
             }
@@ -403,6 +406,7 @@ public class LiveFeedBackPager extends LiveBasePager {
             @Override
             public void onClick(View v) {
                 tutorFeedback.clear();
+                setSelect(false);
                 setStyleData(FEED_TYPE_1, false);
 
             }
@@ -412,6 +416,7 @@ public class LiveFeedBackPager extends LiveBasePager {
             @Override
             public void onClick(View v) {
                 tutorFeedback.clear();
+                setSelect(false);
                 setStyleData(FEED_TYPE_2, false);
 
             }
@@ -421,6 +426,7 @@ public class LiveFeedBackPager extends LiveBasePager {
             @Override
             public void onClick(View v) {
                 tutorFeedback.clear();
+                setSelect(false);
                 setStyleData(FEED_TYPE_3, false);
 
             }
@@ -617,6 +623,9 @@ public class LiveFeedBackPager extends LiveBasePager {
         } else {
             tutorFeedback.add(text);
         }
+        setSelect(isMain);
+    }
+    private void setSelect(boolean isMain){
 
         if (isMain && mainFeedbackList != null && mainFeedbackList.size() > 0) {
 
