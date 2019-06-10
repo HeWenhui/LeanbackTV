@@ -58,6 +58,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
         rl_livevideo_course_item_video_ufo = root.findViewById(R.id.rl_livevideo_course_item_video_ufo);
         iv_livevideo_course_item_video_ufo = root.findViewById(R.id.iv_livevideo_course_item_video_ufo);
         rl_livevideo_course_item_video_off = root.findViewById(R.id.rl_livevideo_course_item_video_off);
+        voiceImageView.setUid(uid);
     }
 
     @Override

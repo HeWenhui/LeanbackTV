@@ -30,6 +30,7 @@ public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {
         this.cloudWorkerThreadPool = workerThread;
         this.uid = uid;
         mLogtf = new LogToFile(context, TAG);
+        mLogtf.addCommon("teammateid", "" + uid);
         primaryClassView = ProxUtil.getProxUtil().get(mContext, PrimaryClassView.class);
     }
 

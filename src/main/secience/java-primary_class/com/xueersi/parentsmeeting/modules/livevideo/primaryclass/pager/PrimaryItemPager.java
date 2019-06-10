@@ -276,6 +276,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                             otherItem.doRenderRemoteUi(surfaceView);
                         }
                         otherItem.didOfflineOfUid(userStat.containsKey(teamMate.getId()));
+                        mLogtf.d("updateTeam:id=" + teamMate.getId() + ",index=" + index);
                         break;
                     }
                 }

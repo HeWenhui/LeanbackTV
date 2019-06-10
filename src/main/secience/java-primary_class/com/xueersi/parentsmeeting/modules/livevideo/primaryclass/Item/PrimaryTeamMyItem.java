@@ -116,7 +116,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
             @Override
             public void run() {
                 rl_livevideo_course_item_video_off.setVisibility(join ? View.GONE : View.VISIBLE);
-                logger.d("didOfflineOfUid:join=" + join + ",visibility=" + rl_livevideo_course_item_video_off.getVisibility());
+                mLogtf.d("didOfflineOfUid:join=" + join + ",haveVideo=" + haveVideo);
                 if (join) {
                     if (!haveVideo) {
                         rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);

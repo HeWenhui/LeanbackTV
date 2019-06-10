@@ -11,13 +11,15 @@ import android.widget.ImageView;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 public class VoiceImageView extends ImageView {
     String TAG = "VoiceImageView";
-    Logger logger = LoggerFactory.getLogger(TAG);
+    Logger logger = LiveLoggerFactory.getLogger(TAG);
     Bitmap bg_live_voicewave_bg1;
     int height;
     Rect src;
+    int uid;
 
     public VoiceImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,14 +37,18 @@ public class VoiceImageView extends ImageView {
         canvas.restore();
     }
 
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
     public void reset() {
         src.top = bg_live_voicewave_bg1.getHeight();
         postInvalidate();
     }
 
     public void setVoice(int volume) {
-        src.top = (int) ((float) volume * height / 255.0f);
-        logger.d("setVoice:volume=" + volume + ",top=" + src.top + ",height=" + height);
+        src.top = bg_live_voicewave_bg1.getHeight() - (int) ((float) volume * height / 255.0f);
+        logger.d("setVoice:uid=" + uid + ",volume=" + volume + ",top=" + src.top + ",height=" + height);
         postInvalidate();
     }
 }
