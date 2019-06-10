@@ -355,8 +355,8 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainIntput = etMainFeedback.getText().toString();
-                tutorInput = etTutorFeedback.getText().toString();
+                mainIntput = etMainFeedback.getText().toString().trim();
+                tutorInput = etTutorFeedback.getText().toString().trim();
                 if (checkContentSubmit()) {
                     submitFeedback();
                 }
