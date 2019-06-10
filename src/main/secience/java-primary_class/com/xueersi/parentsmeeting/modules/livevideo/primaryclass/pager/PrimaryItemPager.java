@@ -290,7 +290,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                             workerThread.getRtcEngine().setupRemoteVideo(surfaceView, teamMate.getIdInt());
                             otherItem.doRenderRemoteUi(surfaceView);
                         }
-                        otherItem.didOfflineOfUid(userStat.containsKey(teamMate.getId()));
+                        otherItem.didOfflineOfUid("updateTeam", userStat.containsKey(teamMate.getId()));
                         mLogtf.d("updateTeam:id=" + teamMate.getId() + ",index=" + index);
                         break;
                     }
@@ -529,7 +529,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         public void remoteUserJoinWitnUid(int uid) {
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             if (basePrimaryTeamItem != null) {
-                basePrimaryTeamItem.didOfflineOfUid(true);
+                basePrimaryTeamItem.didOfflineOfUid("remoteUserJoinWitnUid", true);
             } else {
                 //后进入用户，不在本地，请求接口
                 userStat.put("" + uid, true);
@@ -543,7 +543,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             surfaceViewHashMap.remove("" + uid);
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             if (basePrimaryTeamItem != null) {
-                basePrimaryTeamItem.didOfflineOfUid(false);
+                basePrimaryTeamItem.didOfflineOfUid("didOfflineOfUid", false);
             } else {
                 userStat.remove("" + uid);
             }
@@ -575,7 +575,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
                 if (basePrimaryTeamItem != null) {
                     preview(basePrimaryTeamItem);
-                    basePrimaryTeamItem.didOfflineOfUid(true);
+                    basePrimaryTeamItem.didOfflineOfUid("localUserJoindWithUid", true);
                 }
             }
         }

@@ -88,7 +88,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
                 remove = true;
             }
         }
-        mLogtf.d("doRenderRemoteUi:remove=" + remove + ",uid=" + uid);
+        mLogtf.d("doRenderRemoteUi:uid=" + uid + ",remove=" + remove);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
         rlCourseItemVideo.addView(surfaceV, 0, lp);

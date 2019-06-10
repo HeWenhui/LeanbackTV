@@ -110,7 +110,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     }
 
     @Override
-    public void didOfflineOfUid(final boolean join) {
+    public void didOfflineOfUid(String method, final boolean join) {
         logger.d("didOfflineOfUid:join=" + join + ",thread=" + Thread.currentThread());
         handler.post(new Runnable() {
             @Override

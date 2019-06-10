@@ -119,7 +119,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     }
 
     private void setStatus() {
-        mLogtf.d("setStatus:isLook=" + entity.isLook() + ",videoStatus=" + videoStatus + ",audioStatus=" + audioStatus + ",haveVideo=" + haveVideo);
+        mLogtf.d("setStatus:uid=" + uid + ",isLook=" + entity.isLook() + ",videoStatus=" + videoStatus + ",audioStatus=" + audioStatus + ",haveVideo=" + haveVideo);
         if (entity.isLook()) {
             if (videoStatus && haveVideo) {
                 rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
@@ -151,13 +151,12 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     }
 
     @Override
-    public void didOfflineOfUid(final boolean join) {
-        logger.d("didOfflineOfUid:join=" + join + ",thread=" + Thread.currentThread());
+    public void didOfflineOfUid(String method, final boolean join) {
+        mLogtf.d("didOfflineOfUid:uid=" + uid + ",method=" + method + ",join=" + join + ",haveVideo=" + haveVideo);
         handler.post(new Runnable() {
             @Override
             public void run() {
                 rl_livevideo_course_item_video_off.setVisibility(join ? View.GONE : View.VISIBLE);
-                mLogtf.d("didOfflineOfUid:join=" + join + ",haveVideo=" + haveVideo);
                 if (join) {
                     if (!haveVideo) {
                         rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
@@ -192,7 +191,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     public void onOtherDis(int type, final boolean enable) {
         super.onOtherDis(type, enable);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
-            mLogtf.d("onOtherDis:MMTYPE_VIDEO=" + entity.isLook());
+            mLogtf.d("onOtherDis:uid=" + uid + ",MMTYPE_VIDEO=" + entity.isLook());
             if (entity.isLook()) {
                 handler.post(new Runnable() {
                     @Override
@@ -227,7 +226,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 });
             }
         } else {
-            mLogtf.d("onOtherDis:MMTYPE_VIDEO=" + entity.isLook());
+            mLogtf.d("onOtherDis:uid=" + uid + ",MMTYPE_AUDIO=" + entity.isLook());
             if (entity.isLook()) {
                 handler.post(new Runnable() {
                     @Override

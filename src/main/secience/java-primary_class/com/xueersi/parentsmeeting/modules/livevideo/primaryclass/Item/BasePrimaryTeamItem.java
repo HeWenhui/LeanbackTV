@@ -62,7 +62,7 @@ public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {
 
     }
 
-    public void didOfflineOfUid(boolean join) {
+    public void didOfflineOfUid(String method, boolean join) {
 
     }
 
