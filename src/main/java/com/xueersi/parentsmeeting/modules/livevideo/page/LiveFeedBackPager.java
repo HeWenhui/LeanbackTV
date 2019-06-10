@@ -331,6 +331,8 @@ public class LiveFeedBackPager extends LiveBasePager {
                     tvMainInputNum.setTextColor(greyColor);
 
                 }
+                mainIntput = etMainFeedback.getText().toString();
+
                 checkContentSubmit();
             }
         });
@@ -355,6 +357,7 @@ public class LiveFeedBackPager extends LiveBasePager {
                     tvTutorInputNum.setTextColor(greyColor);
 
                 }
+                tutorInput = etTutorFeedback.getText().toString();
                 checkContentSubmit();
             }
         });
