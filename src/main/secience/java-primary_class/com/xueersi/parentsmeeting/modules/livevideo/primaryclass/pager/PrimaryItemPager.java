@@ -624,7 +624,11 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
         @Override
         public void remotefirstAudioRecvWithUid(int uid) {
-
+            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+            if (basePrimaryTeamItem instanceof PrimaryTeamOtherItem) {
+                PrimaryTeamOtherItem otherItem = (PrimaryTeamOtherItem) basePrimaryTeamItem;
+                otherItem.remotefirstAudioRecvWithUid(uid);
+            }
         }
     };
 

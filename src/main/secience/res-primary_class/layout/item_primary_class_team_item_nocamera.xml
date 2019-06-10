@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@id/tv_livevideo_primary_team_nocamera"
+    android:id="@id/tv_livevideo_primary_team_nomic"
     android:layout_width="65dp"
+    android:visibility="gone"
     android:layout_height="15dp"
     android:layout_centerInParent="true"
     android:background="@drawable/shape_primary_item_eneygy_add_back"

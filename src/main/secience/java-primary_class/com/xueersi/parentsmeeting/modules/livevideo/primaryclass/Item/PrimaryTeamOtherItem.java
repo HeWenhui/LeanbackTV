@@ -161,6 +161,9 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     if (!haveVideo) {
                         rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
                     }
+                    if (audioStatus) {
+                        handler.postDelayed(noMicRun, 2000);
+                    }
                 } else {
                     haveVideo = false;
                 }
@@ -185,6 +188,18 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 rl_livevideo_primary_team_tip.removeView(view);
             }
         }, 2000);
+    }
+
+    /** 麦克风故障 */
+    private Runnable noMicRun = new Runnable() {
+        @Override
+        public void run() {
+            tv_livevideo_primary_team_nomic.setVisibility(View.VISIBLE);
+        }
+    };
+
+    public void remotefirstAudioRecvWithUid(int uid) {
+        handler.removeCallbacks(noMicRun);
     }
 
     @Override
