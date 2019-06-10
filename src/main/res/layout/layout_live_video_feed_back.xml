@@ -341,7 +341,7 @@
             android:text="请选择一个满意度"
             android:textColor="@color/COLOR_FB5E50"
             android:textSize="10sp"
-            android:visibility="visible" />
+            android:visibility="invisible" />
     </LinearLayout>
 
     <ImageView

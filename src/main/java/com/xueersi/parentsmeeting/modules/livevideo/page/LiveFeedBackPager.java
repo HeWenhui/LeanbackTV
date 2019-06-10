@@ -520,7 +520,7 @@ public class LiveFeedBackPager extends LiveBasePager {
      * @return
      */
     private boolean checkContentSubmit() {
-        if(mainType ==0 || (mFeedbackEntity.isHaveTutor() && tutorType==0)) {
+        if(mainType ==0 && (mFeedbackEntity.isHaveTutor() && tutorType==0)) {
             tvSubmitHint.setText("请选择一个满意度");
             tvSubmitHint.setVisibility(View.VISIBLE);
             return false;
