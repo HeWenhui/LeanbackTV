@@ -145,24 +145,31 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     @Override
     public void initListener() {
         super.initListener();
-        mView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                float x = motionEvent.getX();
-                float y = motionEvent.getY();
-                int top = cl_livevideo_primary_team_inter.getTop();
-                int left = cl_livevideo_primary_team_inter.getLeft();
-                int width = cl_livevideo_primary_team_inter.getWidth();
-                int height = cl_livevideo_primary_team_inter.getHeight();
-                logger.d("onTouch:x=" + x + ",y=" + y + ",top=" + top + ",left=" + left + ",width=" + width + ",height=" + height);
-                if (x >= left && x <= x + width && y >= top && y <= top + height) {
+    }
 
-                } else {
-                    cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+    private void hideInter(boolean show) {
+        if (show) {
+            mView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    float x = motionEvent.getX();
+                    float y = motionEvent.getY();
+                    int top = cl_livevideo_primary_team_inter.getTop();
+                    int left = cl_livevideo_primary_team_inter.getLeft();
+                    int width = cl_livevideo_primary_team_inter.getWidth();
+                    int height = cl_livevideo_primary_team_inter.getHeight();
+                    logger.d("onTouch:x=" + x + ",y=" + y + ",top=" + top + ",left=" + left + ",width=" + width + ",height=" + height);
+                    if (x >= left && x <= x + width && y >= top && y <= top + height) {
+
+                    } else {
+                        cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        } else {
+            mView.setOnTouchListener(null);
+        }
     }
 
     private Runnable ivPkStateRun = new Runnable() {
@@ -183,6 +190,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         handler.post(new Runnable() {
             @Override
             public void run() {
+                cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                hideInter(false);
                 if (LiveTopic.MODE_CLASS.equals(mode)) {
                     mView.setVisibility(View.VISIBLE);
                     rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
@@ -414,8 +423,10 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         public void onNameClick(final TeamMate finalEntity, TextView tvName) {
             if (cl_livevideo_primary_team_inter.getVisibility() == View.VISIBLE) {
                 cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                hideInter(false);
             } else {
                 cl_livevideo_primary_team_inter.setVisibility(View.VISIBLE);
+                hideInter(true);
                 int[] loc = ViewUtil.getLoc(tvName, (ViewGroup) mView);
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) cl_livevideo_primary_team_inter.getLayoutParams();
                 lp.leftMargin = loc[0] - (cl_livevideo_primary_team_inter.getWidth() - tvName.getWidth()) / 2;
@@ -427,6 +438,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     @Override
                     public void onClick(View view) {
                         cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                        hideInter(false);
                         BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + finalEntity.getId());
                         if (basePrimaryTeamItem != null) {
                             basePrimaryTeamItem.onVideo();
@@ -439,6 +451,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     @Override
                     public void onClick(View view) {
                         cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                        hideInter(false);
                         primaryClassInter.reportNaughtyBoy(finalEntity, new PrimaryClassInter.ReportNaughtyBoy() {
                             @Override
                             public void onReport(TeamMate entity) {
@@ -485,10 +498,10 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         @Override
         public void remotefirstVideoRecvWithUid(int uid) {
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+            mLogtf.d("remotefirstVideoRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
             if (basePrimaryTeamItem != null) {
                 doRenderRemoteUi(uid, basePrimaryTeamItem);
             } else {
-                logger.d("remotefirstVideoRecvWithUid:uid=" + uid);
                 SurfaceView surfaceV = RtcEngine.CreateRendererView(mContext);
                 surfaceV.setZOrderOnTop(true);
                 surfaceV.setZOrderMediaOverlay(true);

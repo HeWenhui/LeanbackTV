@@ -176,15 +176,15 @@ public class CloudWorkerThreadPool {
             mRtcEngine.enableVideo();
             mRtcEngine.enableLocalVideo(enableLocalVideo);
             mRtcEngine.muteLocalAudio(!enableLocalAudio);
-            try {
-                Field field = mRtcEngine.getClass().getDeclaredField("mRtcEngine");
-                field.setAccessible(true);
-                Object object = field.get(mRtcEngine);
-                Method method = object.getClass().getDeclaredMethod("enableAudioVolumeIndication", Integer.TYPE, Integer.TYPE);
-                method.invoke(object, 500, 3);
-            } catch (Exception e) {
-                logger.d("ensureRtcEngineReadyLock", e);
-            }
+//            try {
+//                Field field = mRtcEngine.getClass().getDeclaredField("mRtcEngine");
+//                field.setAccessible(true);
+//                Object object = field.get(mRtcEngine);
+//                Method method = object.getClass().getDeclaredMethod("enableAudioVolumeIndication", Integer.TYPE, Integer.TYPE);
+//                method.invoke(object, 500, 3);
+//            } catch (Exception e) {
+//                logger.d("ensureRtcEngineReadyLock", e);
+//            }
 //            mRtcEngine.disableVideo();
             if (onEngineCreate != null) {
                 onEngineCreate.onEngineCreate(mRtcEngine);
