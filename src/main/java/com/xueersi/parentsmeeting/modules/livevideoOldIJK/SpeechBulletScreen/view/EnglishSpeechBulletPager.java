@@ -848,14 +848,20 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         }
     };
 
+    private boolean requestSucces = false;
     /**
      * 开始语音识别
      */
     private void startEvaluator() {
+        requestSucces = false;
         if (audioRequest != null) {
             audioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
+                    if(requestSucces){
+                        return;
+                    }
+                    requestSucces = true;
                     saveFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
                     mParam.setRecogType(SpeechConfig.SPEECH_RECOGNITIYON_OFFINE);
                     mParam.setLocalSavePath(saveFile.getPath());
