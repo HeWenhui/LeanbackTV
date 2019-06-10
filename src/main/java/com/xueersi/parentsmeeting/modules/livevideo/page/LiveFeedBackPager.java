@@ -220,8 +220,6 @@ public class LiveFeedBackPager extends LiveBasePager {
         //  setFeedStyleList(FEED_TYPE_1);
 
         tvMainName.setText(mGetInfo.getMainTeacherInfo().getTeacherName());
-        ivMainHeader.setImageResource(R.drawable.bg_live_video_feedback_main_head_image);
-
         if (TextUtils.isEmpty(mGetInfo.getMainTeacherInfo().getTeacherImg())) {
             ImageLoader.with(BaseApplication.getContext()).asCircle().load(R.drawable.bg_main_default_head_image)
                     .placeHolder(R.drawable.bg_main_default_head_image).into(ivMainHeader);
@@ -234,12 +232,10 @@ public class LiveFeedBackPager extends LiveBasePager {
         if (mFeedbackEntity.isHaveTutor()) {
             rlTutorContent.setVisibility(View.VISIBLE);
             tvTutorName.setText(mGetInfo.getTeacherName());
-            ivTutorHeader.setImageResource(R.drawable.bg_live_video_feedback_tutor_head_image);
             if (TextUtils.isEmpty(mGetInfo.getTeacherIMG())) {
                 ImageLoader.with(BaseApplication.getContext()).asCircle().load(R.drawable.bg_main_default_head_image)
                         .placeHolder(R.drawable.bg_main_default_head_image).into(ivTutorHeader);
             } else {
-                ivMainHeader.setImageResource(R.drawable.bg_live_video_feedback_tutor_head_image);
                 ImageLoader.with(BaseApplication.getContext()).asCircle().load(mGetInfo.getTeacherIMG())
                         .placeHolder(R.drawable.bg_main_default_head_image).into(ivTutorHeader);
             }
