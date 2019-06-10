@@ -55,6 +55,10 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
         this.orderId = orderId;
     }
 
+    public void initSignStatus(int signStatus){
+        liveGetInfo.getStudentLiveInfo().setSignStatus(signStatus);
+    }
+
     public void openSignAuto(ClassSignEntity classSignEntity) {
         rollCallBll.onRollCall(false);
         rollCallBll.onRollCall(classSignEntity);

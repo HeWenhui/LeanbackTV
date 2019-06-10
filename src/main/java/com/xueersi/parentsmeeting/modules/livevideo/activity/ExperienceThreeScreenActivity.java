@@ -417,7 +417,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
             try {
                 JSONObject json = new JSONObject(topic);
-                isFirstTopic = true;
+                isFirstTopic = false;
 
                 handleTopicSpeak(json);
                 handleTopicCall(json);
@@ -585,7 +585,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     private boolean isStudyShow;
 
-    private boolean isFirstTopic;
+    private boolean isFirstTopic = true;
 
     /**
      * 播放器当前状态值
@@ -986,6 +986,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         mGetInfo.setStuName(stuName);
         mGetInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
         mGetInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
+
+        mGetInfo.getStudentLiveInfo().setSignStatus(expLiveInfo.getIsSignIn());
     }
 
     /**
@@ -1030,6 +1032,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             businessBll.initViewF(null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
 
+        expRollCallBll.initSignStatus(expLiveInfo.getIsSignIn());
     }
 
     /**
@@ -1389,7 +1392,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      */
     protected void initStudyResult() {
 
-        HttpCallBack callBack = new HttpCallBack() {
+        HttpCallBack callBack = new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 if (isStudyShow) {
