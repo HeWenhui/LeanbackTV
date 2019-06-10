@@ -168,6 +168,12 @@ public class LiveVideoConfig {
     public static String LIVE_EXPERIENCE_IMMSG = "LiveFreePlayEvent";
     /** 体验课事件 */
     public static String LIVE_EXPERIENCE = "experienceLiveClass";
+
+    /**
+     * 直播回放体验课
+     */
+    public static String LIVE_BACK_EXPERIENCE = "liveBackExperience";
+
     /** 直播-H5课件互动题 */
     public static String LIVE_ENGLISH_COURSEWARE = "live_h5waretest";
     /** 直播-接麦 */

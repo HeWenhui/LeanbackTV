@@ -28,6 +28,7 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.JsonUtil;
@@ -43,6 +44,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpLiveInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IConnectService;
@@ -220,9 +222,13 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
+            mData.put("appid", "1001108");
+            mData.put("usertype", "student");
+            mData.put("teacherid", expLiveInfo.getCoachTeacherId() + "");
             mData.put("timestamp", System.currentTimeMillis() + "");
             mData.put("liveid", playBackEntity.getLiveId());
             mData.put("termid", playBackEntity.getChapterId());
+            mData.put("uip", IpAddressUtil.USER_IP);
 
             if (mGetInfo != null && mGetInfo.getStuName() != null) {
                 mData.put("uname", mGetInfo.getStuName());
@@ -484,6 +490,27 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
     };
 
+    // Player 接口监听
+    private final VPlayerCallBack.VPlayerListener mPlayerListener = new VPlayerCallBack.SimpleVPlayerListener() {
+        @Override
+        public void onBufferStart() {
+            if (expLiveInfo.getMode() == COURSE_STATE_2) {
+                sendLogMessage("playerNotFluent",
+                        "videopath", getBackVideo(),
+                        "status", "failed",
+                        "loglevel", "1",
+                        "functype", "6");
+            } else if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_3) {
+                sendLogMessage("videoStartPlay",
+                        "streamid", getLiveVideo(),
+                        "status", "failed",
+                        "loglevel", "1",
+                        "functype", "6");
+            }
+
+        }
+    };
+
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
 
     private VideoLivePlayBackEntity playBackEntity;
@@ -565,13 +592,29 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      */
     private VideoPlayState videoPlayState;
 
-
-    /**
-     * 用户是否属于某个分队
-     */
-    private boolean haveTeam = false;
-
     private String teacherNick = null;
+
+    protected VPlayerCallBack.VPlayerListener getWrapListener() {
+        return mPlayerListener;
+    }
+
+    protected void sendLogMessage(String logtype, String... args) {
+        if (args == null || args.length % 2 != 0) {
+            return;
+        }
+
+        StableLogHashMap logHashMap = new StableLogHashMap(logtype);
+
+        int count = args.length / 2;
+
+        for (int i = 0; i < count; i++) {
+            String key = args[i * 2 + 0];
+            String val = args[i * 2 + 1];
+            logHashMap.put(key, val);
+        }
+
+        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_BACK_EXPERIENCE, logHashMap.getData());
+    }
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -752,6 +795,20 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     @Override
     protected void onPlayOpenSuccess() {
 
+        if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_3) {
+            sendLogMessage("videoStartPlay",
+                    "streamid", getLiveVideo(),
+                    "status", "success",
+                    "loglevel", "1",
+                    "functype", "6");
+        } else if (expLiveInfo.getMode() == COURSE_STATE_2) {
+            sendLogMessage("videoStartPlay",
+                    "videopath", getBackVideo(),
+                    "status", "success",
+                    "loglevel", "1",
+                    "functype", "6");
+        }
+
         if (videoPlayState.isPlaying) {
             seekToCurrent();
         }
@@ -771,6 +828,19 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         rlFirstBackgroundView.postDelayed(action, 1500);
 
+    }
+
+    @Override
+    protected void playComplete() {
+        super.playComplete();
+
+        if (expLiveInfo.getMode() == COURSE_STATE_2) {
+            sendLogMessage("playVideoFileFinished",
+                    "videopath", getBackVideo(),
+                    "status", "success",
+                    "loglevel", "1",
+                    "functype", "6");
+        }
     }
 
     @Override
@@ -814,6 +884,24 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             }
         }
 
+        if (expLiveInfo.getMode() == COURSE_STATE_2) {
+            sendLogMessage("playerError",
+                    "videopath", getBackVideo(),
+                    "errCode", arg2 + "",
+                    "errMsg", "",
+                    "status", "failed",
+                    "loglevel", "loglevel",
+                    "functype", "6");
+        } else if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_2) {
+            sendLogMessage("playerError",
+                    "streamid", getLiveVideo(),
+                    "errCode", arg2 + "",
+                    "errMsg", "",
+                    "status", "failed",
+                    "loglevel", "loglevel",
+                    "functype", "6");
+        }
+
     }
 
     @Override
@@ -838,7 +926,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
 
         if (!videoPlayState.reported && videoPlayState.protocol == MediaPlayer.VIDEO_PROTOCOL_MP4 && t2 - t1 < 3 * 60) {
-            reportToTeacher();
+            reportToTeacher(duration, currentPosition);
         }
     }
 
@@ -1225,6 +1313,14 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             playPSVideo(videoPath, protocol);
 
         } else if (mode == COURSE_STATE_2) {
+
+            sendLogMessage("playVideoFile",
+                    "videopath", getBackVideo(),
+                    "offset", expAutoLive.getSeekTime() + "",
+                    "status", "none",
+                    "loglevel", "1",
+                    "functype", "6");
+
             if (ivTeacherNotpresent.getVisibility() != View.GONE) {
                 ivTeacherNotpresent.setVisibility(View.GONE);
             }
@@ -1259,7 +1355,15 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     /**
      * 上报视频快播完了
      */
-    protected void reportToTeacher() {
+    protected void reportToTeacher(long duration, long curpos) {
+
+        sendLogMessage("notifyVideoCutDown",
+                "duration", TimeUtils.gennerSecond(duration) + "",
+                "curpos", TimeUtils.gennerSecond(curpos) + "",
+                "videoCutDownTime", "180",
+                "status", "failed",
+                "loglevel", "1",
+                "functype", "6");
 
         videoPlayState.reported = true;
 
