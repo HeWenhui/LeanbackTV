@@ -262,6 +262,10 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      */
     private int MAX_INPUT_CHAR_NUMBER = 60;
     /**
+     * 初高中表扬父布局
+     */
+    private RelativeLayout rlPraise;
+    /**
      * 初高中表扬
      */
     private ImageView ivPraise;
@@ -729,17 +733,24 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             rlSpeechBulContent.addView(englishSpeekPager.getRootView(), englishSpeekPager.getLayoutParams());
             rlSpeechBulContent.postDelayed(removeViewRunnable, 1000);
         } else {
-            if (ivPraise == null) {
+            if (rlPraise == null) {
+                rlPraise = new RelativeLayout(mContext);
+                rlPraise.setBackgroundResource(R.color.transparent_70);
+                rlSpeechBulContent.addView(rlPraise, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                        .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                RelativeLayout.LayoutParams rlParams = (RelativeLayout.LayoutParams) rlPraise.getLayoutParams();
+                rlParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                rlPraise.setLayoutParams(rlParams);
+
                 ivPraise = new ImageView(mContext);
                 ivPraise.setImageResource(R.drawable.bg_livevideo_junior_praise);
-                rlSpeechBulContent.addView(ivPraise, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                        .WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT));
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivPraise.getLayoutParams();
-                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                ivPraise.setLayoutParams(layoutParams);
+                rlPraise.addView(ivPraise, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                        .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+                RelativeLayout.LayoutParams ivParams = (RelativeLayout.LayoutParams) ivPraise.getLayoutParams();
+                ivParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                ivPraise.setLayoutParams(ivParams);
             }
-            ivPraise.setVisibility(View.VISIBLE);
+            rlPraise.setVisibility(View.VISIBLE);
             rlSpeechBulContent.removeCallbacks(removeViewRunnable);
             rlSpeechBulContent.postDelayed(removeViewRunnable, 1000);
         }
@@ -754,7 +765,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     rlSpeechBulContent.removeView(englishSpeekPager.getRootView());
                 }
             } else {
-                ivPraise.setVisibility(View.GONE);
+                rlPraise.setVisibility(View.GONE);
             }
         }
     };
@@ -849,6 +860,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     };
 
     private boolean requestSucces = false;
+
     /**
      * 开始语音识别
      */
@@ -858,7 +870,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             audioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
-                    if(requestSucces){
+                    if (requestSucces) {
                         return;
                     }
                     requestSucces = true;
