@@ -25,9 +25,11 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
@@ -391,9 +393,13 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     }
                                     isChangeLine = false;
                                 } else {
+                                    String userName = null;
+                                    String userId = null;
                                     try {
+                                        userName = AppBll.getInstance().getAppInfoEntity().getChildName();
+                                        userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                                         if (vPlayer.getPlayer() instanceof PSIJK) {
-                                            vPlayer.getPlayer().setUserInfo(AppBll.getInstance().getAppInfoEntity().getChildName(), UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                                            vPlayer.getPlayer().setUserInfo(userName, userId);
                                         }
                                         if (liveType == PLAY_LIVE || liveType == PLAY_BACK) {
                                             vPlayer.playPSVideo(streamId, protocol);
@@ -405,6 +411,10 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         e.printStackTrace();
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        if (videoConfigEntity != null) {
+                                            videoConfigEntity.setUserId(userId).setUserName(userName);
+                                        }
+                                        UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.DISPATCH_REQEUSTING, videoConfigEntity.toJSON().toString());
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }

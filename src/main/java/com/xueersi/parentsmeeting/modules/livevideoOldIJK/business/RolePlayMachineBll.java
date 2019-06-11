@@ -332,7 +332,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                     JSONObject objAn = new JSONObject();
                     JSONObject objData = new JSONObject();
                     objAn.put("sentenceNum", i);
-                    objAn.put("entranceTime", message.getMaxReadTime());
+                    objAn.put("entranceTime", (int)message.getSelfValidSpeechTime());
                     objAn.put("score", message.getSpeechScore());
                     objData.put("cont_score", message.getFluency());
                     objData.put("pron_score", message.getAccuracy());
@@ -415,7 +415,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                 if (message.getRolePlayer().isSelfRole()) {
                     JSONObject objAn = new JSONObject();
                     objAn.put("sentenceNum", i);
-                    objAn.put("entranceTime", message.getMaxReadTime());
+                    objAn.put("entranceTime", (int)message.getSelfValidSpeechTime());
                     objAn.put("score", message.getSpeechScore());
                     JSONObject objData = new JSONObject();
                     objData.put("cont_score", message.getFluency());

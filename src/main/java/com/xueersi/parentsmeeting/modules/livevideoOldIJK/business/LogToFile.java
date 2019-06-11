@@ -6,6 +6,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.SysLogEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 
@@ -64,6 +65,7 @@ public class LogToFile {
 
     /**
      * 一些共有参数
+     *
      * @param key
      * @param value
      */
@@ -76,7 +78,15 @@ public class LogToFile {
 
     public void i(String message) {
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, stableLogHashMap, message);
+            liveOnLineLogs.getOnloadLogs(TAG, null, stableLogHashMap, message);
+        }
+        logger.i(message);
+//        liveThreadPoolExecutor.execute(new WriteThread(message));
+    }
+
+    public void i(SysLogEntity label, String message) {
+        if (liveOnLineLogs != null) {
+            liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message);
         }
         logger.i(message);
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
@@ -84,7 +94,15 @@ public class LogToFile {
 
     public void d(String message) {
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, stableLogHashMap, message);
+            liveOnLineLogs.getOnloadLogs(TAG, null, stableLogHashMap, message);
+        }
+        logger.d(message);
+//        liveThreadPoolExecutor.execute(new WriteThread(message));
+    }
+
+    public void d(SysLogEntity label, String message) {
+        if (liveOnLineLogs != null) {
+            liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message);
         }
         logger.d(message);
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
@@ -99,7 +117,14 @@ public class LogToFile {
 
     public void e(String message, Throwable e) {
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, stableLogHashMap, message, e);
+            liveOnLineLogs.getOnloadLogs(TAG, null, stableLogHashMap, message, e);
+        }
+        logger.e(message, e);
+    }
+
+    public void e(SysLogEntity label, String message, Throwable e) {
+        if (liveOnLineLogs != null) {
+            liveOnLineLogs.getOnloadLogs(TAG, label, stableLogHashMap, message, e);
         }
         logger.e(message, e);
     }

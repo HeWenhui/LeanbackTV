@@ -1855,24 +1855,28 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         try {
             JSONObject data = (JSONObject) responseEntity.getJsonObject();
             if (data.has("starList")) {
-                JSONArray jsonArray = data.getJSONArray("starList");
-                JSONObject jsonObject = null;
-                List<TeamEnergyAndContributionStarEntity.ContributionStar> contributionStarList
-                        = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
-                TeamEnergyAndContributionStarEntity.ContributionStar star = null;
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    jsonObject = jsonArray.getJSONObject(i);
-                    star = new TeamEnergyAndContributionStarEntity.ContributionStar();
-                    star.setStuId(jsonObject.getString("stuId"));
-                    star.setEnergy(jsonObject.getLong("energy"));
-                    star.setName(jsonObject.getString("name"));
-                    star.setRealname(jsonObject.getString("realname"));
-                    star.setNickname(jsonObject.getString("nickname"));
-                    star.setAvaterPath(jsonObject.getString("avater_path"));
-                    contributionStarList.add(star);
+                JSONArray jsonArray = data.optJSONArray("starList");
+                if(jsonArray != null && jsonArray.length() >0){
+                    JSONObject jsonObject = null;
+                    List<TeamEnergyAndContributionStarEntity.ContributionStar> contributionStarList
+                            = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
+                    TeamEnergyAndContributionStarEntity.ContributionStar star = null;
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = jsonArray.getJSONObject(i);
+                        star = new TeamEnergyAndContributionStarEntity.ContributionStar();
+                        star.setStuId(jsonObject.getString("stuId"));
+                        star.setEnergy(jsonObject.getLong("energy"));
+                        star.setName(jsonObject.getString("name"));
+                        star.setRealname(jsonObject.getString("realname"));
+                        star.setNickname(jsonObject.getString("nickname"));
+                        star.setAvaterPath(jsonObject.getString("avater_path"));
+                        contributionStarList.add(star);
+                    }
+                    entity.setContributionStarList(contributionStarList);
                 }
-                entity.setContributionStarList(contributionStarList);
             }
+
 
             if (data.has("myTeam")) {
                 JSONObject jsonObject = data.getJSONObject("myTeam");
