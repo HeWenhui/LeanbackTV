@@ -859,6 +859,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             if(expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_3) {
                 getHandler.postDelayed(playDelayTask, 3 * 1000);
             }
+
         } else if (arg2 == MediaErrorInfo.PSChannelNotExist) {
 
             if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
