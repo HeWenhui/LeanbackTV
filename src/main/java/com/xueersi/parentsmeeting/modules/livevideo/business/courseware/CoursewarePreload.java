@@ -645,7 +645,7 @@ public class CoursewarePreload {
         if (coursewareInfo == null) {
             return;
         }
-        File cacheDir = com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile.geCacheFile(mContext,
+        File cacheDir = LiveCacheFile.geCacheFile(mContext,
                 NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
         if (!cacheDir.exists()) {
             cacheDir.mkdirs();
@@ -686,7 +686,7 @@ public class CoursewarePreload {
                 unZipDir.mkdirs();
             }
 
-            com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.PreLoadDownLoaderManager
+            PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager
                     .DownLoadInfoAndListener(
                     downLoadInfo,
 
@@ -705,9 +705,9 @@ public class CoursewarePreload {
                     "");
             if (!isPrecise.get()) {
                 //Log.e("NbDownLoad","=====>downLoadNbResource addToAutoDownloadPool");
-                com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
+                PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
             } else {
-                com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.PreLoadDownLoaderManager.addUrgentInfo(infoListener);
+                PreLoadDownLoaderManager.addUrgentInfo(infoListener);
             }
 
         }

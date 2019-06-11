@@ -22,7 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.config.LiveMessageConfig;
 
 import org.json.JSONObject;
 
@@ -108,14 +108,14 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        if (sourceNick.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sourceNick.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
                 if (speechCollectiveBll != null) {
                     speechCollectiveBll.onTeacherLevel();
                     speechCollectiveBll = null;
                 }
             }
-        } else if (sourceNick.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sourceNick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             if (LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
                 if (speechCollectiveBll != null) {
                     speechCollectiveBll.onTeacherLevel();

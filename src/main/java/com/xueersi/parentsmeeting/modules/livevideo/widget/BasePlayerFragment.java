@@ -414,7 +414,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         e.printStackTrace();
                                     } catch (Exception e) {
                                         e.printStackTrace();
-                                        recordImageView(videoConfigEntity.toJSONObject());
+                                        recordImageView(videoConfigEntity.toJSONObject().toString());
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }

@@ -135,6 +135,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private Button btCourseSubmit;
     /** 新课件缓存 */
     private NewCourseCache newCourseCache;
+    private StaticWeb staticWeb;
     /** 新课件是否是预加载 */
     private boolean ispreload;
     private LiveAndBackDebug liveAndBackDebug;
@@ -251,7 +252,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onViewDetachedFromWindow(View v) {
                 if (mLogtf != null) {
-                    mLogtf.d("onViewDetachedFromWindow:reloadurl=" + wvSubjectWeb.getUrl() + ",,time=" + (System
+                    mLogtf.d("onViewDetachedFromWindow:time=" + (System
                             .currentTimeMillis() - before));
                 }
                 if (isArts == LiveVideoSAConfig.ART_EN) {
@@ -312,7 +313,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         CourseWebViewClient courseWebViewClient = new CourseWebViewClient();
         newCourseCache.setOnHttpCode(courseWebViewClient);
         wvSubjectWeb.setWebViewClient(courseWebViewClient);
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, testid, creattime, new StaticWeb.OnMessage() {
+        staticWeb = new StaticWeb(mContext, wvSubjectWeb, testid, creattime, new StaticWeb.OnMessage() {
 
             @Override
             public void postMessage(String where, final JSONObject message, String origin) {
@@ -341,7 +342,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     e.printStackTrace();
                 }
             }
-        }), "xesApp");
+        });
+        wvSubjectWeb.addJavascriptInterface(staticWeb, "xesApp");
         btCoursePre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -353,7 +355,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("type", CourseMessage.SEND_getAnswer);
                     JSONObject resultData = new JSONObject();
                     jsonData.put("data", resultData);
-                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                    staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -370,7 +372,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("type", CourseMessage.SEND_getAnswer);
                     JSONObject resultData = new JSONObject();
                     jsonData.put("data", resultData);
-                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                    staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -385,7 +387,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("type", CourseMessage.SEND_getAnswer);
                     JSONObject resultData = new JSONObject();
                     jsonData.put("data", resultData);
-                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                    staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
                     CrashReport.postCatchedException(e);
                     mLogtf.e("btCourseSubmit", e);
@@ -669,7 +671,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                                     resultData.put("isCanAnswer", 1);
                                     resultData.put("userAnswerContent", userAnswerContent2);
                                     jsonData.put("data", resultData);
-                                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                                    staticWeb.sendToCourseware(jsonData, "*");
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -780,7 +782,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("type", CourseMessage.SEND_getAnswer);
                     JSONObject resultData = new JSONObject();
                     jsonData.put("data", resultData);
-                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                    staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
                     CrashReport.postCatchedException(e);
                     mLogtf.e("submitData", e);
@@ -1209,7 +1211,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        StaticWeb.testCourseware(wvSubjectWeb);
+                        staticWeb.testCourseware();
                     }
                 }, 10);
             }
@@ -1246,8 +1248,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         XESToastUtils.showToast(mContext, "互动题为空");
                         return;
                     }
+                    NewCourseSec.Test test = tests.get(0);
+                    mLogtf.addCommon("loadUrl", "" + test.getPreviewPath());
                     if (isArts == LiveVideoSAConfig.ART_EN) {
-                        NewCourseSec.Test test = tests.get(0);
                         mLogtf.d("getCourseWareTests:oldtype=" + detailInfo.getArtType() + ",testType=" + test.getTestType());
                         if (StringUtils.isEmpty(detailInfo.getArtType()) || "0".equals(detailInfo.getArtType())) {
                             detailInfo.setArtType(test.getTestType());
@@ -1258,15 +1261,15 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     showControl();
                     if (quesJson != null) {
                         for (int i = 0; i < tests.size(); i++) {
-                            NewCourseSec.Test test = tests.get(i);
+                            NewCourseSec.Test test2 = tests.get(i);
                             JSONArray userAnswerContent = quesJson.optJSONArray("" + i);
-                            test.setUserAnswerContent(userAnswerContent);
+                            test2.setUserAnswerContent(userAnswerContent);
                         }
                     }
                     setNum(1);
-                    NewCourseSec.Test test = tests.get(0);
                     currentIndex = 0;
                     wvSubjectWeb.loadUrl(test.getPreviewPath());
+                    staticWeb.setLoadUrl(test.getPreviewPath());
                     int type = newCourseCache.loadCourseWareUrl(test.getPreviewPath());
                     if (type != 0) {
                         ispreload = type == 1;

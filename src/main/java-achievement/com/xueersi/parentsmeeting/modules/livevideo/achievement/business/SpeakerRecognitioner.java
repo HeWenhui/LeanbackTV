@@ -76,15 +76,13 @@ public class SpeakerRecognitioner {
                         CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 } else {
-                    if (isStart) {
-                        try {
-                            iSpeechRecognitnGen.stopSpeech();
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            CrashReport.postCatchedException(new LiveException(TAG, e));
-                        }
+                    try {
+                        iSpeechRecognitnGen.stopSpeech();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             }

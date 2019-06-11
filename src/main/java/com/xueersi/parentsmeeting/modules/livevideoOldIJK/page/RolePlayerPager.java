@@ -1272,6 +1272,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                     logger.i("测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration()
                             + "得分：" + resultEntity.getScore());
                     entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
+                    message.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
                     //mIsEvaluatoring = false;
                     message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                     message.setSpeechScore(resultEntity.getScore());

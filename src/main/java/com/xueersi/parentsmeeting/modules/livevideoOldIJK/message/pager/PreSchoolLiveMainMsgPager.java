@@ -24,11 +24,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -55,8 +53,8 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAn
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.HotWordLog;
 import com.xueersi.ui.adapter.CommonAdapter;
 
@@ -883,9 +881,9 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
         if(isCloseAllMsg()){
             return;
         }
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);

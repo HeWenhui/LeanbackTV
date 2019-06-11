@@ -179,7 +179,7 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                         vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
                                         e.printStackTrace();
                                     } catch (Exception e) {
-                                        recordImageView(videoConfigEntity.toJSONObject());
+                                        recordImageView(videoConfigEntity.toJSONObject().toString());
                                         e.printStackTrace();
                                     }
                                 }

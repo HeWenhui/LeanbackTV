@@ -603,6 +603,7 @@ public class IRCMessage implements IIRCMessage {
         @Override
         public void onDataSucess(Object... objData) {
             mNewTalkConf = (List<NewTalkConfEntity>) objData[0];
+            mLogtf.d(SysLogLable.connectIrcServer, "onDataSucess:conf=" + mNewTalkConf.size());
             liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
