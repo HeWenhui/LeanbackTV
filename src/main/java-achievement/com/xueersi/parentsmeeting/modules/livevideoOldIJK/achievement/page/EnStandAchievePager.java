@@ -75,7 +75,7 @@ public class EnStandAchievePager extends LiveBasePager {
     /**用户头像*/
     CircleImageView civUserImage;
     LinearLayout llImageContent;
-    String ACHIEVE_LAYOUT_RIGHT = "1";
+    String ACHIEVE_LAYOUT_RIGHT = "0";
     RelativeLayout rlAchieveContent;
     ArtsExtLiveInfo mExtLiveInfo;
     String LAYOUT_SUMMER_SIZE = "0";
@@ -142,27 +142,27 @@ public class EnStandAchievePager extends LiveBasePager {
                         setEngPro(pgAchivePk.getProgress());
                     }
                 }
-                if (com.xueersi.common.config.AppConfig.DEBUG) {
-                    Random random = new Random();
-                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
-                    int nextInt = random.nextInt();
-                    int goldCount2 = goldCount + 1;
-                    int energyCount2 = energyCount + 1;
-                    if (nextInt % 3 == 0) {
-                        goldCount2 += random.nextInt(20);
-                        energyCount2 += random.nextInt(20);
-                    } else if (nextInt % 3 == 1) {
-                        goldCount2 += random.nextInt(20);
-                    } else {
-                        energyCount2 += random.nextInt(20);
-                    }
-                    starAndGoldEntity.setGoldCount(goldCount2);
-                    StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
-                    pkEnergy.me = energyCount2;
-                    pkEnergy.myTeam = 20;
-                    pkEnergy.opTeam = 12;
-                    onGetStar(starAndGoldEntity);
-                }
+//                if (com.xueersi.common.config.AppConfig.DEBUG) {
+//                    Random random = new Random();
+//                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
+//                    int nextInt = random.nextInt();
+//                    int goldCount2 = goldCount + 1;
+//                    int energyCount2 = energyCount + 1;
+//                    if (nextInt % 3 == 0) {
+//                        goldCount2 += random.nextInt(20);
+//                        energyCount2 += random.nextInt(20);
+//                    } else if (nextInt % 3 == 1) {
+//                        goldCount2 += random.nextInt(20);
+//                    } else {
+//                        energyCount2 += random.nextInt(20);
+//                    }
+//                    starAndGoldEntity.setGoldCount(goldCount2);
+//                    StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+//                    pkEnergy.me = energyCount2;
+//                    pkEnergy.myTeam = 20;
+//                    pkEnergy.opTeam = 12;
+//                    onGetStar(starAndGoldEntity);
+//                }
             }
         });
 

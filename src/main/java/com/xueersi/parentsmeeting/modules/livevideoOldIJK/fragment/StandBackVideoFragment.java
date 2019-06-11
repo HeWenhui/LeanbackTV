@@ -10,10 +10,12 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveStandFrameAnim;
@@ -30,7 +32,7 @@ import java.util.Map;
  */
 public class StandBackVideoFragment extends LiveBackVideoFragment {
     LiveStandFrameAnim liveStandFrameAnim;
-
+    String ACHIEVE_LAYOUT_RIGHT = "1";
     {
         mLayoutVideo = R.layout.fram_live_stand_back_video;
     }
@@ -82,8 +84,10 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
         userHeadVisible();
     }
     protected void userHeadVisible() {
+       String LAYOUT_SUMMER_SIZE =  UmsAgentTrayPreference.getInstance().getString(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE,"0");
+
         //直播
-        if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
+        if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE && ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)) {
             // 英语
             if (liveBackBll.getIsArts() == 1 && liveBackBll.getPattern() == 2 && llUserHeadImage!=null) {
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)llUserHeadImage.getLayoutParams();
