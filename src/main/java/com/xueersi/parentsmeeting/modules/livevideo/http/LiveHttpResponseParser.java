@@ -211,7 +211,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isSmallChinese = false;
         }
         getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
-        getInfo.setAllowSnapshot(1);
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
         LiveVideoConfig.LIVEMULPRELOADCHS = data.optString("courseWarePreLoadUrl");
         LiveVideoConfig.LIVEMULH5URLCHS = data.optString("getCourseWareHtml");
