@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -650,6 +651,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                             boolean isPresent = isPresent(mode);
                             if (mVideoAction != null) {
                                 mVideoAction.onModeChange(mode, isPresent);
+                                mLogtf.d(SysLogLable.switchLiveMode, "onNotice:mode=" + mode + ",isPresent=" + isPresent);
                                 if (!isPresent) {
                                     mVideoAction.onTeacherNotPresent(true);
                                 }
@@ -721,6 +723,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         boolean isPresent = isPresent(mLiveTopic.getMode());
                         if (mVideoAction != null) {
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
+                            mLogtf.d(SysLogLable.switchLiveMode, "onTopic:mode=" + liveTopic.getMode() + ",isPresent=" + isPresent);
                         }
                         if (mIRCMessage != null) {
                             mIRCMessage.modeChange(mLiveTopic.getMode());

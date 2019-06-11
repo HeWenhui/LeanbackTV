@@ -777,9 +777,14 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 //                    }
                 } else {
                     //收到题目把排行榜收起来
-                    if (relativeLayout.getVisibility() == View.VISIBLE) {
-                        relativeLayout.startAnimation(mAnimSlideOut);
-                    }
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (relativeLayout.getVisibility() == View.VISIBLE) {
+                                relativeLayout.startAnimation(mAnimSlideOut);
+                            }
+                        }
+                    });
 //                    isMiddleScienceH5Open = true;
 ////                    if (mHandler != null) {
 ////                        mHandler.post(new Runnable() {

@@ -220,10 +220,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
         if (nowProtol != MediaPlayer.VIDEO_PROTOCOL_RTMP && nowProtol != MediaPlayer.VIDEO_PROTOCOL_FLV) {
             nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
             videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
-            VideoConfigEntity videoConfigEntity = mGetInfo.getVideoConfigEntity();
-            if (videoConfigEntity != null) {
-                videoFragment.enableAutoSpeedPlay(videoConfigEntity);
-            }
+//            VideoConfigEntity videoConfigEntity = mGetInfo.getVideoConfigEntity();
+//            videoConfigEntity.setUserName(mGetInfo.getUname());
+//            videoConfigEntity.setUserId(mGetInfo.getStuId());
+//            if (videoConfigEntity != null) {
+            videoFragment.enableAutoSpeedPlay(getVideoConfigEntity());
+//            }
         } else {
             //这里不能进行协议切换，因为协议切换已经在自动切换线路的时候切换好了
 //            if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_RTMP) {
@@ -235,10 +237,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 @Override
                 public void run() {
                     videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
-                    VideoConfigEntity videoConfigEntity = mGetInfo.getVideoConfigEntity();
-                    if (videoConfigEntity != null) {
-                        videoFragment.enableAutoSpeedPlay(videoConfigEntity);
-                    }
+//                    VideoConfigEntity videoConfigEntity = mGetInfo.getVideoConfigEntity();
+//                    videoConfigEntity.setUserName(mGetInfo.getUname());
+//                    videoConfigEntity.setUserId(mGetInfo.getStuId());
+//                    if (videoConfigEntity != null) {
+                    videoFragment.enableAutoSpeedPlay(getVideoConfigEntity());
+//                    }
                     MediaPlayer.setNextDispatchTime();
                 }
             }, MediaPlayer.getDispatchTime());
@@ -246,6 +250,15 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
     }
 
+    private VideoConfigEntity getVideoConfigEntity() {
+        VideoConfigEntity videoConfigEntity = mGetInfo.getVideoConfigEntity();
+        if (videoConfigEntity != null) {
+            videoConfigEntity.
+                    setUserName(mGetInfo.getUname()).
+                    setUserId(mGetInfo.getStuId());
+        }
+        return videoConfigEntity;
+    }
     /**
      * PSIJK重新播放视频,
      * 目前仅有四种情况需要
@@ -1033,7 +1046,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             nowProtol = changeProtol(nowProtol);
             videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
             if (mGetInfo.getVideoConfigEntity() != null) {
-                videoFragment.enableAutoSpeedPlay(mGetInfo.getVideoConfigEntity());
+                videoFragment.enableAutoSpeedPlay(getVideoConfigEntity());
             }
         }
     }
