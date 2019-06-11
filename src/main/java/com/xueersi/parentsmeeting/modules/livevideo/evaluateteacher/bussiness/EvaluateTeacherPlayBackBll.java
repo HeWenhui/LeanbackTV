@@ -10,6 +10,8 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.EvaluateTeacherPager;
@@ -46,7 +48,9 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
             businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
-        if (liveGetInfo != null && 1 == mVideoEntity.getEvaluateIsOpen()) {
+        if (liveGetInfo != null && 1 == mVideoEntity.getEvaluateIsOpen()&& !(liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC
+                && (LiveVideoConfig.EDUCATION_STAGE_3.equals(liveGetInfo.getEducationStage())
+                || LiveVideoConfig.EDUCATION_STAGE_4.equals(liveGetInfo.getEducationStage())))) {
             mParser = new EvaluateResponseParser();
             mHttpManager = liveBackBll.getmHttpManager();
             if (liveGetInfo.getIsArts() == 1) {
