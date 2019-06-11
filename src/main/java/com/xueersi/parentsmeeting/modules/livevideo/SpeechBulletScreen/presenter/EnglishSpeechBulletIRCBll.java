@@ -56,6 +56,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+        englishSpeechBulletView.setSmallEnglish(getInfo.getSmallEnglish());
     }
 
     @Override
@@ -72,15 +73,12 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        if (mGetInfo != null && !mGetInfo.getSmallEnglish()) {
-            return;
-        }
         logger.i("onTopic: jsonObject= " + jsonObject.toString());
         this.liveTopic = liveTopic;
+        if (LiveTopic.MODE_TRANING.equals(liveTopic.getMode())) {
+            return;
+        }
         if (liveTopic.getMainRoomstatus().isOpenVoiceBarrage()) {
-            if (liveTopic.getMainRoomstatus().getVoiceBarrageCount() == voiceBarrageCount) {
-                return;
-            }
             voiceBarrageCount = liveTopic.getMainRoomstatus().getVoiceBarrageCount();
             if (englishSpeechBulletView != null) {
                 mHandler.post(new Runnable() {
@@ -100,10 +98,10 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        if (mGetInfo != null && !mGetInfo.getSmallEnglish()) {
+        logger.i("onNotice: jsonObject= " + data.toString());
+        if (liveTopic != null && LiveTopic.MODE_TRANING.equals(liveTopic.getMode())) {
             return;
         }
-        logger.i("onNotice: jsonObject= " + data.toString());
         switch (type) {
             case XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE: {
                 //开启/关闭弹幕

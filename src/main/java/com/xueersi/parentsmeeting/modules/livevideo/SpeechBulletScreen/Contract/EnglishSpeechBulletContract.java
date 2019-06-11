@@ -45,6 +45,8 @@ public interface EnglishSpeechBulletContract {
         void receivePraiseMsg(String msg);
 
         void setVideoLayout(LiveVideoPoint liveVideoPoint);
+
+        void setSmallEnglish(boolean isSmallEnglish);
     }
 
     interface EnglishSpeechBulletPresenter extends BasePresenter {

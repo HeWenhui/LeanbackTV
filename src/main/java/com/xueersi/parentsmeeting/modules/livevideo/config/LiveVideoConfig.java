@@ -530,5 +530,9 @@ public class LiveVideoConfig {
         }*/
         return info;
     }
+    /**
+     * 文科三分屏上传精彩瞬间截图url，半身直播走理科的接口
+     */
+    public static final String ART_TRIPLE_WONDERFUL_MOMENT = "https://live.chs.xueersi.com/ExamReport/uploadWonderfulMoment";
 
 }

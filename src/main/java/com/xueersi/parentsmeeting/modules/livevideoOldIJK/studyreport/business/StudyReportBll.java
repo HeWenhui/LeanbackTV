@@ -21,11 +21,12 @@ import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCutImage;
 
@@ -266,6 +267,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                                     } catch (Exception e) {
                                         CrashReport.postCatchedException(e);
                                         uploadWonderMoment(type, saveFile.getPath());
+                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
                             }
@@ -294,71 +296,131 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         }
     }
 
+    private class XesUploadListener implements XesStsUploadListener {
+        private int type;
+        private File finalFile;
+
+        public XesUploadListener(int type, File finalFile) {
+            this.type = type;
+            this.finalFile = finalFile;
+        }
+
+        @Override
+        public void onProgress(XesCloudResult result, int percent) {
+
+        }
+
+        @Override
+        public void onSuccess(XesCloudResult result) {
+            if (!AppConfig.DEBUG) {
+                finalFile.delete();
+            }
+            logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
+            if (mGetInfo != null) {
+                if (mGetInfo.getPattern() == 6) {
+                    //半身直播语文 isArts 为 0 ，useSkin为2
+                    if (mGetInfo.getIsArts() == 0 && mGetInfo.getUseSkin() == 2) {
+                        if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE) {
+                            getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                        }
+                    } else {
+                        getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                        logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
+                    }
+                } else if (mGetInfo.getPattern() == 1) {
+                    if ((type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
+                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
+                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE
+                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_WIN) && mGetInfo.getIsArts() == 2) {
+                        getHttpManager().sendWonderfulMoment(
+                                mGetInfo.getStuId(),
+                                mGetInfo.getId(),
+                                mGetInfo.getStuCouId(),
+                                String.valueOf(type),
+                                result.getHttpPath(),
+                                new UploadImageUrl(type, false));
+                    } else {
+                        logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
+                    }
+                }
+            } else {
+                getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+            }
+        }
+
+        @Override
+        public void onError(XesCloudResult result) {
+            logger.d("asyncUpload:onError=" + result.getErrorCode() + "," + result.getErrorMsg());
+        }
+    }
+
+    private class UploadImageUrl extends HttpCallBack {
+        private int type;
+
+        public UploadImageUrl(int type, boolean isShowTip) {
+            super(isShowTip);
+            this.type = type;
+        }
+
+        @Override
+        public void onPmSuccess(ResponseEntity responseEntity) {
+            logger.d("onPmSuccess:type=" + type + ",responseEntity=" + responseEntity.getJsonObject());
+            types.add("" + type);
+            String str = mShareDataManager.getString(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+            try {
+                JSONObject jsonObject = new JSONObject(str);
+                String liveid = jsonObject.optString("liveId");
+                JSONArray jsonArray;
+                if (mLiveId.equals(liveid)) {
+                    jsonArray = jsonObject.getJSONArray("types");
+                } else {
+                    jsonObject.put("liveId", mLiveId);
+                    jsonArray = new JSONArray();
+                    jsonObject.put("types", jsonArray);
+                }
+                jsonArray.put("" + type);
+                mShareDataManager.put(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, jsonObject.toString(), ShareDataManager.SHAREDATA_USER);
+                logger.d("onPmSuccess:jsonObject=" + jsonObject);
+            } catch (Exception e) {
+                mShareDataManager.put(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+                mLogtf.e("onPmSuccess", e);
+            }
+        }
+
+        @Override
+        public void onPmError(ResponseEntity responseEntity) {
+            super.onPmError(responseEntity);
+            logger.d("onPmError:type=" + type + ",responseEntity=" + responseEntity.getErrorMsg());
+        }
+
+        @Override
+        public void onPmFailure(Throwable error, String msg) {
+            super.onPmFailure(error, msg);
+            logger.d("onPmFailure:type=" + type + ",msg=" + msg, error);
+        }
+    }
+
+
     private void uploadWonderMoment(final int type, String path) {
-        mLogtf.d("uploadWonderMoment:type=" + type + ",path=" + path);
+        StringBuilder sbuilder = new StringBuilder("uploadWonderMoment:type=" + type + ",path=" + path);
+        if (mGetInfo != null) {
+            sbuilder.append(",pattern = " + mGetInfo.getPattern());
+        }
+        logger.i(sbuilder.toString());
+        mLogtf.d(sbuilder.toString());
         final File finalFile = new File(path);
         XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(activity);
         CloudUploadEntity uploadEntity = new CloudUploadEntity();
         uploadEntity.setFilePath(path);
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
-        uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
-        xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesStsUploadListener() {
-            @Override
-            public void onProgress(XesCloudResult result, int percent) {
 
-            }
+        uploadEntity.setCloudPath(mGetInfo.getIsArts() == 2 ? CloudDir.LIVE_ARTS_MOMENT : CloudDir.LIVE_SCIENCE_MOMENT);
 
-            @Override
-            public void onSuccess(XesCloudResult result) {
-                if (!AppConfig.DEBUG) {
-                    finalFile.delete();
-                }
-                logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
-                getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new HttpCallBack(false) {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        logger.d("onPmSuccess:type=" + type + ",responseEntity=" + responseEntity.getJsonObject());
-                        types.add("" + type);
-                        String str = mShareDataManager.getString(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
-                        try {
-                            JSONObject jsonObject = new JSONObject(str);
-                            String liveid = jsonObject.optString("liveId");
-                            JSONArray jsonArray;
-                            if (mLiveId.equals(liveid)) {
-                                jsonArray = jsonObject.getJSONArray("types");
-                            } else {
-                                jsonObject.put("liveId", mLiveId);
-                                jsonArray = new JSONArray();
-                                jsonObject.put("types", jsonArray);
-                            }
-                            jsonArray.put("" + type);
-                            mShareDataManager.put(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, jsonObject.toString(), ShareDataManager.SHAREDATA_USER);
-                            logger.d("onPmSuccess:jsonObject=" + jsonObject);
-                        } catch (Exception e) {
-                            mShareDataManager.put(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
-                            mLogtf.e("onPmSuccess", e);
-                        }
-                    }
+//            uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
 
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        super.onPmError(responseEntity);
-                        logger.d("onPmError:type=" + type + ",responseEntity=" + responseEntity.getErrorMsg());
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        super.onPmFailure(error, msg);
-                        logger.d("onPmFailure:type=" + type + ",msg=" + msg, error);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(XesCloudResult result) {
-                logger.d("asyncUpload:onError=" + result.getErrorCode() + "," + result.getErrorMsg());
-            }
-        });
+        xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesUploadListener(type, finalFile));
     }
 
     private void createPlugin() {

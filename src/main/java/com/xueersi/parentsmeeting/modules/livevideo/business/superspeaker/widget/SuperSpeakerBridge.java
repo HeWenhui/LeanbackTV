@@ -124,8 +124,10 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 
     }
 
+    //阿里云地址
+    @Deprecated
     private String audioRemoteUrl, videoRemoteUrl;
-
+    //声音分贝数
     private String voiceDecibel;
     private Intent serViceIntent;
 
@@ -176,8 +178,13 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         }
     }
 
+    @Deprecated
     private ServiceConnection serviceConnection;
 
+    /**
+     * 视频上传成功回调，暂时弃用，上传完全放到{@link UploadVideoService}中
+     */
+    @Deprecated
     private class UploadServiceConnction implements ServiceConnection {
         private UploadVideoService mService;
 
@@ -203,6 +210,10 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 
     }
 
+    /**
+     * 上传成功接口,暂时弃用，已经放到{@link UploadVideoService#uploadSuccess()}中
+     */
+    @Deprecated
     private void uploadSuccess() {
         //允许audioUrl为""，""代表成功
         if (audioRemoteUrl == null || videoRemoteUrl == null) {
@@ -216,6 +227,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         }
     }
 
+    /** 获取视频时长 */
     private long getVideoDuration() {
         MediaPlayer mediaPlayer = new MediaPlayer();
         try {
@@ -343,6 +355,11 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 
     private ISuperSpeakerContract.IRedPackageView redPackageView;
 
+    /**
+     * 更新金币数量
+     *
+     * @param num
+     */
     public void updateNum(String num) {
         if (redPackageView == null) {
             redPackageView = new SuperSpeakerRedPackagePager(mContext, this);
@@ -360,6 +377,9 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 //        }
     }
 
+    /**
+     * 教师端收题
+     */
     @Override
     public void timeUp() {
         if (containsView()) {

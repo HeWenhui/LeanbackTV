@@ -43,11 +43,12 @@ public class SuperSpeakerPermissionPager extends SuperSpeakerCameraPager {
                         public void onGuarantee(String permission, int position) {
                             if (position == 0) {
                                 UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715019));
+                                performStartPreView(isFacingBack);
                             } else if (position == 1) {
                                 UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715021));
                             }
                             logger.i("permission = " + permission + " position = " + position);
-                            performStartPreView(isFacingBack);
+
                         }
                     },
                     PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
@@ -67,9 +68,6 @@ public class SuperSpeakerPermissionPager extends SuperSpeakerCameraPager {
                 && PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.RECORD_AUDIO", mContext.getPackageName())
                 && PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.CAMERA", mContext.getPackageName()));
         logger.i("isDefault " + isDefault);
-        return (PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.MODIFY_AUDIO_SETTINGS", mContext.getPackageName())
-                && PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.RECORD_AUDIO", mContext.getPackageName())
-                && PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.CAMERA", mContext.getPackageName()));
+        return isDefault;
     }
-
 }
