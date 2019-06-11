@@ -37,9 +37,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        if (getInfo != null && (getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC
-                && (LiveVideoConfig.EDUCATION_STAGE_3.equals(mGetInfo.getEducationStage())
-                || LiveVideoConfig.EDUCATION_STAGE_4.equals(mGetInfo.getEducationStage())))) {
+        if (getInfo != null && getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
             mParser =new EvaluateResponseParser();
 
             new android.os.Handler().postDelayed(new Runnable() {
@@ -65,7 +63,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
                 if(mFeedBackEntity == null) {
                     return;
                 }
-
+                mGetInfo.setShowHightFeedback(true);
                 pager = new LiveFeedBackPager(mContext, mLiveId, mFeedBackEntity, mGetInfo, bottomContent, mLiveBll
                         .getHttpManager());
                 pager.setOnPagerClose(onPagerClose);

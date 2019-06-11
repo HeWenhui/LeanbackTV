@@ -48,9 +48,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
             businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
-        if (liveGetInfo != null && 1 == mVideoEntity.getEvaluateIsOpen() && !(liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC
-                && (LiveVideoConfig.EDUCATION_STAGE_3.equals(liveGetInfo.getEducationStage())
-                || LiveVideoConfig.EDUCATION_STAGE_4.equals(liveGetInfo.getEducationStage())))) {
+        if (liveGetInfo != null && 1 == mVideoEntity.getEvaluateIsOpen()) {
             mParser = new EvaluateResponseParser();
             mHttpManager = liveBackBll.getmHttpManager();
             if (liveGetInfo.getIsArts() == 1) {
@@ -92,6 +90,9 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
 
     @Override
     public boolean showPager() {
+        if (liveGetInfo.isShowHightFeedback()) {
+            return false;
+        }
         if (0 != mVideoEntity.getEvaluateTimePer() && ((liveBackBll.getvPlayer().getCurrentPosition() + 0.0) /
                 liveBackBll.getvPlayer().getDuration()) > mVideoEntity.getEvaluateTimePer()) {
             logger.i("showEvaluateTeacher");

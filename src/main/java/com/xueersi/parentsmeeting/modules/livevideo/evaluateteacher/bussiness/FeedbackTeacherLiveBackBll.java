@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness;
+package com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -7,32 +7,24 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveBackPlayerFragment;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveFeedBackPager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoFragment;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
     RelativeLayout bottomContent;
     LiveBackPlayerFragment liveBackPlayVideoFragment;
+
     FeedBackEntity mFeedBackEntity;
 
     LiveFeedBackPager pager = null;

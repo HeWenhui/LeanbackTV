@@ -48,10 +48,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
 
-        if (getInfo != null
-                && !(getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC
-                && LiveVideoConfig.EDUCATION_STAGE_3.equals(mGetInfo.getEducationStage())
-                || LiveVideoConfig.EDUCATION_STAGE_4.equals(mGetInfo.getEducationStage()))) {
+        if (getInfo != null){
             if (getInfo.getEvaluateTeacherEntity() != null && getInfo.getEvaluateTeacherEntity().isEvaluateIsOpen()) {
                 mHttpManager = mLiveBll.getHttpManager();
                 mParser = new EvaluateResponseParser();
@@ -103,6 +100,9 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
 
     @Override
     public boolean showPager() {
+        if(mGetInfo.isShowHightFeedback()) {
+            return false;
+        }
         if ((mGetInfo.getEvaluateTeacherEntity() != null && System.currentTimeMillis() / 1000 > mGetInfo.getEvaluateTeacherEntity().getEvaluateTime())) {
             logger.i("showEvaluateTeacher");
             logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mGetInfo.getEvaluateTeacherEntity().getEvaluateTime());
