@@ -232,6 +232,24 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         });
     }
 
+    public void onRemoteVideoStateChanged(int uid, final int state) {
+        mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state + ",look=" + entity.isLook() + ",videoStatus=" + videoStatus);
+        if (entity.isLook() && videoStatus) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (state == PrimaryClassConfig.VIDEO_STATE_1) {
+                        rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
+                        cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+                    } else {
+                        rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
+                        cl_livevideo_course_item_video.setVisibility(View.GONE);
+                    }
+                }
+            });
+        }
+    }
+
     @Override
     public void onOtherDis(int type, final boolean enable) {
         super.onOtherDis(type, enable);

@@ -30,4 +30,8 @@ public class PrimaryClassConfig {
     public static int VIDEO_WIDTH = 320;
     /** 自己是视频高度 */
     public static int VIDEO_HEIGHT = 240;
+    /** 视频状态 远端视频正常*/
+    public static int VIDEO_STATE_1 = 1;
+    /** 视频状态 端视频卡住*/
+    public static int VIDEO_STATE_2 = 2;
 }

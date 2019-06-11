@@ -319,12 +319,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             if (camera || audio) {
                 BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
                 if (basePrimaryTeamItem instanceof PrimaryTeamMyItem) {
-                    PrimaryTeamMyItem otherItem = (PrimaryTeamMyItem) basePrimaryTeamItem;
+                    PrimaryTeamMyItem myItem = (PrimaryTeamMyItem) basePrimaryTeamItem;
                     if (audio) {
-                        otherItem.onCheckPermission(PrimaryClassConfig.MMTYPE_AUDIO);
+                        myItem.onCheckPermission(PrimaryClassConfig.MMTYPE_AUDIO);
                     }
                     if (camera) {
-                        otherItem.onCheckPermission(PrimaryClassConfig.MMTYPE_VIDEO);
+                        myItem.onCheckPermission(PrimaryClassConfig.MMTYPE_VIDEO);
                     }
                 }
                 if (teamInfoEntity != null && workerThread != null) {
@@ -609,8 +609,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             logger.d("didOccurError:code=" + code);
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
             if (basePrimaryTeamItem instanceof PrimaryTeamMyItem) {
-                PrimaryTeamMyItem otherItem = (PrimaryTeamMyItem) basePrimaryTeamItem;
-                otherItem.didOccurError(code);
+                PrimaryTeamMyItem myItem = (PrimaryTeamMyItem) basePrimaryTeamItem;
+                myItem.didOccurError(code);
             }
         }
 
@@ -656,7 +656,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
         @Override
         public void onRemoteVideoStateChanged(int uid, int state) {
-
+            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+            mLogtf.d("remotefirstAudioRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
+            if (basePrimaryTeamItem instanceof PrimaryTeamOtherItem) {
+                PrimaryTeamOtherItem otherItem = (PrimaryTeamOtherItem) basePrimaryTeamItem;
+                otherItem.onRemoteVideoStateChanged(uid, state);
+            }
         }
     };
 
