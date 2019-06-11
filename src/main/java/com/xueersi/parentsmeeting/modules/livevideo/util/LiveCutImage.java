@@ -63,6 +63,24 @@ public class LiveCutImage {
         }
     }
 
+    public static Bitmap getViewCapture(View view,StringBuilder stringBuilder,AtomicBoolean creatBitmap) {
+        int width = view.getMeasuredWidth();
+        int height = view.getMeasuredHeight();
+
+        if (width<=0 || height<=0) {
+            creatBitmap.set(false);
+            return null;
+        }
+
+        stringBuilder.append(",width=" + width + ",height=" + height);
+        Bitmap bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+
+        creatBitmap.set(true);
+        return bitmap;
+    }
+
     /**
      * 截图，截取当前屏幕的图片
      *

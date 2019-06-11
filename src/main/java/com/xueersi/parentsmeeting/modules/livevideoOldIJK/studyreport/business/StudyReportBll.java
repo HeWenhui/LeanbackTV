@@ -176,7 +176,16 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                         savedir.mkdirs();
                     }
                     File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
-                    LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+                    if (!bmpScreen.isRecycled()) {
+                        LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+                    } else {
+                        bmpScreen = LiveCutImage.getViewCapture(view, stringBuilder, atomicBoolean);
+                        if (cut) {
+                            bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
+                        }
+                        LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+                    }
+//                    LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
                     view.destroyDrawingCache();
                     mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder);
                     uploadWonderMoment(type, saveFile.getPath());
@@ -190,20 +199,21 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             }
         };
 
-        final Thread taskThread = new Thread(runnable);
+//        final Thread taskThread = new Thread(runnable);
         if (predraw) {
             view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
                     view.getViewTreeObserver().removeOnPreDrawListener(this);
-                    // runnable.run();
-                    taskThread.start();
+                    runnable.run();
+//                    taskThread.start();
+
                     return false;
                 }
             });
         } else {
-            // runnable.run();
-            taskThread.start();
+            runnable.run();
+//            taskThread.start();
         }
     }
 

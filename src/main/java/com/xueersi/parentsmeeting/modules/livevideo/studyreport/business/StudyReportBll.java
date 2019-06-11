@@ -155,17 +155,20 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     @Override
     public void cutImage(final int type, final View view, final boolean cut, boolean predraw) {
         mLogtf.d("cutImage:type=" + type + ",cut=" + cut + ",predraw=" + predraw);
+        logger.i("StudyReportBll" + 1);
         if (types.contains("" + type)) {
+            logger.i("has contains " + type + ",return;");
             return;
         }
-
+        logger.i("StudyReportBll" + 2);
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 try {
+                    logger.i("StudyReportBll" + 6);
                     StringBuilder stringBuilder = new StringBuilder();
                     AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-                    Bitmap bmpScreen = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
+                    Bitmap bmpScreen = LiveCutImage.getViewCapture(view, stringBuilder, atomicBoolean);
                     if (bmpScreen == null) {
                         mLogtf.d("cutImage:type=" + type + ",bmpScreen=null");
                         return;
@@ -177,8 +180,19 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     if (!savedir.exists()) {
                         savedir.mkdirs();
                     }
+
                     File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
-                    LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+                    if (!bmpScreen.isRecycled()) {
+                        logger.i("StudyReportBll" + 7);
+                        LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+                    } else {
+                        logger.i("StudyReportBll" + 8);
+                        bmpScreen = LiveCutImage.getViewCapture(view, stringBuilder, atomicBoolean);
+                        if (cut) {
+                            bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
+                        }
+                        LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+                    }
                     view.destroyDrawingCache();
                     mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder);
                     uploadWonderMoment(type, saveFile.getPath());
@@ -191,27 +205,32 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                 }
             }
         };
-
-        final Thread taskThread = new Thread(runnable);
+        logger.i("StudyReportBll" + 3);
+//        final Thread taskThread = new Thread(runnable);
         if (predraw) {
             view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
+                    logger.i("StudyReportBll" + 4);
                     view.getViewTreeObserver().removeOnPreDrawListener(this);
                     // runnable.run();
-                    taskThread.start();
+//                    taskThread.start();
+                    runnable.run();
                     return false;
                 }
             });
         } else {
             // runnable.run();
-            taskThread.start();
+            logger.i("StudyReportBll" + 5);
+//            taskThread.start();
+            runnable.run();
         }
     }
 
     @Override
     public void cutImageAndVideo(final int type, final View view, final boolean cut, boolean predraw) {
         mLogtf.d("cutImageAndVideo:type=" + type + ",cut=" + cut + ",predraw=" + predraw);
+        logger.i("studyreportBll" + 1);
         if (types.contains("" + type)) {
             return;
         }
@@ -318,6 +337,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             if (!AppConfig.DEBUG) {
                 finalFile.delete();
             }
+            logger.i("StudyReportBll" + 10);
             logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
             if (mGetInfo != null) {
                 if (mGetInfo.getPattern() == 6) {
