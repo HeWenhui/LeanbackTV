@@ -516,7 +516,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     private void startSpeechRecognize() {
         File dir = LiveCacheFile.geCacheFile(mContext, "groupgame");
-        FileUtils.deleteDir(dir);
+        //只有第一次删除
+        if (saveVideoFile == null) {
+            FileUtils.deleteDir(dir);
+        }
         if (!dir.exists()) {
             dir.mkdirs();
         }
