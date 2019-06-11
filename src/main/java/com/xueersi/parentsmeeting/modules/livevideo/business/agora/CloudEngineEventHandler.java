@@ -123,5 +123,14 @@ public class CloudEngineEventHandler {
                 handler.remotefirstAudioRecvWithUid(uid);
             }
         }
+
+        @Override
+        public void onRemoteVideoStateChanged(int uid, int state) {
+            Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
+            while (it.hasNext()) {
+                RTCEngine.IRtcEngineEventListener handler = it.next();
+                handler.onRemoteVideoStateChanged(uid, state);
+            }
+        }
     };
 }

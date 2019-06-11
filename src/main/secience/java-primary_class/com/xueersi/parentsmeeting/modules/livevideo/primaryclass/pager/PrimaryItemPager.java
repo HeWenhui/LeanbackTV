@@ -307,19 +307,24 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     public void onCheckPermission() {
         if (!leaveChannel) {
             boolean camera = XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_CAMERA);
-            mLogtf.d("onCheckPermission:camera=" + camera);
-            if (camera) {
-                if (workerThread != null) {
-                    workerThread.execute(new Runnable() {
+            boolean audio = XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_AUDIO);
+            mLogtf.d("onCheckPermission:camera=" + camera + ",audio=" + audio);
+            if (camera || audio) {
+                if (audio) {
+                    BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
+                    if (basePrimaryTeamItem instanceof PrimaryTeamMyItem) {
+                        PrimaryTeamMyItem otherItem = (PrimaryTeamMyItem) basePrimaryTeamItem;
+                        otherItem.onAudio();
+                    }
+                }
+                if (teamInfoEntity != null && workerThread != null) {
+//                    courseGroupItemHashMap.clear();
+//                    llPrimaryTeamContent.removeAllViews();
+                    workerThread.leaveChannel();
+                    workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
                         @Override
-                        public void run() {
-                            RTCEngine mRtcEngine = workerThread.getRtcEngine();
-                            if (mRtcEngine != null) {
-                                mRtcEngine.enableLocalVideo(false);
-                                mRtcEngine.enableLocalVideo(true);
-//                                mRtcEngine.stopPreview();
-//                                mRtcEngine.startPreview();
-                            }
+                        public void onJoinChannel(int joinChannel) {
+
                         }
                     });
                 }
@@ -591,6 +596,11 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         @Override
         public void didOccurError(RTCEngine.RTCEngineErrorCode code) {
             logger.d("didOccurError:code=" + code);
+            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
+            if (basePrimaryTeamItem instanceof PrimaryTeamMyItem) {
+                PrimaryTeamMyItem otherItem = (PrimaryTeamMyItem) basePrimaryTeamItem;
+                otherItem.didOccurError(code);
+            }
         }
 
         @Override
@@ -629,6 +639,11 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 PrimaryTeamOtherItem otherItem = (PrimaryTeamOtherItem) basePrimaryTeamItem;
                 otherItem.remotefirstAudioRecvWithUid(uid);
             }
+        }
+
+        @Override
+        public void onRemoteVideoStateChanged(int uid, int state) {
+
         }
     };
 

@@ -147,6 +147,21 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
         }, 2000);
     }
 
+    public void onAudio() {
+        tv_livevideo_primary_team_nomic.setVisibility(View.GONE);
+    }
+
+    public void didOccurError(RTCEngine.RTCEngineErrorCode code) {
+        if (code == RTCEngine.RTCEngineErrorCode.RTCEngineErrorCodesAudioError) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    tv_livevideo_primary_team_nomic.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+    }
+
     @Override
     public void onOtherDis(int type, final boolean enable) {
         super.onOtherDis(type, enable);
