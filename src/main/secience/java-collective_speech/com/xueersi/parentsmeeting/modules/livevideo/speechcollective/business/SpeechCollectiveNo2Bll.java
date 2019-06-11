@@ -526,7 +526,7 @@ public class SpeechCollectiveNo2Bll {
         }
     }
 
-    private boolean addEnergy() {
+    private void addEnergy() {
         logger.d("addEnergy:pk=" + liveGetInfo.getIsAllowTeamPk());
         if (!addEnergy && "1".equals(liveGetInfo.getIsAllowTeamPk())) {
             addEnergy = true;
@@ -540,11 +540,10 @@ public class SpeechCollectiveNo2Bll {
 //                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId));
 //                }
 //            });
+            speechCollectiveView.showLottieView();
             LiveEventBus.getDefault(context).post(new TeacherPraiseEvent(false));
-            EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId, true));
-            return true;
+            EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId, false));
         }
-        return false;
     }
 
     private void recognizeError(int code) {
@@ -585,7 +584,6 @@ public class SpeechCollectiveNo2Bll {
 //                    showGoldMicroPhoneView();
                     logger.i("lottie view show");
                     //显示金话筒的Lottie View
-//                    mGoldView.showLottieView();
                 }
             });
             if (lottieLastPlayTime == -1) {
