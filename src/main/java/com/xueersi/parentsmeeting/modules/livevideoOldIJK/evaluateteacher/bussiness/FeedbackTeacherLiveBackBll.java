@@ -34,6 +34,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
     RelativeLayout bottomContent;
     LiveBackPlayerFragment liveBackPlayVideoFragment;
     FeedBackEntity mFeedBackEntity;
+
     LiveFeedBackPager pager = null;
     LiveHttpManager mHttpManager;
     EvaluateResponseParser mParser;
@@ -54,7 +55,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
         if (liveGetInfo != null && (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC
                 && (LiveVideoConfig.EDUCATION_STAGE_3.equals(liveGetInfo.getEducationStage())
                 || LiveVideoConfig.EDUCATION_STAGE_4.equals(liveGetInfo.getEducationStage())))) {
-    //   if (liveGetInfo != null){
+//      if (liveGetInfo != null){
             new android.os.Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -81,6 +82,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
 //            pager = new LiveFeedBackPager(mContext, liveGetInfo.getId(), mFeedBackEntity, liveGetInfo,
 //                    bottomContent, mHttpManager);
 //            pager.setOnPagerClose(onPagerClose);
+//            pager.setCourseId(mVideoEntity.getCourseId());
 //            pager.setFeedbackSelectInterface(feedBackTeacherInterface);
 //        } catch (JSONException e) {
 //            e.printStackTrace();
@@ -102,6 +104,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
 
                         pager = new LiveFeedBackPager(mContext, liveGetInfo.getId(), mFeedBackEntity, liveGetInfo,
                                 bottomContent, mHttpManager);
+                        pager.setCourseId(mVideoEntity.getCourseId());
                         pager.setOnPagerClose(onPagerClose);
                         pager.setFeedbackSelectInterface(feedBackTeacherInterface);
                     }

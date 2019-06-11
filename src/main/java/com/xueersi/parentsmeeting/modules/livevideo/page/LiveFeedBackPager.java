@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.opengl.Visibility;
 import android.os.CountDownTimer;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
@@ -110,8 +111,10 @@ public class LiveFeedBackPager extends LiveBasePager {
     LinearLayout llBottom;
     LinearLayout llSubmitSucess;
 
+    String mainScore;
+    String tutorScore;
     FeedBackTeacherInterface feedBackTeacherInterface;
-
+    private String  courseId;
     public LiveFeedBackPager(Context context) {
         super(context);
     }
@@ -332,8 +335,9 @@ public class LiveFeedBackPager extends LiveBasePager {
 
                 }
                 mainIntput = etMainFeedback.getText().toString();
-
-                checkContentSubmit();
+                if(tvSubmitHint.getVisibility() == View.VISIBLE) {
+                    checkContentSubmit();
+                }
             }
         });
         // 主讲输入监听
@@ -358,7 +362,10 @@ public class LiveFeedBackPager extends LiveBasePager {
 
                 }
                 tutorInput = etTutorFeedback.getText().toString();
-                checkContentSubmit();
+                if(tvSubmitHint.getVisibility() == View.VISIBLE) {
+
+                    checkContentSubmit();
+                }
             }
         });
 
@@ -390,6 +397,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivStatus1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mainScore = "不满意";
                 mainFeedback.clear();
                 setSelect(true);
                 setStyleData(FEED_TYPE_1, true);
@@ -399,6 +407,8 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivStatus2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mainScore = "有待提高";
+
                 mainFeedback.clear();
                 setSelect(true);
                 setStyleData(FEED_TYPE_2, true);
@@ -409,6 +419,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivStatus3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mainScore = "满意";
                 mainFeedback.clear();
                 setSelect(true);
                 setStyleData(FEED_TYPE_3, true);
@@ -419,6 +430,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivTutorStatus1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tutorScore = "不满意";
                 tutorFeedback.clear();
                 setSelect(false);
                 setStyleData(FEED_TYPE_1, false);
@@ -429,6 +441,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivTutorStatus2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tutorScore = "有待提高";
                 tutorFeedback.clear();
                 setSelect(false);
                 setStyleData(FEED_TYPE_2, false);
@@ -439,6 +452,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         ivTutorStatus3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tutorScore = "满意";
                 tutorFeedback.clear();
                 setSelect(false);
                 setStyleData(FEED_TYPE_3, false);
@@ -477,11 +491,13 @@ public class LiveFeedBackPager extends LiveBasePager {
     private void submitFeedback() {
         Drawable leftDraw = mContext.getResources().getDrawable(R.drawable.lspj_tanchuang_loading_icon_normal);
         ivSubmit.setCompoundDrawablesWithIntrinsicBounds(leftDraw, null, null, null);
-
-        mHttpManager.saveEvaluationTeacher(liveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo
-                        .getMainTeacherId(),
-                getFeedTextList(mainFeedback), mainIntput, mGetInfo.getTeacherId(), getFeedTextList(tutorFeedback),
-                tutorInput, mGetInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
+        if(TextUtils.isEmpty(courseId)) {
+            courseId = mGetInfo.getStudentLiveInfo().getCourseId();
+        }
+        mHttpManager.saveEvaluationTeacher(liveId, courseId, mGetInfo.getMainTeacherInfo()
+                        .getTeacherId(),mainScore,
+                getFeedTextList(mainFeedback), mGetInfo.getTeacherId(),tutorScore, getFeedTextList(tutorFeedback),
+                 mGetInfo.getStudentLiveInfo().getClassId(), mainIntput,tutorInput,new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         ivSubmit.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
@@ -650,17 +666,26 @@ public class LiveFeedBackPager extends LiveBasePager {
      */
     private void setSelectData(String text, boolean isMain) {
         if (isMain) {
-            mainFeedback.add(text);
+            if (mainFeedback.contains(text)) {
+                mainFeedback.remove(text);
+            } else {
+                mainFeedback.add(text);
+            }
         } else {
-            tutorFeedback.add(text);
+            if (tutorFeedback.contains(text)) {
+                tutorFeedback.remove(text);
+            } else {
+                tutorFeedback.add(text);
+            }
         }
         setSelect(isMain);
     }
 
     private void setSelect(boolean isMain) {
-        checkContentSubmit();
+        if(tvSubmitHint.getVisibility() == View.VISIBLE) {
+            checkContentSubmit();
+        }
         if (isMain && mainFeedbackList != null && mainFeedbackList.size() > 0) {
-
             for (int i = 0; i < mainFeedbackList.size(); i++) {
                 if (mainFeedback.contains(mainFeedbackList.get(i).getText())) {
                     mainFeedbackList.get(i).setSelectFlag(true);
@@ -690,5 +715,9 @@ public class LiveFeedBackPager extends LiveBasePager {
 
     public void setFeedbackSelectInterface(FeedBackTeacherInterface feedBackTeacherInterface) {
         this.feedBackTeacherInterface = feedBackTeacherInterface;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 }

@@ -1948,7 +1948,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void saveEvaluationTeacher(String liveId, String courseId, String teacherId, String teacherScore, String
             teacherOption, String counselorId, String counselorScore, String
-                                                  counselorOption, String classId, HttpCallBack requestCallBack) {
+                                                  counselorOption, String classId,String mainInput,String tutorInput, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("courseId", courseId);
@@ -1956,8 +1956,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("teacherScore", teacherScore);
         params.addBodyParam("teacherOption", teacherOption);
         params.addBodyParam("counselorId", counselorId);
-        params.addBodyParam("teacherEvaluateContent", counselorScore);
-        params.addBodyParam("counselorEvaluateContent", counselorOption);
+        params.addBodyParam("counselorScore", counselorScore);
+        params.addBodyParam("counselorOption", counselorOption);
+
+        params.addBodyParam("teacherEvaluateContent", mainInput);
+        params.addBodyParam("counselorEvaluateContent", tutorInput);
         params.addBodyParam("classId", classId);
         params.setWriteAndreadTimeOut(5);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SCIENCE_EVALUATE_TEACHER, params, requestCallBack);
