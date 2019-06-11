@@ -99,6 +99,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         } else {
             primaryClassView = new PrimaryClassViewSec(activity);
         }
+        ivLivePrimaryClassKuangjiaImgNormal.setMode(mode);
         setKuangjia();
     }
 
@@ -353,6 +354,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     @Override
     public void onModeChange(final String mode, final boolean isPresent) {
         this.mode = mode;
+        ivLivePrimaryClassKuangjiaImgNormal.setMode(mode);
         super.onModeChange(mode, isPresent);
         logger.e("====>onModeChange:" + this.mode);
         mHandler.post(new Runnable() {

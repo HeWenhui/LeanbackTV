@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 public class PrimaryKuangjiaImageView extends ImageView {
     ArrayList<OnSizeChange> onSizeChanges = new ArrayList<>();
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private String mode = LiveTopic.MODE_CLASS;
 
     public PrimaryKuangjiaImageView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -35,6 +37,10 @@ public class PrimaryKuangjiaImageView extends ImageView {
             }
         });
         logger.d("onAttachedToWindow");
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 
     @Override
@@ -60,8 +66,11 @@ public class PrimaryKuangjiaImageView extends ImageView {
         addSizeChange(new OnSizeChange() {
             @Override
             public void onSizeChange(int width, int height) {
-                for (int i = 0; i < onSizeChanges.size(); i++) {
-                    onSizeChanges.get(i).onSizeChange(width, height);
+                logger.d("notifyChange:mode=" + mode);
+                if (LiveTopic.MODE_CLASS.equals(mode)) {
+                    for (int i = 0; i < onSizeChanges.size(); i++) {
+                        onSizeChanges.get(i).onSizeChange(width, height);
+                    }
                 }
             }
         }, false);
