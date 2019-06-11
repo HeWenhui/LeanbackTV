@@ -306,8 +306,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     @Override
     public void onCheckPermission() {
         if (!leaveChannel) {
-            boolean camera = XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_CAMERA);
-            boolean audio = XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_AUDIO);
+            boolean camera = XesPermission.checkPermissionHave(mContext, PermissionConfig.PERMISSION_CODE_CAMERA);
+            boolean audio = XesPermission.checkPermissionHave(mContext, PermissionConfig.PERMISSION_CODE_AUDIO);
             mLogtf.d("onCheckPermission:camera=" + camera + ",audio=" + audio);
             if (camera || audio) {
                 if (audio) {
@@ -635,6 +635,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         @Override
         public void remotefirstAudioRecvWithUid(int uid) {
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+            mLogtf.d("remotefirstAudioRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
             if (basePrimaryTeamItem instanceof PrimaryTeamOtherItem) {
                 PrimaryTeamOtherItem otherItem = (PrimaryTeamOtherItem) basePrimaryTeamItem;
                 otherItem.remotefirstAudioRecvWithUid(uid);

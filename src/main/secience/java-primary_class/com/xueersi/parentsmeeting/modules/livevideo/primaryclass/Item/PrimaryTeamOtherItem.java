@@ -12,6 +12,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 
 public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
+    /** 用户进入 */
+    private boolean join = false;
+    /** 有没有视频 */
+    private boolean haveVideo = false;
+    /** 有没有音频 */
+    private boolean haveAudio = false;
 
     public PrimaryTeamOtherItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
@@ -140,8 +146,6 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         }
     }
 
-    private boolean haveVideo = false;
-
     @Override
     public void doRenderRemoteUi(SurfaceView surfaceV) {
         super.doRenderRemoteUi(surfaceV);
@@ -152,6 +156,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
 
     @Override
     public void didOfflineOfUid(String method, final boolean join) {
+        this.join = join;
         mLogtf.d("didOfflineOfUid:uid=" + uid + ",method=" + method + ",join=" + join + ",haveVideo=" + haveVideo);
         handler.post(new Runnable() {
             @Override
@@ -161,10 +166,12 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     if (!haveVideo) {
                         rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
                     }
-                    if (audioStatus) {
-                        handler.postDelayed(noMicRun, 2000);
+                    //没有音频，切老师打开音频
+                    if (!haveAudio && audioStatus) {
+                        handler.postDelayed(noMicRun, noMicDelayed);
                     }
                 } else {
+                    haveAudio = false;
                     haveVideo = false;
                 }
             }
@@ -190,6 +197,8 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         }, 2000);
     }
 
+    /** 麦克风故障延迟两秒 */
+    private long noMicDelayed = 2000;
     /** 麦克风故障 */
     private Runnable noMicRun = new Runnable() {
         @Override
@@ -199,7 +208,9 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     };
 
     public void remotefirstAudioRecvWithUid(int uid) {
+        haveAudio = true;
         handler.removeCallbacks(noMicRun);
+        tv_livevideo_primary_team_nomic.setVisibility(View.GONE);
     }
 
     @Override
@@ -259,6 +270,10 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
+                        if (enable && join && !haveAudio) {
+                            handler.removeCallbacks(noMicRun);
+                            handler.postDelayed(noMicRun, noMicDelayed);
+                        }
                         RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
                         if (mRtcEngine != null) {
                             mRtcEngine.enableRemoteAudio(uid, !enable);
