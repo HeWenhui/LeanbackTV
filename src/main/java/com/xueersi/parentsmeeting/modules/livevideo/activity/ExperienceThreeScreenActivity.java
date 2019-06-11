@@ -222,7 +222,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-            mData.put("appid", "1001108");
+            mData.put("appid", appID);
             mData.put("usertype", "student");
             mData.put("teacherid", expLiveInfo.getCoachTeacherId() + "");
             mData.put("timestamp", System.currentTimeMillis() + "");
@@ -856,7 +856,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 rlFirstBackgroundView.setVisibility(View.GONE);
             }
 
-            if(expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_3) {
+            if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_3) {
                 getHandler.postDelayed(playDelayTask, 3 * 1000);
             }
 
@@ -886,21 +886,27 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             }
         }
 
+        if (arg2 == MediaErrorInfo.PLAY_COMPLETE) {
+            return;
+        }
+
         if (expLiveInfo.getMode() == COURSE_STATE_2) {
             sendLogMessage("playerError",
                     "videopath", getBackVideo(),
                     "errCode", arg2 + "",
                     "errMsg", "",
+                    "mode", expLiveInfo.getMode()+"",
                     "status", "failed",
-                    "loglevel", "loglevel",
+                    "loglevel", "Error",
                     "functype", "6");
         } else if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_2) {
             sendLogMessage("playerError",
-                    "streamid", getLiveVideo(),
+                    "stream", getLiveVideo(),
                     "errCode", arg2 + "",
                     "errMsg", "",
+                    "mode", expLiveInfo.getMode()+"",
                     "status", "failed",
-                    "loglevel", "loglevel",
+                    "loglevel", "Error",
                     "functype", "6");
         }
 
