@@ -967,7 +967,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                     TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
                 } else if ("off".equals(status)) {
                     //自动结束，不取消分队，但是需要去掉快速入口
-                    if (mFocusPager instanceof PkTeamSelectPager) {
+                    if (mFocusPager instanceof PkDispatchTeamPager) {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
