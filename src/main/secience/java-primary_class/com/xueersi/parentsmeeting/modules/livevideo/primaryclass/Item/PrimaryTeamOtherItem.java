@@ -18,6 +18,8 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     private boolean haveVideo = false;
     /** 有没有音频 */
     private boolean haveAudio = false;
+    /** 麦克风故障 */
+    private boolean noMic = false;
 
     public PrimaryTeamOtherItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
@@ -125,18 +127,20 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     }
 
     private void setStatus() {
-        mLogtf.d("setStatus:uid=" + uid + ",isLook=" + entity.isLook() + ",videoStatus=" + videoStatus + ",audioStatus=" + audioStatus + ",haveVideo=" + haveVideo);
+        mLogtf.d("setStatus:uid=" + uid + ",isLook=" + entity.isLook() + ",videoStatus=" + videoStatus + ",audioStatus=" + audioStatus + ",haveVideo=" + haveVideo + ",noMic=" + noMic);
         if (entity.isLook()) {
             if (videoStatus && haveVideo) {
                 rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
                 cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
             }
             iv_livevideo_primary_team_voice_open.setVisibility(View.VISIBLE);
-            if (audioStatus) {
-                voiceImageView.setVisibility(View.VISIBLE);
-                iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
-            } else {
-                iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
+            if (!noMic) {
+                if (audioStatus) {
+                    voiceImageView.setVisibility(View.VISIBLE);
+                    iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
+                } else {
+                    iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
+                }
             }
         } else {
             rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
@@ -203,14 +207,29 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     private Runnable noMicRun = new Runnable() {
         @Override
         public void run() {
-            tv_livevideo_primary_team_nomic.setVisibility(View.VISIBLE);
+            noMic = true;
+            voiceImageView.setVisibility(View.GONE);
+            iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_bad_normal);
         }
     };
 
     public void remotefirstAudioRecvWithUid(int uid) {
+        mLogtf.d("remotefirstAudioRecvWithUid:uid=" + uid);
         haveAudio = true;
         handler.removeCallbacks(noMicRun);
-        tv_livevideo_primary_team_nomic.setVisibility(View.GONE);
+        noMic = false;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (audioStatus) {
+                    voiceImageView.setVisibility(View.VISIBLE);
+                    iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
+                } else {
+                    voiceImageView.setVisibility(View.GONE);
+                    iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
+                }
+            }
+        });
     }
 
     @Override
@@ -258,12 +277,14 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     @Override
                     public void run() {
                         voiceImageView.reset();
-                        if (enable) {
-                            iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
-                            voiceImageView.setVisibility(View.VISIBLE);
-                        } else {
-                            iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
-                            voiceImageView.setVisibility(View.GONE);
+                        if (!noMic) {
+                            if (enable) {
+                                iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
+                                voiceImageView.setVisibility(View.VISIBLE);
+                            } else {
+                                iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
+                                voiceImageView.setVisibility(View.GONE);
+                            }
                         }
                     }
                 });

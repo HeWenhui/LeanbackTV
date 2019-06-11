@@ -74,8 +74,10 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private HashMap<String, BasePrimaryTeamItem> courseGroupItemHashMap = new HashMap<>();
     /** 后进入用户的视频布局 */
     private HashMap<String, SurfaceView> surfaceViewHashMap = new HashMap<>();
+    /** 用户麦克风状态 */
+    private HashMap<String, Boolean> userVoiceStat = new HashMap<>();
     /** 用户在线状态 */
-    private HashMap<String, Boolean> userStat = new HashMap<>();
+    private HashMap<String, Boolean> userOnLineStat = new HashMap<>();
     private String mode;
     private int stuid;
     private float scale;
@@ -294,8 +296,13 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                             workerThread.getRtcEngine().setupRemoteVideo(surfaceView, teamMate.getIdInt());
                             otherItem.doRenderRemoteUi(surfaceView);
                         }
-                        otherItem.didOfflineOfUid("updateTeam", userStat.containsKey(teamMate.getId()));
-                        mLogtf.d("updateTeam:id=" + teamMate.getId() + ",index=" + index);
+                        boolean onLineStat = userOnLineStat.containsKey("" + teamMate.getId());
+                        otherItem.didOfflineOfUid("updateTeam", onLineStat);
+                        boolean voiceStat = userVoiceStat.containsKey("" + teamMate.getId());
+                        if (voiceStat) {
+                            otherItem.remotefirstAudioRecvWithUid(teamMate.getIdInt());
+                        }
+                        mLogtf.d("updateTeam:id=" + teamMate.getId() + ",index=" + index + ",onLineStat=" + onLineStat + ",voiceStat=" + voiceStat);
                         break;
                     }
                 }
@@ -310,11 +317,14 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             boolean audio = XesPermission.checkPermissionHave(mContext, PermissionConfig.PERMISSION_CODE_AUDIO);
             mLogtf.d("onCheckPermission:camera=" + camera + ",audio=" + audio);
             if (camera || audio) {
-                if (audio) {
-                    BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
-                    if (basePrimaryTeamItem instanceof PrimaryTeamMyItem) {
-                        PrimaryTeamMyItem otherItem = (PrimaryTeamMyItem) basePrimaryTeamItem;
-                        otherItem.onAudio();
+                BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
+                if (basePrimaryTeamItem instanceof PrimaryTeamMyItem) {
+                    PrimaryTeamMyItem otherItem = (PrimaryTeamMyItem) basePrimaryTeamItem;
+                    if (audio) {
+                        otherItem.onCheckPermission(PrimaryClassConfig.MMTYPE_AUDIO);
+                    }
+                    if (camera) {
+                        otherItem.onCheckPermission(PrimaryClassConfig.MMTYPE_VIDEO);
                     }
                 }
                 if (teamInfoEntity != null && workerThread != null) {
@@ -566,7 +576,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 basePrimaryTeamItem.didOfflineOfUid("remoteUserJoinWitnUid", true);
             } else {
                 //后进入用户，不在本地，请求接口
-                userStat.put("" + uid, true);
+                userOnLineStat.put("" + uid, true);
                 mLogtf.d("remoteUserJoinWitnUid:uid=" + uid);
                 primaryClassInter.getMyTeamInfo();
             }
@@ -575,11 +585,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         @Override
         public void didOfflineOfUid(int uid) {
             surfaceViewHashMap.remove("" + uid);
+            userVoiceStat.remove("" + uid);
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             if (basePrimaryTeamItem != null) {
                 basePrimaryTeamItem.didOfflineOfUid("didOfflineOfUid", false);
             } else {
-                userStat.remove("" + uid);
+                userOnLineStat.remove("" + uid);
             }
         }
 
@@ -634,6 +645,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
         @Override
         public void remotefirstAudioRecvWithUid(int uid) {
+            userVoiceStat.put("" + uid, true);
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             mLogtf.d("remotefirstAudioRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
             if (basePrimaryTeamItem instanceof PrimaryTeamOtherItem) {

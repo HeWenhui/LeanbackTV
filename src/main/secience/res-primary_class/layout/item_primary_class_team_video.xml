@@ -48,6 +48,8 @@
 
     <include layout="@layout/item_primary_class_team_item_nocamera" />
 
+    <include layout="@layout/item_primary_class_team_item_nomic" />
+
     <RelativeLayout
         android:id="@id/rl_livevideo_course_item_video_ufo"
         android:layout_width="match_parent"

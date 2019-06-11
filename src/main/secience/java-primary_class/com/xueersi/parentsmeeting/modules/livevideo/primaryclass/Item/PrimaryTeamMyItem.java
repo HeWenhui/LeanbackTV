@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xes.ps.rtcstream.RTCEngine;
@@ -16,6 +17,8 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     private boolean enableVideo = true;
     private boolean enableAudio = true;
     private int totalEnergy;
+    private TextView tv_livevideo_primary_team_nomic;
+    private RelativeLayout rl_livevideo_course_item_video_nocamera;
     private TextView iv_livevideo_primary_team_energy;
 
     public PrimaryTeamMyItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
@@ -33,6 +36,8 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
         super.initViews(root);
         iv_livevideo_primary_team_energy = root.findViewById(R.id.tv_livevideo_primary_team_energy);
         primaryClassView.decorateItemMy(root);
+        tv_livevideo_primary_team_nomic = root.findViewById(R.id.tv_livevideo_primary_team_nomic);
+        rl_livevideo_course_item_video_nocamera = root.findViewById(R.id.rl_livevideo_course_item_video_nocamera);
         //自己默认显示UFO
         rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
     }
@@ -106,6 +111,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     public void doRenderRemoteUi(SurfaceView surfaceV) {
         super.doRenderRemoteUi(surfaceV);
         haveVideo = true;
+//        rl_livevideo_course_item_video_nocamera.setVisibility(View.GONE);
         rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
     }
 
@@ -147,8 +153,12 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
         }, 2000);
     }
 
-    public void onAudio() {
-        tv_livevideo_primary_team_nomic.setVisibility(View.GONE);
+    public void onCheckPermission(int type) {
+        if (type == PrimaryClassConfig.MMTYPE_AUDIO) {
+            tv_livevideo_primary_team_nomic.setVisibility(View.GONE);
+        } else {
+            rl_livevideo_course_item_video_nocamera.setVisibility(View.GONE);
+        }
     }
 
     public void didOccurError(RTCEngine.RTCEngineErrorCode code) {
@@ -157,6 +167,13 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                 @Override
                 public void run() {
                     tv_livevideo_primary_team_nomic.setVisibility(View.VISIBLE);
+                }
+            });
+        } else if (code == RTCEngine.RTCEngineErrorCode.RTCEngineErrorCodeStartCamera) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    rl_livevideo_course_item_video_nocamera.setVisibility(View.VISIBLE);
                 }
             });
         }
