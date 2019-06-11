@@ -22,6 +22,7 @@ import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
@@ -266,6 +267,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                                     } catch (Exception e) {
                                         CrashReport.postCatchedException(e);
                                         uploadWonderMoment(type, saveFile.getPath());
+                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
                             }
@@ -314,16 +316,37 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                 finalFile.delete();
             }
             logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
-            if (mGetInfo.getPattern() == 6) {//半身直播
-                getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new CutImageListener(type, false));
+            if (mGetInfo != null) {
+                if (mGetInfo.getPattern() == 6) {
+                    //半身直播语文 isArts 为 0 ，useSkin为2
+                    if (mGetInfo.getIsArts() == 0 && mGetInfo.getUseSkin() == 2) {
+                        if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE) {
+                            getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                        }
+                    } else {
+                        getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                        logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
+                    }
+                } else if (mGetInfo.getPattern() == 1) {
+                    if ((type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
+                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
+                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE
+                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_WIN) && mGetInfo.getIsArts() == 2) {
+                        getHttpManager().sendWonderfulMoment(
+                                mGetInfo.getStuId(),
+                                mGetInfo.getId(),
+                                mGetInfo.getStuCouId(),
+                                String.valueOf(type),
+                                result.getHttpPath(),
+                                new UploadImageUrl(type, false));
+                    } else {
+                        logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
+                    }
+                }
             } else {
-                getHttpManager().sendWonderfulMoment(
-                        mGetInfo.getStuId(),
-                        mGetInfo.getId(),
-                        mGetInfo.getStuCouId(),
-                        String.valueOf(type),
-                        result.getHttpPath(),
-                        new CutImageListener(type, false));
+                getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
             }
         }
 
@@ -333,11 +356,11 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         }
     }
 
-    private class CutImageListener extends HttpCallBack {
+    private class UploadImageUrl extends HttpCallBack {
         private int type;
 
-        public CutImageListener(int type, boolean isShow) {
-            super(isShow);
+        public UploadImageUrl(int type, boolean isShowTip) {
+            super(isShowTip);
             this.type = type;
         }
 
@@ -379,19 +402,25 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         }
     }
 
+
     private void uploadWonderMoment(final int type, String path) {
-        mLogtf.d("uploadWonderMoment:type=" + type + ",path=" + path);
+        StringBuilder sbuilder = new StringBuilder("uploadWonderMoment:type=" + type + ",path=" + path);
+        if (mGetInfo != null) {
+            sbuilder.append(",pattern = " + mGetInfo.getPattern());
+        }
+        logger.i(sbuilder.toString());
+        mLogtf.d(sbuilder.toString());
         final File finalFile = new File(path);
         XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(activity);
         CloudUploadEntity uploadEntity = new CloudUploadEntity();
         uploadEntity.setFilePath(path);
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
-        uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
-//        if (mGetInfo.getPattern() == 6) {//半身直播
-//            xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesUploadListener(type, finalFile));
-//        } else if (mGetInfo.getPattern() == 1) {//三分屏直播
+
+        uploadEntity.setCloudPath(mGetInfo.getIsArts() == 2 ? CloudDir.LIVE_ARTS_MOMENT : CloudDir.LIVE_SCIENCE_MOMENT);
+
+//            uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
+
         xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesUploadListener(type, finalFile));
-//        }
     }
 
     private void createPlugin() {
