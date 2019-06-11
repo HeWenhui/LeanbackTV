@@ -506,7 +506,7 @@ public class LiveFeedBackPager extends LiveBasePager {
                         tvSubmitError.setVisibility(View.GONE);
                         llBottom.setVisibility(View.GONE);
                         ivClose.setVisibility(View.GONE);
-                        rlFeedbackContent.setBackgroundColor(R.color.transparent_60);
+                        rlFeedbackContent.setBackgroundResource(R.color.transparent_60);
                         llSubmitSucess.setVisibility(View.VISIBLE);
                         timer.start();
                     }
