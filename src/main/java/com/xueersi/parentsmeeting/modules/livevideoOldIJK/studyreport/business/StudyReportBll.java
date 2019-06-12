@@ -154,13 +154,15 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     @Override
     public void cutImage(final int type, final View view, final boolean cut, boolean predraw) {
         mLogtf.d("cutImage:type=" + type + ",cut=" + cut + ",predraw=" + predraw);
+        logger.e("======>StudyReportBll_startCutImage_00_type:" + type);
         if (types.contains("" + type)) {
             return;
         }
-        final Runnable runnable = new Runnable() {
+      /*  final Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 try {
+                    Log.e("cutImgTrace","======>StudyReportBll_startCutImage_3333");
                     StringBuilder stringBuilder = new StringBuilder();
                     AtomicBoolean atomicBoolean = new AtomicBoolean(false);
                     Bitmap bmpScreen = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
@@ -176,16 +178,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                         savedir.mkdirs();
                     }
                     File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
-                    if (!bmpScreen.isRecycled()) {
-                        LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
-                    } else {
-                        bmpScreen = LiveCutImage.getViewCapture(view, stringBuilder, atomicBoolean);
-                        if (cut) {
-                            bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
-                        }
-                        LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
-                    }
-//                    LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+                    LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
                     view.destroyDrawingCache();
                     mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder);
                     uploadWonderMoment(type, saveFile.getPath());
@@ -198,23 +191,90 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                 }
             }
         };
+        final Thread taskThread = new Thread(runnable);*/
 
-//        final Thread taskThread = new Thread(runnable);
         if (predraw) {
             view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
                     view.getViewTreeObserver().removeOnPreDrawListener(this);
-                    runnable.run();
-//                    taskThread.start();
-
+                    logger.e("======>StudyReportBll_startCutImage_2222");
+                    doImgCut(type, view, cut);
                     return false;
                 }
             });
         } else {
-            runnable.run();
-//            taskThread.start();
+            logger.e("======>StudyReportBll_startCutImage_111");
+            doImgCut(type, view, cut);
         }
+    }
+
+    private void doImgCut(int type, View view, boolean cut) {
+        StringBuilder stringBuilder = new StringBuilder();
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        Bitmap viewBitmap = getViewBitmap(view, stringBuilder, atomicBoolean);
+        if (viewBitmap != null) {
+            upLoadViewBitmap(viewBitmap, stringBuilder, atomicBoolean, cut, type);
+        } else {
+            mLogtf.d("cutImage:type=" + type + ",bmpScreen=null");
+        }
+    }
+
+    /**
+     * 从View 得到bitmap 需在主线程执行
+     *
+     * @param view
+     * @param stringBuilder
+     * @param atomicBoolean
+     * @return
+     */
+    private Bitmap getViewBitmap(View view, StringBuilder stringBuilder, AtomicBoolean atomicBoolean) {
+        Bitmap resultBitmap = null;
+        try {
+            if (view != null) {
+//                stringBuilder = new StringBuilder();
+//                atomicBoolean = new AtomicBoolean(false);
+                resultBitmap = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            mLogtf.e("getViewBitmap", e);
+            CrashReport.postCatchedException(e);
+        }
+        return resultBitmap;
+    }
+
+    /**
+     * 上传截图
+     *
+     * @param viewBitmap
+     */
+    private void upLoadViewBitmap(final Bitmap viewBitmap, final StringBuilder stringBuilder, final AtomicBoolean atomicBoolean, final boolean cut, final int type) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Bitmap saveBitmap = viewBitmap;
+                    if (cut) {
+                        saveBitmap = LiveCutImage.cutBitmap(saveBitmap);
+                    }
+                    File savedir = new File(alldir, "type-" + type);
+                    if (!savedir.exists()) {
+                        savedir.mkdirs();
+                    }
+                    File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
+                    LiveCutImage.saveImage(saveBitmap, saveFile.getPath());
+                    mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder);
+                    uploadWonderMoment(type, saveFile.getPath());
+                    if (cut || atomicBoolean.get()) {
+                        saveBitmap.recycle();
+                    }
+                } catch (Exception e) {
+                    mLogtf.e("cutImage", e);
+                    CrashReport.postCatchedException(e);
+                }
+            }
+        }.start();
     }
 
     @Override

@@ -51,9 +51,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 
 /**
  * 战队 pk 结果页
@@ -273,16 +274,31 @@ public class PkTeamResultPager extends BasePager {
             initRecycleView();
 
             final StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
-
+//            if (studyReportAction != null) {
+//                mView.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, false);
+//                    }
+//                }, 300);
+//
+//            }
+            // FIXME: 2019/6/12
 //            if (studyReportAction != null && data.isMe()) {
-            Observable.
+            Single.
                     just(studyReportAction != null && data.isMe()).
+                    filter(new Predicate<Boolean>() {
+                        @Override
+                        public boolean test(Boolean aBoolean) throws Exception {
+                            return aBoolean;
+                        }
+                    }).
                     delay(300, TimeUnit.MILLISECONDS).
                     observeOn(AndroidSchedulers.mainThread()).
                     subscribe(new Consumer<Boolean>() {
                         @Override
                         public void accept(Boolean aBoolean) throws Exception {
-                            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, false);
+                            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, true);
                         }
                     });
 
