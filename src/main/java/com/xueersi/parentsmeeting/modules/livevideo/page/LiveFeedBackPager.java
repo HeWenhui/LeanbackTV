@@ -470,7 +470,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         }
     }
 
-    CountDownTimer timer = new CountDownTimer(3000, 1000) {
+    CountDownTimer timer = new CountDownTimer(2000, 1000) {
         @Override
         public void onTick(long millisUntilFinished) {
 //            String time = String.valueOf(millisUntilFinished / 1000);
@@ -628,6 +628,9 @@ public class LiveFeedBackPager extends LiveBasePager {
             }
         }
         setFeedStyleList(style, isMain);
+        if(tvSubmitHint.getVisibility() == View.VISIBLE) {
+            checkContentSubmit();
+        }
     }
 
     /**

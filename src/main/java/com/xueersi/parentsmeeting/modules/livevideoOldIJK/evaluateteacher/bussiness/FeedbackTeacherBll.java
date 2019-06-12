@@ -44,12 +44,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
         if (getInfo != null && getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
             mParser =new EvaluateResponseParser();
 
-            new android.os.Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showFeedBack(bottomContent);
-                }
-            }, 10000);
+            showFeedBack(bottomContent);
         }
     }
 
