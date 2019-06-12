@@ -6,6 +6,7 @@
     android:visibility="gone">
 
     <ImageView
+        android:id="@id/iv_livevideo_course_item_video_nocamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

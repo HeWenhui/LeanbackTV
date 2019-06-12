@@ -139,6 +139,8 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         iv_livevideo_course_item_video_ufo.setImageResource(R.drawable.bg_live_xuesheng_shipin_mid_ufo_normal_cn);
         ImageView iv_live_xuesheng_shipin_mid_daijiaru_normal = view.findViewById(R.id.iv_live_xuesheng_shipin_mid_daijiaru_normal);
         iv_live_xuesheng_shipin_mid_daijiaru_normal.setImageResource(R.drawable.bg_lvie_xuesheng_shipin_mid_diaoxian_normal_cn);
+        ImageView iv_livevideo_course_item_video_nocamera = view.findViewById(R.id.iv_livevideo_course_item_video_nocamera);
+        iv_livevideo_course_item_video_nocamera.setImageResource(R.drawable.bg_live_xuesheng_shipin_mid_carmer_normal_cn);
     }
 
     /** {@link R.layout#item_primary_class_team_other_video } */
