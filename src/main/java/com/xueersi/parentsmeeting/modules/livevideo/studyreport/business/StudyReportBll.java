@@ -158,19 +158,16 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         if (types.contains("" + type)) {
             return;
         }
-        logger.e("======>StudyReportBll_startCutImage_00");
         if (predraw) {
             view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
                     view.getViewTreeObserver().removeOnPreDrawListener(this);
-                    logger.e("======>StudyReportBll_startCutImage_2222");
                     doImgCut(type, view, cut);
                     return false;
                 }
             });
         } else {
-            logger.e("======>StudyReportBll_startCutImage_111");
             doImgCut(type, view, cut);
         }
     }

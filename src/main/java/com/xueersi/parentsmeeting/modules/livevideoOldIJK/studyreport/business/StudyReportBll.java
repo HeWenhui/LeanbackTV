@@ -154,57 +154,20 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     @Override
     public void cutImage(final int type, final View view, final boolean cut, boolean predraw) {
         mLogtf.d("cutImage:type=" + type + ",cut=" + cut + ",predraw=" + predraw);
-        logger.e("======>StudyReportBll_startCutImage_00_type:" + type);
         if (types.contains("" + type)) {
             return;
         }
-      /*  final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Log.e("cutImgTrace","======>StudyReportBll_startCutImage_3333");
-                    StringBuilder stringBuilder = new StringBuilder();
-                    AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-                    Bitmap bmpScreen = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
-                    if (bmpScreen == null) {
-                        mLogtf.d("cutImage:type=" + type + ",bmpScreen=null");
-                        return;
-                    }
-                    if (cut) {
-                        bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
-                    }
-                    File savedir = new File(alldir, "type-" + type);
-                    if (!savedir.exists()) {
-                        savedir.mkdirs();
-                    }
-                    File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
-                    LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
-                    view.destroyDrawingCache();
-                    mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder);
-                    uploadWonderMoment(type, saveFile.getPath());
-                    if (cut || atomicBoolean.get()) {
-                        bmpScreen.recycle();
-                    }
-                } catch (Exception e) {
-                    mLogtf.e("cutImage", e);
-                    CrashReport.postCatchedException(e);
-                }
-            }
-        };
-        final Thread taskThread = new Thread(runnable);*/
 
         if (predraw) {
             view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
                     view.getViewTreeObserver().removeOnPreDrawListener(this);
-                    logger.e("======>StudyReportBll_startCutImage_2222");
                     doImgCut(type, view, cut);
                     return false;
                 }
             });
         } else {
-            logger.e("======>StudyReportBll_startCutImage_111");
             doImgCut(type, view, cut);
         }
     }
