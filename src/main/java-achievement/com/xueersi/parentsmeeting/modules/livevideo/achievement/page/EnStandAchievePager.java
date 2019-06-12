@@ -86,11 +86,7 @@ public class EnStandAchievePager extends LiveBasePager {
         goldCount = mLiveGetInfo.getGoldCount();
         energyCount = enpkEnergy.me;
         activity = (Activity) context;
-        try {
-            LAYOUT_SUMMER_SIZE =  UmsAgentTrayPreference.getInstance().getString(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE);
-        } catch (ItemNotFoundException e) {
-            e.printStackTrace();
-        }
+
         initView();
         initData();
         initListener();
@@ -127,7 +123,7 @@ public class EnStandAchievePager extends LiveBasePager {
         } else {
             vsAchiveBottom2.inflate();
         }
-        //  setRlAchieveContent();
+        setRlAchieveContent(null);
         setUserHeadImage();
         cbAchiveTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -171,7 +167,7 @@ public class EnStandAchievePager extends LiveBasePager {
      */
     public void setRlAchieveContent(ArtsExtLiveInfo extLiveInfo){
         mExtLiveInfo = extLiveInfo;
-        if(mExtLiveInfo!=null ){
+        if (mExtLiveInfo != null ){
             LAYOUT_SUMMER_SIZE = mExtLiveInfo.getSummerCourseWareSize();
         }
         if(ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)) {
