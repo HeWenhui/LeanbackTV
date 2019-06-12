@@ -26,6 +26,11 @@ public interface SpeechCollectiveView {
 
     View getRootView();
 
+    /**
+     * 显示金话筒的lottieView
+     */
+    void showLottieView();
+
     interface OnTipHide {
         void hide();
     }
