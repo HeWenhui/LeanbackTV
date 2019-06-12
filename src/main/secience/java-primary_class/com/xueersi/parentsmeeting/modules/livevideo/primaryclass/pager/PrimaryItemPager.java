@@ -80,6 +80,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private HashMap<String, Boolean> userOnLineStat = new HashMap<>();
     private String mode;
     private int stuid;
+    private boolean showTeamMid = false;
     private String stuName;
     private float scale;
     private PrimaryClassInter primaryClassInter;
@@ -349,7 +350,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         workerThread.setOnEngineCreate(new CloudWorkerThreadPool.OnEngineCreate() {
             @Override
             public void onEngineCreate(RTCEngine mRtcEngine) {
-                logger.d("onEngineCreate:mRtcEngine=" + (mRtcEngine == null));
+                mLogtf.d("onEngineCreate:mRtcEngine=" + (mRtcEngine == null));
                 if (mRtcEngine != null) {
                     handler.post(new Runnable() {
                         @Override
@@ -381,15 +382,18 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         workerThread.eventHandler().addEventHandler(listener);
         workerThread.start();
         tvPrimaryTeamName.setText(teamInfoEntity.getTeamName());
-        tvPrimaryTeamNameMid.setText("欢迎加入 “" + teamInfoEntity.getTeamName() + "”");
-        tvPrimaryTeamNameMid.setVisibility(View.VISIBLE);
-        ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(ivPrimaryTeamIcon);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                tvPrimaryTeamNameMid.setVisibility(View.GONE);
-            }
-        }, 2000);
+        if (!showTeamMid) {
+            showTeamMid = true;
+            tvPrimaryTeamNameMid.setText("欢迎加入 “" + teamInfoEntity.getTeamName() + "”");
+            tvPrimaryTeamNameMid.setVisibility(View.VISIBLE);
+            ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(ivPrimaryTeamIcon);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tvPrimaryTeamNameMid.setVisibility(View.GONE);
+                }
+            }, 2000);
+        }
     }
 
     @Override
