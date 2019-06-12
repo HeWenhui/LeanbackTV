@@ -658,12 +658,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         @Override
         public void remotefirstAudioRecvWithUid(int uid) {
             userVoiceStat.put("" + uid, true);
-            BasePrimaryTeamItem basePrimaryTeamItem;
-            if (uid == 0) {
-                basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
-            } else {
-                basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
-            }
+            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             mLogtf.d("remotefirstAudioRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
             if (basePrimaryTeamItem instanceof BasePrimaryTeamPeopleItem) {
                 BasePrimaryTeamPeopleItem peopleItem = (BasePrimaryTeamPeopleItem) basePrimaryTeamItem;
@@ -674,7 +669,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         @Override
         public void onRemoteVideoStateChanged(int uid, int state) {
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
-            mLogtf.d("remotefirstAudioRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
+            mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
             if (basePrimaryTeamItem instanceof PrimaryTeamOtherItem) {
                 PrimaryTeamOtherItem otherItem = (PrimaryTeamOtherItem) basePrimaryTeamItem;
                 otherItem.onRemoteVideoStateChanged(uid, state);
