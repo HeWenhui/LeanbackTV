@@ -1496,7 +1496,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         void updateHead() {
             Activity activity = (Activity) mContext;
             if (!activity.isFinishing()) {
-                ImageLoader.with(mContext).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig
+                ImageLoader.with(activity.getApplication()).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig
                         .BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
