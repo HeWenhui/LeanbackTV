@@ -86,7 +86,11 @@ public class EnStandAchievePager extends LiveBasePager {
         goldCount = mLiveGetInfo.getGoldCount();
         energyCount = enpkEnergy.me;
         activity = (Activity) context;
-
+        try {
+            LAYOUT_SUMMER_SIZE =  UmsAgentTrayPreference.getInstance().getString(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE);
+        } catch (ItemNotFoundException e) {
+            e.printStackTrace();
+        }
         initView();
         initData();
         initListener();
@@ -175,9 +179,20 @@ public class EnStandAchievePager extends LiveBasePager {
             LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
             layoutParams.rightMargin = SizeUtils.Dp2Px(activity,10);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
             rlAchieveContent.setLayoutParams(layoutParams);
+
+
             llImageContent.setVisibility(View.GONE);
+        } else {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
+            LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+            layoutParams.leftMargin = SizeUtils.Dp2Px(activity,10);
+            layoutParams.topMargin = SizeUtils.Dp2Px(activity,10);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+            rlAchieveContent.setLayoutParams(layoutParams);
+
+            llImageContent.setVisibility(View.VISIBLE);
         }
     }
 

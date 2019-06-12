@@ -173,7 +173,7 @@ public class EnStandAchievePager extends LiveBasePager {
      */
     public void setRlAchieveContent(ArtsExtLiveInfo extLiveInfo){
         mExtLiveInfo = extLiveInfo;
-        if(mExtLiveInfo!=null ){
+        if (mExtLiveInfo != null ){
             LAYOUT_SUMMER_SIZE = mExtLiveInfo.getSummerCourseWareSize();
         }
         if(ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)) {
@@ -181,10 +181,22 @@ public class EnStandAchievePager extends LiveBasePager {
             LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
             layoutParams.rightMargin = SizeUtils.Dp2Px(activity,10);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
             rlAchieveContent.setLayoutParams(layoutParams);
+
+
             llImageContent.setVisibility(View.GONE);
+        } else {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
+            LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+            layoutParams.leftMargin = SizeUtils.Dp2Px(activity,10);
+            layoutParams.topMargin = SizeUtils.Dp2Px(activity,10);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+            rlAchieveContent.setLayoutParams(layoutParams);
+
+            llImageContent.setVisibility(View.VISIBLE);
         }
+
     }
 
     /**设置头像*/
