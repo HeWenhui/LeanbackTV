@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallEnglishRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ViewUtil;
 import com.xueersi.ui.widget.CircleImageView;
@@ -143,6 +144,8 @@ public class EnStandAchievePager extends LiveBasePager {
                     }
                 }
 //                if (com.xueersi.common.config.AppConfig.DEBUG) {
+//
+//                    setRlAchieveContent(null);
 //                    Random random = new Random();
 //                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
 //                    int nextInt = random.nextInt();
@@ -180,23 +183,46 @@ public class EnStandAchievePager extends LiveBasePager {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
             LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
             layoutParams.rightMargin = SizeUtils.Dp2Px(activity,10);
+            layoutParams.leftMargin  = 0;
+            layoutParams.topMargin = SizeUtils.Dp2Px(activity,8);
+            layoutParams.width = SizeUtils.Dp2Px(activity,177);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
             rlAchieveContent.setLayoutParams(layoutParams);
+
+//            RelativeLayout.LayoutParams cbParams = (RelativeLayout.LayoutParams)cbAchiveTitle.getLayoutParams();
+//            cbParams.rightMargin = SizeUtils.Dp2Px(activity,13);
+//            cbParams.leftMargin = SizeUtils.Dp2Px(activity,0);
+//
+//            cbParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+         //   cbAchiveTitle.setLayoutParams(cbParams);
+
 
 
             llImageContent.setVisibility(View.GONE);
         } else {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
             LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
-            layoutParams.leftMargin = SizeUtils.Dp2Px(activity,10);
-            layoutParams.topMargin = SizeUtils.Dp2Px(activity,10);
+            layoutParams.leftMargin =   videoPoint.screenWidth - videoPoint.x4+SizeUtils.Dp2Px(activity,10);
+
+            layoutParams.topMargin = SizeUtils.Dp2Px(activity,8);
+            layoutParams.width = SizeUtils.Dp2Px(activity,177);
+
+            layoutParams.rightMargin = 0;
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
             rlAchieveContent.setLayoutParams(layoutParams);
 
+//            RelativeLayout.LayoutParams cbParams = (RelativeLayout.LayoutParams)cbAchiveTitle.getLayoutParams();
+//            cbParams.leftMargin = SizeUtils.Dp2Px(activity,13);
+//            cbParams.rightMargin = SizeUtils.Dp2Px(activity,0);
+//
+//            cbParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//            cbAchiveTitle.setLayoutParams(cbParams);
+
             llImageContent.setVisibility(View.VISIBLE);
         }
-
     }
 
     /**设置头像*/
@@ -204,7 +230,7 @@ public class EnStandAchievePager extends LiveBasePager {
         String img = mLiveGetInfo.getStuImg();
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)llImageContent.getLayoutParams();
         layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth -  LiveVideoPoint.getInstance().x4 + SizeUtils.Dp2Px(activity,10);
-//        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
+        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
         llImageContent.setLayoutParams(layoutParams);
         ImageLoader.with(activity).load(img).into(civUserImage);
     }
@@ -385,7 +411,7 @@ public class EnStandAchievePager extends LiveBasePager {
             lp.rightMargin = SizeUtils.Dp2Px(mContext,30);
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
          } else {
-            lp.leftMargin = SizeUtils.Dp2Px(mContext, 22);
+            lp.leftMargin = SizeUtils.Dp2Px(mContext, 30);
          }
         final ViewGroup viewGroup = (ViewGroup) mView;
         viewGroup.addView(lottieAnimationView, lp);

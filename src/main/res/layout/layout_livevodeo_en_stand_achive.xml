@@ -120,7 +120,9 @@
 
         <CheckBox
             android:id="@id/cb_livevideo_en_stand_achive_title"
-            android:layout_width="wrap_content"
+            android:layout_width="152dp"
+            android:layout_marginLeft="13dp"
+            android:layout_marginRight="13dp"
             android:layout_height="wrap_content"
             android:background="@drawable/selector_live_en_stand_achive_open"
             android:button="@null"
