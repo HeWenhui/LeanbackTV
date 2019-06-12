@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -55,6 +56,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     private MediaDataObserverPlugin mediaDataObserverPlugin;
     File alldir = LiveCacheFile.geCacheFile(activity, "studyreport");
     ArrayList<String> types = new ArrayList<>();
+    private LiveThreadPoolExecutor liveThreadPoolExecutor;
 
     public StudyReportBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -66,6 +68,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         super.onLiveInited(getInfo);
         if (getInfo.getAllowSnapshot() == 1) {
             putInstance(StudyReportAction.class, this);
+            liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
             initData();
         } else {
             mLiveBll.removeBusinessBll(this);
@@ -214,7 +217,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
      * @param viewBitmap
      */
     private void upLoadViewBitmap(final Bitmap viewBitmap, final StringBuilder stringBuilder, final AtomicBoolean atomicBoolean, final boolean cut, final int type) {
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -242,7 +245,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     CrashReport.postCatchedException(e);
                 }
             }
-        }.start();
+        });
     }
 
     @Override
