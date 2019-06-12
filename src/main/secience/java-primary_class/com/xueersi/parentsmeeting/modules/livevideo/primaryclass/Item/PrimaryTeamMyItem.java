@@ -234,15 +234,17 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                     }
                 }
             });
-            cloudWorkerThreadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
-                    if (mRtcEngine != null) {
-                        mRtcEngine.muteLocalAudio(!enable);
+            if (cloudWorkerThreadPool != null) {
+                cloudWorkerThreadPool.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+                        if (mRtcEngine != null) {
+                            mRtcEngine.muteLocalAudio(!enable);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 }

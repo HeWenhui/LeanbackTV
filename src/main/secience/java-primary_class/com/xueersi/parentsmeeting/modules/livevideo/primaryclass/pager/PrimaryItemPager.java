@@ -80,6 +80,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private HashMap<String, Boolean> userOnLineStat = new HashMap<>();
     private String mode;
     private int stuid;
+    private String stuName;
     private float scale;
     private PrimaryClassInter primaryClassInter;
     /** 视频默认开 */
@@ -150,6 +151,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         logger.d("onLiveInited:mode=" + getInfo.getMode() + "," + mode);
+        stuName = getInfo.getStuName();
         if (!getInfo.getMode().equals(mode)) {
             mode = getInfo.getMode();
             if (LiveTopic.MODE_TRANING.equals(mode)) {
@@ -430,6 +432,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             mLogtf.d("addItem:size=" + result.size());
         } else {
             result = new ArrayList<>();
+            //把自己加入
+//            TeamMate myTeam = new TeamMate();
+//            myTeam.setId("" + stuid);
+//            myTeam.setIdInt(stuid);
+//            myTeam.setName(stuName);
+//            result.add(myTeam);
         }
         logger.d("addItem:size=" + result.size());
         LayoutInflater mInflater = LayoutInflater.from(mContext);
