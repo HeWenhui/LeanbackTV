@@ -529,8 +529,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     /** 记录播放失败日志日志 */
     protected void recordFailData(String jsonString) {
-
-        UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.PLAY_EXCEPTION, jsonString);
+        if (getActivity() != null) {
+            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.PLAY_EXCEPTION, jsonString);
+        }
     }
 
     /** 加载缓冲进度动画 */
