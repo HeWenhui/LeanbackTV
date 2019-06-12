@@ -120,7 +120,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      */
     private TextView tvOops;
     /**
-     * oops
+     * 没听清,请大声点哦
      */
     private TextView tvVoiceTip;
     /**
@@ -389,7 +389,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         });
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "99999", creattime, new StaticWeb.OnMessage() {
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "99999", creattime, new StaticWeb
+                .OnMessage() {
             @Override
             public void postMessage(String where, final JSONObject message, String origin) {
                 try {
@@ -515,7 +516,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     private void startSpeechRecognize() {
         File dir = LiveCacheFile.geCacheFile(mContext, "groupgame");
-        FileUtils.deleteDir(dir);
+        //只有第一次删除
+        if (saveVideoFile == null) {
+            FileUtils.deleteDir(dir);
+        }
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -555,12 +559,20 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     }
                     if (resultEntity.getNewSenIdx() >= 0) {
                         singleModeAction.onHitSentence(resultEntity);
+                        handler.removeCallbacks(onCoursewareComeOnRunable);
+                        isComeOnRunablePosted = false;
                     }
                 }
             }
 
             @Override
             public void onVolumeUpdate(int volume) {
+                if (volume > 10) {
+                    if (!isComeOnRunablePosted) {
+                        handler.postDelayed(onCoursewareComeOnRunable, 3000);
+                        isComeOnRunablePosted = true;
+                    }
+                }
                 float fVolume = (float) volume / 10.0f;
                 logger.i("onVolumeUpdate = " + volume + ":" + fVolume);
                 mWaveView.setWaveAmplitude(fVolume);
@@ -908,6 +920,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void startTimer() {
+            handler.removeCallbacks(onCoursewareComeOnRunable);
+            isComeOnRunablePosted = false;
             handler.removeCallbacks(turnPageRunnable);
             presentTime = System.currentTimeMillis();
             singleCount = 0;
@@ -1062,7 +1076,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 jsonData.put("isTurnPage", isTurnPage);
                 jsonData.put("turnToPageNum", turnToPageNum);
                 logger.d("uploadScore : jsonData = " + jsonData.toString());
-                postMessage(wvSubjectWeb, jsonData);
+                postMessage(jsonData);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -1282,7 +1296,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
                 jsonData.put("rightItem", rightItem);
                 jsonData.put("combo", 0);
-                postMessage(wvSubjectWeb, jsonData);
+                postMessage(jsonData);
             } catch (Exception e) {
                 CrashReport.postCatchedException(new LiveException(TAG, e));
                 logger.d("uploadScore", e);
@@ -1345,7 +1359,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         StaticWeb.sendToCourseware(wvSubjectWeb, type, data);
     }
 
-    private void postMessage(final WebView wvSubjectWeb, JSONObject jsonData) {
+    private void postMessage(JSONObject jsonData) {
         try {
             JSONObject liveinfo = new JSONObject();
             liveinfo.put("liveid", liveId);
@@ -1360,4 +1374,35 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
         wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
     }
+
+    /*  课件comeOn接口  */
+    private void onCoursewareComeOn() {
+        logger.d("onCoursewareComeOn()");
+        JSONObject jsonData = new JSONObject();
+        try {
+            jsonData.put("type", "coursewareComeOn");
+            jsonData.put("comeOn", true);
+
+            JSONObject liveinfo = new JSONObject();
+            liveinfo.put("liveid", liveId);
+            liveinfo.put("userid", stuId);
+            liveinfo.put("testid", "" + detailInfo.id);
+            liveinfo.put("creattime", "" + creattime);
+            liveinfo.put("time", "" + System.currentTimeMillis());
+            jsonData.put("liveinfo", liveinfo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        postMessage(jsonData);
+    }
+
+    private boolean isComeOnRunablePosted = false;
+    private Runnable onCoursewareComeOnRunable = new Runnable() {
+        @Override
+        public void run() {
+            onCoursewareComeOn();
+            isComeOnRunablePosted = false;
+        }
+    };
 }
