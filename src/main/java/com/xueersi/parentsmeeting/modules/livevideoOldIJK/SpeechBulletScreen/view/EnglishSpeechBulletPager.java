@@ -22,6 +22,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Gravity;
@@ -356,12 +357,20 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         tvSpeechbulSend.setLayoutParams(sendLayoutParams);
         //输入框换肤
         etSpeechbulWords.setBackgroundResource(R.drawable.livevideo_btn_junior_repeat_normal);
+        etSpeechbulWords.setPadding(SizeUtils.Dp2Px(mContext, 16), 0, SizeUtils.Dp2Px(mContext, 72), 0);
         RelativeLayout.LayoutParams wordsLayoutParams = (RelativeLayout.LayoutParams) etSpeechbulWords
                 .getLayoutParams();
-        sendLayoutParams.leftMargin = SizeUtils.Dp2Px(mContext, 12);
-        sendLayoutParams.rightMargin = SizeUtils.Dp2Px(mContext, 12);
+        wordsLayoutParams.leftMargin = SizeUtils.Dp2Px(mContext, 12);
+        wordsLayoutParams.rightMargin = SizeUtils.Dp2Px(mContext, 12);
         etSpeechbulWords.setLayoutParams(wordsLayoutParams);
         etSpeechbulWords.setFilters(new InputFilter[]{new InputFilter.LengthFilter(80)});
+        //输入框字数
+        tvSpeechbulTitleCount.setTextSize(16);
+        tvSpeechbulCount.setTextSize(16);
+        RelativeLayout.LayoutParams inputCountLayoutParams = (RelativeLayout.LayoutParams) tvSpeechbulCount
+                .getLayoutParams();
+        inputCountLayoutParams.rightMargin = SizeUtils.Dp2Px(mContext, 28);
+        tvSpeechbulCount.setLayoutParams(inputCountLayoutParams);
     }
 
     /**
@@ -471,7 +480,11 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     tvSpeechbulSend.setAlpha(1.0f);
                     tvSpeechbulSend.setTextColor(Color.WHITE);
                 }
-                tvSpeechbulCount.setText(repickStr.length() + "/" + MAX_INPUT_CHAR_NUMBER);
+                String length = repickStr.length() + "";
+                SpannableStringBuilder span = new SpannableStringBuilder(length + "/" + MAX_INPUT_CHAR_NUMBER);
+                span.setSpan(new ForegroundColorSpan(Color.parseColor("#E1E1E1")), 0, length.length(), Spanned
+                        .SPAN_EXCLUSIVE_INCLUSIVE);
+                tvSpeechbulCount.setText(span);
             }
         });
         //监听软键盘发送按钮
@@ -1052,7 +1065,11 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         rlSpeechbulInputContent.setVisibility(View.VISIBLE);
         tvSpeechbulRepeat.setVisibility(View.VISIBLE);
         etSpeechbulWords.setText(evaluateResult);
-        tvSpeechbulCount.setText(evaluateResult.length() + "/" + MAX_INPUT_CHAR_NUMBER);
+        String length = evaluateResult.length() + "";
+        SpannableStringBuilder span = new SpannableStringBuilder(length + "/" + MAX_INPUT_CHAR_NUMBER);
+        span.setSpan(new ForegroundColorSpan(Color.parseColor("#E1E1E1")), 0, length.length(), Spanned
+                .SPAN_EXCLUSIVE_INCLUSIVE);
+        tvSpeechbulCount.setText(span);
         etSpeechbulWords.requestFocus();
         etSpeechbulWords.setSelection(etSpeechbulWords.getText().toString().length());
         if (StringUtils.isSpace(etSpeechbulWords.getText().toString())) {
