@@ -808,39 +808,50 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     @Override
     public void onResume() {
         super.onResume();
-        if (videoStatus) {
-            foreach(new ItemCall() {
+        if (workerThread != null && LiveTopic.MODE_CLASS.equals(mode)) {
+            workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
                 @Override
-                public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                    basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, true);
+                public void onJoinChannel(int joinChannel) {
+
                 }
             });
         }
-        if (audioStatus) {
-            foreach(new ItemCall() {
-                @Override
-                public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                    basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, true);
-                }
-            });
-        }
+//        if (videoStatus) {
+//            foreach(new ItemCall() {
+//                @Override
+//                public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+//                    basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, true);
+//                }
+//            });
+//        }
+//        if (audioStatus) {
+//            foreach(new ItemCall() {
+//                @Override
+//                public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+//                    basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, true);
+//                }
+//            });
+//        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        foreach(new ItemCall() {
-            @Override
-            public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, false);
-            }
-        });
-        foreach(new ItemCall() {
-            @Override
-            public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, false);
-            }
-        });
+        if (workerThread != null) {
+            workerThread.leaveChannel();
+        }
+//        foreach(new ItemCall() {
+//            @Override
+//            public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+//                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, false);
+//            }
+//        });
+//        foreach(new ItemCall() {
+//            @Override
+//            public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+//                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, false);
+//            }
+//        });
     }
 
     @Override
