@@ -480,11 +480,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     tvSpeechbulSend.setAlpha(1.0f);
                     tvSpeechbulSend.setTextColor(Color.WHITE);
                 }
-                String length = repickStr.length() + "";
-                SpannableStringBuilder span = new SpannableStringBuilder(length + "/" + MAX_INPUT_CHAR_NUMBER);
-                span.setSpan(new ForegroundColorSpan(Color.parseColor("#E1E1E1")), 0, length.length(), Spanned
-                        .SPAN_EXCLUSIVE_INCLUSIVE);
-                tvSpeechbulCount.setText(span);
+                tvSpeechbulCount.setText(getSpannableText(repickStr.length(), false));
             }
         });
         //监听软键盘发送按钮
@@ -991,7 +987,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             //首字母大写
             content = content.substring(0, MAX_INPUT_CHAR_NUMBER);
             tvSpeechbulTitle.setText(content);
-            tvSpeechbulTitleCount.setText("（" + content.length() + "/" + MAX_INPUT_CHAR_NUMBER + "）");
+            tvSpeechbulTitleCount.setText(getSpannableText(content.length(), true));
             originalText = content;
             startTextInput(content);
         }
@@ -1001,7 +997,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         } else {
             if (!StringUtils.isEmpty(content)) {
                 tvSpeechbulTitle.setText(content);
-                tvSpeechbulTitleCount.setText("（" + content.length() + "/" + MAX_INPUT_CHAR_NUMBER + "）");
+                tvSpeechbulTitleCount.setText(getSpannableText(content.length(), true));
                 originalText = content;
                 hasValidSpeechInput = true;
             }
@@ -1065,11 +1061,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         rlSpeechbulInputContent.setVisibility(View.VISIBLE);
         tvSpeechbulRepeat.setVisibility(View.VISIBLE);
         etSpeechbulWords.setText(evaluateResult);
-        String length = evaluateResult.length() + "";
-        SpannableStringBuilder span = new SpannableStringBuilder(length + "/" + MAX_INPUT_CHAR_NUMBER);
-        span.setSpan(new ForegroundColorSpan(Color.parseColor("#E1E1E1")), 0, length.length(), Spanned
-                .SPAN_EXCLUSIVE_INCLUSIVE);
-        tvSpeechbulCount.setText(span);
+        tvSpeechbulCount.setText(getSpannableText(evaluateResult.length(), false));
         etSpeechbulWords.requestFocus();
         etSpeechbulWords.setSelection(etSpeechbulWords.getText().toString().length());
         if (StringUtils.isSpace(etSpeechbulWords.getText().toString())) {
@@ -1105,6 +1097,25 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         } else {
             view.setTextColor(Color.parseColor("#73FFFFFF"));
         }
+    }
+
+    /**
+     * 字符计数框span
+     */
+    private SpannableStringBuilder getSpannableText(int length, boolean addBrackish) {
+        String str = length + "";
+        SpannableStringBuilder span;
+        if (addBrackish) {
+            span = new SpannableStringBuilder("（" + length + "/" + MAX_INPUT_CHAR_NUMBER + "）");
+            span.setSpan(new ForegroundColorSpan(Color.parseColor("#E1E1E1")), 1, str.length()+1, Spanned
+                    .SPAN_EXCLUSIVE_INCLUSIVE);
+        } else {
+            span = new SpannableStringBuilder(length + "/" + MAX_INPUT_CHAR_NUMBER);
+            span.setSpan(new ForegroundColorSpan(Color.parseColor("#E1E1E1")), 0, str.length(), Spanned
+                    .SPAN_EXCLUSIVE_INCLUSIVE);
+        }
+
+        return span;
     }
 
     /**
