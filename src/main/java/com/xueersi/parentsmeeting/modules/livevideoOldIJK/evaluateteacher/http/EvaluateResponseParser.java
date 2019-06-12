@@ -97,7 +97,7 @@ public class EvaluateResponseParser {
             parseFeedbackContent(teacherJson.optJSONArray("choose2"),false,feedBackEntity.getMainContentList());
             parseFeedbackContent(teacherJson.optJSONArray("choose3"),false,feedBackEntity.getMainContentList());
             JSONObject tutorJson = contentjson.optJSONObject("tutorEvaluOption");
-            if (teacherJson != null) {
+            if (tutorJson != null) {
                 parseFeedbackContent(tutorJson.optJSONArray("choose1"),false,feedBackEntity.getTutorContentList());
                 parseFeedbackContent(tutorJson.optJSONArray("choose2"),false,feedBackEntity.getTutorContentList());
                 parseFeedbackContent(tutorJson.optJSONArray("choose3"),false,feedBackEntity.getTutorContentList());

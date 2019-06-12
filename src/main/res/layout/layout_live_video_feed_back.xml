@@ -49,9 +49,9 @@
                     android:layout_width="55dp"
                     android:layout_height="55dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginTop="26dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginBottom="14dp">
+                    android:layout_marginBottom="20dp">
 
                     <com.xueersi.ui.widget.CircleImageView
                         android:id="@id/iv_pager_live_teacher_feedback_main_head_image"
@@ -66,6 +66,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="0.5dp"
                         android:background="@drawable/ic_pager_live_teacher_feedback_main_head_image_tip" />
 
                 </RelativeLayout>
@@ -74,7 +75,7 @@
                     android:id="@id/tv_pager_live_teacher_feedback_main_name"
                     android:layout_width="88dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="44dp"
+                    android:layout_marginTop="37dp"
                     android:layout_toRightOf="@id/rl_pager_live_teacher_feedback_main_head_image"
                     android:paddingRight="10dp"
                     android:text=""
@@ -178,9 +179,9 @@
                     android:layout_width="55dp"
                     android:layout_height="55dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginTop="26dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginBottom="14dp">
+                    android:layout_marginBottom="20dp">
 
                     <com.xueersi.ui.widget.CircleImageView
                         android:id="@id/iv_pager_live_teacher_feedback_tutor_head_image"
@@ -192,6 +193,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="0.5dp"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/ic_pager_live_teacher_feedback_tutor_head_image_tip" />
@@ -201,7 +203,7 @@
                     android:id="@id/tv_pager_live_teacher_feedback_tutor_name"
                     android:layout_width="88dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="43dp"
+                    android:layout_marginTop="37dp"
                     android:layout_toRightOf="@id/rl_pager_live_teacher_feedback_tutor_head_image"
                     android:paddingRight="10dp"
                     android:text=""
