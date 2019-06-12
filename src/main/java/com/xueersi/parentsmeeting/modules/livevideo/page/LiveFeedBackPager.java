@@ -104,7 +104,9 @@ public class LiveFeedBackPager extends LiveBasePager {
     int greyColor;
     NestedScrollView nestedScrollView;
     TextView tvSubmitError;
-    ImageButton imgBtnSubmit;
+    TextView tvRetrySubmit;
+    LinearLayout llRetrySubmit;
+    ImageView ivRetryLoading;
     public boolean isShow = false;
     public boolean showEvaluate = false;
     ImageView ivTitle;
@@ -182,7 +184,11 @@ public class LiveFeedBackPager extends LiveBasePager {
 
         tvMainInputNum = mView.findViewById(R.id.tv_pager_live_teacher_feedback_main_input_num);
         tvTutorInputNum = mView.findViewById(R.id.tv_pager_live_teacher_feedback_tutor_input_num);
-        imgBtnSubmit = mView.findViewById(R.id.btn_pager_live_teacher_feedback_submit);
+        tvRetrySubmit = mView.findViewById(R.id.tv_pager_live_teacher_feedback_retry_submit);
+        llRetrySubmit= mView.findViewById(R.id.ll_pager_live_teacher_feedback_retry_content);
+        ivRetryLoading = mView.findViewById(R.id.iv_pager_live_teacher_feedback_retry_loading);
+
+
         GridLayoutManager manager = new GridLayoutManager(mContext, 3);
         rvFeedbackContent.setLayoutManager(manager);
         GridLayoutManager manager2 = new GridLayoutManager(mContext, 3);
@@ -380,9 +386,10 @@ public class LiveFeedBackPager extends LiveBasePager {
                 }
             }
         });
-        tvSubmitError.setOnClickListener(new View.OnClickListener() {
+        llRetrySubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ivRetryLoading.setVisibility(View.VISIBLE);
                 submitFeedback();
             }
         });
@@ -508,6 +515,7 @@ public class LiveFeedBackPager extends LiveBasePager {
                         ivClose.setVisibility(View.GONE);
                         rlFeedbackContent.setBackgroundResource(R.color.transparent_60);
                         llSubmitSucess.setVisibility(View.VISIBLE);
+                        llRetrySubmit.setVisibility(View.GONE);
                         timer.start();
                     }
 
@@ -540,7 +548,7 @@ public class LiveFeedBackPager extends LiveBasePager {
     private void onSubmitError(String text, boolean isSuccess) {
         tvSubmitError.setText(text);
         if (!isSuccess) {
-            imgBtnSubmit.setVisibility(View.VISIBLE);
+            llRetrySubmit.setVisibility(View.VISIBLE);
             ivSubmit.setVisibility(View.GONE);
         }
         tvSubmitError.setVisibility(View.VISIBLE);
@@ -563,7 +571,7 @@ public class LiveFeedBackPager extends LiveBasePager {
         if (mFeedbackEntity.isHaveTutor()) {
             if (mainFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(mainIntput))
                     && tutorFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(tutorInput))) {
-                tvSubmitHint.setText("请至少为一位老师做出文字评价或一个以上标签");
+                tvSubmitHint.setText("请至少选择一个标签或输入文字建议");
                 tvSubmitHint.setVisibility(View.VISIBLE);
                 return false;
             }
@@ -591,17 +599,17 @@ public class LiveFeedBackPager extends LiveBasePager {
                 ivStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_selected);
                 ivStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_normal);
                 ivStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_normal);
-                etMainFeedback.setHint("说说老师有哪里需要改进的吧");
+                etMainFeedback.setHint("说说老师有哪里需要改进的呢?");
             } else if (FEED_TYPE_2 == style) {
                 ivStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_normal);
                 ivStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_selected);
                 ivStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_normal);
-                etMainFeedback.setHint("说说老师有哪里需要改进的吧");
+                etMainFeedback.setHint("说说老师有哪里需要改进的呢?");
 
             } else {
                 ivStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_normal);
                 ivStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_normal);
-                ivStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_slected);
+                ivStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_selected);
                 etMainFeedback.setHint("谢谢你的肯定，说点什么夸夸你的老师吧");
 
             }
@@ -611,18 +619,18 @@ public class LiveFeedBackPager extends LiveBasePager {
                 ivTutorStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_selected);
                 ivTutorStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_normal);
                 ivTutorStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_normal);
-                etTutorFeedback.setHint("说说老师有哪里需要改进的吧");
+                etTutorFeedback.setHint("说说老师有哪里需要改进的呢?");
 
             } else if (FEED_TYPE_2 == style) {
                 ivTutorStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_normal);
                 ivTutorStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_selected);
                 ivTutorStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_normal);
-                etTutorFeedback.setHint("说说老师有哪里需要改进的吧");
+                etTutorFeedback.setHint("说说老师有哪里需要改进的呢?");
 
             } else {
                 ivTutorStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_normal);
                 ivTutorStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_normal);
-                ivTutorStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_slected);
+                ivTutorStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_selected);
                 etTutorFeedback.setHint("谢谢你的肯定，说点什么夸夸你的老师吧");
 
             }

@@ -1436,7 +1436,9 @@
     <item name="iv_pager_live_teacher_feedback_title" type="id" />
     <item name="iv_pager_live_teacher_feedback_submit" type="id" />
     <item name="tv_pager_live_teacher_feedback_main_input_num" type="id" />
-    <item name="btn_pager_live_teacher_feedback_submit" type="id" />
+    <item name="tv_pager_live_teacher_feedback_retry_submit" type="id" />
+    <item name="iv_pager_live_teacher_feedback_retry_loading" type="id" />
+    <item name="ll_pager_live_teacher_feedback_retry_content" type="id" />
 
     <item name="rv_pager_live_teacher_feedback_content" type="id" />
     <item name="iv_pager_live_teacher_feedback_main_head_image" type="id" />

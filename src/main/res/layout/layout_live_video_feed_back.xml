@@ -313,14 +313,34 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <ImageButton
-            android:id="@id/btn_pager_live_teacher_feedback_submit"
-            android:layout_width="90dp"
-            android:layout_height="36dp"
-            android:layout_alignParentBottom="true"
+        <LinearLayout
+            android:id="@id/ll_pager_live_teacher_feedback_retry_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginTop="20dp"
-            android:background="@drawable/bg_live_video_feedback_submit"
-            android:visibility="visible" />
+            android:background="@drawable/selector_live_feedback_teacher_retry_submit"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@id/iv_pager_live_teacher_feedback_retry_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/lspj_tanchuang_loading_icon_normal"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@id/tv_pager_live_teacher_feedback_retry_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingLeft="5dp"
+                android:text="重试"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:visibility="visible" />
+        </LinearLayout>
 
         <TextView
             android:id="@id/iv_pager_live_teacher_feedback_submit"
@@ -334,7 +354,8 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="匿名提交，并退出"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="13sp" />
 
         <TextView
             android:id="@id/tv_pager_live_teacher_feedback_bottom_submit_hint"
@@ -359,26 +380,27 @@
         android:layout_marginRight="10dp"
         android:background="@drawable/ic_live_video_feedback_close" />
 
-<LinearLayout
-    android:id="@id/ll_pager_live_teacher_feedback_submit_sucess"
-    android:background="@drawable/shape_big_question_result_rank"
-    android:layout_centerInParent="true"
-    android:layout_width="200dp"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:visibility="gone"
-    android:layout_height="128dp">
-    <ImageView
-        android:background="@drawable/ic_live_video_feedback_submit_success"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:id="@id/ll_pager_live_teacher_feedback_submit_sucess"
+        android:layout_width="200dp"
+        android:layout_height="128dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/shape_big_question_result_rank"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <TextView
-        android:textColor="@color/COLOR_5E5E7F"
-        android:text="提交成功"
-        android:layout_marginTop="8dp"
-        android:textSize="14sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_live_video_feedback_submit_success" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="提交成功"
+            android:textColor="@color/COLOR_5E5E7F"
+            android:textSize="14sp" />
+    </LinearLayout>
 </RelativeLayout>
