@@ -669,7 +669,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         @Override
         public void onRemoteVideoStateChanged(int uid, int state) {
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
-            mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
+            mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state + ",item=" + (basePrimaryTeamItem == null));
             if (basePrimaryTeamItem instanceof PrimaryTeamOtherItem) {
                 PrimaryTeamOtherItem otherItem = (PrimaryTeamOtherItem) basePrimaryTeamItem;
                 otherItem.onRemoteVideoStateChanged(uid, state);
