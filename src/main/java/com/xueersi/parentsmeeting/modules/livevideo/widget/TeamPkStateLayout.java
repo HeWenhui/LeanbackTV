@@ -357,7 +357,7 @@ public class TeamPkStateLayout extends FrameLayout {
                     tvState.setText("全力追赶");
                     tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
                 } else if (ratio == HALF_PROGRESS) {
-                    tvState.setText("");
+                    tvState.setText("打成平手");
                     tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
                 }
             } else {

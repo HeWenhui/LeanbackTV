@@ -21,6 +21,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.SpeechbulletPlayBackView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
@@ -43,16 +44,15 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  * Created by Zhang Yuansun on 2018/7/11.
  */
 
-public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
+public class SpeechBulletScreenPlayBackPager extends LiveBasePager implements SpeechbulletPlayBackView {
     private DanmakuView mDanmakuView;
-    protected DanmakuContext mDanmakuContext;
+    private DanmakuContext mDanmakuContext;
     private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
             return false;
         }
     });
-
 
     public SpeechBulletScreenPlayBackPager(Context context) {
         super(context);
@@ -61,8 +61,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
 
     @Override
     public View initView() {
-        View mDanmukuView = initDanmaku();
-        return mDanmukuView;
+        return initDanmaku();
     }
 
     /**
@@ -93,7 +92,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
         DANMU_BACKGROUND_HEIGHT = SizeUtils.Dp2Px(context, DANMU_BACKGROUND_HEIGHT);
     }
 
-    protected View initDanmaku() {
+    private View initDanmaku() {
         // 设置最大显示行数
         HashMap<Integer, Integer> maxLinesPair = new HashMap<>();
         maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 3); // 滚动弹幕最大显示3行
@@ -156,7 +155,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
                     mWeakHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            addDanmaKuFlowers(time + "", time + "", "http://xesfile.xesimg.com/user/h/def10002.png", true);
+                            addDanmaku(time + "", time + "", "http://xesfile.xesimg.com/user/h/def10002.png", true);
                         }
                     });
                     try {
@@ -178,7 +177,6 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
 
         @Override
         public void measure(BaseDanmaku danmaku, TextPaint paint, boolean fromWorkerThread) {
-//=            danmaku.padding = 20;  // 在背景绘制模式下增加padding
             super.measure(danmaku, paint, fromWorkerThread);
         }
 
@@ -216,19 +214,19 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
 
         @Override
         public void releaseResource(BaseDanmaku danmaku) {
-            // TODO 重要:清理含有ImageSpan的text中的一些占用内存的资源 例如drawable
             if (danmaku.text instanceof Spanned) {
                 danmaku.text = "";
             }
         }
     };
 
-    public void addDanmaKuFlowers(final String name, final String msg, final String headImgUrl, final boolean isGuest) {
+    @Override
+    public void addDanmaku(final String name, final String msg, final String headImgUrl, final boolean isGuest) {
         if (mDanmakuContext == null || mDanmakuView == null || !mDanmakuView.isPrepared()) {
             mWeakHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    addDanmaKuFlowers(name, msg, headImgUrl, isGuest);
+                    addDanmaku(name, msg, headImgUrl, isGuest);
                 }
             }, 100);
             return;
@@ -382,22 +380,30 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
 
     }
 
+    @Override
     public void pauseDanmaku() {
         if (mDanmakuView != null) {
             mDanmakuView.pause();
         }
     }
 
+    @Override
     public void resumeDanmaku() {
         if (mDanmakuView != null) {
             mDanmakuView.resume();
         }
     }
 
+    @Override
     public void setDanmakuSpeed(float speed) {
         if (mDanmakuContext != null) {
             mDanmakuContext.setScrollSpeedFactor(1.2f / speed);
         }
+    }
+
+    @Override
+    public View getPager() {
+        return mView;
     }
 
     @Override

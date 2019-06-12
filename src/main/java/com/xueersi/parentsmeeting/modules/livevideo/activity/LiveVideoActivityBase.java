@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.business.AppBll;
@@ -38,12 +39,14 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ActivityUtils;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
+import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
@@ -54,6 +57,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlay
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
@@ -340,15 +345,24 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                     }
                                     isChangeLine = false;
                                 } else {
+                                    String userName = AppBll.getInstance().getAppInfoEntity().getChildName();
+                                    String userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                                     try {
                                         if (vPlayer.getPlayer() instanceof PSIJK) {
-                                            vPlayer.getPlayer().setUserInfo(AppBll.getInstance().getAppInfoEntity().getChildName(), UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                                            vPlayer.getPlayer().setUserInfo(userName, userId);
                                         }
                                         vPlayer.playPSVideo(videoPath, protocol);
                                     } catch (IOException e) {
                                         vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
                                         e.printStackTrace();
                                     } catch (Exception e) {
+                                        StableLogHashMap map = new StableLogHashMap();
+                                        map.put("userName", userName).
+                                                put("userId", userId).
+                                                put("videoPath", videoPath).
+                                                put("protocol", String.valueOf(protocol));
+                                        UmsAgentManager.umsAgentDebug(LiveVideoActivityBase.this, LiveLogUtils.DISPATCH_REQEUSTING, map.getData());
+                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                         e.printStackTrace();
                                     }
                                 }

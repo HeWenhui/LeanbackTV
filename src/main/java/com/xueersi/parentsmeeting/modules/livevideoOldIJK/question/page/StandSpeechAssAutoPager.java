@@ -766,7 +766,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 long entranceTime2 = System.currentTimeMillis() - entranceTime;
-                answers1.put("entranceTime", resultEntity.getSpeechDuration());
+                answers1.put("entranceTime", (int)resultEntity.getSpeechDuration());
                 answers1.put("score", score);
                 JSONObject detail = new JSONObject();
                 detail.put("cont_score", score);
@@ -1150,7 +1150,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 final JSONObject answers = new JSONObject();
                 JSONObject answers1 = new JSONObject();
                 entranceTime = System.currentTimeMillis() - entranceTime;
-                answers1.put("entranceTime", resultEntity.getSpeechDuration());
+                answers1.put("entranceTime", (int)resultEntity.getSpeechDuration());
                 answers1.put("score", 0);
                 JSONObject detail = new JSONObject();
                 detail.put("cont_score", 0);

@@ -424,6 +424,12 @@ public class RolePlayerEntity {
          * 用来朗读倒计时的最长时长
          */
         private int maxReadTime;
+
+        /**
+         * 自己朗读的具体时长
+         */
+        private double selfValidSpeechTime;
+
         /**
          * 剩下的秒数
          */
@@ -660,6 +666,14 @@ public class RolePlayerEntity {
 
         public String getAudio(){
             return audio;
+        }
+
+        public void setSelfValidSpeechTime(double selfValidSpeechTime) {
+            this.selfValidSpeechTime = selfValidSpeechTime;
+        }
+
+        public double getSelfValidSpeechTime(){
+            return this.selfValidSpeechTime;
         }
     }
 
