@@ -96,6 +96,10 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
         }
     }
 
+    public void remotefirstAudioRecvWithUid(int uid) {
+
+    }
+
     @Override
     public void onOtherDis(int type, boolean enable) {
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {

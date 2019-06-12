@@ -658,11 +658,16 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         @Override
         public void remotefirstAudioRecvWithUid(int uid) {
             userVoiceStat.put("" + uid, true);
-            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+            BasePrimaryTeamItem basePrimaryTeamItem;
+            if (uid == 0) {
+                basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
+            } else {
+                basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+            }
             mLogtf.d("remotefirstAudioRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
-            if (basePrimaryTeamItem instanceof PrimaryTeamOtherItem) {
-                PrimaryTeamOtherItem otherItem = (PrimaryTeamOtherItem) basePrimaryTeamItem;
-                otherItem.remotefirstAudioRecvWithUid(uid);
+            if (basePrimaryTeamItem instanceof BasePrimaryTeamPeopleItem) {
+                BasePrimaryTeamPeopleItem peopleItem = (BasePrimaryTeamPeopleItem) basePrimaryTeamItem;
+                peopleItem.remotefirstAudioRecvWithUid(uid);
             }
         }
 

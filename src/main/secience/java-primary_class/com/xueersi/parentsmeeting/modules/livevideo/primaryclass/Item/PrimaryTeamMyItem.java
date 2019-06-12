@@ -171,6 +171,24 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
         }
     }
 
+    // 没有麦克风也会有这个状态
+//    @Override
+//    public void remotefirstAudioRecvWithUid(int uid) {
+//        noMic = false;
+//        handler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (audioStatus) {
+//                    voiceImageView.setVisibility(View.VISIBLE);
+//                    iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
+//                } else {
+//                    voiceImageView.setVisibility(View.GONE);
+//                    iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
+//                }
+//            }
+//        });
+//    }
+
     public void didOccurError(RTCEngine.RTCEngineErrorCode code) {
         if (code == RTCEngine.RTCEngineErrorCode.RTCEngineErrorCodesAudioError) {
             noMic = true;
