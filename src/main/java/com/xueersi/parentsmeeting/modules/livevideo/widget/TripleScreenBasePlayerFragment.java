@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.XesMobAgent;
@@ -22,6 +23,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 
 import java.io.IOException;
 
@@ -179,8 +181,11 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                         vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
                                         e.printStackTrace();
                                     } catch (Exception e) {
-                                        recordImageView(videoConfigEntity.toJSONObject().toString());
+                                        if (videoConfigEntity != null) {
+                                            recordFailData(videoConfigEntity.toJSONObject().toString());
+                                        }
                                         e.printStackTrace();
+                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
                                 initCallBack();

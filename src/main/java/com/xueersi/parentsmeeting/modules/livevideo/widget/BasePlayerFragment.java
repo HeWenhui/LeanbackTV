@@ -414,7 +414,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         e.printStackTrace();
                                     } catch (Exception e) {
                                         e.printStackTrace();
-                                        recordImageView(videoConfigEntity.toJSONObject().toString());
+                                        if (videoConfigEntity != null) {
+                                            recordFailData(videoConfigEntity.toJSONObject().toString());
+                                        }
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
@@ -526,7 +528,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     /** 记录播放失败日志日志 */
-    protected void recordImageView(String jsonString) {
+    protected void recordFailData(String jsonString) {
 
         UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.PLAY_EXCEPTION, jsonString);
     }
