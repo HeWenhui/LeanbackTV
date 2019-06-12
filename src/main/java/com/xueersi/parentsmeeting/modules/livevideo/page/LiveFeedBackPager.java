@@ -571,13 +571,13 @@ public class LiveFeedBackPager extends LiveBasePager {
         if (mFeedbackEntity.isHaveTutor()) {
             if (mainFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(mainIntput))
                     && tutorFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(tutorInput))) {
-                tvSubmitHint.setText("请至少选择一个标签或输入文字建议");
+                tvSubmitHint.setText("请至少为一位老师做出文字评价或一个以上标签");
                 tvSubmitHint.setVisibility(View.VISIBLE);
                 return false;
             }
         } else {
             if (mainFeedback.size() == 0 && (mFeedbackEntity.isHaveInput() && TextUtils.isEmpty(mainIntput))) {
-                tvSubmitHint.setText("请至少选择一个标签或输入文字建议");
+                tvSubmitHint.setText("请输入文字建议或至少选择一个标签");
                 tvSubmitHint.setVisibility(View.VISIBLE);
                 return false;
             }
@@ -610,7 +610,7 @@ public class LiveFeedBackPager extends LiveBasePager {
                 ivStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_normal);
                 ivStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_normal);
                 ivStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_selected);
-                etMainFeedback.setHint("谢谢你的肯定，说点什么夸夸你的老师吧");
+                etMainFeedback.setHint("谢谢你的肯定，说点什么夸夸你的老师吧!");
 
             }
         } else {
@@ -631,7 +631,7 @@ public class LiveFeedBackPager extends LiveBasePager {
                 ivTutorStatus1.setBackgroundResource(R.drawable.bg_live_video_feedback_type1_normal);
                 ivTutorStatus2.setBackgroundResource(R.drawable.bg_live_video_feedback_type2_normal);
                 ivTutorStatus3.setBackgroundResource(R.drawable.bg_live_video_feedback_type3_selected);
-                etTutorFeedback.setHint("谢谢你的肯定，说点什么夸夸你的老师吧");
+                etTutorFeedback.setHint("谢谢你的肯定，说点什么夸夸你的老师吧!");
 
             }
         }
