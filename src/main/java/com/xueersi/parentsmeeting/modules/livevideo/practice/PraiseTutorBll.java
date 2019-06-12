@@ -9,22 +9,20 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.widget.praise.PraisePager;
 import com.xueersi.parentsmeeting.widget.praise.business.OnPraisePageListener;
 import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
-
 
 import org.json.JSONObject;
 
@@ -149,8 +147,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             JSONObject room2Json = jsonObject.optJSONObject("room_2");
             if (room2Json != null) {
                 JSONObject praiseListJson = room2Json.optJSONObject("praiseList");
-                String id = praiseListJson.optString("id");
-                if(isTopic()){
+                if(isTopic() || praiseListJson == null){
                     return;
                 }
                 setTopic(true);

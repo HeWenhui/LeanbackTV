@@ -54,7 +54,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIm
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback.SuperSpeakerBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
@@ -673,9 +675,24 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         UmsAgentManager.umsAgentDebug(activity, "" + code, "status");
         if (code == MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER) {
             videoPlayStatus = status;
+            umsTeacherChange();
         }
         startNewVideo();
         return code;
+    }
+
+    /**
+     * 老师统计
+     */
+    private void umsTeacherChange(){
+      if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN && liveBackBll!=null) {
+          StableLogHashMap logHashMap = new StableLogHashMap("backup_teacher");
+          liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
+      } else if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR){
+          StableLogHashMap logHashMap = new StableLogHashMap("backup_coach");
+          liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
+      }
+
     }
 
     @Override
@@ -1036,4 +1053,5 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             businessBll.setVideoLayoutF(liveVideoPoint);
         }
     }
+
 }
