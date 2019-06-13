@@ -149,6 +149,9 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
     int count = 0;
 
+    public void setLiveGetInfo(LiveGetInfo getInfo) {
+        this.mGetInfo = getInfo;
+    }
 
     public void initView(final RelativeLayout bottomContent) {
         logger.e("======>:bottomContent" + bottomContent);

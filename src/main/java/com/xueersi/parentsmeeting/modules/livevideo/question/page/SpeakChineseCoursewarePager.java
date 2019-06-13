@@ -26,11 +26,18 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.component.cloud.XesCloudUploadBusiness;
+import com.xueersi.component.cloud.config.CloudDir;
+import com.xueersi.component.cloud.config.XesCloudConfig;
+import com.xueersi.component.cloud.entity.CloudUploadEntity;
+import com.xueersi.component.cloud.entity.XesCloudResult;
+import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -43,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsSpeakEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -262,6 +270,10 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * 语音识别是否是由刷新引起的
      **/
     private boolean startAssesByRefresh;
+    /** 评测返回通过分数线*/
+    private final int CUT_OFF_SCORE = 70;
+    private File saveVideoFile;
+    private String assessContent;
 
 
     public SpeakChineseCoursewarePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
@@ -725,7 +737,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         @Override
         public void run() {
             if (assessMap != null && answerMap != null) {
-                String assessContent = "";
+                assessContent = "";
                 String answerContent = "";
                 for (Integer key : assessMap.keySet()) {
                     assessContent += assessMap.get(key) + "|";
@@ -739,13 +751,14 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 }
                 assessContent = assessContent.substring(0, assessContent.length() - 1);
                 logger.d("assessContent :" + assessContent);
-                File dir = LiveCacheFile.geCacheFile(mContext, "speakingChinese");
+                File dir = LiveCacheFile.geCacheFile(mContext, "speakChinese");
                 FileUtils.deleteDir(dir);
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
                 /* 语音保存位置 */
-                File saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
+                saveVideoFile = new File(dir, "speakChinese" + System.currentTimeMillis()
+                        +"U"+ UserBll.getInstance().getMyUserInfoEntity().getStuId() +"P"+liveId+ ".mp3");
                 SpeechParamEntity mParam = new SpeechParamEntity();
                 mParam.setRecogType(SpeechConfig.SPEECH_CHINESE_EVALUATOR_OFFLINE_ONLINE);
                 mParam.setLang(Constants.ASSESS_PARAM_LANGUAGE_CH);
@@ -779,20 +792,25 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                     try {
                                         jsonData.put("type", CourseMessage.SEND_getAnswer);
                                         JSONObject resultData = new JSONObject();
-                                        if (score >= 60) {
-                                            resultData.put("isRight", 1);
+                                        if (score >= CUT_OFF_SCORE) {
+                                            if (answerMap.containsKey(result.getNewSenIdx())){
+                                                resultData.put("isRight", 1);
+                                            }else {
+                                                resultData.put("isRight", 0);
+                                            }
+                                            JSONArray userAnswerArray = new JSONArray();
+                                            JSONObject userAnswer = new JSONObject();
+                                            userAnswer.put("id", result.getNewSenIdx());
+                                            userAnswer.put("text", word);
+                                            userAnswerArray.put(userAnswer);
+                                            resultData.put("userAnswerContent", userAnswerArray);
+                                            jsonData.put("data", resultData);
+                                            logger.e("onResult: " + jsonData.toString());
+                                            StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+
                                         } else {
-                                            resultData.put("isRight", 0);
+                                            logger.i("result score" + score + "result text" + word);
                                         }
-                                        JSONArray userAnswerArray = new JSONArray();
-                                        JSONObject userAnswer = new JSONObject();
-                                        userAnswer.put("id", result.getNewSenIdx());
-                                        userAnswer.put("text", word);
-                                        userAnswerArray.put(userAnswer);
-                                        resultData.put("userAnswerContent", userAnswerArray);
-                                        jsonData.put("data", resultData);
-                                        logger.e("onResult: " + jsonData.toString());
-                                        StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
                                     } catch (JSONException e) {
                                         CrashReport.postCatchedException(e);
                                         mLogtf.e("submitData", e);
@@ -971,6 +989,9 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             ChsSpeakLog.anserMode(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), 
                     isSpeakAnswer
                     ? "0" : "1", wvSubjectWeb.getUrl(), isPlayBack);
+            if (isSpeakAnswer && saveVideoFile != null){
+                ChsSpeakLog.uploadLOG(mContext,liveAndBackDebug,NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),assessContent,liveId,saveVideoFile);
+            }
             NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1,
                     wvSubjectWeb.getUrl(), ispreload,detailInfo.isTUtor());
         }
@@ -1369,5 +1390,64 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         super.onDestroy();
         isDestory = true;
         cancleAssess();
+    }
+    /**
+     * 上传交互日志、阿里云
+     *
+     * @param msg
+     */
+    private void uploadLOG(String assessContent) {
+        final Map<String, String> mData = new HashMap<>();
+        mData.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        mData.put("liveid", liveId);
+        mData.put("assessContent", assessContent);
+        uploadCloud(saveVideoFile.getPath(), new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                XesCloudResult result = (XesCloudResult) objData[0];
+                mData.put("url", result.getHttpPath());
+                mData.put("upload", "success");
+                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                super.onDataFail(errStatus, failMsg);
+                mData.put("upload", "fail");
+                mData.put("url", "");
+                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
+            }
+        });
+    }
+
+    XesCloudUploadBusiness uploadBusiness;
+
+    private void uploadCloud(String path, final AbstractBusinessDataCallBack callBack) {
+            if (uploadBusiness == null) {
+                uploadBusiness = new XesCloudUploadBusiness(mContext);
+            }
+            final CloudUploadEntity entity = new CloudUploadEntity();
+            entity.setFilePath(path);
+            entity.setCloudPath(CloudDir.LIVE_SPEAK_CHINESE);
+        entity.setType(XesCloudConfig.UPLOAD_OTHER);
+        uploadBusiness.asyncUpload(entity, new XesStsUploadListener() {
+            @Override
+            public void onProgress(XesCloudResult result, int percent) {
+
+            }
+
+            @Override
+            public void onSuccess(XesCloudResult result) {
+                logger.i("upload Success:" + result.getHttpPath());
+                callBack.onDataSucess(result);
+            }
+
+            @Override
+            public void onError(XesCloudResult result) {
+                logger.e("upload Error:" + result.getErrorMsg());
+                callBack.onDataFail(0, result.getErrorMsg());
+            }
+        });
+
     }
 }

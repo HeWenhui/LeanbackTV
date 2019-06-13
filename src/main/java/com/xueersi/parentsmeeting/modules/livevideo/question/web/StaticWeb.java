@@ -6,6 +6,7 @@ import android.webkit.JavascriptInterface;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 
 import org.json.JSONException;
@@ -19,9 +20,12 @@ public class StaticWeb {
     private static String TAG = "StaticWeb";
     private OnMessage onMessage;
     private LogToFile logToFile;
+    private String loadUrl;
+    private WebView wvSubjectWeb;
 
     public StaticWeb(Context activity, WebView wvSubjectWeb, String testId, long creattime, OnMessage onMessage) {
         logToFile = new LogToFile(activity, TAG);
+        this.wvSubjectWeb = wvSubjectWeb;
         try {
             logToFile.addCommon("testId", testId);
             logToFile.addCommon("creattime", "" + creattime);
@@ -29,6 +33,15 @@ public class StaticWeb {
             CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         this.onMessage = onMessage;
+    }
+
+    public void setLoadUrl(String loadUrl) {
+        this.loadUrl = loadUrl;
+        try {
+            logToFile.addCommon("loadUrl", loadUrl);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
     }
 
     /**
@@ -39,7 +52,7 @@ public class StaticWeb {
     @JavascriptInterface
     public void postMessage(String jsonStr) {
         if (!("" + jsonStr).contains("errorInfo")) {
-            logToFile.d("postMessage:jsonStr=" + jsonStr);
+            logToFile.d(SysLogLable.courseMessage, "postMessage:jsonStr=" + jsonStr);
         }
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
@@ -76,6 +89,19 @@ public class StaticWeb {
         logToFile.d("onReceive:jsonStr=" + jsonStr + ",times=" + CALL_TIMES);
     }
 
+    public void sendToCourseware(final JSONObject type, String data) {
+        final int old = CALL_TIMES;
+        wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
+        wvSubjectWeb.post(new Runnable() {
+            @Override
+            public void run() {
+                logToFile.d("sendToCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
+            }
+        });
+    }
+
+    /**直接使用对象调用。日志更全*/
+    @Deprecated
     public static void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data) {
         final LogToFile logToFile = new LogToFile(wvSubjectWeb.getContext(), TAG);
         final int old = CALL_TIMES;
@@ -88,9 +114,8 @@ public class StaticWeb {
         });
     }
 
-    public static void testCourseware(final WebView wvSubjectWeb) {
+    public void testCourseware() {
         try {
-            final LogToFile logToFile = new LogToFile(wvSubjectWeb.getContext(), TAG);
             final int old = CALL_TIMES;
             final String data = "*";
             final JSONObject type = new JSONObject();

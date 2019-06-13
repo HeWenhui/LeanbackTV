@@ -41,6 +41,7 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
     private TextView ivSpeechcollectiveNoVolume;
     private RelativeLayout rlSpeechcollectiveNoperm;
     private TextView tvSpeechcollectiveNopermClick;
+    private LottieAnimationView lottieAnimationView;
     private SpeechCollecPresenter speechCollecPresenter;
     private String voiceId;
 
@@ -67,6 +68,7 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
         ivSpeechcollectiveNoVolume = view.findViewById(R.id.iv_livevideo_speechcollective_novolume);
         rlSpeechcollectiveNoperm = view.findViewById(R.id.rl_livevideo_speechcollective_noperm);
         tvSpeechcollectiveNopermClick = view.findViewById(R.id.tv_livevideo_speechcollective_noperm_click);
+        lottieAnimationView = view.findViewById(R.id.lottie_livevideo_gold_microphone_gold_view);
         return view;
     }
 
@@ -151,6 +153,35 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
     public void onHaveVolume() {
         haveVolume = true;
         ivSpeechcollectiveNoVolume.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLottieView() {
+        if (lottieAnimationView != null) {
+            lottieAnimationView.setVisibility(View.VISIBLE);
+            lottieAnimationView.playAnimation();
+            lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    lottieAnimationView.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+        }
     }
 
     private Runnable microphoneShowRunnable = new Runnable() {

@@ -255,7 +255,7 @@ public class SoundWaveView extends View {
         if (mRipples.size() == 0) {
             mRipples.add(new Circle(0, 1));
         }
-        invalidate();
+        postInvalidateDelayed(13);
         canvas.save();
         canvas.restore();
     }

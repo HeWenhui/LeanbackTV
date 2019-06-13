@@ -169,8 +169,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             JSONObject room2Json = jsonObject.optJSONObject("room_2");
             if (room2Json != null) {
                 JSONObject praiseListJson = room2Json.optJSONObject("praiseList");
-                String id = praiseListJson.optString("id");
-                if(isTopic()){
+                if(isTopic() || praiseListJson == null){
                     return;
                 }
                 setTopic(true);

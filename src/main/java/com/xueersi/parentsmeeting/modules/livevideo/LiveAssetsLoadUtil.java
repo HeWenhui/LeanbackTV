@@ -49,8 +49,8 @@ public class LiveAssetsLoadUtil {
      */
     public static void loadAssertsResource(final Activity context, final LoadFileCallBack callback) {
 
-        if(!LiveVideoConfig.assetsDownloadTag){
-            if(callback!=null){
+        if (!LiveVideoConfig.assetsDownloadTag) {
+            if (callback != null) {
                 callback.success();
                 return;
             }
@@ -81,7 +81,13 @@ public class LiveAssetsLoadUtil {
             public void success() {
                 //XESToastUtils.showToast(context, "加载成功");
                 mDataLoadEntity.webDataSuccess();
-                DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
+                try {
+                    if (!context.isFinishing()) {
+                        DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 try {
                     HashMap<String, String> map = new HashMap<>();
                     map.put("logtype", "success");

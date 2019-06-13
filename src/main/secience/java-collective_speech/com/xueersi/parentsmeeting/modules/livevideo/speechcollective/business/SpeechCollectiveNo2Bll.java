@@ -526,7 +526,7 @@ public class SpeechCollectiveNo2Bll {
         }
     }
 
-    private boolean addEnergy() {
+    private void addEnergy() {
         logger.d("addEnergy:pk=" + liveGetInfo.getIsAllowTeamPk());
         if (!addEnergy && "1".equals(liveGetInfo.getIsAllowTeamPk())) {
             addEnergy = true;
@@ -540,11 +540,10 @@ public class SpeechCollectiveNo2Bll {
 //                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId));
 //                }
 //            });
+            speechCollectiveView.showLottieView();
             LiveEventBus.getDefault(context).post(new TeacherPraiseEvent(false));
-            EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId, true));
-            return true;
+            EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId, false));
         }
-        return false;
     }
 
     private void recognizeError(int code) {
@@ -574,9 +573,9 @@ public class SpeechCollectiveNo2Bll {
         }
         int flastvolume = lastvolume;
         lastvolume = volume;
-        if (volume < 2) {
-            volume = flastvolume / 2;
-        }
+//        if (volume < 2) {
+//            volume = flastvolume / 2;
+//        }
         long nowTime = System.currentTimeMillis();
         if (nowTime - lottieLastPlayTime > SpeechCollectiveConfig.LOTTIE_VIEW_INTERVAL && volume > SpeechCollectiveConfig.GOLD_MICROPHONE_VOLUME) {
             mRootView.post(new Runnable() {
@@ -585,7 +584,6 @@ public class SpeechCollectiveNo2Bll {
 //                    showGoldMicroPhoneView();
                     logger.i("lottie view show");
                     //显示金话筒的Lottie View
-//                    mGoldView.showLottieView();
                 }
             });
             if (lottieLastPlayTime == -1) {
@@ -595,7 +593,7 @@ public class SpeechCollectiveNo2Bll {
         }
         if (nowTime - lastVolumeTime > SpeechCollectiveConfig.VOLUME_INTERVAL) {
             ///1挡位
-            int gear = 1;
+            int gear = 0;
             if (volume < SpeechCollectiveConfig.ONE_GEAR_RIGHT
                     && volume >= SpeechCollectiveConfig.ONE_GEAR_LEFT) {
                 List<SoundWaveView.Circle> list = speechCollectiveView.getRipples();

@@ -54,7 +54,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIm
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback.SuperSpeakerBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
@@ -555,17 +557,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
         liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
         //直播
         if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
             //理科
             if (liveBackBll.getIsArts() == 0) {
-                liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
                 initLiveRemarkBll();
                 liveBackBll.addBusinessBll(new SuperSpeakerBackBll(activity, liveBackBll));//语文半身直播回放走的理科
             } else {
-                if (liveBackBll.getIsArts() == 2) {
-                    liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
-                }
                 Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");
                 liveBackBll.addBusinessBll(new ArtsAnswerResultPlayBackBll(activity, liveBackBll));
                 if (liveBackBll.getPattern() != 2) {
@@ -676,9 +675,24 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         UmsAgentManager.umsAgentDebug(activity, "" + code, "status");
         if (code == MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER) {
             videoPlayStatus = status;
+            umsTeacherChange();
         }
         startNewVideo();
         return code;
+    }
+
+    /**
+     * 老师统计
+     */
+    private void umsTeacherChange(){
+      if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN && liveBackBll!=null) {
+          StableLogHashMap logHashMap = new StableLogHashMap("backup_teacher");
+          liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
+      } else if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR && liveBackBll!=null){
+          StableLogHashMap logHashMap = new StableLogHashMap("backup_coach");
+          liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
+      }
+
     }
 
     @Override
@@ -1039,4 +1053,5 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             businessBll.setVideoLayoutF(liveVideoPoint);
         }
     }
+
 }

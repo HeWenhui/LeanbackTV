@@ -618,6 +618,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                             logger.i("show_eva_score_suc:" + resultEntity.getSpeechDuration()
                                     + ":" + resultEntity.getScore());
                             entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
+                            message.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
                             //mIsEvaluatoring = false;
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             message.setSpeechScore(resultEntity.getScore());
