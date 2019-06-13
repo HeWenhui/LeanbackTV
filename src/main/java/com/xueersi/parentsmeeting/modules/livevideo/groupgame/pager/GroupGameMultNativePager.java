@@ -1111,6 +1111,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
             }
         }, 900);
+        handler.removeCallbacks(onCoursewareComeOnRunable);
+        isComeOnRunablePosted = false;
     }
 
     private void startSpeechRecognize() {
@@ -1180,6 +1182,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         if (evaluatorIng != null) {
                             evaluatorIng.onResult(resultEntity);
                         }
+                        handler.removeCallbacks(onCoursewareComeOnRunable);
+                        isComeOnRunablePosted = false;
                     }
                 }
             }
@@ -1189,6 +1193,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                logger.d("onVolumeUpdate:volume = " + volume);
 //                float floatVolume = (float) volume * 3 / 90;
 //                groupSurfaceView.onVolumeUpdate(volume);
+                if (volume > 10) {
+                    if (!isComeOnRunablePosted) {
+                        handler.postDelayed(onCoursewareComeOnRunable, 3000);
+                        isComeOnRunablePosted = true;
+                    }
+                }
                 BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                 if (courseGroupItem != null) {
                     courseGroupItem.onVolumeUpdate(volume * 2);
@@ -2264,6 +2274,37 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
         wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
     }
+
+    /*  课件comeOn接口  */
+    private void onCoursewareComeOn() {
+        logger.d("onCoursewareComeOn()");
+        JSONObject jsonData = new JSONObject();
+        try {
+            jsonData.put("type", "coursewareComeOn");
+            jsonData.put("comeOn", true);
+
+            JSONObject liveinfo = new JSONObject();
+            liveinfo.put("liveid", liveId);
+            liveinfo.put("userid", stuid);
+            liveinfo.put("testid", "" + detailInfo.id);
+            liveinfo.put("creattime", "" + creattime);
+            liveinfo.put("time", "" + System.currentTimeMillis());
+            jsonData.put("liveinfo", liveinfo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        postMessage(jsonData);
+    }
+
+    private boolean isComeOnRunablePosted = false;
+    private Runnable onCoursewareComeOnRunable = new Runnable() {
+        @Override
+        public void run() {
+            onCoursewareComeOn();
+            isComeOnRunablePosted = false;
+        }
+    };
 
     private class VoiceCannnon implements EvaluatorIng {
 

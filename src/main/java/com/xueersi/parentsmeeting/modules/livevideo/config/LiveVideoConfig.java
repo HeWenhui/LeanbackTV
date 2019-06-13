@@ -506,7 +506,7 @@ public class LiveVideoConfig {
     /** 超级演讲秀存储视频的地方 */
     public static final String SUPER_SPEAKER_VIDEO_PATH = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/superSpeaker/";
 
-    public static boolean assetsDownloadTag = false;
+    public static boolean assetsDownloadTag = true;
 
     public static DownLoadFileInfo getDownLoadFileInfo(){
         DownLoadFileInfo info = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
@@ -530,5 +530,9 @@ public class LiveVideoConfig {
         }*/
         return info;
     }
+    /**
+     * 文科三分屏上传精彩瞬间截图url，半身直播走理科的接口
+     */
+    public static final String ART_TRIPLE_WONDERFUL_MOMENT = "https://live.chs.xueersi.com/ExamReport/uploadWonderfulMoment";
 
 }

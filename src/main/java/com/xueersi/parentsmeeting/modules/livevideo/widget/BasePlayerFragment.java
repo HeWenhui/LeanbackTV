@@ -393,11 +393,14 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     }
                                     isChangeLine = false;
                                 } else {
-                                    String userName = null;
-                                    String userId = null;
+                                    String userName, userId;
                                     try {
                                         userName = AppBll.getInstance().getAppInfoEntity().getChildName();
                                         userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        if (videoConfigEntity != null) {
+                                            videoConfigEntity.setUserId(userId);
+                                            videoConfigEntity.setUserName(userName);
+                                        }
                                         if (vPlayer.getPlayer() instanceof PSIJK) {
                                             vPlayer.getPlayer().setUserInfo(userName, userId);
                                         }
@@ -412,9 +415,8 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                         if (videoConfigEntity != null) {
-                                            videoConfigEntity.setUserId(userId).setUserName(userName);
+                                            recordFailData(videoConfigEntity.toJSONObject().toString());
                                         }
-                                        UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.DISPATCH_REQEUSTING, videoConfigEntity.toJSON().toString());
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
@@ -523,6 +525,13 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         tvVideoLoadingText = viewRoot.findViewById(R.id.tv_course_video_loading_tip); // 加载进度文字框
         videoLoadingLayout = viewRoot.findViewById(R.id.rl_course_video_loading); // 加载进度动画
         return viewRoot;
+    }
+
+    /** 记录播放失败日志日志 */
+    protected void recordFailData(String jsonString) {
+        if (getActivity() != null) {
+            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.PLAY_EXCEPTION, jsonString);
+        }
     }
 
     /** 加载缓冲进度动画 */

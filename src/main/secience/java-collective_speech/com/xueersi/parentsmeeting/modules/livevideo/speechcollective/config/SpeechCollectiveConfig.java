@@ -11,7 +11,7 @@ public class SpeechCollectiveConfig {
     public static int ONE_GEAR_RIGHT = 12;
     public static int TWO_GEAR_RIGHT = 14;
     public static int THREE_GEAR_RIGHT = 30;
-    public static int GOLD_ONE_LEVEL_INTEVAL = 1000;
+    public static int GOLD_ONE_LEVEL_INTEVAL = 800;
     public static int GOLD_TWO_LEVEL_INTEVAL = 300;
     public static int GOLD_THREE_LEVEL_INTEVAL = 200;
 }

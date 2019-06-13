@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
@@ -194,7 +193,7 @@ public class CoursewarePreload {
      * 获取课件信息
      */
     public void getCoursewareInfo(String liveId) {
-        Log.e("NbTrac","=======>coursePrealod  getCoursewareInfo:"+liveId);
+        logger.e("=======>coursePrealod  getCoursewareInfo:" + liveId);
         executos.allowCoreThreadTimeOut(true);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
@@ -254,7 +253,7 @@ public class CoursewarePreload {
             if ("science".equals(arts) && coursewareInfoEntity != null) {
                 mNbCoursewareInfo = coursewareInfoEntity.getNbCoursewareInfo();
             }
-            Log.e("NbTrac","=======>onPmSuccess():"+mNbCoursewareInfo);
+            logger.e("=======>onPmSuccess():" + mNbCoursewareInfo);
             performDownLoad();
         }
 
@@ -282,7 +281,7 @@ public class CoursewarePreload {
 
     private void performDownLoad() {
         logger.i("" + courseWareInfos.size() + " " + subjectNum.get());
-        Log.e("NbTrac","=======>performDownLoad() 000:"+courseWareInfos.size()+":"+subjectNum.get());
+        logger.e("=======>performDownLoad() 000:" + courseWareInfos.size() + ":" + subjectNum.get());
         if (courseWareInfos.size() == subjectNum.get()) {
             logger.i("perform download ");
             AppBll.getInstance().registerAppEvent(CoursewarePreload.this);
@@ -646,7 +645,6 @@ public class CoursewarePreload {
      *
      * @param coursewareInfo
      * @param cdns
-     * @param newIPs
      */
     private void downLoadNbResource(CoursewareInfoEntity.NbCoursewareInfo coursewareInfo, List<String> cdns,
                                     List<String> ips) {
@@ -658,7 +656,7 @@ public class CoursewarePreload {
             cacheDir.mkdirs();
         }
 
-        Log.e("NbTrac","=====>downLoadNbResource 11111:"+cacheDir.exists());
+        logger.e("=====>downLoadNbResource 11111:" + cacheDir.exists());
         logger.i("nbresource download ");
         String tempIP = ips.get(0);
         String ip;
@@ -680,7 +678,7 @@ public class CoursewarePreload {
         String fileName = coursewareInfo.getResourceMd5() + ".zip";
         File save = new File(cacheDir, fileName);
         if (!fileIsExists(save.getAbsolutePath())) {
-            Log.e("NbTrac","=====>downLoadNbResource nbresource zip url path:"+  ip + url + " filename:" +  fileName);
+            logger.e("=====>downLoadNbResource nbresource zip url path:" + ip + url + " filename:" + fileName);
             DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(
                     ip + url,
                     cacheDir.getAbsolutePath(),
@@ -713,7 +711,7 @@ public class CoursewarePreload {
 
                     "");
             if (!isPrecise.get()) {
-                //Log.e("NbDownLoad","=====>downLoadNbResource addToAutoDownloadPool");
+                //logger.e("NbDownLoad","=====>downLoadNbResource addToAutoDownloadPool");
                 PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
             } else {
                 PreLoadDownLoaderManager.addUrgentInfo(infoListener);
@@ -1069,7 +1067,7 @@ public class CoursewarePreload {
 
         @Override
         public void onStart(String url) {
-            Log.e("NbTrac","=====>couresPreLoad:onStart url="+url);
+            logger.e("=====>couresPreLoad:onStart url=" + url);
             if (!NbCourseWareConfig.RESOURSE_TYPE_NB.equals(resourcetype)) {
                 StableLogHashMap hashMap = new StableLogHashMap();
 //            hashMap.put("eventid", LogConfig.PRE_LOAD_START);
@@ -1146,7 +1144,7 @@ public class CoursewarePreload {
         @Override
         public void onFail(int errorCode) {
 //            String ip = "http://" + ips.get((cdnPos.getAndIncrement()) % cdnLength.get());
-            Log.e("NbTrac","=====>couresPreLoad:onFail url="+errorCode);
+            logger.e("=====>couresPreLoad:onFail url=" + errorCode);
             String oldIP = ips.get(downTryCount.get() % ipLength.get());
             logger.d("fail url path:  " + oldIP + url + "   file name:" + mFileName + ".nozip");
             downTryCount.getAndIncrement();

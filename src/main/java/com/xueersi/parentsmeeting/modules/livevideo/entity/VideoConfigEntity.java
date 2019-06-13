@@ -54,7 +54,7 @@ public class VideoConfigEntity {
         return this;
     }
 
-    public JSONObject toJSON() {
+    public JSONObject toJSONObject() {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("waterMark", waterMark);
