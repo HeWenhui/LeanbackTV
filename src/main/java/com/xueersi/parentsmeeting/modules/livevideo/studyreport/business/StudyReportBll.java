@@ -519,6 +519,8 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                         getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
                         logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
                     }
+                } else {
+                    getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
                 }
             } else {
                 getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
