@@ -135,7 +135,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (jsonObject.has(getInfo.getId())) {
                     ResponseEntity responseEntity = new ResponseEntity();
                     responseEntity.setJsonObject(jsonObject.getJSONObject(getInfo.getId()));
-                    parsegetSelfTeamInfo(responseEntity);
+//                    parsegetSelfTeamInfo(responseEntity);
                     pkTeamEntity = parsegetSelfTeamInfo(responseEntity);
                     logger.d("onLiveInited:pkTeamEntity=null?" + (pkTeamEntity == null));
                     if (pkTeamEntity != null) {
