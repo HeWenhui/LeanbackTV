@@ -195,6 +195,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     @Override
     public void onOtherDis(int type, final boolean enable) {
         super.onOtherDis(type, enable);
+        mLogtf.d("onOtherDis:type=" + type + ",noMic=" + noMic);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
             //不屏蔽自己的视频
 //            handler.post(new Runnable() {
