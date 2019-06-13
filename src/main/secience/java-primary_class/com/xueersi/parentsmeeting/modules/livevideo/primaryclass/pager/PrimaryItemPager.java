@@ -819,6 +819,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
                 }
             });
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onCheckPermission();
+                }
+            }, 500);
         }
 //        if (videoStatus) {
 //            foreach(new ItemCall() {
