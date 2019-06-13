@@ -688,7 +688,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
       if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN && liveBackBll!=null) {
           StableLogHashMap logHashMap = new StableLogHashMap("backup_teacher");
           liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
-      } else if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR){
+      } else if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR && liveBackBll!=null){
           StableLogHashMap logHashMap = new StableLogHashMap("backup_coach");
           liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
       }
