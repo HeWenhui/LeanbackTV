@@ -45,7 +45,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
@@ -636,9 +638,24 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         UmsAgentManager.umsAgentDebug(activity, "" + code, "status");
         if (code == MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER) {
             videoPlayStatus = status;
+            umsTeacherChange();
         }
         startNewVideo();
         return code;
+    }
+
+    /**
+     * 老师统计
+     */
+    private void umsTeacherChange(){
+        if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN && liveBackBll!=null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("backup_teacher");
+            liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
+        } else if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR){
+            StableLogHashMap logHashMap = new StableLogHashMap("backup_coach");
+            liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
+        }
+
     }
 
     @Override
