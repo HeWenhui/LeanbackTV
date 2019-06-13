@@ -541,4 +541,8 @@ public class LiveVideoConfig {
      */
     public static final String ART_TRIPLE_WONDERFUL_MOMENT = "https://live.chs.xueersi.com/ExamReport/uploadWonderfulMoment";
 
+    /** 课后评价教师文案获取 */
+    public static String URL_LIVE_COURSE_GETEVALUATE =  AppConfig.HTTP_HOST + "/science/LiveCourse/getEvaluateContentNew";
+
+
 }

@@ -1432,5 +1432,45 @@
 
     <item name="iv_livevideo_en_stand_achive_user_head_imge" type="id" />
     <item name="ll_livevideo_en_stand_achive_user_head_imge" type="id" />
+    <!-- 教师反馈-->
+    <item name="rl_pager_live_teacher_feedback_content" type="id" />
+
+    <item name="tv_item_live_teacher_feedback_text" type="id" />
+    <item name="nsv_pager_live_teacher_feedback_content" type="id" />
+    <item name="iv_pager_live_teacher_feedback_title" type="id" />
+    <item name="iv_pager_live_teacher_feedback_submit" type="id" />
+    <item name="tv_pager_live_teacher_feedback_main_input_num" type="id" />
+    <item name="tv_pager_live_teacher_feedback_retry_submit" type="id" />
+    <item name="iv_pager_live_teacher_feedback_retry_loading" type="id" />
+    <item name="ll_pager_live_teacher_feedback_retry_content" type="id" />
+
+    <item name="rv_pager_live_teacher_feedback_content" type="id" />
+    <item name="iv_pager_live_teacher_feedback_main_head_image" type="id" />
+    <item name="tv_pager_live_teacher_feedback_main_name" type="id" />
+    <item name="iv_pager_live_teacher_feedback_main_status_1" type="id" />
+    <item name="iv_pager_live_teacher_feedback_main_status_2" type="id" />
+    <item name="iv_pager_live_teacher_feedback_main_status_3" type="id" />
+    <item name="et_pager_live_teacher_feedback_main_input_text" type="id" />
+
+    <item name="rl_pager_live_teacher_feedback_tutor_content" type="id" />
+
+    <item name="tv_pager_live_teacher_feedback_submit_error" type="id" />
+    <item name="tv_pager_live_teacher_feedback_tutor_input_num" type="id" />
+
+    <item name="rv_pager_live_teacher_feedback_tutor_content" type="id" />
+    <item name="iv_pager_live_teacher_feedback_tutor_head_image" type="id" />
+    <item name="tv_pager_live_teacher_feedback_tutor_name" type="id" />
+    <item name="iv_pager_live_teacher_feedback_tutor_status_1" type="id" />
+    <item name="iv_pager_live_teacher_feedback_tutor_status_2" type="id" />
+    <item name="iv_pager_live_teacher_feedback_tutor_status_3" type="id" />
+    <item name="et_pager_live_teacher_feedback_tutor_input_text" type="id" />
+    <item name="iv_pager_live_teacher_feedback_close" type="id" />
+
+    <item name="tv_pager_live_teacher_feedback_bottom_submit_hint" type="id" />
+
+    <item name="ll_pager_live_teacher_feedback_bottom" type="id" />
+
+    <item name="rl_pager_live_teacher_feedback_tutor_head_image" type="id" />
+    <item name="ll_pager_live_teacher_feedback_submit_sucess" type="id" />
 
 </resources>
