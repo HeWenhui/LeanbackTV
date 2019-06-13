@@ -64,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.HotWordLog;
@@ -607,12 +608,12 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         super.initData();
         logger.i( "initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 LiveIRCMessageBll.requestGoldTotal(mContext);
             }
-        }.start();
+        });
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
@@ -1123,6 +1124,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
     }
 
+    @Override
     public void onTitleShow(boolean show) {
         if (rlMessageContent.getVisibility() != View.GONE) {
             InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
@@ -1133,6 +1135,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         switchFSPanelLinearLayout.setVisibility(View.GONE);
     }
 
+    @Override
     public void closeChat(final boolean close) {
         mView.post(new Runnable() {
             @Override
@@ -1328,18 +1331,22 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
     @Override
     public void onUserList(String channel, final User[] users) {
+        updateUserCount();
+    }
+
+    /**
+     * 更新在线文案
+     */
+    private void updateUserCount() {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-//                    tvMessageCount.setText("班内" + peopleCount + "人");
                     tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                 } else {
                     if (ircState.isHaveTeam()) {
-//                        tvMessageCount.setText("组内" + peopleCount + "人");
-                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
+                        tvMessageCount.setText("本组在线 " + "( " + peopleCount + " )");
                     } else {
-//                        tvMessageCount.setText(peopleCount + "人正在上课");
                         tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     }
                 }
@@ -1350,9 +1357,9 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         Loger.e("LiveMessagerPager", "=====>onMessage called");
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
@@ -1386,38 +1393,12 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (ircState.isSeniorOfHighSchool()) {
-                    tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
-                } else {
-                    if (ircState.isHaveTeam()) {
-                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
-                    } else {
-                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
-                    }
-                }
-            }
-        });
+        updateUserCount();
     }
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (ircState.isSeniorOfHighSchool()) {
-                    tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
-                } else {
-                    if (ircState.isHaveTeam()) {
-                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
-                    } else {
-                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
-                    }
-                }
-            }
-        });
+        updateUserCount();
     }
 
     @Override
@@ -1432,6 +1413,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 被禁言 */
+    @Override
     public void onDisable(final boolean disable, final boolean fromNotice) {
         mainHandler.post(new Runnable() {
             @Override
@@ -1457,6 +1439,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 关闭开启聊天 */
+    @Override
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
         mainHandler.post(new Runnable() {
             @Override
@@ -1763,6 +1746,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         this.otherMessageAdapter = otherMessageAdapter;
     }
 
+    @Override
     public void onGetMyGoldDataEvent(String goldNum) {
         this.goldNum = goldNum;
         tvMessageGold.setText(goldNum);

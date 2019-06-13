@@ -27,9 +27,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.AllLiveBasePagerIml;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveLog;
+//import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveUidRx;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -365,8 +366,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 JSONObject liveInfo = new JSONObject(getInfoStr);
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
                 liveGetInfo.setPrimaryChinese("2".equals(liveInfo.optString("useSkin")));
+                liveGetInfo.setsTime(liveInfo.optLong("stime"));
                 if (liveGetInfo.getStudentLiveInfo() != null) {
                     liveGetInfo.getStudentLiveInfo().setClassId(liveInfo.optString("class_id"));
+                    liveGetInfo.getStudentLiveInfo().setGroupId(liveInfo.optString("team_id"));
                 }
                 //解析学科id
                 if (liveInfo.has("subject_ids")) {

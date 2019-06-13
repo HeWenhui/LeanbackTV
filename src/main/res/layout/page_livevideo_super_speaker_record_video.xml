@@ -10,7 +10,11 @@
     <SurfaceView
         android:id="@id/sfv_livevideo_super_speaker_record_video"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.CustomVideoController2
         android:id="@id/custom_controller_livevideo_super_speaker_record_video_video_player"

@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -213,6 +214,11 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);// 设置在该页面音量控制键的音频流为媒体音量
         mCreated = true; // 界面onCreate完毕
         videoView = (VideoView) mContentView.findViewById(R.id.vv_course_video_video); // 播放器的videoView
+        if (videoView == null) {
+            videoView = activity.findViewById(R.id.vv_course_video_video);
+            //为了让bugly统计到
+            Log.e(TAG, "onSelect:videoView=null?" + (videoView == null));
+        }
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
                 (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
@@ -509,7 +515,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
 
         @Override
         public int onVideoStatusChange(int code, int status) {
-            liveBackVideoFragment.onVideoStatusChange(code,status);
+            liveBackVideoFragment.onVideoStatusChange(code, status);
             return super.onVideoStatusChange(code, status);
 
         }
@@ -779,7 +785,8 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     protected void onPlayOpenSuccess() {
 
     }
-    protected int onVideoStatusChange(int code,int status){
+
+    protected int onVideoStatusChange(int code, int status) {
         return code;
 
     }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.annotation.UiThread;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -46,22 +47,24 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
-//        if (AppConfig.DEBUG) {
-//        Observable.just(true).
+
+//        Observable.
+//                just(AppConfig.DEBUG).
 //                delay(2, TimeUnit.SECONDS).
 //                observeOn(AndroidSchedulers.mainThread()).
 //                subscribe(new Consumer<Boolean>() {
 //                    @Override
 //                    public void accept(Boolean aBoolean) throws Exception {
-//                        logger.i("accept");
-//                        mGetInfo.setId(String.valueOf(454400));
-//                        courseWareId = String.valueOf(1);
-//                        srcType = String.valueOf(40);
-//                        performShowRecordCamera(10, 65);
-//
+//                        if (aBoolean) {
+//                            logger.i("accept");
+//                            mGetInfo.setId(String.valueOf(454400));
+//                            courseWareId = String.valueOf(1);
+//                            srcType = String.valueOf(40);
+//                            performShowRecordCamera(10, 65);
+//                        }
 //                    }
 //                });
-
+//        if (AppConfig.DEBUG) {
 //                bottomContent.postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
@@ -394,6 +397,13 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     public void stopRecord() {
     }
 
+    /***
+     *  视频上传 成功的回调，已经放在{@link UploadVideoService}中进行上传
+     * @param videoUrl
+     * @param audioUrl
+     * @param averVocieDecibel
+     */
+    @Deprecated
     @Override
     public void uploadSucess(String videoUrl, String audioUrl, String averVocieDecibel) {
         getHttpManager().uploadSpeechShow(
