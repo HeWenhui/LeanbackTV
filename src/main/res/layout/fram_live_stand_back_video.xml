@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -136,6 +137,25 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <LinearLayout
+        android:id="@id/ll_livevideo_en_stand_achive_user_head_imge"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/bg_stand_livevideo_heads_right_normal"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <com.xueersi.ui.widget.CircleImageView
+            android:id="@id/iv_livevideo_en_stand_achive_user_head_imge"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_default_head_square"
+            app:border_color="@android:color/transparent"
+            app:border_width="0dp" />
+    </LinearLayout>
     <!-- 视频列表 -->
     <RelativeLayout
         android:id="@id/rl_course_video_video_list"
@@ -257,6 +277,7 @@
         </RelativeLayout>
 
     </RelativeLayout>
+
     <!-- 互动题显示的界面位置,下层 -->
     <RelativeLayout
         android:id="@id/rl_course_video_question_bottom"

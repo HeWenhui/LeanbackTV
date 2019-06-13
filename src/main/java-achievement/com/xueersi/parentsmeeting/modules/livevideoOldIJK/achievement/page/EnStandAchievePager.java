@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,14 +26,29 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
+import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallEnglishRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ViewUtil;
+import com.xueersi.ui.widget.CircleImageView;
+
+import net.grandcentrix.tray.core.ItemNotFoundException;
+
+import java.util.List;
+import java.util.Random;
 
 public class EnStandAchievePager extends LiveBasePager {
     private RelativeLayout parent;
@@ -57,6 +73,13 @@ public class EnStandAchievePager extends LiveBasePager {
     private int otherTotal = 0;
     private boolean firstCheck = false;
 
+    /**用户头像*/
+    CircleImageView civUserImage;
+    LinearLayout llImageContent;
+    String ACHIEVE_LAYOUT_RIGHT = "0";
+    RelativeLayout rlAchieveContent;
+    ArtsExtLiveInfo mExtLiveInfo;
+    String LAYOUT_SUMMER_SIZE = "0";
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
@@ -66,6 +89,11 @@ public class EnStandAchievePager extends LiveBasePager {
         goldCount = mLiveGetInfo.getGoldCount();
         energyCount = enpkEnergy.me;
         activity = (Activity) context;
+        try {
+            LAYOUT_SUMMER_SIZE =  UmsAgentTrayPreference.getInstance().getString(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE);
+        } catch (ItemNotFoundException e) {
+            e.printStackTrace();
+        }
         initView();
         initData();
         initListener();
@@ -81,6 +109,9 @@ public class EnStandAchievePager extends LiveBasePager {
         vsAchiveBottom2 = mView.findViewById(R.id.vs_livevideo_en_achive_bottom2);
         rlAchiveStandBg = mView.findViewById(R.id.rl_livevideo_en_achive_stand_bg);
         cbAchiveTitle = mView.findViewById(R.id.cb_livevideo_en_stand_achive_title);
+        civUserImage = mView.findViewById(R.id.iv_livevideo_en_stand_achive_user_head_imge);
+        llImageContent = mView.findViewById(R.id.ll_livevideo_en_stand_achive_user_head_imge);
+        rlAchieveContent = mView.findViewById(R.id.rl_livevideo_en_stand_achive__content);
         return mView;
     }
 
@@ -92,6 +123,7 @@ public class EnStandAchievePager extends LiveBasePager {
         tvAchiveNumGold.setText("" + goldCount);
         tvAchiveNumFire.setText("" + enpkEnergy.me);
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
+
         if (1 == englishPk.canUsePK) {
             myTotal = enpkEnergy.myTeam;
             otherTotal = enpkEnergy.opTeam;
@@ -99,6 +131,8 @@ public class EnStandAchievePager extends LiveBasePager {
         } else {
             vsAchiveBottom2.inflate();
         }
+        setRlAchieveContent(null);
+        setUserHeadImage();
         cbAchiveTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -110,6 +144,8 @@ public class EnStandAchievePager extends LiveBasePager {
                     }
                 }
 //                if (com.xueersi.common.config.AppConfig.DEBUG) {
+//
+//                    setRlAchieveContent(null);
 //                    Random random = new Random();
 //                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
 //                    int nextInt = random.nextInt();
@@ -132,6 +168,71 @@ public class EnStandAchievePager extends LiveBasePager {
 //                }
             }
         });
+
+       
+    }
+    /**
+     * 设置贡献之星
+     */
+    public void setRlAchieveContent(ArtsExtLiveInfo extLiveInfo){
+        mExtLiveInfo = extLiveInfo;
+        if (mExtLiveInfo != null ){
+            LAYOUT_SUMMER_SIZE = mExtLiveInfo.getSummerCourseWareSize();
+        }
+        if(ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
+            LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+            layoutParams.rightMargin = SizeUtils.Dp2Px(activity,10);
+            layoutParams.leftMargin  = 0;
+            layoutParams.topMargin = SizeUtils.Dp2Px(activity,8);
+            layoutParams.width = SizeUtils.Dp2Px(activity,177);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            rlAchieveContent.setLayoutParams(layoutParams);
+
+//            RelativeLayout.LayoutParams cbParams = (RelativeLayout.LayoutParams)cbAchiveTitle.getLayoutParams();
+//            cbParams.rightMargin = SizeUtils.Dp2Px(activity,13);
+//            cbParams.leftMargin = SizeUtils.Dp2Px(activity,0);
+//
+//            cbParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+         //   cbAchiveTitle.setLayoutParams(cbParams);
+
+
+
+            llImageContent.setVisibility(View.GONE);
+        } else {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
+            LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+            layoutParams.leftMargin =   videoPoint.screenWidth - videoPoint.x4+SizeUtils.Dp2Px(activity,10);
+
+            layoutParams.topMargin = SizeUtils.Dp2Px(activity,8);
+            layoutParams.width = SizeUtils.Dp2Px(activity,177);
+
+            layoutParams.rightMargin = 0;
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+            rlAchieveContent.setLayoutParams(layoutParams);
+
+//            RelativeLayout.LayoutParams cbParams = (RelativeLayout.LayoutParams)cbAchiveTitle.getLayoutParams();
+//            cbParams.leftMargin = SizeUtils.Dp2Px(activity,13);
+//            cbParams.rightMargin = SizeUtils.Dp2Px(activity,0);
+//
+//            cbParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//            cbAchiveTitle.setLayoutParams(cbParams);
+
+            llImageContent.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**设置头像*/
+    private void setUserHeadImage(){
+        String img = mLiveGetInfo.getStuImg();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)llImageContent.getLayoutParams();
+        layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth -  LiveVideoPoint.getInstance().x4 + SizeUtils.Dp2Px(activity,10);
+        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
+        llImageContent.setLayoutParams(layoutParams);
+        ImageLoader.with(activity).load(img).into(civUserImage);
     }
 
     private void setEnpkView() {
@@ -305,8 +406,13 @@ public class EnStandAchievePager extends LiveBasePager {
         };
         lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
         lp.topMargin = cbAchiveTitle.getHeight() * 144 / 189;
+        if (ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)){
+            lp.rightMargin = SizeUtils.Dp2Px(mContext,30);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+         } else {
+            lp.leftMargin = SizeUtils.Dp2Px(mContext, 30);
+         }
         final ViewGroup viewGroup = (ViewGroup) mView;
         viewGroup.addView(lottieAnimationView, lp);
         lottieAnimationView.playAnimation();
