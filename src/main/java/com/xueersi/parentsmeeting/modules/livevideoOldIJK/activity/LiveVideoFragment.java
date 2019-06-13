@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedbackTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -352,6 +353,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 CrashReport.postCatchedException(e);
             }
         }
+        FeedbackTeacherBll feedbackTeacherBll = new FeedbackTeacherBll(activity,mLiveBll);
+        feedbackTeacherBll.setLiveFragment(this);
+
+        mLiveBll.addBusinessBll(feedbackTeacherBll);
+
     }
 
     /** 加载切流的Bll */

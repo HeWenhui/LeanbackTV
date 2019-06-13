@@ -10,6 +10,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.EvaluateTeacherPager;
@@ -47,7 +48,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
 
-        if (getInfo != null) {
+        if (getInfo != null){
             if (getInfo.getEvaluateTeacherEntity() != null && getInfo.getEvaluateTeacherEntity().isEvaluateIsOpen()) {
                 mHttpManager = mLiveBll.getHttpManager();
                 mParser = new EvaluateResponseParser();
@@ -99,6 +100,9 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
 
     @Override
     public boolean showPager() {
+        if(mGetInfo.isShowHightFeedback()) {
+            return false;
+        }
         if ((mGetInfo.getEvaluateTeacherEntity() != null && System.currentTimeMillis() / 1000 > mGetInfo.getEvaluateTeacherEntity().getEvaluateTime())) {
             logger.i("showEvaluateTeacher");
             logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mGetInfo.getEvaluateTeacherEntity().getEvaluateTime());

@@ -73,6 +73,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherLiveBackBll;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import com.xueersi.ui.widget.CircleImageView;
 
@@ -517,6 +518,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         for (LiveBackBaseBll businessBll : businessBlls) {
             businessBll.initViewF(rlQuestionContentBottom, rlQuestionContent, mIsLand);
         }
+
+
         logger.d("initBusiness:initViewF:time=" + (System.currentTimeMillis() - before));
     }
 
@@ -585,6 +588,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                         liveBackBll);
                 evaluateTeacherPlayBackBll.setLiveFragmentBase(liveBackPlayVideoFragment);
                 liveBackBll.addBusinessBll(evaluateTeacherPlayBackBll);
+
+                FeedbackTeacherLiveBackBll feedbackTeacherLiveBackBll = new FeedbackTeacherLiveBackBll(activity,liveBackBll);
+                feedbackTeacherLiveBackBll.setLiveFragment(liveBackPlayVideoFragment);
+                liveBackBll.addBusinessBll(feedbackTeacherLiveBackBll);
             }
         }
     }

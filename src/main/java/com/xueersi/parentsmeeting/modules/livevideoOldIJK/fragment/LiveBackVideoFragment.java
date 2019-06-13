@@ -59,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseB
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedbackTeacherLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.ArtsAnswerResultPlayBackBll;
@@ -548,6 +549,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                         liveBackBll);
                 evaluateTeacherPlayBackBll.setLiveFragmentBase(liveBackPlayVideoFragment);
                 liveBackBll.addBusinessBll(evaluateTeacherPlayBackBll);
+
+
+                FeedbackTeacherLiveBackBll feedbackTeacherLiveBackBll = new FeedbackTeacherLiveBackBll(activity,liveBackBll);
+                feedbackTeacherLiveBackBll.setLiveFragment(liveBackPlayVideoFragment);
+                liveBackBll.addBusinessBll(feedbackTeacherLiveBackBll);
+
             }
         }
     }
