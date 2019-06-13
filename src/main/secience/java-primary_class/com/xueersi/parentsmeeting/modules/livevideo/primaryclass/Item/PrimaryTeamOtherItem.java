@@ -20,6 +20,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     private boolean haveAudio = false;
     /** 麦克风故障 */
     private boolean noMic = false;
+    private int state;
 
     public PrimaryTeamOtherItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
@@ -92,6 +93,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 }
             });
         } else {
+            handler.removeCallbacks(videoStateRun);
             cloudWorkerThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -233,6 +235,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     }
 
     public void onRemoteVideoStateChanged(int uid, final int state) {
+        this.state = state;
         mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state + ",look=" + entity.isLook() + ",videoStatus=" + videoStatus);
         if (entity.isLook() && videoStatus) {
             handler.post(new Runnable() {
@@ -241,20 +244,40 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     if (state == PrimaryClassConfig.VIDEO_STATE_1) {
                         rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
                         cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+                        handler.removeCallbacks(videoStateRun);
                     } else {
-                        rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
-                        cl_livevideo_course_item_video.setVisibility(View.GONE);
+                        handler.postDelayed(videoStateRun, 3000);
                     }
                 }
             });
         }
     }
 
+    /**
+     * 用户视频状态，延迟两秒
+     */
+    private Runnable videoStateRun = new Runnable() {
+        @Override
+        public void run() {
+            mLogtf.d("videoStateRun:look=" + entity.isLook() + "," + videoStatus);
+            if (entity.isLook() && videoStatus) {
+                if (state == PrimaryClassConfig.VIDEO_STATE_1) {
+                    rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
+                    cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+                } else {
+                    rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
+                    cl_livevideo_course_item_video.setVisibility(View.GONE);
+                }
+            }
+        }
+    };
+
     @Override
     public void onOtherDis(int type, final boolean enable) {
         super.onOtherDis(type, enable);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
             mLogtf.d("onOtherDis:uid=" + uid + ",MMTYPE_VIDEO=" + entity.isLook());
+            handler.removeCallbacks(videoStateRun);
             if (entity.isLook()) {
                 handler.post(new Runnable() {
                     @Override
