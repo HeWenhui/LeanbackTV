@@ -23,7 +23,7 @@ import com.xes.ps.rtcstream.RTCEngine;
  * 云平台声网调用，放在线程池里
  */
 public class CloudWorkerThreadPool {
-    private final static String TAG = "WorkerThreadPool";
+    private final static String TAG = "CloudWorkerThreadPool";
     protected static Logger logger = LiveLoggerFactory.getLogger(TAG);
     /** 和服务器的ping，线程池 */
     private static ThreadPoolExecutor poolExecutor;
@@ -88,7 +88,7 @@ public class CloudWorkerThreadPool {
      * @param onJoinChannel
      */
     public final void joinChannel(final OnJoinChannel onJoinChannel) {
-        poolExecutor.execute(new Runnable() {
+        poolExecutor.execute(new WorkRun("joinChannel", new Runnable() {
             @Override
             public void run() {
 
@@ -102,18 +102,18 @@ public class CloudWorkerThreadPool {
                 onJoinChannel.onJoinChannel(joinChannel);
                 enablePreProcessor();
             }
-        });
+        }));
     }
 
     public final void leaveChannel() {
-        poolExecutor.execute(new Runnable() {
+        poolExecutor.execute(new WorkRun("leaveChannel", new Runnable() {
             @Override
             public void run() {
                 if (mRtcEngine != null) {
                     mRtcEngine.leaveRoom();
                 }
             }
-        });
+        }));
     }
 
     private EngineConfig mEngineConfig;
@@ -126,7 +126,7 @@ public class CloudWorkerThreadPool {
     private final CloudEngineEventHandler mEngineEventHandler;
 
     public final void configEngine(final int cRole, final int vProfile) {
-        poolExecutor.execute(new Runnable() {
+        poolExecutor.execute(new WorkRun("configEngine", new Runnable() {
             @Override
             public void run() {
                 try {
@@ -138,11 +138,11 @@ public class CloudWorkerThreadPool {
                 mEngineConfig.mVideoProfile = vProfile;
                 logger.d("configEngine " + cRole + " " + mEngineConfig.mVideoProfile);
             }
-        });
+        }));
     }
 
     public final void preview(final boolean start, final SurfaceView view) {
-        poolExecutor.execute(new Runnable() {
+        poolExecutor.execute(new WorkRun("preview", new Runnable() {
             @Override
             public void run() {
                 try {
@@ -157,7 +157,7 @@ public class CloudWorkerThreadPool {
                     mRtcEngine.stopPreview();
                 }
             }
-        });
+        }));
     }
 
     public void setAppid(String appid) {
@@ -217,7 +217,8 @@ public class CloudWorkerThreadPool {
     }
 
     public void execute(Runnable runnable) {
-        poolExecutor.execute(runnable);
+        WorkRun workRun = new WorkRun("execute", runnable);
+        poolExecutor.execute(workRun);
     }
 
     /**
@@ -225,7 +226,7 @@ public class CloudWorkerThreadPool {
      * should ONLY call this method when this thread is running
      */
     public final void exit() {
-        poolExecutor.execute(new Runnable() {
+        poolExecutor.execute(new WorkRun("exit", new Runnable() {
             @Override
             public void run() {
                 logger.d("exit() > start");
@@ -235,7 +236,7 @@ public class CloudWorkerThreadPool {
                 }
                 logger.d("exit() > end");
             }
-        });
+        }));
         // TODO should remove all pending(read) messages
     }
 
@@ -280,7 +281,7 @@ public class CloudWorkerThreadPool {
     }
 
     public void start() {
-        poolExecutor.execute(new Runnable() {
+        poolExecutor.execute(new WorkRun("start", new Runnable() {
             @Override
             public void run() {
                 try {
@@ -290,7 +291,7 @@ public class CloudWorkerThreadPool {
                     onEngineCreate.onEngineCreate(null);
                 }
             }
-        });
+        }));
     }
 
     public void setOnEngineCreate(OnEngineCreate onEngineCreate) {
@@ -307,6 +308,23 @@ public class CloudWorkerThreadPool {
             ensureRtcEngineReadyLock();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private class WorkRun implements Runnable {
+        String method;
+        Runnable runnable;
+
+        public WorkRun(String method, Runnable runnable) {
+            this.method = method;
+            this.runnable = runnable;
+        }
+
+        @Override
+        public void run() {
+            logger.d("start:method=" + method);
+            runnable.run();
+            logger.d("end:method=" + method);
         }
     }
 
