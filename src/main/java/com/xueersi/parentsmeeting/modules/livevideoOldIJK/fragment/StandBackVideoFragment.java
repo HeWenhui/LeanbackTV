@@ -98,7 +98,7 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
                 ImageLoader.with(activity).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civUserHeadImage);
 
             }
-        } else {
+        }  else if( llUserHeadImage!=null){
             llUserHeadImage.setVisibility(View.GONE);
 
         }
