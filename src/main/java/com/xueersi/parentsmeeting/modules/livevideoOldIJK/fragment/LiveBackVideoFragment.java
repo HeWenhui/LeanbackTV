@@ -525,9 +525,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             if (liveBackBll.getIsArts() == 0) {
                 initLiveRemarkBll();
             } else {
-                if (liveBackBll.getIsArts() == 2) {
-                    liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
-                }
                 Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");
                 liveBackBll.addBusinessBll(new ArtsAnswerResultPlayBackBll(activity, liveBackBll));
                 if (liveBackBll.getPattern() != 2) {
