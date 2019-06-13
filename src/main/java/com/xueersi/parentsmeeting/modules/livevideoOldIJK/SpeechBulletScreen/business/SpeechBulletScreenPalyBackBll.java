@@ -52,7 +52,8 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
     }
 
     @Override
-    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
+            businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
     }
 
@@ -64,13 +65,14 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
             public void run() {
                 if (liveGetInfo.getIsArts() == 0 || liveGetInfo.getIsArts() == 2) {
                     mSpeechBulPlaybackView = new SpeechBulletScreenPlayBackPager(activity);
-                } else if (liveGetInfo.getIsArts() == 1) {
+                } else {
                     mSpeechBulPlaybackView = new EnglishSpeechBulletPlayBackPager(activity, liveGetInfo
                             .getSmallEnglish());
                 }
                 mRootView.addView(mSpeechBulPlaybackView.getPager(), new ViewGroup.LayoutParams(ViewGroup
                         .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-              /*  RelativeLayout.LayoutParams rp = (RelativeLayout.LayoutParams) mSpeechBulPlaybackView.getPager().getLayoutParams();
+              /*  RelativeLayout.LayoutParams rp = (RelativeLayout.LayoutParams) mSpeechBulPlaybackView.getPager()
+              .getLayoutParams();
                 rp.setMargins(0, SizeUtils.Dp2Px(mContext, 10), 0, 0);
                 mSpeechBulPlaybackView.getPager().setLayoutParams(rp);*/
             }
@@ -199,13 +201,13 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
         } else if (liveGetInfo.getIsArts() == 1) {
             for (int j = 0; j < barrageList.size(); j++) {
                 VoiceBarrageMsgEntity voiceBarrageMsgEntity = barrageList.get(j);
-                long startTime = (Long.parseLong(voiceBarrageMsgEntity.getVoiceId()))/1000 - liveGetInfo.getsTime();
+                long startTime = (Long.parseLong(voiceBarrageMsgEntity.getVoiceId())) / 1000 - liveGetInfo.getsTime();
                 ArrayList<VoiceBarrageMsgEntity.VoiceBarrageItemEntity> voiceBarrageItemEntities =
                         voiceBarrageMsgEntity.getVoiceBarrageItemEntities();
                 for (int k = 0; k < voiceBarrageItemEntities.size(); k++) {
                     VoiceBarrageMsgEntity.VoiceBarrageItemEntity voiceBarrageItemEntity = voiceBarrageItemEntities
                             .get(k);
-                    int relativeTime = voiceBarrageItemEntity.getRelativeTime() + (int)startTime;
+                    int relativeTime = voiceBarrageItemEntity.getRelativeTime() + (int) startTime;
                     voiceBarrageItemEntity.setRelativeTime(relativeTime);
                     allBarrages.add(voiceBarrageItemEntity);
                     logger.i("add barrage: time=" + (voiceBarrageItemEntity.getRelativeTime()) + " msg=" +
