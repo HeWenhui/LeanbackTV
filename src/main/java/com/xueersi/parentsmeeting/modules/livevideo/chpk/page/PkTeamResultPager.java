@@ -10,34 +10,29 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.adapter.TeamStarAdapter;
-import com.xueersi.parentsmeeting.modules.livevideo.chpk.adapter.TeamStarHolder;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.business.ChinesePkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
@@ -47,7 +42,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkResultLottieEff
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionLayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
@@ -55,13 +49,19 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 
 /**
  * 战队 pk 结果页
  *
  * @author yuanwei
- *         <p>
- *         created  at 2018/11/14 11:31
+ * <p>
+ * created  at 2018/11/14 11:31
  */
 public class PkTeamResultPager extends BasePager {
     private static final String TAG = "TeamPkResultPager";
@@ -265,7 +265,7 @@ public class PkTeamResultPager extends BasePager {
         finalViewWrapper.setVisibility(View.GONE);
 
         //显示贡献之星
-        if (data.getContributionStarList() != null && data.getContributionStarList().size()>0) {
+        if (data.getContributionStarList() != null && data.getContributionStarList().size() > 0) {
             if (mContributions == null) {
                 mContributions = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
             }
@@ -273,11 +273,36 @@ public class PkTeamResultPager extends BasePager {
             mContributions.addAll(data.getContributionStarList());
             initRecycleView();
 
-            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+            final StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+//            if (studyReportAction != null) {
+//                mView.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, false);
+//                    }
+//                }, 300);
+//
+//            }
+            // FIXME: 2019/6/12
+//            if (studyReportAction != null && data.isMe()) {
+            Single.
+                    just(studyReportAction != null && data.isMe()).
+                    filter(new Predicate<Boolean>() {
+                        @Override
+                        public boolean test(Boolean aBoolean) throws Exception {
+                            return aBoolean;
+                        }
+                    }).
+                    delay(300, TimeUnit.MILLISECONDS).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean aBoolean) throws Exception {
+                            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, true);
+                        }
+                    });
 
-            if (studyReportAction != null && data.isMe()) {
-                studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, false);
-            }
+//            }
 
         }
         //进度条动画

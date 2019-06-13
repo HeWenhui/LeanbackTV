@@ -168,6 +168,12 @@ public class LiveVideoConfig {
     public static String LIVE_EXPERIENCE_IMMSG = "LiveFreePlayEvent";
     /** 体验课事件 */
     public static String LIVE_EXPERIENCE = "experienceLiveClass";
+
+    /**
+     * 直播回放体验课
+     */
+    public static String LIVE_BACK_EXPERIENCE = "liveBackExperience";
+
     /** 直播-H5课件互动题 */
     public static String LIVE_ENGLISH_COURSEWARE = "live_h5waretest";
     /** 直播-接麦 */
@@ -506,6 +512,8 @@ public class LiveVideoConfig {
     /** 超级演讲秀存储视频的地方 */
     public static final String SUPER_SPEAKER_VIDEO_PATH = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/superSpeaker/";
 
+    public static boolean assetsDownloadTag = true;
+
     public static DownLoadFileInfo getDownLoadFileInfo(){
         DownLoadFileInfo info = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
         if (info == null) {
@@ -528,6 +536,10 @@ public class LiveVideoConfig {
         }*/
         return info;
     }
+    /**
+     * 文科三分屏上传精彩瞬间截图url，半身直播走理科的接口
+     */
+    public static final String ART_TRIPLE_WONDERFUL_MOMENT = "https://live.chs.xueersi.com/ExamReport/uploadWonderfulMoment";
 
     /** 课后评价教师文案获取 */
     public static String URL_LIVE_COURSE_GETEVALUATE =  AppConfig.HTTP_HOST + "/science/LiveCourse/getEvaluateContentNew";

@@ -550,7 +550,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 回放获取弹幕接口
+     * 回放获取弹幕接口(理科、语文)
      *
      * @param requestCallBack
      */
@@ -560,6 +560,19 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuCouId", stuCouId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
+    }
+
+    /**
+     * 回放获取弹幕接口(英语)
+     *
+     * @param requestCallBack
+     */
+    public void getVoiceBarrageForPlayBack(String groupId, String startTime,HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("groupId", groupId);
+        params.addBodyParam("startTime", startTime);
+        setDefaultParameter(params);
+        sendPost(LiveVideoSAConfig.URL_ENGLISH_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
     }
 
     /**

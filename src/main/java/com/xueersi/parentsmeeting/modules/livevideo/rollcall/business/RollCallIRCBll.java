@@ -36,7 +36,6 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        rollCallBll.onLiveInited(getInfo, mRootView, mLiveType);
     }
 
     @Override

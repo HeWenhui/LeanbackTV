@@ -10,7 +10,9 @@ import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
@@ -34,7 +36,7 @@ import ren.yale.android.cachewebviewlib.utils.MD5Utils;
  * 新课件预加载
  */
 public class NewCourseCache {
-    private String eventId = "NewCourseCache_cache";
+    private String eventId = LogConfig.LIVE_NEWCOURSE_CACHE;
     protected String TAG = getClass().getSimpleName();
     protected Logger logger = LiveLoggerFactory.getLogger(TAG);
     LogToFile logToFile;
@@ -58,9 +60,13 @@ public class NewCourseCache {
     private String zhongXueKeJian = "ZhongXueKeJian";
     OnHttpCode onHttpCode;
     private ArrayList<InterceptRequest> interceptRequests = new ArrayList<>();
+    private String liveId;
+    private String testid;
 
     public NewCourseCache(Context mContext, String liveId, String testid) {
         this.mContext = mContext;
+        this.liveId = liveId;
+        this.testid = testid;
         logToFile = new LogToFile(mContext, TAG);
         try {
             logToFile.addCommon("testid", testid);
@@ -204,6 +210,8 @@ public class NewCourseCache {
         return file;
     }
 
+    int urlindex = 0;
+
     public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
         File file = null;
         int index = s.indexOf(coursewarePages);
@@ -243,13 +251,17 @@ public class NewCourseCache {
         }
         if (file.exists()) {
             try {
-                HashMap<String, String> hashMap = new HashMap<>();
-                hashMap.put("url", s);
-                hashMap.put("filepath", file.getPath());
-                hashMap.put("filelength", "" + file.length());
-                UmsAgentManager.umsAgentDebug(mContext, eventId, hashMap);
+                StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequest");
+                stableLogHashMap.put("url", s);
+                stableLogHashMap.put("urlindex", "" + (urlindex++));
+                stableLogHashMap.put("liveId", liveId);
+                stableLogHashMap.put("testid", testid);
+                stableLogHashMap.put("ispreload", "true");
+                stableLogHashMap.put("filepath", file.getPath());
+                stableLogHashMap.put("filelength", "" + file.length());
+                UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
             if (file.length() > 0) {
                 FileInputStream inputStream = null;
@@ -260,10 +272,24 @@ public class NewCourseCache {
                     WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "",
                             inputStream);
                     webResourceResponse.setResponseHeaders(header);
+                    Log.e("Duncan", "artsload");
                     return webResourceResponse;
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+            }
+        } else {
+            try {
+                StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequest");
+                stableLogHashMap.put("url", s);
+                stableLogHashMap.put("urlindex", "" + (urlindex++));
+                stableLogHashMap.put("liveId", liveId);
+                stableLogHashMap.put("testid", testid);
+                stableLogHashMap.put("ispreload", "false");
+                stableLogHashMap.put("filepath", file.getPath());
+                UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
+            } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
         return null;

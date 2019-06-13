@@ -1428,7 +1428,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 投票 能量
-     *  @param liveId
+     *
+     * @param liveId
      * @param teamId
      * @param classId
      * @param stuId
@@ -1877,6 +1878,19 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_WONDER_MOMENT, params, requestCallBack);
     }
 
+    /**
+     *
+     * 文科三分屏上传精彩瞬间截图url，半身直播走理科的接口
+     */
+    public void sendWonderfulMoment(String stuId, String liveId, String stuCouId, String type, String url, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("type", type);
+        params.addBodyParam("url", url);
+        sendPost(LiveVideoConfig.ART_TRIPLE_WONDERFUL_MOMENT, params, httpCallBack);
+    }
     public void saveStuPlanOnlineTime(String stuId, String gradeId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("stuId", "" + stuId);
@@ -1936,7 +1950,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 文科提交对老师评价
+     * 理科高中提交对老师评价
      *
      * @param liveId
      * @param stuCouId

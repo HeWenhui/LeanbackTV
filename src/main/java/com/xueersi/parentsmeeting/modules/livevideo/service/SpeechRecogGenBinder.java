@@ -281,6 +281,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
                 public void run() {
                     if (speakerRecognitionerInterface != null) {
                         speakerRecognitionerInterface.speakerRecognitionerFree();
+                        speakerRecognitionerInterface = null;
                     }
                 }
             });

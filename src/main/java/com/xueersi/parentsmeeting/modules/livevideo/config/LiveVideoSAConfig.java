@@ -282,4 +282,7 @@ public class LiveVideoSAConfig {
     /** 出门测表扬榜 */
     public static final String URL_LIVE_PRAISE_TUTOR_LIST = LiveVideoConfig.APP_ARTS_HTTP_HOST +"/LivePraise/getPraiseData";
 
+    /** 回放获取弹幕接口(英语) */
+    public static final String URL_ENGLISH_GET_VOICE_BARRAGE_MSG = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getVoiceBarrageForPlayBack";
+
 }

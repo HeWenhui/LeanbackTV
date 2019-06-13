@@ -240,7 +240,7 @@ public class LiveGetInfo {
      */
     private int allowSnapshot;
     /**
-     * 1-普通直播，2-全身直播
+     * 1-普通直播，2-全身直播,6半身直播
      */
     private int pattern = 1;
     /** 全身直播语音答题和评测小组排名请求时间 */

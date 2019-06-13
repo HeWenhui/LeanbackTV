@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.AIExperienceLiveVid
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceThreeScreenActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
@@ -451,6 +452,13 @@ public class LiveVideoEnter {
         if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
                         .SP_APP_DEVICE_NOTICE, false,
                 ShareDataManager.SHAREDATA_USER)) {
+            Intent intent;
+            if (MediaPlayer.getIsNewIJK()) {
+                intent = new Intent(context, DeviceDetectionActivity.class);
+            } else {
+                intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
+            }
+            context.startActivity(intent);
             return false;
         }
 
@@ -463,18 +471,6 @@ public class LiveVideoEnter {
 
             @Override
             public void success() {
-
-                if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
-                                .SP_APP_DEVICE_NOTICE, false,
-                        ShareDataManager.SHAREDATA_USER)) {
-                    Intent intent;
-                    if (MediaPlayer.getIsNewIJK()) {
-                        intent = new Intent(context, DeviceDetectionActivity.class);
-                    } else {
-                        intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
-                    }
-                    context.startActivity(intent);
-                }
                 if (MediaPlayer.getIsNewIJK()) {
                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
                             where, VIDEO_REQUEST);
@@ -482,7 +478,6 @@ public class LiveVideoEnter {
                     com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
                             where, VIDEO_REQUEST);
                 }
-
             }
 
             @Override
@@ -561,12 +556,6 @@ public class LiveVideoEnter {
                 } else {
                     com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.HalfBodyLiveExperienceActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
                 }
-
-                if (MediaPlayer.getIsNewIJK()) {
-                    ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-                } else {
-                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-                }
             }
 
             @Override
@@ -582,6 +571,30 @@ public class LiveVideoEnter {
         return true;
     }
 
+    public static boolean intentToLiveBackExperience(final Activity context, final Bundle bundle, final String where){
+        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public void success() {
+                ExperienceThreeScreenActivity.intentTo(context,bundle,where,VIDEO_REQUEST);
+            }
+
+            @Override
+            public void progress(float progress, int type) {
+
+            }
+
+            @Override
+            public void fail(int errorCode, String errorMsg) {
+
+            }
+        });
+        return true;
+    }
 
     /**
      * 跳转到三分屏AI体验直播播放器
