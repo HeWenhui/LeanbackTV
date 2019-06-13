@@ -223,6 +223,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         @Override
         public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
             mData.put("appid", appID);
+            mData.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId()+"");
             mData.put("usertype", "student");
             mData.put("teacherid", expLiveInfo.getCoachTeacherId() + "");
             mData.put("timestamp", System.currentTimeMillis() + "");
@@ -495,14 +496,14 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         @Override
         public void onBufferStart() {
             if (expLiveInfo.getMode() == COURSE_STATE_2) {
-                sendLogMessage("playerNotFluent",
+                sendLogMessage("playFileNotFluent",
                         "videopath", getBackVideo(),
                         "status", "failed",
                         "loglevel", "1",
                         "functype", "6");
             } else if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_3) {
-                sendLogMessage("videoStartPlay",
-                        "streamid", getLiveVideo(),
+                sendLogMessage("playStreamNotFluent",
+                        "stream", getLiveVideo(),
                         "status", "failed",
                         "loglevel", "1",
                         "functype", "6");
@@ -891,7 +892,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
 
         if (expLiveInfo.getMode() == COURSE_STATE_2) {
-            sendLogMessage("playerError",
+            sendLogMessage("playFileError",
                     "videopath", getBackVideo(),
                     "errCode", arg2 + "",
                     "errMsg", "",
@@ -900,7 +901,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                     "loglevel", "Error",
                     "functype", "6");
         } else if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_2) {
-            sendLogMessage("playerError",
+            sendLogMessage("playStreamError",
                     "stream", getLiveVideo(),
                     "errCode", arg2 + "",
                     "errMsg", "",
