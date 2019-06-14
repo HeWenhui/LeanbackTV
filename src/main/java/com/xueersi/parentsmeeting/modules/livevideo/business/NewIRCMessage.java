@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 
 import com.tal100.chatsdk.ChatClient;
 import com.tal100.chatsdk.IChatClientListener;
@@ -154,7 +155,7 @@ public class NewIRCMessage implements IIRCMessage {
                 liveInfo.nickname = target;
                 mChatClient.setLiveInfo(liveInfo);
                 final MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-                new Handler().postDelayed(new Runnable() {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
