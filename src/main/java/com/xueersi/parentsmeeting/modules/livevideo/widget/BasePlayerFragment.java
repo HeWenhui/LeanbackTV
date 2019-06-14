@@ -296,8 +296,8 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
      * 用户点击返回，判断是不是程序崩溃
      */
     protected void onUserBackPressed() {
-        vPlayer.psExit();
         activity.onBackPressed();
+        vPlayer.psExit();
 //        activity.finish(LiveVideoConfig.VIDEO_CANCLE);
     }
 
