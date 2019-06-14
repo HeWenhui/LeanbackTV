@@ -270,6 +270,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      * 初高中表扬
      */
     private ImageView ivPraise;
+    private double voiceTime = 0;
+    private double totoalVoiceTime = 0;
 
     public EnglishSpeechBulletPager(Context context, boolean isNewView) {
         super(context, isNewView);
@@ -501,8 +503,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         tvSpeechbulRepeat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startEvaluator();
                 umsAgentDebugInterSno6();
+                startEvaluator();
             }
         });
         //发送语音弹幕
@@ -510,6 +512,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             @Override
             public void onClick(View view) {
                 fainalText = etSpeechbulWords.getText().toString();
+                totoalVoiceTime += voiceTime;
                 if (saveFile != null) {
                     uploadCloud(saveFile.getPath(), new AbstractBusinessDataCallBack() {
                         @Override
@@ -634,6 +637,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         aliyunUrl = "";
         originalText = "";
         fainalText = "";
+        voiceTime = 0;
+        totoalVoiceTime = 0;
     }
 
     private Runnable showSpeechBulletRunnable = new Runnable() {
@@ -883,6 +888,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                         return;
                     }
                     requestSucces = true;
+                    totoalVoiceTime += voiceTime;
+                    voiceTime = 0;
                     saveFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
                     mParam.setRecogType(SpeechConfig.SPEECH_RECOGNITIYON_OFFINE);
                     mParam.setLocalSavePath(saveFile.getPath());
@@ -923,11 +930,11 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                             logger.i("onResult:status = " + resultEntity.getStatus() + ", errorNo = " + resultEntity
                                     .getErrorNo());
                             if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                                onEvaluatorSuccess(resultEntity.getCurString(), true);
+                                onEvaluatorSuccess(resultEntity, true);
                             } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                                 onEvaluatorError(resultEntity);
                             } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                                onEvaluatorSuccess(resultEntity.getCurString(), false);
+                                onEvaluatorSuccess(resultEntity, false);
                             }
                         }
 
@@ -971,12 +978,13 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     /**
      * 识别成功回调
      */
-    private void onEvaluatorSuccess(String curContent, boolean isSpeechFinished) {
+    private void onEvaluatorSuccess(ResultEntity resultEntity, boolean isSpeechFinished) {
         logger.i("onEvaluatorSuccess(): isSpeechFinish = " + isSpeechFinished);
-        if (curContent == null) {
+        if (resultEntity.getCurString() == null) {
             return;
         }
-        String content = curContent;
+        String content = resultEntity.getCurString();
+        voiceTime = resultEntity.getSpeechDuration();
         //语音录入，60个字符截停
         if (content.length() > 1) {
             content = content.substring(0, 1).toUpperCase() + content.substring(1);
@@ -1107,7 +1115,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         SpannableStringBuilder span;
         if (addBrackish) {
             span = new SpannableStringBuilder("（" + length + "/" + MAX_INPUT_CHAR_NUMBER + "）");
-            span.setSpan(new ForegroundColorSpan(Color.parseColor("#E1E1E1")), 1, str.length()+1, Spanned
+            span.setSpan(new ForegroundColorSpan(Color.parseColor("#E1E1E1")), 1, str.length() + 1, Spanned
                     .SPAN_EXCLUSIVE_INCLUSIVE);
         } else {
             span = new SpannableStringBuilder(length + "/" + MAX_INPUT_CHAR_NUMBER);
@@ -1390,6 +1398,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         mData.put("logtype", "reRecoding");
         mData.put("sno", "6");
         mData.put("voiceId", presenter.getVoiceId());
+        mData.put("voiceTime", voiceTime + "");
+        mData.put("originalText", originalText);
         umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_BULLET, mData);
     }
 
@@ -1412,6 +1422,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         mData.put("logtype", "voiceBulletSend");
         mData.put("sno", "7");
         mData.put("voiceId", presenter.getVoiceId());
+        mData.put("voiceTime", voiceTime + "");
         umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_BULLET, mData);
     }
 
@@ -1428,6 +1439,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         mData.put("logtype", "closeVoiceBullet");
         mData.put("sno", "9");
         mData.put("voiceId", presenter.getVoiceId());
+        mData.put("voiceTime", totoalVoiceTime + "");
         umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_BULLET, mData);
     }
 
