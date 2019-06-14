@@ -51,6 +51,10 @@ public class PrimaryKuangjiaImageView extends ImageView {
         }
     }
 
+    public void onResume() {
+        notifyChange();
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();

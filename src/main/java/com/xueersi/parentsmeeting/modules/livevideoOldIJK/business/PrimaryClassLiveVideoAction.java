@@ -346,6 +346,10 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         });
     }
 
+    public void onResume() {
+        ivLivePrimaryClassKuangjiaImgNormal.onResume();
+    }
+
     @Override
     public void onModeChange(final String mode, final boolean isPresent) {
         this.mode = mode;
