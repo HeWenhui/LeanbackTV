@@ -371,8 +371,17 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                             workerThread.execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    workerThread.getRtcEngine().setVideoEncoderConfiguration(PrimaryClassConfig.VIDEO_WIDTH, PrimaryClassConfig.VIDEO_HEIGHT, RTCEngine.RTCEngineVideoBitrate.VIDEO_BITRATE_100);
-//                            workerThread.getRtcEngine().enableAudioVolumeIndication(500, 3);
+                                    workerThread.getRtcEngine().setVideoEncoderConfiguration(PrimaryClassConfig.VIDEO_WIDTH, PrimaryClassConfig.VIDEO_HEIGHT,
+                                            RTCEngine.RTCEngineVideoBitrate.VIDEO_BITRATE_100, RTCEngine.RTC_ORIENTATION_MODE.RTC_ORIENTATION_MODE_FIXED_LANDSCAPE);
+//                                    VideoEncoderConfiguration.VideoDimensions dimensions = new VideoEncoderConfiguration.VideoDimensions(PrimaryClassConfig.VIDEO_WIDTH, PrimaryClassConfig.VIDEO_HEIGHT);
+//                                    VideoEncoderConfiguration configuration = new VideoEncoderConfiguration(dimensions,
+//                                            VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_10,
+//                                            VideoEncoderConfiguration.STANDARD_BITRATE,
+//                                            VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_LANDSCAPE);
+//                                    RtcEngine mRtcEngine = workerThread.getAgoraRtcEngine();
+//                                    if (mRtcEngine != null) {
+//                                        mRtcEngine.setVideoEncoderConfiguration(configuration);
+//                                    }
                                 }
                             });
                             leaveChannel = false;

@@ -16,6 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import io.agora.rtc.Constants;
+import io.agora.rtc.RtcEngine;
 
 import com.xes.ps.rtcstream.RTCEngine;
 
@@ -214,6 +215,20 @@ public class CloudWorkerThreadPool {
 
     public RTCEngine getRtcEngine() {
         return mRtcEngine;
+    }
+
+    /** 得到真正的声网 */
+    public RtcEngine getAgoraRtcEngine() {
+        Field field = null;
+        try {
+            field = mRtcEngine.getClass().getDeclaredField("mRtcEngine");
+            field.setAccessible(true);
+            Object object = field.get(mRtcEngine);
+            return (RtcEngine) object;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void execute(Runnable runnable) {
