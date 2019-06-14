@@ -606,15 +606,29 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         StableLogHashMap logHashMap = new StableLogHashMap(logtype);
 
-        int count = args.length / 2;
+        logHashMap.put("appid", appID);
+        logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId()+"");
+        logHashMap.put("usertype", "student");
+        logHashMap.put("teacherid", expLiveInfo.getCoachTeacherId() + "");
+        logHashMap.put("timestamp", System.currentTimeMillis() + "");
+        logHashMap.put("liveid", playBackEntity.getLiveId());
+        logHashMap.put("termid", playBackEntity.getChapterId());
+        logHashMap.put("uip", IpAddressUtil.USER_IP);
 
+        if (mGetInfo != null && mGetInfo.getStuName() != null) {
+            logHashMap.put("uname", mGetInfo.getStuName());
+        } else {
+            logHashMap.put("uname", "");
+        }
+
+        int count = args.length / 2;
         for (int i = 0; i < count; i++) {
             String key = args[i * 2 + 0];
             String val = args[i * 2 + 1];
             logHashMap.put(key, val);
         }
 
-        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_BACK_EXPERIENCE, logHashMap.getData());
+        UmsAgentManager.umsAgentOtherBusiness(ExperienceThreeScreenActivity.this, appID, UmsConstants.uploadBehavior, logHashMap.getData());
     }
 
     @Override
@@ -656,11 +670,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         getHandler.removeCallbacks(liveHeartTask);
         getHandler.removeCallbacks(playDelayTask);
 
-        StableLogHashMap params = new StableLogHashMap("LiveFreePlayExit");
-        params.put("liveid", playBackEntity.getLiveId());
-        params.put("termid", playBackEntity.getChapterId());
-        params.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_EXIT);
-        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_EXIT, params.getData());
         AppBll.getInstance().unRegisterAppEvent(this);
 
         if (videoPlayState.isPlaying) {
@@ -702,9 +711,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             isBackPressed = true;
             initStudyResult();
         } else {
-            StableLogHashMap logHashMap = new StableLogHashMap("exitRoom");
-            logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-            ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
             finish();
         }
     }
@@ -1544,10 +1550,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                     expBusiness.sendExperienceFeedback(playBackEntity.getLiveId(), playBackEntity.getSubjectId(), playBackEntity.getGradId(), playBackEntity.getChapterId(), expFeedbackDialog.getSuggest(), jsonArray, callBack);
                 }
 
-                StableLogHashMap logHashMap = new StableLogHashMap("afterClassFeedbackClose");
-                logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-                logHashMap.put("closetype", closeType);
-                ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
             }
         });
 

@@ -493,7 +493,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             if (mGetInfo != null) {
                 if (mGetInfo.getPattern() == 6) {
                     //半身直播语文 isArts 为 0 ，useSkin为2
-                    if (mGetInfo.getIsArts() == 0 && mGetInfo.getUseSkin() == 2) {
+                    if (mGetInfo.getUseSkin() == 2) {
                         if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE) {
@@ -504,20 +504,25 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                         logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
                     }
                 } else if (mGetInfo.getPattern() == 1) {
-                    if ((type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
-                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
-                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE
-                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_WIN) && mGetInfo.getIsArts() == 2) {
-                        getHttpManager().sendWonderfulMoment(
-                                mGetInfo.getStuId(),
-                                mGetInfo.getId(),
-                                mGetInfo.getStuCouId(),
-                                String.valueOf(type),
-                                result.getHttpPath(),
-                                new UploadImageUrl(type, false));
+                    if (mGetInfo.getIsArts() == 2) {
+                        if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_WIN) {
+                            getHttpManager().sendWonderfulMoment(
+                                    mGetInfo.getStuId(),
+                                    mGetInfo.getId(),
+                                    mGetInfo.getStuCouId(),
+                                    String.valueOf(type),
+                                    result.getHttpPath(),
+                                    new UploadImageUrl(type, false));
+                        }
                     } else {
+                        getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
                         logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
                     }
+                } else {
+                    getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
                 }
             } else {
                 getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
