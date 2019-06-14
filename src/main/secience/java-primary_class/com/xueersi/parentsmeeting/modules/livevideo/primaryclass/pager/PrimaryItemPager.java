@@ -88,6 +88,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private boolean videoStatus = true;
     /** 音频默认开 */
     private boolean audioStatus = false;
+    /** 切到后台 */
+    private boolean havepause = false;
+    /** 切到后台时，有相机权限 */
+    private boolean havecamera;
+    /** 切到后台时，有麦克风权限 */
+    private boolean haveaudio;
     private PrimaryClassView primaryClassView;
 
     public PrimaryItemPager(Context context, RelativeLayout mContentView, String mode) {
@@ -318,6 +324,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         if (!leaveChannel) {
             boolean camera = XesPermission.checkPermissionHave(mContext, PermissionConfig.PERMISSION_CODE_CAMERA);
             boolean audio = XesPermission.checkPermissionHave(mContext, PermissionConfig.PERMISSION_CODE_AUDIO);
+            if (havepause) {
+                havepause = false;
+                if (havecamera == camera && haveaudio == audio) {
+                    return;
+                }
+            }
             mLogtf.d("onCheckPermission:camera=" + camera + ",audio=" + audio);
             if (camera || audio) {
                 BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
@@ -849,6 +861,11 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         super.onPause();
         if (workerThread != null) {
             workerThread.leaveChannel();
+            boolean camera = XesPermission.checkPermissionHave(mContext, PermissionConfig.PERMISSION_CODE_CAMERA);
+            boolean audio = XesPermission.checkPermissionHave(mContext, PermissionConfig.PERMISSION_CODE_AUDIO);
+            havecamera = camera;
+            haveaudio = audio;
+            havepause = true;
         }
 //        foreach(new ItemCall() {
 //            @Override
