@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 public interface PrimaryClassView {
 
-    void decorateBack(RelativeLayout rl_course_video_contentview);
+    void decorateBack(int width, int height, RelativeLayout rl_course_video_contentview);
 
     void decorateFrame(ImageView imageView);
 

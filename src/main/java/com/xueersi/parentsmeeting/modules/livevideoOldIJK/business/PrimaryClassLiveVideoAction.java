@@ -457,7 +457,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         if (LiveTopic.MODE_CLASS.equals(mode)) {
 //            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.VISIBLE);
             setImageViewWidth();
-            primaryClassView.decorateBack(rl_course_video_contentview);
+            primaryClassView.decorateBack(ivLivePrimaryClassKuangjiaImgNormal.getWidth(), ivLivePrimaryClassKuangjiaImgNormal.getHeight(), rl_course_video_contentview);
         } else {
             lp.leftMargin = 0;
             lp.bottomMargin = 0;
@@ -469,13 +469,19 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         }
     }
 
-    public void setImageViewWidth() {
-        ivLivePrimaryClassKuangjiaImgNormal.addSizeChange(new PrimaryKuangjiaImageView.OnSizeChange() {
-            @Override
-            public void onSizeChange(int width, int height) {
-                primaryClassView.decorateRlContent(rlContent, width, height);
+    PrimaryKuangjiaImageView.OnSizeChange onSizeChange = new PrimaryKuangjiaImageView.OnSizeChange() {
+        @Override
+        public void onSizeChange(int width, int height) {
+            primaryClassView.decorateRlContent(rlContent, width, height);
+            if (LiveTopic.MODE_CLASS.equals(mode)) {
+                primaryClassView.decorateBack(width, height, rl_course_video_contentview);
             }
-        });
+        }
+    };
+
+    private void setImageViewWidth() {
+        ivLivePrimaryClassKuangjiaImgNormal.removeSizeChange(onSizeChange);
+        ivLivePrimaryClassKuangjiaImgNormal.addSizeChange(onSizeChange);
     }
 
     private int getClassBeforStateImg() {

@@ -1,6 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,14 +12,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 
 public class PrimaryClassViewCn implements PrimaryClassView {
+    private Context context;
+    private Logger logger = LiveLoggerFactory.getLogger(this);
+    private Bitmap lastDrawBitmap;
+
     public PrimaryClassViewCn(Context context) {
+        this.context = context;
         ProxUtil.getProxUtil().put(context, PrimaryClassView.class, this);
     }
 
@@ -26,8 +36,35 @@ public class PrimaryClassViewCn implements PrimaryClassView {
     }
 
     @Override
-    public void decorateBack(RelativeLayout rl_course_video_contentview) {
-        rl_course_video_contentview.setBackgroundResource(R.drawable.bg_livevideo_priclass_normal_cn);
+    public void decorateBack(int width, int height, RelativeLayout rl_course_video_contentview) {
+        Bitmap oldBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_livevideo_priclass_normal_cn);
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        int screenWidth = liveVideoPoint.screenWidth;
+        int screenHeight = liveVideoPoint.screenHeight;
+        int left = (oldBitmap.getWidth() - width - (screenWidth - width) / 2) / 2;
+        int top = (oldBitmap.getHeight() - height - (screenHeight - height) / 2) / 2;
+        if (left < 0) {
+            left = 0;
+        }
+        if (top < 0) {
+            top = 0;
+        }
+        int right = left;
+        int bottom = top;
+        int width2 = oldBitmap.getWidth() - left - right;
+        int height2 = oldBitmap.getHeight() - top - bottom;
+        logger.d("decorateBack:left=" + left + ",top=" + top + ",width2=" + width2 + ",height2=" + height2);
+        if (width2 < 1 || height2 < 1) {
+            rl_course_video_contentview.setBackground(new BitmapDrawable(context.getResources(), oldBitmap));
+            return;
+        }
+        Bitmap drawBitmap = Bitmap.createBitmap(oldBitmap, left, top, width2, height2);
+        oldBitmap.recycle();
+        if (lastDrawBitmap != null) {
+            lastDrawBitmap.recycle();
+        }
+        lastDrawBitmap = drawBitmap;
+        rl_course_video_contentview.setBackground(new BitmapDrawable(context.getResources(), drawBitmap));
     }
 
     @Override

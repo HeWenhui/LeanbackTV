@@ -35,6 +35,7 @@ public class PrimaryClassVideoFragment extends LiveVideoFragment {
     private HalfBodySceneTransAnim mTransAnim;
     PrimaryClassLiveMediaCtrlTop primaryClassLiveMediaCtrlTop;
     private LivePrimaryClassMediaControllerBottom mHalfBodyMediaControllerBottom;
+    private PrimaryClassLiveVideoAction primaryClassLiveVideoAction;
 
     public PrimaryClassVideoFragment() {
         mLayoutVideo = R.layout.activity_video_live_primary_class;
@@ -43,7 +44,13 @@ public class PrimaryClassVideoFragment extends LiveVideoFragment {
     @Override
     protected void createLiveVideoAction() {
         int useSkin = activity.getIntent().getIntExtra("useSkin", 0);
-        liveVideoAction = new PrimaryClassLiveVideoAction(activity, mLiveBll, mContentView, rlContent, isArts, mode, useSkin);
+        liveVideoAction = primaryClassLiveVideoAction = new PrimaryClassLiveVideoAction(activity, mLiveBll, mContentView, rlContent, isArts, mode, useSkin);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        primaryClassLiveVideoAction.onResume();
     }
 
     @Override
