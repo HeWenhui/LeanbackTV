@@ -11,6 +11,8 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
@@ -88,6 +90,9 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
 
     @Override
     public boolean showPager() {
+        if (liveGetInfo.isShowHightFeedback()) {
+            return false;
+        }
         if (0 != mVideoEntity.getEvaluateTimePer() && ((liveBackBll.getvPlayer().getCurrentPosition() + 0.0) /
                 liveBackBll.getvPlayer().getDuration()) > mVideoEntity.getEvaluateTimePer()) {
             logger.i("showEvaluateTeacher");

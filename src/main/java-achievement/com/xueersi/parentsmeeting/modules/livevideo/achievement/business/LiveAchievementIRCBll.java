@@ -67,7 +67,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     private VerifyCancelAlertDialog recognizeDialog;
     private boolean isDestory = false;
     private int smallEnglish;
-
+    LiveAchievementEngStandBll liveAchievementEngStandBll;
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         putInstance(LiveAchievementIRCBll.class, this);
@@ -214,7 +214,13 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             mLiveBll.removeBusinessBll(this);
         }
     }
-
+    @Override
+    public void onArtsExtLiveInited(LiveGetInfo getInfo) {
+        super.onArtsExtLiveInited(getInfo);
+        if(liveAchievementEngStandBll!=null){
+            liveAchievementEngStandBll.setAchievementLayout(getInfo.getArtsExtLiveInfo());
+        }
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -356,11 +362,11 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     oldEnglishSpeekAction.stop(null);
                 }
                 if (LiveTopic.MODE_CLASS.equals(mode)) {
-                    LiveAchievementEngStandBll liveAchievementEngBll = new LiveAchievementEngStandBll(activity, mLiveType, mGetInfo, true);
+                    liveAchievementEngStandBll = new LiveAchievementEngStandBll(activity, mLiveType, mGetInfo, true);
 //                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
-                    liveAchievementEngBll.initView(mRootView, mContentView);
-                    LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
+                    liveAchievementEngStandBll.initView(mRootView, mContentView);
+                    LiveAchievementIRCBll.this.starAction = liveAchievementEngStandBll;
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);

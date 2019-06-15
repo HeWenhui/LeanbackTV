@@ -177,20 +177,21 @@ public class CacheWebView extends WebView {
             return url;
         }
         XesWebViewCookieUtils.syncWebLogin(url);
-        try {
-            if (sessionId == null) {
-                sessionId = UmsAgentTrayPreference.getInstance().getString(UmsAgentTrayPreference.UMSAGENT_APP_SESSID);
-            }
-            if (url.contains("?")) {
-                url += "&client_sessionid=" + sessionId;
-            } else {
-                url += "?client_sessionid=" + sessionId;
-            }
-            logger.d("getSessionUrl:url=" + url);
-            return url;
-        } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
-        }
+        //网页地址增加参数
+//        try {
+//            if (sessionId == null) {
+//                sessionId = UmsAgentTrayPreference.getInstance().getString(UmsAgentTrayPreference.UMSAGENT_APP_SESSID);
+//            }
+//            if (url.contains("?")) {
+//                url += "&client_sessionid=" + sessionId;
+//            } else {
+//                url += "?client_sessionid=" + sessionId;
+//            }
+//            logger.d("getSessionUrl:url=" + url);
+//            return url;
+//        } catch (Exception e) {
+//            CrashReport.postCatchedException(new LiveException(TAG, e));
+//        }
         return url;
     }
 

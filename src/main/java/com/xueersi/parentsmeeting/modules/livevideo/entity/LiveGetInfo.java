@@ -334,6 +334,8 @@ public class LiveGetInfo {
 
     private VideoConfigEntity videoConfigEntity;
 
+    private boolean showHightFeedback;
+
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
     }
@@ -1516,5 +1518,13 @@ public class LiveGetInfo {
         public int me;//: 10,
         public int myTeam;//":80,
         public int opTeam;//":100
+    }
+
+    public boolean isShowHightFeedback() {
+        return showHightFeedback;
+    }
+
+    public void setShowHightFeedback(boolean showHightFeedback) {
+        this.showHightFeedback = showHightFeedback;
     }
 }

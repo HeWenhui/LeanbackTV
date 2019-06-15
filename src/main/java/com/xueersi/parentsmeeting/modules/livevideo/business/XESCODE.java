@@ -315,4 +315,9 @@ public interface XESCODE {
     int SUPER_SPEAKER_TAKE_CAMERA = 3003;
     /** 演讲秀发给老师消息 */
     int SUPER_SPEAKER_SEND_MESSAGE = 3004;
+
+    interface ExpLive{
+        int XEP_MODE_CHANGE = 500;
+        int XEP_BACK_FINISH = 501;
+    }
 }

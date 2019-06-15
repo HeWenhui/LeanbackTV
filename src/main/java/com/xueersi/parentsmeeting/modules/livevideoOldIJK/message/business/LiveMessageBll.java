@@ -398,7 +398,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         rlLiveMessageContent = new RelativeLayout(activity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlLiveMessageContent, params);
+        int pattern = activity.getIntent().getIntExtra("pattern", 0);
+        if (pattern == 2) {
+            bottomContent.addView(rlLiveMessageContent, 0, params);
+        } else {
+            bottomContent.addView(rlLiveMessageContent, params);
+        }
         String text = null;
         boolean isRegister = false;
         boolean isHaveFlowers = false;

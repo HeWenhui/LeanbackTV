@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -29,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveTy
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType2LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType3LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -99,7 +101,11 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumGold.setText("" + goldCount);
         tvAchiveNumFire.setText("" + enpkEnergy.me);
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
-        View view = activity.findViewById(R.id.iv_livevideo_message_small_bg);
+        try {
+            mLogtf.d("initData:canUsePK=" + englishPk.canUsePK + ",hasGroup=" + englishPk.hasGroup);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         if (1 == englishPk.canUsePK && EnglishPk.HAS_GROUP_MAIN == englishPk.hasGroup) {
             showPk();
         } else {
@@ -120,7 +126,7 @@ public class EnAchievePager extends LiveBasePager {
     }
 
     public void onEnglishPk() {
-        mLogtf.d("onEnglishPk");
+        mLogtf.d("onEnglishPk:pkEmptyView=" + (pkEmptyView == null));
         if (pkEmptyView != null) {
             pkEmptyView.removeAllViews();
             ViewGroup group = (ViewGroup) pkEmptyView.getParent();

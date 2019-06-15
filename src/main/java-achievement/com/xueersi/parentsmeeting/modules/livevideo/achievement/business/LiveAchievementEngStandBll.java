@@ -6,11 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnStandAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -45,11 +47,17 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
         relativeLayout.setBackgroundColor(Color.TRANSPARENT);
         enAchievePager = new EnStandAchievePager(activity, relativeLayout, mLiveGetInfo);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) enAchievePager.getRootView().getLayoutParams();
-//        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
-//        lp.rightMargin += (videoPoint.screenWidth - videoPoint.x4);
-//        logger.d("initView:rightMargin=" + lp.rightMargin);
-////        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+        lp.leftMargin = videoPoint.screenWidth - videoPoint.x4+SizeUtils.Dp2Px(activity,10);
+       // lp.topMargin = SizeUtils.Dp2Px(activity,6);
+        logger.d("initView:rightMargin=" + lp.rightMargin);
+//        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         relativeLayout.addView(enAchievePager.getRootView(), lp);
+    }
+    public void setAchievementLayout(ArtsExtLiveInfo extLiveInfo){
+        if(enAchievePager!=null){
+            enAchievePager.setRlAchieveContent(extLiveInfo);
+        }
     }
 
     @Override
