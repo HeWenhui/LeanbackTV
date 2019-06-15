@@ -23,16 +23,17 @@ import java.util.ArrayList;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 /**
- * 理科半身直播2.0 聊天区域
+ * 半身小班
  *
- * @author chenkun
+ * @author linyuqiang
  * @version 1.0, 2018/10/23 下午4:09
  */
-
 public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
     private static String TAG = "HalfBodyPrimaryLiveMessagePager";
     private Activity liveVideoActivity;
-    int useSkin;
+    private int useSkin;
+    private PrimaryKuangjiaImageView iv_live_primary_class_kuangjia_img_normal;
+    private View tpkL_teampk_pkstate_root;
 
     public HalfBodyPrimaryLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                            LiveAndBackDebug ums, BaseLiveMediaControllerBottom
@@ -69,23 +70,37 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void initData() {
         super.initData();
-        final View tpkL_teampk_pkstate_root = mView.findViewById(R.id.tpkL_teampk_pkstate_root);
-        final PrimaryKuangjiaImageView iv_live_primary_class_kuangjia_img_normal = liveVideoActivity.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
-        setTeamPkRight(tpkL_teampk_pkstate_root, iv_live_primary_class_kuangjia_img_normal);
+        tpkL_teampk_pkstate_root = mView.findViewById(R.id.tpkL_teampk_pkstate_root);
+        iv_live_primary_class_kuangjia_img_normal = liveVideoActivity.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
+        setTeamPkRight();
     }
 
-    private void setTeamPkRight(final View tpkL_teampk_pkstate_root, final PrimaryKuangjiaImageView imageView) {
-        imageView.addSizeChange(new PrimaryKuangjiaImageView.OnSizeChange() {
-            @Override
-            public void onSizeChange(int width, int height) {
-                float scale = (float) width / 1334f;
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tpkL_teampk_pkstate_root.getLayoutParams();
-                lp.rightMargin = (int) (237 * scale) + (ScreenUtils.getScreenWidth() - width) / 2;
-                lp.topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + SizeUtils.Dp2Px(imageView.getContext(), 11);
+    private PrimaryKuangjiaImageView.OnSizeChange onSizeChange = new PrimaryKuangjiaImageView.OnSizeChange() {
+        @Override
+        public void onSizeChange(int width, int height) {
+            float scale = (float) width / 1334f;
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tpkL_teampk_pkstate_root.getLayoutParams();
+            int rightMargin = (int) (237 * scale) + (ScreenUtils.getScreenWidth() - width) / 2;
+            int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + SizeUtils.Dp2Px(mContext, 2);
+            boolean change = false;
+            if (rightMargin != lp.rightMargin || topMargin != lp.topMargin) {
+                lp.rightMargin = rightMargin;
+                lp.topMargin = topMargin;
                 tpkL_teampk_pkstate_root.setLayoutParams(lp);
-                logger.d("setTeamPkRight:rightMargin=" + lp.rightMargin + ",top=" + lp.topMargin);
+                change = true;
             }
-        });
+            logger.d("setTeamPkRight:right=" + rightMargin + ",top=" + topMargin + ",change=" + change);
+        }
+    };
+
+    private void setTeamPkRight() {
+        iv_live_primary_class_kuangjia_img_normal.addSizeChange(onSizeChange);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        iv_live_primary_class_kuangjia_img_normal.removeSizeChange(onSizeChange);
     }
 
     @Override

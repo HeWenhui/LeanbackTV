@@ -1,87 +1,39 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
-import android.text.util.Linkify;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.animation.DecelerateInterpolator;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.adapter.HalfBodyHotWordAdapter;
-import com.xueersi.parentsmeeting.modules.livevideo.adapter.HalfBodyHotWordHolder;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTouchEventLayout;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ImageScale;
 import com.xueersi.ui.adapter.CommonAdapter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.List;
 
-import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
-import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 
 /**
- * 理科半身直播2.0 聊天区域
+ * 半身小班
  *
- * @author chenkun
+ * @author linyuqiang
  * @version 1.0, 2018/10/23 下午4:09
  */
-
 public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
     private static String TAG = "HalfBodyPrimaryLiveMessagePager";
     private Activity liveVideoActivity;
-    int useSkin;
+    private int useSkin;
+    private PrimaryKuangjiaImageView iv_live_primary_class_kuangjia_img_normal;
+    private View tpkL_teampk_pkstate_root;
 
     public HalfBodyPrimaryLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                            LiveAndBackDebug ums, BaseLiveMediaControllerBottom
@@ -118,23 +70,37 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void initData() {
         super.initData();
-        final View tpkL_teampk_pkstate_root = mView.findViewById(R.id.tpkL_teampk_pkstate_root);
-        final PrimaryKuangjiaImageView iv_live_primary_class_kuangjia_img_normal = liveVideoActivity.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
-        setTeamPkRight(tpkL_teampk_pkstate_root, iv_live_primary_class_kuangjia_img_normal);
+        tpkL_teampk_pkstate_root = mView.findViewById(R.id.tpkL_teampk_pkstate_root);
+        iv_live_primary_class_kuangjia_img_normal = liveVideoActivity.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
+        setTeamPkRight();
     }
 
-    private void setTeamPkRight(final View tpkL_teampk_pkstate_root, final PrimaryKuangjiaImageView imageView) {
-        imageView.addSizeChange(new PrimaryKuangjiaImageView.OnSizeChange() {
-            @Override
-            public void onSizeChange(int width, int height) {
-                float scale = (float) width / 1334f;
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tpkL_teampk_pkstate_root.getLayoutParams();
-                lp.rightMargin = (int) (237 * scale) + (ScreenUtils.getScreenWidth() - width) / 2;
-                lp.topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + SizeUtils.Dp2Px(imageView.getContext(), 11);
+    private PrimaryKuangjiaImageView.OnSizeChange onSizeChange = new PrimaryKuangjiaImageView.OnSizeChange() {
+        @Override
+        public void onSizeChange(int width, int height) {
+            float scale = (float) width / 1334f;
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tpkL_teampk_pkstate_root.getLayoutParams();
+            int rightMargin = (int) (237 * scale) + (ScreenUtils.getScreenWidth() - width) / 2;
+            int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + SizeUtils.Dp2Px(mContext, 2);
+            boolean change = false;
+            if (rightMargin != lp.rightMargin || topMargin != lp.topMargin) {
+                lp.rightMargin = rightMargin;
+                lp.topMargin = topMargin;
                 tpkL_teampk_pkstate_root.setLayoutParams(lp);
-                logger.d("setTeamPkRight:rightMargin=" + lp.rightMargin + ",top=" + lp.topMargin);
+                change = true;
             }
-        });
+            logger.d("setTeamPkRight:right=" + rightMargin + ",top=" + topMargin + ",change=" + change);
+        }
+    };
+
+    private void setTeamPkRight() {
+        iv_live_primary_class_kuangjia_img_normal.addSizeChange(onSizeChange);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        iv_live_primary_class_kuangjia_img_normal.removeSizeChange(onSizeChange);
     }
 
     @Override
