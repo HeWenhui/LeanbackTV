@@ -4,6 +4,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
  * 直播日志变量
  */
 public class LogConfig {
+    /** 直播-调试日志 */
+    public static String LIVE_DEBUG_MESSAGE = "live_debug_message";
     /** 直播-接麦 */
     public static String LIVE_LINK_NEWMIC = "live_newmic";
     /** 解压错误-单个文件错误 */
@@ -42,5 +44,7 @@ public class LogConfig {
     /** 直播崩溃上传 */
     public static String LIVE_CRASH_UPLOAD = "live_crash_upload";
     /** 直播IRC的onMessage */
-    public static String LIVE_IRC_ONMESSAGE= "live_irc_message";
+    public static String LIVE_IRC_ONMESSAGE = "live_irc_message";
+    /** 新课件缓存 */
+    public static String LIVE_NEWCOURSE_CACHE = "live_newcourse_cache";
 }

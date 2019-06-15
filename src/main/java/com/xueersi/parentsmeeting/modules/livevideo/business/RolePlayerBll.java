@@ -731,11 +731,11 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             //TODO:
             int i = 1;
             for (RolePlayerEntity.RolePlayerMessage message : mRolePlayerEntity.getLstRolePlayerMessage()) {
-
                 if (message.getRolePlayer().isSelfRole()) {
                     JSONObject objAn = new JSONObject();
                     objAn.put("sentenceNum", i);
-                    objAn.put("entranceTime", message.getMaxReadTime());
+                    //上传的是自己朗读的有效时长
+                    objAn.put("entranceTime", (int)message.getSelfValidSpeechTime());
                     objAn.put("score", message.getSpeechScore());
                     JSONObject objData = new JSONObject();
                     objData.put("cont_score", message.getFluency());
@@ -821,7 +821,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 if (message.getRolePlayer().isSelfRole()) {
                     JSONObject objAn = new JSONObject();
                     objAn.put("sentenceNum", i);
-                    objAn.put("entranceTime", message.getMaxReadTime());
+                    objAn.put("entranceTime", (int)message.getSelfValidSpeechTime());
                     objAn.put("score", message.getSpeechScore());
                     JSONObject objData = new JSONObject();
                     objData.put("cont_score", message.getFluency());

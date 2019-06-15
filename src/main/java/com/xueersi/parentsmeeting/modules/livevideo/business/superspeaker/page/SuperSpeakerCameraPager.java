@@ -1,9 +1,18 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page;
 
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Point;
+import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.Group;
+import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -24,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.TimeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.CustomVideoController2;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.io.File;
@@ -34,6 +44,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.LAYOUT_SIZE;
 import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.RECORD_VALID_TIME;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -210,7 +221,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             groupStop.setVisibility(View.GONE);
         }
         if (customVideoController2.getVisibility() != View.GONE) {
-            customVideoController2.setVisibility(View.GONE);
+            customVideoController2.setVisibility(View.INVISIBLE);
         }
         if (sfvVideo.getVisibility() != View.VISIBLE) {
             sfvVideo.setVisibility(View.VISIBLE);
@@ -413,14 +424,76 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         if (camera1Utils != null) {
             StorageUtils.videoUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
             logger.i(StorageUtils.videoUrl);
+            StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.VIDEO_URL, StorageUtils.videoUrl);
             if (camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.videoUrl)) {
                 initCamera = true;
+                //把视频按比例拉长
+                ViewGroup.LayoutParams layoutParams = handleSize(camera1Utils.getCameraSize(), sfvVideo);
+
+                map.put(ISuperSpeakerContract.CAMERA_SIZE,
+                        camera1Utils.getCameraSize().height + "-" +
+                                camera1Utils.getCameraSize().width)
+                        .put(ISuperSpeakerContract.INIT_CAMERA, String.valueOf(true));
+                if (layoutParams != null) {
+                    map.put(LAYOUT_SIZE, layoutParams.height + "-" + layoutParams.width);
+                }
+                camera1Utils.startPreView();
             } else {
                 initCamera = false;
+                map.put(ISuperSpeakerContract.INIT_CAMERA, String.valueOf(false));
             }
+            UmsAgentManager.umsAgentDebug(mContext, ISuperSpeakerContract.SUPER_SPEAKER_EVNT_ID, map.getData());
         }
     }
 
+    /**
+     * 按照相机的比例缩小放大这个View
+     *
+     * @param size
+     * @param view
+     */
+    private ViewGroup.LayoutParams handleSize(Camera.Size size, View view) {
+        if (size == null || view == null) return null;
+        int width = size.width;
+        int height = size.height;
+        if (width > 0 && height > 0) {
+            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+            if (layoutParams != null) {
+                try {
+                    Display defaultDisplay = ((Activity) mContext).getWindowManager().getDefaultDisplay();
+                    Point point = new Point();
+                    defaultDisplay.getSize(point);
+                    int screenWidth = point.y;
+                    int screenHeight = point.x;
+                    logger.i("screenWidth = " + screenWidth + " screenHeight = " + screenHeight);
+                    if (screenWidth < screenHeight) {
+                        int a = screenHeight;
+                        screenHeight = screenWidth;
+                        screenWidth = a;
+                    }
+                    if (height > width) {
+                        int a = height;
+                        height = width;
+                        width = a;
+                    }
+                    double dw = screenHeight * 1.0 / height;
+                    double dh = screenWidth * 1.0 / width;
+                    double dd = dw > dh ? dh : dw;
+                    logger.i("dd = " + dd);
+                    layoutParams.width = (int) (width * dd);
+                    layoutParams.height = (int) (height * dd);
+                    view.setLayoutParams(layoutParams);
+                    return layoutParams;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.e(e);
+                }
+
+            }
+        }
+        return null;
+
+    }
 
     /***
      * 停止拍摄
@@ -442,7 +515,6 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         groupStop.setVisibility(View.GONE);
         groupSubmit.setVisibility(View.VISIBLE);
         groupRestart.setVisibility(View.VISIBLE);
-
         isInRecord = false;
         io.reactivex.Observable.
                 just(true).
@@ -466,15 +538,26 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
-                        sfvVideo.setVisibility(View.GONE);
+                        long invisibleTime = System.currentTimeMillis();
+                        sfvVideo.setVisibility(View.INVISIBLE);
+                        invisibleTime = System.currentTimeMillis() - invisibleTime;
                         customVideoController2.setVisibility(View.VISIBLE);
                         customVideoController2.startPlayVideo(StorageUtils.videoUrl, 0);
+                        if (invisibleTime > 1000) {
+                            StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.CAMERA_INVISIBLE, String.valueOf(invisibleTime));
+                            UmsAgentManager.umsAgentDebug(mContext, ISuperSpeakerContract.SUPER_SPEAKER_EVNT_ID, map.getData());
+                            logger.i(invisibleTime + "");
+                        }
+                        sendVideoAlbum(StorageUtils.videoUrl);
+
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
                         logger.e(throwable);
+                        StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.STOP_RECORD, throwable.toString());
+                        UmsAgentManager.umsAgentDebug(mContext, ISuperSpeakerContract.SUPER_SPEAKER_EVNT_ID, map.getData());
                     }
                 });
 
@@ -627,7 +710,33 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             logger.i("音量大小" + camera1Utils.getVolum() + "");
             bridge.submitSpeechShow(isForce, String.valueOf(camera1Utils.getVolum() - 20));
             removeCameraView();
+
         }
+    }
+
+    private void sendVideoAlbum(String videoUrl) {
+        File file = new File(videoUrl);
+        if (file == null) {
+            return;
+        }
+        //通知相册更新
+        ContentResolver localContentResolver = mContext.getContentResolver();
+        ContentValues localContentValues = getVideoContentValues(mContext, file, System.currentTimeMillis());
+        Uri localUri = localContentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, localContentValues);
+        mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri));
+    }
+
+    private ContentValues getVideoContentValues(Context paramContext, File paramFile, long paramLong) {
+        ContentValues localContentValues = new ContentValues();
+        localContentValues.put("title", paramFile.getName());
+        localContentValues.put("_display_name", paramFile.getName());
+        localContentValues.put("mime_type", "video/3gp");
+        localContentValues.put("datetaken", Long.valueOf(paramLong));
+        localContentValues.put("date_modified", Long.valueOf(paramLong));
+        localContentValues.put("date_added", Long.valueOf(paramLong));
+        localContentValues.put("_data", paramFile.getAbsolutePath());
+        localContentValues.put("_size", Long.valueOf(paramFile.length()));
+        return localContentValues;
     }
 
     //    @Override

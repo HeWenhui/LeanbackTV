@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -45,7 +46,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
@@ -56,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseB
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedbackTeacherLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.ArtsAnswerResultPlayBackBll;
@@ -67,6 +71,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.PlayErrorCod
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.LiveBackVideoBll;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
+import com.xueersi.ui.widget.CircleImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -148,6 +153,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
      */
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
 
+    /** 全身直播 头像*/
+    LinearLayout llUserHeadImage;
+    /** 全身直播 头像*/
+    CircleImageView civUserHeadImage;
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
@@ -367,6 +376,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         rlQuestionContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
+        llUserHeadImage = mContentView.findViewById(R.id.ll_livevideo_en_stand_achive_user_head_imge);
+        civUserHeadImage = mContentView.findViewById(R.id.iv_livevideo_en_stand_achive_user_head_imge);
+
     }
 
 
@@ -518,16 +530,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
         liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
         //直播
         if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
             //理科
             if (liveBackBll.getIsArts() == 0) {
-                liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
                 initLiveRemarkBll();
             } else {
-                if (liveBackBll.getIsArts() == 2) {
-                    liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
-                }
+                Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");
                 liveBackBll.addBusinessBll(new ArtsAnswerResultPlayBackBll(activity, liveBackBll));
                 if (liveBackBll.getPattern() != 2) {
                     //回放聊天区加上MMD的皮肤
@@ -539,6 +549,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                         liveBackBll);
                 evaluateTeacherPlayBackBll.setLiveFragmentBase(liveBackPlayVideoFragment);
                 liveBackBll.addBusinessBll(evaluateTeacherPlayBackBll);
+
+
+                FeedbackTeacherLiveBackBll feedbackTeacherLiveBackBll = new FeedbackTeacherLiveBackBll(activity,liveBackBll);
+                feedbackTeacherLiveBackBll.setLiveFragment(liveBackPlayVideoFragment);
+                liveBackBll.addBusinessBll(feedbackTeacherLiveBackBll);
+
             }
         }
     }
@@ -635,9 +651,24 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         UmsAgentManager.umsAgentDebug(activity, "" + code, "status");
         if (code == MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER) {
             videoPlayStatus = status;
+            umsTeacherChange();
         }
         startNewVideo();
         return code;
+    }
+
+    /**
+     * 老师统计
+     */
+    private void umsTeacherChange(){
+        if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN && liveBackBll!=null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("backup_teacher");
+            liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
+        } else if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR && liveBackBll!=null){
+            StableLogHashMap logHashMap = new StableLogHashMap("backup_coach");
+            liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
+        }
+
     }
 
     @Override

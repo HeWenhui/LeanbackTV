@@ -10,6 +10,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -19,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
@@ -29,6 +31,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.EvaluateContent;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
@@ -210,7 +214,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setSmallEnglish(false);
             LiveVideoConfig.isSmallChinese = false;
         }
-//        getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
+        getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
         LiveVideoConfig.LIVEMULPRELOADCHS = data.optString("courseWarePreLoadUrl");
         LiveVideoConfig.LIVEMULH5URLCHS = data.optString("getCourseWareHtml");
@@ -1855,24 +1859,28 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         try {
             JSONObject data = (JSONObject) responseEntity.getJsonObject();
             if (data.has("starList")) {
-                JSONArray jsonArray = data.getJSONArray("starList");
-                JSONObject jsonObject = null;
-                List<TeamEnergyAndContributionStarEntity.ContributionStar> contributionStarList
-                        = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
-                TeamEnergyAndContributionStarEntity.ContributionStar star = null;
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    jsonObject = jsonArray.getJSONObject(i);
-                    star = new TeamEnergyAndContributionStarEntity.ContributionStar();
-                    star.setStuId(jsonObject.getString("stuId"));
-                    star.setEnergy(jsonObject.getLong("energy"));
-                    star.setName(jsonObject.getString("name"));
-                    star.setRealname(jsonObject.getString("realname"));
-                    star.setNickname(jsonObject.getString("nickname"));
-                    star.setAvaterPath(jsonObject.getString("avater_path"));
-                    contributionStarList.add(star);
+                JSONArray jsonArray = data.optJSONArray("starList");
+                if(jsonArray != null && jsonArray.length() >0){
+                    JSONObject jsonObject = null;
+                    List<TeamEnergyAndContributionStarEntity.ContributionStar> contributionStarList
+                            = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
+                    TeamEnergyAndContributionStarEntity.ContributionStar star = null;
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = jsonArray.getJSONObject(i);
+                        star = new TeamEnergyAndContributionStarEntity.ContributionStar();
+                        star.setStuId(jsonObject.getString("stuId"));
+                        star.setEnergy(jsonObject.getLong("energy"));
+                        star.setName(jsonObject.getString("name"));
+                        star.setRealname(jsonObject.getString("realname"));
+                        star.setNickname(jsonObject.getString("nickname"));
+                        star.setAvaterPath(jsonObject.getString("avater_path"));
+                        contributionStarList.add(star);
+                    }
+                    entity.setContributionStarList(contributionStarList);
                 }
-                entity.setContributionStarList(contributionStarList);
             }
+
 
             if (data.has("myTeam")) {
                 JSONObject jsonObject = data.getJSONObject("myTeam");
@@ -2039,6 +2047,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
         info.setIsGroupGameCourseWare(data.optInt("isGroupGameCourseWare", -1));
+        info.setSummerCourseWareSize(data.optString("summerCourseWareSize"));
+        UmsAgentTrayPreference.getInstance().put(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, info.getSummerCourseWareSize());
         return info;
     }
 
@@ -2465,26 +2475,26 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param responseEntity
      * @return
      */
-    public PraiseEntity parseTutorPraiseEntity(ResponseEntity  responseEntity) throws Exception {
+    public PraiseEntity parseTutorPraiseEntity(ResponseEntity responseEntity) throws Exception {
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-       // JSONObject jsonObject = new JSONObject(data);
+        // JSONObject jsonObject = new JSONObject(data);
         List<PraiseContentEntity> contentEntityList = new ArrayList<>();
         PraiseContentEntity titleEntity = null;
         PraiseContentEntity contentEntity = null;
         PraiseEntity entity = new PraiseEntity();
         entity.setContentEntityList(contentEntityList);
-       int gradle = jsonObject.optInt("grade");
-       int position = 0;
+        int gradle = jsonObject.optInt("grade");
+        int position = 0;
 //        int gradle = 2;
-        if (gradle ==PraiseConfig.GRADLE_SMALL) {
-          entity.setPraiseStyle(jsonObject.optInt("bizId"));
+        if (gradle == PraiseConfig.GRADLE_SMALL) {
+            entity.setPraiseStyle(jsonObject.optInt("bizId"));
             //entity.setPraiseStyle(1);
         } else {
             entity.setPraiseStyle(PraiseConfig.PRAISE_DARK);
         }
         entity.setPraiseName(jsonObject.optString("rankTitle"));
         entity.setPraiseType(jsonObject.optInt("category"));
-        if(entity.getPraiseType() == PraiseConfig.PRAISE_TYPE_TALK) {
+        if (entity.getPraiseType() == PraiseConfig.PRAISE_TYPE_TALK) {
             titleEntity = new PraiseContentEntity();
             titleEntity.setViewType(PraiseConfig.VIEW_TYPE_TITLE);
             titleEntity.setPraiseStyle(entity.getPraiseStyle());
@@ -2518,17 +2528,19 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     contentEntityList.add(titleEntity);
                     position++;
                 }
-                parsePraiseContentEntity(entity,userListObject,contentEntityList,entity.getPraiseStyle(), position);
+                parsePraiseContentEntity(entity, userListObject, contentEntityList, entity.getPraiseStyle(), position);
             }
         }
         return entity;
     }
+
     /**
      * 解析榜单内容
+     *
      * @param jsonObject
      * @param contentEntityList
      */
-    private void parsePraiseContentEntity(  PraiseEntity entity,JSONObject jsonObject,List<PraiseContentEntity> contentEntityList,int style,int position) {
+    private void parsePraiseContentEntity(PraiseEntity entity, JSONObject jsonObject, List<PraiseContentEntity> contentEntityList, int style, int position) {
         JSONArray array = jsonObject.optJSONArray("stus");
         if (array != null && array.length() > 0) {
             JSONObject userListObject = null;
@@ -2538,7 +2550,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 contentEntity = new PraiseContentEntity();
                 position++;
                 contentEntity.setName(userListObject.optString("name"));
-                if (userListObject.optInt("inList") == 1){
+                if (userListObject.optInt("inList") == 1) {
                     entity.setPosition(position);
                 }
                 contentEntity.setStatus(userListObject.optInt("inList"));
@@ -2546,7 +2558,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 contentEntityList.add(contentEntity);
             }
         } else {
-            PraiseContentEntity   contentEntity = new PraiseContentEntity();
+            PraiseContentEntity contentEntity = new PraiseContentEntity();
             contentEntity.setName(jsonObject.optString("msg"));
             contentEntity.setItemSpan(4);
             contentEntity.setPraiseStyle(style);

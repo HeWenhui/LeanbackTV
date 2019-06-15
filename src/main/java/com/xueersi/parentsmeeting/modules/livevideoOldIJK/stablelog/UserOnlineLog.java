@@ -1,11 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog;
 
 import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveLog;
+//import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 /**

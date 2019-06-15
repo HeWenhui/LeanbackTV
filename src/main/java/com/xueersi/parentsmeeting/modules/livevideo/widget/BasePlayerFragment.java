@@ -25,9 +25,11 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
@@ -294,8 +296,8 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
      * 用户点击返回，判断是不是程序崩溃
      */
     protected void onUserBackPressed() {
-        vPlayer.psExit();
         activity.onBackPressed();
+        vPlayer.psExit();
 //        activity.finish(LiveVideoConfig.VIDEO_CANCLE);
     }
 
@@ -391,9 +393,16 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     }
                                     isChangeLine = false;
                                 } else {
+                                    String userName, userId;
                                     try {
+                                        userName = AppBll.getInstance().getAppInfoEntity().getChildName();
+                                        userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        if (videoConfigEntity != null) {
+                                            videoConfigEntity.setUserId(userId);
+                                            videoConfigEntity.setUserName(userName);
+                                        }
                                         if (vPlayer.getPlayer() instanceof PSIJK) {
-                                            vPlayer.getPlayer().setUserInfo(AppBll.getInstance().getAppInfoEntity().getChildName(), UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                                            vPlayer.getPlayer().setUserInfo(userName, userId);
                                         }
                                         if (liveType == PLAY_LIVE || liveType == PLAY_BACK) {
                                             vPlayer.playPSVideo(streamId, protocol);
@@ -405,6 +414,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         e.printStackTrace();
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        if (videoConfigEntity != null) {
+                                            recordFailData(videoConfigEntity.toJSONObject().toString());
+                                        }
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
@@ -513,6 +525,13 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         tvVideoLoadingText = viewRoot.findViewById(R.id.tv_course_video_loading_tip); // 加载进度文字框
         videoLoadingLayout = viewRoot.findViewById(R.id.rl_course_video_loading); // 加载进度动画
         return viewRoot;
+    }
+
+    /** 记录播放失败日志日志 */
+    protected void recordFailData(String jsonString) {
+        if (getActivity() != null) {
+            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.PLAY_EXCEPTION, jsonString);
+        }
     }
 
     /** 加载缓冲进度动画 */

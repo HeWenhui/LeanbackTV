@@ -39,6 +39,12 @@ public class LiveCutImage {
         return newBitmap;
     }
 
+    /**
+     * 保存ImageBitmap到文件夹下
+     *
+     * @param bitmap
+     * @param saveFile
+     */
     public static void saveImage(Bitmap bitmap, String saveFile) {
         FileOutputStream fileOutputStream = null;
         try {
@@ -57,6 +63,32 @@ public class LiveCutImage {
         }
     }
 
+    public static Bitmap getViewCapture(View view,StringBuilder stringBuilder,AtomicBoolean creatBitmap) {
+        int width = view.getMeasuredWidth();
+        int height = view.getMeasuredHeight();
+
+        if (width<=0 || height<=0) {
+            creatBitmap.set(false);
+            return null;
+        }
+
+        stringBuilder.append(",width=" + width + ",height=" + height);
+        Bitmap bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+
+        creatBitmap.set(true);
+        return bitmap;
+    }
+
+    /**
+     * 截图，截取当前屏幕的图片
+     *
+     * @param view
+     * @param stringBuilder
+     * @param creatBitmap
+     * @return
+     */
     public static Bitmap getViewBitmap(View view, StringBuilder stringBuilder, AtomicBoolean creatBitmap) {
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
@@ -79,6 +111,7 @@ public class LiveCutImage {
 
     /**
      * 生成圆形图片
+     *
      * @param input  原始图片
      * @param radius 半径
      * @return

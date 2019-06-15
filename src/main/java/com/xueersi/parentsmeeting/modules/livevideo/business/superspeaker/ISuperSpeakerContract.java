@@ -128,9 +128,16 @@ public interface ISuperSpeakerContract {
         void removeView(View view);
     }
 
-//    interface ICameraBackPresenter {
+    //    interface ICameraBackPresenter {
 //        void removeView(View view);
 //
 //        void removeCameraView();
 //    }
+    String SUPER_SPEAKER_EVNT_ID = "super_speaker_event_id";
+    String INIT_CAMERA = "initCamera";
+    String VIDEO_URL = "video_url";
+    String CAMERA_SIZE = "camera_size";
+    String LAYOUT_SIZE = "layout_size";
+    String CAMERA_INVISIBLE = "camera_invisible";
+    String STOP_RECORD = "stop_record";
 }

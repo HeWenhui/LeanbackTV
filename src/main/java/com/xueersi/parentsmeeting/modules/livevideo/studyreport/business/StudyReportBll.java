@@ -25,9 +25,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,6 +43,7 @@ import io.agora.rtc.plugin.rawdata.MediaDataObserverPlugin;
 import io.agora.rtc.plugin.rawdata.MediaDataVideoObserver;
 import io.agora.rtc.plugin.rawdata.MediaPreProcessing;
 
+
 /**
  * 学习报告截图
  *
@@ -53,6 +56,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     private MediaDataObserverPlugin mediaDataObserverPlugin;
     File alldir = LiveCacheFile.geCacheFile(activity, "studyreport");
     ArrayList<String> types = new ArrayList<>();
+    private LiveThreadPoolExecutor liveThreadPoolExecutor;
 
     public StudyReportBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -64,6 +68,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         super.onLiveInited(getInfo);
         if (getInfo.getAllowSnapshot() == 1) {
             putInstance(StudyReportAction.class, this);
+            liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
             initData();
         } else {
             mLiveBll.removeBusinessBll(this);
@@ -156,60 +161,97 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         if (types.contains("" + type)) {
             return;
         }
+        if (predraw) {
+            view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    view.getViewTreeObserver().removeOnPreDrawListener(this);
+                    doImgCut(type, view, cut);
+                    return false;
+                }
+            });
+        } else {
+            doImgCut(type, view, cut);
+        }
+    }
 
-        final Runnable runnable = new Runnable() {
+    private void doImgCut(int type, View view, boolean cut) {
+        StringBuilder stringBuilder = new StringBuilder();
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        Bitmap viewBitmap = getViewBitmap(view, stringBuilder, atomicBoolean);
+        if (viewBitmap != null) {
+            upLoadViewBitmap(viewBitmap, stringBuilder, atomicBoolean, cut, type);
+        } else {
+            mLogtf.d("cutImage:type=" + type + ",bmpScreen=null");
+        }
+    }
+
+    /**
+     * 从View 得到bitmap 需在主线程执行
+     *
+     * @param view
+     * @param stringBuilder
+     * @param atomicBoolean
+     * @return
+     */
+    private Bitmap getViewBitmap(View view, StringBuilder stringBuilder, AtomicBoolean atomicBoolean) {
+        Bitmap resultBitmap = null;
+        try {
+            if (view != null) {
+//                stringBuilder = new StringBuilder();
+//                atomicBoolean = new AtomicBoolean(false);
+                resultBitmap = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            mLogtf.e("getViewBitmap", e);
+            CrashReport.postCatchedException(e);
+        }
+        return resultBitmap;
+    }
+
+
+    /**
+     * 上传截图
+     *
+     * @param viewBitmap
+     */
+    private void upLoadViewBitmap(final Bitmap viewBitmap, final StringBuilder stringBuilder, final AtomicBoolean atomicBoolean, final boolean cut, final int type) {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-                    Bitmap bmpScreen = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
-                    if (bmpScreen == null) {
-                        mLogtf.d("cutImage:type=" + type + ",bmpScreen=null");
-                        return;
-                    }
+                    Bitmap saveBitmap = viewBitmap;
                     if (cut) {
-                        bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
+                        saveBitmap = LiveCutImage.cutBitmap(saveBitmap);
                     }
                     File savedir = new File(alldir, "type-" + type);
                     if (!savedir.exists()) {
                         savedir.mkdirs();
                     }
                     File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
-                    LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
-                    view.destroyDrawingCache();
-                    mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder);
-                    uploadWonderMoment(type, saveFile.getPath());
-                    if (cut || atomicBoolean.get()) {
-                        bmpScreen.recycle();
+                    if (!saveBitmap.isRecycled()) {
+                        LiveCutImage.saveImage(saveBitmap, saveFile.getPath());
+                        mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder);
+                        uploadWonderMoment(type, saveFile.getPath());
+                        if (cut || atomicBoolean.get()) {
+                            saveBitmap.recycle();
+                        }
+                    } else {
+                        mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder + " bitmap is recycled");
                     }
                 } catch (Exception e) {
                     mLogtf.e("cutImage", e);
                     CrashReport.postCatchedException(e);
                 }
             }
-        };
-
-        final Thread taskThread = new Thread(runnable);
-        if (predraw) {
-            view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    view.getViewTreeObserver().removeOnPreDrawListener(this);
-                    // runnable.run();
-                    taskThread.start();
-                    return false;
-                }
-            });
-        } else {
-            // runnable.run();
-            taskThread.start();
-        }
+        });
     }
 
     @Override
     public void cutImageAndVideo(final int type, final View view, final boolean cut, boolean predraw) {
         mLogtf.d("cutImageAndVideo:type=" + type + ",cut=" + cut + ",predraw=" + predraw);
+        logger.i("studyreportBll" + 1);
         if (types.contains("" + type)) {
             return;
         }
@@ -221,6 +263,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     AtomicBoolean atomicBoolean = new AtomicBoolean(false);
                     Bitmap bmpScreen = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
                     if (bmpScreen == null) {
+                        logger.i("cutImageAndVideo:type=" + type + ",bmpScreen=null");
                         mLogtf.d("cutImageAndVideo:type=" + type + ",bmpScreen=null");
                         return;
                     }
@@ -267,6 +310,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                                     } catch (Exception e) {
                                         CrashReport.postCatchedException(e);
                                         uploadWonderMoment(type, saveFile.getPath());
+                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
                             }
@@ -295,71 +339,266 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         }
     }
 
+    /**
+     * 主线程截屏，解决小学语文三分屏，在子线程截图报错bug
+     *
+     * @param type
+     * @param view
+     * @param cut
+     * @param predraw
+     */
+//    @Override
+//    public void cutImageMainThread(final int type, final View view, final boolean cut, final boolean predraw) {
+//        mLogtf.d("cutImage:type=" + type + ",cut=" + cut + ",predraw=" + predraw);
+//        logger.i("StudyReportBll" + 1);
+//        if (types.contains("" + type)) {
+//            logger.i("has contains " + type + ",return;");
+//            return;
+//        }
+//        Observable.
+//                just(!types.contains("" + type)).
+//                filter(new Predicate<Boolean>() {
+//                    @Override
+//                    public boolean test(Boolean aBoolean) throws Exception {
+//                        return aBoolean;
+//                    }
+//                }).
+//                observeOn(AndroidSchedulers.mainThread()).
+//                map(new Function<Boolean, Bitmap>() {
+//                    @Override
+//                    public Bitmap apply(Boolean aBoolean) throws Exception {
+//                        StringBuilder stringBuilder = new StringBuilder();
+//                        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+//                        Bitmap bmpScreen = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
+//                        return bmpScreen;
+//                    }
+//                }).
+//                filter(new Predicate<Bitmap>() {
+//                    @Override
+//                    public boolean test(Bitmap bitmap) throws Exception {
+//                        return bitmap != null;
+//                    }
+//                }).
+//                observeOn(Schedulers.io()).
+//                doOnNext(new Consumer<Bitmap>() {
+//                    @Override
+//                    public void accept(Bitmap bitmap) throws Exception {
+//                        File savedir = new File(alldir, "type-" + type);
+//                        if (!savedir.exists()) {
+//                            savedir.mkdirs();
+//                        }
+//                        File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
+//                        LiveCutImage.saveImage(bitmap, saveFile.getPath());
+//                        uploadWonderMoment(type, saveFile.getPath());
+//                        mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder);
+//                    }
+//                }).
+//                observeOn(AndroidSchedulers.mainThread()).
+//                subscribe(new Consumer<Bitmap>() {
+//                    @Override
+//                    public void accept(Bitmap bmpScreen) throws Exception {
+//                        view.destroyDrawingCache();
+//
+//                        if (cut || atomicBoolean.get()) {
+//                            bmpScreen.recycle();
+//                        }
+//                    }
+//                });
+//        logger.i("StudyReportBll" + 2);
+//        final Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    logger.i("StudyReportBll" + 6);
+//                    StringBuilder stringBuilder = new StringBuilder();
+//                    AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+//                    Bitmap bmpScreen = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
+//                    if (bmpScreen == null) {
+//                        mLogtf.d("cutImage:type=" + type + ",bmpScreen=null");
+//                        return;
+//                    }
+//                    if (cut) {
+//                        bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
+//                    }
+//                    File savedir = new File(alldir, "type-" + type);
+//                    if (!savedir.exists()) {
+//                        savedir.mkdirs();
+//                    }
+//
+//                    File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
+//                    if (!bmpScreen.isRecycled()) {
+//                        logger.i("StudyReportBll" + 7);
+//                        LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+//                    } else {
+//                        logger.i("StudyReportBll" + 8);
+//                        bmpScreen = LiveCutImage.getViewCapture(view, stringBuilder, atomicBoolean);
+//                        if (cut) {
+//                            bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
+//                        }
+//                        LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+//                    }
+//                    view.destroyDrawingCache();
+//                    mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder);
+//                    uploadWonderMoment(type, saveFile.getPath());
+//                    if (cut || atomicBoolean.get()) {
+//                        bmpScreen.recycle();
+//                    }
+//                } catch (Exception e) {
+//                    mLogtf.e("cutImage", e);
+//                    CrashReport.postCatchedException(e);
+//                }
+//            }
+//        };
+//        logger.i("StudyReportBll" + 3);
+//        if (predraw) {
+//            view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                @Override
+//                public boolean onPreDraw() {
+//                    logger.i("StudyReportBll" + 4);
+//                    view.getViewTreeObserver().removeOnPreDrawListener(this);
+//                    runnable.run();
+//                    return false;
+//                }
+//            });
+//        } else {
+//
+//            logger.i("StudyReportBll" + 5);
+//            runnable.run();
+//        }
+//
+//    }
+
+    private class XesUploadListener implements XesStsUploadListener {
+
+        private int type;
+        private File finalFile;
+
+        public XesUploadListener(int type, File finalFile) {
+            this.type = type;
+            this.finalFile = finalFile;
+        }
+
+        @Override
+        public void onProgress(XesCloudResult result, int percent) {
+
+        }
+
+        @Override
+        public void onSuccess(XesCloudResult result) {
+            if (!AppConfig.DEBUG) {
+                finalFile.delete();
+            }
+            logger.i("StudyReportBll" + 10);
+            logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
+            if (mGetInfo != null) {
+                if (mGetInfo.getPattern() == 6) {
+                    //半身直播语文 isArts 为 0 ，useSkin为2
+                    if (mGetInfo.getUseSkin() == 2) {
+                        if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE) {
+                            getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                        }
+                    } else {
+                        getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                        logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
+                    }
+                } else if (mGetInfo.getPattern() == 1) {
+                    if (mGetInfo.getIsArts() == 2) {
+                        if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_WIN) {
+                            getHttpManager().sendWonderfulMoment(
+                                    mGetInfo.getStuId(),
+                                    mGetInfo.getId(),
+                                    mGetInfo.getStuCouId(),
+                                    String.valueOf(type),
+                                    result.getHttpPath(),
+                                    new UploadImageUrl(type, false));
+                        }
+                    } else {
+                        getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                        logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
+                    }
+                } else {
+                    getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+                }
+            } else {
+                getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
+            }
+        }
+
+        @Override
+        public void onError(XesCloudResult result) {
+            logger.d("asyncUpload:onError=" + result.getErrorCode() + "," + result.getErrorMsg());
+        }
+    }
+
+    private class UploadImageUrl extends HttpCallBack {
+        private int type;
+
+        public UploadImageUrl(int type, boolean isShowTip) {
+            super(isShowTip);
+            this.type = type;
+        }
+
+        @Override
+        public void onPmSuccess(ResponseEntity responseEntity) {
+            logger.d("onPmSuccess:type=" + type + ",responseEntity=" + responseEntity.getJsonObject());
+            types.add("" + type);
+            String str = mShareDataManager.getString(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+            try {
+                JSONObject jsonObject = new JSONObject(str);
+                String liveid = jsonObject.optString("liveId");
+                JSONArray jsonArray;
+                if (mLiveId.equals(liveid)) {
+                    jsonArray = jsonObject.getJSONArray("types");
+                } else {
+                    jsonObject.put("liveId", mLiveId);
+                    jsonArray = new JSONArray();
+                    jsonObject.put("types", jsonArray);
+                }
+                jsonArray.put("" + type);
+                mShareDataManager.put(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, jsonObject.toString(), ShareDataManager.SHAREDATA_USER);
+                logger.d("onPmSuccess:jsonObject=" + jsonObject);
+            } catch (Exception e) {
+                mShareDataManager.put(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+                mLogtf.e("onPmSuccess", e);
+            }
+        }
+
+        @Override
+        public void onPmError(ResponseEntity responseEntity) {
+            super.onPmError(responseEntity);
+            logger.d("onPmError:type=" + type + ",responseEntity=" + responseEntity.getErrorMsg());
+        }
+
+        @Override
+        public void onPmFailure(Throwable error, String msg) {
+            super.onPmFailure(error, msg);
+            logger.d("onPmFailure:type=" + type + ",msg=" + msg, error);
+        }
+    }
+
     private void uploadWonderMoment(final int type, String path) {
-        mLogtf.d("uploadWonderMoment:type=" + type + ",path=" + path);
+        StringBuilder sbuilder = new StringBuilder("uploadWonderMoment:type=" + type + ",path=" + path);
+        if (mGetInfo != null) {
+            sbuilder.append(",pattern = " + mGetInfo.getPattern());
+        }
+        logger.i(sbuilder.toString());
+        mLogtf.d(sbuilder.toString());
         final File finalFile = new File(path);
         XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(activity);
         CloudUploadEntity uploadEntity = new CloudUploadEntity();
         uploadEntity.setFilePath(path);
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
-        uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
-        xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesStsUploadListener() {
-            @Override
-            public void onProgress(XesCloudResult result, int percent) {
 
-            }
+        uploadEntity.setCloudPath(mGetInfo.getIsArts() == 2 ? CloudDir.LIVE_ARTS_MOMENT : CloudDir.LIVE_SCIENCE_MOMENT);
 
-            @Override
-            public void onSuccess(XesCloudResult result) {
-                if (!AppConfig.DEBUG) {
-                    finalFile.delete();
-                }
-                logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
-                getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new HttpCallBack(false) {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        logger.d("onPmSuccess:type=" + type + ",responseEntity=" + responseEntity.getJsonObject());
-                        types.add("" + type);
-                        String str = mShareDataManager.getString(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
-                        try {
-                            JSONObject jsonObject = new JSONObject(str);
-                            String liveid = jsonObject.optString("liveId");
-                            JSONArray jsonArray;
-                            if (mLiveId.equals(liveid)) {
-                                jsonArray = jsonObject.getJSONArray("types");
-                            } else {
-                                jsonObject.put("liveId", mLiveId);
-                                jsonArray = new JSONArray();
-                                jsonObject.put("types", jsonArray);
-                            }
-                            jsonArray.put("" + type);
-                            mShareDataManager.put(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, jsonObject.toString(), ShareDataManager.SHAREDATA_USER);
-                            logger.d("onPmSuccess:jsonObject=" + jsonObject);
-                        } catch (Exception e) {
-                            mShareDataManager.put(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
-                            mLogtf.e("onPmSuccess", e);
-                        }
-                    }
+//            uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
 
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        super.onPmError(responseEntity);
-                        logger.d("onPmError:type=" + type + ",responseEntity=" + responseEntity.getErrorMsg());
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        super.onPmFailure(error, msg);
-                        logger.d("onPmFailure:type=" + type + ",msg=" + msg, error);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(XesCloudResult result) {
-                logger.d("asyncUpload:onError=" + result.getErrorCode() + "," + result.getErrorMsg());
-            }
-        });
+        xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesUploadListener(type, finalFile));
     }
 
     private void createPlugin() {

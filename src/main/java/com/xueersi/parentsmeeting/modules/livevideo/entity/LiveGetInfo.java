@@ -240,7 +240,7 @@ public class LiveGetInfo {
      */
     private int allowSnapshot;
     /**
-     * 1-普通直播，2-全身直播
+     * 1-普通直播，2-全身直播,6半身直播
      */
     private int pattern = 1;
     /** 全身直播语音答题和评测小组排名请求时间 */
@@ -333,6 +333,8 @@ public class LiveGetInfo {
     private String getJournalUrl;
 
     private VideoConfigEntity videoConfigEntity;
+
+    private boolean showHightFeedback;
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -1516,5 +1518,13 @@ public class LiveGetInfo {
         public int me;//: 10,
         public int myTeam;//":80,
         public int opTeam;//":100
+    }
+
+    public boolean isShowHightFeedback() {
+        return showHightFeedback;
+    }
+
+    public void setShowHightFeedback(boolean showHightFeedback) {
+        this.showHightFeedback = showHightFeedback;
     }
 }

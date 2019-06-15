@@ -16,4 +16,7 @@ public class ShareDataConfig {
 //    public static final String SUPER_SPEAKER_SUBMIT_SP_KEY = "livevideo_super_speaker_submit_status";
     /** 集体发言 */
     public final static String SP_SPEECH_COLLECTION = "sp_livevideo_collection";
+    /** 兼容课件组2019年夏季课件尺寸问题， 2019.4.4新增  0 旧尺寸，1 新尺寸 */
+    public final static String SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE = "sp_en_english_stand_summercours_ewaresize";
+
 }

@@ -1428,7 +1428,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 投票 能量
-     *  @param liveId
+     *
+     * @param liveId
      * @param teamId
      * @param classId
      * @param stuId
@@ -1877,6 +1878,19 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_WONDER_MOMENT, params, requestCallBack);
     }
 
+    /**
+     *
+     * 文科三分屏上传精彩瞬间截图url，半身直播走理科的接口
+     */
+    public void sendWonderfulMoment(String stuId, String liveId, String stuCouId, String type, String url, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("type", type);
+        params.addBodyParam("url", url);
+        sendPost(LiveVideoConfig.ART_TRIPLE_WONDERFUL_MOMENT, params, httpCallBack);
+    }
     public void saveStuPlanOnlineTime(String stuId, String gradeId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("stuId", "" + stuId);
@@ -1934,6 +1948,38 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.setWriteAndreadTimeOut(5);
         sendPost(liveVideoSAConfigInner.URL_LIVE_ARTS_EVALUATE_TEACHER, params, requestCallBack);
     }
+
+    /**
+     * 理科高中提交对老师评价
+     *
+     * @param liveId
+     * @param stuCouId
+     * @param teacherEvaluLevel
+     * @param teacherEvaluOption
+     * @param tutorEvaluLevel
+     * @param tutorEvaluOption
+     * @param requestCallBack
+     */
+    public void saveEvaluationTeacher(String liveId, String courseId, String teacherId, String teacherScore, String
+            teacherOption, String counselorId, String counselorScore, String
+                                                  counselorOption, String classId,String mainInput,String tutorInput, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        params.addBodyParam("teacherId", teacherId);
+        params.addBodyParam("teacherScore", teacherScore);
+        params.addBodyParam("teacherOption", teacherOption);
+        params.addBodyParam("counselorId", counselorId);
+        params.addBodyParam("counselorScore", counselorScore);
+        params.addBodyParam("counselorOption", counselorOption);
+
+        params.addBodyParam("teacherEvaluateContent", mainInput);
+        params.addBodyParam("counselorEvaluateContent", tutorInput);
+        params.addBodyParam("classId", classId);
+        params.setWriteAndreadTimeOut(5);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_SCIENCE_EVALUATE_TEACHER, params, requestCallBack);
+    }
+
 
     /**
      * 理科提交对老师评价
@@ -2277,5 +2323,19 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("isForce", isForce);
         params.addBodyParam("videoDuration", videoDuration);
         sendPost(LiveVideoConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
+    }
+    /**
+     * 教师反馈
+     * @param liveId
+     * @param courseId
+     * @param isPlayBack
+     * @param httpCallBack
+     */
+    public void getFeedBack(String liveId,String courseId,String isPlayBack,HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        params.addBodyParam("isPlayBack", isPlayBack);
+        sendPost(LiveVideoConfig.URL_LIVE_COURSE_GETEVALUATE, params, httpCallBack);
     }
 }

@@ -136,7 +136,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (jsonObject.has(getInfo.getId())) {
                     ResponseEntity responseEntity = new ResponseEntity();
                     responseEntity.setJsonObject(jsonObject.getJSONObject(getInfo.getId()));
-                    parsegetSelfTeamInfo(responseEntity);
+//                    parsegetSelfTeamInfo(responseEntity);
                     pkTeamEntity = parsegetSelfTeamInfo(responseEntity);
                     logger.d("onLiveInited:pkTeamEntity=null?" + (pkTeamEntity == null));
                     if (pkTeamEntity != null) {
@@ -998,10 +998,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void run() {
                 final VideoQuestionLiveEntity old = videoQuestionLiveEntity;
-                if (old.isTUtor()) {
-                    return;
-                }
                 if (old != null) {
+                    if (old.isTUtor()) {
+                        return;
+                    }
                     videoQuestionLiveEntity = null;
                     if (pkTeamEntity != null) {
                         final String teamId = "" + pkTeamEntity.getPkTeamId();

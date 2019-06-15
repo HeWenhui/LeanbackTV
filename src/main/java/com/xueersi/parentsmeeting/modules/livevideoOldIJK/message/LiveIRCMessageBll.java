@@ -49,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.SendMessageReg;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionShowReg;
@@ -63,7 +64,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -77,10 +77,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction {
     private final String TAG = "LiveIRCMessageBll";
     Logger loger = LoggerFactory.getLogger(TAG);
-    /** 主讲老师前缀 */
-    public static final String TEACHER_PREFIX = "t_";
-    /** 辅导老师前缀 */
-    public static String COUNTTEACHER_PREFIX = "f_";
 
     private int mLiveType;
     private LogToFile mLogtf;
@@ -344,7 +340,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             User user = users[i];
             String _nick = user.getNick();
             if (_nick != null && _nick.length() > 2) {
-                if (_nick.startsWith(TEACHER_PREFIX)) {
+                if (_nick.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
                     s += ",mainTeacher=" + _nick;
                     haveMainTeacher = true;
                     synchronized (lock) {
@@ -355,7 +351,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             && mVideoAction != null) {
                         mVideoAction.onTeacherQuit(false);
                     }
-                } else if (_nick.startsWith(COUNTTEACHER_PREFIX)) {
+                } else if (_nick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
                     mCounTeacherStr = _nick;
                     haveCounteacher = true;
                     mCounteacher.isLeave = false;
@@ -416,7 +412,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
         logger.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
-        if (sender.startsWith(TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             synchronized (lock) {
                 mMainTeacher = new Teacher(sender);
                 mMainTeacherStr = sender;
@@ -425,7 +421,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
                 mVideoAction.onTeacherQuit(false);
             }
-        } else if (sender.startsWith(COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             mCounTeacherStr = sender;
             mCounteacher.isLeave = false;
             mLogtf.d("onJoin:Counteacher:target=" + target + ",mode=" + mLiveTopic.getMode());
@@ -450,7 +446,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
         logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                 + sourceHostname + ",reason=" + reason);
-        if (sourceNick.startsWith(TEACHER_PREFIX)) {
+        if (sourceNick.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             synchronized (lock) {
                 mMainTeacher = null;
             }
@@ -458,7 +454,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
                 mVideoAction.onTeacherQuit(true);
             }
-        } else if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
+        } else if (sourceNick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             mCounteacher.isLeave = true;
             mLogtf.d("onQuit:Counteacher quit");
             if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode()) && mVideoAction != null) {
