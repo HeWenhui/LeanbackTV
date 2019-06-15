@@ -998,6 +998,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             public void run() {
                 final VideoQuestionLiveEntity old = videoQuestionLiveEntity;
                 if (old != null) {
+                    if (old.isTUtor()) {
+                        return;
+                    }
                     videoQuestionLiveEntity = null;
                     if (pkTeamEntity != null) {
                         final String teamId = "" + pkTeamEntity.getPkTeamId();
