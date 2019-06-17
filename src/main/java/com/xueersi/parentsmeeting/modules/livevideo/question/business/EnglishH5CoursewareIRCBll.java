@@ -341,10 +341,12 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                     englishH5Entity.setPackageId(object.getString("pId"));
                                     objects.put("packageSource", object.getString("pSrc"));
                                     englishH5Entity.setPackageSource(object.getString("pSrc"));
+                                    LiveVideoConfig.pSrc = object.getString("pSrc");
                                     objects.put("packageAttr", object.getString("pAttr"));
                                     englishH5Entity.setPackageAttr(object.getString("pAttr"));
                                     objects.put("releasedPageInfos", object.getString("tests"));
                                     englishH5Entity.setReleasedPageInfos(object.getString("tests"));
+                                    LiveVideoConfig.tests = object.getString("tests");
                                     objects.put("teamId", teamId);
                                     englishH5Entity.setTeamId(teamId);
                                     objects.put("stuCouId", mLiveBll.getStuCouId());
@@ -354,6 +356,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                     objects.put("classId", classId);
                                     englishH5Entity.setClassId(classId);
                                     objects.put("classTestId", object.getString("ctId"));
+                                    LiveVideoConfig.ctId = object.getString("ctId");
                                     englishH5Entity.setClassTestId(object.getString("ctId"));
                                     mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(),
                                             ShareDataManager.SHAREDATA_USER);

@@ -1424,6 +1424,33 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
+     * 每题战队能量 和贡献之星
+     *
+     * @param liveId
+     * @param teamId
+     * @param classId
+     * @param stuId
+     * @param tests
+     * @param ctId            互动课件或者互动题时 testPlan= ''; 测试卷请求时testId= ' '
+     * @param requestCallBack
+     */
+    public void teamEnergyNumAndContributionmulStar(String liveId, String teamId, String classId, String stuId,
+                                                    String tests,
+                                                    String ctId, String pSrc, HttpCallBack requestCallBack) {
+
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("tests", tests+"");
+        params.addBodyParam("ctId", ctId+"");
+        params.addBodyParam("pSrc", pSrc+"");
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params,
+                requestCallBack);
+    }
+
+    /**
      * 理科战队pk  获取战队成员信息
      *
      * @param classId
@@ -1463,10 +1490,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void getCHPkAdversary(boolean isHalfBody, String classId, String teamId, int useSkin, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("useSkin", useSkin + "");
+        setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_MATCHTEAM(isHalfBody), params, requestCallBack);
     }
 
@@ -1616,9 +1643,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("tests", tests);
-        params.addBodyParam("ctId", ctId);
-        params.addBodyParam("pSrc", pSrc);
+        params.addBodyParam("tests", tests+"");
+        params.addBodyParam("ctId", ctId+"");
+        params.addBodyParam("pSrc", pSrc+"");
         params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL(isHalfBody) + "/" + liveId, params, requestCallBack);

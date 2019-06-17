@@ -377,7 +377,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             testId = event.getId();
         }
         final String eventId = getLogEventId(event.getH5Type());
-
         if (event.isScienceNewCourseWare()) {
             getTeamPkHttp().teamEnergyNumAndContributionmulStar(mLiveBll.getLiveId(),
                     getNewTeamId("getClassChestResult"),
