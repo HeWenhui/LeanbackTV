@@ -1512,9 +1512,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("tests", tests);
-        params.addBodyParam("ctId", ctId);
-        params.addBodyParam("pSrc", pSrc);
+        params.addBodyParam("tests", tests+"");
+        params.addBodyParam("ctId", ctId+"");
+        params.addBodyParam("pSrc", pSrc+"");
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params,
                 requestCallBack);
@@ -1713,9 +1713,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("tests", tests);
-        params.addBodyParam("ctId", ctId);
-        params.addBodyParam("pSrc", pSrc);
+        params.addBodyParam("tests", tests+"");
+        params.addBodyParam("ctId", ctId+"");
+        params.addBodyParam("pSrc", pSrc+"");
         params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL(isHalfBody) + "/" + liveId, params, requestCallBack);
