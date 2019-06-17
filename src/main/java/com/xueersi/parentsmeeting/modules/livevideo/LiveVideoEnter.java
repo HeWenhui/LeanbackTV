@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.AIExperienceLiveVid
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceThreeScreenActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
@@ -570,6 +571,30 @@ public class LiveVideoEnter {
         return true;
     }
 
+    public static boolean intentToLiveBackExperience(final Activity context, final Bundle bundle, final String where){
+        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public void success() {
+                ExperienceThreeScreenActivity.intentTo(context,bundle,where,VIDEO_REQUEST);
+            }
+
+            @Override
+            public void progress(float progress, int type) {
+
+            }
+
+            @Override
+            public void fail(int errorCode, String errorMsg) {
+
+            }
+        });
+        return true;
+    }
 
     /**
      * 跳转到三分屏AI体验直播播放器

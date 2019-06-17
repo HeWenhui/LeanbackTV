@@ -608,12 +608,12 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         super.initData();
         logger.i( "initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 LiveIRCMessageBll.requestGoldTotal(mContext);
             }
-        }.start();
+        });
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);

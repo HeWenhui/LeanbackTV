@@ -573,9 +573,9 @@ public class SpeechCollectiveNo2Bll {
         }
         int flastvolume = lastvolume;
         lastvolume = volume;
-        if (volume < 2) {
-            volume = flastvolume / 2;
-        }
+//        if (volume < 2) {
+//            volume = flastvolume / 2;
+//        }
         long nowTime = System.currentTimeMillis();
         if (nowTime - lottieLastPlayTime > SpeechCollectiveConfig.LOTTIE_VIEW_INTERVAL && volume > SpeechCollectiveConfig.GOLD_MICROPHONE_VOLUME) {
             mRootView.post(new Runnable() {
@@ -593,7 +593,7 @@ public class SpeechCollectiveNo2Bll {
         }
         if (nowTime - lastVolumeTime > SpeechCollectiveConfig.VOLUME_INTERVAL) {
             ///1挡位
-            int gear = 1;
+            int gear = 0;
             if (volume < SpeechCollectiveConfig.ONE_GEAR_RIGHT
                     && volume >= SpeechCollectiveConfig.ONE_GEAR_LEFT) {
                 List<SoundWaveView.Circle> list = speechCollectiveView.getRipples();

@@ -1,14 +1,27 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment;
 
+import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
+import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackStandMediaController;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.ArtsAnswerResultPlayBackBll;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +32,7 @@ import java.util.Map;
  */
 public class StandBackVideoFragment extends LiveBackVideoFragment {
     LiveStandFrameAnim liveStandFrameAnim;
-
+    String ACHIEVE_LAYOUT_RIGHT = "1";
     {
         mLayoutVideo = R.layout.fram_live_stand_back_video;
     }
@@ -65,5 +78,29 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
             liveStandFrameAnim.onDestory();
         }
     }
+    @Override
+    protected void onPlayOpenSuccess() {
+        super.onPlayOpenSuccess();
+        userHeadVisible();
+    }
+    protected void userHeadVisible() {
+       String LAYOUT_SUMMER_SIZE =  UmsAgentTrayPreference.getInstance().getString(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE,"0");
 
+        //直播
+        if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE && ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)) {
+            // 英语
+            if (liveBackBll.getIsArts() == 1 && liveBackBll.getPattern() == 2 && llUserHeadImage!=null) {
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)llUserHeadImage.getLayoutParams();
+                layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth -  LiveVideoPoint.getInstance().x4 + SizeUtils.Dp2Px(activity,10);
+                layoutParams.topMargin = SizeUtils.Dp2Px(activity,10);
+                llUserHeadImage.setLayoutParams(layoutParams);
+                llUserHeadImage.setVisibility(View.VISIBLE);
+                ImageLoader.with(activity).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civUserHeadImage);
+
+            }
+        }  else if( llUserHeadImage!=null){
+            llUserHeadImage.setVisibility(View.GONE);
+
+        }
+    }
 }

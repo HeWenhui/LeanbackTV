@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -55,6 +56,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     private MediaDataObserverPlugin mediaDataObserverPlugin;
     File alldir = LiveCacheFile.geCacheFile(activity, "studyreport");
     ArrayList<String> types = new ArrayList<>();
+    private LiveThreadPoolExecutor liveThreadPoolExecutor;
 
     public StudyReportBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -66,6 +68,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         super.onLiveInited(getInfo);
         if (getInfo.getAllowSnapshot() == 1) {
             putInstance(StudyReportAction.class, this);
+            liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
             initData();
         } else {
             mLiveBll.removeBusinessBll(this);
@@ -214,7 +217,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
      * @param viewBitmap
      */
     private void upLoadViewBitmap(final Bitmap viewBitmap, final StringBuilder stringBuilder, final AtomicBoolean atomicBoolean, final boolean cut, final int type) {
-        new Thread() {
+        liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -242,7 +245,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     CrashReport.postCatchedException(e);
                 }
             }
-        }.start();
+        });
     }
 
     @Override
@@ -490,7 +493,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             if (mGetInfo != null) {
                 if (mGetInfo.getPattern() == 6) {
                     //半身直播语文 isArts 为 0 ，useSkin为2
-                    if (mGetInfo.getIsArts() == 0 && mGetInfo.getUseSkin() == 2) {
+                    if (mGetInfo.getUseSkin() == 2) {
                         if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE) {
@@ -501,20 +504,25 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                         logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
                     }
                 } else if (mGetInfo.getPattern() == 1) {
-                    if ((type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
-                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
-                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE
-                            || type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_WIN) && mGetInfo.getIsArts() == 2) {
-                        getHttpManager().sendWonderfulMoment(
-                                mGetInfo.getStuId(),
-                                mGetInfo.getId(),
-                                mGetInfo.getStuCouId(),
-                                String.valueOf(type),
-                                result.getHttpPath(),
-                                new UploadImageUrl(type, false));
+                    if (mGetInfo.getIsArts() == 2) {
+                        if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE
+                                || type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_WIN) {
+                            getHttpManager().sendWonderfulMoment(
+                                    mGetInfo.getStuId(),
+                                    mGetInfo.getId(),
+                                    mGetInfo.getStuCouId(),
+                                    String.valueOf(type),
+                                    result.getHttpPath(),
+                                    new UploadImageUrl(type, false));
+                        }
                     } else {
+                        getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
                         logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
                     }
+                } else {
+                    getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
                 }
             } else {
                 getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
