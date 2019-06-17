@@ -109,6 +109,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private LiveLog liveLog;
     /** 是否使用新IRC SDK */
 //    private boolean isNewIRC = false;
+    LiveAndBackDebugIml liveAndBackDebugIml = new LiveAndBackDebugIml();
 
     /**
      * 直播的
@@ -141,7 +142,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         } else {
             mLiveTopic = new LiveTopic();
         }
-        ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, liveAndBackDebugIml);
         liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
         mLogtf = new LogToFile(context, TAG);
@@ -172,7 +173,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mLiveTopic = new LiveTopic();
         }
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
-        ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, liveAndBackDebugIml);
         liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
         mLogtf = new LogToFile(context, TAG);
@@ -204,7 +205,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
-        ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, liveAndBackDebugIml);
         liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
         mLogtf = new LogToFile(context, TAG);
@@ -941,120 +942,32 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     ///日志上传相关
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        if (mGetInfo == null) {
-            return;
-        }
-        setLogParam(eventId, mData);
-        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
+        liveAndBackDebugIml.umsAgentDebugSys(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        if (mGetInfo == null) {
-            return;
-        }
-        setLogParam(eventId, mData);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
+        liveAndBackDebugIml.umsAgentDebugInter(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-        if (mGetInfo == null) {
-            return;
-        }
-        setLogParam(eventId, mData);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
-    }
-
-    /**
-     * 上传log 添加 公共参数
-     *
-     * @param eventId
-     * @param mData
-     */
-    private void setLogParam(String eventId, Map<String, String> mData) {
-        mData.put("userid", mGetInfo.getStuId());
-        mData.put("uname", mGetInfo.getUname());
-        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-        if (studentLiveInfo != null) {
-            mData.put("classid", studentLiveInfo.getClassId());
-            mData.put("teamid", studentLiveInfo.getTeamId());
-        }
-        mData.put("courseid", mCourseId);
-        mData.put("teacherid", mGetInfo.getMainTeacherId());
-        mData.put("coachid", mGetInfo.getTeacherId());
-        String educationstage = mGetInfo.getEducationStage();
-        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
-            mData.put("gradejudgment", "primary");
-        } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
-            mData.put("gradejudgment", "middle");
-        }
-        mData.put("subject", "" + mGetInfo.getSubject_digits());
-        mData.put("ip", "" + IpAddressUtil.USER_IP);
-        mData.put("liveid", mLiveId);
-        mData.put("livetype", "" + mLiveType);
-        mData.put("eventid", "" + eventId);
-        mData.put("clits", "" + System.currentTimeMillis());
-        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        liveAndBackDebugIml.umsAgentDebugPv(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
-        Map<String, String> mData = stableLogHashMap.getData();
-        Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        mData.put("eventid", "" + eventId);
-        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
-        setAnalysis(analysis);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadSystem, mData, analysis);
+        liveAndBackDebugIml.umsAgentDebugSys(eventId, stableLogHashMap);
     }
 
     @Override
     public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
-        Map<String, String> mData = stableLogHashMap.getData();
-        Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        mData.put("eventid", "" + eventId);
-        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
-        setAnalysis(analysis);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData, analysis);
+        liveAndBackDebugIml.umsAgentDebugInter(eventId, stableLogHashMap);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
-        Map<String, String> mData = stableLogHashMap.getData();
-        Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        mData.put("eventid", "" + eventId);
-        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
-        setAnalysis(analysis);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
-    }
-
-    /**
-     * 上传log 添加 公共参数
-     *
-     * @param analysis
-     */
-    private void setAnalysis(Map<String, String> analysis) {
-        if (!analysis.containsKey("success")) {
-            analysis.put("success", "true");
-        }
-        if (!analysis.containsKey("errorcode")) {
-            analysis.put("errorcode", "0");
-        }
-        if (!analysis.containsKey("duration")) {
-            analysis.put("duration", "0");
-        }
-        if (!analysis.containsKey("modulekey")) {
-            analysis.put("modulekey", "");
-        }
-        if (!analysis.containsKey("moduleid")) {
-            analysis.put("moduleid", "");
-        }
-        analysis.put("timestamp", "" + System.currentTimeMillis());
-        analysis.put("userid", mGetInfo.getStuId());
-        analysis.put("planid", mLiveId);
-        analysis.put("clientip", IpAddressUtil.USER_IP);
-        analysis.put("traceid", "" + UUID.randomUUID());
-        analysis.put("platform", "android");
+        liveAndBackDebugIml.umsAgentDebugPv(eventId, stableLogHashMap);
     }
 
     /**
