@@ -31,6 +31,8 @@ android {
             java.srcDirs += ['src/main/secience/java-primary_class']
             res.srcDirs += ['src/main/secience/res-primary_class']
             res.srcDirs += ['src/main/chinese/res-primary_class']
+            //旧sdk
+            java.srcDirs += ['src/main/java-old']
         }
     }
     compileSdkVersion 26
