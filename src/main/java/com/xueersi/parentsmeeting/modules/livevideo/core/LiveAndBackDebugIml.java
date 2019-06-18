@@ -15,10 +15,24 @@ import java.util.Map;
 import java.util.UUID;
 
 public class LiveAndBackDebugIml implements LiveAndBackDebug {
-
-    private LiveGetInfo mGetInfo;
     private Context mContext;
+    private int mLiveType;
+    private LiveGetInfo mGetInfo;
     private String appID;
+    private String mLiveId;
+    private String mCourseId;
+
+    public LiveAndBackDebugIml(Context mContext, int liveType,String liveId, String courseId) {
+        this.mContext = mContext;
+        mLiveType = liveType;
+        mLiveId = liveId;
+        mCourseId = courseId;
+    }
+
+    public void onGetInfo(LiveGetInfo mGetInfo, String appID) {
+        this.mGetInfo = mGetInfo;
+        this.appID = appID;
+    }
 
     ///日志上传相关
     @Override
@@ -89,29 +103,29 @@ public class LiveAndBackDebugIml implements LiveAndBackDebug {
      * @param mData
      */
     private void setLogParam(String eventId, Map<String, String> mData) {
-//        mData.put("userid", mGetInfo.getStuId());
-//        mData.put("uname", mGetInfo.getUname());
-//        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-//        if (studentLiveInfo != null) {
-//            mData.put("classid", studentLiveInfo.getClassId());
-//            mData.put("teamid", studentLiveInfo.getTeamId());
-//        }
-//        mData.put("courseid", mCourseId);
-//        mData.put("teacherid", mGetInfo.getMainTeacherId());
-//        mData.put("coachid", mGetInfo.getTeacherId());
-//        String educationstage = mGetInfo.getEducationStage();
-//        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
-//            mData.put("gradejudgment", "primary");
-//        } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
-//            mData.put("gradejudgment", "middle");
-//        }
-//        mData.put("subject", "" + mGetInfo.getSubject_digits());
-//        mData.put("ip", "" + IpAddressUtil.USER_IP);
-//        mData.put("liveid", mLiveId);
-//        mData.put("livetype", "" + mLiveType);
-//        mData.put("eventid", "" + eventId);
-//        mData.put("clits", "" + System.currentTimeMillis());
-//        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        mData.put("userid", mGetInfo.getStuId());
+        mData.put("uname", mGetInfo.getUname());
+        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+        if (studentLiveInfo != null) {
+            mData.put("classid", studentLiveInfo.getClassId());
+            mData.put("teamid", studentLiveInfo.getTeamId());
+        }
+        mData.put("courseid", mCourseId);
+        mData.put("teacherid", mGetInfo.getMainTeacherId());
+        mData.put("coachid", mGetInfo.getTeacherId());
+        String educationstage = mGetInfo.getEducationStage();
+        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
+            mData.put("gradejudgment", "primary");
+        } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
+            mData.put("gradejudgment", "middle");
+        }
+        mData.put("subject", "" + mGetInfo.getSubject_digits());
+        mData.put("ip", "" + IpAddressUtil.USER_IP);
+        mData.put("liveid", mLiveId);
+        mData.put("livetype", "" + mLiveType);
+        mData.put("eventid", "" + eventId);
+        mData.put("clits", "" + System.currentTimeMillis());
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
     }
 
     /**
@@ -137,7 +151,7 @@ public class LiveAndBackDebugIml implements LiveAndBackDebug {
         }
         analysis.put("timestamp", "" + System.currentTimeMillis());
         analysis.put("userid", mGetInfo.getStuId());
-//        analysis.put("planid", mLiveId);
+        analysis.put("planid", mLiveId);
         analysis.put("clientip", IpAddressUtil.USER_IP);
         analysis.put("traceid", "" + UUID.randomUUID());
         analysis.put("platform", "android");

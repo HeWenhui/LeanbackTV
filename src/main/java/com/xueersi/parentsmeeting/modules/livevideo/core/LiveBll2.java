@@ -109,7 +109,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private LiveLog liveLog;
     /** 是否使用新IRC SDK */
 //    private boolean isNewIRC = false;
-    LiveAndBackDebugIml liveAndBackDebugIml = new LiveAndBackDebugIml();
+    LiveAndBackDebugIml liveAndBackDebugIml;
 
     /**
      * 直播的
@@ -142,6 +142,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         } else {
             mLiveTopic = new LiveTopic();
         }
+        liveAndBackDebugIml = new LiveAndBackDebugIml(context, mLiveType, mLiveId, mCourseId);
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, liveAndBackDebugIml);
         liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
@@ -173,6 +174,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mLiveTopic = new LiveTopic();
         }
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
+        liveAndBackDebugIml = new LiveAndBackDebugIml(context, mLiveType, mLiveId, "");
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, liveAndBackDebugIml);
         liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
@@ -205,6 +207,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
+        liveAndBackDebugIml = new LiveAndBackDebugIml(context, mLiveType, mLiveId, "");
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, liveAndBackDebugIml);
         liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
@@ -412,6 +415,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             appID = UmsConstants.LIVE_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
+        liveAndBackDebugIml.onGetInfo(getInfo, appID);
         sysTimeOffset = (long) mGetInfo.getNowTime() - System.currentTimeMillis() / 1000;
         mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mGetInfo.setMode(mLiveTopic.getMode());
