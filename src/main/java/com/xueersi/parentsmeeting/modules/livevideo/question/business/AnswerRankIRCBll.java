@@ -31,7 +31,7 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
         super.onLiveInited(getInfo);
         if (mGetInfo.getStudentLiveInfo() != null
                 && mGetInfo.getIs_show_ranks().equals("1")) {
-            mAnswerRankBll = new AnswerRankBll(activity, mLiveBll);
+            mAnswerRankBll = new AnswerRankBll(activity, contextLiveAndBackDebug);
             mAnswerRankBll.initView(mRootView);
             mAnswerRankBll.setLiveHttpManager(getHttpManager());
             mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());

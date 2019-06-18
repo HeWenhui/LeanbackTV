@@ -102,7 +102,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
         pkPraiseLayout.setPriaseStateListener(new TeamPkPraiseLayout.PraiseStateListener() {
             @Override
             public void onFinish(int clickCount) {
-                TeamPkLog.sendContrbuteStarThumbCount(teamPkBll.getLiveBll(),teamPkBll.getNonce(),clickCount);
+                TeamPkLog.sendContrbuteStarThumbCount(teamPkBll.getLiveAndBackDebug(),teamPkBll.getNonce(),clickCount);
             }
         });
         return view;

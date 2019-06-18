@@ -34,6 +34,7 @@ public class LiveBaseBll extends BaseBll {
     protected RelativeLayout rlMessageBottom;
     protected RelativeLayout mContentView;
     protected LiveBll2 mLiveBll;
+    protected ContextLiveAndBackDebug contextLiveAndBackDebug;
     protected Handler mHandler = new Handler(Looper.getMainLooper());
     protected LiveGetInfo mGetInfo;
     protected String mLiveId;
@@ -46,6 +47,7 @@ public class LiveBaseBll extends BaseBll {
     public LiveBaseBll(Activity context, LiveBll2 liveBll) {
         super(context);
         this.activity = context;
+        contextLiveAndBackDebug = new ContextLiveAndBackDebug(context);
         mLiveBll = liveBll;
         mLiveId = liveBll.getLiveId();
         mLiveType = liveBll.getLiveType();
@@ -65,6 +67,10 @@ public class LiveBaseBll extends BaseBll {
         this.mLiveId = liveId;
         this.mLiveType = liveType;
         mLogtf = new LogToFile(TAG);
+    }
+
+    public LiveAndBackDebug getLiveAndBackDebug() {
+        return contextLiveAndBackDebug;
     }
 
     /**
@@ -112,9 +118,10 @@ public class LiveBaseBll extends BaseBll {
 
     /**
      * 向主讲发送消息
-     * @param jsonObject   消息内容
+     *
+     * @param jsonObject 消息内容
      */
-    public void sendNoticeToMain(JSONObject jsonObject){
+    public void sendNoticeToMain(JSONObject jsonObject) {
         if (mLiveBll != null) {
             mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
         }
@@ -122,9 +129,10 @@ public class LiveBaseBll extends BaseBll {
 
     /**
      * 向辅导发送消息
+     *
      * @param jsonObject 消息内容
      */
-    public void sendNoticeToCoun(JSONObject jsonObject){
+    public void sendNoticeToCoun(JSONObject jsonObject) {
         if (mLiveBll != null) {
             mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
         }
@@ -147,8 +155,8 @@ public class LiveBaseBll extends BaseBll {
      * @param data
      */
     public void umsAgentDebugSys(String eventId, Map<String, String> data) {
-        if (mLiveBll != null) {
-            mLiveBll.umsAgentDebugSys(eventId, data);
+        if (contextLiveAndBackDebug != null) {
+            contextLiveAndBackDebug.umsAgentDebugSys(eventId, data);
         }
     }
 
@@ -159,8 +167,8 @@ public class LiveBaseBll extends BaseBll {
      * @param data
      */
     public void umsAgentDebugInter(String eventId, Map<String, String> data) {
-        if (mLiveBll != null) {
-            mLiveBll.umsAgentDebugInter(eventId, data);
+        if (contextLiveAndBackDebug != null) {
+            contextLiveAndBackDebug.umsAgentDebugInter(eventId, data);
         }
     }
 
@@ -172,8 +180,8 @@ public class LiveBaseBll extends BaseBll {
      * @param data
      */
     public void umsAgentDebugPv(String eventId, Map<String, String> data) {
-        if (mLiveBll != null) {
-            mLiveBll.umsAgentDebugPv(eventId, data);
+        if (contextLiveAndBackDebug != null) {
+            contextLiveAndBackDebug.umsAgentDebugPv(eventId, data);
         }
     }
 

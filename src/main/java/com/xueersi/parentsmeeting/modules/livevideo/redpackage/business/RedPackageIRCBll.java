@@ -67,7 +67,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         if (mGetInfo.getPattern() == 2) {
-            RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, true, mLiveBll);
+            RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, true, contextLiveAndBackDebug);
             redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
                 @Override
                 public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {

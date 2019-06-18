@@ -577,7 +577,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
             public void onClick(View v) {
                 if (teamPKBll != null) {
                     nonce = StableLogHashMap.creatNonce();
-                    TeamPkLog.clickTreasureBox(teamPKBll.getLiveBll(), mIsWin, nonce);
+                    TeamPkLog.clickTreasureBox(teamPKBll.getLiveAndBackDebug(), mIsWin, nonce);
                 }
                 //防止快速 连续点击
                 lottieAnimationView.setClickable(false);
@@ -643,7 +643,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
                         super.onFailure(call, e);
                         lottieAnimationView.setClickable(true);
                         if (teamPKBll != null) {
-                            TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(), "", nonce, false);
+                            TeamPkLog.openTreasureBox(teamPKBll.getLiveAndBackDebug(), "", nonce, false);
                         }
                         showToast("获取宝箱数据失败");
                     }
@@ -652,7 +652,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
                         if (teamPKBll != null) {
-                            TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(), "", nonce, false);
+                            TeamPkLog.openTreasureBox(teamPKBll.getLiveAndBackDebug(), "", nonce, false);
                         }
                         String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "获取宝箱数据失败" :
                                 responseEntity.getErrorMsg();
@@ -719,7 +719,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
             }
             updatePkStateLayout();
             if (teamPKBll != null) {
-                TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(), studentChestEntity.getGold() + "",
+                TeamPkLog.openTreasureBox(teamPKBll.getLiveAndBackDebug(), studentChestEntity.getGold() + "",
                         nonce, true);
             }
         }

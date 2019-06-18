@@ -660,7 +660,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager {
             @Override
             public void onClick(View view) {
                 upLoadStudentReady();
-                TeamPkLog.sendReady(mPKBll.getLiveBll());
+                TeamPkLog.sendReady(mPKBll.getLiveAndBackDebug());
             }
         });
     }

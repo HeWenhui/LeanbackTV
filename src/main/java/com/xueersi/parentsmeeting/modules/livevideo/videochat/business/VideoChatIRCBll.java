@@ -68,7 +68,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
             VideoChatBll videoChatBll = new VideoChatBll(activity, this);
             videoChatBll.initView(mRootView);
             videoChatBll.setControllerBottom(baseLiveMediaControllerBottom);
-            videoChatBll.setLiveAndBackDebug(mLiveBll);
+            videoChatBll.setLiveAndBackDebug(contextLiveAndBackDebug);
             videoChatBll.setVideoChatHttp(this);
             videoChatBll.onLiveInit(getInfo);
             videoChatAction = videoChatBll;

@@ -35,7 +35,7 @@ public class LiveAutoNoticeIRCBll extends LiveBaseBll {
             liveAutoNoticeBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
             liveAutoNoticeBll.setTeacherImg(mGetInfo.getTeacherIMG());
             liveAutoNoticeBll.setTeacherName(mGetInfo.getTeacherName());
-            liveAutoNoticeBll.setLiveBll(mLiveBll);
+            liveAutoNoticeBll.setLiveBll(contextLiveAndBackDebug);
             liveAutoNoticeBll.setHttpManager(mLiveBll.getHttpManager());
             liveAutoNoticeBll.setLiveId(mLiveId);
             mLiveAutoNoticeBll = liveAutoNoticeBll;

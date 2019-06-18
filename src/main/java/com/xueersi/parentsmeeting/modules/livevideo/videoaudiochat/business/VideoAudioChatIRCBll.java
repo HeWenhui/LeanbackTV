@@ -87,7 +87,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                 videoChatBll.initView(mRootView);
             }
             videoChatBll.setControllerBottom(baseLiveMediaControllerBottom);
-            videoChatBll.setLiveAndBackDebug(mLiveBll);
+            videoChatBll.setLiveAndBackDebug(contextLiveAndBackDebug);
             videoChatBll.setVideoChatHttp(this);
             videoChatBll.onLiveInit(getInfo);
             videoChatAction = videoChatBll;
@@ -257,10 +257,10 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                     if ("on".equals(status)) {
                         linkMicNonce = object.optString("nonce");
                         startLinkmicid = linkmicid;
-                        VideoAudioChatLog.getRaiseHandMsgSno2(mLiveBll, micType == 0 ? "audio" : "video", linkmicid, linkMicNonce);
+                        VideoAudioChatLog.getRaiseHandMsgSno2(contextLiveAndBackDebug, micType == 0 ? "audio" : "video", linkmicid, linkMicNonce);
                     } else {
                         String nonce = object.optString("nonce");
-                        VideoAudioChatLog.getCloseMsgSno12(mLiveBll, startLinkmicid, micType == 0 ? "audio" : "video", nonce);
+                        VideoAudioChatLog.getCloseMsgSno12(contextLiveAndBackDebug, startLinkmicid, micType == 0 ? "audio" : "video", nonce);
                     }
                 }
             }

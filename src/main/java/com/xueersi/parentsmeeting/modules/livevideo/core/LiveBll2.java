@@ -68,7 +68,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  * created  at 2018/6/20 10:32
  */
-public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
+public class LiveBll2 extends BaseBll{
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /** 需处理 topic 业务集合 */
     private List<TopicAction> mTopicActions = new ArrayList<>();
@@ -944,35 +944,35 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     }
 
     ///日志上传相关
-    @Override
-    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        liveAndBackDebugIml.umsAgentDebugSys(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        liveAndBackDebugIml.umsAgentDebugInter(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-        liveAndBackDebugIml.umsAgentDebugPv(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
-        liveAndBackDebugIml.umsAgentDebugSys(eventId, stableLogHashMap);
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
-        liveAndBackDebugIml.umsAgentDebugInter(eventId, stableLogHashMap);
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
-        liveAndBackDebugIml.umsAgentDebugPv(eventId, stableLogHashMap);
-    }
+//    @Override
+//    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
+//        liveAndBackDebugIml.umsAgentDebugSys(eventId, mData);
+//    }
+//
+//    @Override
+//    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
+//        liveAndBackDebugIml.umsAgentDebugInter(eventId, mData);
+//    }
+//
+//    @Override
+//    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+//        liveAndBackDebugIml.umsAgentDebugPv(eventId, mData);
+//    }
+//
+//    @Override
+//    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+//        liveAndBackDebugIml.umsAgentDebugSys(eventId, stableLogHashMap);
+//    }
+//
+//    @Override
+//    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+//        liveAndBackDebugIml.umsAgentDebugInter(eventId, stableLogHashMap);
+//    }
+//
+//    @Override
+//    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+//        liveAndBackDebugIml.umsAgentDebugPv(eventId, stableLogHashMap);
+//    }
 
     /**
      * 得到当前模式

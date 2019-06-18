@@ -83,7 +83,7 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
         },100);
         VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
         if (detailInfo != null) {
-            NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_CH), event.isIspreload(), 0,detailInfo.isTUtor());
+            NewCourseLog.sno8(contextLiveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_CH), event.isIspreload(), 0,detailInfo.isTUtor());
         }
     }
     /**
