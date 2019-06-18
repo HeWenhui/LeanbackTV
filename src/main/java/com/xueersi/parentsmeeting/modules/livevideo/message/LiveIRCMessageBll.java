@@ -122,13 +122,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //    private LiveAchievementIRCBll starAction;
     private ArrayList<SendMessageReg.OnSendMsg> onSendMsgs = new ArrayList<>();
     private LiveHttpManager mHttpManager;
-    private String mLiveId;
     private LiveHttpResponseParser mHttpResponseParser;
 
     public LiveIRCMessageBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         this.mLiveType = liveBll.getLiveType();
-        mLiveId = liveBll.getLiveId();
         mLogtf = new LogToFile(context, TAG);
         mRoomAction = new LiveMessageBll(context, mLiveType);
         putInstance(SendMessageReg.class, new SendMessageReg() {

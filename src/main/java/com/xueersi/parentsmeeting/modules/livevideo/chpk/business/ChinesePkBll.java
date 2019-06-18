@@ -190,7 +190,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
         };
 
-        mHttpManager.stuCHPKResult(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
+        mHttpManager.stuCHPKResult(isHalfBodyLiveRoom(), mLiveId,
                 getNewTeamId("stuCHPKResult"),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 savedTestId,
@@ -234,7 +234,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
         };
 
-        mHttpManager.getCHClassChestResult(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
+        mHttpManager.getCHClassChestResult(isHalfBodyLiveRoom(), mLiveId,
                 roomInitInfo.getStuId(),
                 getNewTeamId("getCHClassChestResult"),
                 roomInitInfo.getStudentLiveInfo().getClassId()
@@ -520,7 +520,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRedPackageEvent(RedPackageEvent event) {
         if (event.getStateCode() == RedPackageEvent.STATE_CODE_SUCCESS) {
-            if (mLiveBll.getLiveId().equals(event.getLiveId())) {
+            if (mLiveId.equals(event.getLiveId())) {
                 updatePkStateLayout(false);
             }
         }
@@ -1124,7 +1124,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
         };
 
-        mHttpManager.liveCHStuGoldAndTotalEnergy(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
+        mHttpManager.liveCHStuGoldAndTotalEnergy(isHalfBodyLiveRoom(), mLiveId,
                 getNewTeamId("liveCHStuGoldAndTotalEnergy"),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStuId(), roomInitInfo.getUseSkin(), callback);
@@ -1188,7 +1188,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
 
         //上报服务器 增加加能量
-        mHttpManager.addCHPersonAndTeamEnergy(isHalfBodyLiveRoom(), mLiveBll.getLiveId(), addEnergy,
+        mHttpManager.addCHPersonAndTeamEnergy(isHalfBodyLiveRoom(), mLiveId, addEnergy,
                 getNewTeamId("addCHPersonAndTeamEnergy"),
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), roomInitInfo.getUseSkin(), new HttpCallBack() {
                     @Override
@@ -1234,7 +1234,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     }
 
     public void requestStuChest(int isWin, HttpCallBack callBack) {
-        mHttpManager.getCHStuChest(isHalfBodyLiveRoom(), isWin, roomInitInfo.getStudentLiveInfo().getClassId(), getNewTeamId("requestStuChest"), roomInitInfo.getStuId(), mLiveBll.getLiveId(), isAIPartner(), roomInitInfo.getUseSkin(), callBack);
+        mHttpManager.getCHStuChest(isHalfBodyLiveRoom(), isWin, roomInitInfo.getStudentLiveInfo().getClassId(), getNewTeamId("requestStuChest"), roomInitInfo.getStuId(), mLiveId, isAIPartner(), roomInitInfo.getUseSkin(), callBack);
     }
 
 
@@ -1253,7 +1253,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 }
             };
 
-            mHttpManager.teamCHEnergyNumAndContributionmulStar(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
+            mHttpManager.teamCHEnergyNumAndContributionmulStar(isHalfBodyLiveRoom(), mLiveId,
                     getNewTeamId("teamCHEnergyNumAndContributionmulStar"),
                     roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(),
@@ -1272,7 +1272,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 }
             };
 
-            mHttpManager.teamCHEnergyNumAndContributionStar(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
+            mHttpManager.teamCHEnergyNumAndContributionStar(isHalfBodyLiveRoom(), mLiveId,
                     getNewTeamId("teamCHEnergyNumAndContributionStar"),
                     roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(),

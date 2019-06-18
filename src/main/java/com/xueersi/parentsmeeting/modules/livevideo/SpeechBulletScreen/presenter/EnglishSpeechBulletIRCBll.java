@@ -185,7 +185,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             data.put("studentId", mGetInfo.getStuId());
             data.put("courseId", mGetInfo.getStudentLiveInfo().getCourseId());
             data.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
-            data.put("liveId", mLiveBll.getLiveId());
+            data.put("liveId", mLiveId);
             data.put("liveType", 1);
             data.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
             data.put("bulletId", voiceBarrageCount + "");
@@ -230,7 +230,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
 
     @Override
     public String getVoiceId() {
-        return mLiveBll.getLiveId() + "_" + voiceBarrageCount;
+        return mLiveId + "_" + voiceBarrageCount;
     }
 
     @Override

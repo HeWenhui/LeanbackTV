@@ -253,7 +253,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     }
 
     private void getStuPkResult() {
-        getTeamPkHttp().stuPKResult(mLiveBll.getLiveId(), getNewTeamId("getStuPkResult"),
+        getTeamPkHttp().stuPKResult(mLiveId, getNewTeamId("getStuPkResult"),
                 roomInitInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -336,7 +336,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 获取战队开宝箱结果
      */
     private void getClassChestResult() {
-        getTeamPkHttp().getClassChestResult(mLiveBll.getLiveId(), roomInitInfo.getStuId(),
+        getTeamPkHttp().getClassChestResult(mLiveId, roomInitInfo.getStuId(),
                 getNewTeamId("getClassChestResult"), roomInitInfo.getStudentLiveInfo().getClassId()
                 , isAIPartner, new HttpCallBack() {
                     @Override
@@ -377,7 +377,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         EnglishH5Entity englishH5Entity = event.getEnglishH5Entity();
         boolean newCourseWare = englishH5Entity != null && englishH5Entity.getNewEnglishH5();
         if (newCourseWare) {
-            getTeamPkHttp().teamEnergyNumAndContributionmulStar(mLiveBll.getLiveId(),
+            getTeamPkHttp().teamEnergyNumAndContributionmulStar(mLiveId,
                     getNewTeamId("getClassChestResult"),
                     roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), englishH5Entity.getReleasedPageInfos(),
                     englishH5Entity.getClassTestId(), englishH5Entity.getPackageSource(), new
@@ -400,7 +400,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                             });
 
         } else {
-            getTeamPkHttp().teamEnergyNumAndContributionStar(mLiveBll.getLiveId(),
+            getTeamPkHttp().teamEnergyNumAndContributionStar(mLiveId,
                     getNewTeamId("teamEnergyNumAndContributionStar"),
                     roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), testId, testPlan, new
                             HttpCallBack() {
@@ -794,7 +794,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRedPackageEvent(RedPackageEvent event) {
         if (event.getStateCode() == RedPackageEvent.STATE_CODE_SUCCESS) {
-            if (mLiveBll.getLiveId().equals(event.getLiveId())) {
+            if (mLiveId.equals(event.getLiveId())) {
                 updatePkStateLayout(false);
             }
         }
@@ -826,7 +826,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     private void getPkState(final boolean showPopWindow) {
         //logger.e("=====> getPkState:" + roomInitInfo.getStuId() + ":" + mHttpManager);
-        getTeamPkHttp().liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
+        getTeamPkHttp().liveStuGoldAndTotalEnergy(mLiveId,
                 getNewTeamId("getPkState"),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStuId(), new HttpCallBack() {
@@ -888,7 +888,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     private void showVoteEnergyAnim(int addEnergy, String voteId) {
         logger.e("========> showVoteEnergyAnim:" + voteId + ":" + addEnergy);
         //上报服务器 增加加能量
-        getTeamPkHttp().addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
+        getTeamPkHttp().addPersonAndTeamEnergy(mLiveId, addEnergy,
                 getNewTeamId("showVoteEnergyAnim"),
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), voteId, new HttpCallBack() {
                     @Override
@@ -908,7 +908,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         final String voteId = event.getVoiceId();
         logger.e("========> showSpeechAnimSuc:" + voteId + ":" + addEnergy);
         //上报服务器 增加加能量
-        mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
+        mHttpManager.addPersonAndTeamEnergy(mLiveId, addEnergy,
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), voteId, new HttpCallBack(false) {
                     @Override
@@ -1632,7 +1632,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 展示明星榜
      */
     private void getStusStars() {
-        getTeamPkHttp().getTeamPkStarStudents(mLiveBll.getLiveId(),
+        getTeamPkHttp().getTeamPkStarStudents(mLiveId,
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStudentLiveInfo().getCourseId(),
                 getNewTeamId("getStusStars"), new HttpCallBack() {
@@ -1682,7 +1682,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 获取进步榜
      */
     private void getProgressStudent() {
-        getTeamPkHttp().getTeamPkProgressStudent(mLiveBll.getLiveId(),
+        getTeamPkHttp().getTeamPkProgressStudent(mLiveId,
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStudentLiveInfo().getCourseId(),
                 new HttpCallBack() {
