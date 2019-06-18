@@ -1474,38 +1474,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
     @Override
-    public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
-        String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mHttpManager.getSpeechEval(enstuId, liveid, id, new HttpCallBack() {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                SpeechEvalEntity speechEvalEntity = mHttpResponseParser.parseSpeechEval(responseEntity);
-                if (speechEvalEntity != null) {
-                    onSpeechEval.onSpeechEval(speechEvalEntity);
-                } else {
-                    responseEntity = new ResponseEntity();
-                    responseEntity.setStatus(false);
-                    responseEntity.setErrorMsg("出了点意外，请稍后试试");
-                    responseEntity.setJsonError(true);
-                    onSpeechEval.onPmError(responseEntity);
-                }
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        });
-    }
-
-    @Override
     public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
             onSpeechEval) {
         String liveid = mGetInfo.getId();

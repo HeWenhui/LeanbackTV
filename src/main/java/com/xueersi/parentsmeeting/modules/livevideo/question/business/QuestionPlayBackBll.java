@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -471,44 +472,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 //                    isVoice,
 //                    isRight,
 //                    httpCallBack);
-//        }
-    }
-
-    @Override
-    public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
-        String liveid = mVideoEntity.getLiveId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        HttpCallBack httpCallBack = new HttpCallBack() {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                SpeechEvalEntity speechEvalEntity = getCourseHttpResponseParser().parseSpeechEval(responseEntity);
-                if (speechEvalEntity != null) {
-                    onSpeechEval.onSpeechEval(speechEvalEntity);
-                } else {
-                    responseEntity = new ResponseEntity();
-                    responseEntity.setStatus(false);
-                    responseEntity.setErrorMsg("出了点意外，请稍后试试");
-                    responseEntity.setJsonError(true);
-                    onSpeechEval.onPmError(responseEntity);
-                }
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        };
-//        if (!liveBackBll.getExperience()) {
-        getCourseHttpManager().getSpeechEval(enstuId, liveid, id, httpCallBack);
-//        } else {
-//            getCourseHttpManager().getExpeSpeechEval(mVideoEntity.getSpeechEvalUrl(), enstuId,
-//                    liveid, id, httpCallBack);
 //        }
     }
 

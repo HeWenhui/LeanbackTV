@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineActi
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
@@ -1047,38 +1048,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         });
             }
 
-        }
-
-        @Override
-        public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
-            String liveid = mGetInfo.getId();
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            getHttpManager().getSpeechEval(enstuId, liveid, id, new HttpCallBack() {
-
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) {
-                    SpeechEvalEntity speechEvalEntity = getHttpResponseParser().parseSpeechEval(responseEntity);
-                    if (speechEvalEntity != null) {
-                        onSpeechEval.onSpeechEval(speechEvalEntity);
-                    } else {
-                        responseEntity = new ResponseEntity();
-                        responseEntity.setStatus(false);
-                        responseEntity.setErrorMsg("出了点意外，请稍后试试");
-                        responseEntity.setJsonError(true);
-                        onSpeechEval.onPmError(responseEntity);
-                    }
-                }
-
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    onSpeechEval.onPmFailure(error, msg);
-                }
-
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    onSpeechEval.onPmError(responseEntity);
-                }
-            });
         }
 
         @Override

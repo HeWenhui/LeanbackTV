@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -16,6 +17,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -160,44 +162,6 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
                 questionBll.IS_SCIENCE == false ? "1" : "0",
                 stuAnswer,
                 httpCallBack);
-//        }
-    }
-
-    @Override
-    public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
-        String liveid = mVideoEntity.getLiveId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        HttpCallBack httpCallBack = new HttpCallBack() {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                SpeechEvalEntity speechEvalEntity = getCourseHttpResponseParser().parseSpeechEval(responseEntity);
-                if (speechEvalEntity != null) {
-                    onSpeechEval.onSpeechEval(speechEvalEntity);
-                } else {
-                    responseEntity = new ResponseEntity();
-                    responseEntity.setStatus(false);
-                    responseEntity.setErrorMsg("出了点意外，请稍后试试");
-                    responseEntity.setJsonError(true);
-                    onSpeechEval.onPmError(responseEntity);
-                }
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        };
-//        if (!liveBackBll.getExperience()) {
-//        getCourseHttpManager().getSpeechEval(enstuId, liveid, id, httpCallBack);
-//        } else {
-        getCourseHttpManager().getExpeSpeechEval(enstuId,
-                liveid, id, mVideoEntity.getSpeechEvalUrl(), httpCallBack);
 //        }
     }
 

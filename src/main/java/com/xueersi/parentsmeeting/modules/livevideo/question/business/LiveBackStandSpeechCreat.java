@@ -130,10 +130,10 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
 
         }
 
-        @Override
-        public void getSpeechEval(String id, OnSpeechEval onSpeechEval) {
-            action.getSpeechEval(id, onSpeechEval);
-        }
+//        @Override
+//        public void getSpeechEval(String id, AbstractBusinessDataCallBack callBack) {
+//            action.getSpeechEval(id, callBack);
+//        }
 
         @Override
         public void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity,

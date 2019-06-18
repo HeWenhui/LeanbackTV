@@ -29,10 +29,10 @@ public class WrapSpeechEvalAction implements SpeechEvalAction {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
     }
 
-    @Override
-    public void getSpeechEval(String id, OnSpeechEval onSpeechEval) {
-        speechEvalAction.getSpeechEval(id, onSpeechEval);
-    }
+//    @Override
+//    public void getSpeechEval(String id, AbstractBusinessDataCallBack callBack) {
+//        speechEvalAction.getSpeechEval(id, callBack);
+//    }
 
     @Override
     public void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity, String num) {

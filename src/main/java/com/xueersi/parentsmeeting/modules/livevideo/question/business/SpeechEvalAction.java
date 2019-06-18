@@ -14,9 +14,9 @@ public interface SpeechEvalAction {
 
     /**
      * @param id           试题id
-     * @param onSpeechEval 回调
+     * @param callBack 回调
      */
-    void getSpeechEval(String id, OnSpeechEval onSpeechEval);
+//    void getSpeechEval(String id, AbstractBusinessDataCallBack callBack);
 
     /**
      * 关闭试题
