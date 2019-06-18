@@ -17,9 +17,7 @@ public interface QuestionHttp {
 
     void liveSubmitTestAnswer(LiveBasePager liveBasePager, VideoQuestionLiveEntity videoQuestionLiveEntity1, String mVSectionID, String testAnswer, boolean isVoice, boolean isRight, QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit);
 
-    void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval onSpeechEval);
-
-    void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, OnSpeechEval onSpeechEval);
+    void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, AbstractBusinessDataCallBack callBack);
 
     void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity1, AbstractBusinessDataCallBack callBack);
 

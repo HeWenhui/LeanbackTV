@@ -52,6 +52,7 @@ public class LiveVideoConfig {
     /** 得到语音评测试题 */
     public final static String URL_LIVE_GET_SPEECHEVAL = LiveVideoConfig.HTTP_HOST + "/StudyCenter/getSpeechEvalInfo";
     /** 发送语音评测答案 */
+    @Deprecated
     public final static String URL_LIVE_SEND_SPEECHEVAL = LiveVideoConfig.HTTP_HOST + "/StudyCenter/submitSpeechEval";
     /** 直播辅导发送语音评测答案 */
     @Deprecated

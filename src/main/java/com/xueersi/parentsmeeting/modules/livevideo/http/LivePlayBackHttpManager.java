@@ -257,21 +257,6 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_LIVE_GET_SPEECHEVAL, params, requestCallBack);
     }
 
-    //语音评测答案提交
-    public void sendSpeechEvalResult(String enstuId, String liveId, String id, String stuAnswer, String times, int
-            entranceTime, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        setDefaultParameter(params);
-//        params.addBodyParam("enstuId", enstuId);
-        params.addBodyParam("liveId", liveId);
-        params.addBodyParam("testId", id);
-        params.addBodyParam("stuAnswer", "" + stuAnswer);
-        params.addBodyParam("times", "" + times);
-        params.addBodyParam("entranceTime", "" + entranceTime);
-        params.addBodyParam("type", "2");
-        sendPost(LiveVideoConfig.URL_LIVE_SEND_SPEECHEVAL, params, requestCallBack);
-    }
-
     //语音评测2期答案提交
     public void sendSpeechEvalResult2(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
             requestCallBack, String isSubmit) {

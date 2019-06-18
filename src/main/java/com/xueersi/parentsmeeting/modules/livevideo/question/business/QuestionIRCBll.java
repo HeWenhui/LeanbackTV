@@ -1047,37 +1047,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             }
                         });
             }
-
         }
 
         @Override
-        public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval onSpeechEval) {
-            String liveid = mGetInfo.getId();
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            getHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack(false) {
-
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) {
-                    mLogtf.i("sendSpeechEvalResult:onPmSuccess=" + responseEntity.getJsonObject());
-                    onSpeechEval.onSpeechEval(null);
-                }
-
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    mLogtf.i("sendSpeechEvalResult:onPmFailure=" + msg);
-                    onSpeechEval.onPmFailure(error, msg);
-                }
-
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    mLogtf.i("sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
-                    onSpeechEval.onPmError(responseEntity);
-                }
-            });
-        }
-
-        @Override
-        public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
+        public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
             String liveid = mGetInfo.getId();
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             if (LiveVideoConfig.isNewArts) {
@@ -1087,19 +1060,19 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     public void onPmSuccess(final ResponseEntity responseEntity) {
                         mLogtf.i("sendSpeechEvalResult2:onPmSuccess=" + responseEntity.getJsonObject());
                         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                        onSpeechEval.onSpeechEval(jsonObject);
+                        callBack.onDataSucess(jsonObject);
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
-                        onSpeechEval.onPmFailure(error, msg);
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL,msg);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
-                        onSpeechEval.onPmError(responseEntity);
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR,responseEntity.getErrorMsg());
                     }
                 });
             } else {
@@ -1117,19 +1090,19 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                    }
 //                },2000);
                         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                        onSpeechEval.onSpeechEval(jsonObject);
+                        callBack.onDataSucess(jsonObject);
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
-                        onSpeechEval.onPmFailure(error, msg);
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL,msg);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
-                        onSpeechEval.onPmError(responseEntity);
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR,responseEntity.getErrorMsg());
                     }
                 });
             }

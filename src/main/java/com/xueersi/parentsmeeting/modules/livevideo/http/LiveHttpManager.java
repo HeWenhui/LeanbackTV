@@ -740,21 +740,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_LIVE_GET_SPEECHEVAL, params, requestCallBack);
     }
 
-    public void sendSpeechEvalResult(String enstuId, String liveId, String id, String stuAnswer, String times, int
-            entranceTime, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
-        params.addBodyParam("liveId", liveId);
-        params.addBodyParam("testId", id);
-        params.addBodyParam("stuAnswer", "" + stuAnswer);
-        params.addBodyParam("times", "" + times);
-        params.addBodyParam("entranceTime", "" + entranceTime);
-        params.addBodyParam("type", "1");
-        setDefaultParameter(params);
-        logger.i("sendSpeechEvalResult:enstuId=" + enstuId + ",liveId=" + liveId);
-        sendPost(LiveVideoConfig.URL_LIVE_SEND_SPEECHEVAL, params, requestCallBack);
-    }
-
     public void sendSpeechEvalResult2(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();

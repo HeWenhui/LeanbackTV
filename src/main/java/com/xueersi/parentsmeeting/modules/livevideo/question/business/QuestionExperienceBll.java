@@ -241,39 +241,10 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
                         }
                     }
                 });
-
     }
 
     @Override
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
-            onSpeechEval) {
-        String liveid = mVideoEntity.getLiveId();
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-        String termId = mVideoEntity.getChapterId();
-        String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
-        getCourseHttpManager().sendExpSpeechEvalResult(mVideoEntity.getSpeechEvalSubmitUrl(), liveid, id, termId,
-                isArts, stuAnswer, new HttpCallBack(false) {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        onSpeechEval.onSpeechEval(null);
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        onSpeechEval.onPmFailure(error, msg);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        onSpeechEval.onPmError(responseEntity);
-                    }
-                });
-
-    }
-
-    @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
+    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
         String liveid = mVideoEntity.getLiveId();
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         String termId = mVideoEntity.getChapterId();
@@ -284,17 +255,17 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                onSpeechEval.onSpeechEval(jsonObject);
+                callBack.onDataSucess(jsonObject);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL,msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR,responseEntity.getErrorMsg());
             }
         });
     }

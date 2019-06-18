@@ -23,8 +23,6 @@ public interface SpeechEvalAction {
      */
     void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity, String num);
 
-    void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval onSpeechEval);
-
     /**
      * 新课件{@linkplain LiveHttpManager#sendSpeechEvalResultNewArts}
      * 旧课件{@linkplain LiveHttpManager#sendSpeechEvalResult2}
@@ -32,9 +30,9 @@ public interface SpeechEvalAction {
      * @param videoQuestionLiveEntity
      * @param stuAnswer
      * @param isSubmit 1(1主动提交,2 强制提交)
-     * @param onSpeechEval
+     * @param callBack
      */
-    void sendSpeechEvalResult2(String id, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuAnswer, String isSubmit, OnSpeechEval onSpeechEval);
+    void sendSpeechEvalResult2(String id, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuAnswer, String isSubmit, AbstractBusinessDataCallBack callBack);
 
     void onSpeechSuccess(String num);
 

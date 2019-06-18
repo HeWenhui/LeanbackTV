@@ -475,52 +475,16 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 //        }
     }
 
-    @Override
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
-            onSpeechEval) {
-        String liveid = mVideoEntity.getLiveId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        HttpCallBack httpCallBack = new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                onSpeechEval.onSpeechEval(null);
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        };
-//        if (!liveBackBll.getExperience()) {
-        getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
-                httpCallBack);
-//        } else {
-//            getCourseHttpManager().sendExpSpeechEvalResult(
-//                    mVideoEntity.getSpeechEvalSubmitUrl(),
-//                    liveid,
-//                    id,
-//                    mVideoEntity.getChapterId(),
-//                    questionBll.IS_SCIENCE == false ? "1" : "0",
-//                    stuAnswer,
-//                    httpCallBack);
-//        }
-    }
-
     /**
      * 发送语音评测
      *
      * @param id
      * @param stuAnswer
      * @param isSubmit
-     * @param onSpeechEval
+     * @param callBack
      */
     @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
+    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
         String liveid = mVideoEntity.getLiveId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         HttpCallBack httpCallBack = new HttpCallBack(false) {
@@ -536,17 +500,17 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 //                    }
 //                },2000);
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                onSpeechEval.onSpeechEval(jsonObject);
+                callBack.onDataSucess(jsonObject);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL,msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR,responseEntity.getErrorMsg());
             }
         };
 

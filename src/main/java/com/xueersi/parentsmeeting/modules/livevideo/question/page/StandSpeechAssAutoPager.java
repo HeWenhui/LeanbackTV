@@ -51,6 +51,7 @@ import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -763,7 +764,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 long entranceTime2 = System.currentTimeMillis() - entranceTime;
-                answers1.put("entranceTime", (int)resultEntity.getSpeechDuration());
+                answers1.put("entranceTime", (int) resultEntity.getSpeechDuration());
                 answers1.put("score", score);
                 JSONObject detail = new JSONObject();
                 detail.put("cont_score", score);
@@ -776,12 +777,13 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 answers1.put("detail", detail);
                 answers.put("1", answers1);
                 final String isSubmit = EngForceSubmit.getSubmit(isNewArts, false);
-                speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, new OnSpeechEval() {
-                    OnSpeechEval onSpeechEval = this;
+                speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, new AbstractBusinessDataCallBack() {
+                    AbstractBusinessDataCallBack onSpeechEval = this;
 
                     @Override
-                    public void onSpeechEval(Object object) {
-                        final JSONObject jsonObject = (JSONObject) object;
+                    public void onDataSucess(Object... objData) {
+                        final JSONObject jsonObject = (JSONObject) objData[0];
+                        logger.d("sendSpeechEvalResult2:onSpeechEval:object=" + jsonObject);
                         if (count < 3 && count > 0) {
                             long delayMillis = count * 1000;
                             handler.postDelayed(new Runnable() {
@@ -805,22 +807,22 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
 
                     @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        if (isEnd) {
-                            speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                    public void onDataFail(int errStatus, String failMsg) {
+                        if (errStatus == LiveHttpConfig.HTTP_ERROR_FAIL) {
+                            logger.d("sendSpeechEvalResult2:onPmFailure:msg=" + failMsg);
+                            if (isEnd) {
+                                speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                            } else {
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, onSpeechEval);
+                                    }
+                                }, 1000);
+                            }
                         } else {
-                            mView.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, onSpeechEval);
-                                }
-                            }, 1000);
+                            logger.d("sendSpeechEvalResult2:onPmError:error=" + failMsg);
                         }
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-
                     }
                 });
             } catch (JSONException e) {
@@ -1147,7 +1149,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 final JSONObject answers = new JSONObject();
                 JSONObject answers1 = new JSONObject();
                 entranceTime = System.currentTimeMillis() - entranceTime;
-                answers1.put("entranceTime", (int)resultEntity.getSpeechDuration());
+                answers1.put("entranceTime", (int) resultEntity.getSpeechDuration());
                 answers1.put("score", 0);
                 JSONObject detail = new JSONObject();
                 detail.put("cont_score", 0);
@@ -1159,20 +1161,17 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 answers1.put("detail", detail);
                 answers.put("1", answers1);
                 String isSubmit = EngForceSubmit.getSubmit(isNewArts, true);
-                speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, new OnSpeechEval() {
-
+                speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, new AbstractBusinessDataCallBack() {
                     @Override
-                    public void onSpeechEval(Object object) {
+                    public void onDataSucess(Object... objData) {
+                        final JSONObject jsonObject = (JSONObject) objData[0];
+                        logger.d("sendSpeechEvalResult2:onSpeechEval:object=" + jsonObject);
                         speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                     }
 
                     @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
+                    public void onDataFail(int errStatus, String failMsg) {
+                        logger.d("sendSpeechEvalResult2:onPmFailure:msg=" + failMsg);
                         speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                     }
                 });

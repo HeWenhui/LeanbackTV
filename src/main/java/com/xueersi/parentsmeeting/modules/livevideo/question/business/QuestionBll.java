@@ -2247,21 +2247,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         return speechResult;
     }
 
-//    @Override
-//    public void getSpeechEval(String id, AbstractBusinessDataCallBack callBack) {
-//        questionHttp.getSpeechEval(id, callBack);
-//    }
-
-    @Override
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval
-            onSpeechEval) {
-        questionHttp.sendSpeechEvalResult(id, stuAnswer, times, entranceTime, onSpeechEval);
-    }
-
     @Override
     public void sendSpeechEvalResult2(String id, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuAnswer,
-                                      String isSubmit, OnSpeechEval onSpeechEval) {
-        questionHttp.sendSpeechEvalResult2(id, stuAnswer, isSubmit, onSpeechEval);
+                                      String isSubmit, AbstractBusinessDataCallBack callBack) {
+        questionHttp.sendSpeechEvalResult2(id, stuAnswer, isSubmit, callBack);
     }
 
     public void onPause() {

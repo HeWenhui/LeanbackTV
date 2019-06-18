@@ -1080,31 +1080,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval onSpeechEval) {
-        String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mHttpManager.sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack(false) {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult:onPmSuccess=" + responseEntity.getJsonObject());
-                onSpeechEval.onSpeechEval(null);
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                mLogtf.i("sendSpeechEvalResult:onPmFailure=" + msg);
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
-                onSpeechEval.onPmError(responseEntity);
-            }
-        });
-    }
-
     static HashMap<String, String> channelAndRoomid = new HashMap();
 
     public void getToken(final LicodeToken licodeToken) {

@@ -595,32 +595,6 @@ public class LectureLivePlayBackBll extends BaseBll {
         });
     }
 
-    public void sendSpeechEvalResult(String liveid, String id, String stuAnswer, String times, int entranceTime,
-                                     final OnSpeechEval onSpeechEval) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mCourseHttpManager.sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new
-                HttpCallBack(false) {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        logger.i( "sendSpeechEvalResult:onPmSuccess=" + responseEntity.getJsonObject());
-                        onSpeechEval.onSpeechEval(null);
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        logger.i( "sendSpeechEvalResult:onPmFailure=" + msg);
-                        onSpeechEval.onPmFailure(error, msg);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        logger.i( "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
-                        onSpeechEval.onPmError(responseEntity);
-                    }
-                });
-    }
-
     // 获取体验课的聊天记录
     public void getExperienceMsgs(String liveId, String classId, Long start, final ExperienceLiveVideoActivity.GetExperienceLiveMsgs
             getLiveLectureMsgs) {

@@ -45,13 +45,8 @@ public class WrapSpeechEvalAction implements SpeechEvalAction {
     }
 
     @Override
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval onSpeechEval) {
-        speechEvalAction.sendSpeechEvalResult(id, stuAnswer, times, entranceTime, onSpeechEval);
-    }
-
-    @Override
-    public void sendSpeechEvalResult2(String id, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuAnswer, String isSubmit, OnSpeechEval onSpeechEval) {
-        speechEvalAction.sendSpeechEvalResult2(id, videoQuestionLiveEntity, stuAnswer, isSubmit, onSpeechEval);
+    public void sendSpeechEvalResult2(String id, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuAnswer, String isSubmit, AbstractBusinessDataCallBack callBack) {
+        speechEvalAction.sendSpeechEvalResult2(id, videoQuestionLiveEntity, stuAnswer, isSubmit, callBack);
     }
 
     @Override

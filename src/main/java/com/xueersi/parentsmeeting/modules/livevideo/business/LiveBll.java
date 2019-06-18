@@ -24,6 +24,7 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
@@ -1474,34 +1475,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
     @Override
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
-            onSpeechEval) {
-        String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mHttpManager.sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack(false) {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult:onPmSuccess=" + responseEntity.getJsonObject());
-                onSpeechEval.onSpeechEval(null);
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                mLogtf.i("sendSpeechEvalResult:onPmFailure=" + msg);
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
-                onSpeechEval.onPmError(responseEntity);
-            }
-        });
-    }
-
-    @Override
-    public void sendSpeechEvalResult2(final String id, final String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
+    public void sendSpeechEvalResult2(final String id, final String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mHttpManager.sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
@@ -1518,19 +1492,19 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 //                    }
 //                },2000);
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                onSpeechEval.onSpeechEval(jsonObject);
+                callBack.onDataSucess(jsonObject);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
-                onSpeechEval.onPmFailure(error, msg);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL,msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
-                onSpeechEval.onPmError(responseEntity);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR,responseEntity.getErrorMsg());
             }
         });
     }
