@@ -193,12 +193,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 //        return mHttpManager;
 //    }
 
-
-    public LiveBll2 getLiveBll() {
-        return mLiveBll;
-    }
-
-
     private void setRoomInitInfo(LiveGetInfo roomInfo) {
         roomInitInfo = roomInfo;
     }

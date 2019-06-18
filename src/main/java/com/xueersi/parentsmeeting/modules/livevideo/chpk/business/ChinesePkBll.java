@@ -140,11 +140,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         mActivity = context;
     }
 
-    public LiveBll2 getLiveBll() {
-        return mLiveBll;
-    }
-
-
     public void setRoomInitInfo(LiveGetInfo roomInfo) {
         roomInitInfo = roomInfo;
     }
