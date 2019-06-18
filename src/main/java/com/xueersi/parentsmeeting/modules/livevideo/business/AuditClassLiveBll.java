@@ -20,9 +20,7 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.SimpleVPlayerListener;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -36,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
@@ -82,48 +81,84 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private final LiveTopic mLiveTopic = new LiveTopic();
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private LogToFile mLogtf;
-    /** 主讲教师 */
+    /**
+     * 主讲教师
+     */
     private Teacher mMainTeacher;
-    /** 主讲教师名字 */
+    /**
+     * 主讲教师名字
+     */
     private String mMainTeacherStr = null;
     private String mMainTeacherStatus = "on";
-    /** 辅导教师 */
+    /**
+     * 辅导教师
+     */
     private Teacher mCounteacher;
-    /** 渠道前缀 */
+    /**
+     * 渠道前缀
+     */
     private final String CNANNEL_PREFIX = "x_";
-    /** 主讲老师前缀 */
+    /**
+     * 主讲老师前缀
+     */
     public static final String TEACHER_PREFIX = "t_";
-    /** 辅导老师前缀 */
+    /**
+     * 辅导老师前缀
+     */
     public static String COUNTTEACHER_PREFIX = "f_";
     private final String ROOM_MIDDLE = "L";
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle, mGetStudentPlayServerCancle;
-    /** 直播帧数统计 */
+    /**
+     * 直播帧数统计
+     */
     private LivePlayLog livePlayLog;
-    /** 学习记录提交时间间隔 */
+    /**
+     * 学习记录提交时间间隔
+     */
     private int mHbTime = 300, mHbCount = 0;
     private AtomicInteger mOpenCount = new AtomicInteger(0);
-    /** 录播课的直播 */
+    /**
+     * 录播课的直播
+     */
     public final static int LIVE_TYPE_TUTORIAL = 1;
-    /** 公开直播 */
+    /**
+     * 公开直播
+     */
     public final static int LIVE_TYPE_LECTURE = 2;
-    /** 直播课的直播 */
+    /**
+     * 直播课的直播
+     */
     public final static int LIVE_TYPE_LIVE = 3;
-    /** 用户心跳解析错误 */
+    /**
+     * 用户心跳解析错误
+     */
     private int userOnlineError = 0;
     private PlayServerEntity mServer;
     private PlayServerEntity.PlayserverEntity playserverEntity;
-    /** 网络类型 */
+    /**
+     * 网络类型
+     */
     private int netWorkType;
-    /** 调度是不是在无网络下失败 */
+    /**
+     * 调度是不是在无网络下失败
+     */
     private boolean liveGetPlayServerError = false;
-    /** 学生是不是流畅模式 */
+    /**
+     * 学生是不是流畅模式
+     */
     AtomicBoolean fluentMode = new AtomicBoolean(false);
-    /** 是不是有分组 */
+    /**
+     * 是不是有分组
+     */
     private boolean haveTeam = false;
-    /** 区分文理appid */
+    /**
+     * 区分文理appid
+     */
     String appID = UmsConstants.LIVE_APP_ID;
-    /** 直播调度 */
+    /**
+     * 直播调度
+     */
     private LiveGetPlayServer liveGetPlayServer;
     private LiveLog liveLog;
     private boolean isHalfBodyLive = false;
@@ -202,11 +237,13 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     public boolean isHalfBodyLive() {
         return isHalfBodyLive;
     }
+
     /**
      * 设置是否是半身直播
+     *
      * @param halfBodyLive
      */
-    public void setHalfBodyLive(boolean halfBodyLive){
+    public void setHalfBodyLive(boolean halfBodyLive) {
         this.isHalfBodyLive = halfBodyLive;
     }
 
@@ -520,7 +557,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         }
     };
 
-    /** 当前状态，老师是不是在直播间 */
+    /**
+     * 当前状态，老师是不是在直播间
+     */
     public boolean isPresent() {
         return isPresent(mLiveTopic.getMode());
     }
@@ -609,13 +648,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        if (MediaPlayer.getIsNewIJK()){
-            mIRCMessage = new NewAuditIRCMessage(mContext,mGetInfo,netWorkType, channel, mGetInfo.getStuName(), nickname, this);
-        } else {
-            mIRCMessage = new AuditIRCMessage(netWorkType,channel, mGetInfo.getStuName(), nickname, this);
-            IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, mGetInfo, mLiveType, mHttpManager, mGetInfo.getNewTalkConfHosts());
-            mIRCMessage.setIrcTalkConf(ircTalkConf);
-        }
+
+        mIRCMessage = new NewAuditIRCMessage(mContext, mGetInfo, netWorkType, channel, mGetInfo.getStuName(), nickname, this);
+
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
         // logger.d( s);
@@ -626,9 +661,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     /**
      * 是否是 语文半身直播
+     *
      * @return
      */
-    private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo){
+    private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo) {
         return liveGetInfo != null && liveGetInfo.getPattern()
                 == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
                 && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
@@ -639,9 +675,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      * 签名
      */
     public synchronized void getStudentLiveInfo() {
-        if(isHalfBodyLive){
+        if (isHalfBodyLive) {
             getHalfBodyLiveStudentLiveInfo();
-        }else{
+        } else {
             getNorLiveStudentLiveInfo();
         }
     }
@@ -687,41 +723,44 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public synchronized void getHalfBodyLiveStudentLiveInfo() {
 
-        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE,
-                new HttpCallBack(false){
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                String oldMode = mLiveTopic.getMode();
-                HalfBodyLiveStudyInfo stuLiveInfo = mHttpResponseParser.parseStuHalfbodyLiveInfo(responseEntity, oldMode);
-               if (auditClassAction != null) {
-                    auditClassAction.onGetStudyInfo(stuLiveInfo);
-                }
+        mHttpManager.getHalfBodyStuLiveInfo(mLiveId, mStuCouId, mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE,
+                new HttpCallBack(false) {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        String oldMode = mLiveTopic.getMode();
+                        HalfBodyLiveStudyInfo stuLiveInfo = mHttpResponseParser.parseStuHalfbodyLiveInfo(responseEntity, oldMode);
+                        if (auditClassAction != null) {
+                            auditClassAction.onGetStudyInfo(stuLiveInfo);
+                        }
 
-                String mode = stuLiveInfo.getMode();
-                Log.e("parseLiveInfo","getHalfBodyStuLiveInfo=====>oldMode:"+oldMode+":"+mode);
-                if (!oldMode.equals(mode)) {
-                    if (mVideoAction != null) {
-                        mVideoAction.onModeChange(mode, true);
-                        Log.e("parseLiveInfo"," getHalfBodyStuLiveInfo====>mVideoAction.onModeChange"+oldMode+":"+mode);
+                        String mode = stuLiveInfo.getMode();
+                        Log.e("parseLiveInfo", "getHalfBodyStuLiveInfo=====>oldMode:" + oldMode + ":" + mode);
+                        if (!oldMode.equals(mode)) {
+                            if (mVideoAction != null) {
+                                mVideoAction.onModeChange(mode, true);
+                                Log.e("parseLiveInfo", " getHalfBodyStuLiveInfo====>mVideoAction.onModeChange" + oldMode + ":" + mode);
+                            }
+                            mLiveTopic.setMode(mode);
+                            liveGetPlayServer(true);
+                        }
                     }
-                    mLiveTopic.setMode(mode);
-                    liveGetPlayServer(true);
-                }
-            }
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                logger.e( "getHalfBodyLiveStudentLiveInfo:onPmFailure:msg=" + msg, error);
-            }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                logger.e( "getHalfBodyLiveStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
-            }
-        });
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        logger.e("getHalfBodyLiveStudentLiveInfo:onPmFailure:msg=" + msg, error);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        logger.e("getHalfBodyLiveStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
+                    }
+                });
     }
 
 
-    /** 第一次调度，不判断老师状态 */
+    /**
+     * 第一次调度，不判断老师状态
+     */
     public void liveGetPlayServerFirst() {
         liveGetPlayServer = new LiveGetPlayServer((Activity) mContext, new TeacherIsPresent() {
 
@@ -1032,7 +1071,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     }
 
-    /** 得到老师名字 */
+    /**
+     * 得到老师名字
+     */
     public String getModeTeacher() {
         String mainnick = "null";
         synchronized (mIRCcallback) {
@@ -1047,7 +1088,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    /** 得到当前模式 */
+    /**
+     * 得到当前模式
+     */
     public String getMode() {
         String mode;
         if (mLiveType == LIVE_TYPE_LIVE) {
@@ -1342,7 +1385,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         });
     }
 
-    /** 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址 */
+    /**
+     * 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址
+     */
     public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, final PlayServerEntity mServer, String channelname, final AbstractBusinessDataCallBack callBack) {
         if (StringUtils.isEmpty(playserverEntity.getIp_gslb_addr())) {
             callBack.onDataFail(3, "empty");

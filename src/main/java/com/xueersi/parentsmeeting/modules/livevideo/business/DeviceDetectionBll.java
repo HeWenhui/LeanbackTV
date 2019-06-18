@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business.irc;
+package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
 

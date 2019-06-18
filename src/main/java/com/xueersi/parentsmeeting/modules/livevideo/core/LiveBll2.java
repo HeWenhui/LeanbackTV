@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseBll;
@@ -13,7 +12,6 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
@@ -23,13 +21,10 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -37,7 +32,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -45,7 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
@@ -59,7 +53,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -68,15 +61,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  * created  at 2018/6/20 10:32
  */
-public class LiveBll2 extends BaseBll{
+public class LiveBll2 extends BaseBll {
     Logger logger = LoggerFactory.getLogger("LiveBll2");
-    /** 需处理 topic 业务集合 */
+    /**
+     * 需处理 topic 业务集合
+     */
     private List<TopicAction> mTopicActions = new ArrayList<>();
-    /** 需处理 notice 的业务集合 */
+    /**
+     * 需处理 notice 的业务集合
+     */
     private Map<Integer, List<NoticeAction>> mNoticeActionMap = new HashMap<>();
-    /** 需处理 全量 消息的 业务集合 */
+    /**
+     * 需处理 全量 消息的 业务集合
+     */
     private List<MessageAction> mMessageActions = new ArrayList<>();
-    /** 所有业务bll 集合 */
+    /**
+     * 所有业务bll 集合
+     */
     private List<LiveBaseBll> businessBlls = new ArrayList<>();
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private AllLiveBasePagerIml allLiveBasePagerIml;
@@ -87,17 +88,25 @@ public class LiveBll2 extends BaseBll{
     private String mCourseId;
     private LiveGetInfo mGetInfo;
     private LiveVideoSAConfig liveVideoSAConfig;
-    /** 区分文理appid */
+    /**
+     * 区分文理appid
+     */
     String appID = UmsConstants.LIVE_APP_ID;
     private LiveHttpManager mHttpManager;
-    /** 学生课程id */
+    /**
+     * 学生课程id
+     */
     private String mStuCouId;
     private int mForm;
     private LiveHttpResponseParser mHttpResponseParser;
-    /** 网络类型 */
+    /**
+     * 网络类型
+     */
     private int netWorkType;
     private final LiveTopic mLiveTopic;
-    /** 校准系统时间 */
+    /**
+     * 校准系统时间
+     */
     private long sysTimeOffset;
     private final String ROOM_MIDDLE = "L";
     private IIRCMessage mIRCMessage;
@@ -107,7 +116,9 @@ public class LiveBll2 extends BaseBll{
     private static String Tag = "LiveBll2";
     private LiveUidRx liveUidRx;
     private LiveLog liveLog;
-    /** 是否使用新IRC SDK */
+    /**
+     * 是否使用新IRC SDK
+     */
 //    private boolean isNewIRC = false;
     LiveAndBackDebugIml liveAndBackDebugIml;
 
@@ -389,7 +400,9 @@ public class LiveBll2 extends BaseBll{
         }
     }
 
-    /** 获取getInfo成功 */
+    /**
+     * 获取getInfo成功
+     */
     private void onGetInfoSuccess(LiveGetInfo getInfo) {
         logger.e("=======>onGetInfoSuccess");
         this.mGetInfo = getInfo;
@@ -476,22 +489,11 @@ public class LiveBll2 extends BaseBll{
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        if (MediaPlayer.getIsNewIJK()) {
-            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
-                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, channel);
-            } else {
-                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, channel, eChannel);
-            }
+        if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
+            mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, channel);
         } else {
-            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
-                mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel);
-            } else {
-                mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel, eChannel);
-            }
-            IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
-            mIRCMessage.setIrcTalkConf(ircTalkConf);
+            mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, channel, eChannel);
         }
-
         //mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, (TextUtils.isEmpty(eChannel)|| LiveTopic.MODE_CLASS.equals(getMode()))?channel:channel,eChannel);
         if (mGetInfo != null && mGetInfo.ePlanInfo != null) {
             mIRCMessage.modeChange(mGetInfo.getMode());
@@ -1107,12 +1109,16 @@ public class LiveBll2 extends BaseBll{
         return liveVideoSAConfig;
     }
 
-    /** 当前状态，老师是不是在直播间 */
+    /**
+     * 当前状态，老师是不是在直播间
+     */
     public boolean isPresent() {
         return isPresent(mLiveTopic.getMode());
     }
 
-    /** 直播间内模块间 数据共享池 */
+    /**
+     * 直播间内模块间 数据共享池
+     */
     private HashMap<String, Object> businessShareParamMap = new HashMap<String, Object>();
 
     /**
@@ -1173,7 +1179,9 @@ public class LiveBll2 extends BaseBll{
         }
     }
 
-    /** 测试notice */
+    /**
+     * 测试notice
+     */
     public void testNotice(String notice) {
         mIRCcallback.onNotice("", "", "", "", notice, "");
     }

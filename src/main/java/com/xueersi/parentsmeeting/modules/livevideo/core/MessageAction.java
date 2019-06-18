@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 
 /**
 * 直播间 除（notice,topic 外的全量消息）

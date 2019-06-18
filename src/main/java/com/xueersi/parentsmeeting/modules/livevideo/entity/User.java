@@ -11,7 +11,7 @@ found at http://www.jibble.org/licenses/
 
 */
 
-package com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot;
+package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 /**
  * This class is used to represent a user on an IRC server.

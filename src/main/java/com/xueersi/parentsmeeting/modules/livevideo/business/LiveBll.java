@@ -88,7 +88,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
     private LiveHttpManager mHttpManager;
     private LiveHttpResponseParser mHttpResponseParser;
-    private IRCMessage mIRCMessage;
+    private NewIRCMessage mIRCMessage;
     private String vStuCourseID;
     private String courseId;
     private String mLiveId;
