@@ -22,7 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.widget.BezierEvaluator;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BezierEvaluator;
 
 /**
  * 战队pk 实时答题

@@ -33,7 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryK
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ImageScale;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ImageScale;
 
 /**
  * 半身直播 UI 管理器

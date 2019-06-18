@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideoOldIJK.util;
+package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;

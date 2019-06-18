@@ -205,11 +205,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     }
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-                    if (MediaPlayer.getIsNewIJK()) {
-                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                    } else {
-                        com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                    }
+                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                     finish();
                 }
 
@@ -288,11 +284,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         list.add(PermissionConfig.PERMISSION_CODE_CAMERA);
                         gotoHalfBodyChinese(bundle, list);
                     } else {
-                        if (MediaPlayer.getIsNewIJK()) {
-                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        } else {
-                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        }
+                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         finish();
                     }
                 }
@@ -356,11 +348,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (MediaPlayer.getIsNewIJK()) {
-                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                                } else {
-                                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                                }
+                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                                 finish();
                             }
                         });
@@ -368,11 +356,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 },
                 PermissionConfig.PERMISSION_CODE_AUDIO);
         if (have) {
-            if (MediaPlayer.getIsNewIJK()) {
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-            } else {
-                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-            }
+            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
             finish();
         }
     }
@@ -389,11 +373,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (MediaPlayer.getIsNewIJK()) {
-                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                                } else {
-                                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                                }
+                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                                 finish();
                             }
                         });
@@ -418,11 +398,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
         //魅族手机无法弹出权限弹窗
         if (have) {
-            if (MediaPlayer.getIsNewIJK()) {
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-            } else {
-                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-            }
+            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
             finish();
 
         }
@@ -442,22 +418,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         .SP_APP_DEVICE_NOTICE, false,
                 ShareDataManager.SHAREDATA_USER)) {
 
-            Intent intent;
-            if (MediaPlayer.getIsNewIJK()) {
-                intent = new Intent(context, DeviceDetectionActivity.class);
-            } else {
-                intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
-            }
+            Intent intent= new Intent(context, DeviceDetectionActivity.class);
             context.startActivity(intent);
             return;
         }
 
-        Intent intent;
-        if (MediaPlayer.getIsNewIJK()) {
-            intent = new Intent(context, LiveVideoLoadActivity.class);
-        } else {
-            intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.class);
-        }
+        Intent intent= new Intent(context, LiveVideoLoadActivity.class);
         intent.putExtras(bundle);
         context.startActivityForResult(intent, requestCode);
         context.overridePendingTransition(0, 0);

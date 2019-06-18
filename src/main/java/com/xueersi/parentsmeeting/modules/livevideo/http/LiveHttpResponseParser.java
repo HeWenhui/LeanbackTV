@@ -302,7 +302,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setVideoConfigEntity(videoConfigEntity);
 //            MediaPlayer.getIsNewIJK() = "1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC"));
 //            MediaPlayer.getIsNewIJK() = true;
-            MediaPlayer.setIsNewIJK("1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC")));
+            MediaPlayer.setIsNewIJK(true);
             //解析getInfo之前，先把之前用来判断状态的静态变量置空
             setStaticStatusNull();
             getInfo.setId(data.getString("id"));
