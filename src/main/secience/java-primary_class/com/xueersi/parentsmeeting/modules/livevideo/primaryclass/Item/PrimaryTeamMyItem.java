@@ -11,6 +11,7 @@ import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePagerState;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 
 public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
@@ -193,9 +194,9 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     }
 
     @Override
-    public void onOtherDis(int type, final boolean enable) {
-        super.onOtherDis(type, enable);
-        mLogtf.d("onOtherDis:type=" + type + ",noMic=" + noMic);
+    public void onOtherDis(int type, final boolean enable, final int mState) {
+        super.onOtherDis(type, enable, mState);
+        mLogtf.d("onOtherDis:type=" + type + ",enable=" + enable + ",noMic=" + noMic + ",state=" + mState);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
             //不屏蔽自己的视频
 //            handler.post(new Runnable() {
@@ -239,9 +240,11 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
-                        RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
-                        if (mRtcEngine != null) {
-                            mRtcEngine.muteLocalAudio(!enable);
+                        if (mState == LiveBasePagerState.RESUMED) {
+                            RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+                            if (mRtcEngine != null) {
+                                mRtcEngine.muteLocalAudio(!enable);
+                            }
                         }
                     }
                 });

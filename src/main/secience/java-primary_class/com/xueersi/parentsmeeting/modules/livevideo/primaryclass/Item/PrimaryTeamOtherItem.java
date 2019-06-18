@@ -273,10 +273,10 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     };
 
     @Override
-    public void onOtherDis(int type, final boolean enable) {
-        super.onOtherDis(type, enable);
+    public void onOtherDis(int type, final boolean enable, int mState) {
+        super.onOtherDis(type, enable, mState);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
-            mLogtf.d("onOtherDis:uid=" + uid + ",MMTYPE_VIDEO=" + entity.isLook());
+            mLogtf.d("onOtherDis:uid=" + uid + ",enable=" + enable + ",MMTYPE_VIDEO=" + entity.isLook());
             handler.removeCallbacks(videoStateRun);
             if (entity.isLook()) {
                 handler.post(new Runnable() {
@@ -312,7 +312,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 });
             }
         } else {
-            mLogtf.d("onOtherDis:uid=" + uid + ",MMTYPE_AUDIO=" + entity.isLook());
+            mLogtf.d("onOtherDis:uid=" + uid + ",enable=" + enable + ",MMTYPE_AUDIO=" + entity.isLook());
             if (entity.isLook()) {
                 handler.post(new Runnable() {
                     @Override

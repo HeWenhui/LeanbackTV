@@ -101,7 +101,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     }
 
     @Override
-    public void onOtherDis(int type, boolean enable) {
+    public void onOtherDis(int type, boolean enable, int mState) {
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
             videoStatus = enable;
         } else {
