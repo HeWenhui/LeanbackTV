@@ -38,20 +38,16 @@ public class UnderstandIRCBll extends LiveBaseBll implements NoticeAction {
                             understandBll.setUnderstandHttp(new UnderstandHttp() {
                                 @Override
                                 public void understand(boolean isUnderstand, String nonce) {
-                                    if (mLiveBll.getMainTeacherStr() != null) {
-                                        try {
-                                            JSONObject jsonObject = new JSONObject();
-                                            jsonObject.put("type", "" + XESCODE.UNDERSTANDS);
-                                            jsonObject.put("understand", isUnderstand);
-                                            jsonObject.put("nonce", nonce);
-                                            mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
-                                            mLogtf.d("understand ok");
-                                        } catch (Exception e) {
-                                            // logger.e( "understand", e);
-                                            mLogtf.e("understand", e);
-                                        }
-                                    } else {
-                                        mLogtf.d("understand mMainTeacherStr=null");
+                                    try {
+                                        JSONObject jsonObject = new JSONObject();
+                                        jsonObject.put("type", "" + XESCODE.UNDERSTANDS);
+                                        jsonObject.put("understand", isUnderstand);
+                                        jsonObject.put("nonce", nonce);
+                                        mLiveBll.sendNoticeMain(jsonObject);
+                                        mLogtf.d("understand ok");
+                                    } catch (Exception e) {
+                                        // logger.e( "understand", e);
+                                        mLogtf.e("understand", e);
                                     }
                                 }
                             });

@@ -656,16 +656,14 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             if (mLiveBll.getLiveTopic().isDisable()) {
                 return;
             }
-            if (mLiveBll.getMainTeacherStr() != null) {
-                try {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("type", rankStuReconnectMessage + "");
-                    jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
-                    jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
-                    sendNotice(jsonObject, mLiveBll.getMainTeacherStr());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("type", rankStuReconnectMessage + "");
+                jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
+                jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
+                sendNoticeToMain(jsonObject);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

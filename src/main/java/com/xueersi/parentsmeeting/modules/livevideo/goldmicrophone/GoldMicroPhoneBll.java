@@ -678,7 +678,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 e.printStackTrace();
             }
             if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
-                mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
+                mLiveBll.sendNoticeMain(jsonObject);
             }
 //            else {
 //                mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);

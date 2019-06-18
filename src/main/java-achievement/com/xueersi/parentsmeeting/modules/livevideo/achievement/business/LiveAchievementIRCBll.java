@@ -68,6 +68,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     private boolean isDestory = false;
     private int smallEnglish;
     LiveAchievementEngStandBll liveAchievementEngStandBll;
+
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         putInstance(LiveAchievementIRCBll.class, this);
@@ -214,13 +215,15 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             mLiveBll.removeBusinessBll(this);
         }
     }
+
     @Override
     public void onArtsExtLiveInited(LiveGetInfo getInfo) {
         super.onArtsExtLiveInited(getInfo);
-        if(liveAchievementEngStandBll!=null){
+        if (liveAchievementEngStandBll != null) {
             liveAchievementEngStandBll.setAchievementLayout(getInfo.getArtsExtLiveInfo());
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -648,40 +651,30 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
     @Override
     public void sendStat(int index) {
-        if (mLiveBll.getMainTeacherStr() != null) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("type", "" + XESCODE.ROOM_STAR_SEND_S);
-                jsonObject.put("id", "" + mGetInfo.getStuId());
-                jsonObject.put("answer", index);
-//            if (LiveTopic.MODE_CLASS.equals(getMode())) {
-//                mIRCMessage.sendNotice(mMainTeacherStr, jsonObject.toString());
-//            } else {
-//                mIRCMessage.sendNotice(mCounteacher.get_nick(), jsonObject.toString());
-//            }
-                mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
-            } catch (Exception e) {
-                // logger.e( "understand", e);
-                mLogtf.e("sendStat", e);
-            }
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "" + XESCODE.ROOM_STAR_SEND_S);
+            jsonObject.put("id", "" + mGetInfo.getStuId());
+            jsonObject.put("answer", index);
+            sendNoticeToMain(jsonObject);
+        } catch (Exception e) {
+            // logger.e( "understand", e);
+            mLogtf.e("sendStat", e);
         }
     }
 
     @Override
     public void sendDBStudent(int dbDuration) {
-        if (mLiveBll.getMainTeacherStr() != null) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("type", "" + XESCODE.XCR_ROOM_DB_STUDENT);
-                jsonObject.put("id", "" + mGetInfo.getStuId());
-                jsonObject.put("duration", "" + dbDuration);
-                mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
-            } catch (Exception e) {
-                // logger.e( "understand", e);
-                mLogtf.e("sendDBStudent", e);
-            }
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "" + XESCODE.XCR_ROOM_DB_STUDENT);
+            jsonObject.put("id", "" + mGetInfo.getStuId());
+            jsonObject.put("duration", "" + dbDuration);
+            sendNoticeToMain(jsonObject);
+        } catch (Exception e) {
+            // logger.e( "understand", e);
+            mLogtf.e("sendDBStudent", e);
         }
-
     }
 
     @Override

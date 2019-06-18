@@ -870,8 +870,8 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.TEAM_PK_STUDENT_READY);
             jsonObject.put("stuId", "" + roomInitInfo.getStuId());
-            sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
-            sendNotice(jsonObject, mLiveBll.getMainTeacherStr());
+            sendNoticeToCoun(jsonObject);
+            sendNoticeToMain(jsonObject);
         } catch (Exception e) {
             e.printStackTrace();
         }

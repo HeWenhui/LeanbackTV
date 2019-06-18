@@ -517,7 +517,7 @@ public class LiveBll2 extends BaseBll {
         @Override
         public void run() {
             logger.e("======>initArtsExtLiveInfoTask run:");
-            mHttpManager.getArtsExtLiveInfo(LiveBll2.this.mLiveId, LiveBll2.this.mStuCouId, new HttpCallBack(false) {
+            mHttpManager.getArtsExtLiveInfo(mLiveId, mStuCouId, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
@@ -928,6 +928,25 @@ public class LiveBll2 extends BaseBll {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public boolean sendNoticeMain(JSONObject data) {
+        if (getMainTeacherStr() != null) {
+            return sendNotice(getMainTeacherStr(), data);
+        }
+        return false;
+    }
+
+    /**
+     * 向辅导发送消息
+     *
+     * @param data 消息内容
+     */
+    public boolean sendNoticeToCoun(JSONObject data) {
+        if (getCounTeacherStr() != null) {
+            return sendNotice(getCounTeacherStr(), data);
+        }
+        return false;
     }
 
     /**

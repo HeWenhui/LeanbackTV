@@ -344,7 +344,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
+        mLiveBll.sendNoticeMain(jsonObject);
 
         getHttpManager().sendSuperSpeakersubmitSpeech(
                 mGetInfo.getId(),

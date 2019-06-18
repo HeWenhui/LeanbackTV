@@ -898,16 +898,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (mLiveBll.getLiveTopic().isDisable()) {
                 return;
             }
-            if (mLiveBll.getMainTeacherStr() != null) {
-                try {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("type", rankStuReconnectMessage + "");
-                    jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
-                    jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
-                    mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("type", rankStuReconnectMessage + "");
+                jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
+                jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
+                mLiveBll.sendNoticeMain(jsonObject);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

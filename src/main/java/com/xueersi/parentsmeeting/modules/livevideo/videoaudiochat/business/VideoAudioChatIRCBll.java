@@ -90,7 +90,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             videoChatBll.onLiveInit(getInfo);
             videoChatAction = videoChatBll;
 
-            if(baseLiveMediaControllerBottom instanceof LiveUIStateReg){
+            if (baseLiveMediaControllerBottom instanceof LiveUIStateReg) {
                 LiveUIStateReg halfBodyMediaControllerBottom = (LiveUIStateReg)
                         baseLiveMediaControllerBottom;
                 halfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
@@ -348,9 +348,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
 
             jsonObject.put("nonce", nonce);
             if ("t".equals(from)) {
-                mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
+                mLiveBll.sendNoticeMain(jsonObject);
             } else {
-                mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
+                mLiveBll.sendNoticeToCoun(jsonObject);
             }
         } catch (Exception e) {
             // logger.e( "understand", e);
@@ -366,9 +366,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             jsonObject.put("id", mGetInfo.getStuId());
             jsonObject.put("status", "off");
             if ("t".equals(from)) {
-                mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
+                mLiveBll.sendNoticeMain(jsonObject);
             } else {
-                mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
+                mLiveBll.sendNoticeToCoun(jsonObject);
             }
         } catch (Exception e) {
             // logger.e( "understand", e);
