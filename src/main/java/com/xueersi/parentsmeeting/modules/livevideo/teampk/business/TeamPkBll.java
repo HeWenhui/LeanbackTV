@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -377,12 +378,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             testId = event.getId();
         }
         final String eventId = getLogEventId(event.getH5Type());
-
-        if (event.isScienceNewCourseWare()) {
+        EnglishH5Entity englishH5Entity = event.getEnglishH5Entity();
+        boolean newCourseWare = englishH5Entity != null && englishH5Entity.getNewEnglishH5();
+        if (newCourseWare) {
             getTeamPkHttp().teamEnergyNumAndContributionmulStar(mLiveBll.getLiveId(),
                     getNewTeamId("getClassChestResult"),
-                    roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), LiveVideoConfig.tests,
-                    LiveVideoConfig.ctId, LiveVideoConfig.pSrc, new
+                    roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), englishH5Entity.getReleasedPageInfos(),
+                    englishH5Entity.getClassTestId(), englishH5Entity.getPackageSource(), new
                             HttpCallBack() {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
