@@ -9,6 +9,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 /**
  * 直播播放器控制栏底部区域
  */
-public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBottom {
+public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBottom implements LiveUIStateReg {
     String TAG = "LiveMediaControllerBottom";
     View tranLiveView;
     View mainLiveView;
@@ -79,7 +80,8 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
         }
     }
 
-    public void addOnViewChange(LiveUIStateListener listener) {
+    @Override
+    public void addLiveUIStateListener(LiveUIStateListener listener) {
         if (!onViewChanges.contains(listener)) {
             onViewChanges.add(listener);
         }

@@ -11,27 +11,22 @@ import com.tal100.chatsdk.IRoomChatListener;
 import com.tal100.chatsdk.PMDefs;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.MyUserInfoEntity;
-import com.xueersi.common.network.IpAddressUtil;
-import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**

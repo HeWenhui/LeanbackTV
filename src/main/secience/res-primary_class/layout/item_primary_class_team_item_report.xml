@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/iv_livevideo_primary_team_energy_add"
+    android:layout_width="54dp"
+    android:layout_height="22dp"
+    android:gravity="center"
+    android:text="已举报"
+    android:textColor="@color/white"
+    android:textSize="12sp" />

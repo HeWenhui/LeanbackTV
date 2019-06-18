@@ -40,19 +40,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.HalfBodyLiveCo
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyExpMediaCtrBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 

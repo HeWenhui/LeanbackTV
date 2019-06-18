@@ -33,7 +33,7 @@ public class UnderstandIRCBll extends LiveBaseBll implements NoticeAction {
                     @Override
                     public void run() {
                         if (understandAction == null) {
-                            UnderstandBll understandBll = new UnderstandBll(activity, mLiveBll);
+                            UnderstandBll understandBll = new UnderstandBll(activity, contextLiveAndBackDebug);
                             understandBll.setGetInfo(mGetInfo);
                             understandBll.setUnderstandHttp(new UnderstandHttp() {
                                 @Override

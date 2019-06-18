@@ -274,7 +274,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                             mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                         }
-                        event.setScienceNewCourseWare(englishH5Entity.getNewEnglishH5());
+                        event.setEnglishH5Entity(englishH5Entity);
                         event.setForceSubmit(resultGotByForceSubmit);
                         EventBus.getDefault().post(event);
                     }

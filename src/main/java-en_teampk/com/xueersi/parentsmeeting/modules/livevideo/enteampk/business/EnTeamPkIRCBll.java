@@ -17,7 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;

@@ -397,8 +397,11 @@ public class LiveVideoConfig {
     public static HashMap<String, Long> curentTime = new HashMap<>();
     public static HashMap<String, Boolean> livefinish = new HashMap<>();
     /** 战队PK改版 */
+    @Deprecated
     public static String tests;
+    @Deprecated
     public static String ctId;
+    @Deprecated
     public static String pSrc;
 
     public static interface SubjectIds {

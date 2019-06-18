@@ -12,7 +12,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tencent.connect.common.UIListenerManager;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
@@ -27,7 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RankPage.SmallChine
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.MiddleScienceEvenDrivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleSciencePager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
@@ -39,8 +38,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
@@ -137,16 +134,10 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
             liveMediaControllerBottom) {
         this.mMediaController = mMediaController;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
-        if (liveMediaControllerBottom instanceof LiveStandMediaControllerBottom) {
-            LiveStandMediaControllerBottom liveStandMediaControllerBottom = (LiveStandMediaControllerBottom)
-                    liveMediaControllerBottom;
-            liveStandMediaControllerBottom.addOnViewChange(onViewChange);
-        }
 
-        if(liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
-            LiveHalfBodyMediaControllerBottom liveHalfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
-                    liveMediaControllerBottom;
-            liveHalfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
+        if (liveMediaControllerBottom instanceof LiveUIStateReg) {
+            LiveUIStateReg liveUIStateReg = (LiveUIStateReg) liveMediaControllerBottom;
+            liveUIStateReg.addLiveUIStateListener(onViewChange);
         }
 
         rl_livevideo_common_rank = (Button) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank);

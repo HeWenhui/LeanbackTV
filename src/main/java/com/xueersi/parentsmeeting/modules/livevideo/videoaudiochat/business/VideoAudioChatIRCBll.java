@@ -10,8 +10,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
@@ -25,8 +26,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -86,18 +85,13 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                 videoChatBll.initView(mRootView);
             }
             videoChatBll.setControllerBottom(baseLiveMediaControllerBottom);
-            videoChatBll.setLiveAndBackDebug(mLiveBll);
+            videoChatBll.setLiveAndBackDebug(contextLiveAndBackDebug);
             videoChatBll.setVideoChatHttp(this);
             videoChatBll.onLiveInit(getInfo);
             videoChatAction = videoChatBll;
-            if (baseLiveMediaControllerBottom instanceof LiveStandMediaControllerBottom) {
-                LiveStandMediaControllerBottom liveStandMediaControllerBottom = (LiveStandMediaControllerBottom)
-                        baseLiveMediaControllerBottom;
-                liveStandMediaControllerBottom.addOnViewChange(onViewChange);
-            }
 
-            if(baseLiveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
-                LiveHalfBodyMediaControllerBottom halfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
+            if(baseLiveMediaControllerBottom instanceof LiveUIStateReg){
+                LiveUIStateReg halfBodyMediaControllerBottom = (LiveUIStateReg)
                         baseLiveMediaControllerBottom;
                 halfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
             }
@@ -261,10 +255,10 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                     if ("on".equals(status)) {
                         linkMicNonce = object.optString("nonce");
                         startLinkmicid = linkmicid;
-                        VideoAudioChatLog.getRaiseHandMsgSno2(mLiveBll, micType == 0 ? "audio" : "video", linkmicid, linkMicNonce);
+                        VideoAudioChatLog.getRaiseHandMsgSno2(contextLiveAndBackDebug, micType == 0 ? "audio" : "video", linkmicid, linkMicNonce);
                     } else {
                         String nonce = object.optString("nonce");
-                        VideoAudioChatLog.getCloseMsgSno12(mLiveBll, startLinkmicid, micType == 0 ? "audio" : "video", nonce);
+                        VideoAudioChatLog.getCloseMsgSno12(contextLiveAndBackDebug, startLinkmicid, micType == 0 ? "audio" : "video", nonce);
                     }
                 }
             }

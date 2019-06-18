@@ -196,7 +196,7 @@ public class TeamPkPraiseBll {
                 case XESCODE.TEAM_PK_TEACHER_PRAISE:
                     int praiseType = (int) info.getData();
                     if (praiseType > BADGE_LOW_BOUND && praiseType < BADGE_UP_BOUND) {
-                        TeamPkLog.showPkTeamPraise(mPkBll.getLiveBll(),info.getNonce(),praiseType+"");
+                        TeamPkLog.showPkTeamPraise(mPkBll.getLiveAndBackDebug(),info.getNonce(),praiseType+"");
                         showBadge(praiseType);
                     } else {
                         consumPraiseInfo(getNextPraiseInfo());
@@ -209,11 +209,11 @@ public class TeamPkPraiseBll {
                         if (isDouble) {
                             if (mPkBll.getLatesH5CloseEvent() != null && mPkBll.getLatesH5CloseEvent().getmEnergyNum
                                     () > 0) {
-                                TeamPkLog.showPkPraise(mPkBll.getLiveBll(),info.getNonce(),"1");
+                                TeamPkLog.showPkPraise(mPkBll.getLiveAndBackDebug(),info.getNonce(),"1");
                                 showAnswerRightPraise(mPkBll.getLatesH5CloseEvent().getmEnergyNum());
                             }
                         } else {
-                            TeamPkLog.showPkPraise(mPkBll.getLiveBll(),info.getNonce(),"0");
+                            TeamPkLog.showPkPraise(mPkBll.getLiveAndBackDebug(),info.getNonce(),"0");
                             showPraise();
                         }
                     } else {

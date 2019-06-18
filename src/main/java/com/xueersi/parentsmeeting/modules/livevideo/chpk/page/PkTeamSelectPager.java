@@ -41,6 +41,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.chpk.adapter.MemberAdapter;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.adapter.MemberHolder;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.adapter.TeamAdapter;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.business.ChinesePkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamSelectLottieEffectInfo;
@@ -58,8 +60,8 @@ import java.util.List;
  * 战队选择页面
  *
  * @author yuanwei
- *         <p>
- *         created  at 2018/11/14 11:31
+ * <p>
+ * created  at 2018/11/14 11:31
  */
 public class PkTeamSelectPager extends BasePager implements View.OnClickListener {
     private static final String TAG = "TeamPkTeamSelectPager";
@@ -149,16 +151,23 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     private ImageView ivReadyState;
     private ImageView ivSelectClose;
     private TimeCountDowTextView tvTimeCounter;
+    LiveGetInfo liveGetInfo;
 
-    public PkTeamSelectPager(Context context, ChinesePkBll pkBll) {
-        super(context);
+    public PkTeamSelectPager(Context context, ChinesePkBll pkBll, LiveGetInfo liveGetInfo) {
+        super(context, false);
         mPKBll = pkBll;
+        this.liveGetInfo = liveGetInfo;
+        mView = initView();
     }
 
     @Override
     public View initView() {
-        final View view = View.inflate(mContext, R.layout.page_livevideo_chpk_teamselect, null);
-
+        final View view;
+        if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+            view = View.inflate(mContext, R.layout.page_livevideo_chpk_teamselect_primary, null);
+        } else {
+            view = View.inflate(mContext, R.layout.page_livevideo_chpk_teamselect, null);
+        }
         frTeamIntrocude = view.findViewById(R.id.rl_teampk_team_introduce);
         tvTeamName = view.findViewById(R.id.tv_teampk_team_name);
         ivTeamLogo = view.findViewById(R.id.iv_livevideo_chpk_teamLogo);
@@ -181,11 +190,14 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     }
 
 
-
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.iv_livevideo_chpk_selectReady) {
-            upLoadStudentReady();
+            if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                closeTeamSelectPager();
+            } else {
+                upLoadStudentReady();
+            }
         } else if (v.getId() == R.id.iv_livevideo_chpk_selectClose) {
             closeTeamSelectPager();
         }
@@ -321,7 +333,11 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                showTimeCutdown();
+                if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                    showMarquee();
+                } else {
+                    showTimeCutdown();
+                }
             }
         });
 
@@ -466,7 +482,7 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
             playBgMusic();
         }
 
-        if (ivBgMask.getVisibility() != View.VISIBLE){
+        if (ivBgMask.getVisibility() != View.VISIBLE) {
             ivBgMask.setVisibility(View.VISIBLE);
         }
 
@@ -522,7 +538,9 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
 //        }
 
         frTeamIntrocude.setVisibility(View.VISIBLE);
-        rl_teampk_rule.setVisibility(View.GONE);
+        if (rl_teampk_rule != null) {
+            rl_teampk_rule.setVisibility(View.GONE);
+        }
         tvTeamName.setText(mTeamName);
 
         AlphaAnimation animation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevido_teampk_alpha_in);
@@ -541,7 +559,13 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
         final Runnable action = new Runnable() {
             @Override
             public void run() {
-                displayRuleInfo();
+                if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                    ImageView ivReadyBtn = mView.findViewById(R.id.iv_livevideo_chpk_selectReady);
+                    ivReadyBtn.setOnClickListener(PkTeamSelectPager.this);
+                    ivReadyBtn.setVisibility(View.VISIBLE);
+                } else {
+                    displayRuleInfo();
+                }
             }
         };
 
@@ -555,6 +579,8 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
 
         effectTextView.setTextWidthEffect(teamInfo);
         soundPoolHelper.playMusic(R.raw.input_effect, MUSIC_VOLUME_RATIO_FRONT, true);
+        ImageView ivReadyBtn = mView.findViewById(R.id.iv_livevideo_chpk_selectReady);
+        ivReadyBtn.setOnClickListener(this);
     }
 
     /**
@@ -676,7 +702,6 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
         final int spanCount = 5;
         memberRecycler.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 5, LinearLayoutManager.VERTICAL, false));
         ((ViewGroup) mView).setClipChildren(true);
-
 
 
         teamMemberAdapter = new MemberAdapter(mContext, mTeamInfo);

@@ -12,20 +12,32 @@ android {
         main {
             jniLibs.srcDirs = ['libs']
             java.srcDirs += ['src/main/java-en_teampk']
+//            java.srcDirs += ['src/main/english/java-en_teampk_old']
             res.srcDirs += ['src/main/res-en_teampk']
             java.srcDirs += ['src/main/java-achievement']
+//            java.srcDirs += ['src/main/java-achievement_old']
             res.srcDirs += ['src/main/res-achievement']
             java.srcDirs += ['src/main/english/java-en_tcp']
-            // assets.srcDirs += ['src/main/english/assets']
+            assets.srcDirs += ['src/main/english/assets']
             java.srcDirs += ['src/main/java-core']
             //集体发言
             java.srcDirs += ['src/main/secience/java-collective_speech']
+//            java.srcDirs += ['src/main/secience/java-collective_speech_old']
             res.srcDirs += ['src/main/secience/res-collective_speech']
             //老师点赞
             java.srcDirs += ['src/main/secience/java-teacher_praise']
+//            java.srcDirs += ['src/main/secience/java-teacher_praise_old']
             res.srcDirs += ['src/main/secience/res-teacher_praise']
-            //assets.srcDirs += ['src/main/secience/assets']
-            // assets.srcDirs += ['src/main/live_assets']
+            assets.srcDirs += ['src/main/secience/assets']
+             assets.srcDirs += ['src/main/live_assets']
+            //小班体验
+            java.srcDirs += ['src/main/chinese/java-primary_class']
+            java.srcDirs += ['src/main/secience/java-primary_class']
+//            java.srcDirs += ['src/main/secience/java-primary_class_old']
+            res.srcDirs += ['src/main/secience/res-primary_class']
+            res.srcDirs += ['src/main/chinese/res-primary_class']
+            //旧sdk
+//            java.srcDirs += ['src/main/java-old']
         }
     }
     compileSdkVersion 26
@@ -51,7 +63,7 @@ dependencies {
     //日志
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.logger)
     //    implementation project(':ijkplayer')
-    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.ijkplayer)
+//    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.ijkplayer)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.cloud)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
@@ -73,7 +85,7 @@ dependencies {
 
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
-//    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.rtcengine)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rtcengine)
     //    implementation project(':library:agora')
     //implementation(rootProject.ext.xeslibraries.waveform) { changing = true }
     //implementation project(':library:waveform')

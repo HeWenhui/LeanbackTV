@@ -675,15 +675,15 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
     }
 
     public void umsAgentDebug(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebugSys(eventId, mData);
+        contextLiveAndBackDebug.umsAgentDebugSys(eventId, mData);
     }
 
     public void umsAgentDebug2(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebugInter(eventId, mData);
+        contextLiveAndBackDebug.umsAgentDebugInter(eventId, mData);
     }
 
     public void umsAgentDebug3(String eventId, final Map<String, String> mData) {
-        mLiveBll.umsAgentDebugPv(eventId, mData);
+        contextLiveAndBackDebug.umsAgentDebugPv(eventId, mData);
     }
 
 

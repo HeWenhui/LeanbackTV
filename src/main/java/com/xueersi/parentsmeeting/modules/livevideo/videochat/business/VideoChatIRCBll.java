@@ -6,6 +6,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -15,8 +16,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -69,18 +68,13 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
             VideoChatBll videoChatBll = new VideoChatBll(activity, this);
             videoChatBll.initView(mRootView);
             videoChatBll.setControllerBottom(baseLiveMediaControllerBottom);
-            videoChatBll.setLiveAndBackDebug(mLiveBll);
+            videoChatBll.setLiveAndBackDebug(contextLiveAndBackDebug);
             videoChatBll.setVideoChatHttp(this);
             videoChatBll.onLiveInit(getInfo);
             videoChatAction = videoChatBll;
-            if (baseLiveMediaControllerBottom instanceof LiveStandMediaControllerBottom) {
-                LiveStandMediaControllerBottom liveStandMediaControllerBottom = (LiveStandMediaControllerBottom)
-                        baseLiveMediaControllerBottom;
-                liveStandMediaControllerBottom.addOnViewChange(onViewChange);
-            }
 
-            if(baseLiveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
-                LiveHalfBodyMediaControllerBottom halfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
+            if(baseLiveMediaControllerBottom instanceof LiveUIStateReg){
+                LiveUIStateReg halfBodyMediaControllerBottom = (LiveUIStateReg)
                         baseLiveMediaControllerBottom;
                 halfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
             }

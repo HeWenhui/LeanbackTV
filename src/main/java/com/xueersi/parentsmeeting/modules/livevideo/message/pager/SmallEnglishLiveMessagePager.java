@@ -81,13 +81,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordChsI
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;

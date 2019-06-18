@@ -215,7 +215,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 try {
                     VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
                     if (detailInfo != null) {
-                        NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0,detailInfo.isTUtor());
+                        NewCourseLog.sno8(contextLiveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0,detailInfo.isTUtor());
                     }
                 } catch (Exception e) {
                     CrashReport.postCatchedException(e);

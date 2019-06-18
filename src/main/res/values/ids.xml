@@ -562,6 +562,7 @@
     <item name="rl_teampk_teaminfo_root" type="id" />
     <item name="rl_teampk_team_introduce" type="id" />
     <item name="rl_teampk_rule" type="id" />
+    <item name="rl_teampk_rule_content" type="id" />
     <item name="tv_teampk_team_name" type="id" />
     <item name="itv_teampk_team_info" type="id" />
     <item name="tv_teampk_rule_title" type="id" />

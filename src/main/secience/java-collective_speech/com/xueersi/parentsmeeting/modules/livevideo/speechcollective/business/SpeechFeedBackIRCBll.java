@@ -93,7 +93,7 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements com.xueersi.par
         com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechFeedBackBll speechFeedBackBll = new com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechFeedBackBll(activity, SpeechFeedBackIRCBll.this);
         speechFeedBackBll.setGetInfo(mGetInfo);
         speechFeedBackBll.setBottomContent(mRootView);
-        speechFeedBackBll.setLiveAndBackDebug(mLiveBll);
+        speechFeedBackBll.setLiveAndBackDebug(contextLiveAndBackDebug);
         speechFeedBackAction = speechFeedBackBll;
     }
 

@@ -7,9 +7,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -40,7 +37,6 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -61,7 +57,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -582,7 +577,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
             public void onClick(View v) {
                 if (teamPKBll != null) {
                     nonce = StableLogHashMap.creatNonce();
-                    TeamPkLog.clickTreasureBox(teamPKBll.getLiveBll(), mIsWin, nonce);
+                    TeamPkLog.clickTreasureBox(teamPKBll.getLiveAndBackDebug(), mIsWin, nonce);
                 }
                 //防止快速 连续点击
                 lottieAnimationView.setClickable(false);
@@ -607,10 +602,10 @@ public class TeamPkAwardPager extends TeamPkBasePager {
      * 获取学生宝箱信息
      */
     private void getStuChestInfo() {
-        teamPKBll.getmHttpManager().getStuChest(mIsWin ? 1 : 0, teamPKBll.getRoomInitInfo().getStudentLiveInfo()
+        teamPKBll.getTeamPkHttp().getStuChest(mIsWin ? 1 : 0, teamPKBll.getRoomInitInfo().getStudentLiveInfo()
                         .getClassId()
-                , teamPKBll.getRoomInitInfo().getStudentLiveInfo().getTeamId(),
-                teamPKBll.getRoomInitInfo().getStuId(), teamPKBll.getLiveBll().getLiveId(),
+                , teamPKBll.getNewTeamId("getStuChestInfo"),
+                teamPKBll.getRoomInitInfo().getStuId(), teamPKBll.getLiveId(),
                 teamPKBll.isAIPartner(),
                 new HttpCallBack() {
                     @Override
@@ -648,7 +643,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
                         super.onFailure(call, e);
                         lottieAnimationView.setClickable(true);
                         if (teamPKBll != null) {
-                            TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(), "", nonce, false);
+                            TeamPkLog.openTreasureBox(teamPKBll.getLiveAndBackDebug(), "", nonce, false);
                         }
                         showToast("获取宝箱数据失败");
                     }
@@ -657,7 +652,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
                         if (teamPKBll != null) {
-                            TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(), "", nonce, false);
+                            TeamPkLog.openTreasureBox(teamPKBll.getLiveAndBackDebug(), "", nonce, false);
                         }
                         String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "获取宝箱数据失败" :
                                 responseEntity.getErrorMsg();
@@ -724,7 +719,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
             }
             updatePkStateLayout();
             if (teamPKBll != null) {
-                TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(), studentChestEntity.getGold() + "",
+                TeamPkLog.openTreasureBox(teamPKBll.getLiveAndBackDebug(), studentChestEntity.getGold() + "",
                         nonce, true);
             }
         }

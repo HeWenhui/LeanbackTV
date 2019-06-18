@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 直播日志
@@ -131,6 +133,15 @@ public class LiveLog implements LiveOnLineLogs {
         logHashMap.put("teacherId", "" + mGetInfo.getTeacherId());
         UmsAgentManager.umsAgentDebug(mContext, eventid, logHashMap.getData());
         if (AppConfig.DEBUG) {
+            if (stableLogHashMap != null) {
+                Map<String, String> mData = stableLogHashMap.getData();
+                Set<String> keys = mData.keySet();
+                String common = "";
+                for (String key : keys) {
+                    common += key + "=" + mData.get(key) + ",";
+                }
+                liveThreadPoolExecutor.execute(new WriteThread(TAG + "-" + common));
+            }
             liveThreadPoolExecutor.execute(new WriteThread(TAG + "-" + str));
         }
     }
@@ -178,6 +189,15 @@ public class LiveLog implements LiveOnLineLogs {
         logHashMap.put("teacherId", "" + mGetInfo.getTeacherId());
         UmsAgentManager.umsAgentDebug(mContext, eventid, logHashMap.getData());
         if (AppConfig.DEBUG) {
+            if (stableLogHashMap != null) {
+                Map<String, String> mData = stableLogHashMap.getData();
+                Set<String> keys = mData.keySet();
+                String common = "";
+                for (String key : keys) {
+                    common += key + "=" + mData.get(key) + ",";
+                }
+                liveThreadPoolExecutor.execute(new WriteThread(TAG + "-" + common));
+            }
             liveThreadPoolExecutor.execute(new WriteThread(TAG + "-" + str));
         }
     }

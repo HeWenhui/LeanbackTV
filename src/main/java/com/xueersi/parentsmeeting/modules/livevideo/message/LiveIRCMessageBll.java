@@ -30,7 +30,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -43,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
@@ -185,6 +185,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.setLiveBll(new LiveIRCState());
         mRoomAction.setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
+
     public void setLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
         mRoomAction.setBaseLiveMediaControllerTop(controllerTop);
     }
@@ -204,7 +205,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (getInfo.getPattern() == 2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initViewLiveStand(mRootView);
-            } else if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+            } else if ((getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS)
                     && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initHalfBodyLive(mRootView);
             } else {
@@ -228,8 +229,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
     }
 
+    String currentMode;
+
     @Override
     public void onModeChange(final String oldMode, final String mode, boolean isPresent) {
+        this.currentMode = mode;
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -253,11 +257,16 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
                     }
-                } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+                } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
                     //延迟 2.5 秒 走相关逻辑(适配转场动画 节奏)
+                    final String finalMode = mode;
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            logger.d("onModeChange:currentMode=" + currentMode + ",finalMode=" + finalMode);
+                            if (!currentMode.equals(finalMode)) {
+                                return;
+                            }
                             View view = mRoomAction.getView();
                             if (view != null) {
                                 view.setVisibility(View.INVISIBLE);

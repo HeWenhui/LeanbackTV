@@ -208,13 +208,6 @@ public class SpeechCollectiveNo2Bll {
         if (liveMessageBll != null) {
             liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                     message);
-        } else {
-            com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBll liveMessageBllOld =
-                    ProxUtil.getProxUtil().get(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBll.class);
-            if (liveMessageBllOld != null) {
-                liveMessageBllOld.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
-                        message);
-            }
         }
     }
 

@@ -141,7 +141,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                         }
                     }
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-                    liveRemarkBll.setLiveAndBackDebug(mLiveBll);
+                    liveRemarkBll.setLiveAndBackDebug(contextLiveAndBackDebug);
                     liveRemarkBll.setHttpManager(getHttpManager());
                     liveRemarkBll.setSysTimeOffset(mLiveBll.getSysTimeOffset());
                     mLogtf.i("setlivebll____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()

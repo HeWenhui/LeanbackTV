@@ -14,7 +14,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ErrorWebViewClient;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 
 import java.net.URL;
 import java.util.HashMap;

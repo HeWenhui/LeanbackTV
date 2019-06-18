@@ -93,7 +93,7 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
         SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(activity, SpeechFeedBackIRCBll.this);
         speechFeedBackBll.setGetInfo(mGetInfo);
         speechFeedBackBll.setBottomContent(mRootView);
-        speechFeedBackBll.setLiveAndBackDebug(mLiveBll);
+        speechFeedBackBll.setLiveAndBackDebug(contextLiveAndBackDebug);
         speechFeedBackAction = speechFeedBackBll;
     }
 

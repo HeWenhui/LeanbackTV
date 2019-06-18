@@ -328,7 +328,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             //mGetInfo.getGoldCount(),
                             true);
                     starBll.setLiveBll(LiveAchievementIRCBll.this);
-                    starBll.setLiveAndBackDebug(mLiveBll);
+                    starBll.setLiveAndBackDebug(contextLiveAndBackDebug);
                     starBll.initView(mRootView, mContentView);
                     LiveAchievementIRCBll.this.starAction = starBll;
                     //能量条
@@ -340,7 +340,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
-                        englishSpeekBll.setLiveAndBackDebug(mLiveBll);
+                        englishSpeekBll.setLiveAndBackDebug(contextLiveAndBackDebug);
                         englishSpeekBll.setmShareDataManager(mShareDataManager);
                         LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekBll;
                     }
@@ -396,7 +396,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     LiveStandAchievementBll starBll = new LiveStandAchievementBll(activity, mLiveType, mGetInfo
                             .getStarCount(), mGetInfo.getGoldCount(), true);
                     starBll.setLiveBll(LiveAchievementIRCBll.this);
-                    starBll.setLiveAndBackDebug(mLiveBll);
+                    starBll.setLiveAndBackDebug(contextLiveAndBackDebug);
                     starBll.initView(mRootView, mContentView);
                     starAction = starBll;
 
@@ -409,7 +409,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
-                        starBll.setLiveAndBackDebug(mLiveBll);
+                        starBll.setLiveAndBackDebug(contextLiveAndBackDebug);
                         englishSpeekBll.setmShareDataManager(mShareDataManager);
                         englishSpeekAction = englishSpeekBll;
                     }
@@ -419,7 +419,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             //mGetInfo.getGoldCount()
                             , true);
                     starBll.setLiveBll(LiveAchievementIRCBll.this);
-                    starBll.setLiveAndBackDebug(mLiveBll);
+                    starBll.setLiveAndBackDebug(contextLiveAndBackDebug);
                     starBll.initView(mRootView, mContentView);
                     starAction = starBll;
 
@@ -472,7 +472,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             } else {
                 LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo, true);
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
-                starBll.setLiveAndBackDebug(mLiveBll);
+                starBll.setLiveAndBackDebug(contextLiveAndBackDebug);
                 starBll.initView(mRootView, mContentView);
                 starAction = starBll;
                 //能量条

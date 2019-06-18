@@ -94,6 +94,7 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
     public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
         DetailIfo info;
         if ((info = getTeacherNameInfo(fileName)) != null) {
+            Log.e("PkResult","======>fetchTargetBitMap:fileName="+fileName);
             return createMsgBitmap(width, height, info.value, getTextSize(fileName), textColor);
         } else if ((info = getSlogan(fileName)) != null) {
             return createMsgBitmap(width, height, info.value, getTextSize(fileName), textColor);
@@ -240,6 +241,7 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
         float characterWidth = paint.measureText(singleCharacter);
         // 一行能放几个字儿
         int lineNum = (int) (width / characterWidth);
+        Log.e("PkResult","======>createMsgBitmap:"+width+":"+characterWidth+":"+lineNum);
 
         Rect fontRect;
         List<String> stringList = getStrList(msg, lineNum);

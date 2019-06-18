@@ -113,7 +113,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 是不是文理 */
     public boolean IS_SCIENCE = true;
     /** 是不是文科 */
-    private int isArts;
+    protected int isArts;
 
     protected BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     protected BaseLiveMediaControllerBottom liveMediaControllerBottom;
@@ -232,7 +232,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      *
      * @param activity
      */
-    private void addBusiness(Activity activity) {
+    protected void addBusiness(Activity activity) {
         //是文科
         BllConfigEntity[] bllConfigEntities;
         if (isArts == 1) {
@@ -300,7 +300,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(liveIRCMessageBll);
 
             // 语文半身直播 添加 语文pk 业务类
-            if (pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY && useSkin == HalfBodyLiveConfig.SKIN_TYPE_CH) {
+            if ((pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) && useSkin == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                 mLiveBll.addBusinessBll(new ChinesePkBll(activity, mLiveBll));
             } else {
                 mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll));
@@ -530,11 +530,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 }
             }
         });
-    }
-
-    @Override
-    protected void showRefresyLayout(int arg1, int arg2) {
-        super.showRefresyLayout(arg1, arg2);
     }
 
     @Override
@@ -864,16 +859,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Deprecated
     @Override
     public void rePlay(boolean modechange) {
-        mLogtf.d("rePlay:mHaveStop=" + mHaveStop);
-        if (mGetInfo == null || liveVideoAction == null) {//上次初始化尚未完成
-            return;
-        }
-        VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);
-        if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
-            return;
-        }
-        liveVideoAction.rePlay(modechange);
-        mLiveVideoBll.rePlay(modechange);
+
     }
 
     /** PSIJK使用的rePlay */

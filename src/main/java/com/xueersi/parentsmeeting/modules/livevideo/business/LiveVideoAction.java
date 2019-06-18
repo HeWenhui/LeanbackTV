@@ -74,6 +74,7 @@ public class LiveVideoAction implements VideoAction {
     protected int liveType;
     protected LiveGetInfo mGetInfo;
     protected LiveBll2 mLiveBll;
+    protected LiveAndBackDebug liveAndBackDebug;
     protected LogToFile mLogtf;
     /** 切换线路layout */
     private ConstraintLayout layoutSwitchFlow;
@@ -101,6 +102,7 @@ public class LiveVideoAction implements VideoAction {
     public LiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView) {
         this.activity = activity;
         this.mLiveBll = mLiveBll;
+        liveAndBackDebug = new ContextLiveAndBackDebug(activity);
         liveType = mLiveBll.getLiveType();
         this.mContentView = mContentView;
         rlFirstBackgroundView = mContentView.findViewById(R.id.rl_course_video_first_backgroud);
@@ -121,11 +123,11 @@ public class LiveVideoAction implements VideoAction {
         isExperience = activity.getIntent().getBooleanExtra("isExperience", false);
         isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
         if (pattern == 1 && !isExperience) {
-            layoutSwitchFlow = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
-            tvSwitchFlowRetry = mContentView.findViewById(R.id.fzcy_livevideo_switch_flow_retry_text);
-            setVideoLayout();
-            btnRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
-            switchFlowViewChangeBtn();
+//            layoutSwitchFlow = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
+//            tvSwitchFlowRetry = mContentView.findViewById(R.id.fzcy_livevideo_switch_flow_retry_text);
+//            setVideoLayout();
+//            btnRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
+//            switchFlowViewChangeBtn();
         }
     }
 
@@ -319,7 +321,7 @@ public class LiveVideoAction implements VideoAction {
                         mLogtf.d("playComplete:classbegin=" + status.isClassbegin());
                     }
                     //统计日志
-                    PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
+                    PlayErrorCodeLog.livePlayError(liveAndBackDebug, playErrorCode);
                 }
             }
         });
@@ -390,7 +392,7 @@ public class LiveVideoAction implements VideoAction {
                                 mLogtf.d("onFail:classbegin=" + status.isClassbegin());
                             }
                             //统计日志
-                            PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
+                            PlayErrorCodeLog.livePlayError(liveAndBackDebug, playErrorCode);
                             break;
                         }
                         case MediaErrorInfo.PSDispatchFailed: {
@@ -501,7 +503,7 @@ public class LiveVideoAction implements VideoAction {
                         mLogtf.d("onFail:classbegin=" + status.isClassbegin());
                     }
                     //统计日志
-                    PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
+                    PlayErrorCodeLog.livePlayError(liveAndBackDebug, playErrorCode);
                 }
             }
         });
@@ -528,7 +530,7 @@ public class LiveVideoAction implements VideoAction {
                         } else if (mGetInfo != null && mGetInfo.getSmallEnglish()) {//如果是小学英语
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_small_english_zw_dengdaida_bg_psnormal);
-                        }  else {
+                        } else {
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_zw_dengdaida_bg_normal);
                         }
@@ -717,7 +719,7 @@ public class LiveVideoAction implements VideoAction {
         }
         //统计日志
         if (playErrorCode != null) {
-            PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
+            PlayErrorCodeLog.livePlayError(liveAndBackDebug, playErrorCode);
         }
     }
 

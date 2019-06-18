@@ -14,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePage
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -136,7 +136,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
             mHandler.removeCallbacks(delayRemoveRunalbe);
             isOpen = true;
-            praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll,mGetInfo);
+            praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, contextLiveAndBackDebug,mGetInfo);
             rlPraiseContentView.removeAllViews();
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);

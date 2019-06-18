@@ -101,7 +101,7 @@ public class TeamPkImprovePager extends TeamPkBasePager {
         teamPkPraiseLayout.setPriaseStateListener(new TeamPkPraiseLayout.PraiseStateListener() {
             @Override
             public void onFinish(int clickCount) {
-                TeamPkLog.sendPkStarThumbCount(mPkBll.getLiveBll(),"1",mPkBll.getNonce(),clickCount);
+                TeamPkLog.sendPkStarThumbCount(mPkBll.getLiveAndBackDebug(),"1",mPkBll.getNonce(),clickCount);
 
             }
         });

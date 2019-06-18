@@ -435,7 +435,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Override
     protected void onVideoCreateEnd() {
-        mLiveBll.setLivePlayLog(livePlayLog);
         mLiveBll.getInfo();
     }
 
@@ -740,9 +739,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         videoCachedDuration = vPlayer.getVideoCachedDuration();
                         mHandler.postDelayed(getVideoCachedDurationRun, 30000);
                         mLogtf.d("videoCachedDuration=" + videoCachedDuration);
-                        if (videoCachedDuration > 10000) {
-                            mLiveBll.streamReport(AuditClassLiveBll.MegId.MEGID_12130, mGetInfo.getChannelname(), -1);
-                        }
                     }
                 });
                 //logger.i( "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
@@ -757,12 +753,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
         @Override
         public void run() {
-            long openTime = System.currentTimeMillis() - openStartTime;
-            if (openTime > 40000) {
-                mLiveBll.streamReport(AuditClassLiveBll.MegId.MEGID_12107, mGetInfo.getChannelname(), openTime);
-            } else {
-                mLiveBll.streamReport(AuditClassLiveBll.MegId.MEGID_12137, mGetInfo.getChannelname(), openTime);
-            }
             mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
             mLiveBll.repair(true);
 //            mLiveBll.liveGetPlayServer(false);
@@ -1283,7 +1273,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         if (startRemote.get()) {
             return;
         }
-        livePlayLog.onReplay();
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
                 tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
@@ -1330,7 +1319,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             url = rtmpUrl + "/" + mGetInfo.getChannelname();
             msg += "mServer=null";
             mLiveBll.setPlayserverEntity(null);
-            livePlayLog.setLastPlayserverEntity(null);
         } else {
             List<PlayserverEntity> playservers = mServer.getPlayserver();
             msg += "playservers=" + playservers.size();
@@ -1416,7 +1404,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             }
             lastPlayserverEntity = entity;
             mLiveBll.setPlayserverEntity(entity);
-            livePlayLog.setLastPlayserverEntity(entity);
             if (useFlv) {
                 url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
             } else {
