@@ -76,11 +76,11 @@ public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {
 
     /**
      * 收到音视频关闭指令
-     *
-     * @param type   类型
+     *  @param type   类型
      * @param enable 可操作
+     * @param mState
      */
-    public void onOtherDis(int type, boolean enable) {
+    public void onOtherDis(int type, boolean enable, int mState) {
 
     }
 }

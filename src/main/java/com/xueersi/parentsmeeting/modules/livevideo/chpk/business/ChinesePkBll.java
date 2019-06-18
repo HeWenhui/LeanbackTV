@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -105,6 +106,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     private boolean isWin;
 
     private boolean newCourseWare;
+    private EnglishH5Entity englishH5Entity;
     private TeamPkStateLayout pkStateRootView;
     /**
      * 直播间内答题 H5 答题结果页面关闭事件队列
@@ -778,7 +780,8 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
         logger.e("=======>:onRoomH5CloseEvent:" + event.getId() + ":" + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
-        newCourseWare = event.isScienceNewCourseWare();
+        englishH5Entity = event.getEnglishH5Entity();
+        newCourseWare = englishH5Entity != null && englishH5Entity.getNewEnglishH5();
         if (event.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
             savedTestPlan = event.getId();
             savedTestId = "";
@@ -1259,9 +1262,9 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                     getNewTeamId("teamCHEnergyNumAndContributionmulStar"),
                     roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(),
-                    LiveVideoConfig.tests,
-                    LiveVideoConfig.ctId,
-                    LiveVideoConfig.pSrc,
+                    englishH5Entity.getReleasedPageInfos(),
+                    englishH5Entity.getClassTestId(),
+                    englishH5Entity.getPackageSource(),
                     roomInitInfo.getUseSkin(),
                     callback);
 

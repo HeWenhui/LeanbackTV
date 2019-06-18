@@ -298,8 +298,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         llPrimaryTeamContent.removeView(child);
                         llPrimaryTeamContent.addView(convertView, index, lp);
                         courseGroupItemHashMap.put("" + teamMate.getId(), basePrimaryTeamItem);
-                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, videoStatus);
-                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus);
+                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, videoStatus, mState);
+                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus, mState);
                         SurfaceView surfaceView = surfaceViewHashMap.remove(teamMate.getId());
                         if (surfaceView != null) {
                             workerThread.getRtcEngine().setupRemoteVideo(surfaceView, teamMate.getIdInt());
@@ -505,8 +505,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 courseGroupItemHashMap.put("empty" + i, basePrimaryTeamItem);
             } else {
                 courseGroupItemHashMap.put("" + teamMember.getId(), basePrimaryTeamItem);
-                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, videoStatus);
-                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus);
+                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, videoStatus, mState);
+                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus, mState);
             }
         }
     }
@@ -713,7 +713,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
     @Override
     public void onMessage(int type, boolean open) {
-        mLogtf.d("onMessage:type=" + type + ",open=" + open);
+        mLogtf.d("onMessage:type=" + type + ",open=" + open + ",state=" + mState);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
             if (videoStatus != open) {
                 videoStatus = open;
@@ -724,19 +724,17 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     }
                 });
                 if (open) {
-                    if (mState == LiveBasePagerState.RESUMED) {
-                        foreach(new ItemCall() {
-                            @Override
-                            public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, true);
-                            }
-                        });
-                    }
+                    foreach(new ItemCall() {
+                        @Override
+                        public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, true, mState);
+                        }
+                    });
                 } else {
                     foreach(new ItemCall() {
                         @Override
                         public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, false);
+                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, false, mState);
                         }
                     });
                 }
@@ -745,19 +743,17 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             if (audioStatus != open) {
                 audioStatus = open;
                 if (open) {
-                    if (mState == LiveBasePagerState.RESUMED) {
-                        foreach(new ItemCall() {
-                            @Override
-                            public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, true);
-                            }
-                        });
-                    }
+                    foreach(new ItemCall() {
+                        @Override
+                        public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, true, mState);
+                        }
+                    });
                 } else {
                     foreach(new ItemCall() {
                         @Override
                         public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, false);
+                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, false, mState);
                         }
                     });
                 }
@@ -767,7 +763,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
     @Override
     public void onMessage(boolean videoopen, boolean audioopen) {
-        mLogtf.d("onMessage:videoopen=" + videoopen + ",audioopen=" + audioopen);
+        mLogtf.d("onMessage:videoopen=" + videoopen + ",audioopen=" + audioopen + ",state=" + mState);
         if (videoStatus != videoopen) {
             videoStatus = videoopen;
             handler.post(new Runnable() {
@@ -777,19 +773,17 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 }
             });
             if (videoopen) {
-                if (mState == LiveBasePagerState.RESUMED) {
-                    foreach(new ItemCall() {
-                        @Override
-                        public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, true);
-                        }
-                    });
-                }
+                foreach(new ItemCall() {
+                    @Override
+                    public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, true, mState);
+                    }
+                });
             } else {
                 foreach(new ItemCall() {
                     @Override
                     public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, false);
+                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, false, mState);
                     }
                 });
             }
@@ -797,19 +791,17 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         if (audioStatus != audioopen) {
             audioStatus = audioopen;
             if (audioopen) {
-                if (mState == LiveBasePagerState.RESUMED) {
-                    foreach(new ItemCall() {
-                        @Override
-                        public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, true);
-                        }
-                    });
-                }
+                foreach(new ItemCall() {
+                    @Override
+                    public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, true, mState);
+                    }
+                });
             } else {
                 foreach(new ItemCall() {
                     @Override
                     public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
-                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, false);
+                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, false, mState);
                     }
                 });
             }
@@ -837,7 +829,10 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
                 @Override
                 public void onJoinChannel(int joinChannel) {
-
+                    PrimaryTeamMyItem basePrimaryTeamItem = (PrimaryTeamMyItem) courseGroupItemHashMap.get("" + stuid);
+                    if (basePrimaryTeamItem != null) {
+                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus, mState);
+                    }
                 }
             });
             handler.postDelayed(new Runnable() {

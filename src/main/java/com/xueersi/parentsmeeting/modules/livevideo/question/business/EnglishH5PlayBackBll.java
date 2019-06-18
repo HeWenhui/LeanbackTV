@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -27,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsSpeakEvent;
@@ -251,6 +253,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                             englishH5Entity.setPackageSource(packageSource);
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                         //语文开讲吧 出现试题不在恢复视频播放
                         if(!isChsSpeaking(englishH5Entity)){

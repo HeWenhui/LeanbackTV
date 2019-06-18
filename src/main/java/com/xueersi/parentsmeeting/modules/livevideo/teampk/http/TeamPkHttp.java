@@ -173,9 +173,9 @@ public class TeamPkHttp {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("tests", tests);
-        params.addBodyParam("ctId", ctId);
-        params.addBodyParam("pSrc", pSrc);
+        params.addBodyParam("tests", tests+"");
+        params.addBodyParam("ctId", ctId+"");
+        params.addBodyParam("pSrc", pSrc+"");
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params,
                 requestCallBack);
     }
