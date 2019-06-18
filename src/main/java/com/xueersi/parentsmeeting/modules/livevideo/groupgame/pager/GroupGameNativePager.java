@@ -229,9 +229,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         this.liveAndBackDebug = new ContextLiveAndBackDebug(context);
         preLoad = new MiddleSchoolPreLoad();
         if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type) || LiveQueConfig
-                .EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
+                .EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type) || LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING
+                .equals(detailInfo.type)) {
             singleModeAction = new HotAirBallonAction();
-        } else if ((LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type))) {
+        } else {
             singleModeAction = new CleanUpAction();
         }
         initListener();
@@ -934,11 +935,17 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     }
                 }, 1000);
             } else {
+                int startSpeechRecognizeTime = 1;
+                int turnPagetime = mAnswersList.get(pageNum).getSingleTime() + 1;
                 content = new StringBuilder(mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get
                         (pageNum).getText());
-                handler.postDelayed(startSpeechRecognizeRunnable, 1000);
-                int time = mAnswersList.get(pageNum).getSingleTime() + 1;
-                handler.postDelayed(turnPageRunnable, time * 1000);
+                if (pageNum == 0 && detailInfo.type.equals(LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING)) {
+                    //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1秒再开始倒计时和收音
+                    startSpeechRecognizeTime += mAnswersList.size();
+                    turnPagetime += mAnswersList.size();
+                }
+                handler.postDelayed(startSpeechRecognizeRunnable, startSpeechRecognizeTime * 1000);
+                handler.postDelayed(turnPageRunnable, turnPagetime * 1000);
             }
         }
 
@@ -946,21 +953,32 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         public void onLoadComplete() {
             try {
                 JSONObject resultData = new JSONObject();
+                JSONArray studentInfo = new JSONArray();
+                JSONObject student = new JSONObject();
+
                 resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
                 resultData.put("pageNum", 0);
                 resultData.put("restTime", mAnswersList.get(0).getSingleTime());
                 resultData.put("currentRight", 0);
                 resultData.put("isSingle", true);
+
+                student.put("studentNum", 2);
+                student.put("name", liveGetInfo.getStuName());
+                student.put("avatar", liveGetInfo.getHeadImgPath());
+                studentInfo.put(student);
+
+                resultData.put("studentInfo", studentInfo);
                 sendToCourseware(wvSubjectWeb, resultData, "*");
             } catch (Exception e) {
                 e.printStackTrace();
             }
             MAX_SINGLE_COUNT = mTestInfoEntity.getSingleCount();
-            if (detailInfo.type.equals(LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON)) {
-                //语音炮弹单人模式，完成次数减为1/3
-                MAX_SINGLE_COUNT = (int) Math.ceil((double) MAX_SINGLE_COUNT / 3d);
-            } else {
+
+            if (detailInfo.type.equals(LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON)) {
                 tvFireSum.setVisibility(View.GONE);
+            } else {
+                //语音炮弹、what's missing单人模式，完成次数减为1/3
+                MAX_SINGLE_COUNT = (int) Math.ceil((double) MAX_SINGLE_COUNT / 3d);
             }
         }
 
