@@ -138,8 +138,8 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void speechIsAnswered(String num, SpeechIsAnswered isAnswered) {
-            action.speechIsAnswered(num, isAnswered);
+        public void speechIsAnswered(String num, AbstractBusinessDataCallBack callBack) {
+            action.speechIsAnswered(num, callBack);
         }
 
     }

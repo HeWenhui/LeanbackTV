@@ -664,14 +664,11 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    speechEvalAction.speechIsAnswered(id, new SpeechEvalAction.SpeechIsAnswered() {
+                    speechEvalAction.speechIsAnswered(id, new AbstractBusinessDataCallBack() {
                         @Override
-                        public void isAnswer(boolean answer) {
+                        public void onDataSucess(Object... objData) {
+                            boolean answer = (boolean) objData[0];
                             StandSpeechAssAutoPager.this.haveAnswer = answer;
-//                            if (answer) {
-//                                errorSetVisible();
-//                                tvSpeectevalTip.setText("题目已作答");
-//                            }
                         }
                     });
                 }

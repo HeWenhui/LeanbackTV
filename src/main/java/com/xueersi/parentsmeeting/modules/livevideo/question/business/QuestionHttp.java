@@ -25,5 +25,5 @@ public interface QuestionHttp {
 
     void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity1, AbstractBusinessDataCallBack callBack);
 
-    void speechEval42IsAnswered(String mVSectionID, String num, SpeechEvalAction.SpeechIsAnswered isAnswered);
+    void speechEval42IsAnswered(String mVSectionID, String num, AbstractBusinessDataCallBack callBack);
 }

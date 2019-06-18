@@ -1592,8 +1592,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
     @Override
-    public void speechEval42IsAnswered(final String id, String num, final SpeechEvalAction.SpeechIsAnswered
-            isAnswered) {
+    public void speechEval42IsAnswered(final String id, String num, final AbstractBusinessDataCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mHttpManager.speechEval42IsAnswered(enstuId, id, num, new HttpCallBack(false) {
             @Override
@@ -1601,7 +1600,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                 mLogtf.i("speechEval42IsAnswered:onPmSuccess=" + jsonObject);
                 boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
-                isAnswered.isAnswer(isAnswer);
+                callBack.onDataSucess(isAnswer);
             }
 
             @Override

@@ -1813,8 +1813,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
 
     @Override
-    public void speechIsAnswered(String num, SpeechIsAnswered isAnswered) {
-        questionHttp.speechEval42IsAnswered(mVSectionID, num, isAnswered);
+    public void speechIsAnswered(String num, AbstractBusinessDataCallBack callBack) {
+        questionHttp.speechEval42IsAnswered(mVSectionID, num, callBack);
     }
 
     private void setHaveExam(boolean haveExam) {

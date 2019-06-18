@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -37,9 +38,6 @@ public interface SpeechEvalAction {
 
     void onSpeechSuccess(String num);
 
-    void speechIsAnswered(String num, SpeechIsAnswered isAnswered);
+    void speechIsAnswered(String num, AbstractBusinessDataCallBack callBack);
 
-    interface SpeechIsAnswered {
-        void isAnswer(boolean answer);
-    }
 }

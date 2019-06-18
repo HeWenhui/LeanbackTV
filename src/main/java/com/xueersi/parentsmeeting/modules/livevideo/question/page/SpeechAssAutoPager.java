@@ -33,6 +33,7 @@ import com.tal.speech.utils.SpeechUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tal.speech.utils.SpeechUtils;
 import com.umeng.analytics.MobclickAgent;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.util.FontCache;
@@ -510,9 +511,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    speechEvalAction.speechIsAnswered(id, new SpeechEvalAction.SpeechIsAnswered() {
+                    speechEvalAction.speechIsAnswered(id, new AbstractBusinessDataCallBack() {
                         @Override
-                        public void isAnswer(boolean answer) {
+                        public void onDataSucess(Object... objData) {
+                            boolean answer = (boolean) objData[0];
                             SpeechAssAutoPager.this.haveAnswer = answer;
                             if (answer) {
                                 ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);

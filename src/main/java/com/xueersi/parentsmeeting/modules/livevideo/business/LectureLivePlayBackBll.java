@@ -621,50 +621,6 @@ public class LectureLivePlayBackBll extends BaseBll {
                 });
     }
 
-    public void speechEval42IsAnswered(final String liveId, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mCourseHttpManager.speechEval42IsAnswered(enstuId, liveId, num, new
-                HttpCallBack(false) {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                        boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
-                        isAnswered.isAnswer(isAnswer);
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        logger.i( "sendSpeechEvalResult:onPmFailure=" + msg);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        logger.i( "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
-                    }
-                });
-    }
-
-    public void getAdOnLL(String liveId, final LecAdvertEntity lecAdvertEntity, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mCourseHttpManager.getAdOnLL(enstuId, liveId, lecAdvertEntity.course_id, new HttpCallBack() {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                int isLearn = jsonObject.optInt("isLearn", 0);
-                lecAdvertEntity.isLearn = isLearn;
-                if (isLearn == 0) {
-                    lecAdvertEntity.limit = jsonObject.optString("limit");
-                    lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
-                    lecAdvertEntity.saleName = jsonObject.optString("saleName");
-                    lecAdvertEntity.courseId = jsonObject.optString("courseId");
-                    lecAdvertEntity.classId = jsonObject.optString("classId");
-                }
-                callBack.onDataSucess();
-            }
-        });
-    }
-
     // 获取体验课的聊天记录
     public void getExperienceMsgs(String liveId, String classId, Long start, final ExperienceLiveVideoActivity.GetExperienceLiveMsgs
             getLiveLectureMsgs) {

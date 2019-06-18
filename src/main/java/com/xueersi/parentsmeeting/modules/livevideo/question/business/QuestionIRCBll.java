@@ -1205,7 +1205,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
 
         @Override
-        public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
+        public void speechEval42IsAnswered(String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             if (LiveVideoConfig.isNewArts) {
                 getHttpManager().speechNewArtEvaluateIsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
@@ -1216,10 +1216,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         if (detail != null) {
                             mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmSuccess=" + jsonObject);
                             boolean isAnswer = detail.optInt("isAnswer") == 1;
-                            isAnswered.isAnswer(isAnswer);
+                            callBack.onDataSucess(isAnswer);
                         } else {
                             boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
-                            isAnswered.isAnswer(isAnswer);
+                            callBack.onDataSucess(isAnswer);
                         }
                     }
 
@@ -1240,7 +1240,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                         mLogtf.i("speechEval42IsAnswered:onPmSuccess=" + jsonObject);
                         boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
-                        isAnswered.isAnswer(isAnswer);
+                        callBack.onDataSucess(isAnswer);
                     }
 
                     @Override

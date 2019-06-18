@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.content.Context;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -59,8 +60,8 @@ public class WrapSpeechEvalAction implements SpeechEvalAction {
     }
 
     @Override
-    public void speechIsAnswered(String num, SpeechIsAnswered isAnswered) {
-        speechEvalAction.speechIsAnswered(num, isAnswered);
+    public void speechIsAnswered(String num, AbstractBusinessDataCallBack callBack) {
+        speechEvalAction.speechIsAnswered(num, callBack);
     }
 
 }
