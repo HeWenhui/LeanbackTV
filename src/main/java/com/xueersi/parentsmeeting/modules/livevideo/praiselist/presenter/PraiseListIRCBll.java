@@ -376,7 +376,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             jsonObject.put("barrageType", barrageType);
             jsonObject.put("stuId", mGetInfo.getStuId());
             jsonObject.put("stuName", mGetInfo.getStuName());
-            sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
+            sendNoticeToCoun(jsonObject);
         } catch (Exception e) {
             mLogtf.e("sendLikeNum", e);
         }

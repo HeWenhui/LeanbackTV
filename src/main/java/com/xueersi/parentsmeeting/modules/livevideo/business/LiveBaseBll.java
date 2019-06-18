@@ -128,16 +128,37 @@ public class LiveBaseBll extends BaseBll {
     }
 
     /**
+     * 向主讲发送消息
+     *
+     * @param jsonObject 消息内容
+     */
+    public void sendMessageMain(JSONObject jsonObject) {
+        if (mLiveBll != null) {
+            mLiveBll.sendMessageMain(jsonObject);
+        }
+    }
+
+    /**
      * 向辅导发送消息
      *
      * @param jsonObject 消息内容
      */
     public void sendNoticeToCoun(JSONObject jsonObject) {
         if (mLiveBll != null) {
-            mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
+            mLiveBll.sendNoticeToCoun(jsonObject);
         }
     }
 
+    /**
+     * 向辅导发送消息
+     *
+     * @param jsonObject 消息内容
+     */
+    public void sendMessageCoun(JSONObject jsonObject) {
+        if (mLiveBll != null) {
+            mLiveBll.sendMessageCoun(jsonObject);
+        }
+    }
 
     public final void setVideoLayoutF(LiveVideoPoint liveVideoPoint) {
         this.liveVideoPoint = liveVideoPoint;

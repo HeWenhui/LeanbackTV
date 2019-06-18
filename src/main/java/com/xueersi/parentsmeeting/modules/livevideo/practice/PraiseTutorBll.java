@@ -220,7 +220,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             jsonObject.put("likes", likes + "");
             jsonObject.put("stuId", mGetInfo.getStuId());
             jsonObject.put("stuName", mGetInfo.getStuName());
-            sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
+            sendNoticeToCoun(jsonObject);
         } catch (Exception e) {
             mLogtf.e("sendLikeNum", e);
         }

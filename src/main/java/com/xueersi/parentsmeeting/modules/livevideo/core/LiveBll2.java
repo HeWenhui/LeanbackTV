@@ -937,6 +937,10 @@ public class LiveBll2 extends BaseBll {
         return false;
     }
 
+    public void sendMessageMain(JSONObject data) {
+        sendMessage(getMainTeacherStr(), data);
+    }
+
     /**
      * 向辅导发送消息
      *
@@ -947,6 +951,10 @@ public class LiveBll2 extends BaseBll {
             return sendNotice(getCounTeacherStr(), data);
         }
         return false;
+    }
+
+    public void sendMessageCoun(JSONObject data) {
+        sendMessage(getCounTeacherStr(), data);
     }
 
     /**

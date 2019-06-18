@@ -262,7 +262,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
             jsonObject.put("type", "" + XESCODE.ARTS_SEND_PRAISE_NUM);
             jsonObject.put("id", "" + mGetInfo.getStuId());
             jsonObject.put("num", "" + praiseNum);
-            sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
+            sendNoticeToCoun(jsonObject);
         } catch (Exception e) {
             mLogtf.e("sendArtsPraiseNum", e);
         }
