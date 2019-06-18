@@ -39,7 +39,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 
 import org.json.JSONArray;
@@ -81,84 +80,46 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private final LiveTopic mLiveTopic = new LiveTopic();
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private LogToFile mLogtf;
-    /**
-     * 主讲教师
-     */
+    /** 主讲教师 */
     private Teacher mMainTeacher;
-    /**
-     * 主讲教师名字
-     */
+    /** 主讲教师名字 */
     private String mMainTeacherStr = null;
     private String mMainTeacherStatus = "on";
-    /**
-     * 辅导教师
-     */
+    /** 辅导教师 */
     private Teacher mCounteacher;
-    /**
-     * 渠道前缀
-     */
+    /** 渠道前缀 */
     private final String CNANNEL_PREFIX = "x_";
-    /**
-     * 主讲老师前缀
-     */
+    /** 主讲老师前缀 */
     public static final String TEACHER_PREFIX = "t_";
-    /**
-     * 辅导老师前缀
-     */
+    /** 辅导老师前缀 */
     public static String COUNTTEACHER_PREFIX = "f_";
     private final String ROOM_MIDDLE = "L";
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle, mGetStudentPlayServerCancle;
-    /**
-     * 直播帧数统计
-     */
-    private LivePlayLog livePlayLog;
-    /**
-     * 学习记录提交时间间隔
-     */
+    /** 学习记录提交时间间隔 */
     private int mHbTime = 300, mHbCount = 0;
     private AtomicInteger mOpenCount = new AtomicInteger(0);
-    /**
-     * 录播课的直播
-     */
+    /** 录播课的直播 */
     public final static int LIVE_TYPE_TUTORIAL = 1;
-    /**
-     * 公开直播
-     */
+    /** 公开直播 */
     public final static int LIVE_TYPE_LECTURE = 2;
-    /**
-     * 直播课的直播
-     */
+    /** 直播课的直播 */
     public final static int LIVE_TYPE_LIVE = 3;
-    /**
-     * 用户心跳解析错误
-     */
+    /** 用户心跳解析错误 */
     private int userOnlineError = 0;
     private PlayServerEntity mServer;
     private PlayServerEntity.PlayserverEntity playserverEntity;
-    /**
-     * 网络类型
-     */
+    /** 网络类型 */
     private int netWorkType;
-    /**
-     * 调度是不是在无网络下失败
-     */
+    /** 调度是不是在无网络下失败 */
     private boolean liveGetPlayServerError = false;
-    /**
-     * 学生是不是流畅模式
-     */
+    /** 学生是不是流畅模式 */
     AtomicBoolean fluentMode = new AtomicBoolean(false);
-    /**
-     * 是不是有分组
-     */
+    /** 是不是有分组 */
     private boolean haveTeam = false;
-    /**
-     * 区分文理appid
-     */
+    /** 区分文理appid */
     String appID = UmsConstants.LIVE_APP_ID;
-    /**
-     * 直播调度
-     */
+    /** 直播调度 */
     private LiveGetPlayServer liveGetPlayServer;
     private LiveLog liveLog;
     private boolean isHalfBodyLive = false;
@@ -230,20 +191,15 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    public void setLivePlayLog(LivePlayLog livePlayLog) {
-        this.livePlayLog = livePlayLog;
-    }
 
     public boolean isHalfBodyLive() {
         return isHalfBodyLive;
     }
-
     /**
      * 设置是否是半身直播
-     *
      * @param halfBodyLive
      */
-    public void setHalfBodyLive(boolean halfBodyLive) {
+    public void setHalfBodyLive(boolean halfBodyLive){
         this.isHalfBodyLive = halfBodyLive;
     }
 
@@ -557,9 +513,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         }
     };
 
-    /**
-     * 当前状态，老师是不是在直播间
-     */
+    /** 当前状态，老师是不是在直播间 */
     public boolean isPresent() {
         return isPresent(mLiveTopic.getMode());
     }
@@ -661,10 +615,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     /**
      * 是否是 语文半身直播
-     *
      * @return
      */
-    private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo) {
+    private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo){
         return liveGetInfo != null && liveGetInfo.getPattern()
                 == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
                 && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
@@ -675,9 +628,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      * 签名
      */
     public synchronized void getStudentLiveInfo() {
-        if (isHalfBodyLive) {
+        if(isHalfBodyLive){
             getHalfBodyLiveStudentLiveInfo();
-        } else {
+        }else{
             getNorLiveStudentLiveInfo();
         }
     }
@@ -723,44 +676,41 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public synchronized void getHalfBodyLiveStudentLiveInfo() {
 
-        mHttpManager.getHalfBodyStuLiveInfo(mLiveId, mStuCouId, mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE,
-                new HttpCallBack(false) {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        String oldMode = mLiveTopic.getMode();
-                        HalfBodyLiveStudyInfo stuLiveInfo = mHttpResponseParser.parseStuHalfbodyLiveInfo(responseEntity, oldMode);
-                        if (auditClassAction != null) {
-                            auditClassAction.onGetStudyInfo(stuLiveInfo);
-                        }
+        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE,
+                new HttpCallBack(false){
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                String oldMode = mLiveTopic.getMode();
+                HalfBodyLiveStudyInfo stuLiveInfo = mHttpResponseParser.parseStuHalfbodyLiveInfo(responseEntity, oldMode);
+               if (auditClassAction != null) {
+                    auditClassAction.onGetStudyInfo(stuLiveInfo);
+                }
 
-                        String mode = stuLiveInfo.getMode();
-                        Log.e("parseLiveInfo", "getHalfBodyStuLiveInfo=====>oldMode:" + oldMode + ":" + mode);
-                        if (!oldMode.equals(mode)) {
-                            if (mVideoAction != null) {
-                                mVideoAction.onModeChange(mode, true);
-                                Log.e("parseLiveInfo", " getHalfBodyStuLiveInfo====>mVideoAction.onModeChange" + oldMode + ":" + mode);
-                            }
-                            mLiveTopic.setMode(mode);
-                            liveGetPlayServer(true);
-                        }
+                String mode = stuLiveInfo.getMode();
+                Log.e("parseLiveInfo","getHalfBodyStuLiveInfo=====>oldMode:"+oldMode+":"+mode);
+                if (!oldMode.equals(mode)) {
+                    if (mVideoAction != null) {
+                        mVideoAction.onModeChange(mode, true);
+                        Log.e("parseLiveInfo"," getHalfBodyStuLiveInfo====>mVideoAction.onModeChange"+oldMode+":"+mode);
                     }
+                    mLiveTopic.setMode(mode);
+                    liveGetPlayServer(true);
+                }
+            }
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.e( "getHalfBodyLiveStudentLiveInfo:onPmFailure:msg=" + msg, error);
+            }
 
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        logger.e("getHalfBodyLiveStudentLiveInfo:onPmFailure:msg=" + msg, error);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        logger.e("getHalfBodyLiveStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
-                    }
-                });
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.e( "getHalfBodyLiveStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
+            }
+        });
     }
 
 
-    /**
-     * 第一次调度，不判断老师状态
-     */
+    /** 第一次调度，不判断老师状态 */
     public void liveGetPlayServerFirst() {
         liveGetPlayServer = new LiveGetPlayServer((Activity) mContext, new TeacherIsPresent() {
 
@@ -781,7 +731,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         };
         liveGetPlayServer.setHttpManager(mHttpManager);
         liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
-        liveGetPlayServer.setLivePlayLog(livePlayLog);
         liveGetPlayServer.setVideoAction(mVideoAction);
         liveGetPlayServer(mLiveTopic.getMode(), false);
     }
@@ -1015,16 +964,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             isOpenSuccess = true;
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenSuccess:openTime=" + openTime);
-            streamReport(MegId.MEGID_12102, mGetInfo.getChannelname(), openTime);
         }
 
         @Override
         public void onOpenFailed(int arg1, int arg2) {
-            if (isOpenSuccess) {
-                MegId megId = MegId.MEGID_12103;
-                megId.msgid = "fail " + LivePlayLog.getErrorCodeInt(arg2) + " ";
-                streamReport(megId, mGetInfo.getChannelname(), -1);
-            }
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenFailed:openTime=" + openTime + "," + getModeTeacher()
                     + ",NetWorkState=" +
@@ -1071,9 +1014,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     }
 
-    /**
-     * 得到老师名字
-     */
+    /** 得到老师名字 */
     public String getModeTeacher() {
         String mainnick = "null";
         synchronized (mIRCcallback) {
@@ -1088,9 +1029,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    /**
-     * 得到当前模式
-     */
+    /** 得到当前模式 */
     public String getMode() {
         String mode;
         if (mLiveType == LIVE_TYPE_LIVE) {
@@ -1334,60 +1273,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    public void streamReport(MegId msgid, String channelname, long connsec) {
-        if (mServer == null || playserverEntity == null) {
-            return;
-        }
-        String url = mGetInfo.getLogServerUrl();
-        HttpRequestParams entity = new HttpRequestParams();
-        if (MegId.MEGID_12102 == msgid) {
-            if (livePlayLog != null) {
-                String cpuName = livePlayLog.getCpuName();
-                String memsize = livePlayLog.getMemsize();
-                String ua = Build.VERSION.SDK_INT + ";" + cpuName + ";" + memsize;
-                entity.addBodyParam("UA", ua);
-            }
-        }
-        entity.addBodyParam("msgid", msgid.msgid);
-        entity.addBodyParam("userid", mGetInfo.getStuId());
-        entity.addBodyParam("username", mGetInfo.getUname());
-        entity.addBodyParam("channelname", channelname);
-        entity.addBodyParam("ccode", mServer.getCcode());
-        entity.addBodyParam("pcode", mServer.getPcode());
-        entity.addBodyParam("acode", "");
-        entity.addBodyParam("icode", mServer.getIcode());
-        entity.addBodyParam("servercc", playserverEntity.getCcode());
-        entity.addBodyParam("serverpc", playserverEntity.getPcode());
-        entity.addBodyParam("serverac", playserverEntity.getAcode());
-        entity.addBodyParam("serveric", playserverEntity.getIcode());
-        entity.addBodyParam("servergroup", playserverEntity.getGroup());
-        if (StringUtils.isEmpty(playserverEntity.getIpAddress())) {
-            entity.addBodyParam("server", playserverEntity.getAddress());
-        } else {
-            entity.addBodyParam("server", playserverEntity.getIpAddress());
-        }
-        entity.addBodyParam("appname", mServer.getAppname());
-        entity.addBodyParam("reconnnum", "" + (mOpenCount.get() - 1));
-        entity.addBodyParam("connsec", "" + (connsec / 1000));
-        entity.addBodyParam("cfrom", "android");
-        entity.addBodyParam("detail", msgid.detail);
-        mHttpManager.sendGetNoBusiness(url, entity, new okhttp3.Callback() {
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                logger.i("streamReport:onFailure=", e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                logger.i("streamReport:onResponse:response=" + response.message());
-            }
-        });
-    }
-
-    /**
-     * 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址
-     */
+    /** 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址 */
     public void dns_resolve_stream(final PlayServerEntity.PlayserverEntity playserverEntity, final PlayServerEntity mServer, String channelname, final AbstractBusinessDataCallBack callBack) {
         if (StringUtils.isEmpty(playserverEntity.getIp_gslb_addr())) {
             callBack.onDataFail(3, "empty");
