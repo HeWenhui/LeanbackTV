@@ -26,7 +26,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
 
 /**

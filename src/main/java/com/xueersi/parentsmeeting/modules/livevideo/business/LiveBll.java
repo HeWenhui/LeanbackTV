@@ -57,7 +57,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEval
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallAction;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackHttp;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.json.JSONException;
@@ -121,8 +120,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     private final String ROOM_MIDDLE = "L";
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle;
-    /** 直播帧数统计 */
-    private LivePlayLog livePlayLog;
     /**
      * 学习记录提交时间间隔
      */
@@ -229,10 +226,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
-    }
-
-    public void setLivePlayLog(LivePlayLog livePlayLog) {
-        this.livePlayLog = livePlayLog;
     }
 
     /**

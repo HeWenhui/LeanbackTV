@@ -13,7 +13,6 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;

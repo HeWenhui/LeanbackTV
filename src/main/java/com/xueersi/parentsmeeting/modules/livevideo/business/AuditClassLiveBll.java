@@ -40,7 +40,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 
 import org.json.JSONArray;
@@ -98,8 +97,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private final String ROOM_MIDDLE = "L";
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle, mGetStudentPlayServerCancle;
-    /** 直播帧数统计 */
-    private LivePlayLog livePlayLog;
     /** 学习记录提交时间间隔 */
     private int mHbTime = 300, mHbCount = 0;
     private AtomicInteger mOpenCount = new AtomicInteger(0);
@@ -193,10 +190,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         if (mLiveType == LIVE_TYPE_LIVE) {// 直播
             mHttpManager.liveGetInfo(enstuId, "", mLiveId, 1, callBack);
         }
-    }
-
-    public void setLivePlayLog(LivePlayLog livePlayLog) {
-        this.livePlayLog = livePlayLog;
     }
 
     public boolean isHalfBodyLive() {
@@ -742,7 +735,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         };
         liveGetPlayServer.setHttpManager(mHttpManager);
         liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
-        liveGetPlayServer.setLivePlayLog(livePlayLog);
         liveGetPlayServer.setVideoAction(mVideoAction);
         liveGetPlayServer(mLiveTopic.getMode(), false);
     }
@@ -976,16 +968,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             isOpenSuccess = true;
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenSuccess:openTime=" + openTime);
-            streamReport(MegId.MEGID_12102, mGetInfo.getChannelname(), openTime);
         }
 
         @Override
         public void onOpenFailed(int arg1, int arg2) {
-            if (isOpenSuccess) {
-                MegId megId = MegId.MEGID_12103;
-                megId.msgid = "fail " + LivePlayLog.getErrorCodeInt(arg2) + " ";
-                streamReport(megId, mGetInfo.getChannelname(), -1);
-            }
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenFailed:openTime=" + openTime + "," + getModeTeacher()
                     + ",NetWorkState=" +
@@ -1289,57 +1275,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             this.msgid = msgid;
             this.detail = detail;
         }
-    }
-
-    public void streamReport(MegId msgid, String channelname, long connsec) {
-        if (mServer == null || playserverEntity == null) {
-            return;
-        }
-        String url = mGetInfo.getLogServerUrl();
-        HttpRequestParams entity = new HttpRequestParams();
-        if (MegId.MEGID_12102 == msgid) {
-            if (livePlayLog != null) {
-                String cpuName = livePlayLog.getCpuName();
-                String memsize = livePlayLog.getMemsize();
-                String ua = Build.VERSION.SDK_INT + ";" + cpuName + ";" + memsize;
-                entity.addBodyParam("UA", ua);
-            }
-        }
-        entity.addBodyParam("msgid", msgid.msgid);
-        entity.addBodyParam("userid", mGetInfo.getStuId());
-        entity.addBodyParam("username", mGetInfo.getUname());
-        entity.addBodyParam("channelname", channelname);
-        entity.addBodyParam("ccode", mServer.getCcode());
-        entity.addBodyParam("pcode", mServer.getPcode());
-        entity.addBodyParam("acode", "");
-        entity.addBodyParam("icode", mServer.getIcode());
-        entity.addBodyParam("servercc", playserverEntity.getCcode());
-        entity.addBodyParam("serverpc", playserverEntity.getPcode());
-        entity.addBodyParam("serverac", playserverEntity.getAcode());
-        entity.addBodyParam("serveric", playserverEntity.getIcode());
-        entity.addBodyParam("servergroup", playserverEntity.getGroup());
-        if (StringUtils.isEmpty(playserverEntity.getIpAddress())) {
-            entity.addBodyParam("server", playserverEntity.getAddress());
-        } else {
-            entity.addBodyParam("server", playserverEntity.getIpAddress());
-        }
-        entity.addBodyParam("appname", mServer.getAppname());
-        entity.addBodyParam("reconnnum", "" + (mOpenCount.get() - 1));
-        entity.addBodyParam("connsec", "" + (connsec / 1000));
-        entity.addBodyParam("cfrom", "android");
-        entity.addBodyParam("detail", msgid.detail);
-        mHttpManager.sendGetNoBusiness(url, entity, new okhttp3.Callback() {
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                logger.i("streamReport:onFailure=", e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                logger.i("streamReport:onResponse:response=" + response.message());
-            }
-        });
     }
 
     /** 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址 */

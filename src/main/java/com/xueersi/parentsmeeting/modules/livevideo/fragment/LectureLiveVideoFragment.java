@@ -146,11 +146,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
 
     @Override
     public void rePlay(boolean modechange) {
-        if (mGetInfo == null || liveVideoAction == null) {//上次初始化尚未完成
-            return;
-        }
-        liveVideoAction.rePlay(modechange);
-        mLiveVideoBll.rePlay(modechange);
+
     }
 
     /**

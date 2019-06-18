@@ -9,9 +9,4 @@ public class PSLiveVideoBll extends LiveVideoBll {
     public PSLiveVideoBll(Activity activity, LiveBll2 liveBll, int liveType) {
         super(activity, liveBll, liveType);
     }
-
-    @Override
-    public void rePlay(boolean modechange) {
-
-    }
 }

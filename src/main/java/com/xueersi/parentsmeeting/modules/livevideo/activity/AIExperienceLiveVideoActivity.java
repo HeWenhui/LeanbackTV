@@ -490,10 +490,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
     @Override
     protected void onVideoCreateEnd() {
-        if (livePlayLog != null) {
-            livePlayLog.setLive(false);
-            livePlayLog.setChannelname(mVideoEntity.getLiveId());
-        }
     }
 
     private LiveGetInfo getRoomInitData() {

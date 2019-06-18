@@ -605,7 +605,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
         teamPKBll.getTeamPkHttp().getStuChest(mIsWin ? 1 : 0, teamPKBll.getRoomInitInfo().getStudentLiveInfo()
                         .getClassId()
                 , teamPKBll.getNewTeamId("getStuChestInfo"),
-                teamPKBll.getRoomInitInfo().getStuId(), teamPKBll.getLiveBll().getLiveId(),
+                teamPKBll.getRoomInitInfo().getStuId(), teamPKBll.getLiveId(),
                 teamPKBll.isAIPartner(),
                 new HttpCallBack() {
                     @Override
