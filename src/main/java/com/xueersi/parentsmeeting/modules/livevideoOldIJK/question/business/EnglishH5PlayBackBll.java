@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -20,6 +21,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
@@ -239,6 +241,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                             englishH5Entity.setPackageSource(packageSource);
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                         englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                         showQuestion.onShow(true, videoQuestionLiveEntity);

@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -19,9 +20,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import java.util.ArrayList;
 
 public class PrimaryKuangjiaImageView extends ImageView {
-    ArrayList<OnSizeChange> onSizeChanges = new ArrayList<>();
-    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private ArrayList<OnSizeChange> onSizeChanges = new ArrayList<>();
+    private String TAG = "PrimaryKuangjiaImageView";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     private String mode = LiveTopic.MODE_CLASS;
+    private LogToFile logToFile;
 
     public PrimaryKuangjiaImageView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -100,28 +103,34 @@ public class PrimaryKuangjiaImageView extends ImageView {
         getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
+                if (logToFile == null) {
+                    logToFile = new LogToFile(getContext(), TAG);
+                }
                 getViewTreeObserver().removeOnPreDrawListener(this);
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) getLayoutParams();
 //            lp.height = bitmap.getHeight();
                 float radio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
-                float viewRadio = (float) getWidth() / (float) getHeight();
+                LiveVideoPoint point = LiveVideoPoint.getInstance();
+                float viewRadio = (float) point.screenWidth / (float) point.screenHeight;
                 int width;
                 int height;
                 if (viewRadio > radio) {
-                    height = getHeight();
-                    width = (int) ((float) getHeight() / (float) bitmap.getHeight() * (float) bitmap.getWidth());
-                    if (width != lp.width) {
+                    height = point.screenHeight;
+                    width = (int) ((float) height / (float) bitmap.getHeight() * (float) bitmap.getWidth());
+                    if (lp.width != width || lp.height != height) {
                         lp.width = width;
-                        LayoutParamsUtil.setViewLayoutParams(PrimaryKuangjiaImageView.this, lp);
-                        logger.d("setImageViewWidth:width1=" + width);
-                    }
-                } else {
-                    width = getWidth();
-                    height = (int) ((float) getWidth() / (float) bitmap.getWidth() * (float) bitmap.getHeight());
-                    if (height != lp.height) {
                         lp.height = height;
                         LayoutParamsUtil.setViewLayoutParams(PrimaryKuangjiaImageView.this, lp);
-                        logger.d("setImageViewWidth:width2=" + width);
+                        logToFile.d("setImageViewWidth:width1=" + width + ",height1=" + height);
+                    }
+                } else {
+                    width = point.screenWidth;
+                    height = (int) ((float) width / (float) bitmap.getWidth() * (float) bitmap.getHeight());
+                    if (lp.width != width || lp.height != height) {
+                        lp.width = width;
+                        lp.height = height;
+                        LayoutParamsUtil.setViewLayoutParams(PrimaryKuangjiaImageView.this, lp);
+                        logToFile.d("setImageViewWidth:width2=" + width + ",height2=" + height);
                     }
                 }
                 onSizeChange.onSizeChange(width, height);
