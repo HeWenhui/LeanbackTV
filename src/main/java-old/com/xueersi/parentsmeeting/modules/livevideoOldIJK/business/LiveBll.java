@@ -57,7 +57,6 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.Spee
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.rollcall.business.RollCallAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.speechfeedback.business.SpeechFeedBackHttp;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.json.JSONException;

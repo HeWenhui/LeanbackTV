@@ -859,16 +859,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Deprecated
     @Override
     public void rePlay(boolean modechange) {
-        mLogtf.d("rePlay:mHaveStop=" + mHaveStop);
-        if (mGetInfo == null || liveVideoAction == null) {//上次初始化尚未完成
-            return;
-        }
-        VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);
-        if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
-            return;
-        }
-        liveVideoAction.rePlay(modechange);
-        mLiveVideoBll.rePlay(modechange);
+
     }
 
     /** PSIJK使用的rePlay */

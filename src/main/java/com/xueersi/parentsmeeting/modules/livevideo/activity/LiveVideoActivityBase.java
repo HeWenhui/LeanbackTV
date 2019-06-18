@@ -61,7 +61,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.ui.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -180,8 +179,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
-    /** 直播帧数统计 */
-    LivePlayLog livePlayLog;
     /** 是否可以自动横竖屏转换 */
     protected boolean mIsAutoOrientation = true;
 
@@ -741,8 +738,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         // 设置当前是否为横屏
         setFileName(); // 设置视频显示名称
         showLongMediaController();
-        livePlayLog = new LivePlayLog(this, true);
-        livePlayLog.setvPlayer(vPlayer);
     }
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -806,9 +801,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         if (!mCreated)
             return;
         if (isInitialized()) {
-            if (livePlayLog != null) {
-                livePlayLog.onPause(0);
-            }
             if (vPlayer != null && vPlayer.isPlaying()) {
                 // 暂停播放
                 stopPlayer();
@@ -849,9 +841,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         if (isInitialized() && !vPlayer.isPlaying()) {
             // 释放播放器资源
             release();
-        }
-        if (livePlayLog != null) {
-            livePlayLog.destory();
         }
         // 注销事件
         EventBus.getDefault().unregister(this);
@@ -1324,9 +1313,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             if (wrapListener != null) {
                 wrapListener.onOpenStart();
             }
-            if (livePlayLog != null) {
-                livePlayLog.onOpenStart();
-            }
         }
 
         /** 视频预处理完毕可以随时播放了 */
@@ -1346,9 +1332,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             if (isInitialized()) {
                 vPlayer.setVolume(leftVolume, rightVolume);
             }
-            if (livePlayLog != null) {
-                livePlayLog.onOpenSuccess();
-            }
         }
 
         /** 视频打开失败 */
@@ -1358,9 +1341,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onOpenFailed(arg1, arg2);
-            }
-            if (livePlayLog != null) {
-                livePlayLog.onOpenFailed(arg1, arg2);
             }
         }
 
@@ -1376,9 +1356,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             if (wrapListener != null) {
                 wrapListener.onBufferStart();
             }
-            if (livePlayLog != null) {
-                livePlayLog.onBufferStart();
-            }
         }
 
         /** 缓冲结束 */
@@ -1393,9 +1370,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onBufferComplete();
-            }
-            if (livePlayLog != null) {
-                livePlayLog.onBufferComplete();
             }
         }
 
@@ -1415,9 +1389,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlaybackComplete();
-            }
-            if (livePlayLog != null) {
-                livePlayLog.onPlaybackComplete();
             }
         }
 
@@ -1483,9 +1454,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlayError();
-            }
-            if (livePlayLog != null) {
-                livePlayLog.onPlayError();
             }
         }
     };

@@ -61,8 +61,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
     /** 直播服务器 */
     private PlayServerEntity mServer;
     private LiveGetInfo mGetInfo;
-    /** 直播帧数统计 */
-    private LivePlayLog livePlayLog;
     private int lastIndex;
     /** 直播服务器选择 */
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
@@ -98,7 +96,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
     private long playTime = 0;
     /** live_report_play_duration 开始时间 */
     protected long reportPlayStarTime;
-    private LiveVideoReportBll liveVideoReportBll;
     /**
      * 可能是LiveFragmentBase或者
      */
@@ -111,22 +108,16 @@ public class LiveVideoBll implements VPlayerListenerReg {
         this.mLiveBll = liveBll;
         this.mLiveType = liveType;
         mLogtf = new LogToFile(activity, TAG);
-        livePlayLog = new LivePlayLog(activity, true);
-        liveVideoReportBll = new LiveVideoReportBll(activity, liveBll);
-        liveVideoReportBll.setLivePlayLog(livePlayLog);
-        mPlayStatistics.add(liveVideoReportBll.getVideoListener());
         mLogtf.clear();
         ProxUtil.getProxUtil().put(activity, VPlayerListenerReg.class, this);
     }
 
     public void setvPlayer(PlayerService vPlayer) {
         this.vPlayer = vPlayer;
-        livePlayLog.setvPlayer(vPlayer);
     }
 
     public void setHttpManager(LiveHttpManager httpManager) {
         this.mHttpManager = httpManager;
-        liveVideoReportBll.setHttpManager(httpManager);
     }
 
     public void setHttpResponseParser(LiveHttpResponseParser httpResponseParser) {
@@ -182,9 +173,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }, mLiveType, getInfo, liveTopic);
         liveGetPlayServer.setHttpManager(mHttpManager);
         liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
-        liveGetPlayServer.setLivePlayLog(livePlayLog);
         liveGetPlayServer.setVideoAction(mVideoAction);
-        liveVideoReportBll.onLiveInit(getInfo, liveTopic);
         liveGetPlayServer(liveTopic.getMode(), false);
     }
 
@@ -205,15 +194,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     public void setVideoFragment(BasePlayerFragment videoFragment) {
         this.videoFragment = videoFragment;
-        if (videoFragment instanceof LivePlayerFragment) {
-            LivePlayerFragment livePlayerFragment = (LivePlayerFragment) videoFragment;
-            livePlayerFragment.setLivePlayLog(livePlayLog);
-        }
     }
 
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         this.mServer = server;
-        liveVideoReportBll.setServer(server);
     }
 
     public void psRePlay(boolean modeChange) {
@@ -259,220 +243,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
         return videoConfigEntity;
     }
-    /**
-     * PSIJK重新播放视频,
-     * 目前仅有四种情况需要
-     * {@link com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase#onFail(int, int)}中的
-     * 调度失败 MediaErrorInfo.PSDispatchFailed
-     * 鉴权失败 MediaErrorInfo.PSServer403
-     * 第一次播放
-     * 点击重试按钮
-     * <p>
-     * 教师端切换服务器 ,走irc
-     *
-     * @param streamId
-     * @param protocol
-     */
-//    public void playPSVideo(String streamId, int protocol) {
-//        videoFragment.playPSVideo(streamId, protocol);
-//    }
-
-    /**
-     * 第一次播放，或者播放失败，重新播放
-     *
-     * @param modechange
-     */
-    public void rePlay(boolean modechange) {
-//        if (!MediaPlayer.getIsNewIJK()) {
-        if (livePlayLog != null) {
-            livePlayLog.onReplay();
-        }
-        String url;
-        String msg = "rePlay:";
-        if (mServer == null) {
-            livePlayLog.setLastPlayserverEntity(null);
-            String rtmpUrl = null;
-            String[] rtmpUrls = mGetInfo.getRtmpUrls();
-            if (rtmpUrls != null) {
-                rtmpUrl = rtmpUrls[(lastIndex++) % rtmpUrls.length];
-            }
-            if (rtmpUrl == null) {
-                rtmpUrl = mGetInfo.getRtmpUrl();
-            }
-            url = rtmpUrl + "/" + mGetInfo.getChannelname();
-            msg += "mServer=null";
-            liveVideoReportBll.setPlayserverEntity(null);
-        } else {
-            List<PlayServerEntity.PlayserverEntity> playservers = mServer.getPlayserver();
-//            for (int i = 0; i < playservers.size(); i++) {
-//                final PlayserverEntity playserverEntity = playservers.get(i);
-//                mLiveBll.dns_resolve_stream(playserverEntity, mGetInfo.getChannelname(), mServer.getAppname(), new AbstractBusinessDataCallBack() {
-//                    @Override
-//                    public void onDataSucess(Object... objData) {
-//                        String ip = (String) objData[0];
-//                        mLogtf.d("dns_resolve_stream:ip=" + ip);
-//                    }
-//
-//                    @Override
-//                    public void onDataFail(int errStatus, String failMsg) {
-//                        mLogtf.d("dns_resolve_stream:onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
-//                        super.onDataFail(errStatus, failMsg);
-//                    }
-//                });
-//            }
-            msg += "playservers=" + playservers.size();
-            PlayServerEntity.PlayserverEntity entity = null;
-            boolean useFlv = false;
-            if (lastPlayserverEntity == null) {
-                msg += ",lastPlayserverEntity=null";
-                entity = playservers.get(0);
-            } else {
-                msg += ",failPlayserverEntity=" + failPlayserverEntity.size();
-                if (!failPlayserverEntity.isEmpty()) {
-                    boolean allRtmpFail = true;
-                    boolean allFlvFail = true;
-                    List<PlayServerEntity.PlayserverEntity> flvPlayservers = new ArrayList<>();
-                    for (int i = 0; i < playservers.size(); i++) {
-                        PlayServerEntity.PlayserverEntity playserverEntity = playservers.get(i);
-                        if (!StringUtils.isEmpty(playserverEntity.getFlvpostfix())) {
-                            flvPlayservers.add(playserverEntity);
-                            if (!failFlvPlayserverEntity.contains(playserverEntity)) {
-                                allFlvFail = false;
-                            }
-                        }
-                        if (!failPlayserverEntity.contains(playserverEntity)) {
-                            allRtmpFail = false;
-                        }
-                    }
-                    if (allFlvFail) {
-                        msg += ",allFlvFail";
-                        failPlayserverEntity.clear();
-                        failFlvPlayserverEntity.clear();
-                    } else {
-                        if (allRtmpFail) {
-                            if (flvPlayservers.isEmpty()) {
-                                failPlayserverEntity.clear();
-                            } else {
-                                if (!lastPlayserverEntity.isUseFlv()) {
-                                    entity = flvPlayservers.get(0);
-                                    entity.setUseFlv(true);
-                                    useFlv = true;
-                                    msg += ",setUseFlv1";
-                                } else {
-                                    for (int i = 0; i < flvPlayservers.size(); i++) {
-                                        PlayServerEntity.PlayserverEntity playserverEntity = flvPlayservers.get(i);
-                                        if (lastPlayserverEntity.getAddress().equals(playserverEntity.getAddress())) {
-                                            if (modechange) {
-                                                entity = flvPlayservers.get(i % flvPlayservers.size());
-                                            } else {
-                                                entity = flvPlayservers.get((i + 1) % flvPlayservers.size());
-                                            }
-                                            entity.setUseFlv(true);
-                                            useFlv = true;
-                                            msg += ",setUseFlv2,modechange=" + modechange;
-                                            break;
-                                        }
-                                    }
-                                    if (entity == null) {
-                                        msg += ",entity=null1";
-                                        entity = flvPlayservers.get(0);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (entity == null) {
-                    for (int i = 0; i < playservers.size(); i++) {
-                        PlayServerEntity.PlayserverEntity playserverEntity = playservers.get(i);
-                        if (lastPlayserverEntity.equals(playserverEntity)) {
-                            if (modechange) {
-                                entity = playservers.get(i % playservers.size());
-                            } else {
-                                entity = playservers.get((i + 1) % playservers.size());
-                            }
-                            msg += ",entity=null2,modechange=" + modechange;
-                            break;
-                        }
-                    }
-                }
-                if (entity == null) {
-                    msg += ",entity=null3";
-                    entity = playservers.get(0);
-                }
-            }
-            lastPlayserverEntity = entity;
-            liveVideoReportBll.setPlayserverEntity(entity);
-            livePlayLog.setLastPlayserverEntity(entity);
-            if (useFlv) {
-                url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
-            } else {
-                if (StringUtils.isEmpty(entity.getIp_gslb_addr())) {
-                    url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                } else {
-                    final PlayServerEntity.PlayserverEntity finalEntity = entity;
-                    dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new AbstractBusinessDataCallBack() {
-                        @Override
-                        public void onDataSucess(Object... objData) {
-                            if (finalEntity != lastPlayserverEntity) {
-                                return;
-                            }
-                            String provide = (String) objData[0];
-                            String url;
-                            if ("wangsu".equals(provide)) {
-                                url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
-                                videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
-                            } else if ("ali".equals(provide)) {
-                                url = (String) objData[1];
-                                StringBuilder stringBuilder = new StringBuilder(url);
-                                addBody("Sucess", stringBuilder);
-                                url = stringBuilder + "&username=" + mGetInfo.getUname();
-                                videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
-                            } else {
-                                return;
-                            }
-                            StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
-                            stableLogHashMap.put("message", "" + url);
-                            stableLogHashMap.put("activity", activity.getClass().getSimpleName());
-                            UmsAgentManager.umsAgentDebug(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData());
-                        }
-
-                        @Override
-                        public void onDataFail(int errStatus, String failMsg) {
-                            if (finalEntity != lastPlayserverEntity) {
-                                return;
-                            }
-                            String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                            StringBuilder stringBuilder = new StringBuilder(url);
-                            addBody("Fail", stringBuilder);
-                            videoFragment.playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
-                        }
-                    });
-                    return;
-                }
-            }
-            msg += ",entity=" + entity.getIcode();
-        }
-        StringBuilder stringBuilder = new StringBuilder(url);
-        msg += addBody("rePlay", stringBuilder);
-        msg += ",url=" + stringBuilder;
-        mLogtf.d(msg);
-        videoFragment.playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
-//        } else {
-//            videoFragment.playPSVideo();
-
-//        }
-    }
 
     @Deprecated
     /** 直接指定为具体线路只去播放 */
     public void playNewVideo(int pos) {
         if (!MediaPlayer.getIsNewIJK()) {
-            String url = constructUrl(pos);
-            logger.i("加载的url = " + url);
-            if (url != null) {
-                videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
-            }
+
         } else {
             videoFragment.changePlayLive(pos, MediaPlayer.VIDEO_PROTOCOL_RTMP);
         }
@@ -509,7 +285,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     /**
      * PSIJK 自动切换线路
-     * 缓冲超时{@link #mBufferTimeOutRun}
      * <p>
      * 起播超时{@link #mOpenTimeOutRun}
      * <p>
@@ -550,114 +325,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
             tempProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
         }
         return tempProtol;
-    }
-
-    @Deprecated
-    /** 构造url */
-    private String constructUrl(int pos) {
-        String url = "";
-        String msg = "";
-        if (mServer == null) {
-            livePlayLog.setLastPlayserverEntity(null);
-            String rtmpUrl = null;
-            String[] rtmpUrls = mGetInfo.getRtmpUrls();
-            if (rtmpUrls != null) {
-                rtmpUrl = rtmpUrls[(pos) % rtmpUrls.length];
-            }
-            if (rtmpUrl == null) {
-                rtmpUrl = mGetInfo.getRtmpUrl();
-            }
-            url = rtmpUrl + "/" + mGetInfo.getChannelname();
-            msg += "mServer=null";
-            liveVideoReportBll.setPlayserverEntity(null);
-        } else {
-            List<PlayServerEntity.PlayserverEntity> playservers = mServer.getPlayserver();
-            PlayServerEntity.PlayserverEntity entity = playservers.get(pos);
-            if (StringUtils.isEmpty(entity.getIp_gslb_addr())) {
-                url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-            } else {
-                final PlayServerEntity.PlayserverEntity finalEntity = entity;
-                dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new AbstractBusinessDataCallBack() {
-                    @Override
-                    public void onDataSucess(Object... objData) {
-                        if (finalEntity != lastPlayserverEntity) {
-                            return;
-                        }
-                        String provide = (String) objData[0];
-                        String url;
-                        if ("wangsu".equals(provide)) {
-                            url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
-                            videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
-                        } else if ("ali".equals(provide)) {
-                            url = (String) objData[1];
-                            StringBuilder stringBuilder = new StringBuilder(url);
-                            addBody("Sucess", stringBuilder);
-                            url = stringBuilder + "&username=" + mGetInfo.getUname();
-                            videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
-                        } else {
-                            return;
-                        }
-                        StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
-                        stableLogHashMap.put("message", "" + url);
-                        stableLogHashMap.put("activity", activity.getClass().getSimpleName());
-                        UmsAgentManager.umsAgentDebug(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData());
-                    }
-
-                    @Override
-                    public void onDataFail(int errStatus, String failMsg) {
-                        if (finalEntity != lastPlayserverEntity) {
-                            return;
-                        }
-                        String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
-                        StringBuilder stringBuilder = new StringBuilder(url);
-                        addBody("Fail", stringBuilder);
-                        videoFragment.playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
-                    }
-                });
-                return "";
-            }
-        }
-        return url;
-    }
-
-    /**
-     * 直播地址的一些通用参数
-     *
-     * @param method
-     * @param url
-     * @return
-     */
-    protected String addBody(String method, StringBuilder url) {
-        String msg = "";
-        if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
-            if (lastPlayserverEntity != null && !StringUtils.isSpace(lastPlayserverEntity.getRtmpkey())) {
-                url.append("?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android");
-                msg += ",t1";
-            } else {
-                if (!StringUtils.isSpace(mGetInfo.getSkeyPlayT())) {
-                    url.append("?" + mGetInfo.getSkeyPlayT() + "&cfrom=android");
-                    msg += ",t2";
-                } else {
-                    url.append("?cfrom=android");
-                    msg += ",t3";
-                }
-            }
-        } else {
-            if (lastPlayserverEntity != null && !StringUtils.isSpace(lastPlayserverEntity.getRtmpkey())) {
-                url.append("?" + lastPlayserverEntity.getRtmpkey() + "&cfrom=android");
-                msg += ",f1";
-            } else {
-                if (!StringUtils.isSpace(mGetInfo.getSkeyPlayF())) {
-                    url.append("?" + mGetInfo.getSkeyPlayF() + "&cfrom=android");
-                    msg += ",f2";
-                } else {
-                    url.append("?cfrom=android");
-                    msg += ",f3";
-                }
-            }
-        }
-        logger.d("addBody:method=" + method + ",url=" + url);
-        return msg;
     }
 
     public VPlayerCallBack.VPlayerListener getPlayListener() {
@@ -786,10 +453,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 vPlayerListener.onOpenFailed(arg1, arg2);
             }
             mLogtf.d("onOpenFailed:arg2=" + arg2);
-            if (lastPlayserverEntity != null) {
-                liveVideoReportBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "fail reconnect");
-                reportPlayStarTime = System.currentTimeMillis();
-            }
         }
 
         @Override
@@ -814,7 +477,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     public void stopPlay() {
         if (isInitialized()) {
-            livePlayLog.stopPlay();
             vPlayer.releaseSurface();
             vPlayer.stop();
         }
@@ -862,22 +524,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void run() {
-            livePlayLog.onBufferTimeOut();
             if (isInitialized()) {
                 vPlayer.releaseSurface();
                 vPlayer.stop();
             }
             long openTime = System.currentTimeMillis() - openStartTime;
-            if (openTime > 40000) {
-                liveVideoReportBll.streamReport(LiveVideoReportBll.MegId.MEGID_12107, mGetInfo.getChannelname(), openTime);
-            } else {
-                liveVideoReportBll.streamReport(LiveVideoReportBll.MegId.MEGID_12137, mGetInfo.getChannelname(), openTime);
-            }
             mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
-            if (lastPlayserverEntity != null) {
-                liveVideoReportBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "buffer empty reconnect");
-                reportPlayStarTime = System.currentTimeMillis();
-            }
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 if (vPlayerListener instanceof LiveVPlayerListener) {
                     LiveVPlayerListener vPlayerListener1 = (LiveVPlayerListener) vPlayerListener;
@@ -897,20 +549,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
         mHandler.removeCallbacks(mPlayDuration);
         playTime += (System.currentTimeMillis() - lastPlayTime);
         logger.d("onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
-        livePlayLog.onPause(0);
     }
 
     /** 播放时长，7分钟统计 */
     private Runnable mPlayDuration = new Runnable() {
         @Override
         public void run() {
-            if (lastPlayserverEntity != null) {
-                lastPlayTime = System.currentTimeMillis();
-                playTime += mPlayDurTime;
-                logger.d("mPlayDuration:playTime=" + playTime / 1000);
-                liveVideoReportBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "normal");
-                reportPlayStarTime = System.currentTimeMillis();
-            }
             if (isPlay && !activity.isFinishing()) {
                 mHandler.postDelayed(this, mPlayDurTime);
             }
@@ -935,13 +579,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
                         }
                         mHandler.postDelayed(getVideoCachedDurationRun, 30000);
                         mLogtf.d("videoCachedDuration=" + videoCachedDuration);
-                        if (videoCachedDuration > 10000) {
-                            liveVideoReportBll.streamReport(LiveVideoReportBll.MegId.MEGID_12130, mGetInfo.getChannelname(), -1);
-                            if (lastPlayserverEntity != null) {
-                                liveVideoReportBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "play delay reconnect");
-                                reportPlayStarTime = System.currentTimeMillis();
-                            }
-                        }
                     }
                 });
                 //logger.i( "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
@@ -1200,7 +837,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
         if (liveGetPlayServer != null) {
             liveGetPlayServer.onDestroy();
         }
-        liveVideoReportBll.onDestory();
         mPlayStatistics.clear();
     }
 

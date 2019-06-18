@@ -41,7 +41,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.LiveGetPlayServer;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.TeacherIsPresent;
 
 import org.json.JSONArray;
