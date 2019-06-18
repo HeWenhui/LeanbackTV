@@ -930,7 +930,7 @@ public class LiveBll2 extends BaseBll {
         return result;
     }
 
-    public boolean sendNoticeMain(JSONObject data) {
+    public boolean sendNoticeToMain(JSONObject data) {
         if (getMainTeacherStr() != null) {
             return sendNotice(getMainTeacherStr(), data);
         }

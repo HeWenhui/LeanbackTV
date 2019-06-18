@@ -37,7 +37,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
@@ -903,7 +902,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 jsonObject.put("type", rankStuReconnectMessage + "");
                 jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
                 jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
-                mLiveBll.sendNoticeMain(jsonObject);
+                sendNoticeToMain(jsonObject);
             } catch (Exception e) {
                 e.printStackTrace();
             }

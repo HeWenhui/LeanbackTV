@@ -348,9 +348,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
 
             jsonObject.put("nonce", nonce);
             if ("t".equals(from)) {
-                mLiveBll.sendNoticeMain(jsonObject);
+                sendNoticeToMain(jsonObject);
             } else {
-                mLiveBll.sendNoticeToCoun(jsonObject);
+                sendNoticeToCoun(jsonObject);
             }
         } catch (Exception e) {
             // logger.e( "understand", e);
@@ -366,9 +366,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             jsonObject.put("id", mGetInfo.getStuId());
             jsonObject.put("status", "off");
             if ("t".equals(from)) {
-                mLiveBll.sendNoticeMain(jsonObject);
+                sendNoticeToMain(jsonObject);
             } else {
-                mLiveBll.sendNoticeToCoun(jsonObject);
+                sendNoticeToCoun(jsonObject);
             }
         } catch (Exception e) {
             // logger.e( "understand", e);

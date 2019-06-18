@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.annotation.UiThread;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -344,7 +343,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mLiveBll.sendNoticeMain(jsonObject);
+        sendNoticeToMain(jsonObject);
 
         getHttpManager().sendSuperSpeakersubmitSpeech(
                 mGetInfo.getId(),

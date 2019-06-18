@@ -123,7 +123,7 @@ public class LiveBaseBll extends BaseBll {
      */
     public void sendNoticeToMain(JSONObject jsonObject) {
         if (mLiveBll != null) {
-            mLiveBll.sendNoticeMain(jsonObject);
+            mLiveBll.sendNoticeToMain(jsonObject);
         }
     }
 

@@ -43,7 +43,7 @@ public class UnderstandIRCBll extends LiveBaseBll implements NoticeAction {
                                         jsonObject.put("type", "" + XESCODE.UNDERSTANDS);
                                         jsonObject.put("understand", isUnderstand);
                                         jsonObject.put("nonce", nonce);
-                                        mLiveBll.sendNoticeMain(jsonObject);
+                                        sendNoticeToMain(jsonObject);
                                         mLogtf.d("understand ok");
                                     } catch (Exception e) {
                                         // logger.e( "understand", e);
