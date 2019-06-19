@@ -24,31 +24,31 @@ public class GroupCourseCache extends NewCourseCache {
         this.newCourse = newCourse;
         mMorecacheout = new File(todayLiveCacheDir, liveId + "artschild");
     }
-
-    @Override
-    public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
-        WebResourceResponse webResourceResponse1 = super.shouldInterceptRequest(view, s);
-        if (webResourceResponse1 != null) {
-            return webResourceResponse1;
-        }
-        if (s.endsWith("ArialRoundedMTBold.ttf")) {
-            InputStream inputStream = null;
-            try {
-                String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
-                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                inputStream = AssertUtil.open("fangzhengcuyuan.ttf");
-                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", new WrapInputStream(mContext, inputStream));
-                webResourceResponse.setResponseHeaders(header);
-                logger.d("shouldInterceptRequest:Bold.ttf");
-                return webResourceResponse;
-//            return inputStream;
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.d("shouldInterceptRequest", e);
-            }
-        }
-        return null;
-    }
+//
+//    @Override
+//    public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+//        WebResourceResponse webResourceResponse1 = super.shouldInterceptRequest(view, s);
+//        if (webResourceResponse1 != null) {
+//            return webResourceResponse1;
+//        }
+//        if (s.endsWith("ArialRoundedMTBold.ttf")) {
+//            InputStream inputStream = null;
+//            try {
+//                String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
+//                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+//                inputStream = AssertUtil.open("fangzhengcuyuan.ttf");
+//                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", new WrapInputStream(mContext, inputStream));
+//                webResourceResponse.setResponseHeaders(header);
+//                logger.d("shouldInterceptRequest:Bold.ttf");
+//                return webResourceResponse;
+////            return inputStream;
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                logger.d("shouldInterceptRequest", e);
+//            }
+//        }
+//        return null;
+//    }
 
     protected File getCourseWarePagesFileName(String s, String contens, int index) {
         if (!newCourse) {
