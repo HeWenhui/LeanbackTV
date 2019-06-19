@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.xueersi.common.route.XueErSiRouter;
+
 public class IntelligentRecognitionBroadcast extends BroadcastReceiver {
     final String Init = "";
     final String launchIntent = "";
@@ -14,8 +16,7 @@ public class IntelligentRecognitionBroadcast extends BroadcastReceiver {
         if (action.equals(Init)) {
 
         } else if (action.equals(launchIntent)) {
-
+            XueErSiRouter.startModule("/dictation/Launch");
         }
-
     }
 }

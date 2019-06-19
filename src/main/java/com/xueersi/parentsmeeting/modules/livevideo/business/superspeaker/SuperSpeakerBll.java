@@ -48,22 +48,22 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
 
-//        Observable.
-//                just(AppConfig.DEBUG).
-//                delay(2, TimeUnit.SECONDS).
-//                observeOn(AndroidSchedulers.mainThread()).
-//                subscribe(new Consumer<Boolean>() {
-//                    @Override
-//                    public void accept(Boolean aBoolean) throws Exception {
-//                        if (aBoolean) {
-//                            logger.i("accept");
-//                            mGetInfo.setId(String.valueOf(454400));
-//                            courseWareId = String.valueOf(1);
-//                            srcType = String.valueOf(40);
-//                            performShowRecordCamera(10, 65);
-//                        }
-//                    }
-//                });
+        Observable.
+                just(AppConfig.DEBUG).
+                delay(2, TimeUnit.SECONDS).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            logger.i("accept");
+                            mGetInfo.setId(String.valueOf(454400));
+                            courseWareId = String.valueOf(1);
+                            srcType = String.valueOf(40);
+                            performShowRecordCamera(10, 65);
+                        }
+                    }
+                });
 //        if (AppConfig.DEBUG) {
 //                bottomContent.postDelayed(new Runnable() {
 //                    @Override

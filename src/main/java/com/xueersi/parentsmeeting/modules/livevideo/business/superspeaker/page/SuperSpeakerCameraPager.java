@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Trace;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.Group;
@@ -95,7 +96,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
 
     private SuperSpeakerCameraBackPager cameraBackPager;
     /** 是否正在录视频 */
-    private boolean isInRecord = false;
+    private boolean isInRecord = false;//
     /** 是否已经录制过视频并且录制时间时间大于1s */
     private boolean isHasRecordView = false;
     /** 试题时长 */
@@ -522,6 +523,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 doOnNext(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
+                        Trace.beginSection("release camera");
                         if (livevideo == 1) {
                             UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715003));
                         } else {
@@ -532,12 +534,14 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                         if (sfvVideo.getHolder() != null && sfvVideo.getHolder().getSurface() != null) {
                             sfvVideo.getHolder().getSurface().release();
                         }
+                        Trace.endSection();
                     }
                 }).
                 observeOn(AndroidSchedulers.mainThread()).
                 subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
+                        Trace.beginSection("camera surface invisible");
                         long invisibleTime = System.currentTimeMillis();
                         sfvVideo.setVisibility(View.INVISIBLE);
                         invisibleTime = System.currentTimeMillis() - invisibleTime;
@@ -549,6 +553,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                             logger.i(invisibleTime + "");
                         }
                         sendVideoAlbum(StorageUtils.videoUrl);
+                        Trace.endSection();
 
                     }
                 }, new Consumer<Throwable>() {
