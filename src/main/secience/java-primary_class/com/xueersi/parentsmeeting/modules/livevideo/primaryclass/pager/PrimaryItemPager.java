@@ -402,6 +402,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         workerThread.setEnableLocalAudio(audioStatus);
         workerThread.eventHandler().addEventHandler(listener);
         workerThread.start();
+        rl_livevideo_primary_team_content.setVisibility(View.VISIBLE);
+        ivPkState.setVisibility(View.GONE);
         tvPrimaryTeamName.setText(teamInfoEntity.getTeamName());
         if (!showTeamMid) {
             showTeamMid = true;
