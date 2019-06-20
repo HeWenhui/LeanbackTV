@@ -20,7 +20,7 @@ public class PrimaryClassHttp {
     private Logger logger = LiveLoggerFactory.getLogger(TAG);
     private LiveHttpManager liveHttpManager;
     private TeamPKHttpResponseParser teamPKHttpResponseParser;
-    private TeamPkTeamInfoEntity teamInfoEntity;
+    private boolean fromLocal = false;
 
     public PrimaryClassHttp(Context context, LiveHttpManager liveHttpManager) {
         this.liveHttpManager = liveHttpManager;
@@ -58,17 +58,14 @@ public class PrimaryClassHttp {
     }
 
     public void setOldTeamPkTeamInfo(ResponseEntity responseEntity) {
-        teamInfoEntity = teamPKHttpResponseParser.parseTeamInfoPrimary(responseEntity);
-        if (teamInfoEntity.getTeamInfo() != null) {
+        TeamPkTeamInfoEntity teamInfoEntity = teamPKHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+        if (teamInfoEntity != null && teamInfoEntity.getTeamInfo() != null) {
+            fromLocal = true;
             teamInfoEntity.getTeamInfo().setFromLocal(true);
         }
     }
 
     public void getMyTeamInfo(String classId, String stuId, String psuser, final AbstractBusinessDataCallBack callBack) {
-        if (teamInfoEntity != null) {
-            callBack.onDataSucess(teamInfoEntity);
-            return;
-        }
         final HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", "" + classId);
         params.addBodyParam("stuId", "" + stuId);
@@ -80,6 +77,7 @@ public class PrimaryClassHttp {
                 logger.d("getMyTeamInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
                 TeamPkTeamInfoEntity teamInfoEntity = teamPKHttpResponseParser.parseTeamInfoPrimary(responseEntity);
                 if (teamInfoEntity != null) {
+                    teamInfoEntity.getTeamInfo().setFromLocal(fromLocal);
                     callBack.onDataSucess(teamInfoEntity, responseEntity);
                 } else {
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");

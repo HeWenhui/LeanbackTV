@@ -27,6 +27,7 @@ public class LocalTeamPkTeamInfo {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            mShareDataManager.put(ShareDataConfig.LIVE_TEAMPK_INFO, "{}", ShareDataManager.SHAREDATA_USER);
             CrashReport.postCatchedException(new LiveException("LocalTeamPkTeamInfo", e));
         }
         return null;
@@ -39,7 +40,7 @@ public class LocalTeamPkTeamInfo {
             jsonObject.put("liveId", liveId);
             jsonObject.put("data", data);
             mShareDataManager.put(ShareDataConfig.LIVE_TEAMPK_INFO, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             CrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
