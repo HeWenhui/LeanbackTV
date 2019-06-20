@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.event.TeamPkTeamInfoEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.LocalTeamPkTeamInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.TeamPKHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.TeamPkHttp;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
@@ -281,7 +282,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 if (primary) {
-                    TeamPkTeamInfoEntity teamInfoEntityres = getTeamPKHttpResponseParser().parseTeamInfoPrimary(responseEntity);
+                    TeamPkTeamInfoEntity teamInfoEntityres = parseTeamInfoPrimary(responseEntity);
                     if (teamInfoEntityres == null) {
                         return;
                     }
@@ -322,10 +323,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             teamPkHttp = new TeamPkHttp(activity, mHttpManager);
         }
         return teamPkHttp;
-    }
-
-    public TeamPKHttpResponseParser getTeamPKHttpResponseParser() {
-        return getTeamPkHttp().getTeamPKHttpResponseParser();
     }
 
     public void stopTeamSelect() {
@@ -725,11 +722,12 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      */
     private void getTeamMates() {
         if (primaryClass) {
+            getTeamPkTeamInfo();
             getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            TeamPkTeamInfoEntity teamInfoEntityres = getTeamPKHttpResponseParser().parseTeamInfoPrimary(responseEntity);
+                            TeamPkTeamInfoEntity teamInfoEntityres = parseTeamInfoPrimary(responseEntity);
                             if (teamInfoEntityres == null) {
                                 return;
                             }
@@ -1217,7 +1215,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                     roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            TeamPkTeamInfoEntity teamInfoEntityres = getTeamPKHttpResponseParser().parseTeamInfoPrimary(responseEntity);
+                            TeamPkTeamInfoEntity teamInfoEntityres = parseTeamInfoPrimary(responseEntity);
                             if (teamInfoEntityres == null) {
                                 return;
                             }
@@ -1309,5 +1307,20 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         }
         mLogtf.d("getNewTeamId:primaryClass=" + primaryClass + ",method=" + method + ",teamId=" + teamId);
         return teamId;
+    }
+
+    private void getTeamPkTeamInfo() {
+        ResponseEntity responseEntity = LocalTeamPkTeamInfo.getTeamPkTeamInfo(mShareDataManager, mLiveId);
+        if (responseEntity != null) {
+            getTeamPkHttp().setOldTeamPkTeamInfo(responseEntity);
+        }
+    }
+
+    private TeamPkTeamInfoEntity parseTeamInfoPrimary(ResponseEntity responseEntity) {
+        TeamPkTeamInfoEntity teamPkTeamInfoEntity = getTeamPkHttp().getTeamPKHttpResponseParser().parseTeamInfoPrimary(responseEntity);
+        if (teamPkTeamInfoEntity != null) {
+            LocalTeamPkTeamInfo.saveTeamPkTeamInfo(mShareDataManager, responseEntity, mLiveId);
+        }
+        return teamPkTeamInfoEntity;
     }
 }

@@ -15,10 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TeamPKHttpResponseParser extends LiveHttpResponseParser {
-    String TAG = "LiveHttpResponseParser";
+    private String TAG = "LiveHttpResponseParser";
+    private boolean fromLocal = false;
 
     public TeamPKHttpResponseParser(Context mContext) {
         super(mContext);
+    }
+
+    public void setFromLocal(boolean fromLocal) {
+        this.fromLocal = fromLocal;
     }
 
     /** 解析小组战队pk可能为空 */
@@ -71,6 +76,7 @@ public class TeamPKHttpResponseParser extends LiveHttpResponseParser {
                 teamInfo.setBackGroud(teamInfoObj.getString("backGroud"));
                 teamInfo.setRoomid(data.getString("roomId"));
                 teamInfo.setToken(data.getString("token"));
+                teamInfo.setFromLocal(fromLocal);
                 try {
                     JSONArray teamMembersArray = teamInfoObj.optJSONArray("teamMembers");
                     List<TeamPkTeamInfoEntity.StudentEntity> teamMembers = new ArrayList<>();
