@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.http.PrimaryCla
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemPager;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemView;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.event.TeamPkTeamInfoEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.LocalTeamPkTeamInfo;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -143,34 +144,14 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     }
 
     private void getTeamPkTeamInfo() {
-        try {
-            String string = mShareDataManager.getString(ShareDataConfig.LIVE_TEAMPK_INFO, "{}", ShareDataManager.SHAREDATA_USER);
-            JSONObject jsonObject = new JSONObject(string);
-            if (jsonObject.has("liveId")) {
-                String templiveId = jsonObject.optString("liveId");
-                if (liveId.equals(templiveId)) {
-                    JSONObject data = jsonObject.getJSONObject("data");
-                    ResponseEntity responseEntity = new ResponseEntity();
-                    responseEntity.setJsonObject(data);
-                    getPrimaryClassHttp().setOldTeamPkTeamInfo(responseEntity);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+        ResponseEntity responseEntity = LocalTeamPkTeamInfo.getTeamPkTeamInfo(mShareDataManager, liveId);
+        if (responseEntity != null) {
+            getPrimaryClassHttp().setOldTeamPkTeamInfo(responseEntity);
         }
     }
 
     private void saveTeamPkTeamInfo(ResponseEntity responseEntity) {
-        try {
-            JSONObject data = (JSONObject) responseEntity.getJsonObject();
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("liveId", liveId);
-            jsonObject.put("data", data);
-            mShareDataManager.put(ShareDataConfig.LIVE_TEAMPK_INFO, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
-        } catch (JSONException e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
-        }
+        LocalTeamPkTeamInfo.saveTeamPkTeamInfo(mShareDataManager, responseEntity, liveId);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

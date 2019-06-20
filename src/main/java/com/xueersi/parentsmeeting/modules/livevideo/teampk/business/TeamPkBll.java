@@ -49,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.TeamPKHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultFlayPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.event.TeamPkTeamInfoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.TeamPkHttp;
@@ -492,9 +493,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     public TeamPkHttp getTeamPkHttp() {
         if (teamPkHttp == null) {
-            teamPkHttp = new TeamPkHttp(mHttpManager);
+            teamPkHttp = new TeamPkHttp(activity, mHttpManager);
         }
         return teamPkHttp;
+    }
+
+    public TeamPKHttpResponseParser getTeamPKHttpResponseParser() {
+        return getTeamPkHttp().getTeamPKHttpResponseParser();
     }
 
     /**
@@ -508,7 +513,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 if (primary) {
-                    TeamPkTeamInfoEntity teamInfoEntityres = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                    TeamPkTeamInfoEntity teamInfoEntityres = getTeamPKHttpResponseParser().parseTeamInfoPrimary(responseEntity);
                     if (teamInfoEntityres == null) {
                         return;
                     }
@@ -570,7 +575,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            TeamPkTeamInfoEntity teamInfoEntityres = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                            TeamPkTeamInfoEntity teamInfoEntityres = getTeamPKHttpResponseParser().parseTeamInfoPrimary(responseEntity);
                             if (teamInfoEntityres == null) {
                                 return;
                             }
@@ -1149,7 +1154,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            TeamPkTeamInfoEntity teamInfoEntityres = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                            TeamPkTeamInfoEntity teamInfoEntityres = getTeamPKHttpResponseParser().parseTeamInfoPrimary(responseEntity);
                             if (teamInfoEntityres == null) {
                                 return;
                             }
