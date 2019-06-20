@@ -535,6 +535,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
      * 播放完成时调用
      */
     private void playComplete() {
+        mLogtf.d("playComplete");
         if (liveVideoAction != null) {
             liveVideoAction.playComplete();
         }

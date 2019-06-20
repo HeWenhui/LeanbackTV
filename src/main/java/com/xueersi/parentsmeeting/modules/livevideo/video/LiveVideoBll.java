@@ -614,6 +614,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             });
             switch (arg2) {
                 case MediaErrorInfo.PSPlayerError: {
+                    mVideoAction.onPlayError(MediaErrorInfo.PSPlayerError,PlayErrorCode.PLAY_SERVER_CODE_101);
                     //播放器错误
                     autoChangeNextLine();
                     break;
