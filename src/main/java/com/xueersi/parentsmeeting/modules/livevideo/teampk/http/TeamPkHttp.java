@@ -1,22 +1,27 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.http;
 
+import android.content.Context;
+
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.http.PrimaryClassResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 public class TeamPkHttp {
     String TAG = "TeamPkHttp";
     Logger logger = LiveLoggerFactory.getLogger(TAG);
     LiveHttpManager liveHttpManager;
-    PrimaryClassResponseParser primaryClassResponseParser;
+    TeamPKHttpResponseParser teamPKHttpResponseParser;
 
-    public TeamPkHttp(LiveHttpManager liveHttpManager) {
+    public TeamPkHttp(Context context, LiveHttpManager liveHttpManager) {
         this.liveHttpManager = liveHttpManager;
-        primaryClassResponseParser = new PrimaryClassResponseParser();
+        teamPKHttpResponseParser = new TeamPKHttpResponseParser(context);
+    }
+
+    public TeamPKHttpResponseParser getTeamPKHttpResponseParser() {
+        return teamPKHttpResponseParser;
     }
 
     public void getMyTeamInfo(String classId, String stuId, String psuser, HttpCallBack requestCallBack) {
