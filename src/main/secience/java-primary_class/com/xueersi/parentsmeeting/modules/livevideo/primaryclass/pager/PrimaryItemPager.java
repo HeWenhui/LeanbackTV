@@ -19,6 +19,7 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AgoraUpload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -69,6 +70,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     /** 用户交互，不看他 */
     private TextView tvPrimaryTeamInterLeft;
     private CloudWorkerThreadPool workerThread;
+    private AgoraUpload agoraUpload;
+    private String fileFullPath;
     private boolean leaveChannel = true;
     private TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity;
     private HashMap<String, BasePrimaryTeamItem> courseGroupItemHashMap = new HashMap<>();
@@ -79,6 +82,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     /** 用户在线状态 */
     private HashMap<String, Boolean> userOnLineStat = new HashMap<>();
     private String mode;
+    private String liveId;
     private int stuid;
     private boolean showTeamMid = false;
     private String stuName;
@@ -101,6 +105,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         this.mContentView = mContentView;
         this.mode = mode;
         primaryClassView = ProxUtil.getProxUtil().get(mContext, PrimaryClassView.class);
+        agoraUpload = new AgoraUpload(mContext);
         initData();
         initListener();
     }
@@ -159,6 +164,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     public void onLiveInited(LiveGetInfo getInfo) {
         logger.d("onLiveInited:mode=" + getInfo.getMode() + "," + mode);
         stuName = getInfo.getStuName();
+        liveId = getInfo.getId();
         if (!getInfo.getMode().equals(mode)) {
             mode = getInfo.getMode();
             if (LiveTopic.MODE_TRANING.equals(mode)) {
@@ -240,6 +246,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     if (workerThread != null) {
                         workerThread.leaveChannel();
                         workerThread.exit();
+                        agoraUpload.upload(fileFullPath, liveId);
                     }
                 }
             }
@@ -361,9 +368,10 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         workerThread = new CloudWorkerThreadPool(mContext, teamInfoEntity.getToken());
         workerThread.setOnEngineCreate(new CloudWorkerThreadPool.OnEngineCreate() {
             @Override
-            public void onEngineCreate(RTCEngine mRtcEngine) {
+            public void onEngineCreate(RTCEngine mRtcEngine, String path) {
                 mLogtf.d("onEngineCreate:mRtcEngine=" + (mRtcEngine == null));
                 if (mRtcEngine != null) {
+                    fileFullPath = path;
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -892,6 +900,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         super.onDestroy();
         if (workerThread != null) {
             workerThread.exit();
+            agoraUpload.upload(fileFullPath, liveId);
         }
     }
 

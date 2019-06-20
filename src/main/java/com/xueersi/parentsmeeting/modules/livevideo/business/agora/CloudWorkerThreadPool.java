@@ -5,8 +5,10 @@ import android.support.annotation.NonNull;
 import android.view.SurfaceView;
 
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -171,7 +173,7 @@ public class CloudWorkerThreadPool {
             int init = mRtcEngine.initWithToken(token);
             if (init != 0) {
                 mRtcEngine = null;
-                onEngineCreate.onEngineCreate(null);
+                onEngineCreate.onEngineCreate(null, null);
                 return null;
             }
             mRtcEngine.enableVideo();
@@ -187,9 +189,12 @@ public class CloudWorkerThreadPool {
 //                logger.d("ensureRtcEngineReadyLock", e);
 //            }
 //            mRtcEngine.disableVideo();
+            File dir = LiveCacheFile.geCacheFile(mContext, "agora");
+            String fileFullPath = new File(dir, System.currentTimeMillis() + ".txt").getPath();
             if (onEngineCreate != null) {
-                onEngineCreate.onEngineCreate(mRtcEngine);
+                onEngineCreate.onEngineCreate(mRtcEngine, fileFullPath);
             }
+            mRtcEngine.setRtcEngineLog(fileFullPath, RTCEngine.RTCEngineLogLevel.RTCENGINE_LOG_FILTER_INFO);
 //            if (onLastmileQuality != null) {
 //                mEngineEventHandler.setOnLastmileQuality(new MyEngineEventHandler.OnLastmileQuality() {
 //                    @Override
@@ -303,7 +308,7 @@ public class CloudWorkerThreadPool {
                     ensureRtcEngineReadyLock();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    onEngineCreate.onEngineCreate(null);
+                    onEngineCreate.onEngineCreate(null, null);
                 }
             }
         }));
@@ -314,7 +319,7 @@ public class CloudWorkerThreadPool {
     }
 
     public interface OnEngineCreate {
-        void onEngineCreate(RTCEngine mRtcEngine);
+        void onEngineCreate(RTCEngine mRtcEngine, String fileFullPath);
     }
 
     public void enableLastmileTest(MyEngineEventHandler.OnLastmileQuality onLastmileQuality) {
