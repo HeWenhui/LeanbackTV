@@ -7,9 +7,12 @@ import android.widget.RelativeLayout;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -39,7 +42,8 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     PrimaryClassHttp primaryClassHttp;
     PrimaryItemView primaryItemView;
     TeamPkTeamInfoEntity teamPkTeamInfoEntity;
-    String classId;
+    private String classId;
+    private String liveId;
 
     public PrimaryClassIrcBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -48,11 +52,13 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     @Override
     public void onLiveInited(final LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+        liveId = getInfo.getId();
         classId = getInfo.getStudentLiveInfo().getClassId();
         permissionCheck();
 //        getMyTeamInfo();
         LiveEventBus.getDefault(mContext).register(this);
         primaryItemView.onLiveInited(getInfo);
+        getTeamPkTeamInfo();
     }
 
     private void permissionCheck() {
@@ -94,9 +100,15 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                         CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                     teamPkTeamInfoEntity = (TeamPkTeamInfoEntity) objData[0];
+                    if (objData.length > 1) {
+                        saveTeamPkTeamInfo((ResponseEntity) objData[1]);
+                    }
                     return;
                 }
                 teamPkTeamInfoEntity = (TeamPkTeamInfoEntity) objData[0];
+                if (objData.length > 1) {
+                    saveTeamPkTeamInfo((ResponseEntity) objData[1]);
+                }
                 if (primaryItemView != null) {
                     primaryItemView.onTeam(mGetInfo.getStuId(), teamPkTeamInfoEntity.getTeamInfo());
                 }
@@ -120,11 +132,44 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                 CrashReport.postCatchedException(new LiveException(TAG, e));
             }
             teamPkTeamInfoEntity = teamPkTeamInfoEntity2;
+            saveTeamPkTeamInfo(event.getResponseEntity());
             return;
         }
         teamPkTeamInfoEntity = event.getTeamInfoEntity();
+        saveTeamPkTeamInfo(event.getResponseEntity());
         if (primaryItemView != null) {
             primaryItemView.onTeam(mGetInfo.getStuId(), teamPkTeamInfoEntity.getTeamInfo());
+        }
+    }
+
+    private void getTeamPkTeamInfo() {
+        try {
+            String string = mShareDataManager.getString(ShareDataConfig.LIVE_TEAMPK_INFO, "{}", ShareDataManager.SHAREDATA_USER);
+            JSONObject jsonObject = new JSONObject(string);
+            if (jsonObject.has("liveId")) {
+                String templiveId = jsonObject.optString("liveId");
+                if (liveId.equals(templiveId)) {
+                    JSONObject data = jsonObject.getJSONObject("data");
+                    ResponseEntity responseEntity = new ResponseEntity();
+                    responseEntity.setJsonObject(data);
+                    getPrimaryClassHttp().setOldTeamPkTeamInfo(responseEntity);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+    }
+
+    private void saveTeamPkTeamInfo(ResponseEntity responseEntity) {
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("liveId", liveId);
+            jsonObject.put("data", data);
+            mShareDataManager.put(ShareDataConfig.LIVE_TEAMPK_INFO, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
+        } catch (JSONException e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 

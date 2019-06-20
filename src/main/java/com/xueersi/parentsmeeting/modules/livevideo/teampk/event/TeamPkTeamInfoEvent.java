@@ -1,11 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.event;
 
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 
 public class TeamPkTeamInfoEvent {
     private TeamPkTeamInfoEntity teamInfoEntity;
-
-    public TeamPkTeamInfoEvent(TeamPkTeamInfoEntity teamInfoEntity) {
+    private ResponseEntity responseEntity;
+    public TeamPkTeamInfoEvent(TeamPkTeamInfoEntity teamInfoEntity, ResponseEntity responseEntity) {
         this.teamInfoEntity = teamInfoEntity;
     }
 
@@ -13,4 +14,7 @@ public class TeamPkTeamInfoEvent {
         return teamInfoEntity;
     }
 
+    public ResponseEntity getResponseEntity() {
+        return responseEntity;
+    }
 }

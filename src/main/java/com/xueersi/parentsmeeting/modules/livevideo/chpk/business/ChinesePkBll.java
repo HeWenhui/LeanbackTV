@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.chpk.business;
 
 import android.app.Activity;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -294,7 +293,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 }
                 prepareSelcting = false;
                 if (primary) {
-                    LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
+                    LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity, responseEntity));
                     logger.d("getTeamInfo:runnables=" + runnables.size());
                     while (!runnables.isEmpty()) {
                         Runnable runnable = runnables.remove(0);
@@ -737,7 +736,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                             } else {
                                 logger.d("getTeamMates:mTeamMates=null");
                             }
-                            LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
+                            LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity, responseEntity));
                             logger.d("getMyTeamInfo:runnables=" + runnables.size());
                             while (!runnables.isEmpty()) {
                                 Runnable runnable = runnables.remove(0);

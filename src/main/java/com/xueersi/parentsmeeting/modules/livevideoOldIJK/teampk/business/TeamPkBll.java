@@ -30,7 +30,6 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
@@ -524,7 +523,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     showTeamSelectScene(primary);
                 }
                 if (primary) {
-                    LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
+                    LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity, responseEntity));
                     logger.d("getTeamInfo:runnables=" + runnables.size());
                     while (!runnables.isEmpty()) {
                         Runnable runnable = runnables.remove(0);
@@ -1164,7 +1163,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                             } else {
                                 logger.d("getTeamMates:mTeamMates=null");
                             }
-                            LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
+                            LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity, responseEntity));
                             logger.d("getMyTeamInfo:runnables=" + runnables.size());
                             while (!runnables.isEmpty()) {
                                 Runnable runnable = runnables.remove(0);

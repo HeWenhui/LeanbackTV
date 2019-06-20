@@ -20,6 +20,7 @@ public class PrimaryClassHttp {
     LiveHttpManager liveHttpManager;
     PrimaryClassResponseParser primaryClassResponseParser;
     LiveHttpResponseParser liveHttpResponseParser;
+    TeamPkTeamInfoEntity teamInfoEntity;
 
     public PrimaryClassHttp(Context context, LiveHttpManager liveHttpManager) {
         this.liveHttpManager = liveHttpManager;
@@ -57,7 +58,18 @@ public class PrimaryClassHttp {
         });
     }
 
+    public void setOldTeamPkTeamInfo(ResponseEntity responseEntity) {
+        teamInfoEntity = liveHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+        if (teamInfoEntity.getTeamInfo() != null) {
+            teamInfoEntity.getTeamInfo().setFromLocal(true);
+        }
+    }
+
     public void getMyTeamInfo(String classId, String stuId, String psuser, final AbstractBusinessDataCallBack callBack) {
+        if (teamInfoEntity != null) {
+            callBack.onDataSucess(teamInfoEntity);
+            return;
+        }
         final HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", "" + classId);
         params.addBodyParam("stuId", "" + stuId);
@@ -69,7 +81,7 @@ public class PrimaryClassHttp {
                 logger.d("getMyTeamInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
                 TeamPkTeamInfoEntity teamInfoEntity = liveHttpResponseParser.parseTeamInfoPrimary(responseEntity);
                 if (teamInfoEntity != null) {
-                    callBack.onDataSucess(teamInfoEntity);
+                    callBack.onDataSucess(teamInfoEntity, responseEntity);
                 } else {
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");
                 }

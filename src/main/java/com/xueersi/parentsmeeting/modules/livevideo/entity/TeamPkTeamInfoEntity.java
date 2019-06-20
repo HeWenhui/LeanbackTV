@@ -78,6 +78,7 @@ public class TeamPkTeamInfoEntity {
     }
 
     public static class TeamInfoEntity {
+        boolean fromLocal = false;
         String teamName;
         String teamMateName;
         String slogon;
@@ -87,6 +88,14 @@ public class TeamPkTeamInfoEntity {
         String roomid;
         String token;
         List<TeamMate> result = new ArrayList<>();
+
+        public boolean isFromLocal() {
+            return fromLocal;
+        }
+
+        public void setFromLocal(boolean fromLocal) {
+            this.fromLocal = fromLocal;
+        }
 
         public String getTeamName() {
             return teamName;

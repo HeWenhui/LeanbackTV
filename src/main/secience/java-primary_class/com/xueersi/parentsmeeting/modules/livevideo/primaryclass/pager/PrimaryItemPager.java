@@ -405,15 +405,17 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         tvPrimaryTeamName.setText(teamInfoEntity.getTeamName());
         if (!showTeamMid) {
             showTeamMid = true;
-            tvPrimaryTeamNameMid.setText("欢迎加入 “" + teamInfoEntity.getTeamName() + "”");
-            tvPrimaryTeamNameMid.setVisibility(View.VISIBLE);
-            ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(ivPrimaryTeamIcon);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    tvPrimaryTeamNameMid.setVisibility(View.GONE);
-                }
-            }, 2000);
+            if (!teamInfoEntity.isFromLocal()) {
+                tvPrimaryTeamNameMid.setText("欢迎加入 “" + teamInfoEntity.getTeamName() + "”");
+                tvPrimaryTeamNameMid.setVisibility(View.VISIBLE);
+                ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(ivPrimaryTeamIcon);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvPrimaryTeamNameMid.setVisibility(View.GONE);
+                    }
+                }, 2000);
+            }
         }
     }
 
