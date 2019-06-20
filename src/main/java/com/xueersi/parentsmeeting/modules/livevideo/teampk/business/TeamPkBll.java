@@ -520,7 +520,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     showTeamSelectScene(primary);
                 }
                 if (primary) {
-                    LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
+                    LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity, responseEntity));
                     logger.d("getTeamInfo:runnables=" + runnables.size());
                     while (!runnables.isEmpty()) {
                         Runnable runnable = runnables.remove(0);
@@ -1160,7 +1160,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                             } else {
                                 logger.d("getTeamMates:mTeamMates=null");
                             }
-                            LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
+                            LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity, responseEntity));
                             logger.d("getMyTeamInfo:runnables=" + runnables.size());
                             while (!runnables.isEmpty()) {
                                 Runnable runnable = runnables.remove(0);
