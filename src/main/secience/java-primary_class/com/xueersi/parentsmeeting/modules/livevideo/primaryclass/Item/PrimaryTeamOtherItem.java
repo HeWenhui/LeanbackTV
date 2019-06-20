@@ -20,6 +20,8 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     private boolean haveAudio = false;
     /** 麦克风故障 */
     private boolean noMic = false;
+    /** 麦克风故障调用方法 */
+    private String noMicMethod = "";
     private int state;
 
     public PrimaryTeamOtherItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
@@ -174,6 +176,8 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     }
                     //没有音频，切老师打开音频
                     if (!haveAudio && audioStatus) {
+                        handler.removeCallbacks(noMicRun);
+                        noMicMethod = "didOfflineOfUid";
                         handler.postDelayed(noMicRun, noMicDelayed);
                     }
                 } else {
@@ -210,6 +214,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         @Override
         public void run() {
             noMic = true;
+            mLogtf.d("noMicRun:uid=" + uid + ",noMicMethod=" + noMicMethod);
             voiceImageView.setVisibility(View.GONE);
             iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_bad_normal);
         }
@@ -329,13 +334,14 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                         }
                     }
                 });
+                if (enable && join && !haveAudio) {
+                    handler.removeCallbacks(noMicRun);
+                    noMicMethod = "onOtherDis";
+                    handler.postDelayed(noMicRun, noMicDelayed);
+                }
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (enable && join && !haveAudio) {
-                            handler.removeCallbacks(noMicRun);
-                            handler.postDelayed(noMicRun, noMicDelayed);
-                        }
                         RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
                         if (mRtcEngine != null) {
                             mRtcEngine.enableRemoteAudio(uid, !enable);
