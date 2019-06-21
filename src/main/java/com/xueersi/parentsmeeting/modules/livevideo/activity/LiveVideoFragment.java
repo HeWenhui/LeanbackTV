@@ -87,6 +87,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.TripleScreenBasePlaye
 import com.xueersi.parentsmeeting.modules.livevideo.worddictation.business.WordDictationIRCBll;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -234,7 +235,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      */
     protected void addBusiness(Activity activity) {
         //是文科
-        BllConfigEntity[] bllConfigEntities;
+        ArrayList<BllConfigEntity> bllConfigEntities;
         if (isArts == 1) {
             bllConfigEntities = AllBllConfig.getLiveBusinessArts();
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
@@ -260,7 +261,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             videoChatIRCBll.setLiveFragmentBase(this);
             mLiveBll.addBusinessBll(videoChatIRCBll);
         } else if (isArts == 2) {
-            bllConfigEntities = AllBllConfig.live_business_cn;
+            bllConfigEntities = AllBllConfig.getLiveBusinessCn();
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
@@ -353,9 +354,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             initSwitchFlowListener();
         }
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
-        for (int i = 0; i < bllConfigEntities.length; i++) {
+        for (int i = 0; i < bllConfigEntities.size(); i++) {
             try {
-                BllConfigEntity bllConfigEntity = bllConfigEntities[i];
+                BllConfigEntity bllConfigEntity = bllConfigEntities.get(i);
                 String className = bllConfigEntity.className;
                 Class<? extends LiveBaseBll> clazz = (Class<? extends LiveBaseBll>) Class.forName(className);
                 Constructor<? extends LiveBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBll2.class});
