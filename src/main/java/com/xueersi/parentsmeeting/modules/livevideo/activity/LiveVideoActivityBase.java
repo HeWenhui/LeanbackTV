@@ -361,7 +361,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                                 put("userId", userId).
                                                 put("videoPath", videoPath).
                                                 put("protocol", String.valueOf(protocol)).
-                                                put("isPlayerCreated", String.valueOf(isPlayerCreated));
+                                                put("isPlayerCreated", String.valueOf(isPlayerCreated)).
+                                                put("initPlayer", String.valueOf(vPlayer.checkNotNull()));
                                         UmsAgentManager.umsAgentDebug(LiveVideoActivityBase.this, LiveLogUtils.DISPATCH_REQEUSTING, map.getData());
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                         e.printStackTrace();

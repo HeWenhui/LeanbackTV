@@ -49,6 +49,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 //import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
@@ -391,6 +393,13 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         vPlayer.changeLine(changeLinePos, protocol);
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        Map<String, String> map = new HashMap<>();
+                                        map.put("changeLinePos", changeLinePos + "");
+                                        map.put("protocol", protocol + "");
+                                        map.put(LiveLogUtils.CHANGE_LINE_EXCEPTION, e.getMessage());
+                                        if (getActivity() != null) {
+                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.DISPATCH_REQEUSTING, map);
+                                        }
                                     }
                                     isChangeLine = false;
                                 } else {
@@ -412,6 +421,16 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         }
                                     } catch (IOException e) {
                                         vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
+                                        StableLogHashMap map = new StableLogHashMap();
+                                        map.put("userName", userName).
+                                                put("userId", userId).
+                                                put("streamId", streamId).
+                                                put("protocol", String.valueOf(protocol)).
+                                                put("isPlayerCreated", String.valueOf(isPlayerCreated)).
+                                                put("initPlayer", String.valueOf(vPlayer.checkNotNull()));
+                                        if (getActivity() != null) {
+                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.PLAY_EXCEPTION, map.getData());
+                                        }
                                         e.printStackTrace();
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -423,9 +442,10 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                                     put("userId", userId).
                                                     put("streamId", streamId).
                                                     put("protocol", String.valueOf(protocol)).
-                                                    put("isPlayerCreated", String.valueOf(isPlayerCreated));
+                                                    put("isPlayerCreated", String.valueOf(isPlayerCreated)).
+                                                    put("initPlayer", String.valueOf(vPlayer.checkNotNull()));
                                             if (getActivity() != null) {
-                                                UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.DISPATCH_REQEUSTING, map.getData());
+                                                UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.PLAY_EXCEPTION, map.getData());
                                             }
                                         }
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
