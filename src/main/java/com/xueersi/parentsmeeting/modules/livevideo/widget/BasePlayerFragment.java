@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIn
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -383,7 +384,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     logger.i("setDisplay  ");
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
-                                vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                boolean isPlayerCreated = vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
                                 setVideoConfig();
                                 if (isChangeLine) {
                                     try {
@@ -393,7 +394,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     }
                                     isChangeLine = false;
                                 } else {
-                                    String userName, userId;
+                                    String userName = null, userId = null;
                                     try {
                                         userName = AppBll.getInstance().getAppInfoEntity().getChildName();
                                         userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
@@ -416,6 +417,16 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         e.printStackTrace();
                                         if (videoConfigEntity != null) {
                                             recordFailData(videoConfigEntity.toJSONObject().toString());
+                                        } else {
+                                            StableLogHashMap map = new StableLogHashMap();
+                                            map.put("userName", userName).
+                                                    put("userId", userId).
+                                                    put("streamId", streamId).
+                                                    put("protocol", String.valueOf(protocol)).
+                                                    put("isPlayerCreated", String.valueOf(isPlayerCreated));
+                                            if (getActivity() != null) {
+                                                UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.DISPATCH_REQEUSTING, map.getData());
+                                            }
                                         }
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }

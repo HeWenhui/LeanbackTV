@@ -336,7 +336,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                 if (videoView != null) {
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
-                                vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, 0, vPlayerServiceListener, mIsHWCodec);
+                                boolean isPlayerCreated = vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, 0, vPlayerServiceListener, mIsHWCodec);
                                 if (isChangeLine) {
                                     try {
                                         vPlayer.changeLine(changeLinePos, protocol);
@@ -360,7 +360,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                         map.put("userName", userName).
                                                 put("userId", userId).
                                                 put("videoPath", videoPath).
-                                                put("protocol", String.valueOf(protocol));
+                                                put("protocol", String.valueOf(protocol)).
+                                                put("isPlayerCreated", String.valueOf(isPlayerCreated));
                                         UmsAgentManager.umsAgentDebug(LiveVideoActivityBase.this, LiveLogUtils.DISPATCH_REQEUSTING, map.getData());
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                         e.printStackTrace();
