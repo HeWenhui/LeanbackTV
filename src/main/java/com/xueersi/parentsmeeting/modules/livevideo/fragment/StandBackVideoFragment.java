@@ -32,9 +32,15 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
     {
         mLayoutVideo = R.layout.fram_live_stand_back_video;
     }
+    boolean isInit = false;
 
     @Override
     protected void initBll() {
+        if (isInit) {
+            StandBackVideoFragment.super.initBll();
+            return;
+        }
+        isInit = true;
         liveStandFrameAnim = new LiveStandFrameAnim(activity);
         liveStandFrameAnim.check(new AbstractBusinessDataCallBack() {
             @Override
@@ -83,7 +89,7 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
     protected void userHeadVisible() {
         String LAYOUT_SUMMER_SIZE =  UmsAgentTrayPreference.getInstance().getString(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE,"0");
         //直播
-        if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE &&  ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)) {
+        if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE &&  ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE) && !isTutorVideo) {
             // 英语
             if (liveBackBll.getIsArts() == 1 && liveBackBll.getPattern() == 2 && llUserHeadImage!=null) {
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)llUserHeadImage.getLayoutParams();
