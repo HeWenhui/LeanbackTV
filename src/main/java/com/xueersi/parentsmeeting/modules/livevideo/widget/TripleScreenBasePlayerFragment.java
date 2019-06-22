@@ -199,7 +199,7 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                         vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
                                         StableLogHashMap map = new StableLogHashMap();
                                         map.put("userName", userName).
-                                                put("userId", userId).
+                                                put("userId", userId + "").
                                                 put("streamId", streamId).
                                                 put("protocol", String.valueOf(protocol)).
                                                 put("isPlayerCreated", String.valueOf(isPlayerCreated)).

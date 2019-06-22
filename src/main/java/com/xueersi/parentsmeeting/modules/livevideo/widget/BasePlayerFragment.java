@@ -411,7 +411,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         userName = AppBll.getInstance().getAppInfoEntity().getChildName();
                                         userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                                         if (TextUtils.isEmpty(userName)) {
-                                            userName = "lyq123";
+                                            userName = "";
                                         }
                                         if (videoConfigEntity != null) {
                                             videoConfigEntity.setUserId(userId);
@@ -429,7 +429,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
                                         StableLogHashMap map = new StableLogHashMap();
                                         map.put("userName", userName).
-                                                put("userId", userId).
+                                                put("userId", userId + "").
                                                 put("streamId", streamId).
                                                 put("protocol", String.valueOf(protocol)).
                                                 put("isPlayerCreated", String.valueOf(isPlayerCreated)).
