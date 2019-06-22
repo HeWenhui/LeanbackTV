@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
@@ -264,7 +265,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     // region 播放业务Handler
     private AtomicBoolean mOpened = new AtomicBoolean(Boolean.FALSE); // 线程安全的Boolean值
     /** 同步锁 */
-    private Object mOpenLock = new Object();
+    private final Object mOpenLock = new Object();
     /** 准备打开播放文件 */
     private static final int OPEN_FILE = 0;
     /** 初始化完播放器准备加载播放文件 */
@@ -296,7 +297,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     String video;
     float leftVolume = VP.DEFAULT_STEREO_VOLUME, rightVolume = VP.DEFAULT_STEREO_VOLUME;
 
-    private Handler vPlayerHandler = new Handler() {
+    private Handler vPlayerHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
