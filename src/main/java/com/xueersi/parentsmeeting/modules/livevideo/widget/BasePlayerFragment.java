@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
@@ -396,9 +397,10 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         Map<String, String> map = new HashMap<>();
                                         map.put("changeLinePos", changeLinePos + "");
                                         map.put("protocol", protocol + "");
-                                        map.put(LiveLogUtils.CHANGE_LINE_EXCEPTION, e.getMessage());
+                                        map.put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
+                                        map.put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.CHANGE_LINE_EXCEPTION);
                                         if (getActivity() != null) {
-                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.DISPATCH_REQEUSTING, map);
+                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map);
                                         }
                                     }
                                     isChangeLine = false;
@@ -427,15 +429,17 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                                 put("streamId", streamId).
                                                 put("protocol", String.valueOf(protocol)).
                                                 put("isPlayerCreated", String.valueOf(isPlayerCreated)).
-                                                put("initPlayer", String.valueOf(vPlayer.checkNotNull()));
+                                                put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
+                                                put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
+                                                put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
                                         if (getActivity() != null) {
-                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.PLAY_EXCEPTION, map.getData());
+                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
                                         }
                                         e.printStackTrace();
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                         if (videoConfigEntity != null) {
-                                            recordFailData(videoConfigEntity.toJSONObject().toString());
+                                            recordFailData(videoConfigEntity.addPlayException().toString());
                                         } else {
                                             StableLogHashMap map = new StableLogHashMap();
                                             map.put("userName", userName).
@@ -443,9 +447,11 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                                     put("streamId", streamId).
                                                     put("protocol", String.valueOf(protocol)).
                                                     put("isPlayerCreated", String.valueOf(isPlayerCreated)).
-                                                    put("initPlayer", String.valueOf(vPlayer.checkNotNull()));
+                                                    put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
+                                                    put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
+                                                    put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
                                             if (getActivity() != null) {
-                                                UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.PLAY_EXCEPTION, map.getData());
+                                                UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
                                             }
                                         }
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
@@ -561,7 +567,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     /** 记录播放失败日志日志 */
     protected void recordFailData(String jsonString) {
         if (getActivity() != null) {
-            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.PLAY_EXCEPTION, jsonString);
+            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, jsonString);
         }
     }
 
