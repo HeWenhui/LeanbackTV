@@ -491,12 +491,35 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     public final static int PLAY_TUTORIAL = 2;
 
     /**
+     * 切换到下一条线路(回放和体验课专用,目前只支持mp4)
+     */
+    protected void changeNextLine() {
+        this.nowPos++;
+//        if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
+//            //初始化
+//            nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+//            mLiveBll.liveGetPlayServer(false);
+//            return;
+//        }
+        //当前线路小于总线路数
+        if (this.nowPos < totalRouteNum) {
+            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+
+        } else {
+            this.nowPos = 0;
+            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+//            nowProtol = changeProtol(nowProtol);
+//            mLiveBll.liveGetPlayServer(false);
+        }
+    }
+
+    /**
      * PSIJK切换线路使用
      *
      * @param pos
      * @param protocol
      */
-    public void changePlayLive(int pos, int protocol) {
+    protected void changePlayLive(int pos, int protocol) {
         isChangeLine = true;
         this.changeLinePos = pos;
         this.protocol = protocol;
@@ -1289,20 +1312,20 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     // endregion
 
+    /** 当前处于第几条线路 */
+    private int nowPos = 0;
+    /** 一共有几条线路 */
+    private int totalRouteNum = 0;
     // region 播放器核心服务监听
-
     /** 播放器核心服务监听 */
     protected VPlayerListener vPlayerServiceListener = new VPlayerListener() {
 
         @Override
         public void getPSServerList(int cur, int total, boolean modeChange) {
+            nowPos = cur;
+            totalRouteNum = total;
 
         }
-
-//        @Override
-//        public void getPServerListFail() {
-//
-//        }
 
         /** 硬解码失败 */
         @Override
