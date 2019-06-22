@@ -96,6 +96,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                     try {
                         List<TeamMate> result1 = teamPkTeamInfoEntity.getTeamInfo().getResult();
                         List<TeamMate> result2 = teamPkTeamInfoEntity2.getTeamInfo().getResult();
+                        mLogtf.d("getMyTeamInfo:size1=" + result1.size() + ",size2=" + result2.size());
                         if (result1.size() != result2.size()) {
                             primaryItemView.updateTeam(teamPkTeamInfoEntity2.getTeamInfo());
                         }
