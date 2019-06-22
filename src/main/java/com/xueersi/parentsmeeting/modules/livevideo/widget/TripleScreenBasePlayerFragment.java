@@ -185,7 +185,7 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                         userName = AppBll.getInstance().getAppInfoEntity().getChildName();
                                         userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                                         if (TextUtils.isEmpty(userName)) {
-                                            userName = "lyq123";
+                                            userName = "";
                                         }
                                         if (videoConfigEntity != null) {
                                             videoConfigEntity.setUserName(userName);
