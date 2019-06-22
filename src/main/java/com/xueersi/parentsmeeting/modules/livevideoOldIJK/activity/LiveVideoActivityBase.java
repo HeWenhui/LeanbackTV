@@ -307,9 +307,13 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                         if (!mOpened.get() && vPlayer != null) {
                             mOpened.set(true);
                             vPlayer.setVPlayerListener(vPlayerServiceListener);
-                            if (vPlayer.isInitialized())
-                                mUri = vPlayer.getUri();
-
+                            if (vPlayer.isInitialized()){
+                                //这个地方可能会播放错误的地址，参照TripleScreenBasePlayerFragment
+                                Uri olduri = vPlayer.getUri();
+                                logger.d("playNewVideo:olduri=" + olduri);
+                                vPlayer.release();
+                                vPlayer.releaseContext();
+                            }
                             if (videoView != null)
                                 vPlayer.setDisplay(videoView.getHolder());
                             if (mUri != null)

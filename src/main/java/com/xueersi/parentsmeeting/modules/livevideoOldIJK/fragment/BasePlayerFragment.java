@@ -345,7 +345,10 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                             mOpened.set(true);
                             vPlayer.setVPlayerListener(vPlayerServiceListener);
                             if (vPlayer.isInitialized()) {
-                                mUri = vPlayer.getUri();
+                                Uri olduri = vPlayer.getUri();
+                                logger.d("playNewVideo:olduri=" + olduri);
+                                vPlayer.release();
+                                vPlayer.releaseContext();
                             }
 
                             if (videoView != null) {
