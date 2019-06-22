@@ -722,7 +722,8 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      */
     private void getTeamMates() {
         if (primaryClass) {
-            getTeamPkTeamInfo();
+            //获得旧的数据
+            final TeamPkTeamInfoEntity saveTeamInfoEntity = getTeamPkTeamInfo();
             getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
                         @Override
@@ -731,6 +732,19 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                             if (teamInfoEntityres == null) {
                                 return;
                             }
+                            onGetTeam(teamInfoEntityres, responseEntity);
+                        }
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            super.onPmFailure(error, msg);
+                            //网络失败取旧的
+                            if (saveTeamInfoEntity != null) {
+                                onGetTeam(saveTeamInfoEntity, null);
+                            }
+                        }
+
+                        private void onGetTeam(TeamPkTeamInfoEntity teamInfoEntityres, ResponseEntity responseEntity) {
                             teamInfoEntity = teamInfoEntityres;
                             TeamPkTeamInfoEntity.TeamInfoEntity teamInfo = teamInfoEntity.getTeamInfo();
                             mTeamMates = teamInfo.getResult();
@@ -1309,11 +1323,13 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         return teamId;
     }
 
-    private void getTeamPkTeamInfo() {
+    private TeamPkTeamInfoEntity getTeamPkTeamInfo() {
         ResponseEntity responseEntity = LocalTeamPkTeamInfo.getTeamPkTeamInfo(mShareDataManager, mLiveId);
         if (responseEntity != null) {
-            getTeamPkHttp().setOldTeamPkTeamInfo(responseEntity);
+            TeamPkTeamInfoEntity teamInfoEntity = getTeamPkHttp().setOldTeamPkTeamInfo(responseEntity);
+            return teamInfoEntity;
         }
+        return null;
     }
 
     private TeamPkTeamInfoEntity parseTeamInfoPrimary(ResponseEntity responseEntity) {
