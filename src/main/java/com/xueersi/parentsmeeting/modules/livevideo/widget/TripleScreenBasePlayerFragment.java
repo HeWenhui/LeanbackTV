@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -183,6 +184,9 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                     try {
                                         userName = AppBll.getInstance().getAppInfoEntity().getChildName();
                                         userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        if (TextUtils.isEmpty(userName)) {
+                                            userName = "lyq123";
+                                        }
                                         if (videoConfigEntity != null) {
                                             videoConfigEntity.setUserName(userName);
                                             videoConfigEntity.setUserId(userId);
@@ -226,172 +230,172 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                         e.printStackTrace();
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
-                                    }
-                                    initCallBack();
                                 }
+                                initCallBack();
                             }
                         }
-                        break;
-                        case OPEN_START:
-                            // 统计播放器初始化成功
-                            XesMobAgent.userMarkVideoInit();
-                            // 播放器初始化完毕准备开始加载指定视频
-                            tvVideoLoadingText.setText(R.string.video_layout_loading);
-                            onPlayOpenStart();
-                            setVideoLoadingLayoutVisibility(View.VISIBLE);
-                            break;
-                        case OPEN_SUCCESS:
-                            // 统计播放开始
-                            XesMobAgent.userMarkVideoPlay();
-                            // 视频加载成功开始初始化一些播放参数，并开始播放和加载控制栏
-                            loadVPlayerPrefs();
-                            onPlayOpenSuccess();
-                            setVideoLoadingLayoutVisibility(View.GONE);
-                            setVideoLayout();
-                            vPlayer.start();
-                            showLongMediaController();
-                            break;
-                        case OPEN_FAILED:
-                            // 视频打开失败
-                            int arg1 = msg.arg1, arg2 = msg.arg2;
-                            resultFailed(arg1, arg2);
-                            break;
-                        case STOP_PLAYER:
-                            // 暂停播放
-                            stopPlayer();
-                            break;
-                        case SEEK_COMPLETE:
-                            // seek完成
-                            onSeekComplete();
-                            break;
-                        case BUFFER_START:
-                            // 网络视频缓冲开始
-                            if (!isFirstShow) {
-                                setVideoLoadingLayoutVisibility(View.VISIBLE);
+                    }
+                    break;
+                case OPEN_START:
+                    // 统计播放器初始化成功
+                    XesMobAgent.userMarkVideoInit();
+                    // 播放器初始化完毕准备开始加载指定视频
+                    tvVideoLoadingText.setText(R.string.video_layout_loading);
+                    onPlayOpenStart();
+                    setVideoLoadingLayoutVisibility(View.VISIBLE);
+                    break;
+                case OPEN_SUCCESS:
+                    // 统计播放开始
+                    XesMobAgent.userMarkVideoPlay();
+                    // 视频加载成功开始初始化一些播放参数，并开始播放和加载控制栏
+                    loadVPlayerPrefs();
+                    onPlayOpenSuccess();
+                    setVideoLoadingLayoutVisibility(View.GONE);
+                    setVideoLayout();
+                    vPlayer.start();
+                    showLongMediaController();
+                    break;
+                case OPEN_FAILED:
+                    // 视频打开失败
+                    int arg1 = msg.arg1, arg2 = msg.arg2;
+                    resultFailed(arg1, arg2);
+                    break;
+                case STOP_PLAYER:
+                    // 暂停播放
+                    stopPlayer();
+                    break;
+                case SEEK_COMPLETE:
+                    // seek完成
+                    onSeekComplete();
+                    break;
+                case BUFFER_START:
+                    // 网络视频缓冲开始
+                    if (!isFirstShow) {
+                        setVideoLoadingLayoutVisibility(View.VISIBLE);
+                    } else {
+                        if (getActivity() != null) {
+                            rootView = getActivity().findViewById(R.id.rl_course_video_live_question_content);
+                            if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
+                                loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_load_player, null);
+                                layoutLoading = loadingLayout.findViewById(R.id.layout_livevideo_triple_screen_loading);
+                                ivLoading = loadingLayout.findViewById(R.id.iv_livevideo_triple_screen_loading);
+                                setDrawable();
                             } else {
-                                if (getActivity() != null) {
-                                    rootView = getActivity().findViewById(R.id.rl_course_video_live_question_content);
-                                    if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
-                                        loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_load_player, null);
-                                        layoutLoading = loadingLayout.findViewById(R.id.layout_livevideo_triple_screen_loading);
-                                        ivLoading = loadingLayout.findViewById(R.id.iv_livevideo_triple_screen_loading);
-                                        setDrawable();
-                                    } else {
-                                        loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_middle_school_load_playerload, null);
-                                    }
-                                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                                    layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                                    rootView.addView(loadingLayout, layoutParams);
-
-                                    if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
-                                        setLayoutLoadingVisible(true);
-                                    }
-                                    isFirstShow = false;
-                                    vPlayerHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-//                                removeLoadingView();
-                                            removeLoadingView();
-//                                setLayoutLoadingVisible(false);
-                                        }
-                                    }, 2000);
-                                }
+                                loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_middle_school_load_playerload, null);
                             }
-                            vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
-                            break;
-                        case BUFFER_PROGRESS:
-                            // 视频缓冲中进行进度更新
-                            if (!vPlayer.isBuffering() || vPlayer.getBufferProgress() >= 100) {
-                                setVideoLoadingLayoutVisibility(View.GONE);
-                            } else {
-                                // 视频缓冲中进行进度更新,tvVideoLoadingText.getVisibility()==View.GONE
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                            rootView.addView(loadingLayout, layoutParams);
+
+                            if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
+                                setLayoutLoadingVisible(true);
+                            }
+                            isFirstShow = false;
+                            vPlayerHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+//                                removeLoadingView();
+                                    removeLoadingView();
+//                                setLayoutLoadingVisible(false);
+                                }
+                            }, 2000);
+                        }
+                    }
+                    vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
+                    break;
+                case BUFFER_PROGRESS:
+                    // 视频缓冲中进行进度更新
+                    if (!vPlayer.isBuffering() || vPlayer.getBufferProgress() >= 100) {
+                        setVideoLoadingLayoutVisibility(View.GONE);
+                    } else {
+                        // 视频缓冲中进行进度更新,tvVideoLoadingText.getVisibility()==View.GONE
 //                        tvVideoLoadingText.setText(getString(R.string.video_layout_buffering_progress,
 //                                vPlayer.getBufferProgress()));
-                                vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
-                            }
-                            break;
-                        case BUFFER_COMPLETE:
-                            // 缓冲完毕
-                            setVideoLoadingLayoutVisibility(View.GONE);
-                            vPlayerHandler.removeMessages(BUFFER_PROGRESS);
-                            break;
-                        case CLOSE_START:
-                            // 开始退出播放
-                            tvVideoLoadingText.setText(R.string.closing_file);
-                            setVideoLoadingLayoutVisibility(View.VISIBLE);
-                            break;
-                        case CLOSE_COMPLETE:
-                            // 播放器退出完毕，设置相应Boolean值
-                            mCloseComplete = true;
-                            break;
-                        case ON_PLAYING_POSITION:
-                            // 播放中获取实时的进度
-                            long[] arrPosition = (long[]) msg.obj;
-                            if (arrPosition != null && arrPosition.length == 2) {
-                                playingPosition(arrPosition[0], arrPosition[1]);
-                            }
-                            break;
-                        case HW_FAILED:
-                            // 硬解码失败,尝试使用软解码初始化播放器
-                            if (videoView != null) {
-                                videoView.setVisibility(View.GONE);
-                                videoView.setVisibility(View.VISIBLE);
-                                videoView.initialize(activity, TripleScreenBasePlayerFragment.this, false);
-                            }
-                            break;
-                        case LOAD_PREFS:
-                            // 初始化一些播放器的配置参数
-                            loadVPlayerPrefs();
-                            break;
-                        default:
-                            break;
+                        vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
                     }
-                    return true;
+                    break;
+                case BUFFER_COMPLETE:
+                    // 缓冲完毕
+                    setVideoLoadingLayoutVisibility(View.GONE);
+                    vPlayerHandler.removeMessages(BUFFER_PROGRESS);
+                    break;
+                case CLOSE_START:
+                    // 开始退出播放
+                    tvVideoLoadingText.setText(R.string.closing_file);
+                    setVideoLoadingLayoutVisibility(View.VISIBLE);
+                    break;
+                case CLOSE_COMPLETE:
+                    // 播放器退出完毕，设置相应Boolean值
+                    mCloseComplete = true;
+                    break;
+                case ON_PLAYING_POSITION:
+                    // 播放中获取实时的进度
+                    long[] arrPosition = (long[]) msg.obj;
+                    if (arrPosition != null && arrPosition.length == 2) {
+                        playingPosition(arrPosition[0], arrPosition[1]);
+                    }
+                    break;
+                case HW_FAILED:
+                    // 硬解码失败,尝试使用软解码初始化播放器
+                    if (videoView != null) {
+                        videoView.setVisibility(View.GONE);
+                        videoView.setVisibility(View.VISIBLE);
+                        videoView.initialize(activity, TripleScreenBasePlayerFragment.this, false);
+                    }
+                    break;
+                case LOAD_PREFS:
+                    // 初始化一些播放器的配置参数
+                    loadVPlayerPrefs();
+                    break;
+                default:
+                    break;
             }
-        };
-
-        /** 重写回调 */
-        private void initCallBack() {
-
+            return true;
         }
+    };
 
-        /** 重写这个Handler.CallBack */
-        public void overrideHandlerCallBack() {
-            if (LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary || isSmallEnglish) {
-                vPlayerHandler = new WeakHandler(callback);
-            }
-        }
-
-        @Override
-        public void removeLoadingView() {
-            super.removeLoadingView();
-            if (loadingLayout != null && loadingLayout.getParent() == rootView) {
-                rootView.removeView(loadingLayout);
-            }
-        }
-
-        public void setLayoutLoadingVisible(boolean isShow) {
-            if (isShow) {
-                layoutLoading.setVisibility(iVisibible == 1 ? View.VISIBLE : View.GONE);
-                startAnim();
-            } else {
-                layoutLoading.setVisibility(View.GONE);
-                stopAnim();
-            }
-        }
-
-        private void startAnim() {
-//        ivLoading.setVisibility(View.VISIBLE);
-            ivLoading.setImageResource(R.drawable.anim_livevideo_triple_screen_loading);
-            AnimationDrawable animationDrawable = (AnimationDrawable) ivLoading.getDrawable();
-            animationDrawable.start();
-        }
-
-        private void stopAnim() {
-//        ivLoading.setVisibility(View.GONE);
-            ivLoading.setImageResource(R.drawable.anim_livevideo_triple_screen_loading);
-            AnimationDrawable animationDrawable = (AnimationDrawable) ivLoading.getDrawable();
-            animationDrawable.stop();
-        }
+    /** 重写回调 */
+    private void initCallBack() {
 
     }
+
+    /** 重写这个Handler.CallBack */
+    public void overrideHandlerCallBack() {
+        if (LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary || isSmallEnglish) {
+            vPlayerHandler = new WeakHandler(callback);
+        }
+    }
+
+    @Override
+    public void removeLoadingView() {
+        super.removeLoadingView();
+        if (loadingLayout != null && loadingLayout.getParent() == rootView) {
+            rootView.removeView(loadingLayout);
+        }
+    }
+
+    public void setLayoutLoadingVisible(boolean isShow) {
+        if (isShow) {
+            layoutLoading.setVisibility(iVisibible == 1 ? View.VISIBLE : View.GONE);
+            startAnim();
+        } else {
+            layoutLoading.setVisibility(View.GONE);
+            stopAnim();
+        }
+    }
+
+    private void startAnim() {
+//        ivLoading.setVisibility(View.VISIBLE);
+        ivLoading.setImageResource(R.drawable.anim_livevideo_triple_screen_loading);
+        AnimationDrawable animationDrawable = (AnimationDrawable) ivLoading.getDrawable();
+        animationDrawable.start();
+    }
+
+    private void stopAnim() {
+//        ivLoading.setVisibility(View.GONE);
+        ivLoading.setImageResource(R.drawable.anim_livevideo_triple_screen_loading);
+        AnimationDrawable animationDrawable = (AnimationDrawable) ivLoading.getDrawable();
+        animationDrawable.stop();
+    }
+
+}

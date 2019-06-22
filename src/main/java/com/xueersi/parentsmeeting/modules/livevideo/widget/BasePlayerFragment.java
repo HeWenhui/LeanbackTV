@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
@@ -405,10 +406,13 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     }
                                     isChangeLine = false;
                                 } else {
-                                    String userName = null, userId = null;
+                                    String userName = "lyq123", userId = null;
                                     try {
                                         userName = AppBll.getInstance().getAppInfoEntity().getChildName();
                                         userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        if (TextUtils.isEmpty(userName)) {
+                                            userName = "lyq123";
+                                        }
                                         if (videoConfigEntity != null) {
                                             videoConfigEntity.setUserId(userId);
                                             videoConfigEntity.setUserName(userName);
