@@ -136,6 +136,9 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
             if (videoStatus && haveVideo) {
                 rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
                 cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+            } else {
+                rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
+                cl_livevideo_course_item_video.setVisibility(View.GONE);
             }
             iv_livevideo_primary_team_voice_open.setVisibility(View.VISIBLE);
             if (!noMic) {
