@@ -336,7 +336,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                 if (videoView != null) {
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
-                                vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, 0, vPlayerServiceListener, mIsHWCodec);
+                                boolean isPlayerCreated = vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, 0, vPlayerServiceListener, mIsHWCodec);
                                 if (isChangeLine) {
                                     try {
                                         vPlayer.changeLine(changeLinePos, protocol);
@@ -360,8 +360,11 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                         map.put("userName", userName).
                                                 put("userId", userId).
                                                 put("videoPath", videoPath).
-                                                put("protocol", String.valueOf(protocol));
-                                        UmsAgentManager.umsAgentDebug(LiveVideoActivityBase.this, LiveLogUtils.DISPATCH_REQEUSTING, map.getData());
+                                                put("protocol", String.valueOf(protocol)).
+                                                put("isPlayerCreated", String.valueOf(isPlayerCreated)).
+                                                put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
+                                                put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION);
+                                        UmsAgentManager.umsAgentDebug(LiveVideoActivityBase.this, LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                         e.printStackTrace();
                                     }
