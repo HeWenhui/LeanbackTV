@@ -1453,7 +1453,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     teamSelectByNotice = true;
                     if ("on".equals(status)) {
                         startTeamSelect(true, true);
-                        TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
+                        TeamPkLog.receiveCreateTeam(contextLiveAndBackDebug, nonce, true);
                     } else if ("off".equals(status)) {
                         //自动结束，不取消分队，但是需要去掉快速入口
                         if (mFocusPager instanceof TeamPkTeamSelectingPager) {
