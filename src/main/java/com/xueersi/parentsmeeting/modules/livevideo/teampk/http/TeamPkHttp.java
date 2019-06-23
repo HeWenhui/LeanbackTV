@@ -119,7 +119,7 @@ public class TeamPkHttp {
      * @param requestCallBack
      */
     public void addPersonAndTeamEnergy(String liveId, int addEnergy, String teamId, String classId, String stuId,
-                                       String releaseId, HttpCallBack requestCallBack) {
+                                       String releaseId,HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(params);
         params.addBodyParam("classId", classId);
@@ -267,11 +267,12 @@ public class TeamPkHttp {
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_GETPROGRESSSTU, params, requestCallBack);
     }
 
-    public void setOldTeamPkTeamInfo(ResponseEntity responseEntity) {
+    public TeamPkTeamInfoEntity setOldTeamPkTeamInfo(ResponseEntity responseEntity) {
         TeamPkTeamInfoEntity teamInfoEntity = teamPKHttpResponseParser.parseTeamInfoPrimary(responseEntity);
         if (teamInfoEntity != null && teamInfoEntity.getTeamInfo() != null) {
             teamPKHttpResponseParser.setFromLocal(true);
             teamInfoEntity.getTeamInfo().setFromLocal(true);
         }
+        return teamInfoEntity;
     }
 }

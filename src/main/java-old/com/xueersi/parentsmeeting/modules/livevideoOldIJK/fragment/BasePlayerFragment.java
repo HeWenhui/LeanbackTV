@@ -91,7 +91,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     /** 当前播放的视频地址 */
     protected Uri mUri;
     /** 同步锁 */
-    protected Object mOpenLock = new Object();
+    protected final Object mOpenLock = new Object();
     /** 准备打开播放文件 */
     protected static final int OPEN_FILE = 0;
     /** 初始化完播放器准备加载播放文件 */
@@ -345,7 +345,10 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                             mOpened.set(true);
                             vPlayer.setVPlayerListener(vPlayerServiceListener);
                             if (vPlayer.isInitialized()) {
-                                mUri = vPlayer.getUri();
+                                Uri olduri = vPlayer.getUri();
+                                logger.d("playNewVideo:olduri=" + olduri);
+                                vPlayer.release();
+                                vPlayer.releaseContext();
                             }
 
                             if (videoView != null) {

@@ -84,8 +84,11 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
         });
     }
 
+    private int tryTimes = 0;
+
     private void getMyTeamInfo() {
         getPrimaryClassHttp().getMyTeamInfo(classId, mGetInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new AbstractBusinessDataCallBack() {
+
             @Override
             public void onDataSucess(Object... objData) {
                 if (teamPkTeamInfoEntity != null) {
@@ -93,11 +96,12 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                     try {
                         List<TeamMate> result1 = teamPkTeamInfoEntity.getTeamInfo().getResult();
                         List<TeamMate> result2 = teamPkTeamInfoEntity2.getTeamInfo().getResult();
+                        mLogtf.d("getMyTeamInfo:size1=" + result1.size() + ",size2=" + result2.size());
                         if (result1.size() != result2.size()) {
                             primaryItemView.updateTeam(teamPkTeamInfoEntity2.getTeamInfo());
                         }
                     } catch (Exception e) {
-                        logger.e("onTeamPkTeamInfoEvent:event=" + e);
+                        mLogtf.e("getMyTeamInfo", e);
                         CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                     teamPkTeamInfoEntity = (TeamPkTeamInfoEntity) objData[0];
@@ -113,6 +117,22 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                 if (primaryItemView != null) {
                     primaryItemView.onTeam(mGetInfo.getStuId(), teamPkTeamInfoEntity.getTeamInfo());
                 }
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                super.onDataFail(errStatus, failMsg);
+                mLogtf.d("getMyTeamInfo:errStatus=" + errStatus + ",failMsg=" + failMsg + ",tryTimes=" + tryTimes);
+                if (tryTimes > 3) {
+                    return;
+                }
+                tryTimes++;
+                postDelayedIfNotFinish(new Runnable() {
+                    @Override
+                    public void run() {
+                        getMyTeamInfo();
+                    }
+                }, tryTimes * 1000);
             }
         });
     }

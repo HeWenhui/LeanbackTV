@@ -35,6 +35,9 @@ public class LocalTeamPkTeamInfo {
 
     public static void saveTeamPkTeamInfo(ShareDataManager mShareDataManager, ResponseEntity responseEntity, String liveId) {
         try {
+            if (responseEntity == null) {
+                return;
+            }
             JSONObject data = (JSONObject) responseEntity.getJsonObject();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("liveId", liveId);

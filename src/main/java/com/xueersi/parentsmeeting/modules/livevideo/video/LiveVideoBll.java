@@ -285,6 +285,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     /**
      * PSIJK 自动切换线路
+     * 缓冲超时{@link #mBufferTimeOutRun}
      * <p>
      * 起播超时{@link #mOpenTimeOutRun}
      * <p>
@@ -420,7 +421,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 vPlayerListener.onOpenSuccess();
             }
             mHandler.removeCallbacks(mPlayDuration);
-            mLogtf.d("onOpenSuccess:playTime=" + playTime);
+            mLogtf.d("onOpenSuccess:url=" + vPlayer.getUri() + ",playTime=" + playTime);
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
             mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
@@ -428,7 +429,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void onOpenStart() {
-            mLogtf.d("onOpenStart");
+            mLogtf.d("onOpenStart:url=" + vPlayer.getUri());
             openStartTime = System.currentTimeMillis();
             openSuccess = false;
             mHandler.removeCallbacks(mOpenTimeOutRun);
@@ -452,7 +453,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onOpenFailed(arg1, arg2);
             }
-            mLogtf.d("onOpenFailed:arg2=" + arg2);
+            mLogtf.d("onOpenFailed:url=" + vPlayer.getUri() + ",arg2=" + arg2);
+            if (lastPlayserverEntity != null) {
+                 reportPlayStarTime = System.currentTimeMillis();
+            }
         }
 
         @Override

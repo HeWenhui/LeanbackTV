@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -138,7 +139,11 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                 mOpened.set(true);
                                 vPlayer.setVPlayerListener(vPlayerServiceListener);
                                 if (vPlayer.isInitialized()) {
-                                    mUri = vPlayer.getUri();
+                                    //这个地方可能会播放错误的地址，参照TripleScreenBasePlayerFragment
+                                    Uri olduri = vPlayer.getUri();
+                                    logger.d("playNewVideo:olduri=" + olduri);
+                                    vPlayer.release();
+                                    vPlayer.releaseContext();
                                 }
 
                                 if (videoView != null) {
