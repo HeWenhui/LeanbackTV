@@ -165,6 +165,19 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         haveVideo = true;
     }
 
+    /** 收到音量 */
+    private boolean baveVolume = false;
+
+    @Override
+    public void reportAudioVolumeOfSpeaker(int volume) {
+        super.reportAudioVolumeOfSpeaker(volume);
+        if (!baveVolume) {
+            baveVolume = true;
+            mLogtf.d("reportAudioVolumeOfSpeaker:uid=" + uid + ",volume=" + volume + ",haveAudio=" + haveAudio);
+            remotefirstAudioRecvWithUid(uid);
+        }
+    }
+
     @Override
     public void didOfflineOfUid(String method, final boolean join) {
         this.join = join;
