@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -32,6 +34,7 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
     EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
     private RelativeLayout group;
     private ImageView ivCourseRefresh;
+    private ImageView ivLoading;
     private LiveGetInfo liveGetInfo;
     private VideoQuestionLiveEntity detailInfo;
     private EnglishH5Entity englishH5Entity;
@@ -56,12 +59,22 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
         View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_groupgame_empty, null);
         group = (RelativeLayout) view;
         ivCourseRefresh = view.findViewById(R.id.iv_livevideo_course_refresh);
+        ivLoading = mView.findViewById(R.id.iv_data_loading_show);
         return group;
     }
 
     @Override
     public void initData() {
         super.initData();
+        try {
+            Drawable drawable = mContext.getResources().getDrawable(R.drawable.animlst_app_loading);
+            ivLoading.setBackground(drawable);
+            ((AnimationDrawable) drawable).start();
+        } catch (Exception e) {
+            if (mLogtf != null) {
+                mLogtf.e("onStart", e);
+            }
+        }
     }
 
     @Override
