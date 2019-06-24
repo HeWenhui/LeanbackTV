@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineActi
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -262,7 +263,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
         } else {
             // 语文三分屏 或者 语文半身直播
-            if (data.getIsArts() == 2 || (data.getPattern() == 6 && data.getUseSkin() == 2)) {
+            if (data.getIsArts() == 2 || (data.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY && data.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH)) {
 //                String[] subjectIds = data.getSubjectIds();
 //                if (subjectIds != null) {
 //                    for (int i = 0; i < subjectIds.length; i++) {

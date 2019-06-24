@@ -23,6 +23,7 @@ import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -491,9 +492,9 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             logger.i("StudyReportBll" + 10);
             logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
             if (mGetInfo != null) {
-                if (mGetInfo.getPattern() == 6) {
+                if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
                     //半身直播语文 isArts 为 0 ，useSkin为2
-                    if (mGetInfo.getUseSkin() == 2) {
+                    if (mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                         if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE) {
@@ -503,7 +504,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                         getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
                         logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
                     }
-                } else if (mGetInfo.getPattern() == 1) {
+                } else if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_COMMON) {
                     if (mGetInfo.getIsArts() == 2) {
                         if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
