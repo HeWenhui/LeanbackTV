@@ -20,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -36,7 +35,6 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpAutoLive;
@@ -53,7 +51,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -76,6 +73,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.ExperienceIrcState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll;
@@ -83,7 +81,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5Experi
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
-import com.xueersi.parentsmeeting.modules.livevideo.message.ExperienceIrcState;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.ExpRollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -223,7 +220,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         @Override
         public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
             mData.put("appid", appID);
-            mData.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId()+"");
+            mData.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId() + "");
             mData.put("usertype", "student");
             mData.put("teacherid", expLiveInfo.getCoachTeacherId() + "");
             mData.put("timestamp", System.currentTimeMillis() + "");
@@ -607,7 +604,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         StableLogHashMap logHashMap = new StableLogHashMap(logtype);
 
         logHashMap.put("appid", appID);
-        logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId()+"");
+        logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId() + "");
         logHashMap.put("usertype", "student");
         logHashMap.put("teacherid", expLiveInfo.getCoachTeacherId() + "");
         logHashMap.put("timestamp", System.currentTimeMillis() + "");
@@ -888,7 +885,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 if (rlFirstBackgroundView.getVisibility() != View.VISIBLE) {
                     rlFirstBackgroundView.setVisibility(View.VISIBLE);
                 }
-
+//                changeNextLine();
                 playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
             }
         }
@@ -902,7 +899,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                     "videopath", getBackVideo(),
                     "errCode", arg2 + "",
                     "errMsg", "",
-                    "mode", expLiveInfo.getMode()+"",
+                    "mode", expLiveInfo.getMode() + "",
                     "status", "failed",
                     "loglevel", "Error",
                     "functype", "6");
@@ -911,7 +908,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                     "stream", getLiveVideo(),
                     "errCode", arg2 + "",
                     "errMsg", "",
-                    "mode", expLiveInfo.getMode()+"",
+                    "mode", expLiveInfo.getMode() + "",
                     "status", "failed",
                     "loglevel", "Error",
                     "functype", "6");
