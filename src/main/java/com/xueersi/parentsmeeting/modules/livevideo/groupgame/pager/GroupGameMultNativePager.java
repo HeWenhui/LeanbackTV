@@ -583,7 +583,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         for (int i = 0; i < entities.size(); i++) {
                             TeamMemberEntity teamMemberEntity = entities.get(i);
                             JSONObject student = new JSONObject();
-                            student.put("studentNum", i + 1);
+                            student.put("studentNum", i + 4 - entities.size());
                             student.put("name", teamMemberEntity.name);
                             student.put("avatar", teamMemberEntity.headurl);
                             studentInfo.put(student);
