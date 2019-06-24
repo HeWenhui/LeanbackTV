@@ -84,7 +84,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
      */
     public void showTeacherPraise() {
         logger.d("showTeacherPraise:voiceId=" + voiceId);
-        mHandler.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 if (StringUtils.isEmpty(voiceId) || !show.containsKey(voiceId)) {

@@ -134,7 +134,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             userLogMap.clear();
             userLogMap.put("openPraise", "goldnum=" + goldNum);
 
-            mHandler.removeCallbacks(delayRemoveRunalbe);
+            removeCallbacks(delayRemoveRunalbe);
             isOpen = true;
             praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, contextLiveAndBackDebug,mGetInfo);
             rlPraiseContentView.removeAllViews();
@@ -318,7 +318,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     public void closePager() {
         if (rlPraiseContentView != null) {
             praiseInteractionPager.closePraise();
-            mHandler.postDelayed(delayRemoveRunalbe, 1000);
+            postDelayed(delayRemoveRunalbe, 1000);
         }
     }
 

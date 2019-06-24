@@ -137,7 +137,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             englishH5Cache.getCourseWareUrl();
         }
         if (mAnswerRankBll != null) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     englishH5CoursewareBll.setAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
@@ -145,7 +145,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             });
         }
         if (mLiveAutoNoticeBll != null) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     englishH5CoursewareBll.setLiveAutoNoticeBll(mLiveAutoNoticeBll.getLiveAutoNoticeBll());

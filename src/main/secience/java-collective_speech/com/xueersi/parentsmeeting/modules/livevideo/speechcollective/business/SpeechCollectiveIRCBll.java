@@ -211,7 +211,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                     return;
                 }
                 if (speechCollectiveBll != null) {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             if (speechCollectiveBll != null) {
@@ -220,7 +220,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         }
                     });
                 } else {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             //如果是退出直播间再进来，不弹出倒计时和灰色收音球
@@ -245,7 +245,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                     return;
                 }
                 if (speechCollectiveBll != null) {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             if (speechCollectiveBll != null) {
@@ -254,7 +254,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         }
                     });
                 } else {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             //如果是退出直播间再进来，不弹出倒计时和灰色收音球
@@ -311,14 +311,14 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                     final String form = object.getString("from");
                     if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode()) && "t".equals(form)) {
                         if (speechCollectiveBll != null) {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     onStaus(form, status, voiceID);
                                 }
                             });
                         } else {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     if ("on".equals(status)) {
@@ -330,14 +330,14 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         }
                     } else if (LiveTopic.MODE_TRANING.equals(mLiveBll.getMode()) && "f".equals(form)) {
                         if (speechCollectiveBll != null) {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     onStaus(form, status, voiceID);
                                 }
                             });
                         } else {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     if ("on".equals(status)) {

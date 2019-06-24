@@ -226,7 +226,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             this.mTeacherMode = mode;
             if (isHalfBodyLiveRoom()) {
                 //延时5秒 适配切屏动画
-                mHandler.postDelayed(new Runnable() {
+                postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         showPkStateLayout();
@@ -1457,7 +1457,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     } else if ("off".equals(status)) {
                         //自动结束，不取消分队，但是需要去掉快速入口
                         if (mFocusPager instanceof TeamPkTeamSelectingPager) {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     closeCurrentPager();
@@ -1753,7 +1753,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 显示 pk 总结 结束弹框
      */
     private void showPkEndToast() {
-        mHandler.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 if (mFocusPager == null || !(mFocusPager instanceof TeamPkEndPager)) {

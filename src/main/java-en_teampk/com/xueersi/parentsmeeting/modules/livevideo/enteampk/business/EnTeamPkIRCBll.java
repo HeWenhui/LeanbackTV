@@ -211,7 +211,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     super.onDataFail(errStatus, failMsg);
                     mLogtf.d("dispatch:time=" + time + ",failMsg=" + failMsg);
                     callBack = this;
-                    mHandler.postDelayed(new Runnable() {
+                    postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             if (!destory) {
@@ -288,7 +288,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         if (delayMillis < 0) {
                             runnable.run();
                         } else {
-                            mHandler.postDelayed(runnable, delayMillis);
+                            postDelayed(runnable, delayMillis);
                         }
                     }
                     logger.d("onQuestionShow:delayMillis=" + delayMillis);
@@ -417,7 +417,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mLogtf.d("reportStuInfo:mode=" + mode);
             if (mode.equals("1")) {//主讲模式。等irc连接2秒
                 reportStuInfoRun = runnable;
-                mHandler.postDelayed(new Runnable() {
+                postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Runnable freportStuInfoRun = reportStuInfoRun;
@@ -617,7 +617,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         super.onDataFail(errStatus, failMsg);
                         mLogtf.d("dispatch:time=" + time + ",failMsg=" + failMsg);
                         callBack = this;
-                        mHandler.postDelayed(new Runnable() {
+                        postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 if (!destory) {
@@ -887,7 +887,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void poseEvent() {
-        mHandler.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
@@ -1067,7 +1067,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         logger.d("onCourseEnd:isShow=" + mIsShow);
         stopQuestTime = System.currentTimeMillis();
         if (!mIsShow) {
-            mHandler.postDelayed(runnable, maxdelayMillis);
+            postDelayed(runnable, maxdelayMillis);
         } else {
             stopRunnable = runnable;
         }
@@ -1127,7 +1127,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         logger.d("onQuestionEnd:isShow=" + mIsShow);
         stopQuestTime = System.currentTimeMillis();
         if (!mIsShow) {
-            mHandler.postDelayed(runnable, maxdelayMillis);
+            postDelayed(runnable, maxdelayMillis);
         } else {
             stopRunnable = runnable;
         }

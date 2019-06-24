@@ -30,7 +30,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
     @Override
     public void onTopic(LiveTopic liveTopic, final JSONObject jsonObject, boolean modeChange) {
         if (jsonObject.has("h5_Experiment")) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     initNbAction();
@@ -72,7 +72,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
     public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
         switch (type) {
             case XESCODE.H5_START: {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         initNbAction();
@@ -88,7 +88,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
             }
             break;
             case XESCODE.H5_STOP: {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         initNbAction();

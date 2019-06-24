@@ -55,7 +55,7 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements com.xueersi.par
             if (speechFeedBackAction != null) {
                 speechFeedBackAction.start(roomId);
             } else {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         createBll();
@@ -110,7 +110,7 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements com.xueersi.par
                 if (speechFeedBackAction != null) {
                     onStaus(object);
                 } else {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             createBll();

@@ -36,8 +36,8 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     protected RelativeLayout rlMessageBottom;
     protected RelativeLayout mContentView;
     protected LiveBll2 mLiveBll;
-    protected ContextLiveAndBackDebug contextLiveAndBackDebug;
-    protected Handler mHandler = new Handler(Looper.getMainLooper());
+    protected LiveAndBackDebug contextLiveAndBackDebug;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     protected LiveGetInfo mGetInfo;
     protected String mLiveId;
     protected final int mLiveType;

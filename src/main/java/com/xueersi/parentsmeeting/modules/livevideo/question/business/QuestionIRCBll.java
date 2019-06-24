@@ -287,7 +287,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
         mQuestionAction.initData();
         if (mAnswerRankBll != null) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     mQuestionAction.setAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
@@ -295,7 +295,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             });
         }
         if (mLiveAutoNoticeBll != null) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     mQuestionAction.setLiveAutoNoticeBll(mLiveAutoNoticeBll.getLiveAutoNoticeBll());

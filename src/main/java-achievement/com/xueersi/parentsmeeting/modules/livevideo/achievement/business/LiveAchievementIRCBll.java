@@ -101,7 +101,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 mLiveBll.registEvent(EnPkTeam.class, new LiveEvent() {
                     @Override
                     public void onEvent(Object object) {
-                        mHandler.post(new Runnable() {
+                        post(new Runnable() {
                             @Override
                             public void run() {
                                 if (starAction instanceof EnPkInteractAction) {
@@ -192,7 +192,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                 }
                                 if (allow) {
                                     hasGotoRecogniz = true;
-                                    mHandler.post(new Runnable() {
+                                    post(new Runnable() {
                                         @Override
                                         public void run() {
                                             if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
@@ -515,7 +515,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
     private void initAchievement(final String mode) {
         if (englishSpeekMode != null) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     englishSpeekMode.initAchievement(mode);

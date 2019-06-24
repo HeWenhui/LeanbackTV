@@ -232,7 +232,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onModeChange(final String oldMode, final String mode, boolean isPresent) {
         this.currentMode = mode;
-        mHandler.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 //理科，主讲和辅导切换的时候，给出提示（切流）
@@ -258,7 +258,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
                     //延迟 2.5 秒 走相关逻辑(适配转场动画 节奏)
                     final String finalMode = mode;
-                    mHandler.postDelayed(new Runnable() {
+                    postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             logger.d("onModeChange:currentMode=" + currentMode + ",finalMode=" + finalMode);
@@ -755,7 +755,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
                     isMiddleScienceEvenDriveH5Open = false;
                     endTime = System.currentTimeMillis();
-                    mHandler.postDelayed(new Runnable() {
+                    postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             getHttpManager().getEvenPairInfo(
@@ -806,7 +806,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                            }
 //                        });
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-                    mHandler.postDelayed(new Runnable() {
+                    postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             getHttpManager().getEvenPairInfo(
@@ -849,7 +849,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                                    mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
 //                                }
 //                            });
-                        mHandler.postDelayed(new Runnable() {
+                        postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 getHttpManager().getEvenPairInfo(
@@ -979,12 +979,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 break;
         }
         mLogtf.d(msg);
-    }
-
-    public void postDelayIfNotFinished(Runnable runnable, long time) {
-        if (mHandler != null) {
-            mHandler.postDelayed(runnable, time);
-        }
     }
 
     /** 列表，用户点赞列表 */

@@ -772,7 +772,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 //                    }
                 } else {
                     //收到题目把排行榜收起来
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             if (relativeLayout.getVisibility() == View.VISIBLE) {

@@ -45,7 +45,7 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
         switch (type) {
             case XESCODE.LEC_ADVERT: {
                 if (lecAdvertAction == null) {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             lecAdvertAction = new LecAdvertBll(activity);

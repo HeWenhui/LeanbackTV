@@ -35,7 +35,7 @@ public class LecLearnReportIRCBll extends LiveBaseBll implements NoticeAction, L
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
         if (mainRoomstatus.isOpenFeedback()) {
             if (learnReportBll == null) {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         learnReportBll = new LecLearnReportBll(activity);
@@ -57,7 +57,7 @@ public class LecLearnReportIRCBll extends LiveBaseBll implements NoticeAction, L
         switch (type) {
             case XESCODE.LEC_LEARNREPORT: {
                 if (learnReportBll == null) {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             learnReportBll = new LecLearnReportBll(activity);

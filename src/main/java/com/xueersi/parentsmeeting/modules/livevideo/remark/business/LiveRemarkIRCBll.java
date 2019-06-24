@@ -100,7 +100,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         if (liveRemarkBll != null) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     liveRemarkBll.setVideoReady(false);
