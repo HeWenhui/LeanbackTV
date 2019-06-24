@@ -35,7 +35,7 @@ public class GroupGameTestBll extends LiveBaseBll {
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         LinearLayout llTest = new LinearLayout(activity);
-        mRootView.addView(llTest);
+        addView(llTest);
         Button btnTest1 = new Button(activity);
         btnTest1.setText("小组互动");
         Button btnTest2 = new Button(activity);

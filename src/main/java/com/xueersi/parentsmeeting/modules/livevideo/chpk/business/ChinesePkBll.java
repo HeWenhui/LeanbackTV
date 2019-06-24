@@ -161,7 +161,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         rlTeamPkContent = new RelativeLayout(mActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        mRootView.addView(rlTeamPkContent, params);
+        addView(rlTeamPkContent, params);
         showPkStateLayout();
         registLayotListener();
 

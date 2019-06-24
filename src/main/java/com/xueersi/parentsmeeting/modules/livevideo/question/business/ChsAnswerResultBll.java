@@ -73,7 +73,7 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
             return;
         }
         mDsipalyer = new ChiAnswerResultPager(mContext, mAnswerReulst, ChsAnswerResultBll.this);
-        mRootView.postDelayed(new Runnable() {
+        postDelayed(new Runnable() {
             @Override
             public void run() {
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
@@ -129,7 +129,7 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
     @Override
     public void onCompeletShow() {
         if (forceSumbmit) {
-            mRootView.postDelayed(new Runnable() {
+            postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     EventBus.getDefault().post(new AnswerResultCplShowEvent("onCompeletShow"));

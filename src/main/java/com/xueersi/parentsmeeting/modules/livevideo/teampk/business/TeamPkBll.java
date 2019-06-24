@@ -211,9 +211,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         rlTeamPkContent = new RelativeLayout(mActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        ((RelativeLayout) mRootView).addView(rlTeamPkContent, params);
+        addView(rlTeamPkContent, params);
         rlTopLayerContent = new RelativeLayout(mActivity);
-        mRootView.addView(rlTopLayerContent, params);
+        addView(rlTopLayerContent, params);
 
         showPkStateLayout();
         registLayoutListener();

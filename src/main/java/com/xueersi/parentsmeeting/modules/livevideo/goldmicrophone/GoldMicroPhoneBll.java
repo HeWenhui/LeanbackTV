@@ -235,7 +235,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      * 显示权限View
      */
     private void showGoldSettingView(final boolean hasPermission) {
-        mRootView.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 if (mGoldView != null) {
@@ -269,7 +269,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      * 显示麦克风的View
      */
     private void showMicroPhoneView() {
-        mRootView.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 if (mGoldView == null) {
@@ -278,7 +278,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 if (mGoldView.getRootView().getParent() == null) {
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    mRootView.addView(mGoldView.getRootView(), layoutParams);
+                    addView(mGoldView.getRootView(), layoutParams);
                     mGoldView.performAddView();
                     showOrhideBottom(false);
                 }
@@ -379,14 +379,12 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             }
         } catch (Exception e) {
             e.printStackTrace();
-            if (mRootView != null) {
-                mRootView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(activity, "当前有应用正在使用录音功能，请关掉后再重试", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(activity, "当前有应用正在使用录音功能，请关掉后再重试", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -455,7 +453,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         }
         long nowTime = System.currentTimeMillis();
         if (nowTime - lottieLastPlayTime > LOTTIE_VIEW_INTERVAL && volume > GOLD_MICROPHONE_VOLUME) {
-            mRootView.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
 //                    showGoldMicroPhoneView();
@@ -564,7 +562,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             if (errNum == ResultCode.WEBSOCKET_TIME_OUT || errNum == ResultCode.NETWORK_FAIL || errNum == ResultCode.WEBSOCKET_CONN_REFUSE) {
                 XESToastUtils.showToast(mContext, "当前网络不可用，请检查网络连接");
             }
-            mRootView.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     if (mGoldView != null) {
@@ -695,7 +693,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     public void remove(View view) {
         if (view.getParent() == mRootView) {
             logger.i("remove gold view");
-            mRootView.removeView(view);
+            removeView(view);
             stopRecord();
         }
         recognizeStr = "";

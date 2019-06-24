@@ -202,7 +202,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 展示答题结果
      */
     private void showAnswerReulst(final ArtsAnswerResultEvent event) {
-        mRootView.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 if (mGetInfo.getPattern() == 2) {
@@ -592,7 +592,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     public void onCompeletShow() {
         //logger.e( "=======onCompeletShow called:" + forceSumbmit + ":" + this);
         if (forceSumbmit) {
-            mRootView.postDelayed(new Runnable() {
+            postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     EventBus.getDefault().post(new AnswerResultCplShowEvent("onCompeletShow"));
@@ -871,14 +871,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 强制关闭ptype 为12的游戏题
      */
     private void forceCloseGamePage() {
-        if (mRootView != null) {
-            mRootView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    EventBus.getDefault().post(new AnswerResultCplShowEvent("forceCloseGamePage"));
-                }
-            }, AUTO_CLOSE_DELAY);
-        }
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new AnswerResultCplShowEvent("forceCloseGamePage"));
+            }
+        }, AUTO_CLOSE_DELAY);
     }
 
 
@@ -1005,11 +1003,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             speechResultEntity.gold = gold;
                             speechResultEntity.energy = energy;
                             SpeechResultPager speechResultPager = new SpeechResultPager(mContext, mRootView, speechResultEntity, mGetInfo);
-                            mRootView.addView(speechResultPager.getRootView());
+                            addView(speechResultPager.getRootView());
                             speechResultPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                                 @Override
                                 public void onClose(LiveBasePager basePager) {
-                                    mRootView.removeView(basePager.getRootView());
+                                    removeView(basePager.getRootView());
                                 }
                             });
                         }

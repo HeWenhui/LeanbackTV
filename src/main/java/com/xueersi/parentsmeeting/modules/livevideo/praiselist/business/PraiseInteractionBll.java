@@ -97,7 +97,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         params.leftMargin = LiveVideoPoint.getInstance().x2;
-        mRootView.addView(rlPraiseContentView, 0, params);
+        addView(rlPraiseContentView, 0, params);
     }
 
     private class SpecailGiftTimerTask extends TimerTask {

@@ -66,7 +66,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
         rlPraiseContentView = new RelativeLayout(mContext);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        mRootView.addView(rlPraiseContentView, params);
+        addView(rlPraiseContentView, params);
         registLayotListener();
     }
 
@@ -125,7 +125,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
         if (artsPraisePager != null && !rankId.equals(mRankId)) {
             mRankId = rankId;
             stopPraise();
-            mRootView.postDelayed(new Runnable() {
+            postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     getRankData(mRankId);
@@ -195,7 +195,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
      * 老师结束点赞
      */
     private void stopPraise() {
-        mRootView.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 onDestory();
@@ -341,7 +341,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
 
     public void closePager() {
         if (rlPraiseContentView != null) {
-            mRootView.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     rlPraiseContentView.removeAllViews();

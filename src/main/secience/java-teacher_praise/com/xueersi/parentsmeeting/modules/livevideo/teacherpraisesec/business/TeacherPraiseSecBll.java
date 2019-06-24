@@ -94,11 +94,11 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                         if (!addEnergy) {
                             addEnergy = true;
                             final SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(mContext);
-                            mRootView.addView(speechEnergyPager.getRootView());
+                            addView(speechEnergyPager.getRootView());
                             speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                                 @Override
                                 public void onClose(LiveBasePager basePager) {
-                                    mRootView.removeView(basePager.getRootView());
+                                    removeView(basePager.getRootView());
                                     LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
                                     TeachPraiseRusltulCloseEvent teachPraiseRusltulCloseEvent = new TeachPraiseRusltulCloseEvent(voiceId + "_1", false);
                                     teachPraiseRusltulCloseEvent.setStartPosition(speechEnergyPager.getEnergyPosition());
@@ -108,11 +108,11 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                         }
                     } else {
                         SpeechPraisePager speechPraisePager = new SpeechPraisePager(mContext, 1 == getInfo.getIsYouJiao());
-                        mRootView.addView(speechPraisePager.getRootView());
+                        addView(speechPraisePager.getRootView());
                         speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                             @Override
                             public void onClose(LiveBasePager basePager) {
-                                mRootView.removeView(basePager.getRootView());
+                                removeView(basePager.getRootView());
                                 LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
                             }
                         });

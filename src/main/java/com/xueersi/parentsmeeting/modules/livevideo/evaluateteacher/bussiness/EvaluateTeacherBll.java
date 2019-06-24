@@ -113,7 +113,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.paren
             if (rlLiveMessageContent == null) {
                 rlLiveMessageContent = new RelativeLayout(activity);
                 rlLiveMessageContent.setId(R.id.rl_livevideo_evalutate_teacher);
-                mRootView.addView(rlLiveMessageContent, params);
+                addView(rlLiveMessageContent, params);
             } else {
                 rlLiveMessageContent.removeAllViews();
             }

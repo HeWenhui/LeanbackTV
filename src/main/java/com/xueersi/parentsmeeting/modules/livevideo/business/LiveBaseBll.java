@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BaseBll;
@@ -28,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  * created  at 2018/6/20 9:34
  */
-public class LiveBaseBll extends BaseBll {
+public class LiveBaseBll extends BaseBll implements LiveViewAction {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected RelativeLayout mRootView;
     protected RelativeLayout rlMessageBottom;
@@ -303,5 +305,35 @@ public class LiveBaseBll extends BaseBll {
 
     public <T> void putInstance(Class<T> clazz, T object) {
         ProxUtil.getProxUtil().put(mContext, clazz, object);
+    }
+
+    public void addView(View child) {
+        mRootView.addView(child);
+    }
+
+    @Override
+    public void removeView(View child) {
+        mRootView.removeView(child);
+    }
+
+    public void addView(View child, ViewGroup.LayoutParams params) {
+        mRootView.addView(child, params);
+    }
+
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        mRootView.addView(child, index, params);
+    }
+
+    public final boolean post(Runnable r) {
+        return mHandler.post(r);
+    }
+
+    public final boolean postDelayed(Runnable r, long uptimeMillis) {
+        return mHandler.postDelayed(r, uptimeMillis);
+    }
+
+    public void removeCallbacks(Runnable action) {
+        mHandler.removeCallbacks(action);
     }
 }
