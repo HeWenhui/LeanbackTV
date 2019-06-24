@@ -216,7 +216,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                 public void run() {
                     RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
                     if (mRtcEngine != null) {
-                        mRtcEngine.enableLocalVideo(enable);
+                        mRtcEngine.muteLocalVideo(!enable);
                     }
                 }
             });
