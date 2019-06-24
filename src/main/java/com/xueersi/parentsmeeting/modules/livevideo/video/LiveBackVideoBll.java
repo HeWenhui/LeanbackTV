@@ -134,8 +134,12 @@ public class LiveBackVideoBll {
         if (this.nowPos < totalRouteNum) {
             changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
         } else {
-            this.nowPos = 0;
-            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            if(totalRouteNum!=0) {
+                this.nowPos = 0;
+                changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            }else{
+                playNewVideo();
+            }
         }
     }
 
