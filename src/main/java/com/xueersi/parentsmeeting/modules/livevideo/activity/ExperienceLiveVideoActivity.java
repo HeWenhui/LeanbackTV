@@ -1441,8 +1441,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 } else {
                     videoPath = url;
                 }
-//                changeNextLine();
-                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                changeNextLine();
+//                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
                 setmDisplayName(mSectionName);
             }
         }
@@ -1574,8 +1574,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 } else {
                     videoPath = url;
                 }
-//                changeNextLine();
-                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                changeNextLine();
+//                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
                 setmDisplayName(mSectionName);
             }
         } else {

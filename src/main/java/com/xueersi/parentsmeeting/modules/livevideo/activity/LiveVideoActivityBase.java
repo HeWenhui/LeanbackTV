@@ -493,16 +493,16 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     /**
      * 切换到下一条线路(回放和体验课专用,目前只支持mp4)
      */
-//    protected void changeNextLine() {
-//        this.nowPos++;
-//        //当前线路小于总线路数
-//        if (this.nowPos < totalRouteNum) {
-//            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
-//        } else {
-//            this.nowPos = 0;
-//            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
-//        }
-//    }
+    protected void changeNextLine() {
+        this.nowPos++;
+        //当前线路小于总线路数
+        if (this.nowPos < totalRouteNum) {
+            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        } else {
+            this.nowPos = 0;
+            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        }
+    }
 
     /**
      * PSIJK切换线路使用
