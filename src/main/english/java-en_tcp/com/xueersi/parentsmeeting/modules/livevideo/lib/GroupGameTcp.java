@@ -380,7 +380,7 @@ public class GroupGameTcp {
                 if (readSave || saveRead) {
                     //暂时没有出现过异常
                     try {
-                        String name = ("" + inetSocketAddress).replaceAll("\\.", "_").replaceAll(":", "-");
+                        String name = ("" + ("" + inetSocketAddress).hashCode()).replaceAll("\\.", "_").replaceAll(":", "-");
                         saveDir = new File(saveDir, name);
                         if (!saveDir.exists()) {
                             saveDir.mkdirs();
