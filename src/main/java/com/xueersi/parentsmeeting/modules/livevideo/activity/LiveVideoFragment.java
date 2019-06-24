@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.presenter.ChineseSpeechBulletScreenIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.presenter.EnglishSpeechBulletIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
@@ -63,7 +64,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5C
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechCollectiveIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowBll;
@@ -242,7 +242,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
-            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
+//            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll));
@@ -267,7 +267,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
             mLiveBll.addBusinessBll(new ChinesePkBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
+//            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll));
@@ -307,8 +307,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll));
             }
 
-            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
+//            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
+//            mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll));
 //            mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));
@@ -358,7 +358,20 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             try {
                 BllConfigEntity bllConfigEntity = bllConfigEntities.get(i);
                 String className = bllConfigEntity.className;
-                Class<? extends LiveBaseBll> clazz = (Class<? extends LiveBaseBll>) Class.forName(className);
+                Class<?> c = Class.forName(className);
+                Class<? extends LiveBaseBll> clazz;
+                if (BusinessCreat.class.isAssignableFrom(c)) {
+                    Class<? extends BusinessCreat> creatClazz = (Class<? extends BusinessCreat>) c;
+                    BusinessCreat businessCreat = creatClazz.newInstance();
+                    clazz = businessCreat.getClassName(activity.getIntent());
+                    if (clazz == null) {
+                        continue;
+                    }
+                } else if (LiveBaseBll.class.isAssignableFrom(c)) {
+                    clazz = (Class<? extends LiveBaseBll>) c;
+                } else {
+                    continue;
+                }
                 Constructor<? extends LiveBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBll2.class});
                 LiveBaseBll liveBaseBll = constructor.newInstance(activity, mLiveBll);
                 mLiveBll.addBusinessBll(liveBaseBll);
@@ -368,7 +381,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 CrashReport.postCatchedException(e);
             }
         }
-        FeedbackTeacherBll feedbackTeacherBll = new FeedbackTeacherBll(activity,mLiveBll);
+        FeedbackTeacherBll feedbackTeacherBll = new FeedbackTeacherBll(activity, mLiveBll);
         feedbackTeacherBll.setLiveFragment(this);
 
         mLiveBll.addBusinessBll(feedbackTeacherBll);

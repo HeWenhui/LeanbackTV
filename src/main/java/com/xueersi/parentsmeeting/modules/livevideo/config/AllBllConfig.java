@@ -10,12 +10,15 @@ import java.util.ArrayList;
 public class AllBllConfig {
     //"com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
     private static String[] secClassPath = {
+            "com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkCreat",
+            "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechCollectiveIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business.TeacherPraiseSecBll"};
     private static String[] engClassPath = {
+            "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnTeamPkIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll"};
-    private static String[] cnClassPath = {};
+    private static String[] cnClassPath = {"com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",};
 
 //    public static BllConfigEntity[] live_business_arts = {new BllConfigEntity(getEnTeamPkIRCBllClassPath()),
 //            new BllConfigEntity(getLiveAchievementIRCBllClassPath())};
