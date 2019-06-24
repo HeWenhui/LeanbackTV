@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -1224,7 +1225,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             if (responseEntity.getJsonObject() instanceof JSONObject) {
                                 try {
                                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                                    if (mGetInfo.getIsArts() == 0) {
+                                    if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
                                         sendFlowerMessage(jsonObject.getInt("type"), formWhichTeacher);
                                     } else {
                                         sendFlowerMessage(jsonObject.getInt("type"));

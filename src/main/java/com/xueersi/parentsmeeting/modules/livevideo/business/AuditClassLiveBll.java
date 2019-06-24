@@ -563,10 +563,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             onLiveError(responseEntity);
             return;
         }
-        if (mGetInfo.getIsArts() == 1) {
+        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
-        } else if (mGetInfo.getIsArts() == 2) {
+        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
             appID = UmsConstants.LIVE_CN_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {

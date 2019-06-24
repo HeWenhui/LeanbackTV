@@ -285,7 +285,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         LiveVideoConfig.isSend = false;
                         id = h5_Experiment.getString("id");
                         courseware_type = h5_Experiment.getString("courseware_type");
-                        String pre = mGetInfo.getIsArts() == 2 ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                        String pre = mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
                         play_url = pre + mLiveId + "/" + mLiveBll
                                 .getStuCouId() + "/" + id +
                                 "/" + courseware_type
@@ -428,7 +428,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         if ("on".equals(status)) {
                             id = object.getString("id");
                             courseware_type = object.getString("courseware_type");
-                            String pre = mGetInfo.getIsArts() == 2 ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                            String pre = mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
                             play_url = pre + mLiveId + "/" + mLiveBll
                                     .getStuCouId() + "/"
                                     + id + "/" + courseware_type

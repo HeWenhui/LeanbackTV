@@ -263,7 +263,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
         } else {
             // 语文三分屏 或者 语文半身直播
-            if (data.getIsArts() == 2 || (data.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY && data.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH)) {
+            if (data.getIsArts() == LiveVideoSAConfig.ART_CH || (data.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY && data.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH)) {
 //                String[] subjectIds = data.getSubjectIds();
 //                if (subjectIds != null) {
 //                    for (int i = 0; i < subjectIds.length; i++) {

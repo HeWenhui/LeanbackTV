@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.http.EvaluateResponseParser;
@@ -51,7 +52,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.paren
             if (getInfo.getEvaluateTeacherEntity() != null && getInfo.getEvaluateTeacherEntity().isEvaluateIsOpen()) {
                 mHttpManager = mLiveBll.getHttpManager();
                 mParser = new EvaluateResponseParser();
-                if (getInfo.getIsArts() == 1) {
+                if (getInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
                     logger.i("IsArts:" + getInfo.getIsArts() + " IsSmallEnglish:" + getInfo.getSmallEnglish());
                     if (getInfo.getSmallEnglish()) {
                         evaluateTeacherPager = new SmallEnglishEvaluateTeacherPager(mContext, getInfo);
@@ -59,7 +60,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.paren
                         evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
                     }
                     getArtsEvaluateOption(getInfo.getSmallEnglish());
-                } else if (getInfo.getIsArts() == 0) {
+                } else if (getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
                     logger.i("IsArts:" + getInfo.getIsArts() + " IsPrimaryScience:" + getInfo.getIsPrimarySchool());
 
                    // 语文半身 直播，采用语文的皮肤，理科的接口
@@ -72,7 +73,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.paren
                         evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
                     }
                     getSciecneEvaluateOption();
-                } else if (getInfo.getIsArts() == 2) {
+                } else if (getInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
                     logger.i("IsArts:" + getInfo.getIsArts());
                     if (LiveVideoConfig.isSmallChinese){
                         evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, getInfo);
@@ -209,15 +210,15 @@ public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.paren
             }
 
         };
-        if (mGetInfo.getIsArts() == 1) {
+        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
             mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
-        } else if (mGetInfo.getIsArts() == 0) {
+        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
             mHttpManager.saveScienceEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
-        } else if (mGetInfo.getIsArts() == 2) {
+        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
             mHttpManager.saveChsEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);

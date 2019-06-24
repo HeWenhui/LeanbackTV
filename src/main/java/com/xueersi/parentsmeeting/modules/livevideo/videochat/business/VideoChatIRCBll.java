@@ -8,6 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -322,7 +323,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
 
     @Override
     public void chatHandAdd(HttpCallBack call) {
-        if (mGetInfo.getIsArts() == 0) {
+        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
             getHttpManager().chatHandAdd(call);
         }
     }

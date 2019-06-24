@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -631,7 +632,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
         if (OPEN_AUTO_SIGN) {
             // 理科直播 自动签到
-            boolean isAutoSign = data != null && data.getIsArts() != 1 && liveType == LiveVideoConfig.LIVE_TYPE_LIVE;
+            boolean isAutoSign = data.getIsArts() != LiveVideoSAConfig.ART_EN && liveType == LiveVideoConfig.LIVE_TYPE_LIVE;
             setAutoSign(isAutoSign);
         }
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -642,7 +643,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
     private void initUserSignState(LiveGetInfo data) {
 
         //理科自动签到
-        if (RollCallBll.OPEN_AUTO_SIGN && data.getIsArts() != 1
+        if (RollCallBll.OPEN_AUTO_SIGN && data.getIsArts() != LiveVideoSAConfig.ART_EN
                 && data.getStudentLiveInfo().getSignStatus() != Config.SIGN_STATE_CODE_SIGNED) {
             ClassSignEntity classSignEntity = new ClassSignEntity();
             classSignEntity.setStuName(data.getStuName());

@@ -418,10 +418,10 @@ public class LiveBll2 extends BaseBll {
         }
         liveUidRx.setLiveGetInfo(getInfo);
         getInfo.setStuCouId(mStuCouId);
-        if (mGetInfo.getIsArts() == 1) {
+        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
-        } else if (mGetInfo.getIsArts() == 2) {//
+        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {//
             appID = UmsConstants.LIVE_CN_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
@@ -567,7 +567,7 @@ public class LiveBll2 extends BaseBll {
      * @param getInfo
      */
     private void initExtInfo(LiveGetInfo getInfo) {
-        if (getInfo != null && getInfo.getIsArts() == 1 && !exInfoInited.get()) {
+        if (getInfo != null && getInfo.getIsArts() == LiveVideoSAConfig.ART_EN && !exInfoInited.get()) {
             logger.e("======>initExtInfo called:");
             exInfoInited.set(true);
             postDelayedIfNotFinish(initArtsExtLiveInfoTask, 0);

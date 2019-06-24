@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.Coursewa
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -260,7 +261,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putInt("useSkin", mGetInfo.getUseSkin());
                     bundle.putInt("isGoldMicrophone", mGetInfo.isUseGoldMicroPhone());
                     bundle.putInt("useSuperSpeakerShow", mGetInfo.getUseSuperSpeakerShow());
-                    if (mGetInfo.getIsArts() == 0) {
+                    if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
                     } else {
                         bundle.putInt("smallEnglish", mGetInfo.getSmallEnglish() ? 1 : 0);

@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -505,7 +506,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                         logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
                     }
                 } else if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_COMMON) {
-                    if (mGetInfo.getIsArts() == 2) {
+                    if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
                         if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE
@@ -595,7 +596,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         uploadEntity.setFilePath(path);
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
 
-        uploadEntity.setCloudPath(mGetInfo.getIsArts() == 2 ? CloudDir.LIVE_ARTS_MOMENT : CloudDir.LIVE_SCIENCE_MOMENT);
+        uploadEntity.setCloudPath(mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? CloudDir.LIVE_ARTS_MOMENT : CloudDir.LIVE_SCIENCE_MOMENT);
 
 //            uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
 

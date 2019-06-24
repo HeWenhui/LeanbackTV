@@ -294,7 +294,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      * @return
      */
     private boolean isMiddleScience() {
-        return mGetInfo.getIsArts() == 0
+        return mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC
                 && !LiveVideoConfig.isPrimary
                 && !LiveVideoConfig.isSmallChinese
                 && !mGetInfo.getSmallEnglish();
