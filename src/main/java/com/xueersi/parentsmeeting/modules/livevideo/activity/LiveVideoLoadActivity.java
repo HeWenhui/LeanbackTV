@@ -432,7 +432,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
     private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo) {
         return liveGetInfo != null && liveGetInfo.getPattern()
                 == LiveVideoConfig.LIVE_TYPE_HALFBODY
-                && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
+                && liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH;
     }
 
 }

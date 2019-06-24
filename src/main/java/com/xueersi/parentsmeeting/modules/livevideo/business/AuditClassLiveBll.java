@@ -619,7 +619,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo){
         return liveGetInfo != null && liveGetInfo.getPattern()
                 == LiveVideoConfig.LIVE_TYPE_HALFBODY
-                && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
+                && liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH;
     }
 
 
@@ -675,7 +675,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public synchronized void getHalfBodyLiveStudentLiveInfo() {
 
-        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE,
+        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH,
                 new HttpCallBack(false){
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
