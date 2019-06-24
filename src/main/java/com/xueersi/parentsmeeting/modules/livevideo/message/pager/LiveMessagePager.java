@@ -68,8 +68,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -563,7 +564,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    LiveIRCMessageBll.requestGoldTotal(mContext);
+                    UserGoldTotal.requestGoldTotal(mContext);
                 }
             });
             View view = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
@@ -1199,13 +1200,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         Loger.e("LiveMessagerPager", "=====>onMessage called");
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             // 专属老师，如果当前是辅导态，则不显示主讲老师发的聊天
             if (getInfo != null && getInfo.ePlanInfo != null && LiveTopic.MODE_TRANING.equals(getInfo.getMode())) {
                 return;
             }
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = getInfo.ePlanInfo == null ? "辅导老师" : "专属老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);

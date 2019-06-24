@@ -47,6 +47,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessageReg;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
@@ -70,24 +72,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 //import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 
 /**
- * Created by lyqai on 2018/6/26.
+ * Created by linyuqiang on 2018/6/26.
+ * 直播聊天
  */
-
 public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction {
     private final String TAG = "LiveIRCMessageBll";
-    Logger loger = LoggerFactory.getLogger(TAG);
-    /**
-     * 主讲老师前缀
-     */
-    public static final String TEACHER_PREFIX = "t_";
-    /**
-     * 辅导老师前缀
-     */
-    public static String COUNTTEACHER_PREFIX = "f_";
 
     private int mLiveType;
     private LogToFile mLogtf;
-    final Object lock = new Object();
+    private final Object lock = new Object();
     /**
      * 是不是有分组
      */
@@ -339,7 +332,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     }
                 }
             } catch (JSONException e) {
-                loger.e("onPrivateMessage", e);
+                logger.e("onPrivateMessage", e);
             }
         }
         if (mRoomAction != null) {
@@ -366,7 +359,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             User user = users[i];
             String _nick = user.getNick();
             if (_nick != null && _nick.length() > 2) {
-                if (_nick.startsWith(TEACHER_PREFIX)) {
+                if (_nick.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
                     s += ",mainTeacher=" + _nick;
                     haveMainTeacher = true;
                     synchronized (lock) {
@@ -377,7 +370,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             && mVideoAction != null) {
                         mVideoAction.onTeacherQuit(false);
                     }
-                } else if (_nick.startsWith(COUNTTEACHER_PREFIX)) {
+                } else if (_nick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
                     mCounTeacherStr = _nick;
                     haveCounteacher = true;
                     mCounteacher.isLeave = false;
@@ -440,7 +433,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
         logger.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
-        if (sender.startsWith(TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             synchronized (lock) {
                 mMainTeacher = new Teacher(sender);
                 mMainTeacherStr = sender;
@@ -449,7 +442,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
                 mVideoAction.onTeacherQuit(false);
             }
-        } else if (sender.startsWith(COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             mCounTeacherStr = sender;
             mCounteacher.isLeave = false;
             mLogtf.d("onJoin:Counteacher:target=" + target + ",mode=" + mLiveTopic.getMode());
@@ -474,7 +467,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
         logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                 + sourceHostname + ",reason=" + reason);
-        if (sourceNick.startsWith(TEACHER_PREFIX)) {
+        if (sourceNick.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             synchronized (lock) {
                 mMainTeacher = null;
             }
@@ -482,7 +475,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
                 mVideoAction.onTeacherQuit(true);
             }
-        } else if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
+        } else if (sourceNick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             mCounteacher.isLeave = true;
             mLogtf.d("onQuit:Counteacher quit");
             if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode()) && mVideoAction != null) {
@@ -571,7 +564,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     }
                 } catch (Exception e) {
-                    loger.e("onNotice:OPENBARRAGE", e);
+                    logger.e("onNotice:OPENBARRAGE", e);
                 }
                 //getLearnReport();
                 break;
@@ -595,7 +588,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     }
                     msg += ",disable=" + disable + ",id=" + id + "," + mLiveBll.getNickname();
                 } catch (Exception e) {
-                    loger.e("onNotice:GAG", e);
+                    logger.e("onNotice:GAG", e);
                 }
             }
             break;
@@ -620,7 +613,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     }
                 } catch (Exception e) {
-                    loger.e("onNotice:OPENCHAT", e);
+                    logger.e("onNotice:OPENCHAT", e);
                 }
             }
             break;
@@ -649,7 +642,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     }
                 } catch (Exception e) {
-                    loger.e("TEACHER_MESSAGE", e);
+                    logger.e("TEACHER_MESSAGE", e);
                 }
                 break;
             case XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE: {
@@ -1081,30 +1074,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.onTitleShow(show);
     }
 
-    public static String goldNum;
-    public static long goldNumTime;
-
-    public static void requestGoldTotal(Context mContext) {
-        long time = System.currentTimeMillis() - goldNumTime;
-        Loger.d("LiveIRCMessageBll", "requestGoldTotal:goldNum=" + goldNum + ",time=" + time);
-        if (goldNum == null || time > 120000) {
-            OtherModulesEnter.requestGoldTotal(mContext);
-        } else {
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    AppEvent.OnGetGoldUpdateEvent event = new AppEvent.OnGetGoldUpdateEvent(goldNum);
-                    EventBus.getDefault().post(event);
-                }
-            });
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.OnGetGoldUpdateEvent event) {
-        LiveIRCMessageBll.goldNum = event.goldNum;
-        LiveIRCMessageBll.goldNumTime = System.currentTimeMillis();
+        UserGoldTotal.goldNum = event.goldNum;
+        UserGoldTotal.goldNumTime = System.currentTimeMillis();
         mRoomAction.onGetMyGoldDataEvent(event.goldNum);
     }
 
