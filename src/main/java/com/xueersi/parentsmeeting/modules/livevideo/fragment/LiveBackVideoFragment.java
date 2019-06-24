@@ -59,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
@@ -73,7 +74,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherLiveBackBll;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import com.xueersi.ui.widget.CircleImageView;
 
@@ -155,11 +155,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
      * 全屏显示
      */
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
-    /** 全身直播 头像*/
+    /** 全身直播 头像 */
     LinearLayout llUserHeadImage;
-    /** 全身直播 头像*/
+    /** 全身直播 头像 */
     CircleImageView civUserHeadImage;
     boolean isTutorVideo = false;
+
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
@@ -592,7 +593,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 evaluateTeacherPlayBackBll.setLiveFragmentBase(liveBackPlayVideoFragment);
                 liveBackBll.addBusinessBll(evaluateTeacherPlayBackBll);
 
-                FeedbackTeacherLiveBackBll feedbackTeacherLiveBackBll = new FeedbackTeacherLiveBackBll(activity,liveBackBll);
+                FeedbackTeacherLiveBackBll feedbackTeacherLiveBackBll = new FeedbackTeacherLiveBackBll(activity, liveBackBll);
                 feedbackTeacherLiveBackBll.setLiveFragment(liveBackPlayVideoFragment);
                 liveBackBll.addBusinessBll(feedbackTeacherLiveBackBll);
             }
@@ -702,14 +703,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     /**
      * 老师统计
      */
-    private void umsTeacherChange(){
-      if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN && liveBackBll!=null) {
-          StableLogHashMap logHashMap = new StableLogHashMap("backup_teacher");
-          liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
-      } else if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR && liveBackBll!=null){
-          StableLogHashMap logHashMap = new StableLogHashMap("backup_coach");
-          liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
-      }
+    private void umsTeacherChange() {
+        if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN && liveBackBll != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("backup_teacher");
+            liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT, logHashMap);
+        } else if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR && liveBackBll != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("backup_coach");
+            liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT, logHashMap);
+        }
 
     }
 
@@ -952,14 +953,23 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (AppBll.getInstance(activity).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
             logger.d("onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
-            playNewVideo();
+            if (MediaPlayer.getIsNewIJK()) {
+                liveBackVideoBll.changeNextLine();
+            } else {
+                playNewVideo();
+            }
+
         } else {
             StringBuilder stringBuilder = new StringBuilder();
             int netWorkType = NetWorkHelper.getNetWorkState(activity, stringBuilder);
             if (netWorkType == NetWorkHelper.MOBILE_STATE && allowMobilePlayVideo) {
                 videoBackgroundRefresh.setVisibility(View.GONE);
                 logger.d("mobile status : onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
-                playNewVideo();
+                if (MediaPlayer.getIsNewIJK()) {
+                    liveBackVideoBll.changeNextLine();
+                } else {
+                    playNewVideo();
+                }
             } else {
                 logger.i("not mobile status,or not allowMobilePlayVideo");
             }
