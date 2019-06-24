@@ -953,21 +953,21 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         public void onLoadComplete() {
             try {
                 JSONObject resultData = new JSONObject();
-                JSONArray studentInfo = new JSONArray();
-                JSONObject student = new JSONObject();
-
                 resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
                 resultData.put("pageNum", 0);
                 resultData.put("restTime", mAnswersList.get(0).getSingleTime());
                 resultData.put("currentRight", 0);
                 resultData.put("isSingle", true);
 
+                //组内学生信息，单人只传自己的
+                JSONArray studentInfo = new JSONArray();
+                JSONObject student = new JSONObject();
                 student.put("studentNum", 2);
                 student.put("name", liveGetInfo.getStuName());
                 student.put("avatar", liveGetInfo.getHeadImgPath());
                 studentInfo.put(student);
-
                 resultData.put("studentInfo", studentInfo);
+
                 sendToCourseware(wvSubjectWeb, resultData, "*");
             } catch (Exception e) {
                 e.printStackTrace();

@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.core.io.JsonEOFException;
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -456,6 +457,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 //时间没结束,才倒计时
                 if (test.getTotalTime() > 0) {
                     int time = test.getAnswerList().get(currentAnswerIndex).getSingleTime() + 1;
+                    if (currentAnswerIndex == 0 && LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo
+                            .type)) {
+                        //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1秒再开始倒计时和收音
+                        time += test.getAnswerList().size();
+                    }
                     if (turnRun == null) {
                         turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                         handler.postDelayed(turnRun, time * 1000);
@@ -492,11 +498,23 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     if (test.getTotalTime() > 0) {
                         coursewareOnloading(currentAnswerIndex);
                     }
-                    if (!gameOver) {
-                        startSpeechRecognize();
-                    }
                 }
             });
+
+            int time = 0;
+            if (currentAnswerIndex == 0 && LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo
+                    .type)) {
+                //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1秒再开始倒计时和收音
+                time += test.getAnswerList().size();
+            }
+            if (!gameOver) {
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startSpeechRecognize();
+                    }
+                }, time * 1000);
+            }
         }
 
         private void onCoursewareDoing(String where, final JSONObject message) {
@@ -558,6 +576,20 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             resultData.put("currentRight", integer);
                         }
                         resultData.put("isSingle", false);
+
+                        //组内学生信息
+                        JSONArray studentInfo = new JSONArray();
+                        ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                        for (int i = 0; i < entities.size(); i++) {
+                            TeamMemberEntity teamMemberEntity = entities.get(i);
+                            JSONObject student = new JSONObject();
+                            student.put("studentNum", i + 1);
+                            student.put("name", teamMemberEntity.name);
+                            student.put("avatar", teamMemberEntity.headurl);
+                            studentInfo.put(student);
+                        }
+                        resultData.put("studentInfo", studentInfo);
+
                         sendToCourseware(wvSubjectWeb, resultData, "*");
                     } catch (Exception e) {
                         mLogtf.e("coursewareOnloading", e);
