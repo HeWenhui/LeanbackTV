@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -558,7 +557,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             return;
         }*/
 
-        if (mGetInfo.getPattern() == 2) {
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
             ResponseEntity responseEntity = new ResponseEntity();
             responseEntity.setErrorMsg("家长旁听暂不支持全身直播，程序员哥哥正在夜以继日的开发哦!");
             onLiveError(responseEntity);
@@ -619,7 +618,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      */
     private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo){
         return liveGetInfo != null && liveGetInfo.getPattern()
-                == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                == LiveVideoConfig.LIVE_TYPE_HALFBODY
                 && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
     }
 

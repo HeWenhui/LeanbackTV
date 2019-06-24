@@ -54,7 +54,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AuditVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodyAuditClassBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -1012,7 +1011,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * @return
      */
     private boolean isHalfBodyLive() {
-        return mGetInfo != null && mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY;
+        return mGetInfo != null && mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY;
     }
 
     /***

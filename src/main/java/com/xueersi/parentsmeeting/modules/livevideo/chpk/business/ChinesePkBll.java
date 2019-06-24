@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.chpk.business;
 
 import android.app.Activity;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -22,7 +21,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.chpk.page.PkDispatchTeamPage
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.page.PkOpenAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.page.PkTeamResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.page.PkTeamSelectPager;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -48,7 +46,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackage
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.event.TeamPkTeamInfoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.LocalTeamPkTeamInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.TeamPKHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.TeamPkHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
@@ -174,7 +171,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      * @return
      */
     public boolean isHalfBodyLiveRoom() {
-        return roomInitInfo != null && (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || primaryClass);
+        return roomInitInfo != null && (roomInitInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY || primaryClass);
     }
 
 
@@ -698,7 +695,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     @Override
     public void onLiveInited(LiveGetInfo data) {
         if (data != null && "1".equals(data.getIsAllowTeamPk())) {
-            primaryClass = data.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS;
+            primaryClass = data.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS;
             mHttpManager = getHttpManager();
             setRoomInitInfo(data);
             attachToRootView();

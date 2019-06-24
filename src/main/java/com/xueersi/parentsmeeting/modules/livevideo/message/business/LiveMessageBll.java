@@ -258,7 +258,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }else{
             if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                 // 语文
-                if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                if (getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
                     liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
                             null, baseLiveMediaControllerBottom, liveMessageLandEntities, null, HalfBodyLiveConfig.SKIN_TYPE_CH);
                 } else {
@@ -267,7 +267,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 }
             } else {
                 // 理科
-                if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+                if (getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
                     liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
                             null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop, liveMessageLandEntities, null);
                 } else {

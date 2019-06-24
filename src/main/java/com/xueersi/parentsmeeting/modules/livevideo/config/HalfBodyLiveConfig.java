@@ -8,10 +8,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
  */
 
 public interface HalfBodyLiveConfig {
-    /**半身直播直播类型*/
-    int LIVE_TYPE_HALFBODY = 6;
-    /**半身直播直播类型-小组*/
-    int LIVE_TYPE_HALFBODY_CLASS = 9;
     /**直播类型:语文*/
     int LIVE_TYPE_CHINESE = 2;
 

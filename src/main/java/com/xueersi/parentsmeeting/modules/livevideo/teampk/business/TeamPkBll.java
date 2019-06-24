@@ -18,7 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
@@ -50,7 +50,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.LocalTeamPkTeamInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.TeamPKHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultFlayPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.event.TeamPkTeamInfoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.TeamPkHttp;
@@ -243,7 +242,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      */
     public boolean isHalfBodyLiveRoom() {
         //logger.e( "========>isHalfBodyLiveRoom:" + roomInitInfo + ":" + roomInitInfo.getPattern());
-        return roomInitInfo != null && (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || primaryClass);
+        return roomInitInfo != null && (roomInitInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY || primaryClass);
     }
 
     /**
@@ -1128,7 +1127,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     @Override
     public void onLiveInited(LiveGetInfo data) {
         if (data != null && "1".equals(data.getIsAllowTeamPk())) {
-            primaryClass = data.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS;
+            primaryClass = data.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS;
             mHttpManager = getHttpManager();
             setRoomInitInfo(data);
             attachToRootView();

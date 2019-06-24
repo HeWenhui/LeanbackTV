@@ -112,7 +112,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
-        if (mGetInfo.getPattern() == 2) {
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
             onTitleShow(true);
         }
     }

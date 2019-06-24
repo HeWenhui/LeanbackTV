@@ -911,7 +911,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private void upLoadHotWordLog(String hotwordCmd) {
         try {
             //非语文半身直播  上传热词埋点数据
-            if(getInfo != null && getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY && getInfo.getUseSkin()
+            if(getInfo != null && getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY && getInfo.getUseSkin()
                     != HalfBodyLiveConfig.SKIN_TYPE_CH){
                 HotWordLog.hotWordSend(this.liveAndBackDebug,hotwordCmd,HotWordLog.LIVETYPE_PRESCHOOL,
                         getInfo.getStudentLiveInfo().getClassId(),getInfo.getStudentLiveInfo().getTeamId(),getInfo.getStudentLiveInfo().getCourseId());

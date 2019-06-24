@@ -52,7 +52,7 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
         if (redPackageAction == null) {
-            if (pattern == 2) {
+            if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
                 String showName = "";
                 String headUrl = "";
                 MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();

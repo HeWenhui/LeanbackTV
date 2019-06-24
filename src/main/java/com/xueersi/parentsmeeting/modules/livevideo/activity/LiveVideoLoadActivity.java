@@ -3,33 +3,27 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.xueersi.common.base.BaseActivity;
-import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.util.LoadCallback;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
@@ -436,7 +430,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
      */
     private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo) {
         return liveGetInfo != null && liveGetInfo.getPattern()
-                == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                == LiveVideoConfig.LIVE_TYPE_HALFBODY
                 && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
     }
 

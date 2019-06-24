@@ -30,7 +30,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
@@ -201,9 +200,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mCounteacher = new Teacher(mGetInfo.getTeacherName());
         mRoomAction.setLiveGetInfo(getInfo);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            if (getInfo.getPattern() == 2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
+            if (getInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initViewLiveStand(mRootView);
-            } else if ((getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS)
+            } else if ((getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY || getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS)
                     && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initHalfBodyLive(mRootView);
             } else {
@@ -242,7 +241,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             .isZJLKOpenbarrage(), mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
                     //mRoomAction.onTeacherModeChange(mode,false);
                 }
-                if (mGetInfo.getPattern() == 2) {
+                if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
                     View view = mRoomAction.getView();
                     if (view != null) {
                         view.setVisibility(View.INVISIBLE);
@@ -255,7 +254,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
                     }
-                } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                } else if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY || mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
                     //延迟 2.5 秒 走相关逻辑(适配转场动画 节奏)
                     final String finalMode = mode;
                     postDelayed(new Runnable() {

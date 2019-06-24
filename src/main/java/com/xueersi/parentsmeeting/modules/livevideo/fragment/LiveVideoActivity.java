@@ -13,7 +13,7 @@ import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.halfbody.HalfBodyLiveVideoFragement;
 
 /**
@@ -62,12 +62,12 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     @Override
     protected LiveVideoFragmentBase getFragment() {
         int pattern = getIntent().getIntExtra("pattern", 0);
-        if (pattern == 2) {
+        if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
             return new StandLiveVideoFragment();
-        } else if (pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+        } else if (pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
             //半身直播
             return new HalfBodyLiveVideoFragement();
-        } else if (pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+        } else if (pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
             //半身直播
             return new PrimaryClassVideoFragment();
         } else {

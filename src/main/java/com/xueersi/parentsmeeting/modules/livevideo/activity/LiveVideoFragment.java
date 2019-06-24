@@ -98,8 +98,6 @@ import java.util.List;
 public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, BaseLiveMessagePager.OnMsgUrlClick {
     private String TAG = "LiveVideoFragment";
     Logger logger = LiveLoggerFactory.getLogger(TAG);
-    private int useSkin;
-
     public LiveVideoFragment() {
         mLayoutVideo = R.layout.activity_video_live_new;
     }
@@ -150,11 +148,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         if (onVideoCreate) {
             isArts = activity.getIntent().getIntExtra("isArts", -1);
             isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
-            useSkin = activity.getIntent().getIntExtra("useSkin", 0);
             isGoldMicrophone = activity.getIntent().getIntExtra("isGoldMicrophone", 0);
             useSuperSpeakerShow = activity.getIntent().getIntExtra("useSuperSpeakerShow", 0);
             //logger.e("========>:onVideoCreate 22222229999000:");
-            pattern = activity.getIntent().getIntExtra("pattern", 2);
+            pattern = activity.getIntent().getIntExtra("pattern", LiveVideoConfig.LIVE_PATTERN_COMMON);
             String mode2 = activity.getIntent().getStringExtra("mode");
             if (mode2 != null) {
                 mode = mode2;
@@ -242,7 +239,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
-//            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll));
@@ -267,7 +263,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
             mLiveBll.addBusinessBll(new ChinesePkBll(activity, mLiveBll));
-//            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll));
@@ -299,16 +294,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
-
-            // 语文半身直播 添加 语文pk 业务类
-            if ((pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) && useSkin == HalfBodyLiveConfig.SKIN_TYPE_CH) {
-                mLiveBll.addBusinessBll(new ChinesePkBll(activity, mLiveBll));
-            } else {
-                mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll));
-            }
-
-//            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
-//            mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll));
 //            mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));

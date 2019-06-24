@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 
@@ -42,7 +43,7 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
         if(event.getEnvetnType() == LiveBackQuestionEvent.QUSTIONS_SHOW){
             mAnswerResultBll.closeAnswerResult(false);
         }else if(event.getEnvetnType() == LiveBackQuestionEvent.QUSTION_CLOSE){
-            if(liveGetInfo.getPattern() == 2){
+            if(liveGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2){
                 EventBus.getDefault().post(new AnswerResultCplShowEvent("onLiveBackQuestionEvent"));
                 Log.e("mqtt","submitData" + "hahaha");
             }else{

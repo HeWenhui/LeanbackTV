@@ -14,7 +14,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.http.EvaluateResponseParser;
@@ -64,7 +63,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.paren
                     logger.i("IsArts:" + getInfo.getIsArts() + " IsPrimaryScience:" + getInfo.getIsPrimarySchool());
 
                    // 语文半身 直播，采用语文的皮肤，理科的接口
-                   if(getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                   if(getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY
                            && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH){
                        evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, getInfo);
                    } else if (1 == getInfo.getIsPrimarySchool()) {
