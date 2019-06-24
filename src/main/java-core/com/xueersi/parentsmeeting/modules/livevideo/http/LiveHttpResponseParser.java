@@ -411,6 +411,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                     XesMobAgent.liveExpe(from, getInfo.getId());
                 }
+                studentLiveInfoEntity.setGoldNum(studentLiveInfo.optInt("goldNum"));
                 studentLiveInfoEntity.setShutupStatus(studentLiveInfo.getString("shutupStatus"));
                 studentLiveInfoEntity.setEvaluateStatus(studentLiveInfo.optInt("evaluateStatus", 0));
                 studentLiveInfoEntity.setSignStatus(studentLiveInfo.optInt("signStatus", 0));

@@ -710,12 +710,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mSdm = ShareDataManager.getInstance();
         isShowSpeechRecog = mSdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager.SHAREDATA_USER);
         cpuRecogTime = mSdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_USER);
-        liveThreadPoolExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                UserGoldTotal.requestGoldTotal(mContext);
-            }
-        });
+        if (getInfoGoldNum == 0) {
+            liveThreadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    UserGoldTotal.requestGoldTotal(mContext);
+                }
+            });
+        } else {
+            goldNum = "" + getInfoGoldNum;
+        }
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
@@ -816,15 +820,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 //        });
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
-        if (!dir.exists())
-
-        {
+        if (!dir.exists()) {
             dir.mkdirs();
         }
 
-        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5)
-
-        {
+        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5) {
             String fileName = "live_stand_head.json";
 
             @Override
@@ -908,7 +908,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         if (noSpeechTimer != null) {
             noSpeechTimer.cancel();
         }
-        if (vwvVoiceChatWave != null){
+        if (vwvVoiceChatWave != null) {
             vwvVoiceChatWave.stop();
             vwvVoiceChatWave.setVisibility(View.GONE);
         }

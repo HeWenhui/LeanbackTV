@@ -178,7 +178,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
         btMessageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logger.i( "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                logger.i("onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                 Editable editable = etMessageContent.getText();
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
@@ -227,7 +227,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                 .OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
-                logger.i( "onKeyboardShowing:isShowing=" + isShowing);
+                logger.i("onKeyboardShowing:isShowing=" + isShowing);
                 if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                     onTitleShow(true);
                 }
@@ -275,12 +275,16 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     @Override
     public void initData() {
         super.initData();
-        liveThreadPoolExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                UserGoldTotal.requestGoldTotal(mContext);
-            }
-        });
+        if (getInfoGoldNum == 0) {
+            liveThreadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    UserGoldTotal.requestGoldTotal(mContext);
+                }
+            });
+        } else {
+            goldNum = "" + getInfoGoldNum;
+        }
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);

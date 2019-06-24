@@ -561,12 +561,16 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initFlower(educationStage);
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    UserGoldTotal.requestGoldTotal(mContext);
-                }
-            });
+            if (getInfoGoldNum == 0) {
+                liveThreadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        UserGoldTotal.requestGoldTotal(mContext);
+                    }
+                });
+            } else {
+                goldNum = "" + getInfoGoldNum;
+            }
             View view = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
             if (view != null) {
                 view.setVisibility(getInfo.getIsOpenNewCourseWare() == 1 ? View.VISIBLE : View.GONE);

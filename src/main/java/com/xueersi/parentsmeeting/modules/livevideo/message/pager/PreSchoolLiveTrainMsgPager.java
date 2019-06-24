@@ -578,12 +578,16 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
         super.initData();
         logger.i( "initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        liveThreadPoolExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                UserGoldTotal.requestGoldTotal(mContext);
-            }
-        });
+        if (getInfoGoldNum == 0) {
+            liveThreadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    UserGoldTotal.requestGoldTotal(mContext);
+                }
+            });
+        } else {
+            goldNum = "" + getInfoGoldNum;
+        }
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);

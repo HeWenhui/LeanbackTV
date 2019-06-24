@@ -125,6 +125,8 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     protected static int MESSAGE_SEND_CLO = 2;
     public int urlclick;
     public LiveGetInfo getInfo;
+    /** 从getinfo获得金币 */
+    protected int getInfoGoldNum = 0;
     /** 聊天线程池 */
     protected ThreadPoolExecutor pool;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
@@ -152,7 +154,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     }
 
     public BaseLiveMessagePager(Context context) {
-        this (context,true);
+        this(context, true);
     }
 
     public void setMessageBll(LiveMessageBll messageBll) {
@@ -165,6 +167,12 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
     public void setGetInfo(LiveGetInfo getInfo) {
         this.getInfo = getInfo;
+        if (getInfo != null) {
+            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = getInfo.getStudentLiveInfo();
+            if (studentLiveInfo != null) {
+                getInfoGoldNum = studentLiveInfo.getGoldNum();
+            }
+        }
     }
 
     /**
