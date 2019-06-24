@@ -418,7 +418,6 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             if (!teamInfoEntity.isFromLocal()) {
                 tvPrimaryTeamNameMid.setText("欢迎加入 “" + teamInfoEntity.getTeamName() + "”");
                 tvPrimaryTeamNameMid.setVisibility(View.VISIBLE);
-                ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(ivPrimaryTeamIcon);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -427,6 +426,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 }, 2000);
             }
         }
+        ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(ivPrimaryTeamIcon);
     }
 
     @Override

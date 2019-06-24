@@ -370,7 +370,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     public void run() {
                         RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
                         if (mRtcEngine != null) {
-                            mRtcEngine.enableRemoteAudio(uid, false);
+                            mRtcEngine.enableRemoteAudio(uid, true);
                         }
                     }
                 });
