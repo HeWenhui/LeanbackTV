@@ -35,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TeacherAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
@@ -75,7 +76,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/6/26.
  * 直播聊天
  */
-public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction {
+public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction, TeacherAction {
     private final String TAG = "LiveIRCMessageBll";
 
     private int mLiveType;
@@ -85,7 +86,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
      * 是不是有分组
      */
     private boolean haveTeam = false;
-    private long blockTime;
     private LiveTopic mLiveTopic = new LiveTopic();
     /**
      * 主讲老师
@@ -1270,35 +1270,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         return isPresent;
     }
 
-    public Teacher getCounteacher() {
-        return mCounteacher;
-    }
-
-    public Teacher getMainTeacher() {
-        return mMainTeacher;
-    }
-
     public String getmMainTeacherStr() {
         return mMainTeacherStr;
     }
 
     public String getmCounTeacherStr() {
         return mCounTeacherStr;
-    }
-
-    /**
-     * 得到老师名字
-     */
-    public String getModeTeacher(String mode) {
-        String mainnick = "null";
-        if (mMainTeacher != null) {
-            mainnick = mMainTeacher.get_nick();
-        }
-        if (mCounteacher == null) {
-            return "mode=" + mode + ",mainnick=" + mainnick + ",coun=null";
-        } else {
-            return "mode=" + mode + ",mainnick=" + mainnick + ",coun.isLeave=" + mCounteacher.isLeave;
-        }
     }
 
     /**

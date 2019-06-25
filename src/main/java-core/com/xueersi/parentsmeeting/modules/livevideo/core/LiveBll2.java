@@ -42,7 +42,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 
@@ -81,7 +80,7 @@ public class LiveBll2 extends BaseBll {
     private List<LiveBaseBll> businessBlls = new ArrayList<>();
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private AllLiveBasePagerIml allLiveBasePagerIml;
-    private LiveIRCMessageBll liveIRCMessageBll;
+    private TeacherAction teacherAction;
     private final int mLiveType;
     private LogToFile mLogtf;
     private String mLiveId;
@@ -251,15 +250,11 @@ public class LiveBll2 extends BaseBll {
     }
 
     public String getMainTeacherStr() {
-        return liveIRCMessageBll.getmMainTeacherStr();
+        return teacherAction.getmMainTeacherStr();
     }
 
     public String getCounTeacherStr() {
-        return liveIRCMessageBll.getmCounTeacherStr();
-    }
-
-    public String getModeTeacher() {
-        return liveIRCMessageBll.getModeTeacher(getMode());
+        return teacherAction.getmCounTeacherStr();
     }
 
     public LiveTopic getLiveTopic() {
@@ -333,8 +328,8 @@ public class LiveBll2 extends BaseBll {
         return businessBlls;
     }
 
-    public void setLiveIRCMessageBll(LiveIRCMessageBll liveIRCMessageBll) {
-        this.liveIRCMessageBll = liveIRCMessageBll;
+    public void setTeacherAction(TeacherAction teacherAction) {
+        this.teacherAction = teacherAction;
     }
 
     public void onCreate() {
@@ -1127,7 +1122,7 @@ public class LiveBll2 extends BaseBll {
     private boolean isPresent(String mode) {
         boolean isPresent = true;
         if (mIRCMessage != null && mIRCMessage.onUserList()) {
-            isPresent = liveIRCMessageBll.isPresent(mode);
+            isPresent = teacherAction.isPresent(mode);
         }
         return isPresent;
     }

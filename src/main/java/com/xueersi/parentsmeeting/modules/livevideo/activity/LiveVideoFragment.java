@@ -36,7 +36,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.business.ChinesePkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -338,7 +337,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             addSwitchFlowBll();
             initSwitchFlowListener();
         }
-        mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
+        mLiveBll.setTeacherAction(liveIRCMessageBll);
         for (int i = 0; i < bllConfigEntities.size(); i++) {
             try {
                 BllConfigEntity bllConfigEntity = bllConfigEntities.get(i);

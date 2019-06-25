@@ -193,7 +193,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         mLiveBll.addBusinessBll(new LecAdvertIRCBll(activity, mLiveBll));
         mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
         mLiveBll.addBusinessBll(new LecLearnReportIRCBll(activity, mLiveBll));
-        mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
+        mLiveBll.setTeacherAction(liveIRCMessageBll);
     }
 
     @Override
