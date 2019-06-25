@@ -5,6 +5,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -15,17 +16,20 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAsse
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
  * Created by lingyuqiang on 2018/4/7.
  * 站立直播的语音答题
  */
 public class LiveStandSpeechCreat implements BaseSpeechCreat {
-    QuestionIRCBll questionIRCBll;
+    Context context;
+    SpeechEvalHttp questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
     LivePagerBack livePagerBack;
 
-    public LiveStandSpeechCreat(QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug, LivePagerBack livePagerBack) {
+    public LiveStandSpeechCreat(Context context, SpeechEvalHttp questionIRCBll, LiveAndBackDebug liveAndBackDebug, LivePagerBack livePagerBack) {
+        this.context = context;
         this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;
         this.livePagerBack = livePagerBack;
@@ -51,12 +55,11 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
 
-        RolePlayStandMachinePager rolePlayerPager  = new RolePlayStandMachinePager(context,
+        RolePlayStandMachinePager rolePlayerPager = new RolePlayStandMachinePager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack, rolePlayMachineBll, liveGetInfo);
         return rolePlayerPager;
     }
-
 
 
     @Override
@@ -77,9 +80,9 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
 //        RolePlayStandLog.sno3(liveAndBackDebug, testId);
 //        return speechAssessmentPager;
 
-        RolePlayStandMachinePager rolePlayerPager  = new RolePlayStandMachinePager(context,
+        RolePlayStandMachinePager rolePlayerPager = new RolePlayStandMachinePager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack, rolePlayMachineBll, liveGetInfo);
         return rolePlayerPager;
 
     }
@@ -129,7 +132,10 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         @Override
         public void onSpeechSuccess(String num) {
             action.onSpeechSuccess(num);
-            questionIRCBll.getStuGoldCount("onSpeechSuccess");
+            UpdateAchievement updateAchievement = ProxUtil.getProvide(context, UpdateAchievement.class);
+            if (updateAchievement != null) {
+                updateAchievement.getStuGoldCount("onSpeechSuccess:num=" + num, UpdateAchievement.GET_TYPE_QUE);
+            }
         }
 
         @Override

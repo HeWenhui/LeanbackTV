@@ -27,7 +27,7 @@ import java.util.HashMap;
 public class StandSpeechTop3Bll implements SpeechEndAction {
     String TAG = "StandSpeechTop3Bll";
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
-    QuestionIRCBll questionIRCBll;
+    SpeechEvalHttp questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
     StandSpeechTop3Pager standSpeechTop3Pager;
     RelativeLayout bottomContent;
@@ -37,7 +37,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     HashMap<String, OnTop3End> top3EndHashMap = new HashMap<>();
     LogToFile logToFile;
 
-    public StandSpeechTop3Bll(Context context, QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
+    public StandSpeechTop3Bll(Context context, SpeechEvalHttp questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
         this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;
         logToFile = new LogToFile(context, TAG);

@@ -115,7 +115,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         questiongtype = Arrays.asList(ptTypeFilters);
     }
 
-    private void testPraise(RelativeLayout bottomContent){
+    private void testPraise(RelativeLayout bottomContent) {
         String data = "{\"bizId\":2,\"rankTitle\":\"课清测试\",\"category\":1,\"grade\":1,\"rankType\":1,\"isInList\":1," +
                 "\"word\":\"粤语,you're as good as gold!\",\"desc\":\"口述题测试, 口述题测试口述题测试口述题测试" +
                 ", 口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, " +
@@ -159,10 +159,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
         }
     }
+
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
-  //     testPraise(bottomContent);
+        //     testPraise(bottomContent);
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity answerResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity();
 //            answerResultEntity.isVoice = 1;
@@ -224,8 +225,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 liveExamQuestionCreat.setmAnswerRankBll(mAnswerRankBll);
             }
         }
+        QueArtHttp queArtHttp = null;
         if (isArts == LiveVideoSAConfig.ART_EN) {
-            QueArtHttp queArtHttp = new QueArtHttp();
+            queArtHttp = new QueArtHttp();
             liveExamQuestionCreat.setQuestionHttp(queArtHttp);
             mQuestionAction.setLiveBll(queArtHttp);
         } else {
@@ -245,10 +247,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         baseSubjectResultCreat.setLiveGetInfo(data);
         mQuestionAction.setBaseSubjectResultCreat(baseSubjectResultCreat);
         mQuestionAction.setQuestionWebCreate(new LiveQuestionWebCreate());
-        if (data.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
+        if (isArts == LiveVideoSAConfig.ART_EN && data.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction, data));
-            mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, contextLiveAndBackDebug, mQuestionAction));
-            StandSpeechTop3Bll standSpeechTop3Bll = new StandSpeechTop3Bll(activity, this, contextLiveAndBackDebug);
+            mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(activity, queArtHttp, contextLiveAndBackDebug, mQuestionAction));
+            StandSpeechTop3Bll standSpeechTop3Bll = new StandSpeechTop3Bll(activity, queArtHttp, contextLiveAndBackDebug);
             standSpeechTop3Bll.initView(mRootView);
             mQuestionAction.setSpeechEndAction(standSpeechTop3Bll);
         } else {
@@ -1064,13 +1066,13 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
-                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL,msg);
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
-                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR,responseEntity.getErrorMsg());
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
                     }
                 });
             } else {
@@ -1094,13 +1096,13 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
-                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL,msg);
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
-                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR,responseEntity.getErrorMsg());
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
                     }
                 });
             }
@@ -1200,111 +1202,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     }
 
-    public void getSpeechEvalAnswerTeamStatus(String testId, final AbstractBusinessDataCallBack callBack) {
-        getHttpManager().getSpeechEvalAnswerTeamStatus(testId, new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                GoldTeamStatus entity = getHttpResponseParser().getSpeechEvalAnswerTeamStatus(responseEntity, mGetInfo
-                        .getStuId());
-                callBack.onDataSucess(entity);
-//                if (AppConfig.DEBUG) {
-//                    GoldTeamStatus entity = new GoldTeamStatus();
-//                    Random random = new Random();
-//                    for (int i = 0; i < 5; i++) {
-//                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-//                        student.setNickname("测试" + (test1++));
-//                        student.createShowName();
-//                        student.setScore("" + random.nextInt(101));
-//                        student.setAvatar_path(mGetInfo.getHeadImgPath());
-//                        entity.getStudents().add(student);
-//                    }
-//                    callBack.onDataSucess(entity);
-//                } else {
-//                    callBack.onDataFail(1, responseEntity.getErrorMsg());
-//                }
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                super.onPmFailure(error, msg);
-                callBack.onDataFail(0, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                super.onPmError(responseEntity);
-//                if (AppConfig.DEBUG) {
-//                    GoldTeamStatus entity = new GoldTeamStatus();
-//                    for (int i = 0; i < 3; i++) {
-//                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
-//                        student.setNickname("测试" + (test1++));
-//                        student.createShowName();
-//                        student.setScore("90");
-//                        student.setAvatar_path(mGetInfo.getHeadImgPath());
-//                        entity.getStudents().add(student);
-//                    }
-//                    callBack.onDataSucess(entity);
-//                } else {
-//                    callBack.onDataFail(1, responseEntity.getErrorMsg());
-//                }
-                callBack.onDataFail(1, responseEntity.getErrorMsg());
-            }
-        });
-    }
-
-    public String getRequestTime() {
-        return mGetInfo.getRequestTime();
-    }
-
-    public void getRolePlayAnswerTeamRank(String testId, final AbstractBusinessDataCallBack callBack) {
-        getHttpManager().getRolePlayAnswerTeamRank(testId, new HttpCallBack() {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                mLogtf.d("getRolePlayAnswerTeamRank:responseEntity=" + responseEntity.getJsonObject());
-                GoldTeamStatus entity = getHttpResponseParser().parseRolePlayTeamRank(responseEntity, mGetInfo);
-                callBack.onDataSucess(entity);
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                super.onPmFailure(error, msg);
-                logger.d("getRolePlayAnswerTeamRank:msg=" + msg);
-                callBack.onDataFail(0, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                super.onPmError(responseEntity);
-                logger.d("getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
-                callBack.onDataFail(1, responseEntity.getErrorMsg());
-            }
-
-        });
-    }
-
-    public void getSpeechEvalAnswerTeamRank(String id, final AbstractBusinessDataCallBack callBack) {
-        getHttpManager().getSpeechEvalAnswerTeamRank(id, new HttpCallBack(false) {
-
-            @Override
-            public void onPmSuccess(final ResponseEntity responseEntity) {
-                mLogtf.i("getSpeechEvalAnswerTeamRank:onPmSuccess=" + responseEntity.getJsonObject());
-                GoldTeamStatus entity = getHttpResponseParser().parseSpeechTeamRank(responseEntity, mGetInfo);
-                callBack.onDataSucess(entity);
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                mLogtf.i("getSpeechEvalAnswerTeamRank:onPmFailure=" + msg);
-                callBack.onDataFail(0, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.i("getSpeechEvalAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
-                callBack.onDataFail(1, responseEntity.getErrorMsg());
-            }
-        });
-    }
 
     public CourseWareHttpManager getCourseWareHttpManager() {
         if (courseWareHttpManager == null) {
@@ -1313,7 +1210,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         return courseWareHttpManager;
     }
 
-    class QueArtHttp extends QueIrcHttp implements EnglishH5CoursewareSecHttp {
+    class QueArtHttp extends QueIrcHttp implements EnglishH5CoursewareSecHttp, SpeechEvalHttp {
 
         @Override
         public void getCourseWareTests(String url, String params, AbstractBusinessDataCallBack callBack) {
@@ -1348,6 +1245,112 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         @Override
         public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isPlayBack, AbstractBusinessDataCallBack callBack) {
 
+        }
+
+        public void getSpeechEvalAnswerTeamRank(String id, final AbstractBusinessDataCallBack callBack) {
+            getHttpManager().getSpeechEvalAnswerTeamRank(id, new HttpCallBack(false) {
+
+                @Override
+                public void onPmSuccess(final ResponseEntity responseEntity) {
+                    mLogtf.i("getSpeechEvalAnswerTeamRank:onPmSuccess=" + responseEntity.getJsonObject());
+                    GoldTeamStatus entity = getHttpResponseParser().parseSpeechTeamRank(responseEntity, mGetInfo);
+                    callBack.onDataSucess(entity);
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mLogtf.i("getSpeechEvalAnswerTeamRank:onPmFailure=" + msg);
+                    callBack.onDataFail(0, msg);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mLogtf.i("getSpeechEvalAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+                }
+            });
+        }
+
+        public String getRequestTime() {
+            return mGetInfo.getRequestTime();
+        }
+
+        public void getSpeechEvalAnswerTeamStatus(String testId, final AbstractBusinessDataCallBack callBack) {
+            getHttpManager().getSpeechEvalAnswerTeamStatus(testId, new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    GoldTeamStatus entity = getHttpResponseParser().getSpeechEvalAnswerTeamStatus(responseEntity, mGetInfo
+                            .getStuId());
+                    callBack.onDataSucess(entity);
+//                if (AppConfig.DEBUG) {
+//                    GoldTeamStatus entity = new GoldTeamStatus();
+//                    Random random = new Random();
+//                    for (int i = 0; i < 5; i++) {
+//                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                        student.setNickname("测试" + (test1++));
+//                        student.createShowName();
+//                        student.setScore("" + random.nextInt(101));
+//                        student.setAvatar_path(mGetInfo.getHeadImgPath());
+//                        entity.getStudents().add(student);
+//                    }
+//                    callBack.onDataSucess(entity);
+//                } else {
+//                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+//                }
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    super.onPmFailure(error, msg);
+                    callBack.onDataFail(0, msg);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+//                if (AppConfig.DEBUG) {
+//                    GoldTeamStatus entity = new GoldTeamStatus();
+//                    for (int i = 0; i < 3; i++) {
+//                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                        student.setNickname("测试" + (test1++));
+//                        student.createShowName();
+//                        student.setScore("90");
+//                        student.setAvatar_path(mGetInfo.getHeadImgPath());
+//                        entity.getStudents().add(student);
+//                    }
+//                    callBack.onDataSucess(entity);
+//                } else {
+//                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+//                }
+                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+                }
+            });
+        }
+
+        public void getRolePlayAnswerTeamRank(String testId, final AbstractBusinessDataCallBack callBack) {
+            getHttpManager().getRolePlayAnswerTeamRank(testId, new HttpCallBack() {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    mLogtf.d("getRolePlayAnswerTeamRank:responseEntity=" + responseEntity.getJsonObject());
+                    GoldTeamStatus entity = getHttpResponseParser().parseRolePlayTeamRank(responseEntity, mGetInfo);
+                    callBack.onDataSucess(entity);
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    super.onPmFailure(error, msg);
+                    logger.d("getRolePlayAnswerTeamRank:msg=" + msg);
+                    callBack.onDataFail(0, msg);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+                    logger.d("getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+                    callBack.onDataFail(1, responseEntity.getErrorMsg());
+                }
+
+            });
         }
     }
 
