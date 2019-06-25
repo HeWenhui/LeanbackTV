@@ -92,7 +92,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
     /** onPause状态不暂停视频 */
     PauseNotStopVideoIml pauseNotStopVideoIml;
-    private LiveIRCMessageBll liveIRCMessageBll;
     protected String mode = LiveTopic.MODE_TRANING;
     /** 播放器的Fragment */
     protected LivePlayerFragment liveVideoPlayFragment;
@@ -138,7 +137,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             before = System.currentTimeMillis();
             addBusiness(activity);
             logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
-            if ((pattern == 1)) {
+            if ((pattern == LiveVideoConfig.LIVE_PATTERN_COMMON)) {
                 //根据不同直播显示不同加载中动画
                 setLoadingView();
             }
@@ -206,6 +205,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void addBusiness(Activity activity) {
         //是文科
         ArrayList<BllConfigEntity> bllConfigEntities;
+        LiveIRCMessageBll liveIRCMessageBll;
         if (isArts == 1) {
             bllConfigEntities = AllBllConfig.getLiveBusinessArts();
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
@@ -300,7 +300,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void onPlayOpenSuccess() {
         super.onPlayOpenSuccess();
         //如果之前是正在切流的状态
-        if ((pattern == 1)) {
+        if ((pattern == LiveVideoConfig.LIVE_PATTERN_COMMON)) {
             if (liveVideoAction != null) {//处于后台时这里容易null,所以加上非空判断
                 liveVideoAction.onPlaySuccess();
             }
@@ -469,8 +469,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
         bottomContent.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-        pattern = activity.getIntent().getIntExtra("pattern", 2);
-        if ((pattern == 1)) {
+        pattern = activity.getIntent().getIntExtra("pattern", LiveVideoConfig.LIVE_PATTERN_COMMON);
+        if ((pattern == LiveVideoConfig.LIVE_PATTERN_COMMON)) {
             btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
         }
         //如果是三分屏，则需要添加加载中的监听器
@@ -491,7 +491,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     //调度失败，建议重新访问playLive或者playVod频道不存在
                     //调度失败，延迟1s再次访问调度
 
-                    if ((pattern == 1) && switchFlowBll != null) {
+                    if ((pattern == LiveVideoConfig.LIVE_PATTERN_COMMON) && switchFlowBll != null) {
 //            if (server != null) {
 //                        switchFlowBll.setListRoute(0);
                         logger.i("0");
@@ -517,7 +517,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
-        if ((pattern == 1) && switchFlowBll != null) {
+        if ((pattern == LiveVideoConfig.LIVE_PATTERN_COMMON) && switchFlowBll != null) {
             if (server != null) {
                 switchFlowBll.setListRoute(server.getPlayserver());
                 logger.i(server.getPlayserver().size());
@@ -545,7 +545,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         super.getPSServerList(cur, total, modeChange);
         this.totalSwitchRouteNum = total;
 //        this.userEyePos = cur + 1;
-        if ((pattern == 1) && switchFlowBll != null) {
+        if ((pattern == LiveVideoConfig.LIVE_PATTERN_COMMON) && switchFlowBll != null) {
 //            if (total != 0) {
             switchFlowBll.setListRoute(total);
 //                logger.i(total);
