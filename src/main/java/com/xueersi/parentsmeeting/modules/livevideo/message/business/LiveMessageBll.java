@@ -106,7 +106,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public LiveMessageBll(Activity activity, int liveType) {
         this.activity = activity;
         this.liveType = liveType;
-        ProxUtil.getProxUtil().put(activity, LiveMessageBll.class, this);
         ProxUtil.getProxUtil().put(activity, LiveMessageSend.class, this);
         ProxUtil.getProxUtil().put(activity, KeyBordAction.class, this);
         ProxUtil.getProxUtil().put(activity, KeyboardShowingReg.class, this);
@@ -179,7 +178,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
 
@@ -282,7 +280,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.closeChat(isCloseChat);
@@ -375,7 +372,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
 
@@ -457,7 +453,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.setIsRegister(isRegister);
@@ -495,30 +490,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             mLiveMessagePager.setGetInfo(getInfo);
         }
 
-    }
-
-    /**
-     * 开始倒计时
-     *
-     * @param time 倒计时时间
-     * @return
-     */
-    public Runnable startCountDown(final String tag, final int time) {
-        final AtomicInteger atomicInteger = new AtomicInteger(time);
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (mLiveMessagePager != null) {
-                    mLiveMessagePager.countDown(tag, atomicInteger.get());
-                }
-                if (atomicInteger.get() > 0) {
-                    atomicInteger.set(atomicInteger.get() - 1);
-                    rlLiveMessageContent.postDelayed(this, 1000);
-                }
-            }
-        };
-        rlLiveMessageContent.post(runnable);
-        return runnable;
     }
 
     public void onTitleShow(boolean show) {

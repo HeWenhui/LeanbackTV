@@ -1881,44 +1881,6 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
 
     }
 
-    LiveAndBackDebug mLiveBll;
-
-    @Override
-    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugSys(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugInter(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-
-    }
-
-    @Override
-    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
     private void uploadLOG(String msg) {
         final Map<String, String> mData = new HashMap<>();
         mData.put("userid", getInfo.getStuId());

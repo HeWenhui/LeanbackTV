@@ -1888,45 +1888,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 initBtMesOpenAnimation(true);
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
-
-    }
-
-    LiveAndBackDebug mLiveBll;
-
-    @Override
-    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugSys(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugInter(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-
-    }
-
-    @Override
-    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
-
     }
 
     private void uploadLOG(String msg) {

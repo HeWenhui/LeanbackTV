@@ -209,7 +209,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         switchFSPanelLinearLayout = (KPSwitchFSPanelLinearLayout) mView.findViewById(R.id
                 .rl_livevideo_message_panelroot);
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
-        logger.setLogMethod(false);
 
 //        if (getInfo.getIsOpenNewCourseWare() == 1) {
 //        ViewStub viewStub = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);

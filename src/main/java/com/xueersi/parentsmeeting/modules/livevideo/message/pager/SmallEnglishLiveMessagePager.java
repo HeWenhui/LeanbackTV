@@ -358,7 +358,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         params.width = liveVideoPoint.getRightMargin();
         params.topMargin = liveVideoPoint.y3;
-        logger.setLogMethod(false);
         logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
         setBack();
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
@@ -2261,46 +2260,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 }, 300);
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
-    }
-
-    LiveAndBackDebug mLiveBll;
-
-    @Override
-    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        if (mLiveBll != null) {
-            mLiveBll.umsAgentDebugSys(eventId, mData);
-        }
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugInter(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-
-    }
-
-    @Override
-    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
-
     }
 
     /**

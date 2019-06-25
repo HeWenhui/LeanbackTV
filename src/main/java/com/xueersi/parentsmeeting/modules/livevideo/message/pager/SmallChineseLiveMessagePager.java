@@ -218,7 +218,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         params.width = liveVideoPoint.getRightMargin();
         params.topMargin = liveVideoPoint.y3;
-        logger.setLogMethod(false);
         logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
 
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();

@@ -40,7 +40,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
@@ -121,7 +120,6 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
     protected boolean isHaveFlowers = false;
     protected boolean keyboardShowing = false;
     protected IRCState ircState;
-    protected LiveMessageBll messageBll;
     protected static int MESSAGE_SEND_DEF = 0;
     protected static int MESSAGE_SEND_DIS = 1;
     protected static int MESSAGE_SEND_CLO = 2;
@@ -139,7 +137,6 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
 
     public BaseLiveMessagePager(Context context, boolean isNewView) {
         super(context, isNewView);
-        logger.setLogMethod(false);
         pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
         pool.setRejectedExecutionHandler(new RejectedExecutionHandler() {
 
@@ -156,10 +153,6 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
 
     public BaseLiveMessagePager(Context context) {
         this(context, true);
-    }
-
-    public void setMessageBll(LiveMessageBll messageBll) {
-        this.messageBll = messageBll;
     }
 
     /**

@@ -747,7 +747,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         mLiveMessagePager = msgPager;
         // 关联聊天人数
         msgPager.setPeopleCount(peopleCount);
-        msgPager.setMessageBll(liveMessageBll);
         msgPager.setIrcState(mLiveBll);
         msgPager.onModeChange(mLiveBll.getMode());
         msgPager.setIsRegister(true);
