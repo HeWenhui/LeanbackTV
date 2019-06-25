@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -55,6 +56,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private WebView wvSubjectWeb;
     private View errorView;
     private QuestionBll questionBll;
+    private QuestionOnSubmit onSubmit;
     private String liveid;
     private String num;
     /** 用户名称 */
@@ -97,6 +99,10 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         mLogtf.i("ExamQuestionX5Pager:liveid=" + liveid + ",num=" + num);
         this.isShowRankList = isShowRankList;
         initData();
+    }
+
+    public void setQuestionOnSubmit(QuestionOnSubmit onSubmit) {
+        this.onSubmit = onSubmit;
     }
 
     @Override
@@ -216,7 +222,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     }
 
     @android.webkit.JavascriptInterface
-    private void addJavascriptInterface() {
+    public void addJavascriptInterface() {
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setJavaScriptEnabled(true);
         webSetting.setDomStorageEnabled(true);
@@ -357,8 +363,8 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
             logger.e("======> shouldOverrideUrlLoading:" + url);
 
             if (url.contains("/LiveExam/examResult")) {
-                if (questionBll instanceof QuestionBll) {
-                    ((QuestionBll) questionBll).onSubmit(XESCODE.EXAM_STOP, url.contains("submitType=force"));
+                if (onSubmit != null) {
+                    onSubmit.onSubmit(XESCODE.EXAM_STOP, url.contains("submitType=force"));
                 }
                 return false;
             }

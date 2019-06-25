@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
@@ -71,6 +72,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private WebView wvSubjectWeb;
     private View errorView;
     private StopWebQuestion questionBll;
+    private QuestionOnSubmit onSubmit;
     /** 用户名称 */
     private String stuName;
     /** 用户Id */
@@ -144,6 +146,9 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         initData();
     }
 
+    public void setQuestionOnSubmit(QuestionOnSubmit questionOnSubmit) {
+        this.onSubmit = questionOnSubmit;
+    }
 
     /**
      * 重载构造方法 支持 文科新课件平台 H5 题
@@ -350,7 +355,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     }
 
     @android.webkit.JavascriptInterface
-    private void addJavascriptInterface() {
+    public void addJavascriptInterface() {
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setJavaScriptEnabled(true);
         webSetting.setDomStorageEnabled(true);
@@ -605,8 +610,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             logger.e("======> shouldOverrideUrlLoading:" + url);
 
             if (url.contains("science/Live/getMultiTestResult")) {
-                if (questionBll instanceof QuestionBll) {
-                    ((QuestionBll) questionBll).onSubmit(XESCODE.STOPQUESTION, url.contains("submitType=force"));
+                if (onSubmit != null) {
+                    onSubmit.onSubmit(XESCODE.STOPQUESTION, url.contains("submitType=force"));
                 }
                 return false;
             }

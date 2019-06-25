@@ -64,7 +64,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BasePrimaryScienceMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -128,7 +127,6 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
     private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
     private ImageView ivExpressionCancle;
     private Activity liveVideoActivity;
-    private QuestionBll questionBll;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
     LiveAndBackDebug liveAndBackDebug;
