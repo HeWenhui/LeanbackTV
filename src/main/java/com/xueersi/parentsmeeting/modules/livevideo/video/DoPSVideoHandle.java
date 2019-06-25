@@ -12,7 +12,7 @@ public class DoPSVideoHandle {
      */
     public static String getPSVideoPath(String url) {
         int len = url.length();
-        char lastCh = 'a';
+        char lastCh = 'a' ;
         //第一次遇到这种 '/'+字母的形式
         boolean isFirst = true;
         int pos;
@@ -28,5 +28,16 @@ public class DoPSVideoHandle {
             lastCh = ch;
         }
         return url.substring(pos - 1);
+    }
+
+    public static String getPlayBackVideoPath(String url) {
+        String videoPath;
+//        String url = mVideoEntity.getVideoPath();
+        if (url.contains("http") || url.contains("https")) {
+            videoPath = DoPSVideoHandle.getPSVideoPath(url);
+        } else {
+            videoPath = url;
+        }
+        return videoPath;
     }
 }

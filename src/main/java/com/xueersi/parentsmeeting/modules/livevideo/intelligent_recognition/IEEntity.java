@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition;
 
-public class ieEntity {
+public class IEEntity {
 
     /**
      * liveId :
