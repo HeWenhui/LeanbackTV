@@ -25,7 +25,6 @@ import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -51,7 +50,6 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
     private WebView wvSubjectWeb;
     private String liveid;
     private String num;
-    ExamStop examStop;
     private View errorView;
     /** 试卷地址 */
     private String examUrl = "";
@@ -61,9 +59,8 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
     int isArts;
     String stuCouId;
 
-    public ExamQuestionX5PlaybackPager(Context context, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, int isArts, String stuCouId, ExamStop examStop, LivePagerBack livePagerBack) {
+    public ExamQuestionX5PlaybackPager(Context context, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, int isArts, String stuCouId, LivePagerBack livePagerBack) {
         super(context);
-        this.examStop = examStop;
         this.liveid = liveid;
         this.isArts = isArts;
         setBaseVideoQuestionEntity(videoQuestionLiveEntity);
@@ -105,7 +102,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                examStop.stopExam(ExamQuestionX5PlaybackPager.this, (VideoQuestionLiveEntity) getBaseVideoQuestionEntity());
+                onPagerClose.onClose(ExamQuestionX5PlaybackPager.this);
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -163,7 +160,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
     }
 
     @android.webkit.JavascriptInterface
-    private void addJavascriptInterface() {
+    public void addJavascriptInterface() {
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setJavaScriptEnabled(true);
         webSetting.setDomStorageEnabled(true);
@@ -266,7 +263,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
-                examStop.stopExam(ExamQuestionX5PlaybackPager.this, (VideoQuestionLiveEntity) getBaseVideoQuestionEntity());
+                onPagerClose.onClose(ExamQuestionX5PlaybackPager.this);
                 logger.i("shouldOverrideUrlLoading:stopExam");
             } else {
                 if (url.contains("xueersi.com")) {

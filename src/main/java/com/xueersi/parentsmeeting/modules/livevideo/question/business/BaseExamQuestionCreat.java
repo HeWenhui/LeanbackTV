@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.app.Activity;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 
 /**
@@ -10,5 +11,5 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuesti
  * 创建课前测
  */
 public interface BaseExamQuestionCreat {
-    public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity);
+    BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, LiveBasePager.OnPagerClose onPagerClose);
 }

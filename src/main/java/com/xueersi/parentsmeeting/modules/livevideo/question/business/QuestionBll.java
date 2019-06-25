@@ -1482,7 +1482,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("testid", videoQuestionLiveEntity.id);
                 umsAgentDebugInter(examQuestionEventId, mData);
                 examQuestionPager = baseExamQuestionCreat.creatBaseExamQuestion(activity, liveid,
-                        videoQuestionLiveEntity);
+                        videoQuestionLiveEntity, new LiveBasePager.OnPagerClose() {
+                            @Override
+                            public void onClose(LiveBasePager basePager) {
+                                stopExam(videoQuestionLiveEntity.id, examQuestionPager);
+                            }
+                        });
                 rlQuestionContent.addView(examQuestionPager.getRootView());
                 setHaveExam(true);
                 activity.getWindow().getDecorView().requestLayout();

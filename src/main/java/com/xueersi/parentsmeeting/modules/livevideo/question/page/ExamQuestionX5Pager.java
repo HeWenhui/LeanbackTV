@@ -70,20 +70,18 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private String isShowRankList;
     int isArts;
     String stuCouId;
-    private int isTeamPkRoom;
     private int mGoldNum;
     private int mEnergyNum;
     private boolean allowTeamPk;
-    /**是否接收到或者展示过答题结果页面**/
+    /** 是否接收到或者展示过答题结果页面 **/
     private boolean isAnswerResultRecived;
     /**
      * 答题结果是否是 由强制提交 得到的
      */
     private boolean resultGotByForceSubmit;
 
-    public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId
-            , String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String isShowRankList,
-                               int isArts, String stuCouId, boolean allowTeamPk) {
+    public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId, String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity,
+                               String isShowRankList, int isArts, String stuCouId, boolean allowTeamPk) {
         super(context);
         this.questionBll = questionBll;
         this.livePagerBack = questionBll;
@@ -98,7 +96,6 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         this.allowTeamPk = allowTeamPk;
         mLogtf.i("ExamQuestionX5Pager:liveid=" + liveid + ",num=" + num);
         this.isShowRankList = isShowRankList;
-        this.isTeamPkRoom = isTeamPkRoom;
         initData();
     }
 
@@ -141,7 +138,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                questionBll.stopExam(num, ExamQuestionX5Pager.this);
+                onPagerClose.onClose(ExamQuestionX5Pager.this);
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -367,7 +364,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
             }
             mLogtf.i("shouldOverrideUrlLoading:url=" + url);
             if ("xueersi://livevideo/examPaper/close".equals(url) || url.contains("baidu.com")) {
-                questionBll.stopExam(num, ExamQuestionX5Pager.this);
+                onPagerClose.onClose(ExamQuestionX5Pager.this);
                 Map<String, String> mData = new HashMap<>();
                 mData.put("logtype", "examClose");
                 mData.put("examid", num);
@@ -415,11 +412,10 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
      * 理科 课件 答题结果回调
      */
     @JavascriptInterface
-    public void onAnswerResult_LiveVideo(String data){
+    public void onAnswerResult_LiveVideo(String data) {
         isAnswerResultRecived = true;
         EventBus.getDefault().post(new AnswerResultEvent(data));
     }
-
 
 
     @Override
