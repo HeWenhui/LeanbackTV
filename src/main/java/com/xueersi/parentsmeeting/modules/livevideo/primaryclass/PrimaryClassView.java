@@ -6,7 +6,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public interface PrimaryClassView {
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
+
+public interface PrimaryClassView extends LiveProvide {
 
     void decorateBack(int width, int height, RelativeLayout rl_course_video_contentview);
 

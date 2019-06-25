@@ -730,7 +730,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         }
     }
 
-    public interface ShowQuestion {
+    public interface ShowQuestion extends LiveProvide {
         void onShow(boolean isShow, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
         void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity);
