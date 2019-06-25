@@ -207,7 +207,10 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     if (!haveAudio && audioStatus) {
                         handler.removeCallbacks(noMicRun);
                         noMicMethod = "didOfflineOfUid";
-                        handler.postDelayed(noMicRun, noMicDelayed);
+                        if (!postNoMicRun) {
+                            postNoMicRun = true;
+                            handler.postDelayed(noMicRun, noMicDelayed);
+                        }
                     }
                 } else {
                     haveAudio = false;
@@ -236,6 +239,8 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         }, 2000);
     }
 
+    /** 麦克风故障延迟 */
+    private boolean postNoMicRun = false;
     /** 麦克风故障延迟两秒 */
     private long noMicDelayed = 2000;
     /** 麦克风故障 */
@@ -366,7 +371,10 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 if (enable && join && !haveAudio) {
                     handler.removeCallbacks(noMicRun);
                     noMicMethod = "onOtherDis";
-                    handler.postDelayed(noMicRun, noMicDelayed);
+                    if (!postNoMicRun) {
+                        postNoMicRun = true;
+                        handler.postDelayed(noMicRun, noMicDelayed);
+                    }
                 }
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
