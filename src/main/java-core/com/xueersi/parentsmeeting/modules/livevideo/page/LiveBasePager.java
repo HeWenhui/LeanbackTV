@@ -26,7 +26,7 @@ import java.util.Map;
 public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     protected LogToFile mLogtf;
-    protected LiveAndBackDebug mLiveBll;
+    private LiveAndBackDebug mLiveBll;
     protected LivePagerBack livePagerBack;
     protected BaseVideoQuestionEntity baseVideoQuestionEntity;
     protected OnPagerClose onPagerClose;
