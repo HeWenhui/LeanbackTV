@@ -78,8 +78,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     private Map<String, String> userLogMap = new HashMap<String, String>();
 
 
-    public PraiseInteractionBll(Context context, LiveBll2 liveBll) {
-        super((Activity) context, liveBll);
+    public PraiseInteractionBll(Activity activity, LiveBll2 liveBll) {
+        super(activity, liveBll);
         logger.d("PraiseInteractionBll construct");
         mLiveBll = liveBll;
 
