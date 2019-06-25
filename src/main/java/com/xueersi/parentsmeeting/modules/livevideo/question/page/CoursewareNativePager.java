@@ -211,7 +211,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         try {
             NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         initData();
     }
@@ -389,7 +389,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("data", resultData);
                     staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                     mLogtf.e("btCourseSubmit", e);
                 }
             }
@@ -446,7 +446,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     startQueTime = todayLiveObj.optLong("start-" + queskey);
                 }
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("getTodayQues", e);
             }
         }
@@ -484,7 +484,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             todayObj.put(liveId, todayLiveObj);
             return jsonObject;
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("getTodayLive", e);
         }
         return null;
@@ -507,7 +507,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 mShareDataManager.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("saveThisQues", e);
         }
     }
@@ -528,7 +528,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 mShareDataManager.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("saveThisQues", e);
         }
     }
@@ -543,7 +543,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     oldTest.setUserAnswerContent(userAnswerContent);
                     saveThisQues(currentIndex, userAnswerContent);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 logger.d("onAnswer:answer:getAnswerType=" + getAnswerType + ",index=" + currentIndex);
                 if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_SUBMIT || getAnswerType == LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT) {
@@ -784,7 +784,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("data", resultData);
                     staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                     mLogtf.e("submitData", e);
                 }
                 if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
@@ -1126,7 +1126,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 json.put("userAnswerContent", userAnswerContent);
                 testInfos.put(test.getId(), json);
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submit", e);
             }
         }

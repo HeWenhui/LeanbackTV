@@ -756,7 +756,7 @@ public class LiveBll2 extends BaseBll {
                         try {
                             mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(e);
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
 
                     }

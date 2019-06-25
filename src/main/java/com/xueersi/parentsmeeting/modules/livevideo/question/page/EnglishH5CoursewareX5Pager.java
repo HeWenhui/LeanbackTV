@@ -407,7 +407,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             hashMap.put("filelength", "" + file.length());
                             UmsAgentManager.umsAgentDebug(mContext, TAG + "_cache", hashMap);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(e);
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                         if (file.length() > 0) {
                             FileInputStream inputStream = null;

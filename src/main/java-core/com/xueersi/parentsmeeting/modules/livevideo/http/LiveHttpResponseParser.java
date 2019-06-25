@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
@@ -2128,7 +2129,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (Exception e) {
             e.printStackTrace();
             MobAgent.httpResponseParserError(TAG, "parsegetSelfTeamInfo", e.getMessage());
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return null;
     }
@@ -2167,7 +2168,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (Exception e) {
             e.printStackTrace();
             MobAgent.httpResponseParserError(TAG, "parseUpdataEnglishPkByTestId", e.getMessage());
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return null;
     }

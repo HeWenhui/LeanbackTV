@@ -207,7 +207,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         } catch (Exception e) {
             e.printStackTrace();
             mLogtf.e("getViewBitmap", e);
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return resultBitmap;
     }
@@ -244,7 +244,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     }
                 } catch (Exception e) {
                     mLogtf.e("cutImage", e);
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });
@@ -310,7 +310,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                                         videoBitmap.recycle();
                                         logger.d("onGetBitmap:create=" + createBitmap.getWidth() + ",old=" + oldBitmap.getWidth() + ",height=" + oldBitmap.getHeight() + ",left=" + left + ",top=" + top);
                                     } catch (Exception e) {
-                                        CrashReport.postCatchedException(e);
+                                        CrashReport.postCatchedException(new LiveException(TAG, e));
                                         uploadWonderMoment(type, saveFile.getPath());
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
@@ -323,7 +323,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     }
                 } catch (Exception e) {
                     mLogtf.e("cutImageAndVideo", e);
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         };

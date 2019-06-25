@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -224,7 +225,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                 }
             } catch (Exception e) {
                 logger.e("onTopic", e);
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }

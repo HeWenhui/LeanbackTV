@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -216,10 +217,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 try {
                     VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
                     if (detailInfo != null) {
-                        NewCourseLog.sno8(contextLiveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0,detailInfo.isTUtor());
+                        NewCourseLog.sno8(contextLiveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0, detailInfo.isTUtor());
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });

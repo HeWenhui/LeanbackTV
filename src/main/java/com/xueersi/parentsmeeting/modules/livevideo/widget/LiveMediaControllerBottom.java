@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 
 import java.util.HashMap;
 
@@ -88,7 +89,7 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
                 hashMap.put("findid", "" + findid);
                 UmsAgentManager.umsAgentDebug(mContext, TAG + "_onhide", hashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
         if (switchFlowView != null) {

@@ -16,6 +16,7 @@ import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.FileLogger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
 import org.json.JSONArray;
@@ -74,7 +75,7 @@ public class LiveService extends Service {
                 //bugly 2555
                 runningAppProcessInfos = mActivityManager.getRunningAppProcesses();
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 stopSelf();
                 return;
             }

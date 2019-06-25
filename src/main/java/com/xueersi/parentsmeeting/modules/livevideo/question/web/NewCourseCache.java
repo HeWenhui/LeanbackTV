@@ -147,7 +147,7 @@ public class NewCourseCache {
                 return 0;
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return 0;
     }

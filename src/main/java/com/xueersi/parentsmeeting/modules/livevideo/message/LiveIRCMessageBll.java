@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDrive
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TeacherAction;
@@ -1172,7 +1173,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         try {
                             onSendMsgs.get(i).onSendMsg(msg);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(e);
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                     }
                 } catch (Exception e) {

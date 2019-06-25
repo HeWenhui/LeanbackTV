@@ -14,6 +14,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import java.net.InetAddress;
@@ -103,7 +104,7 @@ public class ErrorWebViewClient extends WebViewClient {
                         UmsAgentManager.umsAgentDebug(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData());
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });

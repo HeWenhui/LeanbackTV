@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
@@ -421,7 +422,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     startQueTime = todayLiveObj.optLong("start-" + queskey);
                 }
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("getTodayQues", e);
             }
         }
@@ -456,7 +457,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             todayObj.put(liveId, todayLiveObj);
             return jsonObject;
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("getTodayLive", e);
         }
         return null;
@@ -481,7 +482,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("saveThisQues", e);
         }
     }
@@ -504,7 +505,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("saveThisQues", e);
         }
     }
@@ -535,7 +536,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     }
                     saveThisQues(currentIndex, data);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 logger.d("onAnswer:answer:getAnswerType=" + getAnswerType + ",index=" + currentIndex);
                 if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_SUBMIT || getAnswerType == LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT) {
@@ -716,7 +717,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 jsonData.put("data", resultData);
                 StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submitData", e);
             }
 //            XESToastUtils.showToast(mContext, "时间到,停止作答!");
@@ -797,7 +798,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 dataJson.put("userAnswerContent", userAnswerContent);
                 data.put(test.getId(), dataJson);
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submit", e);
             }
         }

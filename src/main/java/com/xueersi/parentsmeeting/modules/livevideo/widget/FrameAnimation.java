@@ -20,6 +20,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import java.io.File;
@@ -652,7 +653,7 @@ public class FrameAnimation {
                 stableLogHashMap.put("path", "" + path);
                 UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
             FrameAnimation btframeAnimation1 = new FrameAnimation(iv, files, duration, isRepeat);
             btframeAnimation1.path = path;
@@ -667,7 +668,7 @@ public class FrameAnimation {
             stableLogHashMap.put("path", "" + path);
             UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return btframeAnimation1;
     }

@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -96,6 +97,7 @@ import java.util.List;
 public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, BaseLiveMessagePager.OnMsgUrlClick {
     private String TAG = "LiveVideoFragment";
     Logger logger = LiveLoggerFactory.getLogger(TAG);
+
     public LiveVideoFragment() {
         mLayoutVideo = R.layout.activity_video_live_new;
     }
@@ -362,7 +364,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 logger.d("addBusiness:business=" + className);
             } catch (Exception e) {
                 logger.d("addBusiness:business=", e);
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
         FeedbackTeacherBll feedbackTeacherBll = new FeedbackTeacherBll(activity, mLiveBll);
