@@ -236,7 +236,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                             if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                                 boolean send = ircState.sendMessage(msg, "");
                                 if (send) {
-                                    messageBll.startCountDown(COUNT_TAG_MSG, (int) (SEND_MSG_INTERVAL / 1000));
+                                    startCountDown(COUNT_TAG_MSG, (int) (SEND_MSG_INTERVAL / 1000));
                                     etMessageContent.setText("");
                                     addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
                                     lastSendMsg = System.currentTimeMillis();
@@ -644,7 +644,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     tvFlowersDisable.setVisibility(View.VISIBLE);
-                                    Runnable runnable = messageBll.startCountDown(COUNT_TAG_FLO, 10);
+                                    Runnable runnable = startCountDown(COUNT_TAG_FLO, 10);
                                     tvFlowersDisable.setTag(runnable);
                                     if (goldNum == null) {
                                         OtherModulesEnter.requestGoldTotal(mContext);

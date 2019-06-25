@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
@@ -55,6 +56,7 @@ import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import master.flame.danmaku.danmaku.controller.DrawHandler;
 import master.flame.danmaku.danmaku.controller.IDanmakuView;
@@ -78,7 +80,7 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  * Created by linyuqiang on 2016/12/19.
  * 聊天信息一些基本方法
  */
-public abstract class BaseLiveMessagePager extends BasePager implements RoomAction, QuestionShowAction {
+public abstract class BaseLiveMessagePager extends LiveBasePager implements RoomAction, QuestionShowAction {
     protected ArrayList<LiveMessageEntity> liveMessageEntities = new ArrayList<>();
     /** 发送消息间隔 */
     protected final static long SEND_MSG_INTERVAL = 5000;
@@ -130,7 +132,6 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     /** 聊天线程池 */
     protected ThreadPoolExecutor pool;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
-    protected Handler mainHandler = new Handler(Looper.getMainLooper());
     //小英的献花
     public final static int SMALL_ENGLISH = 1;
     //其他部分的献花
@@ -160,6 +161,29 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     public void setMessageBll(LiveMessageBll messageBll) {
         this.messageBll = messageBll;
     }
+
+    /**
+     * 开始倒计时
+     *
+     * @param time 倒计时时间
+     * @return
+     */
+    public Runnable startCountDown(final String tag, final int time) {
+        final AtomicInteger atomicInteger = new AtomicInteger(time);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                countDown(tag, atomicInteger.get());
+                if (atomicInteger.get() > 0) {
+                    atomicInteger.set(atomicInteger.get() - 1);
+                    mainHandler.postDelayed(this, 1000);
+                }
+            }
+        };
+        mainHandler.post(runnable);
+        return runnable;
+    }
+
 
     public void countDown(String tag, int time) {
 

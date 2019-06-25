@@ -50,7 +50,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsSpeakEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -352,8 +351,8 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 if (isPlayBack) {
                     resetMediaCtr();
                 }
-                if (handler != null) {
-                    handler.removeCallbacks(null);
+                if (mainHandler != null) {
+                    mainHandler.removeCallbacks(null);
                 }
                 ChsSpeakEvent event = new ChsSpeakEvent();
                 event.setEventType(ChsSpeakEvent.EVENT_TYPE_PAGE_CLOSE);
@@ -414,7 +413,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 try {
                     String type = message.getString("type");
                     if (CourseMessage.REC_close.equals(type)) {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
 
@@ -583,7 +582,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     private void onAnswer(final JSONObject message) {
         recognizeSuccess = true;
         cancleAssess();
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 NewCourseSec.Test oldTest = tests.get(currentIndex);
@@ -617,7 +616,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     }
 
     private void onLoadComplete(final String where, final JSONObject message) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (LiveQueConfig.GET_ANSWERTYPE_WHERE_MESSAGE.equals(where)) {
@@ -865,10 +864,10 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     private void startAssess() {
         if (startAssesByRefresh) {
             startAssesByRefresh = false;
-            handler.removeCallbacks(assessTask);
-            handler.postDelayed(assessTask, 900);
+            mainHandler.removeCallbacks(assessTask);
+            mainHandler.postDelayed(assessTask, 900);
         } else {
-            handler.removeCallbacks(assessTask);
+            mainHandler.removeCallbacks(assessTask);
             assessTask.run();
         }
     }
@@ -884,7 +883,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      **/
     private void onRecognizeStop() {
         if (isAttach()) {
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (!recognizeSuccess && !isDestory && isSpeakAnswer) {
@@ -1263,7 +1262,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 wvSubjectWeb.stopLoading();
@@ -1278,7 +1277,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
-                    handler.post(new Runnable() {
+                    mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             wvSubjectWeb.stopLoading();

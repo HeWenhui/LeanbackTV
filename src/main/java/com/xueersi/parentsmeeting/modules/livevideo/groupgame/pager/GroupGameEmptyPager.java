@@ -200,7 +200,7 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
                         @Override
                         public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
                             //延迟remove，否则会卡住界面
-                            handler.post(new Runnable() {
+                            mainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     group.removeAllViews();

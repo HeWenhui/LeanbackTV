@@ -348,7 +348,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 try {
                     String type = message.getString("type");
                     if (CourseMessage.REC_close.equals(type)) {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
 
@@ -511,7 +511,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     }
 
     private void onAnswer(final JSONObject message) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 NewCourseSec.Test oldTest = tests.get(currentIndex);
@@ -615,7 +615,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     }
 
     private void onLoadComplete(final String where, final JSONObject message) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (LiveQueConfig.GET_ANSWERTYPE_WHERE_MESSAGE.equals(where)) {
@@ -1195,7 +1195,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 wvSubjectWeb.stopLoading();
@@ -1210,7 +1210,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
-                    handler.post(new Runnable() {
+                    mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             wvSubjectWeb.stopLoading();

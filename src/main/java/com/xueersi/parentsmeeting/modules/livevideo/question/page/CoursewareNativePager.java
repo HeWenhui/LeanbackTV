@@ -320,7 +320,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 try {
                     String type = message.getString("type");
                     if (CourseMessage.REC_close.equals(type)) {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
 
@@ -534,7 +534,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     private void onAnswer(final JSONObject message) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 NewCourseSec.Test oldTest = tests.get(currentIndex);
@@ -654,7 +654,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     private void onLoadComplete(final String where, final JSONObject message) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (LiveQueConfig.GET_ANSWERTYPE_WHERE_MESSAGE.equals(where)) {
@@ -1208,7 +1208,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } catch (Exception e) {
                     CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
-                handler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         staticWeb.testCourseware();
@@ -1320,7 +1320,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     negative.getAndIncrement();
                     tvCourseTimeText.setTextColor(Color.RED);
                 }
-                handler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         String timeStr = getTimeNegativePrimary(releaseTime, startTime, negative);
@@ -1332,7 +1332,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             tvCourseTimeText.setTextColor(Color.RED);
                         }
                         tvCourseTimeText.setText(timeStr);
-                        handler.postDelayed(this, 1000);
+                        mainHandler.postDelayed(this, 1000);
                     }
                 }, 1000);
             }
@@ -1350,14 +1350,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     startTime = newCourseSec.getReleaseTime();
                     tvCourseTimeText.setText(getTimePositive(startTime));
                 }
-                handler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         tvCourseTimeText.setText(getTimePositive(startTime));
                         if (loadResult || mView.getParent() == null) {
                             return;
                         }
-                        handler.postDelayed(this, 1000);
+                        mainHandler.postDelayed(this, 1000);
                     }
                 }, 1000);
             }
@@ -1371,7 +1371,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 final long releaseTime = newCourseSec.getReleaseTime() * 60;
                 final long startTime = System.currentTimeMillis() / 1000;
                 tvCourseTimeText.setText(getTimeNegativeEn(releaseTime, startTime));
-                handler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         String timeStr = getTimeNegativeEn(releaseTime, startTime);
@@ -1379,7 +1379,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             return;
                         }
                         tvCourseTimeText.setText(timeStr);
-                        handler.postDelayed(this, 1000);
+                        mainHandler.postDelayed(this, 1000);
                     }
                 }, 1000);
             }
@@ -1662,7 +1662,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 wvSubjectWeb.stopLoading();
@@ -1682,7 +1682,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
-                    handler.post(new Runnable() {
+                    mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             wvSubjectWeb.stopLoading();

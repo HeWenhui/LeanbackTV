@@ -30,7 +30,7 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected LivePagerBack livePagerBack;
     protected BaseVideoQuestionEntity baseVideoQuestionEntity;
     protected OnPagerClose onPagerClose;
-    protected Handler handler = new Handler(Looper.getMainLooper());
+    protected Handler mainHandler = new Handler(Looper.getMainLooper());
     /** pager创建时间 */
     protected long creattime;
     protected int mState = LiveBasePagerState.INITIALIZING;
@@ -242,6 +242,18 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
         public void onClose(LiveBasePager basePager) {
             onPagerClose.onClose(basePager);
         }
+    }
+
+    public final boolean post(Runnable r) {
+        return mainHandler.post(r);
+    }
+
+    public final boolean postDelayed(Runnable r, long uptimeMillis) {
+        return mainHandler.postDelayed(r, uptimeMillis);
+    }
+
+    public void removeCallbacks(Runnable action) {
+        mainHandler.removeCallbacks(action);
     }
 
     /**

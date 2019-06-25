@@ -311,7 +311,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
     private void submitBigTestInteraction(final int isForce) {
         mLogtf.d("submitBigTestInteraction:isForce=" + isForce + ",resultPager=null?" + (resultPager == null));
         if (resultPager != null) {
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     rlQuestionResContent.removeView(resultPager.getRootView());
@@ -408,7 +408,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
         });
         //强制提交，结果页关闭
         if (isForce == 1) {
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (resultPager.isAttach()) {
