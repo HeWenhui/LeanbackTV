@@ -159,9 +159,22 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
 
     @Override
     public void doRenderRemoteUi(SurfaceView surfaceV) {
-        super.doRenderRemoteUi(surfaceV);
-        rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
-        cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+        mLogtf.d("doRenderRemoteUi:videoStatus=" + videoStatus);
+        if (videoStatus) {
+            super.doRenderRemoteUi(surfaceV);
+            rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
+            cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+        } else {
+            cloudWorkerThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+                    if (mRtcEngine != null) {
+                        mRtcEngine.muteRemoteVideo(uid, true);
+                    }
+                }
+            });
+        }
         haveVideo = true;
     }
 

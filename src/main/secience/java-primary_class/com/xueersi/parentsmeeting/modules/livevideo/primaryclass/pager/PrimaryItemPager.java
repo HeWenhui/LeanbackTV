@@ -365,6 +365,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     }
 
     private void joinChannel() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                addItem();
+            }
+        });
         workerThread = new CloudWorkerThreadPool(mContext, teamInfoEntity.getToken());
         workerThread.setOnEngineCreate(new CloudWorkerThreadPool.OnEngineCreate() {
             @Override
@@ -375,7 +381,6 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            addItem();
                             workerThread.execute(new Runnable() {
                                 @Override
                                 public void run() {
@@ -602,7 +607,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         @Override
         public void remotefirstVideoRecvWithUid(int uid) {
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
-            mLogtf.d("remotefirstVideoRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
+            mLogtf.d("remotefirstVideoRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null) + ",videoStatus=" + videoStatus);
             if (basePrimaryTeamItem != null) {
                 doRenderRemoteUi(uid, basePrimaryTeamItem);
             } else {
@@ -843,6 +848,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 public void onJoinChannel(int joinChannel) {
                     PrimaryTeamMyItem basePrimaryTeamItem = (PrimaryTeamMyItem) courseGroupItemHashMap.get("" + stuid);
                     if (basePrimaryTeamItem != null) {
+//                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, audioStatus, mState);
                         basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus, mState);
                     }
                 }
