@@ -30,6 +30,17 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
     public WordDictationIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         logToFile = new LogToFile(context, TAG);
+//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Bundle bundle = new Bundle();
+//                String answer = "[\"twenty\",\"thirty\",\"forty\",\"fifty\",\"sisty\",\"twenty\",\"thirty\",\"forty\",\"fifty\",\"sisty\"]";
+//                RecognizeFlow recognizeFlow = new RecognizeFlow("1111", "1313", "", "3021", answer);
+//                bundle.putSerializable("data", recognizeFlow);
+//                bundle.putString("what","MiddleLaunch");
+//                XueErSiRouter.startModule(activity, "/dictation/MiddleLaunch", bundle);
+//            }
+//        },5000);
     }
 
     @Override

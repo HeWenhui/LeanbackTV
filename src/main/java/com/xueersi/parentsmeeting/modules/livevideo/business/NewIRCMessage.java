@@ -218,6 +218,7 @@ public class NewIRCMessage implements IIRCMessage {
             logHashMap.put("logtype", "logout");
             logHashMap.put("logoutCode", "" + logoutNotice.code);
             logHashMap.put("logoutInfo", "" + logoutNotice.info);
+            logHashMap.put("sourceNick", "" + logoutNotice.userInfo.nickname);
             UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
         }
 
