@@ -54,7 +54,7 @@ import okhttp3.Call;
 import okhttp3.Response;
 
 /**
- * Created by lyqai on 2017/9/20.
+ * Created by linyuqiang on 2017/9/20.
  */
 
 public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBottom.MediaChildViewClick, NoticeAction, MessageAction {

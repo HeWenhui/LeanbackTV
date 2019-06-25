@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business;
 
 /**
- * Created by lyqai on 2018/1/3.
+ * Created by linyuqiang on 2018/1/3.
  */
 
 public interface WebViewRequest {

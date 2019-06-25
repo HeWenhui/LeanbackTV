@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by lyqai on 2018/6/8.
+ * Created by linyuqiang on 2018/6/8.
  */
 
 public class HardWareUtil {

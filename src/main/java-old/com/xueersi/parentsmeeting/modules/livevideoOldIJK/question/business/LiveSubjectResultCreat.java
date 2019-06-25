@@ -8,7 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseQues
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.SubjectResultX5Pager;
 
 /**
- * Created by lyqai on 2018/7/26.
+ * Created by linyuqiang on 2018/7/26.
  */
 
 public class LiveSubjectResultCreat implements BaseSubjectResultCreat {

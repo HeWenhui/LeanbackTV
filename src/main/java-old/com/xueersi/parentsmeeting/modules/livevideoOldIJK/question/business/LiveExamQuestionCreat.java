@@ -12,7 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ExamQues
 import java.util.ArrayList;
 
 /**
- * Created by lyqai on 2018/7/25.
+ * Created by linyuqiang on 2018/7/25.
  */
 
 public class LiveExamQuestionCreat implements BaseExamQuestionCreat {

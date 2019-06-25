@@ -14,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import java.util.ArrayList;
 
 /**
- * Created by lyqai on 2018/7/30.
+ * Created by linyuqiang on 2018/7/30.
  */
 
 public class AllLiveBasePagerIml implements AllLiveBasePagerInter {

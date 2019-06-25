@@ -21,7 +21,7 @@ import org.json.JSONObject;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/18.
+ * Created by linyuqiang on 2018/7/18.
  */
 public class LecLearnReportIRCBll extends LiveBaseBll implements NoticeAction, LecLearnReportHttp, TopicAction {
     LecLearnReportBll learnReportBll;

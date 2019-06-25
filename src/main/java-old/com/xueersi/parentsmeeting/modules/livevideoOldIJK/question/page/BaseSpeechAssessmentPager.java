@@ -14,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 
 /**
- * Created by lyqai on 2017/11/21.
+ * Created by linyuqiang on 2017/11/21.
  */
 
 public abstract class BaseSpeechAssessmentPager extends LiveBasePager {

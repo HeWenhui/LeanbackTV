@@ -11,7 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
  * 站立直播回放Bottom
- * Created by lyqai on 2018/3/21.
+ * Created by linyuqiang on 2018/3/21.
  */
 
 public class LiveBackStandMediaControllerBottom extends MediaControllerBottom2 {

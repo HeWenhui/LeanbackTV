@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
 public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     private RedPackageAction redPackageAction;

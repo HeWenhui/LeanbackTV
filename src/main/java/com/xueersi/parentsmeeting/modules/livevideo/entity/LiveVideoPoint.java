@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by lyqai on 2018/7/10.
+ * Created by linyuqiang on 2018/7/10.
  * 直播的10个点
  */
 public class LiveVideoPoint {

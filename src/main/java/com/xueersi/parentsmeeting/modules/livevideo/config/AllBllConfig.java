@@ -70,7 +70,14 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldMicroPhoneBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll",
     };
-
+    private static String[] lecClassPath = {
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertIRCBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.leclearnreport.business.LecLearnReportIRCBll",
+    };
 //    public static BllConfigEntity[] live_business_arts = {new BllConfigEntity(getEnTeamPkIRCBllClassPath()),
 //            new BllConfigEntity(getLiveAchievementIRCBllClassPath())};
 
@@ -98,4 +105,11 @@ public class AllBllConfig {
         return arrayList;
     }
 
+    public static ArrayList<BllConfigEntity> getLiveBusinessLec() {
+        ArrayList<BllConfigEntity> arrayList = new ArrayList<>();
+        for (int i = 0; i < lecClassPath.length; i++) {
+            arrayList.add(new BllConfigEntity(lecClassPath[i]));
+        }
+        return arrayList;
+    }
 }

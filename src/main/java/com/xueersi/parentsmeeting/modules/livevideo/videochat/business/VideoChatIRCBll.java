@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/11.
+ * Created by linyuqiang on 2018/7/11.
  */
 public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, NoticeAction, TopicAction, VideoChatHttp {
     private VideoChatBll videoChatAction;

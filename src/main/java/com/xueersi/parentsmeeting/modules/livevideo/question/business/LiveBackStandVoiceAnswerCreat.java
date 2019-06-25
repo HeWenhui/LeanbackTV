@@ -13,7 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswer
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
- * Created by lyqai on 2018/7/26.
+ * Created by linyuqiang on 2018/7/26.
  */
 
 public class LiveBackStandVoiceAnswerCreat extends LiveStandVoiceAnswerCreat {

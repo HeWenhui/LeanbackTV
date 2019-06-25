@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/6.
+ * Created by linyuqiang on 2018/7/6.
  * nb实验网页
  */
 public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
