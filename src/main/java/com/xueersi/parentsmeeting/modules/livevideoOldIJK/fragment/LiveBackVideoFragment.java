@@ -157,6 +157,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     LinearLayout llUserHeadImage;
     /** 全身直播 头像*/
     CircleImageView civUserHeadImage;
+    boolean isTutorVideo = false;
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
@@ -188,9 +189,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
         if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_TUTOR) {
             mVideoEntity = mVideoTutorEntity;
+            isTutorVideo = true;
 
         } else {
             mVideoEntity = mVideoMainEntity;
+            isTutorVideo = false;
         }
 
 
