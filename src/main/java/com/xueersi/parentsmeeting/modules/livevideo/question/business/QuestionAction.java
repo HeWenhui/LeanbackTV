@@ -47,9 +47,5 @@ public interface QuestionAction {
      */
     void onExamStop(String num);
 
-    /** 语音评测刷新 */
-    @Deprecated
-    boolean onSpeechResult(String json);
-
     void onNetWorkChange(int netWorkType);
 }

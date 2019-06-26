@@ -157,7 +157,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private BaseLiveQuestionPager baseQuestionPager;
     private BaseLiveBigQuestionPager baseLiveBigQuestionPager;
     private BigQueCreate bigQueCreate;
-    LiveQuestionCreat liveQuestionCreat;
+    private LiveQuestionCreat liveQuestionCreat;
     /**
      * 互动题的布局
      */
@@ -208,7 +208,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     private boolean isHaveWebQuestion = false;
     private BaseQuestionWebInter questionWebPager;
-    private QuestionWebCreate questionWebCreate;
     /** 试卷页面 */
     /**
      * 试卷页面
@@ -1687,7 +1686,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             speechAssessmentPager.onDestroy();
             rlQuestionContent.removeView(speechAssessmentPager.getRootView());
             mQueAndBool.add("" + speechAssessmentPager.getId());
-            onPause();
+            if (speechAssessmentPager != null) {
+                speechAssessmentPager.stopPlayer();
+            }
         }
         if (speechAssessmentPager != null) {
             speechAssessmentPager.jsExamSubmit();
@@ -2217,26 +2218,26 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 移除除了战况以外的view
      */
     private void removeQuestionViews() {
-        int oldChildCount = rlQuestionContent.getChildCount();
-        for (int i = rlQuestionContent.getChildCount() - 1; i >= 0; i--) {
-            View v = rlQuestionContent.getChildAt(i);
-            if (v.getId() != R.id.rl_livevideo_fight_root) {
-                if (examQuestionPager != null && v == examQuestionPager.getRootView()) {
-
-                } else if (speechAssessmentPager != null && v == speechAssessmentPager.getRootView()) {
-
-                } else if (questionWebPager != null && v == questionWebPager.getRootView()) {
-
-                } else if (subjectResultPager != null && v == subjectResultPager.getRootView()) {
-
-                } else if (voiceAnswerPager != null && v == voiceAnswerPager.getRootView()) {
-
-                } else {
-                    rlQuestionContent.removeView(v);
-                }
-            }
-        }
-        mLogtf.d("removeQuestionViews:ChildCount=" + rlQuestionContent.getChildCount() + "," + oldChildCount);
+//        int oldChildCount = rlQuestionContent.getChildCount();
+//        for (int i = rlQuestionContent.getChildCount() - 1; i >= 0; i--) {
+//            View v = rlQuestionContent.getChildAt(i);
+//            if (v.getId() != R.id.rl_livevideo_fight_root) {
+//                if (examQuestionPager != null && v == examQuestionPager.getRootView()) {
+//
+//                } else if (speechAssessmentPager != null && v == speechAssessmentPager.getRootView()) {
+//
+//                } else if (questionWebPager != null && v == questionWebPager.getRootView()) {
+//
+//                } else if (subjectResultPager != null && v == subjectResultPager.getRootView()) {
+//
+//                } else if (voiceAnswerPager != null && v == voiceAnswerPager.getRootView()) {
+//
+//                } else {
+//                    rlQuestionContent.removeView(v);
+//                }
+//            }
+//        }
+//        mLogtf.d("removeQuestionViews:ChildCount=" + rlQuestionContent.getChildCount() + "," + oldChildCount);
     }
 
     public void postIfNotFinish(Runnable r) {
@@ -2251,15 +2252,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             return;
         }
         mVPlayVideoControlHandler.postDelayed(r, delayMillis);
-    }
-
-    @Override
-    public boolean onSpeechResult(final String json) {
-        boolean speechResult = false;
-//        if (speechAssessmentPager != null) {
-//            speechResult = speechAssessmentPager.onSpeechResult(json);
-//        }
-        return speechResult;
     }
 
     @Override
@@ -2484,10 +2476,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
             }
         }, delayTime);
-    }
-
-    public void setQuestionWebCreate(QuestionWebCreate questionWebCreate) {
-        this.questionWebCreate = questionWebCreate;
     }
 
     public void setBaseSpeechCreat(BaseSpeechCreat baseSpeechCreat) {
