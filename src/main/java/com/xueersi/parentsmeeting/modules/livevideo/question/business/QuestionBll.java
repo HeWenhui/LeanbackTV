@@ -275,10 +275,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         this.stuCouId = stuCouId;
         liveQuestionCreat = new LiveQuestionCreat(activity, isAbLand, this);
         EventBus.getDefault().register(this);
-//        KeyboardObserverReg keyboardObserverReg = ProxUtil.getProxUtil().get(activity, KeyboardObserverReg.class);
-//        if (keyboardObserverReg != null) {
-//            keyboardObserverReg.addKeyboardObserver(this);
-//        }
+        KeyboardUtil.registKeyboardShowingListener(this);
     }
 
     public void setLiveVideoSAConfig(LiveVideoSAConfig liveVideoSAConfig) {
@@ -2635,6 +2632,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
+        KeyboardUtil.unRegistKeyboardShowingListener(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
