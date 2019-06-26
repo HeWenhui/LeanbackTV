@@ -31,6 +31,9 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseInteractionBll",
             "com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportBll",
             "com.xueersi.parentsmeeting.modules.livevideo.practice.PraiseTutorBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoChatCreat",
+            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"
     };
     private static String[] engClassPath = {
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
@@ -49,7 +52,10 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultBll",
             "com.xueersi.parentsmeeting.modules.livevideo.practice.PraiseTutorBll",
             "com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnTeamPkIRCBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll"};
+            "com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"};
     private static String[] cnClassPath = {
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
@@ -73,6 +79,9 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.ChsAnswerResultBll",
             "com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldMicroPhoneBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"
     };
     private static String[] lecClassPath = {
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",

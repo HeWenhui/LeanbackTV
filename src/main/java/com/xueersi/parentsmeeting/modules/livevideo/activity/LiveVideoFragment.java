@@ -38,10 +38,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowBll;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowRoutePager;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
@@ -205,34 +203,16 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void addBusiness(Activity activity) {
         ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerTop.class, baseLiveMediaControllerTop);
         ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
+        ProxUtil.getProxUtil().put(activity, LivePlayAction.class, this);
         //是文科
         ArrayList<BllConfigEntity> bllConfigEntities;
-        if (isArts == 1) {
+        if (isArts == LiveVideoSAConfig.ART_EN) {
             bllConfigEntities = AllBllConfig.getLiveBusinessArts();
-            VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-            videoChatIRCBll.setLiveFragmentBase(this);
-            mLiveBll.addBusinessBll(videoChatIRCBll);
-        } else if (isArts == 2) {
+        } else if (isArts == LiveVideoSAConfig.ART_CH) {
             bllConfigEntities = AllBllConfig.getLiveBusinessCn();
-            VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-            videoChatIRCBll.setLiveFragmentBase(this);
-            mLiveBll.addBusinessBll(videoChatIRCBll);
         } else {
             bllConfigEntities = AllBllConfig.getLiveBusinessScience(activity.getIntent());
-            int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
-            if (allowLinkMicNew == 1) {
-                VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
-                videoAudioChatIRCBll.setLiveFragmentBase(this);
-                mLiveBll.addBusinessBll(videoAudioChatIRCBll);
-            } else {
-                VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-                videoChatIRCBll.setLiveFragmentBase(this);
-                mLiveBll.addBusinessBll(videoChatIRCBll);
-            }
         }
-        EvaluateTeacherBll evaluateTeacherBll = new EvaluateTeacherBll(activity, mLiveBll);
-        evaluateTeacherBll.setLiveFragment(this);
-        mLiveBll.addBusinessBll(evaluateTeacherBll);
         if ((pattern == LiveVideoConfig.LIVE_PATTERN_COMMON)) {
             addSwitchFlowBll();
             initSwitchFlowListener();
@@ -265,10 +245,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
-        FeedbackTeacherBll feedbackTeacherBll = new FeedbackTeacherBll(activity, mLiveBll);
-        feedbackTeacherBll.setLiveFragment(this);
-
-        mLiveBll.addBusinessBll(feedbackTeacherBll);
     }
 
     /** 加载切流的Bll */

@@ -14,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 
@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, NoticeAction, TopicAction, VideoChatHttp {
     private VideoChatBll videoChatAction;
-    private LiveFragmentBase liveFragmentBase;
+    private LivePlayAction livePlayAction;
     /** 接麦已经连接老师 */
     private AtomicBoolean startRemote = new AtomicBoolean(false);
     public static final String DEFULT_VOICE_CHAT_STATE = "off";
@@ -57,12 +57,14 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
     @Override
     public void onCreate(HashMap<String, Object> data) {
         super.onCreate(data);
+        LivePlayAction livePlayAction = getInstance(LivePlayAction.class);
+        setLivePlayAction(livePlayAction);
         BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = getInstance(BaseLiveMediaControllerBottom.class);
         setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
 
-    public void setLiveFragmentBase(LiveFragmentBase liveFragmentBase) {
-        this.liveFragmentBase = liveFragmentBase;
+    private void setLivePlayAction(LivePlayAction livePlayAction) {
+        this.livePlayAction = livePlayAction;
     }
 
     private void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
@@ -116,12 +118,12 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
 
     @Override
     public void setVolume(float left, float right) {
-        liveFragmentBase.setVolume(left, right);
+        livePlayAction.setVolume(left, right);
     }
 
     @Override
     public void showLongMediaController() {
-        liveFragmentBase.showLongMediaController();
+        livePlayAction.showLongMediaController();
     }
 
     @Override
@@ -131,16 +133,16 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
 
     @Override
     public void stopPlay() {
-        liveFragmentBase.stopPlayer();
+        livePlayAction.stopPlayer();
     }
 
     @Override
     public void rePlay(boolean b) {
         if (!MediaPlayer.getIsNewIJK()) {
-            liveFragmentBase.rePlay(b);
+            livePlayAction.rePlay(b);
         } else {
-//            liveFragmentBase.psRePlay(b);
-            liveFragmentBase.changeNowLine();
+//            livePlayAction.psRePlay(b);
+            livePlayAction.changeNowLine();
         }
     }
 
