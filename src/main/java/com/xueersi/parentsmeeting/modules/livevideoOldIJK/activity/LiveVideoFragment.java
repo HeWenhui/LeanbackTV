@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.english.EnglishCommonBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedbackTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -231,6 +232,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             liveIRCMessageBll.setLiveMediaCtrTop(baseLiveMediaControllerTop);
 
             mLiveBll.addBusinessBll(liveIRCMessageBll);
+            mLiveBll.addBusinessBll(new EnglishCommonBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
