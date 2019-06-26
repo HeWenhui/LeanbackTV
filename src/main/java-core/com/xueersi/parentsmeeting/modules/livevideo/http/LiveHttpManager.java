@@ -2192,4 +2192,60 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("isPlayBack", isPlayBack);
         sendPost(LiveVideoConfig.URL_LIVE_COURSE_GETEVALUATE, params, httpCallBack);
     }
+
+    /**
+     * 英语小目标 - 获取学生段位信息
+     *
+     * @param requestCallBack
+     */
+    public void getStuSegment( HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_SEGMENT, params, requestCallBack);
+    }
+
+    /**
+     * 英语小目标 - 获取学生这节课小目标
+     *
+     * @param liveId
+     * @param courseId
+     * @param requestCallBack
+     */
+    public void getBetterMe(String liveId, String courseId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", "" + liveId);
+        params.addBodyParam("courseId", "" + courseId);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_BETTER_ME, params, requestCallBack);
+    }
+
+    /**
+     * 英语小目标 - 实时获取学生目标完成度
+     *
+     * @param liveId
+     * @param courseId
+     * @param requestCallBack
+     */
+    public void getStuAimRealTimeVal(String liveId, String courseId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", "" + liveId);
+        params.addBodyParam("courseId", "" + courseId);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_AIM_REALTIME_VAL, params, requestCallBack);
+    }
+
+    /**
+     * 英语小目标 - 获取小目标结果
+     *
+     * @param liveId
+     * @param courseId
+     * @param requestCallBack
+     */
+    public void getStuAimResult(String liveId, String courseId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", "" + liveId);
+        params.addBodyParam("courseId", "" + courseId);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_AIM_RESULT, params, requestCallBack);
+    }
 }

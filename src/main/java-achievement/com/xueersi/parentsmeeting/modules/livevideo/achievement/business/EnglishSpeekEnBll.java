@@ -61,12 +61,17 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
     int lastSecond;
     int MAX_SECOND = 15;
     StringBuilder totalEn_seg_len = new StringBuilder();
+    /**
+     * 其他业务开口时长 eg. 语音评测、语音答题
+     */
+    private double otherDuration = 0;
 
     public EnglishSpeekEnBll(Activity activity, LiveGetInfo liveGetInfo) {
         this.activity = activity;
         this.liveGetInfo = liveGetInfo;
         liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
         setTotalOpeningLength(liveGetInfo.getTotalOpeningLength());
+        ProxUtil.getProxUtil().put(activity, EnglishSpeekAction.class, this);
     }
 
     public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest, RelativeLayout mContentView) {
@@ -112,7 +117,7 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
             }
             final String en_seg_len = jsonObject.optString("duration");
             lastduration = duration;
-            double time = Double.parseDouble(duration);
+            double time = Double.parseDouble(duration) + otherDuration;
             final int totalSecond = (int) time;
             if (dbStart) {
                 dbDuration = totalSecond - dbSecond;
@@ -171,7 +176,7 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
                     }
                     if (second15 >= 15) {
                         second15 = second15 % MAX_SECOND;
-                        double douduration = Double.parseDouble(duration);
+                        double douduration = Double.parseDouble(duration) + otherDuration;
 //                        int location[] = new int[2];
 //                        tv_livevideo_english_prog.getLocationInWindow(location);
                         String speakingLen = totalEn_seg_len.toString();
@@ -378,5 +383,60 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
         if (speakerRecognitioner != null) {
             speakerRecognitioner.stop();
         }
+    }
+
+
+    /**
+     * 统计其他业务开口时长
+     *
+     * @param speechDuration
+     */
+    @Override
+    public void onAddTotalOpeningLength(double speechDuration) {
+        this.otherDuration += speechDuration;
+        logger.d("onAddTotalOpeningLength():speechDuration = " + speechDuration + ", otherDuration = " + otherDuration);
+        final double totalDuration;
+        if (lastduration != null) {
+            totalDuration = Double.parseDouble(lastduration) + otherDuration;
+        } else {
+            totalDuration = otherDuration;
+        }
+        final String en_seg_len = "" + speechDuration;
+        final int totalSecond = (int) totalDuration;
+        if (dbStart) {
+            dbDuration = totalSecond - dbSecond;
+            long nowTime = System.currentTimeMillis();
+            if (nowTime - lastDBTime >= 3000) {
+                sendDbDuration = dbDuration;
+                liveBll.sendDBStudent(dbDuration);
+                lastDBTime = nowTime;
+                logger.d("onProcessData(sendDBStudent):dbDuration=" + dbDuration);
+            }
+        }
+        second15 += totalSecond - lastSecond;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (totalOpeningLength.duration == 0) {
+                    setEnglishTime(totalSecond / 60, totalSecond % 60);
+                } else {
+                    int d = (int) totalOpeningLength.duration;
+                    setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
+                }
+                if (!"".equals(en_seg_len)) {
+                    totalEn_seg_len.append(en_seg_len).append(",");
+                }
+                if (second15 >= 15) {
+                    second15 = second15 % MAX_SECOND;
+                    String speakingLen = totalEn_seg_len.toString();
+                    liveBll.setTotalOpeningLength(1000, "" + (totalDuration + totalOpeningLength
+                                    .duration),
+                            "" + (totalEn_seg_num + totalOpeningLength.speakingNum), speakingLen,
+                            0, 0);
+                }
+                lastSecond = totalSecond;
+                lastEnSegNum = totalEn_seg_num;
+            }
+        });
     }
 }

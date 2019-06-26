@@ -19,6 +19,8 @@ import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -57,6 +59,7 @@ import okhttp3.Call;
 public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, LiveAchievementHttp,
         EnglishSpeekHttp, AudioRequest {
     private StarInteractAction starAction;
+    private BetterMeInteractAction betterMeInteractAction;
     private EnglishSpeekAction englishSpeekAction;
     private AtomicBoolean audioRequest = new AtomicBoolean(false);
     private EnglishSpeekMode englishSpeekMode;
@@ -315,6 +318,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     liveAchievementEngBll.initView(mRootView, mContentView);
                     liveAchievementEngBll.setLiveAchievementHttp(LiveAchievementIRCBll.this);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
+                    LiveAchievementIRCBll.this.betterMeInteractAction = liveAchievementEngBll;
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
@@ -889,4 +893,39 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         }
     }
 
+    /**
+     * 获取学生这节课小目标
+     */
+    public void getBetterMe() {
+        String liveId = mLiveBll.getLiveId();
+        String courseId = mLiveBll.getCourseId();
+        getHttpManager().getBetterMe(liveId, courseId, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.i("getBetterMe:onPmSuccess():json=" + responseEntity.getJsonObject());
+                BetterMeEntity betterMeEntity = getHttpResponseParser().parseBetterMeInfo(responseEntity);
+                if (betterMeEntity != null) {
+                    betterMeInteractAction.onReceiveBetterMe(betterMeEntity);
+                }
+            }
+        });
+    }
+
+    /**
+     * 实时获取学生目标完成度
+     */
+    public void getStuAimRealTimeVal() {
+        String liveId = mLiveBll.getLiveId();
+        String courseId = mLiveBll.getCourseId();
+        getHttpManager().getStuAimRealTimeVal(liveId, courseId, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.i("getStuAimRealTimeVal:onPmSuccess():json=" + responseEntity.getJsonObject());
+                AimRealTimeValEntity aimRealTimeValEntity = getHttpResponseParser().parseAimRealTimeValInfo(responseEntity);
+                if (aimRealTimeValEntity != null) {
+                    betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity);
+                }
+            }
+        });
+    }
 }

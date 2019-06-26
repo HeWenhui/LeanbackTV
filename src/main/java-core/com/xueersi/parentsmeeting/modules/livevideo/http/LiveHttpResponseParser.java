@@ -14,6 +14,10 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
@@ -2568,5 +2572,97 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             contentEntity.setPraiseStyle(style);
             contentEntityList.add(contentEntity);
         }
+    }
+
+    /**
+     * 英语小目标 - 解析学生段位信息
+     *
+     * @param responseEntity
+     * @return
+     */
+    public StuSegmentEntity parseStuSegmentInfo(ResponseEntity responseEntity) {
+        try {
+            StuSegmentEntity stuSegmentEntity = new StuSegmentEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            stuSegmentEntity.setAimNumber(jsonObject.getString("aimNumber"));
+            stuSegmentEntity.setSegment(jsonObject.getString("segment"));
+            stuSegmentEntity.setStar(jsonObject.getString("star"));
+            stuSegmentEntity.setSumCount(jsonObject.getString("sumCount"));
+            return  stuSegmentEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseStuSegmentInfo", e.getMessage());
+            CrashReport.postCatchedException(e);
+        }
+        return null;
+    }
+
+    /**
+     * 英语小目标 - 解析学生这节课小目标
+     *
+     * @param responseEntity
+     * @return
+     */
+    public BetterMeEntity parseBetterMeInfo(ResponseEntity responseEntity) {
+        try {
+            BetterMeEntity betterMeEntity = new BetterMeEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            betterMeEntity.setAimType(jsonObject.getString("aimType"));
+            betterMeEntity.setAimValue(jsonObject.getString("aimValue"));
+            return  betterMeEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseBetterMeInfo", e.getMessage());
+            CrashReport.postCatchedException(e);
+        }
+        return null;
+    }
+
+    /**
+     * 英语小目标 - 解析实时学生目标完成度
+     *
+     * @param responseEntity
+     * @return
+     */
+    public AimRealTimeValEntity parseAimRealTimeValInfo(ResponseEntity responseEntity) {
+        try {
+            AimRealTimeValEntity aimRealTimeValEntity = new AimRealTimeValEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            aimRealTimeValEntity.setType(jsonObject.getString("type"));
+            aimRealTimeValEntity.setRealTimeVal(jsonObject.getString("realTimeVal"));
+            return  aimRealTimeValEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseAimRealTimeValInfo", e.getMessage());
+            CrashReport.postCatchedException(e);
+        }
+        return null;
+    }
+
+    /**
+     * 英语小目标 - 解析小目标结果
+     *
+     * @param responseEntity
+     * @return
+     */
+    public StuAimResultEntity parseStuAimResultInfo(ResponseEntity responseEntity) {
+        try {
+            StuAimResultEntity stuAimResultEntity = new StuAimResultEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            stuAimResultEntity.setIsUpGrade(jsonObject.getString("isUpGrade"));
+            stuAimResultEntity.setSegment(jsonObject.getString("segment"));
+            stuAimResultEntity.setAimNumber(jsonObject.getString("aimNumber"));
+            stuAimResultEntity.setStar(jsonObject.getString("star"));
+            stuAimResultEntity.setIsDoneAim(jsonObject.getString("isDoneAim"));
+            stuAimResultEntity.setAimType(jsonObject.getString("aimType"));
+            stuAimResultEntity.setRealTimeVal(jsonObject.getString("realTimeVal"));
+            stuAimResultEntity.setAimValue(jsonObject.getString("aimValue"));
+            return  stuAimResultEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseStuAimResultInfo", e.getMessage());
+            CrashReport.postCatchedException(e);
+        }
+        return null;
     }
 }
