@@ -12,7 +12,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -45,10 +45,11 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, englishH5CoursewareBll.new
                 LiveQuestionSwitchImpl());
         englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(wrapQuestionSwitch,
-                englishH5CoursewareBll));
+                englishH5CoursewareBll, liveGetInfo));
 
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new
                 LiveBackBaseEnglishH5CoursewareCreat();
+        liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(liveGetInfo);
         int isArts = liveBackBll.getIsArts();
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
@@ -71,7 +72,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
-                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity,vCategory);
                 englishH5CoursewareBll.onH5Courseware("off", videoQuestionLiveEntity);//关闭答题
             }
         }
@@ -85,13 +86,14 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
                 questionEntity.setAnswered(true);
-                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity,vCategory);
                 englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                 showQuestion.onShow(true, videoQuestionLiveEntity);
             }
             break;
+            case LocalCourseConfig.CATEGORY_TUTOR_EVENT_35:
             case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE: {
-                MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 questionEntity.setAnswered(true);
                 // 获取拼装一题多发的字段
                 LiveVideoConfig.LIVEPLAYBACKINFOS = questionEntity.getUrl();
@@ -99,7 +101,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 LiveVideoConfig.LIVEPLAYBACKCLASSID = mVideoEntity.getClassId();
                 LiveVideoConfig.LIVEPLAYBACKTEAMID = mVideoEntity.getTeamId();
                 LiveVideoConfig.LIVEPLAYBACKSTAGE = mVideoEntity.getEdustage();
-                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity,vCategory);
                 englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                 showQuestion.onShow(true, videoQuestionLiveEntity);
             }
@@ -109,7 +111,8 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         }
     }
 
-    private VideoQuestionLiveEntity getVideoQuestionLiveEntity(VideoQuestionEntity questionEntity) {
+    private VideoQuestionLiveEntity getVideoQuestionLiveEntity(VideoQuestionEntity questionEntity,int vCategory) {
+
         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
         videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
         videoQuestionLiveEntity.englishH5Entity = questionEntity.getEnglishH5Entity();
@@ -124,13 +127,16 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
         videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
+        if (vCategory ==  LocalCourseConfig.CATEGORY_TUTOR_EVENT_35) {
+            videoQuestionLiveEntity.setTUtor(true);
+        }
         return videoQuestionLiveEntity;
     }
 
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
 
         @Override
-        public void getStuGoldCount() {
+        public void getStuGoldCount(String method) {
             //回放没有
         }
 

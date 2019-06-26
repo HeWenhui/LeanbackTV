@@ -11,12 +11,11 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 
 public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
 
@@ -32,18 +31,18 @@ public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
 
-                MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
                     mediaPlayerControl.pause();
                 }
                 questionEntity.setAnswered(true);
                 if (liveBackBll.getExperience()) {//体验课直接出题
-                    MediaPlayerControl mediaPlayerControl1 = getInstance(MediaPlayerControl.class);
+                    BackMediaPlayerControl mediaPlayerControl1 = getInstance(BackMediaPlayerControl.class);
                     if (mediaPlayerControl1 != null) {
                         mediaPlayerControl1.start();
                     }
                     VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
-                            (questionEntity);
+                            (questionEntity,vCategory);
 
                     englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                     showQuestion.onShow(true, videoQuestionLiveEntity);
@@ -51,7 +50,7 @@ public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
             }
             break;
             case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE: {
-                MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {
                     mediaPlayerControl.pause();
                 }
@@ -64,12 +63,12 @@ public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
                 LiveVideoConfig.LIVEPLAYBACKSTAGE = mVideoEntity.getEdustage();
                 LiveVideoConfig.LIVEPLAYBACKTYPE = questionEntity.getName();
                 if (liveBackBll.getExperience()) {//站立直播体验课,不弹出弹窗
-                    MediaPlayerControl mediaPlayerControl1 = getInstance(MediaPlayerControl.class);
+                    BackMediaPlayerControl mediaPlayerControl1 = getInstance(BackMediaPlayerControl.class);
                     if (mediaPlayerControl1 != null) {
                         mediaPlayerControl1.start();
                     }
                     VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
-                            (questionEntity);
+                            (questionEntity,vCategory);
 
                     videoQuestionLiveEntity.englishH5Entity.setNewEnglishH5(true);
                     englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
@@ -90,7 +89,7 @@ public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
     class ExperienceEnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
 
         @Override
-        public void getStuGoldCount() {
+        public void getStuGoldCount(String method) {
             //回放没有
         }
 

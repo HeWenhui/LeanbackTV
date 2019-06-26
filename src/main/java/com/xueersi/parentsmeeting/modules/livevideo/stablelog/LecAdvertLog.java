@@ -6,7 +6,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 /**
- * Created by lyqai on 2018/1/26.
+ * Created by linyuqiang on 2018/1/26.
  */
 
 public class LecAdvertLog {

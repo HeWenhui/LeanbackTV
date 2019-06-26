@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -134,7 +134,7 @@ public class LiveQuestionCreat {
                         }
 
                         private void onQuestionHide() {
-                            MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(activity, MediaPlayerControl.class);
+                            BackMediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(activity, BackMediaPlayerControl.class);
                             if (mediaPlayerControl != null) {
                                 mediaPlayerControl.seekTo(liveEntity.getvEndTime() * 1000);
                                 mediaPlayerControl.start();
@@ -144,7 +144,7 @@ public class LiveQuestionCreat {
                                 showQuestion.onHide(videoQuestionLiveEntity2);
                             }
                         }
-                    });
+                    }, "1");
         }
     };
 

@@ -1,0 +1,331 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@id/rl_live_stand_message_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_info"
+            android:layout_width="170dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@id/tv_livevideo_message_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/white" />
+
+                <ImageView
+                    android:id="@id/iv_livevideo_message_online"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/bg_livevideo_message_offline" />
+            </RelativeLayout>
+
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveEdgeListView
+                android:id="@id/lv_livevideo_message"
+                style="@style/listview_common_style"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:divider="@null"
+                android:listSelector="@color/transparent"
+                android:paddingBottom="15dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:paddingTop="10dp"
+                android:scrollbars="none"
+                android:stackFromBottom="true"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_star_content"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="30dp"
+            android:visibility="visible" />
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_message_panelcontent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout
+                android:id="@id/rl_livevideo_message_panelroot"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/panel_height"
+                android:visibility="gone">
+
+                <include
+                    android:id="@id/layout_chat_expression"
+                    layout="@layout/include_livechat_expression"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+            </cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout>
+        </RelativeLayout>
+
+        <Button
+            android:id="@id/bt_livevideo_message_open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_above="@id/rl_livevideo_message_panelcontent"
+            android:background="@drawable/bg_livevideo_message_open" />
+
+        <Button
+            android:id="@id/bt_livevideo_message_voice_open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/bt_livevideo_message_open"
+            android:background="@drawable/bg_livevideo_message_open"
+            android:layout_above="@id/rl_livevideo_message_panelcontent"
+            android:visibility="visible"/>
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_message_content2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/rl_livevideo_message_panelcontent"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/bt_livevideo_message_voice_open"
+            android:layout_toRightOf="@id/rl_livevideo_info"
+            android:layout_marginLeft="20dp"
+            android:gravity="center"
+            android:paddingBottom="15dp"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:id="@+id/rl_livevideo_message_back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_live_stand_voicechat_input"
+                />
+            <RelativeLayout
+                android:id="@id/rl_livevideo_voice_message_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignBottom="@id/rl_livevideo_message_back"
+                android:layout_alignTop="@id/rl_livevideo_message_back"
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@id/tv_livevideo_voicechat_word_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:text="(0/40)"
+                    android:textSize="10sp"/>
+
+                <TextView
+                    android:id="@id/tv_livevideo_voicechat_content"
+                    android:layout_width="260dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toLeftOf="@id/tv_livevideo_voicechat_word_count"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:maxLines="2"
+                    android:lineSpacingMultiplier="0.9"
+                    android:layout_marginTop="10dp"
+                    android:textSize="14sp"/>
+
+                <com.xueersi.parentsmeeting.widget.VolumeWaveView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_livevideo_voicechat_content"
+                    android:layout_marginRight="63dp"
+                    android:layout_marginLeft="63dp"
+                    android:layout_marginTop="2dp"
+                    android:id="@id/vwv_livevideo_voicechat_wave"
+                    android:layout_centerHorizontal="true" />
+
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@id/tv_livevideo_voicechat_countdown"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FF7DE0FE"
+                    android:textSize="15sp"
+                    android:layout_below="@id/tv_livevideo_voicechat_content"
+                    android:layout_centerHorizontal="true"
+                    android:text=""/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_text_message_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/rl_livevideo_message_back"
+                android:layout_alignTop="@id/rl_livevideo_message_back"
+                android:layout_alignStart="@id/rl_livevideo_message_back"
+                android:layout_alignEnd="@id/rl_livevideo_message_back"
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@id/bt_livevideo_message_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/selector_live_stand_chat_send"
+                    android:textColor="@color/white" />
+
+                <Button
+                    android:id="@id/bt_livevideo_message_express"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@id/bt_livevideo_message_send"
+                    android:background="@drawable/selector_live_stand_chat_expression"
+                    android:textColor="@color/white" />
+
+                <EditText
+                    android:id="@id/et_livevideo_message_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@id/bt_livevideo_message_express"
+                    android:background="@color/transparent"
+                    android:hint="请输入文字"
+                    android:imeOptions="flagNoExtractUi|actionSend"
+                    android:maxLength="40"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@id/iv_livevideo_message_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/rl_livevideo_message_back"
+                android:layout_alignTop="@id/rl_livevideo_message_back"
+                android:paddingBottom="6dp"
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp"
+                android:paddingTop="6dp"
+                android:src="@drawable/selector_live_stand_chat_close"
+                />
+        </RelativeLayout>
+
+        <master.flame.danmaku.danmaku.ui.widget.DanmakuView
+            android:id="@id/dv_livevideo_message_danmaku"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/rl_livevideo_info" />
+
+    </RelativeLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/cl_stand_experience_temp_gold_star">
+
+        <ImageView
+            android:id="@+id/iv_livevideo_star_energy_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="130dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/iv_livevideo_star_energy_bar_background"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_star_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="60dp"
+            android:src="@drawable/iv_livevideo_star_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_star_energy_bar"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_star_energy_bar"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_star_energy_bar" />
+
+        <TextView
+            android:id="@+id/tv_livevideo_star_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text=""
+            android:textColor="@color/COLOR_FFFFFFFF"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_star_energy_bar"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_star_energy_bar"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_star_energy_bar" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_gold_enerty_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/iv_livevideo_star_energy_bar_background"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_star_energy_bar" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="60dp"
+            android:src="@drawable/iv_livevideo_gold_icon"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_gold_enerty_bar"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_star_icon" />
+
+        <TextView
+            android:id="@+id/tv_livevideo_gold_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/COLOR_FFFFFFFF"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_gold_enerty_bar"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_gold_enerty_bar"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_gold_enerty_bar" />
+    </android.support.constraint.ConstraintLayout>
+
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView
+        android:id="@id/lav_livevideo_chievement"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_english_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+</RelativeLayout>

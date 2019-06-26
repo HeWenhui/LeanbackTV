@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingConstraints">
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_pop_window_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/shellwindow_toast_board"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_pop_window_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/COLOR_5A3A13"
+        android:textSize="19dp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_super_speaker_pop_window_background"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_pop_window_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_pop_window_background"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_super_speaker_pop_window_background"
+        tools:text="你已提交过视频" />
+
+</android.support.constraint.ConstraintLayout>

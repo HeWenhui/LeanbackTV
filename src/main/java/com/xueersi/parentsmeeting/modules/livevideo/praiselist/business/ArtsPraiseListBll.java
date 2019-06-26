@@ -57,8 +57,8 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
     private VerifyCancelAlertDialog verifyCancelAlertDialog;
     private String mRankId;
 
-    public ArtsPraiseListBll(Context context, LiveBll2 liveBll) {
-        super((Activity) context, liveBll);
+    public ArtsPraiseListBll(Activity activity, LiveBll2 liveBll) {
+        super(activity, liveBll);
         mLiveBll = liveBll;
     }
 
@@ -66,7 +66,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
         rlPraiseContentView = new RelativeLayout(mContext);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        mRootView.addView(rlPraiseContentView, params);
+        addView(rlPraiseContentView, params);
         registLayotListener();
     }
 
@@ -125,7 +125,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
         if (artsPraisePager != null && !rankId.equals(mRankId)) {
             mRankId = rankId;
             stopPraise();
-            mRootView.postDelayed(new Runnable() {
+            postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     getRankData(mRankId);
@@ -195,7 +195,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
      * 老师结束点赞
      */
     private void stopPraise() {
-        mRootView.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 onDestory();
@@ -262,7 +262,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
             jsonObject.put("type", "" + XESCODE.ARTS_SEND_PRAISE_NUM);
             jsonObject.put("id", "" + mGetInfo.getStuId());
             jsonObject.put("num", "" + praiseNum);
-            sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
+            sendNoticeToCoun(jsonObject);
         } catch (Exception e) {
             mLogtf.e("sendArtsPraiseNum", e);
         }
@@ -341,7 +341,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
 
     public void closePager() {
         if (rlPraiseContentView != null) {
-            mRootView.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     rlPraiseContentView.removeAllViews();
@@ -389,7 +389,6 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        Log.e("Arts","=======>onNotice:"+type+":"+isAvailable);
         if (isAvailable) {
             switch (type) {
                 case XESCODE.ARTS_PRAISE_START:

@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/COLOR_CC000000"
-    >
+    android:background="@color/COLOR_CC000000">
 
     <LinearLayout
         android:layout_width="520dp"
@@ -27,78 +26,71 @@
                 android:layout_marginTop="30dp"
                 android:text="方便告诉我们你离开课堂的原因吗？" />
 
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <CheckBox
+                android:id="@+id/cb_item_1"
+                style="@style/style_experience_quit_radiobutton"
                 android:layout_below="@+id/tv_experience_quit_title"
-                android:layout_marginTop="23dp">
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="23dp"
+                android:text="课程过于简单" />
 
-                <TableRow
-                    android:layout_marginBottom="18dp">
-                    <CheckBox
-                        android:id="@+id/cb_item_1"
-                        style="@style/style_experience_quit_radiobutton"
-                        android:layout_marginLeft="30dp"
-                        android:text="课程过于简单" />
+            <CheckBox
+                android:id="@+id/cb_item_2"
+                style="@style/style_experience_quit_radiobutton"
+                android:layout_below="@+id/tv_experience_quit_title"
+                android:layout_marginTop="23dp"
+                android:layout_toRightOf="@+id/cb_item_1"
+                android:text="课程过于困难" />
 
-                    <CheckBox
-                        android:id="@+id/cb_item_2"
-                        style="@style/style_experience_quit_radiobutton"
-                        android:text="课程过于困难" />
-                </TableRow>
+            <CheckBox
+                android:id="@+id/cb_item_3"
+                style="@style/style_experience_quit_radiobutton"
+                android:layout_below="@+id/cb_item_1"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="18dp"
+                android:text="不喜欢授课老师" />
 
-                <TableRow
-                    android:layout_marginBottom="18dp">
+            <CheckBox
+                android:id="@+id/cb_item_4"
+                style="@style/style_experience_quit_radiobutton"
+                android:layout_width="217dp"
+                android:layout_below="@+id/cb_item_1"
+                android:layout_marginTop="18dp"
+                android:layout_toRightOf="@+id/cb_item_3"
+                android:text="课堂内容与所学内容不匹配" />
 
-                    <CheckBox
-                        android:id="@+id/cb_item_3"
-                        style="@style/style_experience_quit_radiobutton"
-                        android:layout_marginLeft="30dp"
-                        android:text="不喜欢授课老师" />
-
-                    <CheckBox
-                        android:id="@+id/cb_item_4"
-                        style="@style/style_experience_quit_radiobutton"
-                        android:layout_width="217dp"
-                        android:text="课堂内容与所学内容不匹配" />
-                </TableRow>
-                <TableRow
-                    android:layout_marginBottom="18dp">
-                    <CheckBox
-                        android:id="@+id/cb_item_5"
-                        style="@style/style_experience_quit_radiobutton"
-                        android:layout_marginLeft="30dp"
-                        android:text="其他"
-                         />
-                </TableRow>
-            </TableLayout>
+            <CheckBox
+                android:id="@+id/cb_item_5"
+                style="@style/style_experience_quit_radiobutton"
+                android:layout_below="@+id/cb_item_3"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="18dp"
+                android:text="其他" />
 
             <LinearLayout
                 android:id="@+id/ll_experience_grading_papers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="14dp"
                 android:layout_centerHorizontal="true"
-                android:visibility="gone"
-                >
+                android:layout_marginBottom="14dp"
+                android:visibility="gone">
+
                 <TextView
                     android:id="@+id/tv_experience_grading_papers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/COLOR_F13232"
-                    android:textSize="12sp"
                     android:layout_gravity="center_horizontal"
-                    android:text="去做定级试卷"/>
+                    android:text="去做定级试卷"
+                    android:textColor="@color/COLOR_F13232"
+                    android:textSize="12sp" />
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/im_ty_jtright_icon_normal"
                     android:layout_gravity="center_vertical"
-                    />
+                    android:src="@drawable/im_ty_jtright_icon_normal" />
             </LinearLayout>
-
-
 
         </RelativeLayout>
 

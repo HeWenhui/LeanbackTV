@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.Call;
 
 /**
- * Created by lyqai on 2018/7/18.
+ * Created by linyuqiang on 2018/7/18.
  */
 public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdvertHttp {
     LecAdvertBll lecAdvertAction;
@@ -45,7 +45,7 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
         switch (type) {
             case XESCODE.LEC_ADVERT: {
                 if (lecAdvertAction == null) {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             lecAdvertAction = new LecAdvertBll(activity);

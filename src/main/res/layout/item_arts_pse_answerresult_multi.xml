@@ -5,70 +5,61 @@
     android:layout_height="wrap_content"
     android:paddingRight="30dp">
 
-    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@id/tv_arts_answer_result_answer_index"
+    <LinearLayout
+        android:id="@id/ll_arts_answer_result_item_muti_user_answer_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/livevideo_answer_index_bg"
-        android:layout_marginLeft="30dp"
-        android:text="99"
-        android:textColor="@color/white"
-        android:textSize="9sp"
-        android:gravity="center"
-        />
+        android:gravity="center_vertical"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal">
 
-    <LinearLayout
-        android:id="@id/ll_arts_answer_result_useranswer_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/tv_arts_answer_result_answer_index"
-        android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
-        >
+        <ImageView
+            android:id="@id/iv_arts_answer_result_item_muti_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp" />
 
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView
-            android:id="@id/tv_arts_answer_result_answer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="南极洲板块、美洲板块、印度洋板块板块块块"
-            android:textColor="#756565"
-            android:textSize="17sp"
-            app:drawableLeftMargin="-5dp"
-            app:drawableTopMargin="8dp"
-            app:suffixIcon="@drawable/livevideo_pse_answer_partcorrect"
-            app:useDefultTextFont="false"
-            android:lineSpacingExtra="6dp"
-            />
-
-        <!--选择题 标准答案-->
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:id="@id/tv_arts_answer_result_stander_answer"
+            android:id="@id/tv_arts_answer_result_item_muti_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:text="C"
-            android:textColor="#83BD27"
-            android:textSize="17sp"
-            android:visibility="visible"
-            />
+            android:minWidth="15dp"
+            android:text=""
+            android:textColor="#726665"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
-    <!--填空题标准答案-->
-    <com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView
-        android:id="@id/tv_arts_answer_result_stander_answer_below"
-        android:layout_width="match_parent"
+
+    <!--选择题 标准答案-->
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_toRightOf="@id/ll_arts_answer_result_item_muti_user_answer_info"
+        android:id="@id/tv_arts_answer_result_item_muti_user_answer"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/ll_arts_answer_result_useranswer_container"
-        android:layout_below="@id/ll_arts_answer_result_useranswer_container"
-        android:text="数字式线段式文字式,数字式线段式文字式,数字式,线段式,ß文字式"
-        android:textColor="#83BD27"
-        android:textSize="17sp"
-        android:visibility="gone"
-        app:useDefultTextFont="false"
-        android:lineSpacingExtra="6dp"
-        android:layout_marginTop="-3dp"
-        />
+        android:text=""
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="#726665"
+        android:lineSpacingExtra="3dp"
+        android:textSize="16sp" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_arts_answer_result_item_muti_right_answer"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_below="@id/tv_arts_answer_result_item_muti_user_answer"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/ll_arts_answer_result_item_muti_user_answer_info"
+        android:text=""
+        android:lineSpacingExtra="3dp"
+        android:textColor="#726665"
+        android:textSize="16sp"
+        android:visibility="visible" />
+
 
 </RelativeLayout>

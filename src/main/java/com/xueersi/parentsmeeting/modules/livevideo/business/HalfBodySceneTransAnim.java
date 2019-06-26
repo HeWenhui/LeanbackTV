@@ -17,7 +17,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
@@ -92,7 +91,7 @@ public class HalfBodySceneTransAnim {
         if (animationView != null) {
             String lottieResPath = null;
             String lottieJsonPath = null;
-            if(mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE){
+            if(mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH){
                 lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR_ARTS  +"/images";
                 lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR_ARTS +"/data.json";
             }else{

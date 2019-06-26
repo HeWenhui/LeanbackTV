@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -38,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="62dp"
+        android:layout_marginBottom="55dp"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -67,11 +68,11 @@
 
 
             <FrameLayout
+                android:id="@id/fl_teampk_aipatner_chip_contanier"
                 android:layout_width="26dp"
                 android:layout_height="28dp"
-                android:id="@id/fl_teampk_aipatner_chip_contanier"
-                android:layout_marginLeft="18dp"
-                >
+                android:layout_marginLeft="18dp">
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -115,6 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
+            android:textSize="17dp"
             android:text="可在移动端我的阿丘中打开"
             android:textColor="@color/white"
             android:visibility="invisible" />
@@ -150,16 +152,38 @@
 
         </LinearLayout>
 
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView
-            android:id="@id/rcl_teampk_open_box_rank"
+
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/ll_teampk_open_box_team_coin_container"
-            android:layout_marginLeft="36dp"
-            android:layout_marginRight="36dp"
-            android:layout_marginTop="14dp"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
+            >
+
+            <android.support.constraint.Guideline
+                android:id="@id/gl_teampk_award_left_guide_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.128" />
+
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
+                android:id="@id/rcl_teampk_open_box_rank"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="14dp"
+                android:overScrollMode="never"
+                android:scrollbars="none"
+                app:layout_constraintWidth_percent="0.825"
+                app:VerticalThumbDrawable="@drawable/teampk_rcl_fastscorller_header_selector"
+                app:VerticalTrackDrawable="@drawable/teampk_rcl_fastscroller_tracker"
+                app:layout_constraintLeft_toRightOf="@id/gl_teampk_award_left_guide_line"
+                />
+        </android.support.constraint.ConstraintLayout>
+
+
     </RelativeLayout>
 
     <ImageView
@@ -172,13 +196,12 @@
 
     <ImageView
         android:id="@id/iv_teampk_open_box_close"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
-        android:padding="3dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="11dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/livevideo_alertview_close_bth_normal"
+        android:src="@drawable/selector_live_teampk_close"
         android:visibility="gone" />
 </RelativeLayout>

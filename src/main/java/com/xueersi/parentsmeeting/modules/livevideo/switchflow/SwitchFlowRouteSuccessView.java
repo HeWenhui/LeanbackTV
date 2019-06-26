@@ -39,7 +39,7 @@ public class SwitchFlowRouteSuccessView extends BasePager {
         int color = mContext.getResources().getColor(R.color.COLOR_FFFFFF);
         if (LiveVideoConfig.isSmallChinese) {
             wid = SizeUtils.Dp2Px(mContext, 388);
-            wid = SizeUtils.Dp2Px(mContext, 133);
+            height = SizeUtils.Dp2Px(mContext, 133);
             drawable = mContext.getResources().getDrawable(R.drawable.shellwindow_toast_board);
             color = mContext.getResources().getColor(R.color.COLOR_5A3A13);
         } else if (LiveVideoConfig.isPrimary) {

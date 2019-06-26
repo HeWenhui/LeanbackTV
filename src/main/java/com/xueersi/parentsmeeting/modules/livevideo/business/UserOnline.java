@@ -11,12 +11,13 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.UserOnlineLog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by lyqai on 2018/6/26.
+ * Created by linyuqiang on 2018/6/26.
  * 直播心跳
  */
 public class UserOnline {
@@ -30,14 +31,19 @@ public class UserOnline {
     private int userOnlineError = 0;
     private LogToFile mLogtf;
     private String TAG = "UserOnline";
-    Handler mainHandler = new Handler(Looper.getMainLooper());
-    Activity activity;
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
+    private Activity activity;
+    private ContextLiveAndBackDebug contextLiveAndBackDebug;
+    private long startHeart;
+    private long delayHeart;
 
     public UserOnline(Activity activity, int mLiveType, String mLiveId) {
         this.activity = activity;
         this.mLiveType = mLiveType;
         this.mLiveId = mLiveId;
         mLogtf = new LogToFile(activity, TAG);
+        startHeart = System.currentTimeMillis();
+        contextLiveAndBackDebug = new ContextLiveAndBackDebug(activity);
     }
 
     public void setHttpManager(LiveHttpManager mHttpManager) {
@@ -60,10 +66,13 @@ public class UserOnline {
     };
 
     public void start() {
+        UserOnlineLog.sno2(0, contextLiveAndBackDebug);
         mainHandler.postDelayed(mUserOnlineCall, mHbTime * 1000);
     }
 
     public void stop() {
+        long oldTime = System.currentTimeMillis() - startHeart;
+        UserOnlineLog.sno5(oldTime, contextLiveAndBackDebug);
         mainHandler.removeCallbacks(mUserOnlineCall);
     }
 
@@ -83,17 +92,21 @@ public class UserOnline {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 onFinished();
+                startHeart = System.currentTimeMillis();
+                UserOnlineLog.sno3("", "1", "", contextLiveAndBackDebug);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
+                UserOnlineLog.sno3("", "0", "" + msg, contextLiveAndBackDebug);
                 onFinished();
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
+                UserOnlineLog.sno3("", "0", "" + responseEntity.getErrorMsg(), contextLiveAndBackDebug);
                 onFinished();
             }
 

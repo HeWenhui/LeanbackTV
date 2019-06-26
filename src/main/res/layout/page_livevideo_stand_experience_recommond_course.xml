@@ -35,7 +35,7 @@
         <!--app:layout_constraintLeft_toLeftOf="parent"-->
         <!--app:layout_constraintTop_toTopOf="parent" />-->
 
-    <com.xueersi.parentsmeeting.modules.livevideo.fragment.se.CustomVerticalBannerView
+    <com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.CustomVerticalBannerView
         android:id="@id/cvbv_recommond_course"
         android:layout_width="wrap_content"
         android:layout_height="40dp"

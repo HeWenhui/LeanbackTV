@@ -17,16 +17,12 @@ import android.widget.RelativeLayout;
 import com.tal.speech.speechrecognizer.PCMFormat;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageSend;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechCollectivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -61,7 +57,7 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
     private AudioRecord mAudioRecord = null;
 
     /** 播放声音对象 */
-    private AudioTrack mAudioTrack = null;
+//    private AudioTrack mAudioTrack = null;
     /** 原始录音数据 */
     private short[] mPCMBuffer;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
@@ -93,9 +89,9 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
             m_canceler.setEnabled(true);
         }
 
-        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, DEFAULT_SAMPLING_RATE, DEFAULT_CHANNEL_CONFIG,
-                DEFAULT_AUDIO_FORMAT.getAudioFormat(), mBufferSize, AudioTrack.MODE_STREAM, mAudioRecord
-                .getAudioSessionId());
+//        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, DEFAULT_SAMPLING_RATE, DEFAULT_CHANNEL_CONFIG,
+//                DEFAULT_AUDIO_FORMAT.getAudioFormat(), mBufferSize, AudioTrack.MODE_STREAM, mAudioRecord
+//                .getAudioSessionId());
 
     }
 
@@ -116,9 +112,9 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
             return;
         }
 
-        LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
-        if (liveMessageBll != null) {
-            liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+        LiveMessageSend liveMessageSend = ProxUtil.getProvide(activity, LiveMessageSend.class);
+        if (liveMessageSend != null) {
+            liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                     "老师开启了集体发言");
 
         }
@@ -162,14 +158,14 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
                 logger.d("start:startRecording:mAudioRecord=" + (mAudioRecord == null));
                 long time = System.currentTimeMillis();
                 mAudioRecord.startRecording();
-                mAudioTrack.play();
+//                mAudioTrack.play();
                 while (isStart) {
                     if (mAudioRecord != null) {
                         int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
                         if (readSize > 0) {
                             calculateRealVolume(mPCMBuffer, readSize);
                         }
-                        mAudioTrack.write(mPCMBuffer, 0, mPCMBuffer.length);
+//                        mAudioTrack.write(mPCMBuffer, 0, mPCMBuffer.length);
                     }
                 }
                 logger.d("start:startRecording:end;time=" + (System.currentTimeMillis() - time));
@@ -200,9 +196,9 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
         if (!isStart) {
             return;
         }
-        LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
-        if (liveMessageBll != null) {
-            liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+        LiveMessageSend liveMessageSend = ProxUtil.getProvide(activity, LiveMessageSend.class);
+        if (liveMessageSend != null) {
+            liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                     "老师关闭了集体发言");
 
         }
@@ -212,10 +208,10 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
             mAudioRecord.release();
             mAudioRecord = null;
         }
-        if (mAudioTrack != null) {
-            mAudioTrack.release();
-            mAudioTrack = null;
-        }
+//        if (mAudioTrack != null) {
+//            mAudioTrack.release();
+//            mAudioTrack = null;
+//        }
 
         if (speechFeedBackPager != null) {
             mHandler.post(new Runnable() {
@@ -280,17 +276,17 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
     }
 
     public void onResume() {
-        if (mAudioTrack != null) {
-            if (mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED) {
-                mAudioTrack.play();
-            }
-        }
+//        if (mAudioTrack != null) {
+//            if (mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED) {
+//                mAudioTrack.play();
+//            }
+//        }
     }
 
     public void onPause() {
-        if (mAudioTrack != null) {
-            mAudioTrack.pause();
-        }
+//        if (mAudioTrack != null) {
+//            mAudioTrack.pause();
+//        }
 
     }
 }

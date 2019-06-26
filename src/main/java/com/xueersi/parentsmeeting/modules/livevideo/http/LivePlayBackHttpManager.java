@@ -91,15 +91,16 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
             if (!StringUtils.isSpace(srcType)) {
                 params.addBodyParam("srcType", srcType);
             }
-            params.addBodyParam("classId", classId);
-            params.addBodyParam("liveId", classId);
-            params.addBodyParam("testDay", testDay);
+            params.addBodyParam("classId", "" + classId);
+            params.addBodyParam("liveId", "" + classId);
+            params.addBodyParam("testDay", "" + testDay);
+            params.addBodyParam("livePlayType", "" + livePlayType);
 //        params.addBodyParam("enstuId", enStuId);
-            params.addBodyParam("testId", testId);
+            params.addBodyParam("testId", "" + testId);
             if (voice) {
-                params.addBodyParam("answer", testResult);
+                params.addBodyParam("answer", "" + testResult);
             } else {
-                params.addBodyParam("testAnswer", testResult);
+                params.addBodyParam("testAnswer", "" + testResult);
             }
             params.addBodyParam("useVoice", voice ? "1" : "0");
             params.addBodyParam("isRight", isRight ? "1" : "0");
@@ -127,7 +128,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                                   String classId, String type, String isSubmit,
                                   double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
         if (LiveVideoConfig.isNewArts) {
-            if("16".equals(type) || "15".equals(type)){
+            if ("16".equals(type) || "15".equals(type)) {
                 HttpRequestParams params = new HttpRequestParams();
                 String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSH5_ANSWER;
                 setDefaultParameter(params);
@@ -135,7 +136,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                 params.addBodyParam("liveId", classId);
                 params.addBodyParam("type", type);
                 params.addBodyParam("isRight", isRight ? "1" : "0");
-                params.addBodyParam("isPlayBack", "1");
+                params.addBodyParam("isPlayBack", "2");
                 params.addBodyParam("isSubmit", isSubmit);
                 params.addBodyParam("voiceUrl", "");
                 params.addBodyParam("voiceTime", "" + voiceTime);
@@ -144,14 +145,14 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                 params.addBodyParam("userAnswer", LiveVideoConfig.userAnswer);
                 params.addBodyParam("answer", LiveVideoConfig.answer);
                 sendPost(url, params, requestCallBack);
-            }else{
+            } else {
                 HttpRequestParams params = new HttpRequestParams();
                 String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
                 setDefaultParameter(params);
                 params.addBodyParam("liveId", classId);
                 params.addBodyParam("answers", testResult);
                 params.addBodyParam("isPlayBack", "2");
-                params.addBodyParam("isForce", "1");
+                params.addBodyParam("isForce", isSubmit);
                 params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
                 sendPost(url, params, requestCallBack);
             }
@@ -206,7 +207,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param operateId
      * @param requestCallBack
      */
-    public void  getLivePlayRedPacket(String enStuId, String operateId, String liveId, HttpCallBack
+    public void getLivePlayRedPacket(String enStuId, String operateId, String liveId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
@@ -256,29 +257,15 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_LIVE_GET_SPEECHEVAL, params, requestCallBack);
     }
 
-    //语音评测答案提交
-    public void sendSpeechEvalResult(String enstuId, String liveId, String id, String stuAnswer, String times, int
-            entranceTime, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        setDefaultParameter(params);
-//        params.addBodyParam("enstuId", enstuId);
-        params.addBodyParam("liveId", liveId);
-        params.addBodyParam("testId", id);
-        params.addBodyParam("stuAnswer", "" + stuAnswer);
-        params.addBodyParam("times", "" + times);
-        params.addBodyParam("entranceTime", "" + entranceTime);
-        params.addBodyParam("type", "2");
-        sendPost(LiveVideoConfig.URL_LIVE_SEND_SPEECHEVAL, params, requestCallBack);
-    }
-
     //语音评测2期答案提交
     public void sendSpeechEvalResult2(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
-            requestCallBack) {
+            requestCallBack, String isSubmit) {
         if (LiveVideoConfig.isNewArts) {
             HttpRequestParams params = new HttpRequestParams();
             params.addBodyParam("liveId", liveId);
             params.addBodyParam("testId", id);
             params.addBodyParam("isRejected", "1");
+            params.addBodyParam("isSubmit", "" + isSubmit);
             params.addBodyParam("answers", "" + stuAnswer);
             params.addBodyParam("type", "2");
             setDefaultParameter(params);
@@ -548,7 +535,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 回放获取弹幕接口
+     * 回放获取弹幕接口(理科、语文)
      *
      * @param requestCallBack
      */
@@ -558,6 +545,19 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuCouId", stuCouId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
+    }
+
+    /**
+     * 回放获取弹幕接口(英语)
+     *
+     * @param requestCallBack
+     */
+    public void getVoiceBarrageForPlayBack(String groupId, String startTime,HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("groupId", groupId);
+        params.addBodyParam("startTime", startTime);
+        setDefaultParameter(params);
+        sendPost(LiveVideoSAConfig.URL_ENGLISH_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
     }
 
     /**
@@ -638,6 +638,90 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("termId", termId);
         params.addBodyParam("content", content);
         sendPost(LiveVideoConfig.URL_AUTO_LIVE_QUIT_FEED_BACK, params, requestCallBack);
+    }
+
+    public void sumbitExperienceNoviceGuide(String stuId, String termId, String subjectId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("termId", termId);
+        params.addBodyParam("subjectId", subjectId);
+        sendPost(LiveVideoConfig.URL_AUTO_LIVE_NOVIC_GUIDE, params, requestCallBack);
+    }
+
+
+    /**
+     * app端提交演讲秀
+     *
+     * @param liveId       场次id
+     * @param stuCouId     学生课程id
+     * @param stuId        学生id
+     * @param isPlayBack   是否回放(1:直播,2:回放)
+     * @param testId       互动题所属题目Id
+     * @param srcType      互动题所属题目类型
+     * @param isForce      是否是强制提交（1：是 2：否）
+     * @param httpCallBack
+     */
+    public void sendSuperSpeakersubmitSpeech(String liveId, String stuCouId, String stuId, String isPlayBack, String testId, String srcType, String isForce, String videoDuration, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("isPlayBack", isPlayBack);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("srcType", srcType);
+        params.addBodyParam("isForce", isForce);
+        params.addBodyParam("videoDuration", videoDuration);
+        sendPost(LiveVideoConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
+    }
+
+
+    /**
+     * app端上传演讲秀视频
+     *
+     * @param liveId           场次id
+     * @param stuCouId         学生课程id
+     * @param stuId            学生id
+     * @param isPlayBack       是否回放(1:直播,2:回放)
+     * @param testId           互动题所属题目Id
+     * @param srcType          互动题所属题目类型
+     * @param video_url        提交的视频地址
+     * @param voice_url        提交的音频地址
+     * @param isUpload         是否上传成功(1:上传成功 2：上传失败)
+     * @param averVocieDecibel 平均声音分贝数
+     */
+    public void uploadSpeechShow(String liveId, String stuCouId, String stuId, String isPlayBack, String testId, String srcType, String video_url, String voice_url, String isUpload, String averVocieDecibel
+            , HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("isPlayBack", isPlayBack);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("srcType", srcType);
+        params.addBodyParam("video_url", video_url);
+        params.addBodyParam("voice_url", voice_url);
+        params.addBodyParam("isUpload", isUpload);
+        params.addBodyParam("averVocieDecibel", averVocieDecibel);
+        sendPost(LiveVideoConfig.SUPER_SPEAKER_UPLOAD_SPEECH_SHOW, params, httpCallBack);
+    }
+
+
+    /**
+     * app摄像头开启状态
+     *
+     * @param liveId 场次id
+     * @param stuId  学生id
+     * @param testId 互动题所属题目Id
+     */
+    public void sendSuperSpeakerCameraStatus(String liveId, String stuId, String testId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("testId", testId);
+//        params.addBodyParam("srcType", srcType);
+//        params.addBodyParam("cameraStatus", cameraStatus);
+        sendPost(LiveVideoConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
+
     }
 
 }

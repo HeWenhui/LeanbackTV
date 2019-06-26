@@ -109,4 +109,47 @@
     <color name="COLOR_28FFFFFF">#28FFFFFF</color>
     <color name="COLOR_19FFFFFF">#19FFFFFF</color>
     <color name="COLOR_202020">#202020</color>
+
+    <color name="COLOR_FFFF8036">#FFFF8036</color>
+    <color name="COLOR_FFFF6E1A">#FFFF6E1A</color>
+
+    <color name="COLOR_00000000">#00000000</color>
+    <color name="COLOR_FFFFF8F5">#FFFFF8F5</color>
+    <color name="COLOR_FF8EA6EB">#FF8EA6EB</color>
+    <color name="COLOR_327af1">#327af1</color>
+    <color name="COLOR_FCBB23">#FCBB23</color>
+    <color name="COLOR_1AFFFFFF">#1AFFFFFF</color>
+    <color name="COLOR_E6FFFFFF">#E6FFFFFF</color>
+    <color name="COLOR_FF449CEE">#FF449CEE</color>
+
+    <color name="COLOR_E34949">#E34949</color>
+
+    <color name="COLOR_5DA741">#5DA741</color>
+    <color name="COLOR_726665">#726665</color>
+    <color name="COLOR_84AD3D">#84AD3D</color>
+    <color name="COLOR_D45E58">#D45E58</color>
+    <color name="COLOR_FFBC2D">#FFBC2D</color>
+    <color name="COLOR_985540">#985540</color>
+    <color name="COLOR_FFA421">#FFA421</color>
+    <color name="COLOR_FD6368">#FD6368</color>
+    <color name="COLOR_70A1DE">#70A1DE</color>
+    <color name="FFFFFFFF_70">#B2FFFFFF</color>
+
+    <color name="COLOR_F7E1A8">#F7E1A8</color>
+    <color name="COLOR_CCF7E1A8">#CCF7E1A8</color>
+    <color name="COLOR_99F7E1A8">#99F7E1A8</color>
+    <color name="COLOR_66F7E1A8">#66F7E1A8</color>
+    <color name="COLOR_33F7E1A8">#33F7E1A8</color>
+    <color name="COLOR_FB5E50">#FB5E50</color>
+    <color name="COLOR_5E5E7F">#5E5E7F</color>
+    <color name="COLOR_8C8CA7">#8c8ca7</color>
+
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="COLOR_A05431">#A05431</color>
+    <color name="COLOR_01757F">#01757F</color>
+    <color name="COLOR_D95151">#D95151</color>
+    <color name="transparent_60">#99000000</color>
+    <color name="COLOR_F47D00">#F47D00</color>
+
 </resources>

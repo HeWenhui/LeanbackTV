@@ -14,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePage
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -26,7 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ArtsPraiseHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageSend;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseInteractionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -78,8 +78,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     private Map<String, String> userLogMap = new HashMap<String, String>();
 
 
-    public PraiseInteractionBll(Context context, LiveBll2 liveBll) {
-        super((Activity) context, liveBll);
+    public PraiseInteractionBll(Activity activity, LiveBll2 liveBll) {
+        super(activity, liveBll);
         logger.d("PraiseInteractionBll construct");
         mLiveBll = liveBll;
 
@@ -97,7 +97,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         params.leftMargin = LiveVideoPoint.getInstance().x2;
-        mRootView.addView(rlPraiseContentView, 0, params);
+        addView(rlPraiseContentView, 0, params);
     }
 
     private class SpecailGiftTimerTask extends TimerTask {
@@ -134,9 +134,9 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             userLogMap.clear();
             userLogMap.put("openPraise", "goldnum=" + goldNum);
 
-            mHandler.removeCallbacks(delayRemoveRunalbe);
+            removeCallbacks(delayRemoveRunalbe);
             isOpen = true;
-            praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll,mGetInfo);
+            praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, contextLiveAndBackDebug,mGetInfo);
             rlPraiseContentView.removeAllViews();
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
@@ -318,7 +318,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     public void closePager() {
         if (rlPraiseContentView != null) {
             praiseInteractionPager.closePraise();
-            mHandler.postDelayed(delayRemoveRunalbe, 1000);
+            postDelayed(delayRemoveRunalbe, 1000);
         }
     }
 
@@ -377,8 +377,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                     }
                 });
 
-                LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
-                if (liveMessageBll != null) {
+                LiveMessageSend liveMessageSend = ProxUtil.getProxUtil().get(activity, LiveMessageSend.class);
+                if (liveMessageSend != null) {
                     String teacherType = "主讲";
                     if ("f".equals(from)) {
                         teacherType = "辅导";
@@ -388,7 +388,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                         status = "开启";
                     }
                     String message = teacherType + "老师" + status + "了点赞功能";
-                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                    liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                             message);
 
                 }

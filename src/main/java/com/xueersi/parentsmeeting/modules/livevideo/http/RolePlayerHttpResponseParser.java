@@ -126,13 +126,19 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
                 //“9.mp3”
                 String audio = objMsg.optString("audio");
                 //http://resource.xxyys.com/test_library/audio/2017/11/07/t_20125_9.mp3?1510050714
-                String realAudio = objStems.optString(audio);
 
+                String realAudio = null;
+                if(objAudio != null){
+                    if(objStems != null){
+                        realAudio = objStems.optString(audio);
+                    }
+                }
                 //不满三秒，也要保证至少三秒，统一由服务器计算好返回
                /* if (maxTime < 3) {
                     maxTime = (msgContent.length()/5) +3;
                 }*/
 
+                //解析message
                 RolePlayerEntity.RolePlayerHead head = rolePlayerEntity.getMapRoleHeadInfo().get(roleName);
                 if (head == null) {
                     head = new RolePlayerEntity.RolePlayerHead();
@@ -246,10 +252,10 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
 
             //所有对话的音频地址
             JSONObject objAudio =  jsonObject.optJSONObject("audio");
-            if(objAudio == null){
+           if(objAudio == null){
                 logger.i("audio is empty");
                 MobAgent.httpResponseParserError(TAG, "parserNewRolePlayGroupAndTestInfos", "audio is empty");
-                return null;
+                //return null;
             }
             JSONObject objStems = objAudio.optJSONObject("stem");
             for(int i = 0; i<arrRoles.length();i++){
@@ -273,7 +279,6 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
                 rolePlayerEntity.getMapRoleHeadInfo().put(roleName,rolePlayerHead);
                 rolePlayerEntity.getLstRoleInfo().add(rolePlayerHead);
             }
-
             for (int i = 0; i < arrSpeech.length(); i++) {
                 JSONObject objMsg = arrSpeech.getJSONObject(i);
                 String roleName = objMsg.optString("role");
@@ -282,12 +287,20 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
                 //“9.mp3”
                 String audio = objMsg.optString("audio");
                 //http://resource.xxyys.com/test_library/audio/2017/11/07/t_20125_9.mp3?1510050714
-                String realAudio = objStems.optString(audio);
+                String realAudio = null;
+                if(objAudio != null){
+                    if(objStems != null){
+                        realAudio = objStems.optString(audio);
+                    }
+                }
+
+
 
                 //不满三秒，也要保证至少三秒，统一由服务器计算好返回
                /* if (maxTime < 3) {
                     maxTime = (msgContent.length()/5) +3;
                 }*/
+                //解析message
                 roleName = roleName.replaceAll("\n","");
                 HashMap <String,RolePlayerEntity.RolePlayerHead> roleHeadsMap = (HashMap<String, RolePlayerEntity.RolePlayerHead>) rolePlayerEntity.getMapRoleHeadInfo();
                 RolePlayerEntity.RolePlayerHead head =roleHeadsMap.get(roleName);

@@ -40,13 +40,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -97,16 +97,14 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     private BaseLiveMediaControllerBottom lectureMediaControllerBottom;
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     private ImageView ivExpressionCancle;
-    private QuestionBll questionBll;
     /** 横屏的时候，也添加竖屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
 
-    public LiveMessageLandPager(Context context, QuestionBll questionBll, BaseLiveMediaControllerBottom
+    public LiveMessageLandPager(Context context, BaseLiveMediaControllerBottom
             lectureMediaControllerBottom,
                                 ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
         this.lectureMediaControllerBottom = lectureMediaControllerBottom;
-        this.questionBll = questionBll;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         nameColors[2] = Color.WHITE;
@@ -177,7 +175,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
         btMessageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logger.i( "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                logger.i("onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                 Editable editable = etMessageContent.getText();
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
@@ -226,12 +224,11 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                 .OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
-                logger.i( "onKeyboardShowing:isShowing=" + isShowing);
+                logger.i("onKeyboardShowing:isShowing=" + isShowing);
                 if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                     onTitleShow(true);
                 }
                 keyboardShowing = isShowing;
-                questionBll.onKeyboardShowing(isShowing);
                 if (keyboardShowing) {
                     btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
                 }
@@ -274,12 +271,16 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     @Override
     public void initData() {
         super.initData();
-        liveThreadPoolExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                LiveIRCMessageBll.requestGoldTotal(mContext);
-            }
-        });
+        if (getInfoGoldNum == 0) {
+            liveThreadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    UserGoldTotal.requestGoldTotal(mContext);
+                }
+            });
+        } else {
+            goldNum = "" + getInfoGoldNum;
+        }
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
@@ -557,9 +558,9 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);

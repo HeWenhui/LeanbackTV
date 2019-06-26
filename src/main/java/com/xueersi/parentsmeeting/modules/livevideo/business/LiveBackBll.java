@@ -2,9 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -16,22 +13,22 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.MyUserInfoEntity;
-import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.AllLiveBasePagerIml;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveUidRx;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -39,15 +36,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
 import org.json.JSONObject;
-import org.xutils.xutils.http.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,8 +55,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by linyuqiang on 2018/7/17.
  */
-public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick,
-        LiveOnLineLogs {
+public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick {
     protected String TAG = "LiveBackBll";
     protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
     protected Activity activity;
@@ -128,6 +123,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     protected ShowQuestion showQuestion;
     private LiveUidRx liveUidRx;
     LogToFile logToFile;
+    private LiveLog liveLog;
     /**
      * 是否是体验课
      */
@@ -167,7 +163,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 IS_SCIENCE = false;
                 liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
             } else if (isArts == 2) {
-                appID = UmsConstants.ARTS_APP_ID_BACK;
+                appID = UmsConstants.LIVE_BACK_CN_ID;
                 IS_SCIENCE = false;
                 liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
                 try {
@@ -194,12 +190,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                                 hashMap.put("size", oldSize + "-" + size);
                                 UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
                             } catch (Exception e) {
-                                CrashReport.postCatchedException(e);
+                                CrashReport.postCatchedException(new LiveException(TAG, e));
                             }
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             } else {
                 appID = UmsConstants.LIVE_APP_ID_BACK;
@@ -229,17 +225,18 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                                 hashMap.put("size", oldSize + "-" + size);
                                 UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
                             } catch (Exception e) {
-                                CrashReport.postCatchedException(e);
+                                CrashReport.postCatchedException(new LiveException(TAG, e));
                             }
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         }
-        logToFile = new LogToFile(this, TAG);
-        ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, this);
+        liveLog = new LiveLog(activity, mLiveType, mVideoEntity.getLiveId(), getPrefix());
+        ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, liveLog);
+        logToFile = new LogToFile(activity, TAG);
         mCourseHttpManager = new LivePlayBackHttpManager(activity);
         if (liveVideoSAConfig != null) {
             mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
@@ -254,6 +251,20 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         }
         mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
+        if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {
+            try {
+                HashMap<String, String> hashMap = new HashMap();
+                hashMap.put("logtype", "recorded");
+                hashMap.put("livetype", "" + mLiveType);
+                hashMap.put("where", "" + where);
+                hashMap.put("contextname", "" + intent.getStringExtra("contextname"));
+                hashMap.put("bundle", "" + intent.getExtras());
+                hashMap.put("liveid", "" + mVideoEntity.getLiveId());
+                UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+        }
     }
 
     public Boolean getExperience() {
@@ -342,11 +353,17 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         //解析性别
         liveGetInfo.setStuSex(mMyInfo.getSex() + "");
         liveGetInfo.setHeadImgPath(mMyInfo.getHeadImg());
+
+        LiveGetInfo.StudentLiveInfoEntity studentLiveInfoEntity = new LiveGetInfo.StudentLiveInfoEntity();
+        studentLiveInfoEntity.setClassId(mVideoEntity.getClassId());
+        studentLiveInfoEntity.setCourseId(mVideoEntity.getCourseId());
+
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = new LiveGetInfo.StudentLiveInfoEntity();
-            studentLiveInfo.setLearning_stage(mVideoEntity.getLearning_stage());
-            liveGetInfo.setStudentLiveInfo(studentLiveInfo);
+            studentLiveInfoEntity.setLearning_stage(mVideoEntity.getLearning_stage());
         }
+
+        mGetInfo.setStudentLiveInfo(studentLiveInfoEntity);
+
         liveGetInfo.setPattern(pattern);
         try {
             String getInfoStr = mVideoEntity.getGetInfoStr();
@@ -354,6 +371,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 JSONObject liveInfo = new JSONObject(getInfoStr);
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
                 liveGetInfo.setPrimaryChinese("2".equals(liveInfo.optString("useSkin")));
+                liveGetInfo.setsTime(liveInfo.optLong("stime"));
+                if (liveGetInfo.getStudentLiveInfo() != null) {
+                    liveGetInfo.getStudentLiveInfo().setClassId(liveInfo.optString("class_id"));
+                    liveGetInfo.getStudentLiveInfo().setGroupId(liveInfo.optString("team_id"));
+                }
                 //解析学科id
                 if (liveInfo.has("subject_ids")) {
                     String strSubjIds = liveInfo.getString("subject_ids");
@@ -364,6 +386,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             }
         } catch (Exception e) {
             logger.e("onCreate", e);
+        }
+        if (liveLog != null) {
+            liveLog.setGetInfo(liveGetInfo);
         }
         String clientLog = mShareDataManager.getString(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, LiveVideoConfig
                 .URL_LIVE_ON_LOAD_LOGS, ShareDataManager.SHAREDATA_NOT_CLEAR);
@@ -401,6 +426,29 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         return liveVideoSAConfig;
     }
 
+    private OnItemClick onItemClick;
+
+    public OnItemClick getOnItemClick() {
+        if (onItemClick == null) {
+            onItemClick = new OnItemClick() {
+                @Override
+                public void onItemClick(int position) {
+                    List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+                    if (position < lstVideoQuestion.size()) {
+                        VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(position);
+                        boolean same = mQuestionEntity == videoQuestionEntity;
+                        logger.d("onItemClick:position=" + position + "" + videoQuestionEntity.getvQuestionID() + ",start=" + videoQuestionEntity.getvQuestionInsretTime()
+                                + ",isAnswered=" + videoQuestionEntity.isAnswered() + ",same=" + same);
+                        if (!same) {
+                            videoQuestionEntity.setAnswered(false);
+                        }
+                    }
+                }
+            };
+        }
+        return onItemClick;
+    }
+
     /**
      * 扫描是否有需要弹出的互动题
      */
@@ -433,6 +481,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             logger.d("scanQuestion:showQuestion");
             Log.e("Duncan", "showQuestion:" + position);
             showQuestion(oldQuestionEntity, showQuestion);
+            if (LocalCourseConfig.CATEGORY_REDPACKET != mQuestionEntity.getvCategory()) {
+                LiveVideoConfig.isAITrue = false;
+            }
         }
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onPositionChanged(playPosition);
@@ -557,6 +608,15 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     index = i;
                     break;
                 }
+            } else if (LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT == videoQuestionEntity.getvCategory()) {
+                // 在开始时间和结束时间之间
+                if (startTime <= playPosition && playPosition < endTime) {
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
             } else if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
@@ -567,7 +627,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     index = i;
                     break;
                 }
-            } else if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()) {
+            } else if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory() ||
+                    LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
                     LiveVideoConfig.isMulLiveBack = true;
@@ -626,6 +687,21 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     standexperienceRecommondCourseIsShow = true;
                     break;
                 }
+            } else if (LocalCourseConfig.CATEGORY_BIG_TEST == videoQuestionEntity.getvCategory()) {//大题互动
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
+            } else if (LocalCourseConfig.CATEGORY_SUPER_SPEAKER == videoQuestionEntity.getvCategory()) {//大题互动
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
+
             }
         }
         if (mQuestionEntity != null) {
@@ -647,14 +723,14 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 hashMap.put("where", "" + where);
                 hashMap.put("liveid", "" + mVideoEntity.getLiveId());
                 hashMap.put("category", "" + mQuestionEntity.getvCategory());
-                UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
+                UmsAgentManager.umsAgentDebug(activity, LogConfig.LIVE_BACK_CATEGORY_UNKNOW, hashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
 
-    public interface ShowQuestion {
+    public interface ShowQuestion extends LiveProvide {
         void onShow(boolean isShow, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
         void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity);
@@ -823,6 +899,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         }
     }
 
+    public void onReusme() {
+        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+            liveBackBaseBll.onResume();
+        }
+    }
+
     public void onNewIntent(Intent intent) {
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onNewIntent(intent);
@@ -859,40 +941,16 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         }
     }
 
-    @Override
     public String getPrefix() {
         return "LB";
     }
 
     /**
-     * 播放器异常日志
+     * 获取直播间初始换参数
      *
-     * @param str
+     * @return
      */
-    @Override
-    public void getOnloadLogs(String TAG, String str) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
-        PackageManager packageManager = activity.getPackageManager();
-        PackageInfo packInfo = null;
-        String filenam = "f";
-        try {
-            packInfo = packageManager.getPackageInfo(activity.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (packInfo != null) {//else不会发生
-            filenam = packInfo.versionCode + "";
-        }
-        filenam = Build.VERSION.SDK_INT + "&" + filenam;
-        if (mGetInfo == null) {
-            UmsAgent.onEvent(activity, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
-            return;
-        }
-        LiveLogCallback liveLogCallback = new LiveLogCallback();
-        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mGetInfo.getId()
-                , mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
-        liveLogCallback.setParams(params);
+    public LiveGetInfo getRommInitData() {
+        return mGetInfo;
     }
 }

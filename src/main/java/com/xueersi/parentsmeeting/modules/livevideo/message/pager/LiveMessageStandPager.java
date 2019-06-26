@@ -38,11 +38,15 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechEvaluatorUtils;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -50,9 +54,6 @@ import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -71,15 +72,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessSysItem;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
@@ -259,7 +261,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         tvVoiceChatCountdown = mView.findViewById(R.id.tv_livevideo_voicechat_countdown);
         rlMessageText = mView.findViewById(R.id.rl_livevideo_text_message_content);
 
-
+//        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+//        int rightMargin = videoPoint.screenWidth - videoPoint.x4;
+//        if (rightMargin > 0) {
+//            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) btMesOpen.getLayoutParams();
+//            lp.rightMargin = rightMargin;
+//            btMesOpen.setLayoutParams(lp);
+//        }
 //        int screenWidth = ScreenUtils.getScreenWidth();
 //        int screenHeight = ScreenUtils.getScreenHeight();
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
@@ -339,7 +347,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 }
             }
 
-            inputStream = mContext.getAssets().open(fileName);
+            inputStream = AssertUtil.open(fileName);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 //            bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * (FrameAnimation.IMAGE_HEIGHT / (float) com
 // .xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));
@@ -369,6 +377,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     /** 聊天打开的动画 */
     private void initBtMesOpenAnimation(boolean isvoice) {
         if (rlMessageContent.getVisibility() == View.GONE) {
+            mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
             startOpenAnimation(isvoice);
             rlMessageContent.setVisibility(View.VISIBLE);
             lvMessage.setVisibility(View.VISIBLE);
@@ -701,12 +710,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mSdm = ShareDataManager.getInstance();
         isShowSpeechRecog = mSdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager.SHAREDATA_USER);
         cpuRecogTime = mSdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_USER);
-        liveThreadPoolExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                LiveIRCMessageBll.requestGoldTotal(mContext);
-            }
-        });
+        if (getInfoGoldNum == 0) {
+            liveThreadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    UserGoldTotal.requestGoldTotal(mContext);
+                }
+            });
+        } else {
+            goldNum = "" + getInfoGoldNum;
+        }
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
@@ -743,7 +756,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             mSpeechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
         }
         mParam = new SpeechParamEntity();
-        mSpeechUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
+        mSpeechUtils.prepar(new SpeechEvaluatorUtils.OnFileSuccess() {
+            @Override
+            public void onFileInit(int code) {
+
+            }
+
             @Override
             public void onFileSuccess() {
                 mSpeechFail = "模型正在启动，请稍后";
@@ -802,15 +820,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 //        });
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
-        if (!dir.exists())
-
-        {
+        if (!dir.exists()) {
             dir.mkdirs();
         }
 
-        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5)
-
-        {
+        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5) {
             String fileName = "live_stand_head.json";
 
             @Override
@@ -882,7 +896,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mAudioRequest = ProxUtil.getProxUtil().
 
                 get(liveVideoActivity, AudioRequest.class);
-
+        logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
     }
 
     @Override
@@ -893,6 +907,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         }
         if (noSpeechTimer != null) {
             noSpeechTimer.cancel();
+        }
+        if (vwvVoiceChatWave != null) {
+            vwvVoiceChatWave.stop();
+            vwvVoiceChatWave.setVisibility(View.GONE);
         }
         Map<String, String> mData = new HashMap<>();
         mData.put("userid", getInfo.getStuId());
@@ -1162,9 +1180,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = getInfo.getMainTeacherInfo().getTeacherName();
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = getInfo.getTeacherName();
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
@@ -1820,6 +1838,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     }
 
     private void startVoiceInput() {
+        mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
         if (mSpeechUtils != null) {
             mSpeechUtils.cancel();
         }
@@ -1837,6 +1856,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         tvVoiceContent.setText(VOICE_RECOG_HINT);
         tvVoiceCount.setText("");
         tvVoiceCount.setVisibility(View.GONE);
+        logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
         if (mAudioRequest != null) {
             mAudioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
@@ -1868,45 +1888,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 initBtMesOpenAnimation(true);
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
-
-    }
-
-    LiveAndBackDebug mLiveBll;
-
-    @Override
-    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugSys(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugInter(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-
-    }
-
-    @Override
-    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
-
     }
 
     private void uploadLOG(String msg) {

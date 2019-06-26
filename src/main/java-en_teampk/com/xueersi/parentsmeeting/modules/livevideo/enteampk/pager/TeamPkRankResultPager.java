@@ -12,13 +12,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.item.TeamMemberItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TeamPkRankResultPager extends LiveBasePager {
+    private RelativeLayout rlTeampkContent;
     private ImageView ivTeampkMine;
     private ImageView ivTeampkOther;
     private RelativeLayout rlRankMine;
@@ -33,7 +34,7 @@ public class TeamPkRankResultPager extends LiveBasePager {
     private Button btRankStart;
     private ImageView ivRankScore;
     private LinearLayout llScoreTip;
-    private TextView tv_livevideo_en_teampk_rank_start_close;
+    private TextView tvStartClose;
     private OnStartClick onStartClick;
     private CommonAdapter<TeamMemberEntity> myTeamAdapter;
     private CommonAdapter<TeamMemberEntity> otherTeamAdapter;
@@ -55,6 +56,7 @@ public class TeamPkRankResultPager extends LiveBasePager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_en_team_rank_result, null);
+        rlTeampkContent = view.findViewById(R.id.rl_livevideo_en_teampk_content);
         ivTeampkMine = view.findViewById(R.id.iv_livevideo_en_teampk_mine);
         ivTeampkOther = view.findViewById(R.id.iv_livevideo_en_teampk_other);
         rlRankMine = view.findViewById(R.id.rl_livevideo_en_teampk_rank_mine);
@@ -62,7 +64,7 @@ public class TeamPkRankResultPager extends LiveBasePager {
         btRankStart = view.findViewById(R.id.bt_livevideo_en_teampk_rank_start);
         ivRankScore = view.findViewById(R.id.iv_livevideo_en_teampk_rank_score);
         llScoreTip = view.findViewById(R.id.ll_livevideo_en_teampk_rank_score_tip);
-        tv_livevideo_en_teampk_rank_start_close = view.findViewById(R.id.tv_livevideo_en_teampk_rank_start_close);
+        tvStartClose = view.findViewById(R.id.tv_livevideo_en_teampk_rank_start_close);
         return view;
     }
 
@@ -102,6 +104,14 @@ public class TeamPkRankResultPager extends LiveBasePager {
             myTeamEntitys = pkTeamEntity.getbTeamMemberEntity();
             otherTeamEntitys = pkTeamEntity.getaTeamMemberEntity();
         }
+        for (int i = 0; i < myTeamEntitys.size(); i++) {
+            TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
+            if (teamMemberEntity.isMy) {
+                myTeamEntitys.remove(i);
+                myTeamEntitys.add(0, teamMemberEntity);
+                break;
+            }
+        }
         myTeamAdapter = new CommonAdapter<TeamMemberEntity>(myTeamEntitys) {
             @Override
             public AdapterItemInterface<TeamMemberEntity> getItemView(Object type) {
@@ -138,9 +148,12 @@ public class TeamPkRankResultPager extends LiveBasePager {
             lp.leftMargin = (int) ((i % 3) * (73 * ScreenUtils.getScreenDensity()));
             rlRankOther.addView(view, lp);
         }
+        String[] lables = {"答对互动题", "参与互动题", "完成语音题"};
         String[] tips = {"+10", "+5", "按比例增加"};
         for (int i = 0; i < tips.length; i++) {
             View tipView = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_en_tip, llScoreTip, false);
+            TextView tv_livevideo_en_teampk_rank_score_tip_lable = tipView.findViewById(R.id.tv_livevideo_en_teampk_rank_score_tip_lable);
+            tv_livevideo_en_teampk_rank_score_tip_lable.setText(lables[i]);
             TextView tv_livevideo_en_teampk_rank_score_tip = tipView.findViewById(R.id.tv_livevideo_en_teampk_rank_score_tip);
             tv_livevideo_en_teampk_rank_score_tip.setText(tips[i]);
             llScoreTip.addView(tipView);
@@ -161,8 +174,8 @@ public class TeamPkRankResultPager extends LiveBasePager {
             }
         });
         final AtomicInteger integer = new AtomicInteger(10);
-        setCloseText(tv_livevideo_en_teampk_rank_start_close, integer);
-        tv_livevideo_en_teampk_rank_start_close.postDelayed(new Runnable() {
+        setCloseText(tvStartClose, integer);
+        tvStartClose.postDelayed(new Runnable() {
             @Override
             public void run() {
                 int count = integer.decrementAndGet();
@@ -171,16 +184,29 @@ public class TeamPkRankResultPager extends LiveBasePager {
                         onStartClick.onClick();
                     } else {
                         ViewGroup group = (ViewGroup) mView.getParent();
-                        if(group!=null){
+                        if (group != null) {
                             group.removeView(mView);
                         }
                     }
                 } else {
-                    setCloseText(tv_livevideo_en_teampk_rank_start_close, integer);
-                    tv_livevideo_en_teampk_rank_start_close.postDelayed(this, 1000);
+                    setCloseText(tvStartClose, integer);
+                    tvStartClose.postDelayed(this, 1000);
                 }
             }
         }, 1000);
+        rlTeampkContent.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                rlTeampkContent.getViewTreeObserver().removeOnPreDrawListener(this);
+                int maxWidth = SizeUtils.Dp2Px(mContext, 501);
+                if (rlTeampkContent.getWidth() > maxWidth) {
+                    ViewGroup.LayoutParams lp = rlTeampkContent.getLayoutParams();
+                    lp.width = maxWidth;
+                    rlTeampkContent.setLayoutParams(lp);
+                }
+                return false;
+            }
+        });
     }
 
     private void setCloseText(TextView textView, AtomicInteger integer) {

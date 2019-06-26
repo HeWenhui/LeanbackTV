@@ -94,6 +94,7 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
     public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
         DetailIfo info;
         if ((info = getTeacherNameInfo(fileName)) != null) {
+            Log.e("PkResult","======>fetchTargetBitMap:fileName="+fileName);
             return createMsgBitmap(width, height, info.value, getTextSize(fileName), textColor);
         } else if ((info = getSlogan(fileName)) != null) {
             return createMsgBitmap(width, height, info.value, getTextSize(fileName), textColor);
@@ -240,6 +241,7 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
         float characterWidth = paint.measureText(singleCharacter);
         // 一行能放几个字儿
         int lineNum = (int) (width / characterWidth);
+        Log.e("PkResult","======>createMsgBitmap:"+width+":"+characterWidth+":"+lineNum);
 
         Rect fontRect;
         List<String> stringList = getStrList(msg, lineNum);
@@ -252,8 +254,6 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
             stringList.add(line_2);
         }
         int size = height / stringList.size();
-        //paint.setTextSize(size);
-      //  Log.e(TAG, "====>setTextSize:" + size + ":" + stringList.size() + ":" + height);
         resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Rect drawRect = null;
         Canvas canvas = new Canvas(resultBitmap);
@@ -297,34 +297,15 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
     }
 
     private String substring(String text, int f, int t) {
-        if (f > text.length())
+        if (f > text.length()){
             return null;
+        }
         if (t > text.length()) {
             return text.substring(f, text.length());
         } else {
             return text.substring(f, t);
         }
     }
-
-    public static Bitmap circleBitmap(Bitmap input, int radius) {
-        Bitmap result = null;
-        try {
-            result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(result);
-            Rect src = new Rect(0, 0, input.getWidth(), input.getHeight());
-            Rect dst = new Rect(0, 0, radius * 2, radius * 2);
-            Path path = new Path();
-            path.addCircle(radius, radius, radius, Path.Direction.CCW);
-            canvas.clipPath(path);
-            Paint paint = new Paint();
-            paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-            canvas.drawBitmap(input, src, dst, paint);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
 }
 
 

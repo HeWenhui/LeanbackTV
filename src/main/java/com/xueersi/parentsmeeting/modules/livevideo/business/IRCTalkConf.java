@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseHttpBusiness;
@@ -17,6 +18,7 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
@@ -37,7 +39,7 @@ import java.util.List;
 /**
  * 直播聊天调度
  *
- * @author lyqai
+ * @author linyuqiang
  * @date 2018/5/22
  */
 public class IRCTalkConf {
@@ -52,6 +54,8 @@ public class IRCTalkConf {
      */
     private int mSelectTalk = 0;
     private String liveId;
+    /** 专属场次id */
+    private String fakePlanId;
     private LiveGetInfo liveGetInfo;
     private String classid;
     private int mLiveType;
@@ -78,6 +82,7 @@ public class IRCTalkConf {
      * 播放器是不是销毁
      */
     private boolean mIsDestory = false;
+    private boolean mIsSuccess = false;
     private static String hostIp = null;
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -96,6 +101,11 @@ public class IRCTalkConf {
 //        }
 
         this.liveId = liveGetInfo.getId();
+        if (liveGetInfo.ePlanInfo != null && liveGetInfo.ePlanInfo.fakePlanId != null) {
+            this.fakePlanId = liveGetInfo.ePlanInfo.fakePlanId;
+        } else {
+            this.fakePlanId = null;
+        }
         this.mLiveType = mLiveType;
         this.baseHttpBusiness = baseHttpBusiness;
         this.hosts = hosts;
@@ -125,6 +135,7 @@ public class IRCTalkConf {
         if (hosts.isEmpty()) {
             return false;
         }
+        mIsSuccess = false;
         handler.removeMessages(GET_SERVER);
         handler.sendEmptyMessage(GET_SERVER);
         return true;
@@ -138,7 +149,7 @@ public class IRCTalkConf {
             return;
         }
         final HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("liveid", liveId);
+        params.addBodyParam("liveid", fakePlanId == null ? liveId : fakePlanId);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             params.addBodyParam("appid", "1");
             params.addBodyParam("classid", classid);
@@ -164,11 +175,11 @@ public class IRCTalkConf {
         callBack = new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                if (callBack != this) {
+                if (mIsSuccess) {
+                    mLogtf.d("onPmSuccess:url=" + url + ",this=" + (callBack != this));
                     return;
                 }
                 handler.removeMessages(GET_SERVER);
-                mLogtf.d("onPmSuccess:url=" + url + ",jsonObject=" + responseEntity.getJsonObject());
                 JSONArray jsonArray = (JSONArray) responseEntity.getJsonObject();
                 List<LiveGetInfo.NewTalkConfEntity> mNewTalkConf = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -180,12 +191,14 @@ public class IRCTalkConf {
                         entity.setPwd(jsonObject.getString("pwd"));
                         mNewTalkConf.add(entity);
                     } catch (Exception e) {
-
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
+                mLogtf.d("onPmSuccess:mIsDestory=" + mIsDestory + ",size=" + mNewTalkConf.size());
                 if (!mIsDestory) {
                     businessDataCallBack.onDataSucess(mNewTalkConf);//回调IRCMessage中businessDataCallBack的onDataSucess方法
                 }
+                mIsSuccess = true;
 //                if (callBack != this) {
 //                    return;
 //                }
@@ -198,12 +211,16 @@ public class IRCTalkConf {
                 if (callBack != this) {
                     return;
                 }
-                StableLogHashMap stableLogHashMap = new StableLogHashMap();
-                stableLogHashMap.put("gslburl", url);
-                stableLogHashMap.put("errmsg", msg);
-                stableLogHashMap.put("ip", getHostIP());
-                stableLogHashMap.put("netWorkType", "" + netWorkType);
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                try {
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap();
+                    stableLogHashMap.put("gslburl", url);
+                    stableLogHashMap.put("errmsg", msg);
+                    stableLogHashMap.put("ip", getHostIP());
+                    stableLogHashMap.put("netWorkType", "" + netWorkType);
+                    UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 //体验课获取失败
                 final String finalmsg = msg;
                 if (chatServiceError != null) {
@@ -236,11 +253,15 @@ public class IRCTalkConf {
                 if (callBack != this) {
                     return;
                 }
-                StableLogHashMap stableLogHashMap = new StableLogHashMap();
-                stableLogHashMap.put("gslburl", url);
-                stableLogHashMap.put("errmsg", responseEntity.getErrorMsg());
-                stableLogHashMap.put("ip", getHostIP());
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                try {
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap();
+                    stableLogHashMap.put("gslburl", url);
+                    stableLogHashMap.put("errmsg", responseEntity.getErrorMsg());
+                    stableLogHashMap.put("ip", getHostIP());
+                    UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 reTry();
             }
 
@@ -259,7 +280,7 @@ public class IRCTalkConf {
                 }
             }
         };
-        callBack.url = url;
+        callBack.url = "https://chatgslb.xescdn.com/getserver";
         baseHttpBusiness.sendGet(url, params, callBack);
         handler.sendEmptyMessageDelayed(GET_SERVER, GET_SERVER_TIMEOUT);
     }

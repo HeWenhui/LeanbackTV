@@ -4,10 +4,11 @@ import android.view.View;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
 
 /**
  * @author linyuqiang
- *         互动试卷基础
+ * 互动试卷基础
  * @date 2018/6/6
  */
 public interface BaseExamQuestionInter {
@@ -23,7 +24,12 @@ public interface BaseExamQuestionInter {
 
     void onDestroy();
 
-    interface ExamStop {
-        void stopExam(BaseExamQuestionInter baseExamQuestionInter, VideoQuestionLiveEntity mQuestionEntity);
-    }
+    void setQuestionOnSubmit(QuestionOnSubmit questionOnSubmit);
+
+    /**
+     * 是否展示过答题结果页面
+     *
+     * @return
+     */
+    boolean isResultRecived();
 }

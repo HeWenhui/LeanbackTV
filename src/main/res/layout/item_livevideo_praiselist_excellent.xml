@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@+id/tv_livevideo_praiselist_excellent_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:ellipsize="end"
+        android:gravity="left"
+        android:singleLine="true"
+        android:textColor="#7d553f"
+        android:textSize="12dp"
+        tools:text="张远荪" />
+
+    <RelativeLayout
+        android:id="@+id/rl_livevideo_praiselist_excellent_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_livevideo_praiselist_excellent_name"
+        android:layout_alignLeft="@+id/tv_livevideo_praiselist_excellent_name"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="10dp"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/iv_livevideo_praiselist_excellent_like"
+            android:layout_width="6dp"
+            android:layout_height="7dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_livevideo_praiselist_dianzan_student"
+            android:layout_marginRight="2dp"/>
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_praiselist_excellent_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/iv_livevideo_praiselist_excellent_like"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="#ce755a"
+            android:textSize="8dp"
+            tools:text="10" />
+    </RelativeLayout>
+
+</RelativeLayout>

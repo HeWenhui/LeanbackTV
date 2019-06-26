@@ -1,36 +1,26 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.SysLogEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 public class LogToFile {
     String TAG;
-    String path;
     private static SimpleDateFormat dateFormat;
     /** 静态唯一 */
-    public static LiveBll liveBll;
-    public static AuditClassLiveBll auditClassLiveBll;
-    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
-    public static int LIVE_TIME = 0;
+    public static LiveOnLineLogs auditClassLiveBll;
     public LiveOnLineLogs liveOnLineLogs;
     protected Logger logger = LoggerFactory.getLogger("LogToFile");
+    private StableLogHashMap stableLogHashMap;
 
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
@@ -38,31 +28,15 @@ public class LogToFile {
 
     public LogToFile(String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = "OL:" + tag + ":" + LIVE_TIME;
-        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
-        this.path = file.getPath();
-        File parent = file.getParentFile();
-        if (!parent.exists()) {
-            parent.mkdirs();
-        }
-        file.delete();
-        if (liveBll != null) {
-            liveOnLineLogs = liveBll;
-        } else if (auditClassLiveBll != null) {
+        this.TAG = "OL:" + tag;
+        if (auditClassLiveBll != null) {
             liveOnLineLogs = auditClassLiveBll;
         }
     }
 
     public LogToFile(String tag, LiveOnLineLogs liveOnLineLogs) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = tag + ":" + LIVE_TIME;
-        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
-        this.path = file.getPath();
-        File parent = file.getParentFile();
-        if (!parent.exists()) {
-            parent.mkdirs();
-        }
-        file.delete();
+        this.TAG = tag + "";
         this.liveOnLineLogs = liveOnLineLogs;
     }
 
@@ -72,112 +46,86 @@ public class LogToFile {
 
     public LogToFile(LiveOnLineLogs liveBll2, String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = tag + ":" + LIVE_TIME;
-        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
-        this.path = file.getPath();
-        File parent = file.getParentFile();
+        this.TAG = tag + "";
         liveOnLineLogs = liveBll2;
-        if (!parent.exists()) {
-            parent.mkdirs();
-        }
-        file.delete();
     }
 
     public LogToFile(Context context, String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = tag + ":" + LIVE_TIME;
-        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
-        this.path = file.getPath();
-        File parent = file.getParentFile();
+        this.TAG = tag + "";
         liveOnLineLogs = ProxUtil.getProxUtil().get(context, LiveOnLineLogs.class);
-        if (!parent.exists()) {
-            parent.mkdirs();
-        }
-        file.delete();
     }
 
+    @Deprecated
     public void clear() {
-        if (new File(path).exists()) {
-            new File(path).delete();
+//        if (new File(path).exists()) {
+//            new File(path).delete();
+//        }
+    }
+
+    /**
+     * 一些共有参数
+     *
+     * @param key
+     * @param value
+     */
+    public void addCommon(String key, String value) {
+        if (stableLogHashMap == null) {
+            stableLogHashMap = new StableLogHashMap();
         }
+        stableLogHashMap.put(key, value);
     }
 
     public void i(String message) {
-        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            getPrefix = liveOnLineLogs.getPrefix();
-            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
+            liveOnLineLogs.getOnloadLogs(TAG, null, stableLogHashMap, message);
         }
         logger.i(message);
-        if (AppConfig.DEBUG) {
-            liveThreadPoolExecutor.execute(new WriteThread(message));
+//        liveThreadPoolExecutor.execute(new WriteThread(message));
+    }
+
+    public void i(SysLogEntity logEntity, String message) {
+        if (liveOnLineLogs != null) {
+            liveOnLineLogs.getOnloadLogs(TAG, logEntity, stableLogHashMap, message);
         }
+        logger.i(message);
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void d(String message) {
-        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            getPrefix = liveOnLineLogs.getPrefix();
-            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
+            liveOnLineLogs.getOnloadLogs(TAG, null, stableLogHashMap, message);
         }
         logger.d(message);
-        if (AppConfig.DEBUG) {
-            liveThreadPoolExecutor.execute(new WriteThread(message));
+//        liveThreadPoolExecutor.execute(new WriteThread(message));
+    }
+
+    public void d(SysLogEntity logEntity, String message) {
+        if (liveOnLineLogs != null) {
+            liveOnLineLogs.getOnloadLogs(TAG, logEntity, stableLogHashMap, message);
         }
+        logger.d(message);
 //        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void debugSave(String message) {
         logger.i(message);
-        if (AppConfig.DEBUG) {
-            liveThreadPoolExecutor.execute(new WriteThread(message));
+        if (liveOnLineLogs != null) {
+            liveOnLineLogs.saveOnloadLogs(TAG, message);
         }
-//        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void e(String message, Throwable e) {
-        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            getPrefix = liveOnLineLogs.getPrefix();
-            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message + "**" + e);
+            liveOnLineLogs.getOnloadLogs(TAG, null, stableLogHashMap, message, e);
         }
         logger.e(message, e);
-        if (AppConfig.DEBUG) {
-            liveThreadPoolExecutor.execute(new WriteThread(message, e));
-        }
     }
 
-    class WriteThread implements Runnable {
-        private String message;
-        Throwable e;
-
-        public WriteThread(String message) {
-            this.message = message;
+    public void e(SysLogEntity logEntity, String message, Throwable e) {
+        if (liveOnLineLogs != null) {
+            liveOnLineLogs.getOnloadLogs(TAG, logEntity, stableLogHashMap, message, e);
         }
-
-        public WriteThread(String message, Throwable e) {
-            this.message = message;
-            this.e = e;
-        }
-
-        @Override
-        public void run() {
-            String s = dateFormat.format(new Date());
-            String[] ss = s.split(",");
-            try {
-                FileOutputStream os = new FileOutputStream(path, true);
-                os.write((ss[1] + " message:" + message + "\n").getBytes());
-                if (e != null) {
-                    if (e instanceof UnknownHostException) {
-                        os.write((ss[1] + " errorlog:UnknownHostException\n").getBytes());
-                    } else {
-                        os.write((ss[1] + " errorlog:" + Log.getStackTraceString(e) + "\n").getBytes());
-                    }
-                }
-                os.close();
-            } catch (Exception e) {
-            }
-        }
+        logger.e(message, e);
     }
 }

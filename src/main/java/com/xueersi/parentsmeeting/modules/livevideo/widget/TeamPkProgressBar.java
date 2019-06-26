@@ -82,7 +82,6 @@ public class TeamPkProgressBar extends View {
      * 滑动头 底部背景缩放比例
      */
     private float sliderBgScaleRatio = 0;
-
     /**
      * 滑动头底部背景 最大放大比列
      */
@@ -419,112 +418,197 @@ public class TeamPkProgressBar extends View {
         this.progressRightBound = rightBound;
     }
 
+
+    Matrix totalProgressMatrix;
+    Matrix currentProgressMatrix;
+    RectF totalProgressShaderRect;
+    RectF currentProgressShaderRect;
+
     @Override
     protected void onDraw(Canvas canvas) {
 
         try {
             // step 1 draw border
-            if (borderRect == null) {
-                borderRect = new RectF();
-                borderRect.left = animExtraSpace / 2 + strokeWidth;
-                borderRect.top = (getMeasuredHeight() - innerBarHeight) / 2;
-                borderRect.right = getMeasuredWidth() - strokeWidth - animExtraSpace / 2;
-                borderRect.bottom = borderRect.top + innerBarHeight;
-            }
-            canvas.drawRoundRect(borderRect, borderRect.height() / 2, borderRect.height() / 2, borderPaint);
+            drawBoder(canvas);
             // step 2 draw totalProgress
-            if (progressRect == null) {
-                progressRect = new RectF();
-                progressRect.left = borderRect.left;
-                progressRect.top = borderRect.top;
-                progressRect.right = borderRect.right;
-                progressRect.bottom = borderRect.bottom;
-            }
-
-            if (totalProgressPaintShader == null) {
-                totalProgressPaintShader = new LinearGradient(progressRect.centerX(), progressRect.top
-                        , progressRect.centerX(), progressRect.bottom, mBgColor_start, mBgColor_end, Shader.TileMode
-                        .CLAMP);
-                totalProgressPaint.setShader(totalProgressPaintShader);
-            }
-
-            canvas.drawRoundRect(progressRect, progressRect.height() / 2, progressRect.height() / 2,
-                    totalProgressPaint);
+            drawTotalProgress(canvas);
             // step3 draw currentProgress
-            float offsetX = getProgressRightBound();
-
-            // 首次绘制时 初始化
-            if (offsetX == -1) {
-                offsetX = progressRect.width() * getProgress() / getMaxProgress();
-                setProgressRightBound(offsetX);
-            }
-            currentProgressPaintShader = new LinearGradient(progressRect.left + offsetX / 2, progressRect.top,
-                    progressRect.left + offsetX / 2, progressRect.bottom,
-                    mProgressColor_start, mProgressColor_end, Shader.TileMode.CLAMP);
-            currentProgressPaint.setShader(currentProgressPaintShader);
-
-            if (currentPorgressRect == null) {
-                currentPorgressRect = new RectF();
-            }
-            currentPorgressRect.left = progressRect.left;
-            currentPorgressRect.top = progressRect.top;
-            currentPorgressRect.right = progressRect.left + offsetX;
-            currentPorgressRect.bottom = progressRect.bottom;
-
-            canvas.drawRoundRect(currentPorgressRect, currentPorgressRect.height() / 2,
-                    currentPorgressRect.height() / 2, currentProgressPaint);
+            drawCurrentProgress(canvas);
 
             // step 4 draw slider bg
-            if (sliderBg != null && (int) (sliderBgScaleRatio * sliderBgWidth) > 0) {
-                if (sliderBgMatrix == null) {
-                    sliderBgMatrix = new Matrix();
-                }
-                sliderBgMatrix.reset();
-                sliderBgMatrix.postScale(sliderBgScaleRatio, sliderBgScaleRatio);
-
-                int sliderBgWidth = (int) (sliderBg.getWidth() * sliderBgScaleRatio);
-                int sliderBgHeight = (int) (sliderBg.getHeight() * sliderBgScaleRatio);
-
-                float startX = currentPorgressRect.right - sliderBgWidth / 2;
-                float startY = (getMeasuredHeight() - sliderBgHeight) / 2;
-
-                float rightBound = getMeasuredWidth() - (animExtraSpace + mSliderWidth) / 2;
-                if (startX > rightBound) {
-                    startX = rightBound;
-                }
-                sliderBgMatrix.postTranslate(startX, startY);
-                canvas.drawBitmap(sliderBg, sliderBgMatrix, currentProgressPaint);
-            }
+            drawSilderEffect(canvas);
             // step 5 draw mSlidHeader
-
-            if (mSlidHeader != null) {
-                float startX = currentPorgressRect.right - mSliderWidth / 2;
-                float startY = (getMeasuredHeight() - mSliderHeight) / 2;
-
-                float leftBound = animExtraSpace / 2;
-                if (animExtraSpace != 0) {
-                    if (startX < leftBound) {
-                        startX = leftBound;
-                    }
-                } else {
-                    if (startX < 0) {
-                        startX = 0;
-                    }
-                }
-                float rightBound = getMeasuredWidth() - animExtraSpace / 2 - mSliderWidth;
-                if (startX > rightBound) {
-                    startX = rightBound;
-                }
-
-                // 记录当前滑动头的位置
-                mSbOffsetX = (int) startX;
-                mSbOffsetY = (int) startY;
-                canvas.drawBitmap(mSlidHeader, startX, startY, currentProgressPaint);
-            }
+            drawSlider(canvas);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 绘制滑动头
+     *
+     * @param canvas
+     */
+    private void drawSlider(Canvas canvas) {
+        if (mSlidHeader != null) {
+            float startX = currentPorgressRect.right - mSliderWidth / 2;
+            float startY = (getMeasuredHeight() - mSliderHeight) / 2;
+
+            float leftBound = animExtraSpace / 2;
+            if (animExtraSpace != 0) {
+                if (startX < leftBound) {
+                    startX = leftBound;
+                }
+            } else {
+                if (startX < 0) {
+                    startX = 0;
+                }
+            }
+            float rightBound = getMeasuredWidth() - animExtraSpace / 2 - mSliderWidth;
+            if (startX > rightBound) {
+                startX = rightBound;
+            }
+
+            // 记录当前滑动头的位置
+            mSbOffsetX = (int) startX;
+            mSbOffsetY = (int) startY;
+            canvas.drawBitmap(mSlidHeader, startX, startY, currentProgressPaint);
+        }
+    }
+
+    /**
+     * 绘制滑动头背景特效
+     *
+     * @param canvas
+     */
+    private void drawSilderEffect(Canvas canvas) {
+        if (sliderBg != null && (int) (sliderBgScaleRatio * sliderBgWidth) > 0) {
+            if (sliderBgMatrix == null) {
+                sliderBgMatrix = new Matrix();
+            }
+            sliderBgMatrix.reset();
+            sliderBgMatrix.postScale(sliderBgScaleRatio, sliderBgScaleRatio);
+
+            int sliderBgWidth = (int) (sliderBg.getWidth() * sliderBgScaleRatio);
+            int sliderBgHeight = (int) (sliderBg.getHeight() * sliderBgScaleRatio);
+
+            float startX = currentPorgressRect.right - sliderBgWidth / 2;
+            float startY = (getMeasuredHeight() - sliderBgHeight) / 2;
+
+            float rightBound = getMeasuredWidth() - (animExtraSpace + mSliderWidth) / 2;
+            if (startX > rightBound) {
+                startX = rightBound;
+            }
+            sliderBgMatrix.postTranslate(startX, startY);
+            canvas.drawBitmap(sliderBg, sliderBgMatrix, currentProgressPaint);
+        }
+    }
+
+    /**
+     * 绘制当前进度
+     *
+     * @param canvas
+     */
+    private void drawCurrentProgress(Canvas canvas) {
+        float offsetX = getProgressRightBound();
+
+        // 首次绘制时 初始化
+        if (offsetX == -1) {
+            offsetX = progressRect.width() * getProgress() / getMaxProgress();
+            setProgressRightBound(offsetX);
+        }
+
+        if (currentProgressPaintShader == null) {
+            currentProgressPaintShader = new LinearGradient(progressRect.left + offsetX / 2, progressRect.top,
+                    progressRect.left + offsetX / 2, progressRect.bottom,
+                    mProgressColor_start, mProgressColor_end, Shader.TileMode.CLAMP);
+            currentProgressPaint.setShader(currentProgressPaintShader);
+        }
+
+
+        if (currentProgressShaderRect == null) {
+            currentProgressShaderRect = new RectF();
+        }
+        currentProgressShaderRect.left = progressRect.left + offsetX / 2;
+        currentProgressShaderRect.top = progressRect.top;
+        currentProgressShaderRect.right = progressRect.left + offsetX / 2;
+        currentProgressShaderRect.bottom = progressRect.bottom;
+
+
+        if (currentProgressMatrix == null) {
+            currentProgressMatrix = new Matrix();
+        }
+        currentProgressMatrix.mapRect(currentProgressShaderRect);
+        currentProgressPaintShader.setLocalMatrix(currentProgressMatrix);
+
+
+        if (currentPorgressRect == null) {
+            currentPorgressRect = new RectF();
+        }
+        currentPorgressRect.left = progressRect.left;
+        currentPorgressRect.top = progressRect.top;
+        currentPorgressRect.right = progressRect.left + offsetX;
+        currentPorgressRect.bottom = progressRect.bottom;
+
+        canvas.drawRoundRect(currentPorgressRect, currentPorgressRect.height() / 2,
+                currentPorgressRect.height() / 2, currentProgressPaint);
+    }
+
+    /**
+     * 绘制总进度条
+     *
+     * @param canvas
+     */
+    private void drawTotalProgress(Canvas canvas) {
+        if (progressRect == null) {
+            progressRect = new RectF();
+        }
+        progressRect.left = borderRect.left;
+        progressRect.top = borderRect.top;
+        progressRect.right = borderRect.right;
+        progressRect.bottom = borderRect.bottom;
+        if (totalProgressPaintShader == null) {
+            totalProgressPaintShader = new LinearGradient(progressRect.centerX(), progressRect.top
+                    , progressRect.centerX(), progressRect.bottom, mBgColor_start, mBgColor_end, Shader.TileMode
+                    .CLAMP);
+            totalProgressPaint.setShader(totalProgressPaintShader);
+        }
+
+        if (totalProgressShaderRect == null) {
+            totalProgressShaderRect = new RectF();
+        }
+        totalProgressShaderRect.left = progressRect.centerX();
+        totalProgressShaderRect.top = progressRect.top;
+        totalProgressShaderRect.right = progressRect.centerX();
+        totalProgressShaderRect.bottom = progressRect.bottom;
+
+        if (totalProgressMatrix == null) {
+            totalProgressMatrix = new Matrix();
+        }
+        totalProgressMatrix.mapRect(totalProgressShaderRect);
+        totalProgressPaintShader.setLocalMatrix(totalProgressMatrix);
+
+        canvas.drawRoundRect(progressRect, progressRect.height() / 2, progressRect.height() / 2,
+                totalProgressPaint);
+    }
+
+
+
+    /**
+     * 绘制边框
+     *
+     * @param canvas
+     */
+    private void drawBoder(Canvas canvas) {
+        if (borderRect == null) {
+            borderRect = new RectF();
+        }
+        borderRect.left = animExtraSpace / 2 + strokeWidth;
+        borderRect.top = (getMeasuredHeight() - innerBarHeight) / 2;
+        borderRect.right = getMeasuredWidth() - strokeWidth - animExtraSpace / 2;
+        borderRect.bottom = borderRect.top + innerBarHeight;
+        canvas.drawRoundRect(borderRect, borderRect.height() / 2, borderRect.height() / 2, borderPaint);
     }
 
     /**

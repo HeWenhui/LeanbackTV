@@ -8,10 +8,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
  */
 public class ArtsExtLiveInfo {
 
-    /**
-     * 是否是新文科课件平台
-     */
+    /** 是否是新文科课件平台 */
     private String newCourseWarePlatform;
+    private int isGroupGameCourseWare = -1;
+    /**兼容课件组2019年夏季课件尺寸问题， 2019.4.4新增  0 旧尺寸，1 新尺寸*/
+    private String summerCourseWareSize;
     /**
      * 英语小目标 - 判断学生是否迟到
      */
@@ -25,6 +26,21 @@ public class ArtsExtLiveInfo {
         return newCourseWarePlatform;
     }
 
+    public int getIsGroupGameCourseWare() {
+        return isGroupGameCourseWare;
+    }
+
+    public void setIsGroupGameCourseWare(int isGroupGameCourseWare) {
+        this.isGroupGameCourseWare = isGroupGameCourseWare;
+    }
+
+    public String getSummerCourseWareSize() {
+        return summerCourseWareSize;
+    }
+
+    public void setSummerCourseWareSize(String summerCourseWareSize) {
+        this.summerCourseWareSize = summerCourseWareSize;
+    }
     public boolean isArriveLate() {
         return isArriveLate;
     }

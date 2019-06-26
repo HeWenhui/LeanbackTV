@@ -1,13 +1,18 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.business;
 
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 
 /**
- * Created by lyqai on 2018/7/11.
+ * Created by linyuqiang on 2018/7/11.
  */
 
-public interface VPlayerListenerReg {
-    void addVPlayerListener(PlayerService.VPlayerListener vPlayerListener);
+public interface VPlayerListenerReg extends LiveProvide {
+    void addVPlayerListener(VPlayerCallBack.VPlayerListener vPlayerListener);
 
-    void removeVPlayerListener(PlayerService.VPlayerListener vPlayerListener);
+    void removeVPlayerListener(VPlayerCallBack.VPlayerListener vPlayerListener);
+
+    void release();
+
+    void playVideo();
 }

@@ -26,7 +26,7 @@ import java.util.Map;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 /**
- * Created by lyqai on 2018/7/17.
+ * Created by linyuqiang on 2018/7/17.
  */
 
 public class UnderstandBll implements UnderstandAction, Handler.Callback {
@@ -107,20 +107,7 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                 //如果不是小英
                 if (!isSmallEnglish) {
                     logger.i("进入到非小英");
-                    if (LiveVideoConfig.isPrimary) {
-                        understandView = activity.getLayoutInflater().inflate(
-                                R.layout.dialog_livevideo_primary_understand, rlQuestionContent, false);
-                        understandView.findViewById(R.id.iv_understand_close).setOnClickListener(new View
-                                .OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                removeView(rlQuestionContent, understandView);
-                            }
-                        });
-                        understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
-                                (listener);
-                        understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
-                    } else if (LiveVideoConfig.isSmallChinese) {
+                    if (LiveVideoConfig.isSmallChinese) {
                         logger.i("显示语文三分屏");
                         smallChineseUnderstandPager = new SmallChineseUnderstandPager(activity);
                         smallChineseUnderstandPager.setListener(new SmallChineseUnderstandPager.UnderStandListener() {
@@ -138,7 +125,20 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                         });
                         understandView = smallChineseUnderstandPager.getRootView();
 
-                    } else {
+                    } else if (LiveVideoConfig.isPrimary) {
+                        understandView = activity.getLayoutInflater().inflate(
+                                R.layout.dialog_livevideo_primary_understand, rlQuestionContent, false);
+                        understandView.findViewById(R.id.iv_understand_close).setOnClickListener(new View
+                                .OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                removeView(rlQuestionContent, understandView);
+                            }
+                        });
+                        understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
+                                (listener);
+                        understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
+                    }  else {
                         understandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
                                 rlQuestionContent,
                                 false);
@@ -190,12 +190,12 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     //在中间位置显示
                 }
-                rlQuestionContent.getHandler().removeCallbacks(closeRedPackage);
+                mVPlayVideoControlHandler.removeCallbacks(closeRedPackage);
                 rlQuestionContent.addView(understandView, params);
                 if (LiveVideoConfig.isPrimary) {
 //                    rlQuestionContent.postDelayed(closeRedPackage, 100000);//十秒之后关闭
                 } else {
-                    rlQuestionContent.postDelayed(closeRedPackage, 10000);//十秒之后关闭
+                    mVPlayVideoControlHandler.postDelayed(closeRedPackage, 10000);//十秒之后关闭
                 }
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();

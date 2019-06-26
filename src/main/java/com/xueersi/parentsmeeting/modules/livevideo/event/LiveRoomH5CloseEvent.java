@@ -1,4 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.event;
+
+import com.xueersi.common.entity.EnglishH5Entity;
+
 /**
  * 直播间内  h5 关闭事件
  *@author  chenkun
@@ -19,6 +22,40 @@ public class LiveRoomH5CloseEvent {
     private String id;
     /** 是否是老师发起的关闭*/
     private boolean closeByTeacher;
+    /**
+     * 是否是理科新课件平台
+     */
+    private boolean scienceNewCourseWare;
+    private EnglishH5Entity englishH5Entity;
+    /**
+     * 此次作答是否是 强制提交
+     */
+    private boolean forceSubmit;
+
+    public void setForceSubmit(boolean forceSubmit) {
+        this.forceSubmit = forceSubmit;
+    }
+
+    public boolean isForceSubmit() {
+        return forceSubmit;
+    }
+
+    public boolean isScienceNewCourseWare() {
+        return scienceNewCourseWare;
+    }
+
+    public void setScienceNewCourseWare(boolean scienceNewCourseWare) {
+        this.scienceNewCourseWare = scienceNewCourseWare;
+    }
+
+    public EnglishH5Entity getEnglishH5Entity() {
+        return englishH5Entity;
+    }
+
+    public void setEnglishH5Entity(EnglishH5Entity englishH5Entity) {
+        this.englishH5Entity = englishH5Entity;
+    }
+
 
     public void setCloseByTeahcer(boolean closeByTeacher) {
         this.closeByTeacher = closeByTeacher;

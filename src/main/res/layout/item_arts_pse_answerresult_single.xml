@@ -29,6 +29,7 @@
             app:drawableTopMargin="8dp"
             app:suffixIcon="@drawable/livevideo_pse_answer_partcorrect"
             app:useDefultTextFont="false"
+            android:minWidth="15dp"
             android:lineSpacingExtra="6dp"
             />
 

@@ -4,4 +4,20 @@
     <string name="agora_private_app_id_debug">8a751989972f4599a315ed9129471f32</string>
     <string name="agora_private_app_id_release">f8d8132f9e1446c79568e2c22e585f82</string>
     <string name="livevideo_chpk_dispatchteam">分队仪式进行中...</string>
+    <string name="livevideo_chpk_how_to_win">如何获取能量 \n帮助战队在PK中获胜?</string>
+    <!--战队pk没有小目标显示-->
+    <string name="livevideo_enpk_notarget">你真棒！继续加油哦~</string>
+
+    <string name="super_speaker_back_camera_tip">确定退出超级演讲秀吗?</string>
+    <string name="super_speaker_back_camera_content_tip">已录制的内容将无法保存</string>
+    <string name="super_speaker_back_camera_rerecord_title_tip">确定要重录吗？</string>
+    <string name="super_speaker_camera_record_start_tip">开始录制</string>
+    <string name="super_speaker_camera_record_open_landscape">请保持横向拍摄哦</string>
+    <string name="super_speaker_back_has_send">你已提交过视频</string>
+    <string name="super_speaker_back_upload_in_background">视频后台上传中</string>
+    <string name="super_speaker_time_up_not_record_finish_tip">时间到，视频没有完成哦</string>
+    <string name="super_speaker_time_up_record_finish_tip_title">时间到，是否提交已录视频？</string>
+    <string name="super_speaker_time_up_record_finish_tip_content">提交视频可获得金币哦</string>
+    <string name="super_speaker_back_exit">退出后可重新进入录制</string>
+    <string name="super_speaker_back_exit_cannot_record">退出后将无法在直播中参与录制</string>
 </resources>

@@ -5,25 +5,21 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
 
 public interface QuestionHttp {
-    void getStuGoldCount();
+    void getStuGoldCount(String method);
 
     void sendRankMessage(int rankStuReconnectMessage);
 
     void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity1, AbstractBusinessDataCallBack abstractBusinessDataCallBack);
 
-    void liveSubmitTestAnswer(LiveBasePager liveBasePager, VideoQuestionLiveEntity videoQuestionLiveEntity1, String mVSectionID, String testAnswer, boolean isVoice, boolean isRight, QuestionSwitch.OnAnswerReslut answerReslut);
+    void liveSubmitTestAnswer(LiveBasePager liveBasePager, VideoQuestionLiveEntity videoQuestionLiveEntity1, String mVSectionID, String testAnswer, boolean isVoice, boolean isRight, QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit);
 
-    void getSpeechEval(String id, OnSpeechEval onSpeechEval);
-
-    void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval onSpeechEval);
-
-    void sendSpeechEvalResult2(String id, String stuAnswer, OnSpeechEval onSpeechEval);
+    void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, AbstractBusinessDataCallBack callBack);
 
     void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity1, AbstractBusinessDataCallBack callBack);
 
-    void speechEval42IsAnswered(String mVSectionID, String num, SpeechEvalAction.SpeechIsAnswered isAnswered);
+    void speechEval42IsAnswered(String mVSectionID, String num, AbstractBusinessDataCallBack callBack);
 }

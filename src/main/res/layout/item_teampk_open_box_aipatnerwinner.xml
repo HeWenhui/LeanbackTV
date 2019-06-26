@@ -1,102 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="57dp"
-    >
+    android:layout_height="53dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+       android:layout_centerVertical="true">
 
-        <ImageView
+        <RelativeLayout
+            android:id="@id/rl_teampk_lucy_header_container"
             android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@id/iv_teampk_open_box_winner_head" />
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/live_video_teampk_headmask" />
+            <ImageView
+                android:id="@id/iv_teampk_open_box_winner_head"
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:layout_centerHorizontal="true" />
 
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="13dp"
-            android:src="@drawable/livevideo_alertview_luckystar_img_disable"
-            android:layout_below="@id/iv_teampk_open_box_winner_head"
-            android:layout_marginTop="-12dp"
-            android:id="@id/iv_teampk_open_box_lucky_guy" />
+            <ImageView
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/livevideo_teampk_header_cover" />
+
+            <ImageView
+                android:id="@id/iv_teampk_open_box_lucky_guy"
+                android:layout_width="50dp"
+                android:layout_height="13dp"
+                android:layout_below="@id/iv_teampk_open_box_winner_head"
+                android:layout_marginTop="-8dp"
+                android:src="@drawable/livevideo_alertview_luckystar_img_disable" />
+
+        </RelativeLayout>
+
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_teampk_open_box_winner_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="100dp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:ellipsize="end"
-            android:id="@id/tv_teampk_open_box_winner_name"
-            android:text="宋珂珂宋珂珂宋珂珂"
-            android:textSize="14sp"
-            android:layout_alignTop="@id/iv_teampk_open_box_winner_head"
+            android:layout_alignTop="@id/rl_teampk_lucy_header_container"
+            android:layout_marginLeft="7dp"
             android:layout_marginTop="6dp"
-            android:layout_toRightOf="@id/iv_teampk_open_box_winner_head"
-            android:layout_marginLeft="5dp"
-            android:singleLine="true" />
+            android:layout_toRightOf="@id/rl_teampk_lucy_header_container"
+            android:ellipsize="end"
+            android:maxWidth="100dp"
+            android:singleLine="true"
+            android:text="宋珂珂宋珂珂宋珂珂"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_teampk_open_box_winner_coin"
             android:layout_width="wrap_content"
             android:layout_height="16dp"
-            android:drawableLeft="@drawable/livevideo_tool_golds_img_disable"
-            android:id="@id/tv_teampk_open_box_winner_coin"
             android:layout_alignLeft="@id/tv_teampk_open_box_winner_name"
             android:layout_below="@id/tv_teampk_open_box_winner_name"
             android:layout_marginTop="2dp"
-            android:gravity="center_vertical"
-            android:text="+15"
-            android:textStyle="bold"
-            android:textColor="@color/COLOR_FF8F24"
-            android:maxWidth="100dp"
+            android:drawableLeft="@drawable/livevideo_tool_golds_img_disable"
+            android:drawablePadding="5dp"
             android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxWidth="100dp"
             android:singleLine="true"
+            android:text="+15"
+            android:textColor="@color/COLOR_FF8F24"
             android:textSize="14sp"
-            android:drawablePadding="5dp" />
+            android:textStyle="bold" />
 
         <FrameLayout
+            android:id="@id/fl_teampk_aipatner_chip_contanier"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_alignBottom="@id/tv_teampk_open_box_winner_coin"
-            android:layout_toRightOf="@id/tv_teampk_open_box_winner_coin"
-            android:id="@id/fl_teampk_aipatner_chip_contanier"
             android:layout_marginLeft="10dp"
-            >
+            android:layout_toRightOf="@id/tv_teampk_open_box_winner_coin">
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/livevideo_aipatner_award_icon"
                 android:scaleType="centerCrop"
-                />
+                android:src="@drawable/livevideo_aipatner_award_icon" />
+
             <ImageView
+                android:id="@id/iv_teampk_aipatner_chip"
                 android:layout_width="5dp"
                 android:layout_height="6dp"
-                android:scaleType="centerCrop"
-                android:id="@id/iv_teampk_aipatner_chip"
                 android:layout_gravity="right|center_vertical"
                 android:layout_marginRight="4dp"
-                android:src="@drawable/livevideo_aipatner_chip"
-                />
+                android:scaleType="centerCrop"
+                android:src="@drawable/livevideo_aipatner_chip" />
         </FrameLayout>
-        
+
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_teampk_lucky_start_patch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+29"
-            android:textSize="14sp"
-            android:textColor="@color/COLOR_FF8F24"
             android:layout_alignBottom="@id/tv_teampk_open_box_winner_coin"
-            android:layout_toRightOf="@id/fl_teampk_aipatner_chip_contanier"
-            android:id="@id/tv_teampk_lucky_start_patch"
             android:layout_marginLeft="5dp"
-            />
+            android:layout_toRightOf="@id/fl_teampk_aipatner_chip_contanier"
+            android:text="+29"
+            android:textColor="@color/COLOR_FF8F24"
+            android:textSize="14sp" />
 
     </RelativeLayout>
 

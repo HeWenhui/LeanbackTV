@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 
 import java.util.HashMap;
 
@@ -37,14 +38,14 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
         pattern = paramIntent.getIntExtra("pattern", 0);
         isSmallEnglish = paramIntent.getBooleanExtra("isSmallEnglish", false);
         isExperience = paramIntent.getBooleanExtra("isExperience", false);
-        if (LiveVideoConfig.isPrimary) {
+        if (LiveVideoConfig.isSmallChinese) {
+            id = "layout_livemediacontroller_chs_bottom";
+            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_switch_flow_bottom, this);
+//            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_switch_flow_bottom, this);
+        } else if (LiveVideoConfig.isPrimary) {
             id = "layout_livemediacontroller_psbottom";
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_ps_switch_flow_bottom, this);
-        } else if (LiveVideoConfig.isSmallChinese) {
-            id = "layout_livemediacontroller_chs_bottom";
-            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom, this);
-//            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_switch_flow_bottom, this);
-        } else if (isSmallEnglish) {
+        }   else if (isSmallEnglish) {
             id = "layout_livemediacontroller_english_switch_flow_bottom";
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_english_switch_flow_bottom, this);
         } else {
@@ -63,13 +64,13 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
     public void onHide() {
         View view = null;
         String findid = "";
-        if (LiveVideoConfig.isPrimary) {
-            findid = "rl_livevideo_common_wordps";
-            view = findViewById(R.id.rl_livevideo_common_word);
-        } else if (LiveVideoConfig.isSmallChinese) {
+        if (LiveVideoConfig.isSmallChinese) {
             findid = "rl_livevideo_common_wordsc";
             view = findViewById(R.id.rl_livevideo_common_word);
-        } else if (isSmallEnglish) {
+        } else if (LiveVideoConfig.isPrimary) {
+            findid = "rl_livevideo_common_wordps";
+            view = findViewById(R.id.rl_livevideo_common_word);
+        }   else if (isSmallEnglish) {
             findid = "rl_livevideo_common_wordse";
             view = findViewById(R.id.rl_livevideo_common_word);
         } else if (pattern == 1) {
@@ -88,7 +89,7 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
                 hashMap.put("findid", "" + findid);
                 UmsAgentManager.umsAgentDebug(mContext, TAG + "_onhide", hashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
         if (switchFlowView != null) {

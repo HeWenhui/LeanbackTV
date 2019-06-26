@@ -53,14 +53,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerPortItem
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
@@ -235,7 +236,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                             if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                                 boolean send = ircState.sendMessage(msg, "");
                                 if (send) {
-                                    messageBll.startCountDown(COUNT_TAG_MSG, (int) (SEND_MSG_INTERVAL / 1000));
+                                    startCountDown(COUNT_TAG_MSG, (int) (SEND_MSG_INTERVAL / 1000));
                                     etMessageContent.setText("");
                                     addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
                                     lastSendMsg = System.currentTimeMillis();
@@ -485,7 +486,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                LiveIRCMessageBll.requestGoldTotal(mContext);
+                UserGoldTotal.requestGoldTotal(mContext);
             }
         });
         ivExpressionCancle.setOnClickListener(new View.OnClickListener() {
@@ -643,7 +644,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     tvFlowersDisable.setVisibility(View.VISIBLE);
-                                    Runnable runnable = messageBll.startCountDown(COUNT_TAG_FLO, 10);
+                                    Runnable runnable = startCountDown(COUNT_TAG_FLO, 10);
                                     tvFlowersDisable.setTag(runnable);
                                     if (goldNum == null) {
                                         OtherModulesEnter.requestGoldTotal(mContext);
@@ -861,9 +862,9 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);

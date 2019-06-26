@@ -2,9 +2,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 
 import android.app.Application;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -15,8 +17,10 @@ import com.xueersi.ui.dialog.BaseAlertDialog;
  */
 
 public class CloseConfirmDialog extends BaseAlertDialog {
-    public ImageView tvCancel;
-    public ImageView tvConfirm;
+    private ImageView tvCancel;
+    private ImageView tvConfirm;
+    private TextView tvTitle;
+    private TextView tvContent;
 
     public CloseConfirmDialog(Context context) {
         super(context, (Application) BaseApplication.getContext(), false);
@@ -27,6 +31,8 @@ public class CloseConfirmDialog extends BaseAlertDialog {
         View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_livevideo_speechbul_close, null);
         tvCancel = view.findViewById(R.id.iv_livevideo_speechbul_close_cancel);
         tvConfirm = view.findViewById(R.id.iv_livevideo_speechbul_close_confim);
+        tvTitle = view.findViewById(R.id.tv_livevideo_speechbul_close_title);
+        tvContent = view.findViewById(R.id.tv_livevideo_speechbul_close_content);
         return view;
     }
 
@@ -36,6 +42,18 @@ public class CloseConfirmDialog extends BaseAlertDialog {
 
     public void setOnClickConfirmlListener(View.OnClickListener listener){
         tvConfirm.setOnClickListener(listener);
+    }
+
+    public void setTitle(String title) {
+        tvTitle.setText(title);
+    }
+
+    public void setTitleGravaty(int gravaty) {
+        tvTitle.setGravity(gravaty);
+    }
+
+    public void hideContent() {
+        tvContent.setVisibility(View.GONE);
     }
 
     public void showDialog() {

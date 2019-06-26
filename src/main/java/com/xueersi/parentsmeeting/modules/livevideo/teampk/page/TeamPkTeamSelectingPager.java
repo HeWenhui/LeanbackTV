@@ -16,7 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 *@author chekun
 *created  at 2018/4/17 11:31
 */
-public class TeamPkTeamSelectingPager extends BasePager implements View.OnClickListener {
+public class TeamPkTeamSelectingPager extends TeamPkBasePager implements View.OnClickListener {
     private ImageView ivEnter;
     private final TeamPkBll mTeamPkBll;
     /**呼吸动画持续时间*/

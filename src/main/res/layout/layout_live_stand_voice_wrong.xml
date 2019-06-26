@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_speecteval_result_answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:shadowColor="#ffdaf9fa"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3.0"
+        android:text="你的答案:B"
+        android:textColor="#456B82" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_livevideo_speecteval_result_answer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3dp"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@id/iv_livevideo_speecteval_result_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/livevideo_enteampk_benchangchengjiu_gold_img_nor_25dp" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_livevideo_speecteval_result_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@id/iv_livevideo_speecteval_result_gold"
+            android:includeFontPadding="false"
+            android:text="+1"
+            android:textColor="#456B82"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:id="@id/iv_livevideo_speecteval_result_energy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="7dp"
+            android:layout_toRightOf="@id/tv_livevideo_speecteval_result_gold"
+            android:src="@drawable/livevideo_enteampk_benchangchengjiu_fair_img_nor_25dp" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_livevideo_speecteval_result_energy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/iv_livevideo_speecteval_result_energy"
+            android:includeFontPadding="false"
+            android:text="+1"
+            android:textColor="#456B82"
+            android:textSize="15sp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

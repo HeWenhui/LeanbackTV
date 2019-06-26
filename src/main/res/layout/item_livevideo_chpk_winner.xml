@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp">
+        <ImageView
+            android:id="@id/iv_teampk_open_box_winner_head"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/livevideo_chpk_logo_border"
+            android:paddingBottom="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:paddingTop="5dp" />
+
+        <ImageView
+            android:id="@id/iv_teampk_open_box_lucky_guy"
+            android:layout_width="50dp"
+            android:layout_height="14dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="3dp"
+            android:src="@drawable/livevideo_alertview_luckystar_img_disable" />
+
+        <TextView
+            android:id="@id/tv_teampk_open_box_winner_name"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginLeft="55dp"
+            android:ellipsize="end"
+            android:gravity="bottom"
+            android:maxWidth="100dp"
+            android:singleLine="true"
+            android:text="宋珂珂宋珂珂宋珂珂"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@id/tv_teampk_open_box_winner_coin"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="55dp"
+            android:drawableLeft="@drawable/livevideo_tool_golds_img_disable"
+            android:drawablePadding="5dp"
+            android:ellipsize="end"
+            android:maxWidth="100dp"
+            android:singleLine="true"
+            android:text="+15"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+
+
+
+</FrameLayout>

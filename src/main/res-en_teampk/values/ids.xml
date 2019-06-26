@@ -5,9 +5,9 @@
     <item name="gv_livevideo_en_teampk_rank" type="id" />
     <item name="iv_livevideo_en_teampk_rank_select" type="id" />
     <!--分队结果-->
+    <item name="rl_livevideo_en_teampk_content" type="id" />
     <item name="iv_livevideo_en_teampk_mine" type="id" />
     <item name="iv_livevideo_en_teampk_vs" type="id" />
-    <item name="v_livevideo_en_teampk_center" type="id" />
     <item name="iv_livevideo_en_teampk_other" type="id" />
     <item name="rl_livevideo_en_teampk_rank_mine" type="id" />
     <item name="rl_livevideo_en_teampk_rank_other" type="id" />
@@ -37,18 +37,20 @@
     <item name="iv_livevideo_en_teampk_lead_left" type="id" />
     <item name="iv_livevideo_en_teampk_lead_mid" type="id" />
     <item name="iv_livevideo_en_teampk_lead_right" type="id" />
+    <item name="rl_livevideo_en_teampk_lead" type="id" />
     <item name="pg_livevideo_en_teampk_lead" type="id" />
     <item name="iv_livevideo_en_teampk_lead_prog" type="id" />
     <item name="rl_livevideo_en_teampk_lead_bottom" type="id" />
     <item name="iv_livevideo_en_teampk_lead_star" type="id" />
-    <item name="gv_livevideo_en_teampk_lead_star" type="id" />
+    <item name="ll_livevideo_en_teampk_lead_star" type="id" />
     <item name="rl_livevideo_en_teampk_lead_left" type="id" />
     <item name="iv_livevideo_en_teampk_lead_fire_left" type="id" />
     <item name="tv_livevideo_en_teampk_lead_fire_add_left" type="id" />
+    <item name="rl_livevideo_en_teampk_lead_score_left" type="id" />
     <item name="tv_livevideo_en_teampk_lead_score_left" type="id" />
     <item name="rl_livevideo_en_teampk_lead_right" type="id" />
     <item name="iv_livevideo_en_teampk_lead_fire_right" type="id" />
     <item name="iv_livevideo_en_teampk_lead_fire_add_right" type="id" />
     <item name="tv_livevideo_en_teampk_lead_score_right" type="id" />
-
+    <item name="iv_livevideo_enpk_jieguo_pic_nor" type="id" />
 </resources>

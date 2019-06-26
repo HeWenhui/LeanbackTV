@@ -12,7 +12,7 @@
         android:layout_centerVertical="true"
         android:src="@drawable/zhanduipk_fantastic_huomiao_pic" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_live_speech_result_myenergy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
         android:layout_toRightOf="@id/tv_live_speech_result_myenergy"
         android:src="@drawable/zhanduipk_fantastic_jinbi_pic" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_live_speech_result_mygold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
         android:layout_toRightOf="@id/tv_live_speech_result_mygold"
         android:src="@drawable/zhanduipk_fantastic_zan_pic" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_live_speech_result_mypraise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

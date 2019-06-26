@@ -10,6 +10,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAssAutoPager;
@@ -26,7 +27,7 @@ import java.util.HashMap;
 public class StandSpeechTop3Bll implements SpeechEndAction {
     String TAG = "StandSpeechTop3Bll";
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
-    QuestionIRCBll questionIRCBll;
+    SpeechEvalHttp questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
     StandSpeechTop3Pager standSpeechTop3Pager;
     RelativeLayout bottomContent;
@@ -36,7 +37,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     HashMap<String, OnTop3End> top3EndHashMap = new HashMap<>();
     LogToFile logToFile;
 
-    public StandSpeechTop3Bll(Context context, QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
+    public StandSpeechTop3Bll(Context context, SpeechEvalHttp questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
         this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;
         logToFile = new LogToFile(context, TAG);
@@ -76,7 +77,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                         }
                     });
                     /** 语音评测 roleplay */
-                } else if (speechAssessmentPager instanceof SpeechAssessmentWebX5Pager) {
+                } else if (speechAssessmentPager instanceof SpeechAssessmentWebX5Pager || speechAssessmentPager instanceof RolePlayStandMachinePager) {
                     questionIRCBll.getRolePlayAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {

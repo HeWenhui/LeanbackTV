@@ -2,8 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.content.Context;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -28,15 +29,15 @@ public class WrapSpeechEvalAction implements SpeechEvalAction {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
     }
 
-    @Override
-    public void getSpeechEval(String id, OnSpeechEval onSpeechEval) {
-        speechEvalAction.getSpeechEval(id, onSpeechEval);
-    }
+//    @Override
+//    public void getSpeechEval(String id, AbstractBusinessDataCallBack callBack) {
+//        speechEvalAction.getSpeechEval(id, callBack);
+//    }
 
     @Override
     public void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity, String num) {
         speechEvalAction.stopSpeech(pager, baseVideoQuestionEntity, num);
-        MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
+        BackMediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, BackMediaPlayerControl.class);
         if (mediaPlayerControl != null) {
             mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
             mediaPlayerControl.start();
@@ -44,13 +45,8 @@ public class WrapSpeechEvalAction implements SpeechEvalAction {
     }
 
     @Override
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval onSpeechEval) {
-        speechEvalAction.sendSpeechEvalResult(id, stuAnswer, times, entranceTime, onSpeechEval);
-    }
-
-    @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, OnSpeechEval onSpeechEval) {
-        speechEvalAction.sendSpeechEvalResult2(id, stuAnswer, onSpeechEval);
+    public void sendSpeechEvalResult2(String id, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuAnswer, String isSubmit, AbstractBusinessDataCallBack callBack) {
+        speechEvalAction.sendSpeechEvalResult2(id, videoQuestionLiveEntity, stuAnswer, isSubmit, callBack);
     }
 
     @Override
@@ -59,8 +55,8 @@ public class WrapSpeechEvalAction implements SpeechEvalAction {
     }
 
     @Override
-    public void speechIsAnswered(String num, SpeechIsAnswered isAnswered) {
-        speechEvalAction.speechIsAnswered(num, isAnswered);
+    public void speechIsAnswered(String num, AbstractBusinessDataCallBack callBack) {
+        speechEvalAction.speechIsAnswered(num, callBack);
     }
 
 }

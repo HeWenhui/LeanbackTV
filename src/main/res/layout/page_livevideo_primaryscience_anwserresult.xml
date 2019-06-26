@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent_80"
+    android:clickable="true">
+
+    <FrameLayout
+        android:layout_width="667dp"
+        android:layout_height="375dp"
+        android:layout_centerInParent="true">
+
+        <RelativeLayout
+            android:id="@+id/rl_livevideo_primaryscience_anwserrsult_content"
+            android:layout_width="445dp"
+            android:layout_height="205dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="132dp"
+            android:background="@drawable/live_interact_primary_bg">
+
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
+                android:id="@+id/frv_livevideo_primaryscience_anwserrsult"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="19dp"
+                android:layout_marginTop="67dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="24dp"
+                android:overScrollMode="never"
+                app:VerticalThumbDrawable="@drawable/arts_pse_fastscorller_header_selector"
+                app:VerticalTrackDrawable="@drawable/arts_rcl_fastscroller_tracker" />
+
+        </RelativeLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lav_livevideo_primaryscience_anwserrsult_active_right"
+            android:layout_width="667dp"
+            android:layout_height="375dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:lottie_fileName="primary_science_answer_result/interact-active-right.json"
+            app:lottie_imageAssetsFolder="primary_science_answer_result/animation/interact-active/right" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_primaryscience_anwerresult_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="388dp"
+            android:layout_marginTop="130dp"
+            android:textColor="#FFEFE30F"
+            android:textSize="14dp" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_primaryscience_anwerresult_gold_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="337dp"
+            android:layout_marginTop="289dp"
+            android:textColor="#FFFEAE22"
+            android:textSize="15dp" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_primaryscience_anwerresult_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="532dp"
+            android:layout_marginTop="29dp"
+            android:src="@drawable/live_interact_primary_close" />
+    </FrameLayout>
+
+</RelativeLayout>

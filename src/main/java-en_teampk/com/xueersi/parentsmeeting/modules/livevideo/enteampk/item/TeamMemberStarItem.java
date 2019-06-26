@@ -16,11 +16,14 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.airbnb.lottie.utils.Utils;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -32,23 +35,37 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
     private RelativeLayout rlTeampkMember;
     private ImageView civTeampkMember;
     private TextView tvTeampkName;
+    private ImageView ivTeampkFire;
     private TextView tvTeampkFire;
     private RelativeLayout rlTeampkZan;
     //    private LottieAnimationView lav_livevideo_en_teampk_zan;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/dianzan";
     private Context context;
     private TeamMemberEntity entity;
+    private LottieAnimationView lav_livevideo_en_teampk_zan;
     private HashMap<TeamMemberEntity, LottieAnimationView> map;
     private int width;
     private int height;
+    private OnItemClick onItemClick;
+    private int type;
+    private int pattern;
 
-    public TeamMemberStarItem(Context context, HashMap<TeamMemberEntity, LottieAnimationView> map) {
+    public TeamMemberStarItem(Context context, int type, int pattern, HashMap<TeamMemberEntity, LottieAnimationView> map) {
         this.context = context;
+        this.type = type;
+        this.pattern = pattern;
         this.map = map;
+    }
+
+    public void setOnItemClick(OnItemClick onItemClick) {
+        this.onItemClick = onItemClick;
     }
 
     @Override
     public int getLayoutResId() {
+        if (pattern == 2) {
+            return R.layout.item_livevideo_en_team_member_star_stand;
+        }
         return R.layout.item_livevideo_en_team_member_star;
     }
 
@@ -59,6 +76,7 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
         rlTeampkMember = root.findViewById(R.id.rl_livevideo_en_teampk_member);
         civTeampkMember = root.findViewById(R.id.civ_livevideo_en_teampk_member);
         tvTeampkName = root.findViewById(R.id.tv_livevideo_en_teampk_name);
+        ivTeampkFire = root.findViewById(R.id.iv_livevideo_en_teampk_fire);
         tvTeampkFire = root.findViewById(R.id.tv_livevideo_en_teampk_fire);
         rlTeampkZan = root.findViewById(R.id.rl_livevideo_en_teampk_zan);
 //        lav_livevideo_en_teampk_zan = root.findViewById(R.id.lav_livevideo_en_teampk_zan);
@@ -69,15 +87,20 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
 
     }
 
+    public TeamMemberEntity getEntity() {
+        return entity;
+    }
+
     @Override
     public void updateViews(final TeamMemberEntity entity, int position, Object objTag) {
         this.entity = entity;
-        LottieAnimationView lav_livevideo_en_teampk_zan = map.get(entity);
+        lav_livevideo_en_teampk_zan = map.get(entity);
         if (lav_livevideo_en_teampk_zan == null) {
             rlTeampkZan.removeAllViews();
             lav_livevideo_en_teampk_zan = new LottieAnimationView(context);
             map.put(entity, lav_livevideo_en_teampk_zan);
-            rlTeampkZan.addView(lav_livevideo_en_teampk_zan);
+            float scale = Utils.dpScale() * 0.9f;
+            rlTeampkZan.addView(lav_livevideo_en_teampk_zan, (int) (162 * scale), (int) (119 * scale));
             String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
             String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
             LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath, "img_0.png") {
@@ -119,9 +142,19 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             rlTeampkMember.setBackgroundResource(R.drawable.app_livevideo_enteampk_morentouxiang_bg_img_nor);
         }
         tvTeampkName.setText(entity.name);
-        tvTeampkFire.setText("" + entity.energy);
+        if (type == TeamPkLeadPager.TEAM_TYPE_2) {
+            ivTeampkFire.setImageResource(R.drawable.livevideo_enteampk_benchangchengjiu_idol_img_nor1);
+            tvTeampkFire.setText("+" + entity.gold);
+        } else {
+            ivTeampkFire.setImageResource(R.drawable.livevideo_enteampk_benchangchengjiu_fire_img_nor1);
+            tvTeampkFire.setText("+" + entity.getEnergy());
+        }
         lav_livevideo_en_teampk_zan.setOnClickListener(new PraiseClick(lav_livevideo_en_teampk_zan));
         ImageLoader.with(context.getApplicationContext()).load(entity.headurl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civTeampkMember);
+    }
+
+    public void updatePraise() {
+        lav_livevideo_en_teampk_zan.updateBitmap("image_0", createBitmap(entity.praiseCount, width, height));
     }
 
     private class PraiseClick implements View.OnClickListener {
@@ -154,6 +187,7 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
 //            if (!pressLottileView.isAnimating()) {
             lav_livevideo_en_teampk_zan.playAnimation();
             entity.praiseCount++;
+            entity.thisPraiseCount++;
             lav_livevideo_en_teampk_zan.updateBitmap("image_0", createBitmap(entity.praiseCount, width, height));
             logger.d("onClick:classmateEntity=" + entity.id + ",v1=" + lav_livevideo_en_teampk_zan.hashCode() + ",v2=" + v.hashCode());
 //            }
@@ -170,6 +204,9 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             }
             handler.removeCallbacks(countRunnable);
             handler.postDelayed(countRunnable, 1000);
+            if (onItemClick != null) {
+                onItemClick.onItemClick(entity);
+            }
         }
     }
 
@@ -193,5 +230,9 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             logger.e("createBitmap", e);
         }
         return null;
+    }
+
+    public interface OnItemClick {
+        void onItemClick(TeamMemberEntity entity);
     }
 }

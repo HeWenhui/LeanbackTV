@@ -20,7 +20,9 @@
             android:id="@id/iv_livevideo_message_small_bg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/app_livevideo_enteampk_bg_img_nor" />
+            android:scaleType="fitXY"
+            android:src="@drawable/app_livevideo_enteampk_bg_img1_nor"
+            android:visibility="visible" />
 
         <RelativeLayout
             android:id="@id/rl_livevideo_message_top"
@@ -55,9 +57,9 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
             android:layout_below="@id/rl_livevideo_message_top"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
             android:background="@drawable/app_livevideo_enteampk_achievement_board2_img_nor"
             android:padding="0dp">
 
@@ -80,10 +82,10 @@
                 android:id="@id/lv_livevideo_small_english_live_message"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="13dp"
-                android:layout_marginRight="12dp"
                 android:layout_marginTop="42dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="10dp"
                 android:divider="@null"
                 android:dividerHeight="10dp"
                 android:listSelector="@color/transparent" />
@@ -117,15 +119,16 @@
         android:layout_above="@id/rl_livevideo_small_english_message_panelcontent"
         android:background="#b2000000"
         android:visibility="gone">
+
         <Button
             android:id="@id/btn_livevideo_small_english_message_switch"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="11dp"
-            android:background="@drawable/selector_livevideo_small_english_keyborad"
-            />
+            android:background="@drawable/selector_livevideo_small_english_keyborad" />
+
         <RelativeLayout
             android:id="@id/rl_livevideo_small_english_voice_message_content"
             android:layout_width="match_parent"
@@ -138,42 +141,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="11dp"
                 android:text=""
                 android:textColor="@color/white"
-                android:layout_marginTop="11dp"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
+
             <TextView
                 android:id="@id/tv_livevideo_voicechat_word_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="13dp"
                 android:layout_toRightOf="@id/tv_livevideo_voicechat_content"
                 android:text="(0/40)"
                 android:textColor="#66FFFFFF"
-                android:layout_marginLeft="10dp"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
             <com.xueersi.parentsmeeting.widget.VolumeWaveView
+                android:id="@id/vwv_livevideo_voicechat_wave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_livevideo_voicechat_content"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="60dp"
-                android:layout_marginRight="110dp"
                 android:layout_marginTop="11dp"
-                android:id="@id/vwv_livevideo_voicechat_wave"
-                android:layout_centerHorizontal="true" />
+                android:layout_marginRight="110dp" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_livevideo_voicechat_countdown"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FF7DE0FE"
-                android:textSize="25sp"
                 android:layout_below="@id/tv_livevideo_voicechat_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="11dp"
-                android:text=""/>
+                android:text=""
+                android:textColor="#FF7DE0FE"
+                android:textSize="25sp"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -182,20 +186,20 @@
             android:layout_height="match_parent"
             android:layout_toRightOf="@id/btn_livevideo_small_english_message_switch"
             android:visibility="gone">
+
             <Button
                 android:id="@id/btn_livevideo_small_english_start_voice"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="10dp"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/shape_livevideo_smallenglish_message_edittext_bg"
                 android:text="大声说英语啦"
                 android:textColor="@color/white"
-                android:textSize="17sp"
-                />
+                android:textSize="17sp" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -203,17 +207,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toRightOf="@id/btn_livevideo_small_english_message_switch"
-            android:visibility="gone"
-            >
+            android:visibility="gone">
+
             <EditText
                 android:id="@id/et_livevideo_small_english_message_content"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
-                android:layout_toRightOf="@id/bt_livevideo_small_english_message_send"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="16dp"
+                android:layout_toRightOf="@id/bt_livevideo_small_english_message_send"
                 android:background="@drawable/shape_livevideo_smallenglish_message_edittext_bg"
                 android:hint="请输入文字"
                 android:imeOptions="flagNoExtractUi|actionSend"
@@ -221,8 +225,9 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:singleLine="true"
-                android:textSize="14sp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
             <Button
                 android:id="@id/bt_livevideo_small_english_message_send"
                 android:layout_width="75dp"
@@ -230,9 +235,9 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16dp"
-                android:clickable="true"
                 android:background="@drawable/selector_livevideo_small_english_chat_send"
-                />
+                android:clickable="true" />
+
             <Button
                 android:id="@id/bt_livevideo_small_english_message_express"
                 android:layout_width="24dp"
@@ -242,16 +247,17 @@
                 android:layout_toLeftOf="@id/bt_livevideo_small_english_message_send"
                 android:background="@drawable/selector_livevideo_small_english_chat_expression"
                 android:textColor="@color/white" />
+
             <TextView
                 android:id="@id/tv_livevideo_small_english_message_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#66FFFFFF"
-                android:textSize="13sp"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/bt_livevideo_small_english_message_express"
                 android:layout_marginRight="16dp"
-                android:text="0/40"/>
+                android:layout_toLeftOf="@id/bt_livevideo_small_english_message_express"
+                android:text="0/40"
+                android:textColor="#66FFFFFF"
+                android:textSize="13sp" />
         </RelativeLayout>
 
     </RelativeLayout>

@@ -8,17 +8,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -30,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.EngForceSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -84,7 +84,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     boolean userBack = false;
     /** 是不是用户切换答题 */
     boolean userSwitch = false;
-    String type;
+    private String type;
+    private boolean isNewArts;
     int netWorkType = NetWorkHelper.WIFI_STATE;
     private long entranceTime;
     private VideoQuestionLiveEntity mDetail;
@@ -97,7 +98,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         this.questionSwitch = questionSwitch;
         this.type = type;
         this.assess_ref = assess_ref;
-        if (LiveVideoConfig.isNewArts) {
+        isNewArts = LiveVideoConfig.isNewArts;
+        if (isNewArts) {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(mDetail.getVoiceType()) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(mDetail.getVoiceType())) {
                 try {
                     answer = assess_ref.getJSONArray("answer").getString(0);
@@ -157,6 +159,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
             public void run() {
                 if (mIse == null) {
                     mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                    mIse.prepar();
                 }
 //                if (mIse == null) {
 //                    mIse = new SpeechEvaluatorUtils(true);
@@ -416,13 +419,26 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     VoiceEvaluatorListener listener = new VoiceEvaluatorListener();
 
     private void onEvaluatorError(final ResultEntity resultEntity) {
-        mLogtf.d("onEvaluatorError:userSwitch=" + userSwitch + ",userBack=" + userBack + ",isEnd=" + isEnd);
+        mLogtf.d("onEvaluatorError:userSwitch=" + userSwitch + ",userBack=" + userBack + ",isEnd=" + isEnd + ",errorNo=" + resultEntity.getErrorNo());
         isSpeechError = true;
         if (userSwitch || userBack) {
             return;
         }
         if (isEnd) {
-            questionSwitch.stopSpeech(this, baseVideoQuestionEntity);
+            //语音答题也强制提交
+//            questionSwitch.stopSpeech(this, baseVideoQuestionEntity);
+            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(type)) {
+                submitQuestionSelect("", false, resultEntity.getSpeechDuration());
+            } else {
+                try {
+                    JSONArray options = assess_ref.getJSONArray("options");
+                    JSONObject jsonObject = options.getJSONObject(0);
+                    JSONArray content1 = jsonObject.getJSONArray("content");
+                    submitQuestionBlack(content1.getString(0), "", false, resultEntity.getSpeechDuration());
+                } catch (Exception e) {
+                    mLogtf.e("onEvaluatorError:submitQuestionBlack", e);
+                }
+            }
             return;
         }
         if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode
@@ -577,58 +593,14 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                         logHashMap.addExY().addExpect("1").addSno("4").addNonce("" + nonce).addStable("1");
                         umsAgentDebugInter(eventId, logHashMap.getData());
                         baseVideoQuestionEntity.nonce = nonce;
-                        questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer, option, 1, isRight,
-                                resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch
-                                        .OnAnswerReslut() {
-                            @Override
-                            public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity,
-                                                       VideoResultEntity entity) {
-                                if (entity != null) {
-                                    entity.setYourAnswer(option);
-                                    entity.setStandardAnswer(answer);
-                                    String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-                                    VoiceAnswerLog.sno5(VoiceAnswerPager.this, sourcetype, baseVideoQuestionEntity
-                                            .getvQuestionID(), baseVideoQuestionEntity.nonce);
-                                    // 发送已答过这题的标识
-//                                    EventBus.getDefault().post(new ArtsAnswerResultEvent(baseVideoQuestionEntity
-// .getvQuestionID(),2));
-                                }
-                            }
-
-                            @Override
-                            public void onAnswerFailure() {
-                                isSpeechSuccess = false;
-                                if (isEnd) {
-                                    questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
-                                } else {
-                                    tvVoiceansSwitch.setVisibility(View.VISIBLE);
-//                                        XESToastUtils.showToast(mContext, "提交失败，请重读");
-                                    rlSpeectevalTip.setVisibility(View.VISIBLE);
-                                    tvSpeectevalTip.setText("提交失败，请重读");
-                                    tvSpeectevalTip.setTag("7");
-                                    mView.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-//                                            rlSpeectevalTip.setVisibility(View.GONE);
-                                            rlSpeectevalTipGone();
-                                        }
-                                    }, 1500);
-                                    logger.d("onResult(SUCCESS):onAnswerFailure");
-                                    mView.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            startEvaluator();
-                                        }
-                                    }, 200);
-                                }
-                            }
-                        });
+                        submitQuestionSelect(option, isRight, resultEntity.getSpeechDuration());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 } else {
                     if (isEnd) {
-                        questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
+                        submitQuestionSelect("", false, resultEntity.getSpeechDuration());
+//                        questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
                     } else {
 //                        XESToastUtils.showToast(mContext, "重读");
                         rlSpeectevalTip.setVisibility(View.VISIBLE);
@@ -693,46 +665,103 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     tvVoiceansSwitch.setVisibility(View.GONE);
                     questionSwitch.uploadVoiceFile(saveVideoFile);
                     isSpeechSuccess = true;
-                    questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, content1.getString(0),
-                            content1.getString(0), 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0",
-                            new QuestionSwitch.OnAnswerReslut() {
-                        @Override
-                        public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity
-                                entity) {
-                            if (entity != null) {
-                                entity.setStandardAnswer(answer);
-                                String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
-                                VoiceAnswerLog.sno5(VoiceAnswerPager.this, sourcetype, baseVideoQuestionEntity
-                                        .getvQuestionID(), baseVideoQuestionEntity.nonce);
-                                // 发送已答过这题的标识
-//                                EventBus.getDefault().post(new ArtsAnswerResultEvent(baseVideoQuestionEntity
-// .getvQuestionID(),ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
-                            }
-                        }
-
-                        @Override
-                        public void onAnswerFailure() {
-                            isSpeechSuccess = false;
-                            if (isEnd) {
-                                questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
-                            } else {
-                                tvVoiceansSwitch.setVisibility(View.VISIBLE);
-                                XESToastUtils.showToast(mContext, "提交失败，请重读");
-                                logger.d("onResult(SUCCESS):onAnswerFailure");
-                                mView.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        startEvaluator();
-                                    }
-                                }, 200);
-                            }
-                        }
-                    });
+                    String result = isRight ? "" + content1.getString(0) : "";
+                    submitQuestionBlack(content1.getString(0), result, isRight, resultEntity.getSpeechDuration());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    private void submitQuestionSelect(final String option, boolean isRight, double speechDuration) {
+        String isSubmit = EngForceSubmit.getSubmit(isNewArts, isEnd);
+        questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer, option, 1, isRight,
+                speechDuration, isSubmit, new QuestionSwitch
+                        .OnAnswerReslut() {
+                    @Override
+                    public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity,
+                                               VideoResultEntity entity) {
+                        if (entity != null) {
+                            entity.setYourAnswer(option);
+                            entity.setStandardAnswer(answer);
+                            String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+                            VoiceAnswerLog.sno5(VoiceAnswerPager.this, sourcetype, baseVideoQuestionEntity
+                                    .getvQuestionID(), baseVideoQuestionEntity.nonce);
+                            // 发送已答过这题的标识
+//                                    EventBus.getDefault().post(new ArtsAnswerResultEvent(baseVideoQuestionEntity
+// .getvQuestionID(),2));
+                        }
+                    }
+
+                    @Override
+                    public void onAnswerFailure() {
+                        isSpeechSuccess = false;
+                        if (isEnd) {
+                            questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
+                        } else {
+                            tvVoiceansSwitch.setVisibility(View.VISIBLE);
+//                                        XESToastUtils.showToast(mContext, "提交失败，请重读");
+                            rlSpeectevalTip.setVisibility(View.VISIBLE);
+                            tvSpeectevalTip.setText("提交失败，请重读");
+                            tvSpeectevalTip.setTag("7");
+                            mView.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+//                                            rlSpeectevalTip.setVisibility(View.GONE);
+                                    rlSpeectevalTipGone();
+                                }
+                            }, 1500);
+                            logger.d("onResult(SUCCESS):onAnswerFailure");
+                            mView.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    startEvaluator();
+                                }
+                            }, 200);
+                        }
+                    }
+                });
+    }
+
+    private void submitQuestionBlack(final String answer, final String result, boolean isRight, double speechDuration) {
+        String isSubmit = EngForceSubmit.getSubmit(isNewArts, isEnd);
+        questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer,
+                result, 1, isRight, speechDuration, isSubmit,
+                new QuestionSwitch.OnAnswerReslut() {
+                    @Override
+                    public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity
+                            entity) {
+                        if (entity != null) {
+                            entity.setYourAnswer(result);
+                            entity.setStandardAnswer(answer);
+                            String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+                            VoiceAnswerLog.sno5(VoiceAnswerPager.this, sourcetype, baseVideoQuestionEntity
+                                    .getvQuestionID(), baseVideoQuestionEntity.nonce);
+                            // 发送已答过这题的标识
+//                                EventBus.getDefault().post(new ArtsAnswerResultEvent(baseVideoQuestionEntity
+// .getvQuestionID(),ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
+                        }
+                    }
+
+                    @Override
+                    public void onAnswerFailure() {
+                        isSpeechSuccess = false;
+                        if (isEnd) {
+                            questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
+                        } else {
+                            tvVoiceansSwitch.setVisibility(View.VISIBLE);
+                            XESToastUtils.showToast(mContext, "提交失败，请重读");
+                            logger.d("onResult(SUCCESS):onAnswerFailure");
+                            mView.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    startEvaluator();
+                                }
+                            }, 200);
+                        }
+                    }
+                });
     }
 
     @Override

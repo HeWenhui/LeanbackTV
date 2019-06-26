@@ -21,10 +21,14 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private static String TAG = "VideoQuestionLiveEntity";
     public double time;
     public String id;
+    /** 聊天消息notice类型 */
+    public int noticeType;
     public double gold;
     public int num;
     /** 互动题类型 */
     public String type;
+    /** 英语互动题类型,新课件,避免和type冲突 */
+    private String artType;
     /** 当type=1时为选择题，choiceType 1：单选；2：多选，num为选择题数量 */
     public String choiceType;
     /** 题目来源 */
@@ -68,7 +72,10 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
      * 2 设计组
      */
     public int package_socurce;
-
+    /**互动点id**/
+    private String dotId;
+    /**互动点id**/
+    private int dotType;
     /**文科在线教研数据**/
     private H5OnlineTechEntity onlineTechEntity;
 
@@ -77,7 +84,20 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     /**语音评测独有。答案**/
     public String answer;
+    /** 年级阶段的标识 */
+    private String educationstage = "";
+    private String newCourseTestIdSec = null;
+    /** 语文AI主观题AI接口*/
+    private String subjectiveItem2AIUrl;
+    /** 辅导态 */
+    private boolean isTUtor = false;
+    public String getSubjectiveItem2AIUrl() {
+        return subjectiveItem2AIUrl;
+    }
 
+    public void setSubjectiveItem2AIUrl(String subjectiveItem2AIUrl) {
+        this.subjectiveItem2AIUrl = subjectiveItem2AIUrl;
+    }
     public VideoQuestionLiveEntity() {
     }
 
@@ -101,17 +121,17 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("\nid=" + id);
-        builder.append("\ntime=" + time);
-        builder.append("\ngold=" + gold);
-        builder.append("\nnum=" + num);
-        builder.append("\ntype=" + type);
-        builder.append("\nchoiceType=" + choiceType);
+        builder.append("id=" + id);
+        builder.append(",time=" + time);
+        builder.append(",gold=" + gold);
+        builder.append(",num=" + num);
+        builder.append(",type=" + type);
+        builder.append(",choiceType=" + choiceType);
         if ("1".equals(isAllow42)) {
-            builder.append("\nspeechContent=" + speechContent);
+            builder.append(",speechContent=" + speechContent);
         }
         if ("1".equals(getIsVoice())) {
-            builder.append("\nquestiontype=" + questiontype);
+            builder.append(",questiontype=" + questiontype);
         }
         return builder.toString();
     }
@@ -163,6 +183,14 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     @Override
     public int getvBlankSize() {
         return num;
+    }
+
+    public String getArtType() {
+        return artType;
+    }
+
+    public void setArtType(String artType) {
+        this.artType = artType;
     }
 
     public String getUrl() {
@@ -219,5 +247,60 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public H5OnlineTechEntity getOnlineTechEntity() {
         return onlineTechEntity;
+    }
+
+    public void setLiveType(int liveType){
+        englishH5Entity.setLiveType(liveType);
+    }
+    public int getLiveType(){
+        return  englishH5Entity.getLiveType();
+    }
+
+
+    public String getEducationstage() {
+        return educationstage;
+    }
+
+    public void setEducationstage(String educationstage) {
+        this.educationstage = educationstage;
+    }
+
+    public String getNewCourseTestIdSec() {
+        return newCourseTestIdSec;
+    }
+
+    public void setNewCourseTestIdSec(String newCourseTestIdSec) {
+        this.newCourseTestIdSec = newCourseTestIdSec;
+    }
+
+    public String getSrcType() {
+        return srcType;
+    }
+
+    public void setSrcType(String srcType) {
+        this.srcType = srcType;
+    }
+
+    public String getDotId() {
+        return dotId;
+    }
+
+    public void setDotId(String dotId) {
+        this.dotId = dotId;
+    }
+
+    public int getDotType() {
+        return dotType;
+    }
+
+    public void setDotType(int dotType) {
+        this.dotType = dotType;
+    }
+    public boolean isTUtor() {
+        return isTUtor;
+    }
+
+    public void setTUtor(boolean TUtor) {
+        isTUtor = TUtor;
     }
 }

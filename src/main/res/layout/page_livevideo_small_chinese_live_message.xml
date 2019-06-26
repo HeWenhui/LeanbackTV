@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/rl_livevideo_message_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -67,7 +68,7 @@
 
         <ImageView
             android:id="@id/iv_livevideo_small_chinese_play_achievement_board"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignTop="@+id/iv_livevideo_small_chinese_live_message_top_icon"
             android:layout_alignParentRight="true"

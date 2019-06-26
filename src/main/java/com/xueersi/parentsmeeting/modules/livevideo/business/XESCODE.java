@@ -1,6 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 public interface XESCODE {
+    /** 开启 */
+    String ON = "on";
+    /** 关闭 */
+    String OFF = "off";
+
     /** 发红包 */
     int READPACAGE = 101;
     /** 禁言 */
@@ -29,11 +34,11 @@ public interface XESCODE {
     /** 学习报告 */
     int LEARNREPORT = 133;
 //    int LEARNREPORT = 106;
-    /** 点名 */
+    /** 点名,签到 */
     int ROLLCALL = 134;
-    /** 结束点名 */
+    /** 结束点名，结束签到 */
     int STOPROLLCALL = 135;
-    /** 其他学生点名 */
+    /** 其他学生点名，签到 */
     int CLASS_MATEROLLCALL = 136;
     /** 直播表扬批评功能 */
     @Deprecated
@@ -90,6 +95,8 @@ public interface XESCODE {
     /** 老师进出直播室 */
     @Deprecated
     int TEACHER_JOIN_LEVEL = 176;
+    /** 排行榜刷新,没用 */
+    int RANK_FRESH = 180;
     /** 学生发送秒数指令 */
     int XCR_ROOM_DB_STUDENT = 190;
     /** 表扬学生 */
@@ -114,14 +121,22 @@ public interface XESCODE {
     int VOTE_SEND = 212;
     /** 上墙-学生发送消息 */
 
-    /** 学生私聊老师点赞 */
-    int XCR_ROOM_AGREE_SEND_S = 220;
-    /** 老师广播学生点赞 TODO */
-    int XCR_ROOM_AGREE_SEND_T = 221;
-    /** 学生计算赞数后私发老师 */
-    int XCR_ROOM_AGREE_NUM_S = 222;
-    /** 开/关榜单 TODO */
-    int XCR_ROOM_AGREE_OPEN = 224;
+    /**
+     * 开启和发布榜单
+     */
+    int XCR_ROOM_PRAISELIST_OPEN = 294;
+    /**
+     * 学生告诉教师点赞个数
+     */
+    int XCR_ROOM_PRAISELIST_SEND_LIKE = 290;
+    /**
+     * 老师广播赞数，包含一键表扬 和 某某学生点了多少赞
+     */
+    int XCR_ROOM_PRAISELIST_LIKE_STUTENT = 291;
+    /**
+     * 老师广播赞数，告诉学生 当前各个战队有多少赞
+     */
+    int XCR_ROOM_PRAISELIST_LIKE_TEAM = 293;
 
     int RANK_STU_MESSAGE = 225;
     /** 上墙-老师发送消息 */
@@ -134,6 +149,10 @@ public interface XESCODE {
 
     /** 老师点赞 */
     int TEACHER_PRAISE = 236;
+    /** 老师点赞-集体发言 */
+    int TEACHER_VOICE_PRAISE = 274;
+    /** 战队pk，未知类型237 */
+    int TEAMPK_237 = 237;
 
 
     /** 分队仪式 */
@@ -153,15 +172,43 @@ public interface XESCODE {
 
     /** 退出每题pk 结果 */
     int TEAM_PK_EXIT_PK_RESULT = 235;
+    /** 公布明星榜 **/
+    int TEAM_PK_STAR_RANK_LIST = 301;
+    /** 公布黑马榜 **/
+    int TEAM_PK_BLACK_RANK_LIST = 302;
+    /** 教师端结束pk 统计 **/
+    int TEAM_PK_PK_END = 303;
+    /** 战队PK答对超难题 **/
+    int TEAM_PK_PARISE_ANWSER_RIGHT = 304;
+    /** 战队pk老师徽章表扬 **/
+    int TEAM_PK_TEACHER_PRAISE = 305;
+    /** 战队pk老师聊天  http://wiki.xesv5.com/pages/viewpage.action?pageId=18556157**/
+    int TEAM_PK_MESSAGE = 320;
+    /** 战队pk老师分组  http://wiki.xesv5.com/pages/viewpage.action?pageId=18556157**/
+    int TEAM_PK_GROUP = 325;
 
-    /** 一题多发 TODO */
+    /** 一题多发 */
+    /** 一题多发 收题发题都是251 TODO */
     int MULTIPLE_H5_COURSEWARE = 251;
 
-    /** 开启/关闭语音弹幕 TODO */
+    /** 语文AI主观题*/
+    int AI_SUBJECTIVE_H5_COURSEWARE = 252;
+
+    /** 大题互动 http://wiki.xesv5.com/pages/viewpage.action?pageId=17724551 */
+    int QUES_BIG = 252;
+    /** 开启/关闭语音弹幕 */
     int XCR_ROOM_DANMU_OPEN = 260;
 
-    /** 发送语音弹幕 TODO */
+    /** 发送语音弹幕 */
     int XCR_ROOM_DANMU_SEND = 261;
+    /** 发送集体发言 */
+    int XCR_ROOM_SPEECH_COLL = 273;
+    /** 语文：开启/关闭语音弹幕 */
+    int XCR_ROOM_CHINESE_DANMU_OPEN = 290;
+
+    /** 语文：发送语音弹幕 */
+    int XCR_ROOM_CHINESE_DANMU_SEND = 291;
+
     /** 提醒学生标记 */
     int MARK_POINT_TIP = 800;
 
@@ -177,6 +224,24 @@ public interface XESCODE {
     /** 集体语言互动消息 */
     int SPEECH_COLLECTIVE = 270;
 
+    /**Nb 加试 消息指令**/
+    int NB_EXAM = 310;
+    /**nb 加试实验 学生提交成功**/
+    int NB_ADDEXPERIMENT_SUBMIT_SUCCESS = 311;
+
+
+    /** 辅导老师发题 */
+    int QUESTION_TUTOR = 315;
+
+    /** 辅导老师 表扬榜on */
+    int TUTOR_ROOM_PRAISE_OPEN = 400;
+    /** 辅导老师 表扬榜 发送点赞数 */
+    int TUTOR_ROOM_PRAISE_SENT_LIKE = 401;
+    /** 辅导老师 表扬-点赞 */
+    int TUTOR_ROOM_PRAISE_LIKE = 402;
+    /** 辅导老师 表扬- 点赞总数*/
+    int TUTOR_ROOM_PRAISE_LIKE_TOTAL = 403;
+
     /** 2018接麦 */
     interface AgoraChat {
         /** 开启/关闭举手 */
@@ -189,6 +254,13 @@ public interface XESCODE {
         int STU_RAISE_HAND = 283;
         /** 点赞 */
         int PRAISE_STU = 286;
+    }
+
+    interface EvenDrive {
+        /** 学生之间私发点赞消息 */
+        int PRAISE_PRIVATE_STUDENT = 299;
+        /** 教师广播发送学报消息 */
+        int BROADCAST_STUDY_REPORT = 300;
     }
 
     /** 文科表扬榜  开始notice */
@@ -204,6 +276,10 @@ public interface XESCODE {
     /** 文科语音弹幕  表扬消息 */
     int XCR_ROOM_VOICEBARRAGEPRAISE = 1007;
 
+    /** 开启小目标 */
+    int XCR_ROOM_BETTERME_OPEN = 1055;
+    /** 小目标结果页 */
+    int XCR_ROOM_BETTERME_RESULT = 1056;
 
     /**
      * 文科新课件平台 对接notice 指令
@@ -232,10 +308,20 @@ public interface XESCODE {
         int XCR_ROOM_TEAMPK_OPEN = 1050;//  ("1004")  //通知战队pk分组
         int XCR_ROOM_TEAMPK_RESULT = 1051;//     ("1005")  //发布战队PK结果
         int XCR_ROOM_TEAMPK_GO = 1020;//     ("1005")  //发布战队PK结果
+        int XCR_ROOM_TEAMPK_STULIKE = 1021;//     ("1021")  //学生点赞上报
     }
 
-    /** 开启小目标 */
-    int XCR_ROOM_BETTERME_OPEN = 1055;
-    /** 小目标结果页 */
-    int XCR_ROOM_BETTERME_RESULT = 1056;
+    /** 语文幼升小金话筒 */
+    int ARTS_GOLD_MICROPHONE = 3000;
+    /** 语文幼升小发送语音识别消息 */
+    int ARTS_GOLD_MICROPHONE_SEND_TEACHER = 3001;
+    /** 发布结束演讲秀notice */
+    int SUPER_SPEAKER_TAKE_CAMERA = 3003;
+    /** 演讲秀发给老师消息 */
+    int SUPER_SPEAKER_SEND_MESSAGE = 3004;
+
+    interface ExpLive{
+        int XEP_MODE_CHANGE = 500;
+        int XEP_BACK_FINISH = 501;
+    }
 }

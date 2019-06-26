@@ -1,17 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="78dp"
+    android:layout_width="70dp"
     android:layout_height="match_parent"
     android:clickable="false">
 
     <RelativeLayout
         android:id="@id/rl_livevideo_en_teampk_member"
-        android:layout_width="78dp"
-        android:layout_height="78dp">
+        android:layout_width="70dp"
+        android:layout_height="70dp">
 
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_livevideo_en_teampk_member"
-            android:layout_width="31dp"
-            android:layout_height="31dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_centerInParent="true" />
     </RelativeLayout>
 
@@ -20,32 +20,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="67dp">
+        android:layout_marginTop="62dp"
+        android:gravity="center_horizontal">
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_teampk_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="55dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_livevideo_en_teampk_fire"
+            android:includeFontPadding="false"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="11sp" />
+            android:textSize="10sp" />
 
         <ImageView
             android:id="@id/iv_livevideo_en_teampk_fire"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@id/tv_livevideo_en_teampk_name"
-            android:src="@drawable/livevideo_enteampk_benchangchengjiu_fire_img_nor1" />
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_livevideo_en_teampk_fire" />
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_teampk_fire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_livevideo_en_teampk_fire"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:includeFontPadding="false"
             android:textColor="#F9DF95"
-            android:textSize="11sp" />
+            android:textSize="10sp" />
     </RelativeLayout>
 
     <RelativeLayout

@@ -10,6 +10,10 @@ public class RankEntity {
     String name;
     String rate;
     boolean isMe;
+    /** 点赞数量 */
+    private int thumbsUpNum;
+    /** 是否可以点赞 */
+    private int isThumbsUp;
 
     public String getId() {
         return id;
@@ -49,5 +53,21 @@ public class RankEntity {
 
     public void setMe(boolean me) {
         isMe = me;
+    }
+
+    public int getThumbsUpNum() {
+        return thumbsUpNum;
+    }
+
+    public void setThumbsUpNum(int thumbsUpNum) {
+        this.thumbsUpNum = thumbsUpNum;
+    }
+
+    public int getIsThumbsUp() {
+        return isThumbsUp;
+    }
+
+    public void setIsThumbsUp(int isThumbsUp) {
+        this.isThumbsUp = isThumbsUp;
     }
 }

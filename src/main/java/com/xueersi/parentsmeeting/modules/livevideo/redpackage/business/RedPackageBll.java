@@ -281,7 +281,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                     // 更新 本场成就
                     UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(activity, UpdateAchievement.class);
                     if (updateAchievement != null) {
-                        updateAchievement.getStuGoldCount();
+                        updateAchievement.getStuGoldCount("initRedPacketResult:isSmallEnglish", UpdateAchievement.GET_TYPE_RED);
                     }
                 }
             }, 2900);
@@ -306,7 +306,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                     // 更新 本场成就
                     UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(activity, UpdateAchievement.class);
                     if (updateAchievement != null) {
-                        updateAchievement.getStuGoldCount();
+                        updateAchievement.getStuGoldCount("initRedPacketResult:isSmallChinese", UpdateAchievement.GET_TYPE_RED);
                     }
                 }
             }, 0);
@@ -363,7 +363,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                     // 更新 本场成就
                     UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(activity, UpdateAchievement.class);
                     if (updateAchievement != null) {
-                        updateAchievement.getStuGoldCount();
+                        updateAchievement.getStuGoldCount("initRedPacketResult", UpdateAchievement.GET_TYPE_RED);
                     }
                 }
             }, 2900);

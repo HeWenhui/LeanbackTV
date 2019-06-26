@@ -31,6 +31,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -42,8 +43,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /***
  * 视频播放主界面
@@ -113,9 +112,11 @@ public class LiveVideoFragmentBase extends Fragment {
         activity = (BaseActivity) getActivity();
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
         mIsLand.set(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
-        mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
+        if (!mIsLand.get()) {
+            mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
+        }
 //        mPortVideoHeight = (int) LiveVideoConfig.VIDEO_HEIGHT;
-        logger.d("onCreate:mPortVideoHeight=" + mPortVideoHeight);
+        logger.d("onCreate:mPortVideoHeight=" + mPortVideoHeight + ",IsLand=" + mIsLand.get());
         //showDialog(savedInstanceState);
     }
 
@@ -249,13 +250,13 @@ public class LiveVideoFragmentBase extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        mContentView = (RelativeLayout) inflater.inflate(R.layout.frag_livevideo_content, container, false);
+//        mContentView = (RelativeLayout) inflater.inflate(R.layout.frag_livevideo_content, container, false);
         logger.d("onCreateView");
         loadView(mLayoutVideo);
         return mContentView;
     }
 
-    public RelativeLayout getContentView() {
+    public ViewGroup getContentView() {
         return mContentView;
     }
 
@@ -280,11 +281,13 @@ public class LiveVideoFragmentBase extends Fragment {
 
     /** 加载界面 */
     protected void loadView(int id) {
+        if (mContentView != null) {
+            return;
+        }
         LayoutInflater inflater = LayoutInflater.from(activity);
         //getLayoutInflater();
-        View view = inflater.inflate(id, mContentView, false);
-        mContentView.removeAllViews();
-        mContentView.addView(view);
+        RelativeLayout view = (RelativeLayout) inflater.inflate(id, mContentView, false);
+        mContentView = view;
         activity.getWindow().setBackgroundDrawable(null);
         viewRoot = (ViewGroup) mContentView.findViewById(R.id.cl_course_video_root);// 播放器所在的io.vov.vitamio.widget.CenterLayout
         videoView = (VideoView) mContentView.findViewById(R.id.vv_course_video_video); // 播放器的videoView
@@ -335,6 +338,9 @@ public class LiveVideoFragmentBase extends Fragment {
         if (mIsLand.get()) {
             lpr.height = LayoutParams.MATCH_PARENT;
         } else {
+            if (mPortVideoHeight == 0) {
+                mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
+            }
             lpr.height = mPortVideoHeight;
             // lpr.height = VP.DEFAULT_PORT_HEIGHT;
         }
@@ -349,6 +355,7 @@ public class LiveVideoFragmentBase extends Fragment {
     }
 
     /** 加载视频异常时出现可重新刷新的背景界面 */
+    @Deprecated
     protected void showRefresyLayout(int arg1, int arg2) {
         videoBackgroundRefresh.setVisibility(View.VISIBLE);
         updateRefreshImage();
@@ -381,9 +388,9 @@ public class LiveVideoFragmentBase extends Fragment {
      * @author zouhao
      * @Create at: 2015-9-23 下午7:45:41
      */
-    protected void playNewVideo(Uri uri, String displayName, String shareKey) {
-        videoFragment.playNewVideo(uri, displayName, shareKey);
-    }
+//    protected void playNewVideo(Uri uri, String displayName, String shareKey) {
+//        videoFragment.playNewVideo(uri, displayName, shareKey);
+//    }
 
     /** 播放下一个视频 */
     protected void startPlayNextVideo() {
@@ -440,6 +447,7 @@ public class LiveVideoFragmentBase extends Fragment {
     }
 
     /** 视频非正常播放完毕，有可能是断网了，也有可能一开始打开失败了 */
+    @Deprecated
     protected void resultFailed(int arg1, int arg2) {
         showRefresyLayout(arg1, arg2);
     }

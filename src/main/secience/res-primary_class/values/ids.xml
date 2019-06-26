@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--战队信息-->
+    <item name="iv_livevideo_primary_team_info_back" type="id" />
+    <item name="iv_livevideo_primary_team_info_gold" type="id" />
+    <item name="tv_livevideo_primary_team_my_lable" type="id" />
+    <item name="tv_livevideo_primary_team_my_text" type="id" />
+    <item name="tv_livevideo_primary_team_other_lable" type="id" />
+    <item name="tv_livevideo_primary_team_other_text" type="id" />
+    <!--<item name="pg_livevideo_primary_team_info_prog" type="id" />-->
+    <item name="tv_livevideo_primary_team_people_name" type="id" />
+    <item name="iv_livevideo_primary_team_energy_add" type="id" />
+    <item name="rl_livevideo_primary_team_tip" type="id" />
+    <item name="iv_livevideo_primary_team_energy" type="id" />
+    <item name="tv_livevideo_primary_team_energy" type="id" />
+    <item name="tv_livevideo_primary_team_nomic" type="id" />
+    <item name="rl_livevideo_primary_team_voice_open" type="id" />
+    <item name="iv_livevideo_primary_team_voice_open" type="id" />
+    <item name="iv_livevideo_primary_team_voice_voice" type="id" />
+    <item name="cl_livevideo_primary_team_inter" type="id" />
+    <item name="tv_livevideo_primary_team_inter_left" type="id" />
+    <item name="v_livevideo_primary_team_inter_center" type="id" />
+    <item name="tv_livevideo_primary_team_inter_right" type="id" />
+    <!--小组成员-->
+    <item name="rl_livevideo_primary_content" type="id" />
+    <item name="rl_livevideo_primary_team_content" type="id" />
+    <item name="iv_livevideo_primary_team_icon" type="id" />
+    <item name="tv_livevideo_primary_team_name_mid" type="id" />
+    <item name="tv_livevideo_primary_team_name" type="id" />
+    <item name="ll_livevideo_primary_team_content" type="id" />
+    <item name="cl_livevideo_course_item_video" type="id" />
+    <item name="rl_livevideo_course_item_video_nocamera" type="id" />
+    <item name="iv_livevideo_course_item_video_nocamera" type="id" />
+    <item name="rl_livevideo_course_item_video_ufo" type="id" />
+    <item name="iv_livevideo_course_item_video_ufo" type="id" />
+    <item name="rl_livevideo_course_item_video_off" type="id" />
+    <item name="iv_live_xuesheng_shipin_mid_daijiaru_normal" type="id" />
+</resources>

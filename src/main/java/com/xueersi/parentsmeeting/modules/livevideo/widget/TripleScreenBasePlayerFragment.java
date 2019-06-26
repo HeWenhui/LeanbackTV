@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,10 +15,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+
+import java.io.IOException;
 
 /**
  * 三分屏直播的基础播放Fragment，这里主要作用是现实自定义的加载中
@@ -59,9 +68,9 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
             case TRIPLE_SCREEN_MIDDLE_LOADING:
 //                loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_loading);
                 break;
-//            case TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING:
-//                loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_primary_chinese_loading);
-//                break;
+            case TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING:
+                loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_primary_chinese_loading);
+                break;
             case TRIPLE_SCREEN_PRIMARY_ENGLISH_LOADING:
                 loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_primary_english_loading);
                 break;
@@ -126,17 +135,65 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                     // 准备开始播放指定视频
                     synchronized (mOpenLock) {
                         if (!mOpened.get() && vPlayer != null) {
-                            mOpened.set(true);
-                            vPlayer.setVPlayerListener(vPlayerServiceListener);
-                            if (vPlayer.isInitialized()) {
-                                mUri = vPlayer.getUri();
-                            }
+                            if (!MediaPlayer.getIsNewIJK()) {
+                                mOpened.set(true);
+                                vPlayer.setVPlayerListener(vPlayerServiceListener);
+                                if (vPlayer.isInitialized()) {
+                                    //这个地方可能会播放错误的地址，参照TripleScreenBasePlayerFragment
+                                    Uri olduri = vPlayer.getUri();
+                                    logger.d("playNewVideo:olduri=" + olduri);
+                                    vPlayer.release();
+                                    vPlayer.releaseContext();
+                                }
 
-                            if (videoView != null) {
-                                vPlayer.setDisplay(videoView.getHolder());
-                            }
-                            if (mUri != null) {
-                                vPlayer.initialize(mUri, video, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                if (videoView != null) {
+                                    vPlayer.setDisplay(videoView.getHolder());
+                                }
+                                if (mUri != null) {
+                                    vPlayer.initialize(mUri, video, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                    initCallBack();
+                                }
+                            } else {
+                                mOpened.set(true);
+                                vPlayer.setVPlayerListener(vPlayerServiceListener);
+                                if (videoView != null) {
+                                    vPlayer.setDisplay(videoView.getHolder());
+                                }
+                                vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                setVideoConfig();
+                                if (isChangeLine) {
+                                    try {
+                                        vPlayer.changeLine(changeLinePos, protocol);
+                                        isChangeLine = false;
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    String userName;
+                                    String userId;
+                                    try {
+                                        userName = AppBll.getInstance().getAppInfoEntity().getChildName();
+                                        userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        if (videoConfigEntity != null) {
+                                            videoConfigEntity.setUserName(userName);
+                                            videoConfigEntity.setUserId(userId);
+                                        }
+                                        if (vPlayer.getPlayer() instanceof PSIJK) {
+                                            vPlayer.getPlayer().setUserInfo(userName, userId);
+                                        }
+                                        vPlayer.playPSVideo(streamId, protocol);
+                                    } catch (IOException e) {
+                                        vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
+                                        e.printStackTrace();
+                                    } catch (Exception e) {
+                                        if (videoConfigEntity != null) {
+                                            recordFailData(videoConfigEntity.toJSONObject().toString());
+                                        }
+                                        e.printStackTrace();
+                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                                    }
+                                }
+                                initCallBack();
                             }
                         }
                     }
@@ -178,30 +235,33 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                     if (!isFirstShow) {
                         setVideoLoadingLayoutVisibility(View.VISIBLE);
                     } else {
-                        rootView = getActivity().findViewById(R.id.rl_course_video_live_question_content);
-                        if (isSmallEnglish || LiveVideoConfig.isPrimary) {
-                            loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_load_player, null);
-                            layoutLoading = loadingLayout.findViewById(R.id.layout_livevideo_triple_screen_loading);
-                            ivLoading = loadingLayout.findViewById(R.id.iv_livevideo_triple_screen_loading);
-                            setDrawable();
-                        } else {
-                            loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_middle_school_load_playerload, null);
-                        }
-                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                        rootView.addView(loadingLayout, layoutParams);
-                        if (isSmallEnglish || LiveVideoConfig.isPrimary) {
-                            setLayoutLoadingVisible(true);
-                        }
-                        isFirstShow = false;
-                        vPlayerHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-//                                removeLoadingView();
-                                removeLoadingView();
-//                                setLayoutLoadingVisible(false);
+                        if (getActivity() != null) {
+                            rootView = getActivity().findViewById(R.id.rl_course_video_live_question_content);
+                            if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
+                                loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_load_player, null);
+                                layoutLoading = loadingLayout.findViewById(R.id.layout_livevideo_triple_screen_loading);
+                                ivLoading = loadingLayout.findViewById(R.id.iv_livevideo_triple_screen_loading);
+                                setDrawable();
+                            } else {
+                                loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_middle_school_load_playerload, null);
                             }
-                        }, 2000);
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                            rootView.addView(loadingLayout, layoutParams);
+
+                            if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
+                                setLayoutLoadingVisible(true);
+                            }
+                            isFirstShow = false;
+                            vPlayerHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+//                                removeLoadingView();
+                                    removeLoadingView();
+//                                setLayoutLoadingVisible(false);
+                                }
+                            }, 2000);
+                        }
                     }
                     vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
                     break;
@@ -256,8 +316,13 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
         }
     };
 
-    /** 重写这个CallBack */
-    public void overrideCallBack() {
+    /** 重写回调 */
+    private void initCallBack() {
+
+    }
+
+    /** 重写这个Handler.CallBack */
+    public void overrideHandlerCallBack() {
         if (LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary || isSmallEnglish) {
             vPlayerHandler = new WeakHandler(callback);
         }

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -19,6 +20,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
+import com.tal.speech.utils.SpeechUtils;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.JsResult;
 import com.tencent.smtt.sdk.WebChromeClient;
@@ -31,8 +33,6 @@ import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -588,6 +588,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                 if (mIse == null) {
 //                    mIse = new SpeechEvaluatorUtils(true);
                     mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                    mIse.prepar();
                 }
                 SpeechParamEntity param = new SpeechParamEntity();
                 param.setStrEvaluator(assessRef);

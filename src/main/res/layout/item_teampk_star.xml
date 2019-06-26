@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="54dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+
+        <RelativeLayout
+            android:id="@id/rl_teampk_lucy_header_container"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@id/iv_teampk_stars_head"
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:layout_centerHorizontal="true" />
+
+            <ImageView
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/livevideo_teampk_header_cover" />
+
+            <ImageView
+                android:id="@id/iv_teampk_stars_super_star"
+                android:layout_width="50dp"
+                android:layout_height="13dp"
+                android:layout_below="@id/iv_teampk_stars_head"
+                android:layout_marginTop="-8dp"
+                android:src="@drawable/live_teampk_super_star"
+                />
+
+        </RelativeLayout>
+
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_teampk_stars_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/rl_teampk_lucy_header_container"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@id/rl_teampk_lucy_header_container"
+            android:ellipsize="end"
+            android:maxWidth="90dp"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_teampk_stars_energy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tv_teampk_stars_name"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/tv_teampk_stars_name"
+            android:drawableLeft="@drawable/live_teampk_star_energy"
+            android:gravity="center_vertical"
+            android:text="+0"
+            android:textColor="#FF8F24"
+            android:textSize="14dp" />
+
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_teampk_stars_teamname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/tv_teampk_stars_name"
+            android:layout_below="@id/tv_teampk_stars_name"
+            android:layout_marginTop="4dp"
+            android:textColor="#88ffffff"
+            android:textSize="12dp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

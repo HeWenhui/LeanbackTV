@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,10 +43,14 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -58,14 +63,12 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
-
 /***
  * 视频播放主界面
  *
  * @author 林玉强
  */
-public class LiveBackVideoFragmentBase extends Fragment {
+public abstract class LiveBackVideoFragmentBase extends Fragment {
     private String TAG = "LiveBackVideoFragmentBase";
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected BaseActivity activity;
@@ -75,7 +78,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
     protected int mLayoutBackgroundRefresh = R.layout.layout_video_resfresh;
     protected LiveBackPlayerFragment liveBackPlayVideoFragment;
     /** 所在的Activity是否已经onCreated */
-    private boolean mCreated = false;
+    protected boolean mCreated = false;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
     protected String mDisplayName;
     /** 是否从头开始播放 */
@@ -211,6 +214,11 @@ public class LiveBackVideoFragmentBase extends Fragment {
         activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);// 设置在该页面音量控制键的音频流为媒体音量
         mCreated = true; // 界面onCreate完毕
         videoView = (VideoView) mContentView.findViewById(R.id.vv_course_video_video); // 播放器的videoView
+        if (videoView == null) {
+            videoView = activity.findViewById(R.id.vv_course_video_video);
+            //为了让bugly统计到
+            Log.e(TAG, "onSelect:videoView=null?" + (videoView == null));
+        }
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
                 (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
@@ -483,6 +491,11 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
+        public void release() {
+            super.release();
+        }
+
+        @Override
         public void start() {
             super.start();
             liveBackVideoFragment.onStartPlayer();
@@ -498,6 +511,13 @@ public class LiveBackVideoFragmentBase extends Fragment {
         public void setSpeed(float speed) {
             super.setSpeed(speed);
             liveBackVideoFragment.setSpeed(speed);
+        }
+
+        @Override
+        public int onVideoStatusChange(int code, int status) {
+            liveBackVideoFragment.onVideoStatusChange(code, status);
+            return super.onVideoStatusChange(code, status);
+
         }
 
         @Override
@@ -524,7 +544,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
-        protected PlayerService.VPlayerListener getWrapListener() {
+        protected VPlayerCallBack.VPlayerListener getWrapListener() {
             return liveBackVideoFragment.getWrapListener();
         }
 
@@ -618,17 +638,50 @@ public class LiveBackVideoFragmentBase extends Fragment {
         updateRefreshImage();
         TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.module.player
                 .R.id.tv_course_video_errorinfo);
-        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-        if (error != null) {
-            errorInfo.setVisibility(View.VISIBLE);
-            String videoKey = getVideoKey();
-            if (StringUtils.isSpace(videoKey)) {
-                errorInfo.setText(error.getNum() + " (" + error.getTag() + ")");
-            } else {
-                errorInfo.setText("(" + videoKey + ")" + error.getNum() + " (" + error.getTag() + ")");
+        if (MediaPlayer.getIsNewIJK()) {
+            MediaErrorInfo mediaErrorInfo = liveBackPlayVideoFragment.getMediaErrorInfo();
+            if (mediaErrorInfo != null) {
+                switch (mediaErrorInfo.mErrorCode) {
+                    case MediaErrorInfo.PSPlayerError: {
+
+                        errorInfo.setText("视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "],请重试");
+                        break;
+                    }
+                    case MediaErrorInfo.PSDispatchFailed: {
+
+                        errorInfo.setText("视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "],请点击重试");
+                        break;
+                    }
+                    case MediaErrorInfo.PSChannelNotExist: {
+
+                        errorInfo.setText("视频播放失败[" + MediaErrorInfo.PSChannelNotExist + "],请点击重试");
+                        break;
+                    }
+                    case MediaErrorInfo.PSServer403: {
+
+                        errorInfo.setText("鉴权失败[" + MediaErrorInfo.PSServer403 + "],请点击重试");
+                        break;
+                    }
+                    default: {
+
+                        errorInfo.setText("视频播放失败 [" + arg2 + "]");
+                        break;
+                    }
+                }
             }
         } else {
-            errorInfo.setVisibility(View.GONE);
+            AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+            if (error != null) {
+                errorInfo.setVisibility(View.VISIBLE);
+                String videoKey = getVideoKey();
+                if (StringUtils.isSpace(videoKey)) {
+                    errorInfo.setText(error.getNum() + " (" + error.getTag() + ")");
+                } else {
+                    errorInfo.setText("(" + videoKey + ")" + error.getNum() + " (" + error.getTag() + ")");
+                }
+            } else {
+                errorInfo.setVisibility(View.GONE);
+            }
         }
         videoBackgroundRefresh.getLayoutParams().height = LayoutParams.MATCH_PARENT;
     }
@@ -723,9 +776,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         mySpeed = speed;
     }
 
-    protected void seekTo(long pos) {
-
-    }
+    protected abstract void seekTo(long pos);
 
     protected void onPlayOpenStart() {
 
@@ -734,6 +785,12 @@ public class LiveBackVideoFragmentBase extends Fragment {
     protected void onPlayOpenSuccess() {
 
     }
+
+    protected int onVideoStatusChange(int code, int status) {
+        return code;
+
+    }
+
 
     /** 视频正常播放完毕退出时调用，非加载失败 */
     protected void resultComplete() {
@@ -765,21 +822,23 @@ public class LiveBackVideoFragmentBase extends Fragment {
     }
 
     /** 取出当前播放视频上次播放的点位 */
-    protected long getStartPosition() {
-        if (mFromStart) {
-            return 0;
-        }
-        // if (mStartPos <= 0.0f || mStartPos >= 1.0f)
-        try {
-            return ShareDataManager.getInstance().getLong(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
-                    ShareDataManager.SHAREDATA_USER);
-        } catch (Exception e) {
-            // 有一定不知明原因造成取出的播放点位int转long型失败,故加上这个值确保可以正常观看
-            e.printStackTrace();
-            return 0L;
-        }
-        // return mStartPos;
-    }
+    protected abstract long getStartPosition();
+//    {
+//        if (mFromStart) {
+//            return 0;
+//        }
+//        // if (mStartPos <= 0.0f || mStartPos >= 1.0f)
+//        try {
+//
+//            return ShareDataManager.getInstance().getLong(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
+//                    ShareDataManager.SHAREDATA_USER);
+//        } catch (Exception e) {
+//            // 有一定不知明原因造成取出的播放点位int转long型失败,故加上这个值确保可以正常观看
+//            e.printStackTrace();
+//            return 0L;
+//        }
+//        // return mStartPos;
+//    }
 
     /** 初始化控制器界面 */
     protected void attachMediaController() {
@@ -851,7 +910,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
     };
 
-    protected PlayerService.VPlayerListener getWrapListener() {
+    protected VPlayerCallBack.VPlayerListener getWrapListener() {
         return null;
     }
 
@@ -1049,5 +1108,6 @@ public class LiveBackVideoFragmentBase extends Fragment {
 //        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources()
 //                .getDisplayMetrics());
 //    }
+
 
 }

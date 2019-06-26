@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
@@ -17,24 +18,30 @@ import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.create.LiveBackBigQueCreate;
+import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -49,11 +56,11 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
  * Created by linyuqiang on 2018/7/17.
  * 互动题回放
  */
-public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp {
+public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp, QuestionSecHttp {
     QuestionBll questionBll;
     String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
     private List<String> questiongtype = Arrays.asList(ptTypeFilters);
-
+    private CourseWareHttpManager courseWareHttpManager;
 
     public QuestionPlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -74,7 +81,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                     LiveQuestionSwitchImpl());
-            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
             //语音评测
             LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll,
                     questionBll);
@@ -84,7 +91,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                     LiveQuestionSwitchImpl());
-            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
             //语音评测
             LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
             liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
@@ -95,34 +102,31 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         liveBackExamQuestionCreat.setLiveGetInfo(liveGetInfo);
         int isArts = liveBackBll.getIsArts();
         liveBackExamQuestionCreat.setArts(isArts);
-        liveBackExamQuestionCreat.setLivePagerBack(questionBll);
-        liveBackExamQuestionCreat.setExamStop(new LiveBackExamStop(activity, questionBll));
+        liveBackExamQuestionCreat.setLivePagerBack(activity, questionBll);
         questionBll.setBaseExamQuestionCreat(liveBackExamQuestionCreat);
         //主观题结果页
         LiveBackSubjectResultCreat liveBackSubjectResultCreat = new LiveBackSubjectResultCreat();
         liveBackSubjectResultCreat.setLiveGetInfo(liveGetInfo);
-        WrapQuestionWebStop wrapQuestionWebStop = new WrapQuestionWebStop(activity);
-        wrapQuestionWebStop.setStopWebQuestion(questionBll);
-        liveBackSubjectResultCreat.setWrapQuestionWebStop(wrapQuestionWebStop);
         questionBll.setBaseSubjectResultCreat(liveBackSubjectResultCreat);
-        questionBll.setQuestionWebCreate(new LiveBackQuestionWebCreate());
-        if (isArts == 0) {
+        if (isArts == LiveVideoSAConfig.ART_SEC) {
             QuestionWebCache webCache = new QuestionWebCache(activity);
             webCache.startCache();
+            questionBll.setBigQueCreate(new LiveBackBigQueCreate(activity, this));
         }
     }
 
     @Override
     public int[] getCategorys() {
-        return new int[]{LocalCourseConfig.CATEGORY_QUESTION, LocalCourseConfig.CATEGORY_EXAM, LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE};
+        return new int[]{LocalCourseConfig.CATEGORY_QUESTION, LocalCourseConfig.CATEGORY_EXAM, LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE, LocalCourseConfig.CATEGORY_BIG_TEST};
     }
 
     @Override
     public void onQuestionEnd(VideoQuestionEntity questionEntity) {
         int vCategory = questionEntity.getvCategory();
+        logger.i("onQuestionEnd:vCategory=" + vCategory);
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
-                questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
+                questionBll.onStopQuestion("PlayBack:onQuestionEnd1", questionEntity.getvQuestionType(), "");
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
@@ -132,9 +136,27 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             case LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
-                questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
+                questionBll.onStopQuestion("PlayBack:onQuestionEnd3", questionEntity.getvQuestionType(), "");
             }
             break;
+//            case LocalCourseConfig.CATEGORY_BIG_TEST: {
+//                try {
+//                    final VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+//                    String url = questionEntity.getUrl();
+//                    JSONObject jsonObject = new JSONObject(url);
+//                    videoQuestionLiveEntity.id = jsonObject.getString("testId");
+//                    videoQuestionLiveEntity.setDotId(jsonObject.getString("dotId"));
+//                    videoQuestionLiveEntity.setSrcType(jsonObject.getString("srcType"));
+//                    videoQuestionLiveEntity.setDotType(jsonObject.getInt("choiceType"));
+//                    videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+//                    questionBll.showBigQuestion(videoQuestionLiveEntity, false);
+//                } catch (Exception e) {
+//                    CrashReport.postCatchedException(e);
+//                }
+//                break;
+//            }
+            default:
+                break;
         }
     }
 
@@ -148,7 +170,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     LiveBackBll.ShowQuestion showQuestion) {
         mRootView.setVisibility(View.VISIBLE);
         int vCategory = questionEntity.getvCategory();
-        logger.i("showQuestion :" + vCategory);
+        logger.i("showQuestion:vCategory=" + vCategory);
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
                 LiveVideoConfig.isNewArts = false;
@@ -181,8 +203,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
                 if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !"1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                     logger.i("走人机start,拉取试题");
-                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
-                    questionBll.setRolePlayMachineAction(rolePlayerBll);
+                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo, false);
+                    questionBll.setRolePlayMachineAction(rolePlayerBll, null);
 
                 }
 
@@ -210,7 +232,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
                         showQuestion.onHide(questionEntity);
@@ -226,9 +248,15 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                 verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
+                BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
+                if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
+                    mediaPlayerControl.pause();
+                }
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
+                        mediaPlayerControl.start();
                         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                         if (questionEntity.getvCategory() == 1001) {
                             List<String> testIds = new ArrayList<>();
@@ -255,6 +283,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                             }
                             videoQuestionLiveEntity.id = getTestIdS(testIds);
                             videoQuestionLiveEntity.type = type;
+                            videoQuestionLiveEntity.setArtType(type);
                             videoQuestionLiveEntity.num = 1;
                             videoQuestionLiveEntity.setIsVoice(isVoices);
                             videoQuestionLiveEntity.assess_ref = assess;
@@ -264,8 +293,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         logger.i("yzl_showQuestion type = " + videoQuestionLiveEntity.type);
                         if ("5".equals(videoQuestionLiveEntity.type)) {
                             logger.i("yzl_init new rolePlay bll");
-                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
-                            questionBll.setRolePlayMachineAction(rolePlayerBll);
+                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo, false);
+                            questionBll.setRolePlayMachineAction(rolePlayerBll, null);
                         }
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
@@ -280,7 +309,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
                         showQuestion.onHide(questionEntity);
@@ -289,13 +318,45 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 verifyCancelAlertDialog.showDialog();
             }
             break;
+            case LocalCourseConfig.CATEGORY_BIG_TEST: {
+                try {
+                    final VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                    String url = questionEntity.getUrl();
+                    JSONObject jsonObject = new JSONObject(url);
+                    videoQuestionLiveEntity.id = jsonObject.getString("testId");
+                    videoQuestionLiveEntity.setDotId(jsonObject.getString("dotId"));
+                    videoQuestionLiveEntity.setSrcType(jsonObject.getString("srcType"));
+                    videoQuestionLiveEntity.setDotType(jsonObject.getInt("choiceType"));
+                    if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_FILL) {
+                        videoQuestionLiveEntity.num = jsonObject.getInt("item_num");
+                    } else {
+                        videoQuestionLiveEntity.num = LiveQueConfig.DOTTYPE_SELE_NUM;
+                    }
+                    videoQuestionLiveEntity.setLive(false);
+                    questionBll.showBigQuestion(videoQuestionLiveEntity, true);
+                    videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+                    long dealy = questionEntity.getvEndTime() - questionEntity.getvQuestionInsretTime();
+                    if (dealy < 0) {
+                        dealy = 180;
+                    }
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            questionBll.showBigQuestion(videoQuestionLiveEntity, false);
+                        }
+                    }, dealy * 1000);
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
+                break;
+            }
             default:
                 break;
         }
     }
 
     @Override
-    public void getStuGoldCount() {
+    public void getStuGoldCount(String method) {
 //回放没有
     }
 
@@ -313,7 +374,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     @Override
     public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity
             videoQuestionLiveEntity1, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight,
-                                     final QuestionSwitch.OnAnswerReslut answerReslut) {
+                                     final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
@@ -410,89 +471,16 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 //        }
     }
 
-    @Override
-    public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
-        String liveid = mVideoEntity.getLiveId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        HttpCallBack httpCallBack = new HttpCallBack() {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                SpeechEvalEntity speechEvalEntity = getCourseHttpResponseParser().parseSpeechEval(responseEntity);
-                if (speechEvalEntity != null) {
-                    onSpeechEval.onSpeechEval(speechEvalEntity);
-                } else {
-                    responseEntity = new ResponseEntity();
-                    responseEntity.setStatus(false);
-                    responseEntity.setErrorMsg("出了点意外，请稍后试试");
-                    responseEntity.setJsonError(true);
-                    onSpeechEval.onPmError(responseEntity);
-                }
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        };
-//        if (!liveBackBll.getExperience()) {
-        getCourseHttpManager().getSpeechEval(enstuId, liveid, id, httpCallBack);
-//        } else {
-//            getCourseHttpManager().getExpeSpeechEval(mVideoEntity.getSpeechEvalUrl(), enstuId,
-//                    liveid, id, httpCallBack);
-//        }
-    }
-
-    @Override
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
-            onSpeechEval) {
-        String liveid = mVideoEntity.getLiveId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        HttpCallBack httpCallBack = new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                onSpeechEval.onSpeechEval(null);
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        };
-//        if (!liveBackBll.getExperience()) {
-        getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
-                httpCallBack);
-//        } else {
-//            getCourseHttpManager().sendExpSpeechEvalResult(
-//                    mVideoEntity.getSpeechEvalSubmitUrl(),
-//                    liveid,
-//                    id,
-//                    mVideoEntity.getChapterId(),
-//                    questionBll.IS_SCIENCE == false ? "1" : "0",
-//                    stuAnswer,
-//                    httpCallBack);
-//        }
-    }
-
     /**
      * 发送语音评测
      *
      * @param id
      * @param stuAnswer
-     * @param onSpeechEval
+     * @param isSubmit
+     * @param callBack
      */
     @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
+    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
         String liveid = mVideoEntity.getLiveId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         HttpCallBack httpCallBack = new HttpCallBack(false) {
@@ -508,24 +496,24 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 //                    }
 //                },2000);
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                onSpeechEval.onSpeechEval(jsonObject);
+                callBack.onDataSucess(jsonObject);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
             }
         };
 
 //        if (!liveBackBll.getExperience()) {
 //            getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
 //                    httpCallBack);
-        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, httpCallBack);
+        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, httpCallBack, isSubmit);
 //    } else
 
 //    {
@@ -548,15 +536,14 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered
-            isAnswered) {
+    public void speechEval42IsAnswered(String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         getCourseHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(final ResponseEntity responseEntity) {
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                 boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
-                isAnswered.isAnswer(isAnswer);
+                callBack.onDataSucess(isAnswer);
             }
 
             @Override
@@ -619,5 +606,22 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
         return sb.toString();
+    }
+
+    public CourseWareHttpManager getCourseWareHttpManager() {
+        if (courseWareHttpManager == null) {
+            courseWareHttpManager = new CourseWareHttpManager(getmHttpManager());
+        }
+        return courseWareHttpManager;
+    }
+
+    @Override
+    public void submitBigTestInteraction(VideoQuestionLiveEntity videoQuestionLiveEntity, JSONArray userAnswer, long startTime, int isForce, AbstractBusinessDataCallBack callBack) {
+        getCourseWareHttpManager().submitBigTestInteraction(UserBll.getInstance().getMyUserInfoEntity().getStuId(), videoQuestionLiveEntity.id, videoQuestionLiveEntity.getDotId(), userAnswer, startTime, isForce, 1, videoQuestionLiveEntity.getSrcType(), callBack);
+    }
+
+    @Override
+    public void getStuInteractionResult(VideoQuestionLiveEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
+        getCourseWareHttpManager().getStuInteractionResult(UserBll.getInstance().getMyUserInfoEntity().getStuId(), videoQuestionLiveEntity.id, videoQuestionLiveEntity.getSrcType(), videoQuestionLiveEntity.getDotId(), 1, callBack);
     }
 }

@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
 public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     private RedPackageAction redPackageAction;
@@ -66,8 +66,8 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        if (mGetInfo.getPattern() == 2) {
-            RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, true, mLiveBll);
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
+            RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, true, contextLiveAndBackDebug);
             redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
                 @Override
                 public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {
@@ -83,7 +83,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
                 public void onReceiveGold() {
                     UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
                     if (updateAchievement != null) {
-                        updateAchievement.getStuGoldCount();
+                        updateAchievement.getStuGoldCount("onReceiveGold", UpdateAchievement.GET_TYPE_RED);
                     }
                 }
 
@@ -98,7 +98,8 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             redPackageStandBll.initView(mRootView);
             redPackageAction = redPackageStandBll;
         } else {
-            if(LiveVideoConfig.isPrimary){
+            //
+            if(LiveVideoConfig.isPrimary && !LiveVideoConfig.isSmallChinese){
                 PScienceRedPackageBll redPackageBll = new PScienceRedPackageBll(activity, mGetInfo, true);
                 redPackageBll.setVSectionID(mLiveId);
                 redPackageBll.initView(mRootView);

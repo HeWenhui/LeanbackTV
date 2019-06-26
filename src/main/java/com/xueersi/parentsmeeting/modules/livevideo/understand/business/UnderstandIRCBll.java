@@ -29,29 +29,25 @@ public class UnderstandIRCBll extends LiveBaseBll implements NoticeAction {
     public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
         switch (type) {
             case XESCODE.UNDERSTANDT:
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         if (understandAction == null) {
-                            UnderstandBll understandBll = new UnderstandBll(activity, mLiveBll);
+                            UnderstandBll understandBll = new UnderstandBll(activity, contextLiveAndBackDebug);
                             understandBll.setGetInfo(mGetInfo);
                             understandBll.setUnderstandHttp(new UnderstandHttp() {
                                 @Override
                                 public void understand(boolean isUnderstand, String nonce) {
-                                    if (mLiveBll.getMainTeacherStr() != null) {
-                                        try {
-                                            JSONObject jsonObject = new JSONObject();
-                                            jsonObject.put("type", "" + XESCODE.UNDERSTANDS);
-                                            jsonObject.put("understand", isUnderstand);
-                                            jsonObject.put("nonce", nonce);
-                                            mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
-                                            mLogtf.d("understand ok");
-                                        } catch (Exception e) {
-                                            // logger.e( "understand", e);
-                                            mLogtf.e("understand", e);
-                                        }
-                                    } else {
-                                        mLogtf.d("understand mMainTeacherStr=null");
+                                    try {
+                                        JSONObject jsonObject = new JSONObject();
+                                        jsonObject.put("type", "" + XESCODE.UNDERSTANDS);
+                                        jsonObject.put("understand", isUnderstand);
+                                        jsonObject.put("nonce", nonce);
+                                        sendNoticeToMain(jsonObject);
+                                        mLogtf.d("understand ok");
+                                    } catch (Exception e) {
+                                        // logger.e( "understand", e);
+                                        mLogtf.e("understand", e);
                                     }
                                 }
                             });

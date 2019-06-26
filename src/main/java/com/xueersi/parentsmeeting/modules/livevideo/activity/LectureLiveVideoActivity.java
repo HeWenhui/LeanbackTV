@@ -80,7 +80,7 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+//import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 //
 ///**
 // * 直播

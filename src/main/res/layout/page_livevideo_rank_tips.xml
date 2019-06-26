@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingConstraints">
+
+    <TextView
+        android:id="@id/tv_livevideo_rank_tips_left"
+        style="@style/text_font11_999999_style"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="13dp"
+        android:gravity="center"
+        android:text="排名"
+        android:textSize="11dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@id/tv_livevideo_rank_tips_middle"
+        style="@style/text_font11_999999_style"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="学员"
+        android:textSize="11dp"
+        app:layout_constraintLeft_toRightOf="@id/tv_livevideo_rank_tips_left"
+        app:layout_constraintRight_toLeftOf="@id/tv_livevideo_rank_tips_right"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_rank_tips_left" />
+
+    <TextView
+        android:id="@id/tv_livevideo_rank_tips_right"
+        style="@style/text_font11_999999_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="正确率"
+        android:textSize="11dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_rank_tips_left" />
+</android.support.constraint.ConstraintLayout>

@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.tal.speech.speechrecognizer.PhoneScore;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,6 +46,7 @@ public class RolePlayerEntity {
      * 金币数
      */
     private int goldCount;
+    private int energy;
 
     /**
      * 自己最后一段话的index
@@ -73,6 +76,7 @@ public class RolePlayerEntity {
     private List<RolePlayerMessage> lstRolePlayerMessage = new ArrayList<>();
     private int resultStar;
     private double selfSpeechTime;
+    private JSONObject jsonObject;
 
     public long getCountDownSecond() {
         return countDownSecond;
@@ -141,6 +145,14 @@ public class RolePlayerEntity {
 
     public void setGoldCount(int goldCount) {
         this.goldCount = goldCount;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
     }
 
     public int getSelfLastIndex() {
@@ -236,6 +248,14 @@ public class RolePlayerEntity {
 
     public double getSelfValidSpeechTime() {
         return selfSpeechTime;
+    }
+
+    public void setJson(JSONObject json) {
+        jsonObject = json;
+    }
+
+    public JSONObject getJson() {
+        return jsonObject;
     }
 
 
@@ -404,6 +424,12 @@ public class RolePlayerEntity {
          * 用来朗读倒计时的最长时长
          */
         private int maxReadTime;
+
+        /**
+         * 自己朗读的具体时长
+         */
+        private double selfValidSpeechTime;
+
         /**
          * 剩下的秒数
          */
@@ -641,6 +667,14 @@ public class RolePlayerEntity {
         public String getAudio(){
             return audio;
         }
+
+        public void setSelfValidSpeechTime(double selfValidSpeechTime) {
+            this.selfValidSpeechTime = selfValidSpeechTime;
+        }
+
+        public double getSelfValidSpeechTime(){
+            return this.selfValidSpeechTime;
+        }
     }
 
     /**
@@ -677,6 +711,11 @@ public class RolePlayerEntity {
          * 对话结束后，停止刷新界面
          */
         public static final int STOP_UPDATE = -1;
+
+        /**
+         * 通知当前正在播放音频的索引，方便，退出界面的时候，关闭音频
+         */
+        public static final int CUR_PLAYING_ITEM_INDEX = 500;
     }
 
     /**
@@ -692,4 +731,5 @@ public class RolePlayerEntity {
         }
         return null;
     }
+
 }

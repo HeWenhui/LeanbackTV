@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/COLOR_F9F9F9">
+
+    <LinearLayout
+        android:id="@id/ll_item_audit_class_room_ranking_head"
+        android:layout_width="78dp"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@id/iv_item_audit_class_room_ranking_head"
+            style="@style/text_font14_333333_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@id/tv_item_audit_class_room_ranking_head"
+            style="@style/text_font14_333333_style"
+            android:layout_width="match_parent"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+
+    </LinearLayout>
+    <View
+        android:layout_below="@id/ll_item_audit_class_room_ranking_head"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"/>
+
+    <TextView
+        android:id="@id/tv_item_audit_class_room_ranking_name"
+        style="@style/text_font14_333333_style"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/tv_item_audit_class_room_ranking"
+        android:layout_toRightOf="@id/ll_item_audit_class_room_ranking_head" />
+
+    <TextView
+        android:id="@id/tv_item_audit_class_room_ranking"
+        android:layout_width="104dp"
+        android:singleLine="true"
+        android:layout_centerVertical="true"
+        android:ellipsize="end"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="12dp"
+        android:gravity="center" />
+</RelativeLayout>

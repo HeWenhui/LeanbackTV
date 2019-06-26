@@ -29,7 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import java.util.ArrayList;
 
 /**
- * Created by lyqai on 2017/11/16.
+ * Created by linyuqiang on 2017/11/16.
  */
 
 public class StartProgress extends RelativeLayout {
@@ -72,6 +72,7 @@ public class StartProgress extends RelativeLayout {
                     View rl_live_star_result_tip = findViewById(R.id.rl_live_star_result_tip);
                     LayoutParams lp = (LayoutParams) rl_live_star_result_tip.getLayoutParams();
                     lp.topMargin = childGroup.getTop() + childGroup.getHeight();
+                    Log.i(TAG, "onPreDraw:topMargin=" + lp.topMargin);
                     LayoutParamsUtil.setViewLayoutParams(rl_live_star_result_tip, lp);
                 }
                 {

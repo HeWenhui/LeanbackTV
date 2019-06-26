@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,11 +116,13 @@ public class LiveGetInfo {
      */
     private int hbTime;
     /**
-     * 记录客户端日志地址
+     * 记录客户端日志地址 2019-1-14作废
      */
+    @Deprecated
     private String clientLog;
     /**
      * 直播id
+     * liveId
      */
     private String id;
     /**
@@ -208,7 +211,10 @@ public class LiveGetInfo {
     private String subjectiveTestAnswerResult;
     //是否是小英
     private boolean smallEnglish;
-
+    /**
+     * 声网appid
+     */
+    private String appid;
     private boolean primaryChinese;
     /**
      * 当前的直播模式
@@ -234,20 +240,26 @@ public class LiveGetInfo {
      */
     private int allowSnapshot;
     /**
-     * 1-普通直播，2-全身直播
+     * 1-普通直播，2-全身直播,6半身直播
      */
     private int pattern = 1;
     /** 全身直播语音答题和评测小组排名请求时间 */
     private String requestTime;
+
+    /** 语文，英语是否使用皮肤 **/
+    private int useSkin;
 
     /**
      * 是否是 teampk 直播间
      * 1 :是pk 直播间  0 :非pk直播间
      */
     private String isAllowTeamPk;
+
     /** 是否是AI 伴侣直播间 */
     private int isAIPartner;
     private String[] subjectIds;//所有学科id
+    /** 学科，都是2 的倍数 */
+    private String subject_digits;
     /** 小学理科改版，教育阶段，区分献花 */
     private String educationStage;
     /** 直播课年级 */
@@ -255,7 +267,9 @@ public class LiveGetInfo {
     /** 一发多题的动态接口 */
     private String mulpreload;
     private String mulh5url;
-
+    private String getCourseWareHtmlNew;
+    private String getCourseWareHtmlZhongXueUrl;
+    private ScienceStaticConfig scienceStaticConfig;
     /**
      * 是否是高三理科
      */
@@ -264,6 +278,8 @@ public class LiveGetInfo {
     private int showArtsPraise;
     /** 是否是小学理科 */
     private int isPrimarySchool;
+    /** 是否是幼教 */
+    private int isYouJiao;
     /**
      * 是否开启集语音互动功能 1,开启，0 不开启
      */
@@ -280,14 +296,105 @@ public class LiveGetInfo {
     private ArrayList<Double> praiseGiftRate = new ArrayList();
 
     //连续点赞多长时间弹出礼物
-    private int praiseAutoCutTime=5;
+    private int praiseAutoCutTime = 5;
 
     //暂停点赞多长时间弹出礼物
-    private int praiseAutoBarrageTime=1;
-
+    private int praiseAutoBarrageTime = 1;
+    /** 走新课件预加载 */
+    private boolean newCourse = false;
+    /** 走新课件预加载,接口返回 */
+    private int isNewProject = 0;
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
+    /** 语文AI主观题AI接口 */
+    private String subjectiveItem2AIUrl;
+
+    /**
+     * 是否是幼教
+     */
+    private boolean preschool;
+
+    public String getSubjectiveItem2AIUrl() {
+        return subjectiveItem2AIUrl;
+    }
+
+    public void setSubjectiveItem2AIUrl(String subjectiveItem2AIUrl) {
+        this.subjectiveItem2AIUrl = subjectiveItem2AIUrl;
+    }
+
+    /** 是否支持连对激励 0：关闭 1：打开 */
+    private int isOpenNewCourseWare;
+    /** 连对榜接口地址 */
+    private String getEvenPairListUrl;
+    /** 点赞接口地址 */
+    private String getThumbsUpUrl;
+
+    private String getJournalUrl;
+
+    private VideoConfigEntity videoConfigEntity;
+
+    private boolean showHightFeedback;
+
+    public VideoConfigEntity getVideoConfigEntity() {
+        return videoConfigEntity;
+    }
+
+    public void setVideoConfigEntity(VideoConfigEntity videoConfigEntity) {
+        this.videoConfigEntity = videoConfigEntity;
+    }
+
+    public String getGetJournalUrl() {
+        return getJournalUrl;
+    }
+
+    public void setGetJournalUrl(String getJournalUrl) {
+        this.getJournalUrl = getJournalUrl;
+    }
+
+    public int getIsOpenNewCourseWare() {
+        return isOpenNewCourseWare;
+    }
+
+    public void setIsOpenNewCourseWare(int isOpenNewCourseWare) {
+        this.isOpenNewCourseWare = isOpenNewCourseWare;
+    }
+
+    public String getGetEvenPairListUrl() {
+        return getEvenPairListUrl;
+    }
+
+    public void setGetEvenPairListUrl(String getEvenPairListUrl) {
+        this.getEvenPairListUrl = getEvenPairListUrl;
+    }
+
+    public String getGetThumbsUpUrl() {
+        return getThumbsUpUrl;
+    }
+
+    public void setGetThumbsUpUrl(String getThumbsUpUrl) {
+        this.getThumbsUpUrl = getThumbsUpUrl;
+    }
+
+    private int useGoldMicroPhone;
+
+    private int useSuperSpeakerShow;
+
+    public int getUseSuperSpeakerShow() {
+        return useSuperSpeakerShow;
+    }
+
+    public void setUseSuperSpeakerShow(int useSuperSpeakerShow) {
+        this.useSuperSpeakerShow = useSuperSpeakerShow;
+    }
+
+    public int isUseGoldMicroPhone() {
+        return useGoldMicroPhone;
+    }
+
+    public void setUseGoldMicroPhone(int useGoldMicroPhone) {
+        this.useGoldMicroPhone = useGoldMicroPhone;
+    }
 
     public int getPraiseAutoCutTime() {
         return praiseAutoCutTime;
@@ -339,6 +446,14 @@ public class LiveGetInfo {
 
     public boolean getSmallEnglish() {
         return smallEnglish;
+    }
+
+    public String getAppid() {
+        return appid;
+    }
+
+    public void setAppid(String appid) {
+        this.appid = appid;
     }
 
     public boolean isPrimaryChinese() {
@@ -419,6 +534,14 @@ public class LiveGetInfo {
 
     public void setIsPrimarySchool(int isPrimarySchool) {
         this.isPrimarySchool = isPrimarySchool;
+    }
+
+    public int getIsYouJiao() {
+        return isYouJiao;
+    }
+
+    public void setIsYouJiao(int isYouJiao) {
+        this.isYouJiao = isYouJiao;
     }
 
     public LiveGetInfo(LiveTopic liveTopic) {
@@ -517,6 +640,7 @@ public class LiveGetInfo {
         this.hbTime = hbTime;
     }
 
+    @Deprecated
     public void setClientLog(String clientLog) {
         this.clientLog = clientLog;
     }
@@ -595,6 +719,14 @@ public class LiveGetInfo {
 
     public String getUname() {
         return uname;
+    }
+
+    public void setUseSkin(int useSkin) {
+        this.useSkin = useSkin;
+    }
+
+    public int getUseSkin() {
+        return useSkin;
     }
 
     /**
@@ -956,12 +1088,44 @@ public class LiveGetInfo {
         return subjectIds;
     }
 
+    public String getSubject_digits() {
+        return subject_digits;
+    }
+
+    public void setSubject_digits(String subject_digits) {
+        this.subject_digits = subject_digits;
+    }
+
     public String getEducationStage() {
         return educationStage;
     }
 
     public void setEducationStage(String educationStage) {
         this.educationStage = educationStage;
+    }
+
+    public boolean isNewCourse() {
+        return newCourse;
+    }
+
+    public void setNewCourse(boolean newCourse) {
+        this.newCourse = newCourse;
+    }
+
+    public int getIsNewProject() {
+        return isNewProject;
+    }
+
+    public void setIsNewProject(int isNewProject) {
+        this.isNewProject = isNewProject;
+    }
+
+    public void setPreschool(boolean preschool) {
+        this.preschool = preschool;
+    }
+
+    public boolean isPreschool() {
+        return preschool;
     }
 
     public static class MainTeacherInfo {
@@ -1049,6 +1213,7 @@ public class LiveGetInfo {
          * 童音测评
          */
         private String learning_stage = "";
+        private int goldNum;
 
         public String getCourseId() {
             return courseId;
@@ -1144,6 +1309,14 @@ public class LiveGetInfo {
 
         public void setLearning_stage(String learning_stage) {
             this.learning_stage = learning_stage;
+        }
+
+        public int getGoldNum() {
+            return goldNum;
+        }
+
+        public void setGoldNum(int goldNum) {
+            this.goldNum = goldNum;
         }
     }
 
@@ -1247,7 +1420,8 @@ public class LiveGetInfo {
     }
 
     EvaluateTeacherEntity evaluateTeacherEntity;
-    public static class EvaluateTeacherEntity{
+
+    public static class EvaluateTeacherEntity {
         boolean evaluateIsOpen = false;
         long evaluateTime;
 
@@ -1268,7 +1442,7 @@ public class LiveGetInfo {
         }
     }
 
-    public void setEvaluateTeacherEntity(EvaluateTeacherEntity evaluateTeacherEntity){
+    public void setEvaluateTeacherEntity(EvaluateTeacherEntity evaluateTeacherEntity) {
         this.evaluateTeacherEntity = evaluateTeacherEntity;
     }
 
@@ -1292,6 +1466,30 @@ public class LiveGetInfo {
         this.mulh5url = mulh5url;
     }
 
+    public String getGetCourseWareHtmlNew() {
+        return getCourseWareHtmlNew;
+    }
+
+    public void setGetCourseWareHtmlNew(String getCourseWareHtmlNew) {
+        this.getCourseWareHtmlNew = getCourseWareHtmlNew;
+    }
+
+    public String getGetCourseWareHtmlZhongXueUrl() {
+        return getCourseWareHtmlZhongXueUrl;
+    }
+
+    public void setGetCourseWareHtmlZhongXueUrl(String getCourseWareHtmlZhongXueUrl) {
+        this.getCourseWareHtmlZhongXueUrl = getCourseWareHtmlZhongXueUrl;
+    }
+
+    public ScienceStaticConfig getScienceStaticConfig() {
+        return scienceStaticConfig;
+    }
+
+    public void setScienceStaticConfig(ScienceStaticConfig science_static_config) {
+        this.scienceStaticConfig = science_static_config;
+    }
+
     /** 直播间额外参数信息 */
     private ArtsExtLiveInfo artsExtLiveInfo;
 
@@ -1307,6 +1505,7 @@ public class LiveGetInfo {
         public String ePlanId;
         public String eTeacherId;
         public String eClassId;
+        public String fakePlanId;
     }
 
     /**
@@ -1325,8 +1524,16 @@ public class LiveGetInfo {
     }
 
     public static class EnPkEnergy {
-        public  int me;//: 10,
-        public  int myTeam;//":80,
-        public  int opTeam;//":100
+        public int me;//: 10,
+        public int myTeam;//":80,
+        public int opTeam;//":100
+    }
+
+    public boolean isShowHightFeedback() {
+        return showHightFeedback;
+    }
+
+    public void setShowHightFeedback(boolean showHightFeedback) {
+        this.showHightFeedback = showHightFeedback;
     }
 }

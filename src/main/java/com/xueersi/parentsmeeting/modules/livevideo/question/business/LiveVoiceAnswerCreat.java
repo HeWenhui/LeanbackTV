@@ -1,13 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -15,17 +15,16 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE1;
 import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE2;
@@ -39,10 +38,12 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     private QuestionSwitch questionSwitch;
     Logger logger = LoggerFactory.getLogger("LiveVoiceAnswerCreat");
     LivePagerBack livePagerBack;
+    LiveGetInfo getInfo;
 
-    public LiveVoiceAnswerCreat(QuestionSwitch questionSwitch, LivePagerBack livePagerBack) {
+    public LiveVoiceAnswerCreat(QuestionSwitch questionSwitch, LivePagerBack livePagerBack, LiveGetInfo getInfo) {
         this.questionSwitch = questionSwitch;
         this.livePagerBack = livePagerBack;
+        this.getInfo = getInfo;
     }
 
     @Override
@@ -84,16 +85,25 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     }
 
     @Override
-    public boolean onAnswerReslut(Context context, AnswerRightResultVoice answerRightResultVoice, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+    public CreateAnswerReslutEntity onAnswerReslut(Context context, AnswerRightResultVoice answerRightResultVoice, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+        CreateAnswerReslutEntity createAnswerReslutEntity = new CreateAnswerReslutEntity();
         boolean isSuccess = false;
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         if (LiveVideoConfig.isNewArts) {
+            boolean smallEnglish = false;
             if (answerRightResultVoice instanceof NewArtsAnswerRightResultVoice) {
                 NewArtsAnswerRightResultVoice artsAnswerRightResultVoice = (NewArtsAnswerRightResultVoice) answerRightResultVoice;
-                AnswerResultEntity answerResultEntity = AnswerResultEntity.getAnswerResultEntity(videoQuestionLiveEntity, entity);
-                artsAnswerRightResultVoice.initArtsAnswerRightResultVoice(answerResultEntity);
-                isSuccess = answerResultEntity.getIsRight() == 2;
-            } else {
+                if (getInfo != null) {
+                    smallEnglish = getInfo.getSmallEnglish();
+                }
+                if (smallEnglish) {
+                    AnswerResultEntity answerResultEntity = AnswerResultEntity.getAnswerResultEntity(videoQuestionLiveEntity, entity);
+                    View view = artsAnswerRightResultVoice.initArtsAnswerRightResultVoice(answerResultEntity);
+                    createAnswerReslutEntity.resultView = view;
+                    isSuccess = answerResultEntity.getIsRight() == 2;
+                }
+            }
+            if (!smallEnglish) {
                 if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE2) {
                     if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
                         answerRightResultVoice.initSelectAnswerRightResultVoice(entity);
@@ -129,6 +139,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 // 填空题部分正确提示
             }
         }
-        return isSuccess;
+        createAnswerReslutEntity.isSuccess = isSuccess;
+        return createAnswerReslutEntity;
     }
 }

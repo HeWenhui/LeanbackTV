@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingRight="30dp">
+
+
+    <ImageView
+        android:id="@id/iv_chi_answer_result_item_muti_right_answer"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="4dp"
+        />
+
+
+    <TextView
+        android:id="@id/tv_chi_answer_result_item_muti_user_answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/COLOR_333333"
+        android:textSize="17sp"
+        android:visibility="visible"
+        android:layout_toRightOf="@id/iv_chi_answer_result_item_muti_right_answer"
+        tools:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+
+    <TextView
+        android:id="@id/tv_chi_answer_result_item_muti_right_answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_chi_answer_result_item_muti_user_answer"
+        android:layout_alignLeft="@id/tv_chi_answer_result_item_muti_user_answer"
+        android:gravity="center_vertical"
+        android:textColor="@color/COLOR_333333"
+        android:textSize="17sp"
+        android:visibility="visible"
+        tools:text="bbbbbbbbbbbbbbbbbbbbbbbbb" />
+</RelativeLayout>

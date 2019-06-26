@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 /**
- * Created by lyqai on 2017/7/21.
+ * Created by linyuqiang on 2017/7/21.
  * 旁听学生数据
  */
 public class StudyInfo {

@@ -3,14 +3,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.content.Context;
 
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
- * Created by lyqai on 2018/7/26.
+ * Created by linyuqiang on 2018/7/26.
  */
 
 public class WrapOnH5ResultClose implements EnglishH5CoursewareBll.OnH5ResultClose {
@@ -33,7 +33,7 @@ public class WrapOnH5ResultClose implements EnglishH5CoursewareBll.OnH5ResultClo
     @Override
     public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
         onH5ResultClose.onH5ResultClose(baseEnglishH5CoursewarePager, baseVideoQuestionEntity);
-        MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
+        BackMediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, BackMediaPlayerControl.class);
         if (mediaPlayerControl != null) {
             mediaPlayerControl.seekTo(videoQuestionH5Entity.getvEndTime() * 1000);
             mediaPlayerControl.start();

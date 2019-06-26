@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
@@ -16,7 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
  */
 public class LivePlaybackStandMediaController extends LivePlaybackMediaController {
 
-    public LivePlaybackStandMediaController(Context context, MediaPlayerControl player, boolean mIsLand) {
+    public LivePlaybackStandMediaController(Context context, BackMediaPlayerControl player, boolean mIsLand) {
         super(context, player, mIsLand);
     }
 

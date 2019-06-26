@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -29,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 
 public class RolePlayerMachineOtherItem extends RolePlayerItem {
+
     private final LiveAndBackDebug mLiveBll;//只为记录日志用
     /**
      * 头像
@@ -74,6 +77,8 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
      */
     private boolean mIsPlaying = false;
     Handler mReadHandler ;
+    private int mPostion;
+
     public RolePlayerMachineOtherItem(Context context, RolePlayerBll rolePlayerBll,Handler readHandler) {
         super(context, rolePlayerBll);
         mLiveBll = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
@@ -162,14 +167,15 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
         }else {
             //通过点击对话播放的
             if(mAudioPlayerManager != null){
-                logger.i("先停掉正在播放的音频，优先播放现在的");
+                logger.i("先停掉f正在播放的音频，优先播放现在的");
                 mAudioPlayerManager.stop();
                 mAudioPlayerManager.release();
                 mAudioPlayerManager = null;
             }
 
-        }
 
+        }
+        sendCurItemIndex();
         mAudioPlayerManager = AudioPlayerManager.get(ContextManager.getApplication());
         //播放
         mAudioPlayerManager.start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
@@ -205,6 +211,7 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
             @Override
             public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
                 super.onError(msg, dataSource, manager);
+                XESToastUtils.showToast(mContext,"音频播放失败");
                 if(isRolePlay){
                     logger.i( "机器播完出错:msg = "+msg+" dataSource = "+dataSource);
                     nextMsg();
@@ -214,6 +221,15 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
                 mAudioPlayerManager = null;
             }
         });
+    }
+
+    private void sendCurItemIndex() {
+        if(mReadHandler != null){
+            Message message = new Message();
+            message.what = RolePlayerEntity.RolePlayerMessageStatus.CUR_PLAYING_ITEM_INDEX;
+            message.obj = mPostion;
+            mReadHandler.sendMessage(message);
+        }
     }
 
     /**
@@ -235,15 +251,21 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
      */
     private void recoverMsgUiStatus() {
         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                logger.i( "currentThread:"+Thread.currentThread());
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
-                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                tvMessageContent.setTextColor(Color.parseColor("#333333"));
-            }
-        });
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+                    vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                    tvMessageContent.setTextColor(Color.parseColor("#333333"));
+                }
+            });
+        }else {
+            ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+            vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+            tvMessageContent.setTextColor(Color.parseColor("#333333"));
+        }
+
 
     }
 
@@ -251,14 +273,17 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
      * 机器播完之后，通知跳到下一条
      */
     private void nextMsg() {
-        Message temp = mReadHandler.obtainMessage();
-        temp.what = RolePlayMachinePager.READ_MESSAGE;
-        mReadHandler.sendMessage(temp);
+        if(mReadHandler != null){
+            Message temp = mReadHandler.obtainMessage();
+            temp.what = RolePlayMachinePager.READ_MESSAGE;
+            mReadHandler.sendMessage(temp);
+        }
     }
 
     @Override
     public void updateViews(RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
+        mPostion = position;
         logger.i( "updateViews entity = " + entity.getWebVoiceUrl());
         mEntity = entity;
 

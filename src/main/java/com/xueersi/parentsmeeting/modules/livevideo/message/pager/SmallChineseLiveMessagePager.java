@@ -14,7 +14,6 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -47,16 +46,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordChsItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -218,7 +218,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         params.width = liveVideoPoint.getRightMargin();
         params.topMargin = liveVideoPoint.y3;
-        logger.setLogMethod(false);
         logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
 
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
@@ -438,7 +437,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         super.initListener();
         rlLivevideoCommonWord = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
 
-        Log.e("SmallChinese", "=========>initListener:" + liveMediaControllerBottom.getClass().getSimpleName());
         //聊天，设置监听器
         btMesOpen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -794,12 +792,16 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initFlower(educationStage);
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    LiveIRCMessageBll.requestGoldTotal(mContext);
-                }
-            });
+            if (getInfoGoldNum == 0) {
+                liveThreadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        UserGoldTotal.requestGoldTotal(mContext);
+                    }
+                });
+            } else {
+                goldNum = "" + getInfoGoldNum;
+            }
         }
     }
 
@@ -874,6 +876,28 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                             if (getInfo != null) {
                                 educationStage = getInfo.getEducationStage();
                             }
+                            int goldSend = 0;
+                            if (smallChineseSendGiftPager.getWhich() == FLOWERS_SMALL) {
+                                goldSend = 10;
+                            } else if (smallChineseSendGiftPager.getWhich() == FLOWERS_MIDDLE) {
+                                goldSend = 50;
+                            } else if (smallChineseSendGiftPager.getWhich() == FLOWERS_BIG) {
+                                goldSend = 100;
+                            }
+                            if (goldNum == null) {
+                                OtherModulesEnter.requestGoldTotal(mContext);
+                            } else {
+                                try {
+                                    int goldSum = Integer.parseInt(goldNum);
+                                    if (goldSend > goldSum) {
+                                        XESToastUtils.showToast(mContext, "当前金币余额不足");
+                                        return;
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
 //                            String educationStage = getInfo.getEducationStage();
                             ircState.praiseTeacher("", smallChineseSendGiftPager.getWhich() + "",
                                     educationStage, new HttpCallBack(false) {
@@ -1114,9 +1138,9 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         logger.e("=====>onMessage called");
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);

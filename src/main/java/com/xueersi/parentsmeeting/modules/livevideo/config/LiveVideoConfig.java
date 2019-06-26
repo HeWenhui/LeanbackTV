@@ -1,7 +1,18 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
+import android.os.Environment;
+
+import com.xueersi.common.base.XueErSiRunningEnvironment;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.util.LoadFileUtils;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.RunningEnvironment;
+import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
+
+import java.util.HashMap;
 
 /**
  * 直播模块配置
@@ -11,22 +22,28 @@ import com.xueersi.common.entity.EnglishH5Entity;
  * Created by Administrator on 2017/3/31.
  */
 public class LiveVideoConfig {
-
+    //是否使用PSIJK
+//    public static final boolean getIsNewIJK() = true;
     // private static final String TEST_HOST="https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example";
 
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
     public static String HTTP_PRIMARY_CHINESE_HOST = "https://app.chs.xueersi.com";
     /** 文科的接口域名 */
     public static String APP_ARTS_HTTP_HOST = "https://app.arts.xueersi.com";
+    /** 文科的接口域名 */
+    public static String APP_ARTS_WXEN_HTTP_HOST = "https://wxen.arts.xueersi.com";
     /** 直播辅导用户在线心跳 */
+    @Deprecated
     public final static String URL_LIVE_TUTORIAL_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/userOnline";
     /** 公开直播用户在线心跳 */
     public final static String URL_LIVE_LECTURE_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/userOnline";
     /** 直播辅导领取金币 */
+    @Deprecated
     public final static String URL_LIVE_TUTORIAL_GOLD = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/receiveGold";
     /** 公开直播领取金币 */
     public final static String URL_LIVE_LECTURE_GOLD = LiveVideoConfig.HTTP_HOST + "/LiveLecture/receiveGold";
     /** 直播辅导献花 */
+    @Deprecated
     public final static String URL_LIVE_TUTORIAL_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST +
             "/LiveTutorial/praiseTeacher";
     /** 直播讲座献花 */
@@ -35,7 +52,10 @@ public class LiveVideoConfig {
     /** 得到语音评测试题 */
     public final static String URL_LIVE_GET_SPEECHEVAL = LiveVideoConfig.HTTP_HOST + "/StudyCenter/getSpeechEvalInfo";
     /** 发送语音评测答案 */
+    @Deprecated
     public final static String URL_LIVE_SEND_SPEECHEVAL = LiveVideoConfig.HTTP_HOST + "/StudyCenter/submitSpeechEval";
+    /** 直播辅导发送语音评测答案 */
+    @Deprecated
     public final static String URL_LIVE_TUTORIAL_SUBMIT_TEST_ANSWER = LiveVideoConfig.HTTP_HOST +
             "/LiveTutorial/submitTestAnswer";
     /** 公开直播提交测试题 */
@@ -69,15 +89,35 @@ public class LiveVideoConfig {
      */
     public final static int LIVE_TYPE_TUTORIAL = 1;
     /**
-     * 公开直播
+     * 公开直播，讲座
      */
     public final static int LIVE_TYPE_LECTURE = 2;
     /**
      * 直播课的直播
      */
     public final static int LIVE_TYPE_LIVE = 3;
+    /** 直播课的普通直播  */
+    public final static int LIVE_PATTERN_COMMON = 1;
+    /** 直播课的全身直播 */
+    public final static int LIVE_PATTERN_2 = 2;
+    /**半身直播直播类型*/
+    public static final int LIVE_TYPE_HALFBODY = 6;
+    /**半身直播直播类型-小组*/
+    public static final int LIVE_TYPE_HALFBODY_CLASS = 9;
     /** 视频类型为站立直播体验课 */
     public static final int LIVE_TYPE_STAND_EXPERIENCE = 10000;
+    /**
+     * 中学激励系统获取当前连对和最高连对
+     */
+    public static final String EVEN_DRIVE_PAIR_INFO = "https://live.xueersi.com/science/Stimulation/getEvenPairInfo";
+    /**
+     * 中学激励系统获取连对榜单
+     */
+    public static final String EVEN_DRIVE_PAIR_LIST = "https://live.xueersi.com/science/Stimulation/evenPairList";
+    /** 中学激励系统学报接口地址 */
+    public static final String EVEN_DRIVE_STYDU_REPORT = "https://live.xueersi.com/science/Stimulation/getJournal";
+    /** 中学激励系统点赞地址 */
+    public static final String EVEN_DRIVE_LIKE = "https://live.xueersi.com/science/Stimulation/thumbsUp";
     /**
      * 语音评测地址
      */
@@ -96,6 +136,7 @@ public class LiveVideoConfig {
     // public final static String URL_LIVE_GET_INFO = TEST_HOST + "/LiveCourse/getInfo";
 
     /** 直播辅导播放器数据初始化 */
+    @Deprecated
     public final static String URL_LIVE_TUTORIAL_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/initInfo";
     /** 公开直播播放器数据初始化 */
     public final static String URL_LIVE_LECTURE_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveLecture/initInfo";
@@ -132,6 +173,12 @@ public class LiveVideoConfig {
     public static String LIVE_EXPERIENCE_IMMSG = "LiveFreePlayEvent";
     /** 体验课事件 */
     public static String LIVE_EXPERIENCE = "experienceLiveClass";
+
+    /**
+     * 直播回放体验课
+     */
+    public static String LIVE_BACK_EXPERIENCE = "liveBackExperience";
+
     /** 直播-H5课件互动题 */
     public static String LIVE_ENGLISH_COURSEWARE = "live_h5waretest";
     /** 直播-接麦 */
@@ -194,6 +241,8 @@ public class LiveVideoConfig {
     public static String SP_LIVEVIDEO_CLIENT_LOG = "sp_livevideo_clientLog";
     /** 直播网页加载失败 */
     public static String LIVE_WEBVIEW_ERROR = "live_webview_error";
+    /** 直播预加载启动 */
+    public static String LIVE_PRESERVICE_START = "live_preservice_start";
     /** 直播网页弹窗 */
     public static String LIVE_WEBVIEW_JS_ALERT = "live_webview_js_alert";
     /** 直播语音弹幕 */
@@ -206,6 +255,8 @@ public class LiveVideoConfig {
     public static String LIVE_VOICE_CHAT = "voicechat";
     /** 直播-小英语音弹幕*/
     public static String LIVE_VOICE_BULLET = "voicebullet";
+    /** 直播-小英语音聊天*/
+    public static String LIVE_VOICE_VOLUME = "live_smallenglish_volume";
 
     public static class ShareData {
 
@@ -240,7 +291,7 @@ public class LiveVideoConfig {
     public static String URL_ROLEPLAY_NEWARTS_TESTINFOS = "https://app.arts.xueersi.com/v2/MultiRolePlay/getRolePlay";
     /** 提交接口 */
     public static String URL_ROLEPLAY_RESULT = LiveVideoConfig.HTTP_HOST + "/libarts/LiveCourse/submitRolePlay";
-    /** 文科新课件平台提交接口 */
+    /** 文科新课件平台提交接口 http://wiki.xesv5.com/pages/viewpage.action?pageId=12968144 */
     public static String URL_ROLEPLAY_NEWARTS_RESULT = "https://app.arts.xueersi.com/v2/MultiRolePlay/submitRolePlay";
     /** 讲座直播获取更多课程 */
     public static String URL_LECTURELIVE_MORE_COURSE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
@@ -263,6 +314,10 @@ public class LiveVideoConfig {
      * 提交体验课退出反馈
      */
     public static String URL_AUTO_LIVE_QUIT_FEED_BACK = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitClassQuitFeedback";
+    /**
+     * 提交体验课新手引导页是否展示
+     */
+    public static String URL_AUTO_LIVE_NOVIC_GUIDE = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitNoviceGuide";
     /** 视频播放失败的eventId */
     public final static String STAND_EXPERIENCE_LIVE_PLAY_ERROR = "stand_experience_live_play_error";
 
@@ -338,9 +393,20 @@ public class LiveVideoConfig {
     /** 一发多题的两个动态接口-语文 */
     public static String LIVEMULPRELOADCHS;
     public static String LIVEMULH5URLCHS;
+    /** AI体验课互动题答题结果*/
+    public static Boolean isAITrue = false;
+    /** AI体验课已答互动题序号*/
+    public static int aiQuestionIndex = -1;
+    /** AI体验课退出时，记录当前的进度*/
+    public static HashMap<String, Long> liveKey = new HashMap<>();
+    public static HashMap<String, Long> curentTime = new HashMap<>();
+    public static HashMap<String, Boolean> livefinish = new HashMap<>();
     /** 战队PK改版 */
+    @Deprecated
     public static String tests;
+    @Deprecated
     public static String ctId;
+    @Deprecated
     public static String pSrc;
 
     public static interface SubjectIds {
@@ -408,5 +474,83 @@ public class LiveVideoConfig {
     public static final String URL_HALFBODY_LIVE_STULIVEINFO = "https://laoshi.xueersi.com/science/LiveCourse/getStuDateOfVisitedParentPage";
     /** 文理半身直播  文科科家长旁听数据接口 */
     public static final String URL_HALFBODY_LIVE_STULIVEINFO_ARTS = "https://app.chs.xueersi.com/LiveCourse/getStuDateOfVisitedParentPage";
+
+
+    /**
+     * 体验课类型
+     */
+    public static interface ExperiencLiveType{
+        /**半身直播体验课*/
+        int HALF_BODY = 1001;
+        /**普通直播体验课*/
+        int NORMAL = 1000;
+    }
+    /**半身直播体验课 试题 h5 地址**/
+    public static final String URL_HALFBODY_EXPERIENCE_LIVE_H5 = "https://expclass.xueersi.com/live-rewrite/courseware-sci/index.html";
+
+    /**
+     * 文科课件预加载
+     */
+    public static String URL_LIVE_GET_ARTS_COURSEWARE_URL = "https://app.chs.xueersi.com/LiveCourses/preLoadNewCourseWare";
+    /**
+     * 英语课件预加载
+     */
+    public static String URL_LIVE_GET_ENGLISH_COURSEWARE_URL = "https://app.arts.xueersi.com/preloading/preLoading";
+    /**
+     * 理科课件预加载
+     */
+    public static String URL_LIVE_GET_SCIENCE_COURSEWARE_URL =  LiveVideoConfig.HTTP_HOST+"/science/LiveCourses/preLoadNewCourseWare";
+
+    public static final String URL_GOLD_MICROPHONE_TO_AI = "https://app.chs.xueersi.com/LiveCourse/isGoldMicrophoneToAi";
+
+    public static final String URL_IS_GOLD_MICROPHONE = "https://app.chs.xueersi.com/LiveCourse/setGoldMicrophoneData";
+
+    /**NB加试实验**/
+    public static String URL_NB_LOGIN = "https://live.xueersi.com/science/LiveExam/stuLoginNB";
+    /**上传NB 实验答题结果 **/
+    public static String URL_NB_RESULT_UPLOAD = "https://live.xueersi.com/science/LiveExam/receiveNBResult";
+    /**获取 Nb 试题信息**/
+    public static String URL_NB_COURSE_INFO = "https://live.xueersi.com/science/LiveExam/getNBTestInfo";
+    /** app端上传演讲秀视频 */
+    public static final String SUPER_SPEAKER_UPLOAD_SPEECH_SHOW = "https://app.chs.xueersi.com/LiveCourse/uploadSpeechShow";
+    /** app端摄像头开启状态 */
+    public static final String SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS = "https://app.chs.xueersi.com/LiveCourse/speechShowCameraStatus";
+    /** app端提交演讲秀 */
+    public static final String SUPER_SPEAKER_SUBMIT_SPEECH_SHOW = "https://app.chs.xueersi.com/LiveCourse/submitSpeechShow";
+    /** 超级演讲秀存储视频的地方 */
+    public static final String SUPER_SPEAKER_VIDEO_PATH = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/superSpeaker/";
+
+    public static boolean assetsDownloadTag = true;
+
+    public static DownLoadFileInfo getDownLoadFileInfo(){
+        DownLoadFileInfo info = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
+        if (info == null) {
+            info = new DownLoadFileInfo();
+            info.fileName = "assets.zip";
+            info.fileMD5 = "0026c20e191b4adab347af523fc1e62c";
+            info.fileType = 0;
+            info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/1.0.1/assets.zip";
+            info.needManualDownload = true;
+            info.id = 0;
+        }
+        info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+        UmsAgentManager.umsAgentDebug(RunningEnvironment.sAppContext, LiveAssetsLoadUtil.TAG, "assets message:" + info.toString());
+
+        /*if (XueErSiRunningEnvironment.debug) {
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        } else {
+            info.dirPath  = LoadFileUtils.geCacheFile(RunningEnvironment.sAppContext, "downloadAssets").getAbsolutePath();
+        }*/
+        return info;
+    }
+    /**
+     * 文科三分屏上传精彩瞬间截图url，半身直播走理科的接口
+     */
+    public static final String ART_TRIPLE_WONDERFUL_MOMENT = "https://live.chs.xueersi.com/ExamReport/uploadWonderfulMoment";
+
+    /** 课后评价教师文案获取 */
+    public static String URL_LIVE_COURSE_GETEVALUATE =  AppConfig.HTTP_HOST + "/science/LiveCourse/getEvaluateContentNew";
+
 
 }

@@ -136,9 +136,6 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
 
     /** 互动题 */
     private VideoQuestionEntity mQuestionEntity;
-    /** 讲座暂时没有 */
-    @Deprecated
-    private BaseExamQuestionInter examQuestionPlaybackPager;
     /** 红包id */
     private String mRedPacketId;
 
@@ -693,6 +690,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
     }
 
     /** seek完成 */
+    @Override
     protected void onSeekComplete() {
         long lastCurrentMsg = currentMsg;
         long currentPosition = vPlayer.getCurrentPosition();
@@ -916,29 +914,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
     }
 
     private void showExam() {
-        mPlayVideoControlHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (rlQuestionContent != null && mQuestionEntity != null) {
-                    mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
-                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                    videoQuestionLiveEntity.id = mQuestionEntity.getvQuestionID();
-                    examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(LectureLivePlayBackVideoActivity.this, mVideoEntity.getLiveId(), videoQuestionLiveEntity,
-                            1, "", new BaseExamQuestionInter.ExamStop() {
-                        @Override
-                        public void stopExam(BaseExamQuestionInter baseExamQuestionInter, VideoQuestionLiveEntity mQuestionEntity) {
-                            LectureLivePlayBackVideoActivity.this.stopExam();
-                            rlQuestionContent.removeView(baseExamQuestionInter.getRootView());
-                            baseExamQuestionInter.onDestroy();
-                        }
-                    }, null);
-                    rlQuestionContent.removeAllViews();
-                    rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new LayoutParams(LayoutParams.MATCH_PARENT,
-                            LayoutParams.WRAP_CONTENT));
-                    rlQuestionContent.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+
     }
 
     /**
@@ -1331,20 +1307,6 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
             }
         }
 //        logger.i( "getPlayQuetion:playPosition=" + playPosition + ",hasQuestionShow=" + hasQuestionShow + ",mQuestionEntity=" + (mQuestionEntity != null));
-        if (mQuestionEntity != null) {
-            if (LocalCourseConfig.CATEGORY_EXAM == mQuestionEntity.getvCategory()) {
-                if (mQuestionEntity.getvEndTime() < playPosition) {
-                    if (examQuestionPlaybackPager != null) {
-                        examQuestionPlaybackPager.examSubmitAll();
-                        if (vPlayer != null) {
-                            vPlayer.pause();
-                        }
-                        logger.i( "getPlayQuetion:examSubmitAll:playPosition=" + playPosition);
-                    }
-                }
-                return;
-            }
-        }
         // 如果没有互动题则移除
         if (!hasQuestionShow && mQuestionEntity != null) {
             startTime = mQuestionEntity.getvQuestionInsretTime();
@@ -1584,6 +1546,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
         }
     };
 
+    @Override
     protected void onRefresh() {
         if (AppBll.getInstance(this).isNetWorkAlert()) {
             loadView(mLayoutVideo);

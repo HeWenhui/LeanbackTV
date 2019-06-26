@@ -73,7 +73,7 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
      * @param testId
      * @param stuId
      */
-    public void requestNewArtsRolePlayTestInfos(String liveId, String stuCouId, String testId, String stuId,HttpCallBack requestCallBack) {
+    public void requestNewArtsRolePlayTestInfos(String liveId, String stuCouId, String testId, String stuId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuCouId", stuCouId);
@@ -109,14 +109,16 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
      * @param testId
      * @param roler
      * @param answer
+     * @param type
      * @param requestCallBack
      */
-    public void requestNewArtsResult(String stuCouId, String liveId, String testId, String roler, String answer, HttpCallBack requestCallBack) {
+    public void requestNewArtsResult(String stuCouId, String liveId, String testId, String roler, String answer, int type, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", testId);
         params.addBodyParam("roler", roler);
+        params.addBodyParam("type", "" + type);
         params.addBodyParam("data", answer);
         params.setWriteAndreadTimeOut(5);
         setDefaultParameter(params);

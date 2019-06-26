@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.switchflow;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.MainThread;
+import android.support.annotation.UiThread;
 import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -52,14 +55,24 @@ public class SwitchFlowRoutePager extends BasePager {
         super(context, isLazy);
     }
 
-    /** 每次 */
+    /**
+     * 可能在子线程
+     */
     public void setRouteSum(int routeSum) {
         this.routeSum = routeSum;
-        initData();
+        if (mView != null) {
+            mView.post(new Runnable() {
+                @Override
+                public void run() {
+                    initData();
+                }
+            });
+        }
         logger.i("线路数量为" + routeSum);
 //        init();
     }
 
+    @MainThread
     public void init() {
         if (mView == null) {
             initView();
@@ -83,7 +96,6 @@ public class SwitchFlowRoutePager extends BasePager {
             ivBackGroundTopIcon = mView.findViewById(R.id.iv_livevideo_small_chinese_live_message_background_top);
             lvRoute = mView.findViewById(R.id.lv_livevideo_triple_screen_switch_route);
             dynamicChangeTopIcon();
-
         } else if (isSmallEnglish) {
             mView = View.inflate(mContext, R.layout.page_livevideo_triple_screen_switch_small_enlgish_route, null);
             lvRoute = mView.findViewById(R.id.lv_livevideo_triple_screen_switch_route);
@@ -132,6 +144,10 @@ public class SwitchFlowRoutePager extends BasePager {
 
     private RouteAdapter routeAdapter;
 
+    /**
+     * ui操作，必须在主线程中
+     */
+    @UiThread
     @Override
     public void initData() {
         if (listRoute == null) {
@@ -215,6 +231,8 @@ public class SwitchFlowRoutePager extends BasePager {
 //                        nowPos = listRoute.indexOf(nowTvRoute.getText().toString());
 //                        logger.i("nowPos" + nowPos);
                         nowPos = position;
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                                .livevideo_switch_flow_1707013));
                         itemClickListener.itemClick(position);
                         routeAdapter.notifyDataSetChanged();
                     }
@@ -223,7 +241,6 @@ public class SwitchFlowRoutePager extends BasePager {
         } else {
             routeAdapter.notifyDataSetChanged();
         }
-
     }
 
     public interface ItemClickListener {
@@ -259,7 +276,7 @@ public class SwitchFlowRoutePager extends BasePager {
             if (convertView == null) {
                 mHolder = new ViewHolder();
                 LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                if (isSmallEnglish || LiveVideoConfig.isPrimary) {
+                if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
                     convertView = layoutInflater.inflate(R.layout.item_livevideo_triple_screen_switch_flow_route, null);
                     mHolder.tvRoute = convertView.findViewById(R.id.fzcy_livevideo_switch_flow_route_item);
                 } else if (pattern == 1) {

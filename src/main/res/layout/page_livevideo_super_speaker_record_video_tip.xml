@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/COLOR_99000000"
+    android:clickable="true"
+    tools:ignore="MissingConstraints">
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="12324343423"-->
+    <!--android:textColor="@color/white" />-->
+
+    <!--<ImageView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--/>-->
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_background"
+        android:layout_width="520dp"
+        android:layout_height="280dp"
+        android:src="@drawable/bg_livevideo_kindergarten_primary_school_microphone_close_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_tittle_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:textColor="@color/COLOR_7B583E"
+        android:textSize="23dp"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_background"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_super_speaker_background"
+        tools:text="确定要重录吗？" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_content_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/COLOR_7B583E"
+        android:textSize="14dp"
+        app:layout_constraintLeft_toLeftOf="@id/tv_livevideo_super_speaker_tittle_tip"
+        app:layout_constraintRight_toRightOf="@id/tv_livevideo_super_speaker_tittle_tip"
+        app:layout_constraintTop_toBottomOf="@id/tv_livevideo_super_speaker_tittle_tip"
+        tools:text="已录制的内容将无法保存" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_gold_microphone_close_btn_no"
+        android:layout_width="130dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="120dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/selector_livevideo_super_speaker_nor_submit_video"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_background"
+        app:layout_constraintTop_toBottomOf="@id/tv_livevideo_super_speaker_content_tip" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_gold_microphone_close_btn_yes"
+        android:layout_width="130dp"
+        android:layout_height="54dp"
+        android:layout_marginLeft="30dp"
+        android:src="@drawable/selector_livevideo_super_speaker_submit_video"
+        app:layout_constraintLeft_toRightOf="@id/iv_livevideo_gold_microphone_close_btn_no"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_gold_microphone_close_btn_no" />
+
+
+    <android.support.constraint.Group
+        android:id="@id/group_livevideo_super_speaker_submit_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tv_livevideo_super_speaker_tittle_tip,
+            tv_livevideo_super_speaker_content_tip,
+            iv_livevideo_gold_microphone_close_btn_no,
+            iv_livevideo_gold_microphone_close_btn_yes"
+        tools:ignore="NotSibling" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_time_up_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:textColor="@color/COLOR_7B583E"
+        android:textSize="23dp"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_background"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_super_speaker_background"
+        tools:text="时间到，视频没有完成哦" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_yes_btn"
+        android:layout_width="130dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/selector_livevideo_super_speaker_record_video_good_tip"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_background"
+        app:layout_constraintTop_toBottomOf="@id/tv_livevideo_super_speaker_time_up_title" />
+
+    <android.support.constraint.Group
+        android:id="@id/group_livevideo_super_speaker_cancel_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tv_livevideo_super_speaker_time_up_title,iv_livevideo_super_speaker_yes_btn"
+        tools:ignore="NotSibling" />
+
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_countdown_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:textColor="@color/COLOR_7B583E"
+        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_super_speaker_background"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_background"
+        tools:text="5s后自动返回直播间" />
+</android.support.constraint.ConstraintLayout>

@@ -14,11 +14,12 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -35,6 +36,7 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
     private ViewGroup decorView;
     private View praiseRootView;
     private boolean isAnimStart;
+
 
     public TeacherPraiseBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -79,7 +81,9 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
         String lottieResPath = "team_pk/pkresult/teacher_praise/images";
         String lottieJsonPath = "team_pk/pkresult/teacher_praise/data.json";
 
-        if (mGetInfo.getIsArts() == 2) {
+         // 兼容语文半身直播 老师点赞动画
+        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH || (mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY
+                && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH)) {
             lottieResPath = "chinesePk/praise/images";
             lottieJsonPath = "chinesePk/praise/data.json";
         } else {
@@ -141,8 +145,6 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
         switch (type) {
             case XESCODE.TEACHER_PRAISE:
                 showTeacherPraise();
-                String nonce = data.optString("nonce", "");
-                TeamPkLog.receiveVoicePraise(mLiveBll, nonce);
                 break;
 
             default:

@@ -1,0 +1,161 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@id/rl_teampk_pkstate_container_2"
+        android:layout_width="219dp"
+        android:layout_height="25dp"
+        android:layout_toLeftOf="@id/fl_live_halfbody_coin_container">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="2dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_live_halfbody_pk_arts" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_teampk_pkstate_myteam_coin_prefix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="9dp"
+            android:text="本队"
+            android:textColor="@color/COLOR_EEF7C4"
+            android:textSize="12sp" />
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
+            android:id="@id/tv_teampk_pkstate_myteam_energy"
+            android:layout_width="28dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:layout_toRightOf="@id/tv_teampk_pkstate_myteam_coin_prefix"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/COLOR_EEF7C4"
+            android:textSize="12sp" />
+
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar
+            android:id="@id/tpb_teampk_pkstate_energy_bar"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/tv_teampk_pkstate_myteam_energy"
+            app:border_line_color="@color/COLOR_40621F"
+            app:innerProgressBarHeight="8dp"
+            app:sliderHeader="@drawable/live_halfbody_slider_arts" />
+
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
+            android:id="@id/tv_teampk_pkstate_otherteam_energy"
+            android:layout_width="28dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/tpb_teampk_pkstate_energy_bar"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/COLOR_EEF7C4"
+            android:textSize="12sp" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_teampk_pkstate_adversary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:layout_toRightOf="@id/tv_teampk_pkstate_otherteam_energy"
+            android:text="对手"
+            android:textColor="@color/COLOR_EEF7C4"
+            android:textSize="12dp" />
+    </RelativeLayout>
+
+
+    <FrameLayout
+        android:id="@id/fl_live_halfbody_coin_container"
+        android:layout_width="76dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="9dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/bg_live_halfbody_coin_arts" />
+
+        <ImageView
+            android:id="@id/iv_teampk_pkstate_coin"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/iv_live_halfbody_coin" />
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
+            android:id="@id/tv_teampk_pkstate_coin_num"
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="30dp"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/COLOR_EEF7C4"
+            android:textSize="14dp" />
+    </FrameLayout>
+
+
+    <ImageView
+        android:id="@id/iv_live_halfbody_pk_state"
+        android:layout_width="41dp"
+        android:layout_height="70dp"
+        android:layout_below="@id/fl_live_halfbody_coin_container"
+        android:layout_alignLeft="@id/fl_live_halfbody_coin_container"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="-8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/live_halfbody_pk_ready_arts"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@id/rl_live_halfbody_energy_contribution"
+        android:layout_width="235dp"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/rl_teampk_pkstate_container_2"
+        android:background="@drawable/bg_live_halfbody_energy_contribution"
+        android:visibility="gone">
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_live_halfbody_energy_contribution"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:textSize="14dp" />
+
+        <ImageView
+            android:layout_width="19dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="9dp"
+            android:layout_toLeftOf="@id/tv_live_halfbody_energy_contribution"
+            android:src="@drawable/live_halfbody_pk_star" />
+
+        <ImageView
+            android:layout_width="19dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="9dp"
+            android:layout_toRightOf="@id/tv_live_halfbody_energy_contribution"
+            android:src="@drawable/live_halfbody_pk_star" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

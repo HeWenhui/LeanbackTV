@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -16,22 +17,23 @@ import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ActivityUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 
 /**
- * @author lyqai
+ * @author linyuqiang
  * @date 2018/6/22
  */
 public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoView.SurfaceCallback,
-        MediaPlayerControl {
+        BackMediaPlayerControl {
 
     /** 播放器的控制对象 */
     protected MediaController2 mMediaController;
@@ -42,8 +44,6 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     protected float mySpeed = 1.0f;
 
     private OnVideoCreate onVideoCreate;
-    /** 直播帧数统计 */
-    private LivePlayLog livePlayLog;
 
     /**
      * 在VideoFragment的onActivityCreated创建完成以后
@@ -56,6 +56,37 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         this.onVideoCreate = onVideoCreate;
     }
 
+    /**
+     * 播放PS视频
+     */
+//    public void playPSVod() {
+//        if (vPlayer != null) {
+//            vPlayer.release();
+//            vPlayer.psStop();
+//        }
+//        mDisplayName = "";
+//        mIsHWCodec = false;
+////        mFromStart = false;
+//        mStartPos = 0;
+//        mIsEnd = false;
+////        mUri = uri;
+////        mDisplayName = displayName;
+//        if (viewRoot != null) {
+//            viewRoot.invalidate();
+//        }
+//        if (mOpened != null) {
+//            mOpened.set(false);
+//        }
+//
+//        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+//    }
+
+    /**
+     * 切换播放地址
+     */
+//    public void changLine() {
+
+//    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +98,29 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         manageReceivers();
-        logger.d("onActivityCreated");
-        if (onVideoCreate != null) {
-            onVideoCreate.onVideoCreate();
+        logger.d("onActivityCreated:Parent=" + videoView.getParent());
+        if (videoView.getParent() != null) {
+            if (onVideoCreate != null) {
+                onVideoCreate.onVideoCreate();
+            }
+        } else {
+            final long before = System.currentTimeMillis();
+            videoView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View view) {
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap();
+                    stableLogHashMap.put("time", "" + (System.currentTimeMillis() - before));
+                    UmsAgentManager.umsAgentDebug(activity, "LiveBackPlayerFragment_onActivityCreated", stableLogHashMap.getData());
+                    if (onVideoCreate != null) {
+                        onVideoCreate.onVideoCreate();
+                    }
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View view) {
+
+                }
+            });
         }
     }
 
@@ -200,16 +251,9 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         }
     }
 
-    public void setLivePlayLog(LivePlayLog livePlayLog) {
-        this.livePlayLog = livePlayLog;
-    }
-
     @Override
     public void onDestroy() {
         logger.d("onDestroy");
-        if (livePlayLog != null) {
-            livePlayLog.destory();
-        }
         // 统计退出
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONDESTROY);
         // 注销广播
@@ -353,7 +397,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         if (isInitialized())
         // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
         {
-            vPlayer.getSpeed();
+            return vPlayer.getSpeed();
         }
         return 1.0f;
     }
@@ -384,6 +428,22 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     public void onShare() {
 
     }
+
+    @Override
+    public void startPlayVideo() {
+        playPSVideo(streamId, protocol);
+    }
+
+    @Override
+    public void setVideoStatus(int code, int status, String values) {
+
+    }
+
+    @Override
+    public int onVideoStatusChange(int code, int status) {
+        return 0;
+    }
+
 
     protected void updateRefreshImage() {
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false,

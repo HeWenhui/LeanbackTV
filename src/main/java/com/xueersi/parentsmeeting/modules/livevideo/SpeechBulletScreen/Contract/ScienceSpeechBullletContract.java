@@ -40,6 +40,7 @@ public interface ScienceSpeechBullletContract {
         void receivePraiseMsg(String msg);
 
         void setVideoLayout(LiveVideoPoint liveVideoPoint);
+        void onStop();
     }
 
     public interface ScienceSpeechBulletPresenter extends BasePresenter {

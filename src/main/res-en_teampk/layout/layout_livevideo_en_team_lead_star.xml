@@ -7,16 +7,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="13dp"
         android:src="@drawable/livevideo_enpk_gongxianzhixing_pic" />
 
-    <GridView
-        android:id="@id/gv_livevideo_en_teampk_lead_star"
-        android:layout_width="372dp"
-        android:layout_height="match_parent"
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:clickable="false"
-        android:horizontalSpacing="20dp"
-        android:listSelector="@color/transparent"
-        android:numColumns="4" />
+        android:layout_marginTop="12dp">
+
+        <LinearLayout
+            android:id="@id/ll_livevideo_en_teampk_lead_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
+    </HorizontalScrollView>
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_en_teampk_rank_start_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:textColor="#ffbebebe"
+        android:textSize="10sp" />
+
 </RelativeLayout>

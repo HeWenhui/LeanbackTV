@@ -3,15 +3,23 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandLiveVideoExperienceFragment;
+
+import java.util.HashMap;
 
 /**
  * Created by linyuqiang on 2018/7/23.
  * 新直播回放
  */
 public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
-
+    private static String TAG = "LivePlaybackVideoActivityLog";
     /**
      * 用来判断是否是站立直播体验课
      */
@@ -74,12 +82,41 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         Intent intent = new Intent(context, LivePlaybackVideoActivity.class);
         intent.putExtras(bundle);
         intent.putExtra("where", where);
+        intent.putExtra("contextname", context.getClass().getSimpleName());
         try {
             context.startActivityForResult(intent, requestCode);
         } catch (Exception e) {
             e.printStackTrace();
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
-
+        try {
+            VideoLivePlayBackEntity serializable = (VideoLivePlayBackEntity) bundle.getSerializable("videoliveplayback");
+            if (serializable != null) {
+                HashMap<String, String> hashMap = new HashMap();
+                if (serializable.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {
+                    hashMap.put("logtype", "recorded");
+                } else if (serializable.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_LECTURE) {
+                    hashMap.put("logtype", "lecplayback");
+                } else {
+                    hashMap.put("logtype", "liveplayback");
+                }
+                hashMap.put("where", "" + where);
+                hashMap.put("contextname", "" + context.getClass().getSimpleName());
+                hashMap.put("bundle", "" + bundle);
+                hashMap.put("liveid", "" + serializable.getLiveId());
+                UmsAgentManager.umsAgentDebug(context, "LivePlaybackVideoActivityIntentTo", hashMap);
+            } else {
+                CrashReport.postCatchedException(new Exception("" + bundle));
+                HashMap<String, String> hashMap = new HashMap();
+                hashMap.put("logtype", "videoliveplayback");
+                hashMap.put("where", "" + where);
+                hashMap.put("contextname", "" + context.getClass().getSimpleName());
+                hashMap.put("bundle", "" + bundle);
+                hashMap.put("exception", "" + Log.getStackTraceString(new Exception()));
+                UmsAgentManager.umsAgentDebug(context, "LivePlaybackVideoActivityIntentTo", hashMap);
+            }
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
     }
-
 }

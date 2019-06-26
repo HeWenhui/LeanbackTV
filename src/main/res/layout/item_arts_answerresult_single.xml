@@ -28,6 +28,7 @@
             app:drawableLeftMargin="-5dp"
             app:drawableTopMargin="8dp"
             android:lineSpacingExtra="3dp"
+            android:minWidth="15dp"
             app:suffixIcon="@drawable/icon_live_prart_correct" />
 
         <!--选择题 标准答案-->

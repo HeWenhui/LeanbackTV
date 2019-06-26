@@ -30,6 +30,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.StandLoadLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -89,7 +91,12 @@ public class LiveStandFrameAnim {
         StandLiveConfig.createVoice(activity);
         File alldir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand");
         if (alldir == null) {
-            alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live_stand");
+            String status = Environment.getExternalStorageState();
+            if (Environment.MEDIA_MOUNTED.equals(status)) {
+                alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live_stand");
+            } else {
+                alldir = new File(activity.getFilesDir(), "live_stand");
+            }
         }
         File[] allcache = alldir.listFiles();
         if (allcache != null) {
@@ -112,6 +119,7 @@ public class LiveStandFrameAnim {
         final File saveFile = new File(externalFilesDir, "frame_anim");
         final File saveFileTemp = new File(externalFilesDir, "frame_anim.temp");
         this.callBack = callBack;
+        StandLoadLog.downFile(saveFile, saveFileZip);
 //        callBack.onDataSucess("");
         if (saveFileZip.exists()) {
             if (saveFile.exists()) {
@@ -132,7 +140,7 @@ public class LiveStandFrameAnim {
                     }
                 });
                 LiveZip liveZip = new LiveZip(view, callBack, saveFile, saveFileTemp);
-                zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, liveZip);
+                zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, liveZip);
                 zipExtractorTask.execute();
             }
         } else {
@@ -189,7 +197,7 @@ public class LiveStandFrameAnim {
         Bitmap bitmap2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.bg_live_stand_update_prog);
         //设置进度条宽度
         layoutParams.width = bitmap.getWidth();
-        pbLiveStandUpdate.setLayoutParams(layoutParams);
+        LayoutParamsUtil.setViewLayoutParams(pbLiveStandUpdate, layoutParams);
         //进度条背景和里面进度的差值
         progGap = (bitmap.getWidth() - bitmap2.getWidth()) / 2;
         progHeight = bitmap2.getHeight();
@@ -231,7 +239,7 @@ public class LiveStandFrameAnim {
                     bps = String.format("%.2f", dspeed / 1024.0d) + " KB/s";
                 }
                 mLogtf.d("onDownloadSuccess:bps=" + bps + ",downTime=" + downTime);
-                StableLogHashMap logHashMap = new StableLogHashMap();
+                StableLogHashMap logHashMap = new StableLogHashMap("ondownloadsuccess");
                 logHashMap.put("bps", bps);
                 logHashMap.put("downTime", "" + downTime);
                 logHashMap.put("times", "" + times.get());
@@ -241,7 +249,7 @@ public class LiveStandFrameAnim {
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, logHashMap.getData());
                 onProgress(pbLiveStandUpdate.getLeft(), rlLiveStandUpdateProg, ivLiveStandUpdateProgLight, 50);
                 LiveZip liveZip = new LiveZip(view, callBack, saveFile, saveFileTemp);
-                zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, liveZip);
+                zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, liveZip);
                 zipExtractorTask.execute();
             }
 
@@ -258,7 +266,7 @@ public class LiveStandFrameAnim {
                         @Override
                         public void run() {
                             String url = urls[times.get() % urls.length];
-                            logger.d( "onDownloadFailed:times=" + times.get() + ",url=" + url);
+                            logger.d("onDownloadFailed:times=" + times.get() + ",url=" + url);
                             downloadStart = System.currentTimeMillis();
                             baseHttp.downloadRenew(url, tempFileZip, downloadCallBack);
                         }
@@ -314,9 +322,9 @@ public class LiveStandFrameAnim {
     private void onProgress(int progLeft, RelativeLayout rlLiveStandUpdateProg, ImageView ivLiveStandUpdateProgLight, int progress) {
         int progTipWidth = rlLiveStandUpdateProg.getWidth();
         int lightWidth = ivLiveStandUpdateProgLight.getWidth();
-        logger.d( "onProgress:progLeft=" + progLeft + ",progTipWidth=" + progTipWidth + ",lightWidth=" + lightWidth);
+        logger.d("onProgress:progLeft=" + progLeft + ",progTipWidth=" + progTipWidth + ",lightWidth=" + lightWidth);
         int left = (int) (((float) progWidth) * (float) progress / 100.0f);
-        logger.d( "onProgress:progress=" + progress + ",left=" + left);
+        logger.d("onProgress:progress=" + progress + ",left=" + left);
         {
             RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rlLiveStandUpdateProg.getLayoutParams();
 //                        int left = pbLiveStandUpdate.getWidth() * progress / 100;
@@ -340,6 +348,7 @@ public class LiveStandFrameAnim {
         ImageView ivLiveStandUpdateProgLight;
         TextView tvLiveStandUpdateProg;
         boolean cancle = false;
+        long startTime;
         int max;
 
         public LiveZip(View view, AbstractBusinessDataCallBack callBack, File saveFile, File saveFileTemp) {
@@ -353,6 +362,7 @@ public class LiveStandFrameAnim {
             //解压开始，要删除以前旧的
             FileUtils.deleteDir(saveFile);
             FileUtils.deleteDir(saveFileTemp);
+            startTime = System.currentTimeMillis();
         }
 
         @Override
@@ -419,6 +429,7 @@ public class LiveStandFrameAnim {
                         callBack.onDataSucess("");
                     }
                 });
+                StandLoadLog.zipFileFailSuc(startTime, saveFile);
             } else {
                 mLogtf.e("onPostExecute:cancle=" + cancle, exception);
                 if (!cancle) {
@@ -442,6 +453,7 @@ public class LiveStandFrameAnim {
                         }
                     });
                 }
+                StandLoadLog.zipFileFailErr(startTime, exception);
             }
         }
     }
@@ -461,8 +473,8 @@ public class LiveStandFrameAnim {
         boolean cancle = false;
         ZipProg zipProg;
 
-        public StandLiveZipExtractorTask(File in, File out, Context context, ZipProg zipProg) {
-            super(in, out, context, true);
+        public StandLiveZipExtractorTask(File in, File out, ZipProg zipProg) {
+            super(in, out, true, null);
             this.zipProg = zipProg;
         }
 
@@ -471,7 +483,7 @@ public class LiveStandFrameAnim {
             if (cancle) {
                 setCancle(true);
                 zipProg.setCancle(true);
-                logger.d( "onProgressUpdate:cancle");
+                logger.d("onProgressUpdate:cancle");
                 return;
             }
             super.onProgressUpdate(values);
@@ -489,7 +501,7 @@ public class LiveStandFrameAnim {
     public void onDestory() {
         cancle = true;
         if (zipExtractorTask != null) {
-            logger.d( "onDestory:cancle");
+            logger.d("onDestory:cancle");
             zipExtractorTask.cancle = true;
         }
         if (liveSoundPool != null && loadTask != null) {

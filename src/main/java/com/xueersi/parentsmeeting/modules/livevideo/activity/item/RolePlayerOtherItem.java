@@ -7,6 +7,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -77,9 +79,11 @@ public class RolePlayerOtherItem extends RolePlayerItem {
     private final LiveAndBackDebug mLiveBll;//只为记录日志用
     private boolean mIsPlaying = false;//标记当前语音正在播放,true 表示正在播放； flase 表示已经停止播放
 
-
-    public RolePlayerOtherItem(Context context, RolePlayerBll bll) {
+    private final Handler mReadHandler;
+    private int mPosition;
+    public RolePlayerOtherItem(Context context, RolePlayerBll bll,Handler handler) {
         super(context, bll);
+        mReadHandler = handler;
         mLiveBll = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
     }
 
@@ -152,13 +156,14 @@ public class RolePlayerOtherItem extends RolePlayerItem {
         tvMessageContent.setTextColor(Color.WHITE);
 
         mAudioPlayerManager = AudioPlayerManager.get(ContextManager.getApplication());
+        sendCurItemIndex();
         //播放
         mAudioPlayerManager.start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
             @Override
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 logger.i( "完成播放");
                 mIsPlaying = false;
-                new Handler().post(new Runnable() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
                         logger.i( "currentThread:"+Thread.currentThread());
@@ -175,7 +180,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 super.onStop(dataSource, manager);
                 logger.i( "停止播放");
                 mIsPlaying = false;
-                new Handler().post(new Runnable() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
                         logger.i( "currentThread:"+Thread.currentThread());
@@ -199,7 +204,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
             public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
                 super.onError(msg, dataSource, manager);
                 mIsPlaying = false;
-                new Handler().post(new Runnable() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
                         logger.i( "currentThread:"+Thread.currentThread());
@@ -215,6 +220,15 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
     }
 
+    private void sendCurItemIndex() {
+        if(mReadHandler != null){
+            Message message = new Message();
+            message.what = RolePlayerEntity.RolePlayerMessageStatus.CUR_PLAYING_ITEM_INDEX;
+            message.obj = mPosition;
+            mReadHandler.sendMessage(message);
+        }
+    }
+
     @Override
     public void updateViews(final RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
        /* if(entity.getMsgStatus() == RolePlayerEntity.RolePlayerMessageStatus.STOP_UPDATE){
@@ -224,6 +238,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
             return;
         }*/
         super.updateViews(entity, position, objTag);
+        mPosition = position;
         updateUserHeadImage(civUserHead, entity.getRolePlayer().getHeadImg()); // 绑定用户头像
 
         // 播放语音

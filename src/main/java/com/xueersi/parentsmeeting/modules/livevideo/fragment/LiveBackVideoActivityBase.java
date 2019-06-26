@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.tencent.bugly.crashreport.BuglyLog;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCall;
@@ -17,6 +18,7 @@ import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.service.LiveService;
 import com.xueersi.ui.dataload.DataLoadManager;
 
@@ -30,7 +32,7 @@ import org.greenrobot.eventbus.ThreadMode;
  *
  * @author 林玉强
  */
-public class LiveBackVideoActivityBase extends XesActivity {
+public abstract class LiveBackVideoActivityBase extends XesActivity {
     private String TAG = "LiveVideoActivityBaseLog";
     /** 当前界面是否横屏 */
     protected boolean mIsLand = false;
@@ -48,10 +50,15 @@ public class LiveBackVideoActivityBase extends XesActivity {
         // 注册事件
         EventBus.getDefault().register(this);
         loadView(R.layout.activity_video_live_frag);
-        Intent intent = new Intent(this, LiveService.class);
-        intent.putExtra("livepid", android.os.Process.myPid());
-        startService(intent);
-        BuglyLog.i(TAG,"onCreate");
+        try {
+            Intent intent = new Intent(this, LiveService.class);
+            intent.putExtra("livepid", android.os.Process.myPid());
+            intent.putExtra("liveintent", getIntent().getExtras());
+            startService(intent);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        BuglyLog.i(TAG, "onCreate");
     }
 
     @Override
@@ -70,7 +77,7 @@ public class LiveBackVideoActivityBase extends XesActivity {
     @Override
     public void onResume() {
         super.onResume();
-        BuglyLog.i(TAG,"onResume");
+        BuglyLog.i(TAG, "onResume");
         FileLogger.runActivity = this;
         //关闭系统后台声音
         AudioPlayer.requestAudioFocus(this);
@@ -80,7 +87,7 @@ public class LiveBackVideoActivityBase extends XesActivity {
     @Override
     public void onPause() {
         super.onPause();
-        BuglyLog.i(TAG,"onPause");
+        BuglyLog.i(TAG, "onPause");
         AudioPlayer.abandAudioFocus(this);
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONPAUSE);
     }
@@ -88,7 +95,7 @@ public class LiveBackVideoActivityBase extends XesActivity {
     @Override
     public void onStop() {
         super.onStop();
-        BuglyLog.i(TAG,"onStop");
+        BuglyLog.i(TAG, "onStop");
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONSTOP);
     }
 
@@ -106,10 +113,11 @@ public class LiveBackVideoActivityBase extends XesActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        BuglyLog.i(TAG,"onDestroy");
+        BuglyLog.i(TAG, "onDestroy");
         // 注销事件
         EventBus.getDefault().unregister(this);
         stopService(new Intent(this, LiveService.class));
+//        System.exit(0);
     }
 
     @Override
@@ -120,7 +128,7 @@ public class LiveBackVideoActivityBase extends XesActivity {
 
     @Override
     public final void onBackPressed() {
-        BuglyLog.i(TAG,"onBackPressed");
+        BuglyLog.i(TAG, "onBackPressed");
         if (liveVideoFragmentBase != null) {
             liveVideoFragmentBase.onBackPressed();
         }
@@ -139,13 +147,14 @@ public class LiveBackVideoActivityBase extends XesActivity {
 
     /** 加载界面 */
     protected void loadView(int id) {
-        setContentView(id);
+//        setContentView(id);
         getWindow().setBackgroundDrawable(null);
         liveVideoFragmentBase = (LiveBackVideoFragmentBase) getFragmentManager().findFragmentByTag("liveVideo");
         if (liveVideoFragmentBase == null) {
             liveVideoFragmentBase = getFragment();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.rl_course_video_contentview, liveVideoFragmentBase, "liveVideo");
+            fragmentTransaction.add(android.R.id.content, liveVideoFragmentBase, "liveVideo");
+//            fragmentTransaction.add(R.id.rl_course_video_contentview, liveVideoFragmentBase, "liveVideo");
             fragmentTransaction.commit();
         } else {
             restoreFragment(liveVideoFragmentBase);
@@ -157,9 +166,10 @@ public class LiveBackVideoActivityBase extends XesActivity {
 
     }
 
-    protected LiveBackVideoFragmentBase getFragment() {
-        return new LiveBackVideoFragmentBase();
-    }
+    protected abstract LiveBackVideoFragmentBase getFragment();
+//    {
+//        return new LiveBackVideoFragmentBase();
+//    }
 
     /**
      * 改变界面加载数据状态

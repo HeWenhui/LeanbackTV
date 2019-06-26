@@ -21,7 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import java.util.ArrayList;
 
 /**
- * Created by lyqai on 2018/1/15.
+ * Created by linyuqiang on 2018/1/15.
  */
 
 public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {

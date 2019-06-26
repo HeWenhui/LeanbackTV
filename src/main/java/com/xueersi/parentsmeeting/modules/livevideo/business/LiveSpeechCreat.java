@@ -21,11 +21,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
  * 直播的语音评测创建
  */
 public class LiveSpeechCreat implements BaseSpeechCreat {
+    private LivePagerBack livePagerBack;
+    private LiveGetInfo getInfo;
 
-    LivePagerBack livePagerBack;
-
-    public LiveSpeechCreat(LivePagerBack livePagerBack) {
+    public LiveSpeechCreat(LivePagerBack livePagerBack, LiveGetInfo getInfo) {
         this.livePagerBack = livePagerBack;
+        this.getInfo = getInfo;
     }
 
     @Override
@@ -33,14 +34,16 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
 
     }
 
-
     @Override
     public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String nonce, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
         SpeechAssAutoPager speechAssAutoPager =
-                new SpeechAssAutoPager(context, videoQuestionLiveEntity, liveid, videoQuestionLiveEntity.id, nonce,
+                new SpeechAssAutoPager(context, videoQuestionLiveEntity, liveid, videoQuestionLiveEntity.id, getInfo, nonce,
                         videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, learning_stage, speechEvalAction, livePagerBack);
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         lp.rightMargin = liveVideoPoint.getRightMargin();
+        if (getInfo.getSmallEnglish()) {
+            speechAssAutoPager.setSmallEnglish(1);
+        }
         return speechAssAutoPager;
     }
 
@@ -49,10 +52,10 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
                                                     SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
 
         //老讲义人机走原生
-        if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles)){
-            RolePlayMachinePager rolePlayerPager  = new RolePlayMachinePager(context,
+        if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles)) {
+            RolePlayMachinePager rolePlayerPager = new RolePlayMachinePager(context,
                     videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                    true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+                    true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack, rolePlayMachineBll, liveGetInfo);
             return rolePlayerPager;
         }
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
@@ -64,12 +67,12 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
 
     @Override
     public BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
-                                                    SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
+                                                       SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
         //新课件平台， roleplay也走原生
-        if(liveGetInfo.getLiveType() != 2 && "5".equals(videoQuestionLiveEntity.type)){
-            RolePlayMachinePager rolePlayerPager  = new RolePlayMachinePager(context,
+        if (liveGetInfo.getLiveType() != 2 && "5".equals(videoQuestionLiveEntity.type)) {
+            RolePlayMachinePager rolePlayerPager = new RolePlayMachinePager(context,
                     videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                    true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+                    true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack, rolePlayMachineBll, liveGetInfo);
             return rolePlayerPager;
         }
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,

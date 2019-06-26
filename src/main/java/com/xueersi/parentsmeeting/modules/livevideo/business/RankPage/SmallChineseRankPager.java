@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -69,7 +70,12 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
 //                logger.i("点击了");
 //            }
 //        });
-        dynamicChangeTopIcon();
+        try {
+            dynamicChangeTopIcon(view);
+        } catch (Exception e) {
+            logger.e(e);
+        }
+
 //        dynamicChangeRankView();
         return view;
     }
@@ -78,7 +84,7 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
     private double mag;
 
     /** 动态调整排行榜背景高度 */
-    private void dynamicChangeTopIcon() {
+    private void dynamicChangeTopIcon(View view) {
         Drawable topIconDrawable = mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_rank_top_icon);
         int topIconHeight = topIconDrawable.getIntrinsicHeight();
         int topIconWid = topIconDrawable.getIntrinsicWidth();
@@ -87,6 +93,10 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
         int ivWid = liveVideoPoint.x4 - liveVideoPoint.x3;
         double mag = ivWid * 1.0 / topIconWid;
         int ivRealHeight = (int) (mag * topIconHeight);
+        //整个布局宽度都是ivWid;
+        RelativeLayout.LayoutParams rootParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        rootParams.width = ivWid;
+        view.setLayoutParams(rootParams);
 
         ViewGroup.LayoutParams layoutParams = ivTopIcon.getLayoutParams();
         layoutParams.width = ivWid;

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/app_livevideo_enteampk_benchangchengjiu_btn_nor" android:state_checked="true" android:state_pressed="false" />
-    <item android:drawable="@drawable/app_livevideo_enteampk_benchangchengjiu_btn_click" android:state_checked="true" android:state_pressed="true" />
-    <item android:drawable="@drawable/app_livevideo_enteampk_benchangchengjiu_shouqi_btn_nor" android:state_checked="false" android:state_pressed="false" />
-    <item android:drawable="@drawable/app_livevideo_enteampk_benchangchengjiu_shouqi_btn_click" android:state_checked="false" android:state_pressed="true" />
+    <item android:drawable="@drawable/app_livevideo_enteampk_benchangchengjiu_btn_nor" android:state_checked="false" android:state_pressed="false" />
+    <item android:drawable="@drawable/app_livevideo_enteampk_benchangchengjiu_btn_click" android:state_checked="false" android:state_pressed="true" />
+    <item android:drawable="@drawable/app_livevideo_enteampk_benchangchengjiu_shouqi_btn_nor" android:state_checked="true" android:state_pressed="false" />
+    <item android:drawable="@drawable/app_livevideo_enteampk_benchangchengjiu_shouqi_btn_click" android:state_checked="true" android:state_pressed="true" />
 </selector>

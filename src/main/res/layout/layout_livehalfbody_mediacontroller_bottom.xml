@@ -6,34 +6,48 @@
     android:layout_height="match_parent"
     android:background="@color/transparent">
 
-    <LinearLayout
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTouchEventLayout
         android:id="@id/ll_livevideo_bottom_controller"
-        android:layout_width="match_parent"
+        android:layout_width="254dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="20dp"
         android:gravity="right"
         android:orientation="horizontal"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        >
 
         <Button
-            android:id="@id/bt_livevideo_message_common"
+            android:id="@id/btn_livevideo_halbody_msg_state"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="bottom"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/bg_livevideo_message_common" />
+            android:layout_marginRight="16dp"
+            android:background="@drawable/selector_live_halfbody_msgstate_open" />
 
         <Button
             android:id="@id/bt_livevideo_message_open"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/bg_livevideo_message_open"
+            android:layout_marginRight="21dp"
+            android:background="@drawable/selector_live_halfbody_msg_open" />
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/rl_livevideo_halbody_hotword"
+            android:layout_width="137dp"
+            android:layout_height="40dp"
+            android:background="@drawable/live_bg_halfbody_hotword"
+            android:paddingTop="6dp"
+            android:paddingLeft="7dp"
+            android:paddingBottom="6dp"
+            android:scrollbars="none"
+            android:overScrollMode="never"
             />
 
-     <!--   &lt;!&ndash;只是为了接入现有框架，让程序不崩溃&ndash;&gt;-->
+        <!--   &lt;!&ndash;只是为了接入现有框架，让程序不崩溃&ndash;&gt;-->
         <Button
             android:id="@id/bt_livevideo_voicechat_raise_hands"
             android:layout_width="0dp"
@@ -41,7 +55,8 @@
             android:background="@drawable/bg_livevideo_voicechat_raise_hands"
             android:visibility="gone" />
 
-    </LinearLayout>
+    </com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTouchEventLayout>
+
 
     <!--此按钮在 半身直播中 无功能，只是为了能接入目前直播框架-->
     <Button

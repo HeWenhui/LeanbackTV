@@ -1,18 +1,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@id/rl_livevideo_en_achive_pk_back"
+        android:id="@id/rl_livevideo_en_achive_pk_my"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
+        android:layout_alignLeft="@id/rl_livevideo_en_achive_pk"
+        android:layout_marginLeft="5dp">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_my_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"
             android:includeFontPadding="false"
             android:shadowColor="#b3061b40"
             android:shadowDx="0"
@@ -26,6 +27,7 @@
             android:id="@id/tv_livevideo_en_achive_pk_energy_my"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="1dp"
             android:layout_toRightOf="@id/tv_livevideo_en_achive_pk_energy_my_lable"
             android:includeFontPadding="false"
@@ -36,13 +38,21 @@
             android:text="130"
             android:textColor="#fff6b288"
             android:textSize="11sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_en_achive_pk_other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/rl_livevideo_en_achive_pk"
+        android:layout_marginRight="5dp">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_other_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"
             android:includeFontPadding="false"
             android:shadowColor="#b3061b40"
             android:shadowDx="0"
@@ -56,7 +66,7 @@
             android:id="@id/tv_livevideo_en_achive_pk_energy_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="3dp"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/tv_livevideo_en_achive_pk_energy_other_lable"
             android:includeFontPadding="false"
             android:shadowColor="#cc061b40"
@@ -64,19 +74,28 @@
             android:shadowDy="1"
             android:shadowRadius="3.0"
             android:text="100"
-            android:textColor="#ff8fd6fe"
+            android:textColor="#ff8FD6FE"
             android:textSize="11sp" />
 
     </RelativeLayout>
 
-    <ProgressBar
-        android:id="@id/pg_livevideo_en_achive_pk"
-        style="@style/ProgressBar_live_en_pk"
+    <FrameLayout
+        android:id="@id/rl_livevideo_en_achive_pk"
         android:layout_width="145dp"
-        android:layout_height="17dp"
-        android:layout_below="@id/rl_livevideo_en_achive_pk_back"
+        android:layout_height="20dp"
+        android:layout_below="@id/rl_livevideo_en_achive_pk_my"
         android:layout_centerHorizontal="true"
-        android:max="100"
-        android:progress="50" />
+        android:clipChildren="false">
+
+        <ProgressBar
+            android:id="@id/pg_livevideo_en_achive_pk"
+            style="@style/ProgressBar_live_en_pk"
+            android:layout_width="145dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="-3dp"
+            android:max="100"
+            android:progress="50" />
+
+    </FrameLayout>
 
 </RelativeLayout>

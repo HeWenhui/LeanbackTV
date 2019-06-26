@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
@@ -14,46 +16,47 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.utils.Log;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
-import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TeacherAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessageReg;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -65,51 +68,73 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Created by lyqai on 2018/6/26.
- */
+//import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 
-public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction {
+/**
+ * Created by linyuqiang on 2018/6/26.
+ * 直播聊天
+ */
+public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction, TeacherAction {
     private final String TAG = "LiveIRCMessageBll";
-    Logger loger = LoggerFactory.getLogger(TAG);
-    /** 主讲老师前缀 */
-    public static final String TEACHER_PREFIX = "t_";
-    /** 辅导老师前缀 */
-    public static String COUNTTEACHER_PREFIX = "f_";
 
     private int mLiveType;
     private LogToFile mLogtf;
-    final Object lock = new Object();
-    /** 是不是有分组 */
+    private final Object lock = new Object();
+    /**
+     * 是不是有分组
+     */
     private boolean haveTeam = false;
-    private long blockTime;
     private LiveTopic mLiveTopic = new LiveTopic();
-    /** 主讲老师 */
+    /**
+     * 主讲老师
+     */
     private Teacher mMainTeacher;
-    /** 主讲教师名字 */
+    /**
+     * 主讲教师名字
+     */
     private String mMainTeacherStr = null;
-    /** 辅导教师 */
+    /**
+     * 辅导教师
+     */
     private Teacher mCounteacher;
-    /** 辅导教师IRC */
+    /**
+     * 辅导教师IRC
+     */
     private String mCounTeacherStr = null;
     private VideoAction mVideoAction;
-    /** 智能私信业务 */
+    /**
+     * 智能私信业务
+     */
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private LiveMessageBll mRoomAction;
-    /** 星星互动 */
-    private LiveAchievementIRCBll starAction;
+    /**
+     * 星星互动
+     */
+//    private LiveAchievementIRCBll starAction;
+    private ArrayList<SendMessageReg.OnSendMsg> onSendMsgs = new ArrayList<>();
     private LiveHttpManager mHttpManager;
-    private String mLiveId;
     private LiveHttpResponseParser mHttpResponseParser;
 
     public LiveIRCMessageBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+        liveBll.setTeacherAction(this);
         this.mLiveType = liveBll.getLiveType();
-        mLiveId = liveBll.getLiveId();
         mLogtf = new LogToFile(context, TAG);
         mRoomAction = new LiveMessageBll(context, mLiveType);
+        putInstance(SendMessageReg.class, new SendMessageReg() {
+            @Override
+            public void addOnSendMsg(OnSendMsg onSendMsg) {
+                onSendMsgs.add(onSendMsg);
+            }
+
+            @Override
+            public void removeOnSendMsg(OnSendMsg onSendMsg) {
+                onSendMsgs.remove(onSendMsg);
+            }
+        });
     }
 
     @Override
@@ -120,7 +145,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mVideoAction = getInstance(VideoAction.class);
         mHttpResponseParser = mLiveBll.getHttpResponseParser();
         mHttpManager = mLiveBll.getHttpManager();
-        starAction = getInstance(LiveAchievementIRCBll.class);
+//        starAction = getInstance(LiveAchievementIRCBll.class);
 //        mRoomAction.setQuestionBll(getInstance(QuestionBll.class));
         VideoChatStatusChange videoChatStatusChange = getInstance(VideoChatStatusChange.class);
         if (videoChatStatusChange != null) {
@@ -147,12 +172,21 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 mRoomAction.onTitleShow(show);
             }
         });
+        mRoomAction.setLiveBll(new LiveIRCState());
+        BaseLiveMediaControllerTop controllerTop = getInstance(BaseLiveMediaControllerTop.class);
+        setLiveMediaControllerTop(controllerTop);
+        BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = getInstance(BaseLiveMediaControllerBottom.class);
+        setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
 
-    public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
-        mRoomAction.setLiveBll(new LiveIRCState());
+    private void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         mRoomAction.setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
+
+    private void setLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
+        mRoomAction.setBaseLiveMediaControllerTop(controllerTop);
+    }
+
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
@@ -166,20 +200,38 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mCounteacher = new Teacher(mGetInfo.getTeacherName());
         mRoomAction.setLiveGetInfo(getInfo);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            if (getInfo.getPattern() == 2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
+            if (getInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initViewLiveStand(mRootView);
-            } else if(getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
-                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode())){
+            } else if ((getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY || getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS)
+                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initHalfBodyLive(mRootView);
             } else {
                 mRoomAction.initViewLive(mRootView);
             }
         }
+        //中学连对激励系统，教师广播发送学报消息
+        if (getInfo.getIsOpenNewCourseWare() == 1) {
+            getHttpManager().getEvenLikeData(
+//                "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
+                    mGetInfo.getGetEvenPairListUrl(),
+                    mGetInfo.getStudentLiveInfo().getClassId(),
+                    mGetInfo.getId(),
+                    mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+                            mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+                        }
+                    });
+        }
     }
+
+    String currentMode;
 
     @Override
     public void onModeChange(final String oldMode, final String mode, boolean isPresent) {
-        mHandler.post(new Runnable() {
+        this.currentMode = mode;
+        post(new Runnable() {
             @Override
             public void run() {
                 //理科，主讲和辅导切换的时候，给出提示（切流）
@@ -189,7 +241,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             .isZJLKOpenbarrage(), mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
                     //mRoomAction.onTeacherModeChange(mode,false);
                 }
-                if (mGetInfo.getPattern() == 2) {
+                if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
                     View view = mRoomAction.getView();
                     if (view != null) {
                         view.setVisibility(View.INVISIBLE);
@@ -202,11 +254,16 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
                     }
-                }else if(mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY){
+                } else if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY || mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
                     //延迟 2.5 秒 走相关逻辑(适配转场动画 节奏)
-                    mHandler.postDelayed(new Runnable() {
+                    final String finalMode = mode;
+                    postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            logger.d("onModeChange:currentMode=" + currentMode + ",finalMode=" + finalMode);
+                            if (!currentMode.equals(finalMode)) {
+                                return;
+                            }
                             View view = mRoomAction.getView();
                             if (view != null) {
                                 view.setVisibility(View.INVISIBLE);
@@ -222,7 +279,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                 view.setVisibility(View.VISIBLE);
                             }
                         }
-                    },2500);
+                    }, 2500);
                 }
             }
         });
@@ -281,7 +338,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     }
                 }
             } catch (JSONException e) {
-                loger.e("onPrivateMessage", e);
+                logger.e("onPrivateMessage", e);
             }
         }
         if (mRoomAction != null) {
@@ -308,7 +365,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             User user = users[i];
             String _nick = user.getNick();
             if (_nick != null && _nick.length() > 2) {
-                if (_nick.startsWith(TEACHER_PREFIX)) {
+                if (_nick.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
                     s += ",mainTeacher=" + _nick;
                     haveMainTeacher = true;
                     synchronized (lock) {
@@ -319,7 +376,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             && mVideoAction != null) {
                         mVideoAction.onTeacherQuit(false);
                     }
-                } else if (_nick.startsWith(COUNTTEACHER_PREFIX)) {
+                } else if (_nick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
                     mCounTeacherStr = _nick;
                     haveCounteacher = true;
                     mCounteacher.isLeave = false;
@@ -356,7 +413,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
     }
 
-    /** 是不是自己组的人 */
+    /**
+     * 是不是自己组的人
+     */
     private boolean isMyTeam(String sender) {
         boolean isMyTeam = true;
         ArrayList<String> teamStuIds = mGetInfo.getTeamStuIds();
@@ -380,7 +439,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
         logger.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
-        if (sender.startsWith(TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             synchronized (lock) {
                 mMainTeacher = new Teacher(sender);
                 mMainTeacherStr = sender;
@@ -389,7 +448,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
                 mVideoAction.onTeacherQuit(false);
             }
-        } else if (sender.startsWith(COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             mCounTeacherStr = sender;
             mCounteacher.isLeave = false;
             mLogtf.d("onJoin:Counteacher:target=" + target + ",mode=" + mLiveTopic.getMode());
@@ -414,7 +473,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
         logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                 + sourceHostname + ",reason=" + reason);
-        if (sourceNick.startsWith(TEACHER_PREFIX)) {
+        if (sourceNick.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             synchronized (lock) {
                 mMainTeacher = null;
             }
@@ -422,7 +481,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && mVideoAction != null) {
                 mVideoAction.onTeacherQuit(true);
             }
-        } else if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
+        } else if (sourceNick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             mCounteacher.isLeave = true;
             mLogtf.d("onQuit:Counteacher quit");
             if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode()) && mVideoAction != null) {
@@ -472,6 +531,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         String msg = "onNotice";
+        logger.i("收到指令" + type);
         switch (type) {
             case XESCODE.OPENBARRAGE: {
                 try {
@@ -510,7 +570,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     }
                 } catch (Exception e) {
-                    loger.e("onNotice:OPENBARRAGE", e);
+                    logger.e("onNotice:OPENBARRAGE", e);
                 }
                 //getLearnReport();
                 break;
@@ -521,7 +581,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     boolean disable = object.getBoolean("disable");
                     //s_3_13827_11022_1
                     String id = object.getString("id");
-                    if (("" + id).contains(mLiveBll.getNickname())) {
+                    if (("" + id).endsWith(mLiveBll.getNickname()) || mLiveBll.getNickname().endsWith("" + id)) {
                         mLiveTopic.setDisable(disable);
                         if (mRoomAction != null) {
                             mRoomAction.onDisable(disable, true);
@@ -534,7 +594,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     }
                     msg += ",disable=" + disable + ",id=" + id + "," + mLiveBll.getNickname();
                 } catch (Exception e) {
-                    loger.e("onNotice:GAG", e);
+                    logger.e("onNotice:GAG", e);
                 }
             }
             break;
@@ -559,7 +619,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     }
                 } catch (Exception e) {
-                    loger.e("onNotice:OPENCHAT", e);
+                    logger.e("onNotice:OPENCHAT", e);
                 }
             }
             break;
@@ -588,7 +648,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     }
                 } catch (Exception e) {
-                    loger.e("TEACHER_MESSAGE", e);
+                    logger.e("TEACHER_MESSAGE", e);
                 }
                 break;
             case XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE: {
@@ -671,30 +731,280 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.SENDQUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
+                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                    userLikeList.clear();
+                    isMiddleScienceEvenDriveH5Open = true;
+                }
                 break;
-            }case XESCODE.STOPQUESTION: {
+            }
+            case XESCODE.STOPQUESTION: {
                 mRoomAction.onOpenVoiceNotic(false, "STOPQUESTION");
+//                getHttpManager().getEvenLikeData(
+////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
+//                        mGetInfo.getGetEvenPairListUrl(),
+//                        mGetInfo.getStudentLiveInfo().getClassId(),
+//                        mGetInfo.getId(),
+//                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+//                            @Override
+//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+//                            }
+//                        });
+                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                    isMiddleScienceEvenDriveH5Open = false;
+                    endTime = System.currentTimeMillis();
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getHttpManager().getEvenPairInfo(
+                                    mGetInfo.getStudentLiveInfo().getClassId(),
+                                    mGetInfo.getId(),
+                                    mGetInfo.getStudentLiveInfo().getTeamId(),
+                                    mGetInfo.getStuId(),
+                                    new HttpCallBack() {
+                                        @Override
+                                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                                            mRoomAction.setEvenNum(
+                                                    jsonObject.optString("evenPairNum"),
+                                                    jsonObject.optString("highestRightNum")
+                                            );
+                                        }
+                                    }
+                            );
+                        }
+                    }, 5000);
+                }
                 break;
             }
             case XESCODE.ARTS_SEND_QUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "ARTS_SEND_QUESTION");
                 break;
-            } case XESCODE.ARTS_STOP_QUESTION: {
+            }
+            case XESCODE.ARTS_STOP_QUESTION: {
                 mRoomAction.onOpenVoiceNotic(false, "ARTS_STOP_QUESTION");
                 break;
             }
             case XESCODE.EXAM_START: {
                 mRoomAction.onOpenVoiceNotic(true, "EXAM_START");
                 break;
-            } case XESCODE.EXAM_STOP: {
+            }
+            case XESCODE.EXAM_STOP: {
                 mRoomAction.onOpenVoiceNotic(false, "EXAM_STOP");
+//                getHttpManager().getEvenLikeData(
+////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
+//                        mGetInfo.getGetEvenPairListUrl(),
+//                        mGetInfo.getStudentLiveInfo().getClassId(),
+//                        mGetInfo.getId(),
+//                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+//                            @Override
+//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+//                            }
+//                        });
+                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getHttpManager().getEvenPairInfo(
+                                    mGetInfo.getStudentLiveInfo().getClassId(),
+                                    mGetInfo.getId(),
+                                    mGetInfo.getStudentLiveInfo().getTeamId(),
+                                    mGetInfo.getStuId(),
+                                    new HttpCallBack() {
+                                        @Override
+                                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                                            mRoomAction.setEvenNum(
+                                                    jsonObject.optString("evenPairNum"),
+                                                    jsonObject.optString("highestRightNum")
+                                            );
+                                        }
+                                    }
+                            );
+                        }
+                    }, 5000);
+                }
                 break;
             }
+            case XESCODE.MULTIPLE_H5_COURSEWARE: {
+                boolean isOpen = object.optBoolean("open");
+                //
+
+                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                    if (!isOpen) {
+                        //老师收题之后，更新聊天区连对榜
+//                    getHttpManager().getEvenLikeData(
+////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
+//                            mGetInfo.getGetEvenPairListUrl(),
+//                            mGetInfo.getStudentLiveInfo().getClassId(),
+//                            mGetInfo.getId(),
+//                            mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+//                                @Override
+//                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                                    EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                    mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+//                                }
+//                            });
+                        postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                getHttpManager().getEvenPairInfo(
+                                        mGetInfo.getStudentLiveInfo().getClassId(),
+                                        mGetInfo.getId(),
+                                        mGetInfo.getStudentLiveInfo().getTeamId(),
+                                        mGetInfo.getStuId(),
+                                        new HttpCallBack() {
+                                            @Override
+                                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                                                mRoomAction.setEvenNum(
+                                                        jsonObject.optString("evenPairNum"),
+                                                        jsonObject.optString("highestRightNum")
+                                                );
+                                            }
+                                        }
+                                );
+                            }
+                        }, 5000);
+                        //设置结束时间，判断是否显示XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT点赞消息
+                        endTime = System.currentTimeMillis();
+//                    isHasReceiveLike = false;
+                        isMiddleScienceEvenDriveH5Open = false;
+                    } else {
+                        userLikeList.clear();
+//                    isHasReceiveLike = false;
+                        isMiddleScienceEvenDriveH5Open = true;
+                    }
+                }
+                break;
+            }
+            case XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT: {
+                //点赞
+                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                    logger.i("receive Appreciate message");
+                    String senderId = object.optString("from");
+                    if (isInLikeTime() && !userLikeList.contains(senderId)) {
+                        String likeSender = object.optString("stuName");
+                        logger.i(likeSender + " Appreciate you just now");
+                        mRoomAction.addMessage("", LiveMessageEntity.EVEN_DRIVE_LIKE, likeSender + " 刚刚赞了你");
+                        userLikeList.add(senderId);
+//                    isHasReceiveLike = true;
+                    } else {
+                        logger.i("超过时间或者senderId重复");
+                    }
+                }
+//                logger.i("获取学报");
+//                getHttpManager().getJournalUrl(
+//                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/getJournal",
+////                        mGetInfo.getGetJournalUrl(),
+//                        mGetInfo.getStudentLiveInfo().getClassId(),
+//                        mGetInfo.getId(),
+//                        mGetInfo.getStudentLiveInfo().getTeamId(),
+//                        mGetInfo.getStuId(),
+//                        new HttpCallBack() {
+//                            @Override
+//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+//                                String message = jsonObject.getString("message");
+//                                logger.i(message);
+//                                if (!TextUtils.isEmpty(message)) {
+//                                    mRoomAction.addMessage("提示", LiveMessageEntity.EVEN_DRIVE_REPORT, message);
+//                                }
+//                            }
+//                        });
+//
+//
+//                //中学连对激励系统，教师广播发送学报消息
+//                logger.i("中学连对激励系统，教师广播发送学报消息");
+//                getHttpManager().getEvenLikeData(
+////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
+//                        mGetInfo.getGetEvenPairListUrl(),
+//                        mGetInfo.getStudentLiveInfo().getClassId(),
+//                        mGetInfo.getId(),
+//                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+//                            @Override
+//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+//                            }
+//                        });
+
+                break;
+            }
+            case XESCODE.EvenDrive.BROADCAST_STUDY_REPORT: {
+                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                    //获取学报
+                    logger.i("获取学报");
+                    //中学连对激励系统，教师广播发送学报消息
+                    logger.i("中学连对激励系统，教师广播发送学报消息");
+
+                    getHttpManager().getJournalUrl(
+//                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/getJournal",
+                            mGetInfo.getGetJournalUrl(),
+                            mGetInfo.getStudentLiveInfo().getClassId(),
+                            mGetInfo.getId(),
+                            mGetInfo.getStudentLiveInfo().getTeamId(),
+                            mGetInfo.getStuId(),
+                            new HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                                    String message = jsonObject.getString("message");
+                                    if (!TextUtils.isEmpty(message)) {
+                                        mRoomAction.addMessage("提示", LiveMessageEntity.EVEN_DRIVE_REPORT, message);
+                                    }
+                                }
+                            });
+//                getHttpManager().getEvenLikeData(
+////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
+//                        mGetInfo.getGetEvenPairListUrl(),
+//                        mGetInfo.getStudentLiveInfo().getClassId(),
+//                        mGetInfo.getId(),
+//                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+//                            @Override
+//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+//                            }
+//                        });
+                }
+                break;
+            }
+
             default:
                 break;
         }
         mLogtf.d(msg);
     }
+
+    /** 列表，用户点赞列表 */
+    private List<String> userLikeList = new CopyOnWriteArrayList<>();
+
+    /**
+     * 是否在点赞时间里面
+     * 现在点赞消息是在  发题至收题后15s.
+     *
+     * @return
+     */
+    private boolean isInLikeTime() {
+        long nowTime = System.currentTimeMillis();
+        logger.i("isMiddleScienceH5Open " + isMiddleScienceEvenDriveH5Open);
+        return (isMiddleScienceEvenDriveH5Open || (((nowTime - endTime) < TIME_SEND_PRIVATE_MSG)));
+    }
+
+    //当前互动题是否处于打开状态(用来判断中学连对激励是否显示点赞消息)
+    private boolean isMiddleScienceEvenDriveH5Open = false;
+    /**
+     * 中学激励系统，15s内来判断是否显示点赞消息
+     */
+    protected final long TIME_SEND_PRIVATE_MSG = 15 * 1000;
+    //中学激励系统，收题时间,判断是否在15s内来决定点赞
+    private long endTime;
+    //中学激励系统，这段时间是否接收过点赞消息,一道题目只显示一次点赞消息
+//    private boolean isHasReceiveLike = false;
 
     @Override
     public int[] getNoticeFilter() {
@@ -702,7 +1012,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 XESCODE.OPENBARRAGE, XESCODE.GAG, XESCODE.OPENCHAT, XESCODE.TEACHER_MESSAGE, XESCODE.START_MICRO,
                 XESCODE.ARTS_WORD_DICTATION, XESCODE.RAISE_HAND, XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE, XESCODE
                 .RAISE_HAND_SELF, XESCODE.ENGLISH_H5_COURSEWARE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.SENDQUESTION,
-                XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START,XESCODE.STOPQUESTION,XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION
+                XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START, XESCODE.STOPQUESTION, XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION,
+                XESCODE.EvenDrive.BROADCAST_STUDY_REPORT, XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT, XESCODE.MULTIPLE_H5_COURSEWARE
         };
     }
 
@@ -711,10 +1022,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         List<String> disableSpeaking = liveTopic.getDisableSpeaking();
         boolean forbidSendMsg = false;
         for (String id : disableSpeaking) {
-            if (("" + id).contains(mLiveBll.getNickname())) {
+            if (("" + id).endsWith(mLiveBll.getNickname()) || mLiveBll.getNickname().endsWith("" + id)) {
                 forbidSendMsg = true;
             }
         }
+
         liveTopic.setDisable(forbidSendMsg);
         if (mRoomAction != null) {
             try {
@@ -768,30 +1080,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.onTitleShow(show);
     }
 
-    public static String goldNum;
-    public static long goldNumTime;
-
-    public static void requestGoldTotal(Context mContext) {
-        long time = System.currentTimeMillis() - goldNumTime;
-        Loger.d("LiveIRCMessageBll", "requestGoldTotal:goldNum=" + goldNum + ",time=" + time);
-        if (goldNum == null || time > 120000) {
-            OtherModulesEnter.requestGoldTotal(mContext);
-        } else {
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    AppEvent.OnGetGoldUpdateEvent event = new AppEvent.OnGetGoldUpdateEvent(goldNum);
-                    EventBus.getDefault().post(event);
-                }
-            });
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.OnGetGoldUpdateEvent event) {
-        LiveIRCMessageBll.goldNum = event.goldNum;
-        LiveIRCMessageBll.goldNumTime = System.currentTimeMillis();
+        UserGoldTotal.goldNum = event.goldNum;
+        UserGoldTotal.goldNumTime = System.currentTimeMillis();
         mRoomAction.onGetMyGoldDataEvent(event.goldNum);
     }
 
@@ -882,8 +1174,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         jsonObject.put("to", teamId);
                     }
                     sendMessage = mLiveBll.sendMessage(jsonObject);
-                    if (starAction != null) {
-                        starAction.onSendMsg(msg);
+                    for (int i = 0; i < onSendMsgs.size(); i++) {
+                        try {
+                            onSendMsgs.get(i).onSendMsg(msg);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
                     }
                 } catch (Exception e) {
                     // logger.e( "understand", e);
@@ -908,7 +1204,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             if (responseEntity.getJsonObject() instanceof JSONObject) {
                                 try {
                                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                                    if (mGetInfo.getIsArts() == 0) {
+                                    if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
                                         sendFlowerMessage(jsonObject.getInt("type"), formWhichTeacher);
                                     } else {
                                         sendFlowerMessage(jsonObject.getInt("type"));
@@ -980,35 +1276,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         return isPresent;
     }
 
-    public Teacher getCounteacher() {
-        return mCounteacher;
-    }
-
-    public Teacher getMainTeacher() {
-        return mMainTeacher;
-    }
-
     public String getmMainTeacherStr() {
         return mMainTeacherStr;
     }
 
     public String getmCounTeacherStr() {
         return mCounTeacherStr;
-    }
-
-    /**
-     * 得到老师名字
-     */
-    public String getModeTeacher(String mode) {
-        String mainnick = "null";
-        if (mMainTeacher != null) {
-            mainnick = mMainTeacher.get_nick();
-        }
-        if (mCounteacher == null) {
-            return "mode=" + mode + ",mainnick=" + mainnick + ",coun=null";
-        } else {
-            return "mode=" + mode + ",mainnick=" + mainnick + ",coun.isLeave=" + mCounteacher.isLeave;
-        }
     }
 
     /**
@@ -1060,6 +1333,35 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     public void onDestory() {
         super.onDestory();
         mRoomAction.onDestroy();
+        onSendMsgs.clear();
         EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * 中学激励系统,用户关闭页面后，更新连天区的信息
+     *
+     * @param evenDriveEvent
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getEvenDrive(EvenDriveEvent evenDriveEvent) {
+        if (evenDriveEvent.getStatus() == EvenDriveEvent.CLOSE_H5
+                && mGetInfo.getIsOpenNewCourseWare() == 1) {
+            //老师收题之后，更新聊天区连对榜
+            getHttpManager().getEvenLikeData(
+//                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
+                    mGetInfo.getGetEvenPairListUrl(),
+                    mGetInfo.getStudentLiveInfo().getClassId(),
+                    mGetInfo.getId(),
+                    mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+                            mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+                        }
+                    });
+            //设置结束时间，判断是否显示XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT点赞消息
+//            endTime = System.currentTimeMillis();
+//            isHasReceiveLike = false;
+        }
     }
 }

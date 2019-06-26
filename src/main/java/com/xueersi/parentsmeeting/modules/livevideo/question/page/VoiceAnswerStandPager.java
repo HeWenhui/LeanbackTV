@@ -22,15 +22,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -43,20 +46,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.LiveStandQuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.EngForceSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
@@ -146,6 +147,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
      * 是不是用户切换答题
      */
     boolean userSwitch = false;
+    /** 是不是新课件 */
+    private final boolean isNewArts;
     String type;
     ScoreAndIndex lastMaxScoreAndIndex = null;
     int netWorkType = NetWorkHelper.WIFI_STATE;
@@ -160,10 +163,13 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     LiveSoundPool liveSoundPool;
     /** 当前答题结果 */
     private AnswerResultEntity mAnswerReulst;
+    private VideoQuestionLiveEntity mDetail;
 
     public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, String headUrl, String userName) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
+        this.mDetail = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+        isNewArts = mDetail.isNewArtsH5Courseware();
         this.questionSwitch = questionSwitch;
         this.type = type;
         this.assess_ref = assess_ref;
@@ -212,6 +218,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //                }
                 if (mIse == null) {
                     mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                    mIse.prepar();
                 }
                 rgivStandReadygo.setAnimationListener(new FrameAnimation.AnimationListener() {
                     @Override
@@ -440,6 +447,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //        tvSpeectevalTip.setText("语音输入有点小问题，\n先手动答题哦（1131)");
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             long before;
+
             @Override
             public void onViewAttachedToWindow(View view) {
                 logger.d("onViewAttachedToWindow");
@@ -483,7 +491,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
                         @Override
                         public void onAnimationEnd() {
-                            boolean switchQuestion = switchQuestion("");
+                            boolean switchQuestion = switchQuestion("onAnimationEnd");
                             if (!switchQuestion) {
                                 ivVoiceansSwitch.setClickable(true);
                             }
@@ -681,26 +689,40 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     VoiceEvaluatorListener listener = new VoiceEvaluatorListener();
 
     private void onEvaluatorError(final ResultEntity resultEntity) {
-        mLogtf.d("onEvaluatorError:userSwitch=" + userSwitch + ",userBack=" + userBack + ",isEnd=" + isEnd);
+        mLogtf.d("onEvaluatorError:userSwitch=" + userSwitch + ",userBack=" + userBack + ",isEnd=" + isEnd + ",errorNo=" + resultEntity.getErrorNo());
         isSpeechError = true;
         if (userSwitch || userBack) {
             return;
         }
         if (isEnd) {
-            VideoResultEntity entity = new VideoResultEntity();
-            if (LiveVideoConfig.isNewArts) {
-                entity.setResultType(0);
+            //语音答题也强制提交
+            //LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type)
+            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type)) {
+                submitQuestionSelect("", false, resultEntity.getSpeechDuration());
             } else {
-                entity.setResultType(VideoResultEntity.QUE_RES_TYPE2);
-            }
-            entity.setStandardAnswer(answer);
-            questionSwitch.onAnswerTimeOutError(baseVideoQuestionEntity, entity);
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
+                try {
+                    JSONArray options = assess_ref.getJSONArray("options");
+                    JSONObject jsonObject = options.getJSONObject(0);
+                    JSONArray content1 = jsonObject.getJSONArray("content");
+                    submitQuestionBlack(content1.getString(0), "", false, resultEntity.getSpeechDuration());
+                } catch (Exception e) {
+                    mLogtf.e("onEvaluatorError:submitQuestionBlack", e);
                 }
-            }, 3000);
+            }
+//            VideoResultEntity entity = new VideoResultEntity();
+//            if (LiveVideoConfig.isNewArts) {
+//                entity.setResultType(0);
+//            } else {
+//                entity.setResultType(VideoResultEntity.QUE_RES_TYPE2);
+//            }
+//            entity.setStandardAnswer(answer);
+//            questionSwitch.onAnswerTimeOutError(baseVideoQuestionEntity, entity);
+//            mView.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
+//                }
+//            }, 3000);
             return;
         }
         if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode
@@ -833,63 +855,13 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         questionSwitch.uploadVoiceFile(saveVideoFile);
                         isSpeechSuccess = true;
                         boolean isRight = option.equalsIgnoreCase(answer);
-                        questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
-                            @Override
-                            public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                                if (entity != null) {
-                                    entity.setYourAnswer(option);
-                                    entity.setStandardAnswer(answer);
-                                    ivLivevideoSpeectevalWave.setVisibility(View.INVISIBLE);
-                                    onCommit(entity, resultEntity.getSpeechDuration());
-                                }
-                            }
-
-                            @Override
-                            public void onAnswerFailure() {
-                                isSpeechSuccess = false;
-                                if (isEnd) {
-                                    questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
-                                } else {
-                                    ivVoiceansSwitch.setVisibility(View.VISIBLE);
-//                                    errorSetVisible();
-//                                    tvSpeectevalTip.setText("提交失败，请重读");
-//                                    tvSpeectevalTip.setTag("7");
-                                    XESToastUtils.showToast(mContext, "提交失败，请重读");
-                                    mView.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            rlSpeectevalTipGone();
-                                        }
-                                    }, 1500);
-                                    logger.d("onResult(SUCCESS):onAnswerFailure");
-                                    mView.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            startEvaluator();
-                                        }
-                                    }, 200);
-                                }
-                            }
-                        });
+                        submitQuestionSelect(option, isRight, resultEntity.getSpeechDuration());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 } else {
                     if (isEnd) {
-                        VideoResultEntity entity = new VideoResultEntity();
-                        if (LiveVideoConfig.isNewArts) {
-                            entity.setResultType(0);
-                        } else {
-                            entity.setResultType(VideoResultEntity.QUE_RES_TYPE2);
-                        }
-                        entity.setStandardAnswer(answer);
-                        questionSwitch.onAnswerTimeOutError(baseVideoQuestionEntity, entity);
-                        mView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
-                            }
-                        }, 3000);
+                        submitQuestionSelect("", false, resultEntity.getSpeechDuration());
                     } else {
 //                        XESToastUtils.showToast(mContext, "重读");
                         errorSetVisible();
@@ -944,39 +916,86 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                     ivVoiceansSwitch.setVisibility(View.GONE);
                     questionSwitch.uploadVoiceFile(saveVideoFile);
                     isSpeechSuccess = true;
-                    questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, content1.getString(0), content1.getString(0), 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
-                        @Override
-                        public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                            if (entity != null) {
-                                entity.setStandardAnswer(answer);
-                                ivLivevideoSpeectevalWave.setVisibility(View.INVISIBLE);
-                                onCommit(entity, resultEntity.getSpeechDuration());
-                            }
-                        }
-
-                        @Override
-                        public void onAnswerFailure() {
-                            isSpeechSuccess = false;
-                            if (isEnd) {
-                                questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
-                            } else {
-                                ivVoiceansSwitch.setVisibility(View.VISIBLE);
-                                XESToastUtils.showToast(mContext, "提交失败，请重读");
-                                logger.d("onResult(SUCCESS):onAnswerFailure");
-                                mView.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        startEvaluator();
-                                    }
-                                }, 200);
-                            }
-                        }
-                    });
+                    submitQuestionBlack(content1.getString(0), content1.getString(0), isRight, resultEntity.getSpeechDuration());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    private void submitQuestionSelect(final String option, boolean isRight, final double speechDuration) {
+        String isSubmit = EngForceSubmit.getSubmit(isNewArts, isEnd);
+        questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer, option, 1, isRight, speechDuration, isSubmit, new QuestionSwitch.OnAnswerReslut() {
+            @Override
+            public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+                if (entity != null) {
+                    entity.setYourAnswer(option);
+                    entity.setStandardAnswer(answer);
+                    ivLivevideoSpeectevalWave.setVisibility(View.INVISIBLE);
+                    onCommit(entity, speechDuration);
+                }
+            }
+
+            @Override
+            public void onAnswerFailure() {
+                isSpeechSuccess = false;
+                if (isEnd) {
+                    questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
+                } else {
+                    ivVoiceansSwitch.setVisibility(View.VISIBLE);
+//                                    errorSetVisible();
+//                                    tvSpeectevalTip.setText("提交失败，请重读");
+//                                    tvSpeectevalTip.setTag("7");
+                    XESToastUtils.showToast(mContext, "提交失败，请重读");
+                    mView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            rlSpeectevalTipGone();
+                        }
+                    }, 1500);
+                    logger.d("onResult(SUCCESS):onAnswerFailure");
+                    mView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startEvaluator();
+                        }
+                    }, 200);
+                }
+            }
+        });
+    }
+
+    private void submitQuestionBlack(final String answer, final String result, boolean isRight, final double speechDuration) {
+        String isSubmit = EngForceSubmit.getSubmit(isNewArts, isEnd);
+        questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer, result, 1, isRight, speechDuration, isSubmit, new QuestionSwitch.OnAnswerReslut() {
+            @Override
+            public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+                if (entity != null) {
+                    entity.setStandardAnswer(answer);
+                    ivLivevideoSpeectevalWave.setVisibility(View.INVISIBLE);
+                    onCommit(entity, speechDuration);
+                }
+            }
+
+            @Override
+            public void onAnswerFailure() {
+                isSpeechSuccess = false;
+                if (isEnd) {
+                    questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
+                } else {
+                    ivVoiceansSwitch.setVisibility(View.VISIBLE);
+                    XESToastUtils.showToast(mContext, "提交失败，请重读");
+                    logger.d("onResult(SUCCESS):onAnswerFailure");
+                    mView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startEvaluator();
+                        }
+                    }, 200);
+                }
+            }
+        });
     }
 
     @Override
@@ -1113,9 +1132,9 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             InputStream inputStream = null;
             try {
                 if (isMe) {
-                    inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_11.png");
+                    inputStream = AssertUtil.open("live_stand/lottie/voice_answer/team_right/img_11.png");
                 } else {
-                    inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_1.png");
+                    inputStream = AssertUtil.open("live_stand/lottie/voice_answer/team_right/img_1.png");
                 }
                 Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                 Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
@@ -1133,7 +1152,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 canvas.drawText(name, headBack.getWidth() / 2 - width / 2, headBack.getHeight() / 2 + paint.measureText("a") / 2, paint);
                 lottieAnimationView.updateBitmap("image_1", creatBitmap);
                 headBack.recycle();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 if (inputStream != null) {
@@ -1155,7 +1174,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "updateHead", student.getAvatar_path());
                         InputStream inputStream = null;
                         try {
-                            inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_2.png");
+                            inputStream = AssertUtil.open("live_stand/lottie/voice_answer/team_right/img_2.png");
                             Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                             Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                             Canvas canvas = new Canvas(creatBitmap);
@@ -1172,7 +1191,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             scalHeadBitmap.recycle();
                             lottieAnimationView.updateBitmap("image_2", creatBitmap);
                             headBack.recycle();
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         } finally {
                             if (inputStream != null) {

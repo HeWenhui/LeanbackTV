@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.MidToast;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
@@ -225,7 +226,7 @@ public class ChatTipBll {
                     VideoAudioChatLog.cancelRaiseHandSno6(liveAndBackDebug, linkmicid, micType == 0 ? "audio" : "video", linkMicNonce);
                 }
                 isConnect = true;
-                raisehandClick();
+                raisehandClick(true);
             }
         });
         tv_livevideo_chat_people = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people);
@@ -277,7 +278,7 @@ public class ChatTipBll {
             RelativeLayout relativeLayout = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand2);
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) relativeLayout.getLayoutParams();
             lp.leftMargin = (int) (15 * ScreenUtils.getScreenDensity());
-            relativeLayout.setLayoutParams(lp);
+            LayoutParamsUtil.setViewLayoutParams(relativeLayout, lp);
         }
     }
 
@@ -400,11 +401,11 @@ public class ChatTipBll {
         });
     }
 
-    private void raisehandClick() {
+    private void raisehandClick(boolean addRaise) {
         haveRaisehand = true;
         boolean oldRaisehand = raisehand;
         if (!raisehand) {
-            raisehand(msgFrom);
+            raisehand(addRaise, msgFrom);
             if ("off".equals(onMic)) {
                 rl_livevideo_chat_raisehand_on.setVisibility(View.VISIBLE);
                 rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
@@ -418,16 +419,22 @@ public class ChatTipBll {
         }
         changeRaisehand(!raisehand);
         raisehand = !oldRaisehand;
-        logger.d("raisehandClick:raisehand=" + raisehand);
+        logToFile.d("raisehandClick:raisehand=" + raisehand + ",addRaise=" + addRaise);
     }
 
-    private void raisehand(final String from) {
+    private void raisehand(final boolean addRaise, final String from) {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 String nonce = StableLogHashMap.creatNonce();
-                getInfo.setStuPutUpHandsNum(stuPutUpHandsNum + 1);
+                if (addRaise) {
+                    stuPutUpHandsNum++;
+                }
+                getInfo.setStuPutUpHandsNum(stuPutUpHandsNum);
                 videoChatHttp.requestMicro(nonce, room, from);
+                if (!addRaise) {
+                    return;
+                }
                 final long before = SystemClock.elapsedRealtime();
                 videoChatHttp.chatHandAdd(new HttpCallBack(false) {
                     @Override
@@ -551,7 +558,7 @@ public class ChatTipBll {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    raisehandClick();
+                    raisehandClick(false);
                 }
             });
         }

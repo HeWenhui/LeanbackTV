@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -22,18 +21,20 @@ import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
-import com.xueersi.lib.framework.utils.ZipExtractorTask;
-import com.xueersi.lib.framework.utils.ZipProg;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsMoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ZipProg;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -103,10 +104,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
         this.liveId = mGetInfo.getId();
         this.mGetInfo = mGetInfo;
-        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
-        if (cacheFile == null) {
-            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
-        }
+        cacheFile = LiveCacheFile.geCacheFile(context, "webviewCache");
 //        cacheFile = new File(context.getCacheDir(), "cache/webviewCache");
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
@@ -292,14 +290,23 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
         }
+        boolean isNewPreLoad = ((Activity) context).getIntent().getBooleanExtra("newCourse", false);
         // 一次多发的接口调用
-        if (LiveVideoConfig.isScience) {
-            ScienceMulPreDownLoad(todayLiveCacheDir);
-        } else if (mGetInfo != null && mGetInfo.getIsArts() == 2) {
+        if (LiveVideoConfig.isScience || mGetInfo != null && mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
+            if (!isNewPreLoad) {
+                ScienceMulPreDownLoad(todayLiveCacheDir);
+            }
+            // TODO 理科小学
+//            scienceStatic();
+        } else if (mGetInfo != null && mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
             //语文一题多发
-            chineseMulPreDownLoad(todayLiveCacheDir);
+            if (!isNewPreLoad) {
+                chineseMulPreDownLoad(todayLiveCacheDir);
+            }
         } else {
-            ArtsMulPreDownLoad(todayLiveCacheDir);
+            if (!isNewPreLoad) {
+                ArtsMulPreDownLoad(todayLiveCacheDir);
+            }
         }
     }
 
@@ -541,6 +548,85 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
 
         }
     }
+
+    // TODO 理科小学
+//    public void scienceStatic() {
+//        ScienceStaticConfig scienceStaticConfig = mGetInfo.getScienceStaticConfig();
+//        if (scienceStaticConfig != null) {
+//            final ScienceStaticConfig.Version version = scienceStaticConfig.stringVersionHashMap.get(ScienceStaticConfig.THIS_VERSION);
+//            if (version != null) {
+//                File dir = new File(mPublicCacheout, "sciencestatic/" + ScienceStaticConfig.THIS_VERSION);
+//                if (!dir.exists()) {
+//                    dir.mkdirs();
+//                }
+//                int index = version.tarballURL.lastIndexOf("/");
+//                String fileName = version.tarballURL.substring(index + 1);
+//                int indexdot = fileName.indexOf(".");
+//                if (indexdot != -1) {
+//                    fileName = fileName.substring(0, indexdot);
+//                }
+//                final File filesave = new File(dir, fileName + "_save");
+//                if (filesave.exists()) {
+//                    version.localfile = filesave + "/xiaoxuekejian/local.html";
+//                } else {
+//                    final File filesaveTmp = new File(dir, fileName + "_savetmp");
+//                    final File zipsave = new File(dir, fileName + ".zip");
+//                    if (zipsave.exists()) {
+//                        try {
+//                            String md5Str = MD5.md5(zipsave);
+//                            logger.d("scienceStatic:md5Str=" + md5Str + ",assetsHash=" + version.assetsHash);
+//                            if (md5Str.equalsIgnoreCase(version.assetsHash)) {
+//                                new ZipExtractorTask(zipsave, filesaveTmp, true, new Progresses() {
+//                                    @Override
+//                                    public void onPostExecute(Exception exception) {
+//                                        if (exception == null) {
+//                                            boolean renameTo = filesaveTmp.renameTo(filesave);
+//                                            if (new File(filesave, "/xiaoxuekejian/local.html").exists()) {
+//                                                version.localfile = filesave + "/xiaoxuekejian/local.html";
+//                                            }
+//                                            logger.d("scienceStatic:onPostExecute:localfile=" + version.localfile + ",renameTo=" + renameTo);
+//                                        }
+//                                    }
+//                                }).execute();
+//                                return;
+//                            }
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    final File zipsavetmp = new File(dir, fileName + ".ziptmp");
+//                    mHttpManager.download(version.tarballURL, zipsavetmp.getPath(), new DownloadCallBack() {
+//                        @Override
+//                        protected void onDownloadSuccess() {
+//                            zipsavetmp.renameTo(zipsave);
+//                            new ZipExtractorTask(zipsave, filesaveTmp, true, new Progresses() {
+//                                @Override
+//                                public void onPostExecute(Exception exception) {
+//                                    if (exception == null) {
+//                                        boolean renameTo = filesaveTmp.renameTo(filesave);
+//                                        if (new File(filesave, "/xiaoxuekejian/local.html").exists()) {
+//                                            version.localfile = filesave + "/xiaoxuekejian/local.html";
+//                                        }
+//                                        logger.d("scienceStatic:onPostExecute:localfile=" + version.localfile + ",renameTo=" + renameTo);
+//                                    }
+//                                }
+//                            }).execute();
+//                        }
+//
+//                        @Override
+//                        protected void onDownloadFailed() {
+//
+//                        }
+//
+//                        @Override
+//                        protected void onDownloadFailed(Exception e) {
+//                            logger.d("scienceStatic:download", e);
+//                        }
+//                    });
+//                }
+//            }
+//        }
+//    }
 
     public void ScienceMulPreDownLoad(final File path) {
         mHttpManager.getMoreCoureWareUrl(liveId, new HttpCallBack(false) {

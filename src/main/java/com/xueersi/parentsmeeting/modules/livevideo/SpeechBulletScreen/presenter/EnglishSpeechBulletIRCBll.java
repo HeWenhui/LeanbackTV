@@ -56,12 +56,13 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+        englishSpeechBulletView.setSmallEnglish(getInfo.getSmallEnglish());
     }
 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         if (englishSpeechBulletView != null) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     englishSpeechBulletView.closeSpeechBullet(false);
@@ -72,18 +73,15 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        if (mGetInfo != null && !mGetInfo.getSmallEnglish()) {
-            return;
-        }
         logger.i("onTopic: jsonObject= " + jsonObject.toString());
         this.liveTopic = liveTopic;
+        if (LiveTopic.MODE_TRANING.equals(liveTopic.getMode())) {
+            return;
+        }
         if (liveTopic.getMainRoomstatus().isOpenVoiceBarrage()) {
-            if (liveTopic.getMainRoomstatus().getVoiceBarrageCount() == voiceBarrageCount) {
-                return;
-            }
             voiceBarrageCount = liveTopic.getMainRoomstatus().getVoiceBarrageCount();
             if (englishSpeechBulletView != null) {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         englishSpeechBulletView.showSpeechBullet(mRootView);
@@ -100,10 +98,10 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        if (mGetInfo != null && !mGetInfo.getSmallEnglish()) {
+        logger.i("onNotice: jsonObject= " + data.toString());
+        if (liveTopic != null && LiveTopic.MODE_TRANING.equals(liveTopic.getMode())) {
             return;
         }
-        logger.i("onNotice: jsonObject= " + data.toString());
         switch (type) {
             case XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE: {
                 //开启/关闭弹幕
@@ -111,7 +109,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
                 voiceBarrageCount = data.optInt("voiceBarrageCount");
                 if ("true".equals(open)) {
                     if (englishSpeechBulletView != null) {
-                        mHandler.post(new Runnable() {
+                        post(new Runnable() {
                             @Override
                             public void run() {
                                 englishSpeechBulletView.showSpeechBullet(mRootView);
@@ -119,7 +117,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
                         });
                     }
                 } else if ("false".equals(open)) {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             englishSpeechBulletView.closeSpeechBullet(true);
@@ -135,7 +133,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
                 final String context = data.optString("context");
                 final String name = data.optString("name");
                 String teamId = data.optString("teamId");
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         if (senderId.equals(mLiveBll.getConnectNickname())) {
@@ -151,7 +149,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             case XESCODE.XCR_ROOM_VOICEBARRAGEPRAISE: {
                 //表扬消息
                 final String context = data.optString("context");
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         englishSpeechBulletView.receivePraiseMsg(context);
@@ -187,7 +185,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             data.put("studentId", mGetInfo.getStuId());
             data.put("courseId", mGetInfo.getStudentLiveInfo().getCourseId());
             data.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
-            data.put("liveId", mLiveBll.getLiveId());
+            data.put("liveId", mLiveId);
             data.put("liveType", 1);
             data.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
             data.put("bulletId", voiceBarrageCount + "");
@@ -232,7 +230,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
 
     @Override
     public String getVoiceId() {
-        return mLiveBll.getLiveId() + "_" + voiceBarrageCount;
+        return mLiveId + "_" + voiceBarrageCount;
     }
 
     @Override

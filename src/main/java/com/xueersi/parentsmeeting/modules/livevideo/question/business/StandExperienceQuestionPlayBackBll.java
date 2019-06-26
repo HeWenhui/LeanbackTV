@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -16,6 +17,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -48,7 +50,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                     LiveQuestionSwitchImpl());
-            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
             //语音评测
             LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll,
                     questionBll);
@@ -59,7 +61,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                     LiveQuestionSwitchImpl());
-            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
             //语音评测
             LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
             liveBackSpeechCreat.setIsExperience(((StandExperienceLiveBackBll) liveBackBll).getExperience());
@@ -71,15 +73,11 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
         liveBackExamQuestionCreat.setLiveGetInfo(liveGetInfo);
         int isArts = liveBackBll.getIsArts();
         liveBackExamQuestionCreat.setArts(isArts);
-        liveBackExamQuestionCreat.setLivePagerBack(questionBll);
-        liveBackExamQuestionCreat.setExamStop(new LiveBackExamStop(activity, questionBll));
+        liveBackExamQuestionCreat.setLivePagerBack(activity, questionBll);
         questionBll.setBaseExamQuestionCreat(liveBackExamQuestionCreat);
         //主观题结果页
         LiveBackSubjectResultCreat liveBackSubjectResultCreat = new LiveBackSubjectResultCreat();
         liveBackSubjectResultCreat.setLiveGetInfo(liveGetInfo);
-        WrapQuestionWebStop wrapQuestionWebStop = new WrapQuestionWebStop(activity);
-        wrapQuestionWebStop.setStopWebQuestion(questionBll);
-        liveBackSubjectResultCreat.setWrapQuestionWebStop(wrapQuestionWebStop);
         questionBll.setBaseSubjectResultCreat(liveBackSubjectResultCreat);
     }
 
@@ -126,90 +124,16 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
         }
     }
 
-
-    @Override
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
-            onSpeechEval) {
-        String liveid = mVideoEntity.getLiveId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        HttpCallBack httpCallBack = new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                onSpeechEval.onSpeechEval(null);
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        };
-//        if (!liveBackBll.getExperience()) {
-//            getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
-//                    httpCallBack);
-//        } else {
-        getCourseHttpManager().sendExpSpeechEvalResult(
-                mVideoEntity.getSpeechEvalSubmitUrl(),
-                liveid,
-                id,
-                mVideoEntity.getChapterId(),
-                questionBll.IS_SCIENCE == false ? "1" : "0",
-                stuAnswer,
-                httpCallBack);
-//        }
-    }
-
-    @Override
-    public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
-        String liveid = mVideoEntity.getLiveId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        HttpCallBack httpCallBack = new HttpCallBack() {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                SpeechEvalEntity speechEvalEntity = getCourseHttpResponseParser().parseSpeechEval(responseEntity);
-                if (speechEvalEntity != null) {
-                    onSpeechEval.onSpeechEval(speechEvalEntity);
-                } else {
-                    responseEntity = new ResponseEntity();
-                    responseEntity.setStatus(false);
-                    responseEntity.setErrorMsg("出了点意外，请稍后试试");
-                    responseEntity.setJsonError(true);
-                    onSpeechEval.onPmError(responseEntity);
-                }
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        };
-//        if (!liveBackBll.getExperience()) {
-//        getCourseHttpManager().getSpeechEval(enstuId, liveid, id, httpCallBack);
-//        } else {
-        getCourseHttpManager().getExpeSpeechEval(enstuId,
-                liveid, id, mVideoEntity.getSpeechEvalUrl(), httpCallBack);
-//        }
-    }
-
     /**
      * 发送语音评测
      *
      * @param id
      * @param stuAnswer
-     * @param onSpeechEval
+     * @param isSubmit
+     * @param callBack
      */
     @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
+    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
         String liveid = mVideoEntity.getLiveId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
 //        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer,
@@ -217,19 +141,18 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
             @Override
             public void onPmSuccess(final ResponseEntity responseEntity) {
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                onSpeechEval.onSpeechEval(jsonObject);
+                callBack.onDataSucess(jsonObject);
                 Log.e(TAG, "" + jsonObject.toString());
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-//            }
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
             }
         };
         getCourseHttpManager().sendExpSpeechEvalResult(
@@ -245,7 +168,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
     @Override
     public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity
             videoQuestionLiveEntity1, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight,
-                                     final QuestionSwitch.OnAnswerReslut answerReslut) {
+                                     final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());

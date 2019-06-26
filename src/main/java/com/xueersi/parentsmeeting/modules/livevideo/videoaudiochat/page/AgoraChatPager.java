@@ -164,6 +164,11 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         }
 
         @Override
+        public void onRemoteVideoStateChanged(int uid, int state) {
+
+        }
+
+        @Override
         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
             mLogtf.d("onJoinChannelSuccess:channel=" + channel + ",uid=" + uid);
         }
@@ -403,7 +408,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                                         int tra = (lp.width - width) / 2;
                                         lp.leftMargin = left + rl_livevideo_chat_head1.getLeft() - tra;
                                         lp.topMargin = top + rl_livevideo_chat_head1.getTop() - tra;
-                                        pressLottileView1.setLayoutParams(lp);
+                                        LayoutParamsUtil.setViewLayoutParams(pressLottileView1, lp);
                                         logger.d("onPreDraw:left1=" + width + ",lw=" + lottieWidth + "," + lp.width + ",left=" + left + ",tra=" + tra);
                                         return false;
                                     }
@@ -471,7 +476,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                                         int tra = (lp.width - width) / 2;
                                         lp.leftMargin = left + rl_livevideo_chat_head2.getLeft() - tra;
                                         lp.topMargin = top + rl_livevideo_chat_head2.getTop() - tra;
-                                        pressLottileView2.setLayoutParams(lp);
+                                        LayoutParamsUtil.setViewLayoutParams(pressLottileView2, lp);
                                         logger.d("onPreDraw:left2=" + width + ",lw=" + lottieWidth + "," + lp.width + ",left=" + left + ",tra=" + tra);
                                         return false;
                                     }

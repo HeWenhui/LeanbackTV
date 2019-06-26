@@ -12,12 +12,16 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.airbnb.lottie.AssertUtil;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,7 +47,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class FrameAnimation {
     static String TAG = "FrameAnimation";
     protected static Logger logger = LoggerFactory.getLogger(TAG);
-    String eventId = LiveVideoConfig.LIVE_FRAME_ANIM;
+    static String eventId = LiveVideoConfig.LIVE_FRAME_ANIM;
     /** 是不是循环播放 */
     private boolean mIsRepeat;
     /** 是循环播放的时候，是不是缓存图片 */
@@ -351,6 +355,7 @@ public class FrameAnimation {
                             }
                             InputStream inputStream = null;
                             Bitmap bitmap = null;
+                            Throwable throwable = null;
                             try {
                                 if (bitmapCreate != null) {
                                     bitmap = bitmapCreate.onAnimationCreate(file);
@@ -365,7 +370,7 @@ public class FrameAnimation {
                                     }
                                 }
                                 if (bitmap == null) {
-//                                    inputStream = mView.getContext().getAssets().open(file);
+//                                    inputStream = mView.getContext().AssertUtil.open(file);
                                     inputStream = getInputStream(mView.getContext(), file);
                                     bitmap = BitmapFactory.decodeStream(inputStream);
                                     if (bitmap != null) {
@@ -414,41 +419,15 @@ public class FrameAnimation {
                                                     });
                                                 }
                                             }
-                                            if (i == mLastFrame) {
-                                                HashMap<String, String> map = new HashMap<>();
-                                                long totaltime = (System.currentTimeMillis() - beginTime);
-                                                map.put("totaltime", "" + totaltime);
-                                                map.put("totaltime2", "" + (mDuration * files.length));
-                                                map.put("frames", "" + files.length);
-                                                map.put("fps", "" + (files.length * 1000 / totaltime));
-                                                map.put("path", "" + path);
-                                                Runtime runtime = Runtime.getRuntime();
-                                                map.put("totalMemory", "" + (runtime.totalMemory() / 1024 / 1024));
-                                                map.put("freeMemory", "" + (runtime.freeMemory() / 1024 / 1024));
-                                                UmsAgentManager.umsAgentDebug(mView.getContext(), eventId, map);
-                                            }
-                                            if (i == mLastFrame) {
-                                                if (mIsRepeat) {
-                                                    if (mAnimationListener != null) {
-                                                        mAnimationListener.onAnimationRepeat();
-                                                    }
-                                                    play(0);
-                                                } else {
-                                                    if (mAnimationListener != null) {
-                                                        mAnimationListener.onAnimationEnd();
-                                                        mPause = true;
-                                                    }
-                                                }
-                                            } else {
-                                                play(i + 1);
-                                            }
                                         }
                                     });
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
+                                throwable = e;
                             } catch (OutOfMemoryError e) {
-                                logger.d( "play:OutOfMemoryError:file=" + file);
+                                throwable = e;
+                                logger.d("play:OutOfMemoryError:file=" + file);
                             } finally {
                                 if (inputStream != null) {
                                     try {
@@ -458,6 +437,44 @@ public class FrameAnimation {
                                     }
                                 }
                             }
+                            final Throwable finalThrowable = throwable;
+                            mView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (i == mLastFrame) {
+                                        HashMap<String, String> map = new HashMap<>();
+                                        long totaltime = (System.currentTimeMillis() - beginTime);
+                                        map.put("logtype", "frameend");
+                                        map.put("totaltime", "" + totaltime);
+                                        map.put("totaltime2", "" + (mDuration * files.length));
+                                        map.put("frames", "" + files.length);
+                                        map.put("fps", "" + (files.length * 1000 / totaltime));
+                                        map.put("path", "" + path);
+                                        if (finalThrowable != null) {
+                                            map.put("throwable", "" + finalThrowable);
+                                        }
+                                        Runtime runtime = Runtime.getRuntime();
+                                        map.put("totalMemory", "" + (runtime.totalMemory() / 1024 / 1024));
+                                        map.put("freeMemory", "" + (runtime.freeMemory() / 1024 / 1024));
+                                        UmsAgentManager.umsAgentDebug(mView.getContext(), eventId, map);
+                                    }
+                                    if (i == mLastFrame) {
+                                        if (mIsRepeat) {
+                                            if (mAnimationListener != null) {
+                                                mAnimationListener.onAnimationRepeat();
+                                            }
+                                            play(0);
+                                        } else {
+                                            if (mAnimationListener != null) {
+                                                mAnimationListener.onAnimationEnd();
+                                                mPause = true;
+                                            }
+                                        }
+                                    } else {
+                                        play(i + 1);
+                                    }
+                                }
+                            });
                         }
                     };
                     executor.execute(thread);
@@ -630,13 +647,29 @@ public class FrameAnimation {
                     files[i] = path + "/" + files[i];
                 }
             }
+            try {
+                StableLogHashMap stableLogHashMap = new StableLogHashMap("create_frame");
+                stableLogHashMap.put("length", "" + files.length);
+                stableLogHashMap.put("path", "" + path);
+                UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
+            } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
             FrameAnimation btframeAnimation1 = new FrameAnimation(iv, files, duration, isRepeat);
             btframeAnimation1.path = path;
             return btframeAnimation1;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         FrameAnimation btframeAnimation1 = new FrameAnimation(iv, new String[0], duration, false);
+        try {
+            StableLogHashMap stableLogHashMap = new StableLogHashMap("create_frame");
+            stableLogHashMap.put("length", "0");
+            stableLogHashMap.put("path", "" + path);
+            UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         return btframeAnimation1;
     }
 
@@ -645,7 +678,7 @@ public class FrameAnimation {
             FileInputStream fileInputStream = new FileInputStream(file);
             return fileInputStream;
         }
-        InputStream inputStream = context.getAssets().open(file);
+        InputStream inputStream = AssertUtil.open(file);
         return inputStream;
     }
 

@@ -27,14 +27,15 @@ import java.io.InputStream;
  */
 
 public class ArtsAnswerStateNoEnergyLottieEffectInfo extends LottieEffectInfo {
-
+    private String mCoinStr;
     private String energyStr;
     protected Logger logger = LoggerFactory.getLogger("ArtsAnswerStateNoEnergyLottieEffectInfo");
 
     private static final String TEXTCOLOR = "#FFDB2A";
     private static final int TEXTSIZE = 30;
 
-    private static final String COIN_FILE_NAME = "img_14.png";
+    private static final String COIN_FILE_NAME = "img_16.png";
+    private static final String ENERGY_FILE_NAME = "img_15.png";
 
     public ArtsAnswerStateNoEnergyLottieEffectInfo(String imgDir, String jsonFilePath, String... targetFileNames) {
         super(imgDir, jsonFilePath, targetFileNames);
@@ -45,9 +46,15 @@ public class ArtsAnswerStateNoEnergyLottieEffectInfo extends LottieEffectInfo {
             height) {
         Bitmap resultBitmap = null;
         if (COIN_FILE_NAME.equals(fileName)) {
+            resultBitmap = generateCoinNum(mCoinStr, width, height);
+        } else if (ENERGY_FILE_NAME.equals(fileName)) {
             resultBitmap = generateCoinNum(energyStr, width, height);
         }
         return resultBitmap;
+    }
+
+    public void setmCoinStr(String mCoinStr) {
+        this.mCoinStr = mCoinStr;
     }
 
     public void setEnergyStr(String energyStr) {

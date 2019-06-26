@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +11,11 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
- * Created by lyqai on 2018/7/10.
+ * Created by linyuqiang on 2018/7/10.
  * 直播的10个点
  */
 public class LiveVideoPoint {
@@ -39,6 +43,7 @@ public class LiveVideoPoint {
     public int videoHeight;
     public int headHeight;
     public int msgHeight;
+    HashMap<Context, ArrayList<VideoSizeChange>> contextArrayListHashMap = new HashMap<>();
 
     private LiveVideoPoint() {
 
@@ -69,7 +74,7 @@ public class LiveVideoPoint {
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         //int screenWidth = (r.right - r.left);
-        int  screenWidth = Math.min((r.right - r.left),ScreenUtils.getScreenWidth());
+        int screenWidth = Math.min((r.right - r.left), ScreenUtils.getScreenWidth());
         int screenHeight = ScreenUtils.getScreenHeight();
         if (liveVideoPoint.screenWidth == screenWidth && liveVideoPoint.videoWidth == lp.width && liveVideoPoint.videoHeight == lp.height) {
             return false;
@@ -96,6 +101,54 @@ public class LiveVideoPoint {
         liveVideoPoint.y4 = liveVideoPoint.y2 + lp.height;
         liveVideoPoint.screenHeight = screenHeight;
         liveVideoPoint.toString();
+        ArrayList<VideoSizeChange> videoSizeChanges = liveVideoPoint.contextArrayListHashMap.get(activity);
+        if (videoSizeChanges != null) {
+            for (VideoSizeChange videoSizeChange : videoSizeChanges) {
+                videoSizeChange.videoSizeChange(liveVideoPoint);
+            }
+        }
         return true;
+    }
+
+    /**
+     * 屏幕按比例缩放
+     *
+     * @return
+     */
+    public int[] getNewWidthHeight() {
+        int screenHeight = ScreenUtils.getScreenHeight();
+        float density = ScreenUtils.getScreenDensity();
+        int bitmapW = (int) (density * 1280);
+        int bitmapH = (int) (density * 720);
+        float screenRatio = (float) screenWidth / (float) screenHeight;
+        int newWidth = screenWidth;
+        int newHeight = screenHeight;
+        if (screenRatio > (float) 16 / (float) 9) {
+            newHeight = (int) ((float) screenWidth * (float) bitmapH / (float) bitmapW);
+        } else if (screenRatio < (float) 16 / (float) 9) {
+            newWidth = (int) ((float) screenHeight * (float) bitmapW / (float) bitmapH);
+        }
+        return new int[]{newWidth, newHeight};
+    }
+
+    public void addVideoSizeChange(Context context, VideoSizeChange videoSizeChange) {
+        ArrayList<VideoSizeChange> videoSizeChanges = contextArrayListHashMap.get(context);
+        if (videoSizeChanges == null) {
+            videoSizeChanges = new ArrayList<>();
+            contextArrayListHashMap.put(context, videoSizeChanges);
+        }
+        videoSizeChanges.add(videoSizeChange);
+    }
+
+    public void clear(Context context) {
+        ArrayList<VideoSizeChange> videoSizeChanges = contextArrayListHashMap.get(context);
+        if (videoSizeChanges != null) {
+            videoSizeChanges.clear();
+            contextArrayListHashMap.remove(context);
+        }
+    }
+
+    public interface VideoSizeChange {
+        void videoSizeChange(LiveVideoPoint liveVideoPoint);
     }
 }

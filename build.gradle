@@ -2,6 +2,13 @@ apply plugin: 'com.android.library'
 apply from: rootDir.absolutePath + '/buildscript/module_extra_config.gradle'
 apply from: rootDir.absolutePath + '/buildscript/module_upload_config.gradle'
 
+//com.android.build.gradle.api.AndroidSourceSet set
+def getSecSource(Object set) {
+    print("getSecSource:set=" + set.getClass() + "--");
+    set.java.srcDirs += ['src/main/secience/java-teampk']
+    set.java.srcDirs += ['src/main/secience/java-roll_call']
+}
+
 android {
     defaultConfig {
         ndk {
@@ -12,18 +19,46 @@ android {
         main {
             jniLibs.srcDirs = ['libs']
             java.srcDirs += ['src/main/java-en_teampk']
+//            java.srcDirs += ['src/main/english/java-en_teampk_old']
             res.srcDirs += ['src/main/res-en_teampk']
+            java.srcDirs += ['src/main/java-achievement']
+//            java.srcDirs += ['src/main/java-achievement_old']
+            res.srcDirs += ['src/main/res-achievement']
+            java.srcDirs += ['src/main/english/java-en_tcp']
+            assets.srcDirs += ['src/main/english/assets']
+            java.srcDirs += ['src/main/java-core']
+            //集体发言
+            java.srcDirs += ['src/main/secience/java-collective_speech']
+//            java.srcDirs += ['src/main/secience/java-collective_speech_old']
+            res.srcDirs += ['src/main/secience/res-collective_speech']
+            //老师点赞
+            java.srcDirs += ['src/main/secience/java-teacher_praise']
+//            java.srcDirs += ['src/main/secience/java-teacher_praise_old']
+            res.srcDirs += ['src/main/secience/res-teacher_praise']
+            assets.srcDirs += ['src/main/secience/assets']
+            assets.srcDirs += ['src/main/live_assets']
+            //小班体验
+            java.srcDirs += ['src/main/chinese/java-primary_class']
+            java.srcDirs += ['src/main/secience/java-primary_class']
+//            java.srcDirs += ['src/main/secience/java-primary_class_old']
+            res.srcDirs += ['src/main/secience/res-primary_class']
+            res.srcDirs += ['src/main/chinese/res-primary_class']
+            //旧sdk
+//            java.srcDirs += ['src/main/java-old']
+            getSecSource(this.android.sourceSets.main);
         }
     }
     compileSdkVersion 26
     buildToolsVersion '27.0.3'
 }
+
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'org.java-websocket:Java-WebSocket:1.3.4'
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api 'org.java-websocket:Java-WebSocket:1.3.4'
     //glide库
     implementation rootProject.ext.thirdlibraries.glide
-    implementation(rootProject.ext.xeslibraries.speechrecognizer) { changing = true }
+
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.speechrecognizer)
     implementation(rootProject.ext.xeslibraries.ldnetdiagnoservice) { changing = true }
     //uicomponent
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.uicomponent)
@@ -37,12 +72,13 @@ dependencies {
     //日志
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.logger)
     //    implementation project(':ijkplayer')
-    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.ijkplayer)
+//    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.ijkplayer)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.cloud)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.browser)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xeslottie)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.pschatsdk)
     implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.appcompat
     implementation rootProject.ext.thirdlibraries.recyclerview
@@ -51,10 +87,21 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.bugly
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
-    //    implementation project(':business:endictation')
-    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)
     implementation rootProject.ext.thirdlibraries.ticker
+    implementation rootProject.ext.thirdlibraries.tray
+
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
-//    implementation project(':library:agora')
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rtcengine)
+    //    implementation project(':library:agora')
+    //implementation(rootProject.ext.xeslibraries.waveform) { changing = true }
+    //implementation project(':library:waveform')
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.gifDrawable)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.transition)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rxjava)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rxandroid)
+//    implementation 'com.github.adrielcafe:ffmpeg-android-java:2a627f6ecd@aar'
+//    implementation "androidx.work:work-runtime:2.01"
+    //    implementation project(':library:agora')
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.businessinterface)
 }

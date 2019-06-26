@@ -14,6 +14,7 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -44,7 +45,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
     private boolean isShowQuitDialog = false;
     private IStandExperienceEvaluationContract.IEvaluationView mEvaluationView;
     private boolean isStand;
-    private ExperienceLiveVideoActivity liveVideoActivityBase;
+    private LiveVideoActivityBase liveVideoActivityBase;
     VideoLivePlayBackEntity mVideoEntity;
 
     public ExperienceQuitFeedbackBll(Activity activity, LiveBackBll liveBackBll, boolean isStand) {
@@ -79,7 +80,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         this.isStand = isStand;
     }
 
-    public void setLiveVideo(ExperienceLiveVideoActivity liveVideoActivityBase) {
+    public void setLiveVideo(LiveVideoActivityBase liveVideoActivityBase) {
         this.liveVideoActivityBase = liveVideoActivityBase;
     }
 

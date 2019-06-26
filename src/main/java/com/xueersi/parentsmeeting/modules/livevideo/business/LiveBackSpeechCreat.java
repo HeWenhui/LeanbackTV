@@ -28,7 +28,6 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
      */
     private boolean isExperience;
 
-
     public LiveBackSpeechCreat(LivePagerBack livePagerBack) {
         this.livePagerBack = livePagerBack;
     }
@@ -55,10 +54,13 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
         wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
         wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         SpeechAssAutoPager speechAssAutoPager = new SpeechAssAutoPager(context,
-                videoQuestionLiveEntity, liveid, videoQuestionLiveEntity.id,
+                videoQuestionLiveEntity, liveid, videoQuestionLiveEntity.id, getInfo,
                 "", videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time,
                 videoQuestionLiveEntity.getvEndTime() - videoQuestionLiveEntity.getvQuestionInsretTime(),
                 learning_stage, wrapSpeechEvalAction, livePagerBack);
+        if (getInfo.getSmallEnglish()) {
+            speechAssAutoPager.setSmallEnglish(1);
+        }
         return speechAssAutoPager;
     }
 

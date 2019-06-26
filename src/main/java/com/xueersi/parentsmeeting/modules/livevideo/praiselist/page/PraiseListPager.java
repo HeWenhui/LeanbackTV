@@ -1,62 +1,65 @@
 package com.xueersi.parentsmeeting.modules.livevideo.praiselist.page;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Build;
-import android.support.v4.util.LruCache;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.AnimationUtils;
-import android.view.animation.GridLayoutAnimationController;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListBll;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListView;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListStudentEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
 import com.xueersi.ui.adapter.RCommonAdapter;
 import com.xueersi.ui.adapter.RItemViewInterface;
 import com.xueersi.ui.adapter.ViewHolder;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
@@ -64,260 +67,735 @@ import java.util.TimerTask;
 
 /**
  * Created by Zhang Yuansun on 2018/1/2.
+ * <p>
+ * 小理表扬榜
  */
 
 public class PraiseListPager extends LiveBasePager {
-
-    public static final String TAG = "PraiseListPager";
+    private PraiseListPresenter mPresenter;
+    private PraiseListView mPraiseListView;
+    private ExcellentListEntity excellentListEntity;
+    private LikeListEntity likeListEntity;
+    private MinimarketListEntity minimarketListEntity;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "praise_list/";
-
-    private static final int ANIMATOR_TYPE_MAIN = 1;
-
-    private static final int ANIMATOR_TYPE_THANKS = ANIMATOR_TYPE_MAIN + 1;
-
-    private static final int ANIMATOR_TYPE_TEACHER = ANIMATOR_TYPE_THANKS + 1;
-
-    private HonorListEntity honorListEntity;
-    private ThumbsUpListEntity thumbsUpListEntity;
-    private ProgressListEntity progressListEntity;
-    private PraiseListIRCBll liveBll;
-    private PraiseListBll mPraiseListBll;
-    private WeakHandler weakHandler;
-
+    /**
+     * 当前表扬榜类型
+     */
+    private int listType;
+    public final static int PRAISE_LIST_TYPE_EXECELLENT = 1;//优秀榜
+    public final static int PRAISE_LIST_TYPE_MINI_MARKET = 2;//小超市计算榜
+    public final static int PRAISE_LIST_TYPE_LIKE = 3;//点赞榜
+    //循环光芒动画
+    private LottieAnimationView lottieAnimationLoopLightView;
     //主背景动画
     private LottieAnimationView lottieAnimationBGView;
-    //主背景闪光循环动画
-    private LottieAnimationView lottieAnimationLoopBGView;
-
-    //感谢点赞
-    private LottieAnimationView lottieAnimationThanksView;
-    private View lottieAnimationThanksGroup;
-
     //老师表扬学生
     private LottieAnimationView lottieAnimationTeacherView;
     private View lottieAnimationTeacherGroup;
     private TextView teacherTipsView;
-
     private View contentGroup;
 
-    /** 表扬榜单 */
-    private RecyclerView rvPraiseListView;
-    /** 备注 */
-    private TextView tvTipsView;
-    /** 点赞弹幕 */
-    private AutoVerticalScrollTextView tvDanmakuView;
-    /** 点赞按钮 */
-    private Button btnThumbsUpView;
+    //循环星星动画
+    private LottieAnimationView lottieAnimationLoopStarView;
+    //发现二倍卡动画
+    private LottieAnimationView lottieAnimationDoubleCardView;
+    //点击 点赞按钮 动画显示的图层
+    private RelativeLayout lottieClickLikeGroup;
 
-    private TextView noteView;
-
-
-    /** 当前表扬榜类型 */
-    private int mPraiseListType;
-    public final static int PRAISE_LIST_TYPE_HONOR = 1;//优秀榜
-    public final static int PRAISE_LIST_TYPE_THUMBS_UP = 3;//点赞榜
-    public final static int PRAISE_LIST_TYPE_PROGRESS = 2;//进步榜
-
-    /** 我的姓名 */
-    private String stuName;
-    /** 我在榜上的位置索引 */
-    private int onListIndex = 0;
-    /** 给我点赞同学姓名 */
-    private ArrayList<String> stuNames = new ArrayList<>();
-    /** 给我点赞数量 */
-    private ArrayList<Integer> thumbsUpNums = new ArrayList<>();
-    /** 点赞文案 */
-    public String[] thumbsUpCopywriting;
-    private ArrayList<Integer> thumbsUpCopywritingIndex = new ArrayList<>();
-
-    /** 点赞弹幕定时器 */
-    private Timer mTimer = null;
-    /** 点赞弹幕计数 */
-    private int number = 0;
-    /** 点赞弹幕线程是否停止 */
-    private boolean isStop = true;
-
-    /** 声音池 */
-    private SoundPool soundPool;
-    /** 榜单弹出声音 */
-    private int soundPraiselistIn = 0;
-    /** 点赞声音 */
-    private int soundThumbsUp = 0;
-
-    //是否在榜上
+    /**
+     * 金榜题名
+     */
+    private TextView tvCongratulations;
+    /**
+     * 表扬榜单
+     */
+    private RecyclerView rvStudentlist;
+    /**
+     * 战队列表
+     */
+    private RecyclerView rvTeamList;
+    /**
+     * 关闭按钮
+     */
+    private Button btnClose;
+    /**
+     * 点赞按钮显示的图层
+     */
+    RelativeLayout likeContentGroup;
+    /**
+     * 点赞按钮
+     */
+    private Button btnLike;
+    /**
+     * 点赞计数
+     */
+    private TextView tvLikeCount;
+    /**
+     * 备注
+     */
+    private TextView tvNotes;
+    /**
+     * 我是否上榜
+     */
     private boolean isOnList = false;
-    private LruCache<String, Bitmap> mBitmapCache;
+    /**
+     * 声音池
+     */
+    private SoundPool mSoundPool;
+    /**
+     * 榜单弹出声音
+     */
+    private int soundPraiselistIn = 0;
+    /**
+     * 点赞声音
+     */
+    private int soundLike = 0;
 
-    public PraiseListPager(Context context, HonorListEntity honorListEntity, PraiseListIRCBll liveBll, PraiseListBll
-            mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+    /**
+     * 学生列表
+     */
+    private RCommonAdapter studentAdapter;
+    private static final int MAX_STUDENT_COLUMN_NUMBER = 5; //每行最多有几个
+
+    /**
+     * 战队列表
+     */
+    private RCommonAdapter teamAdapter;
+    private int selectedTeamTabs = 0;
+    private int myTeamTabs = -1;
+    private static final int MAX_TEAM_NUMBER = 6;
+    private static final int[] tabsBackgroundRes = new int[]{
+            R.drawable.bg_livevideo_praiselist_tabs0,
+            R.drawable.bg_livevideo_praiselist_tabs1,
+            R.drawable.bg_livevideo_praiselist_tabs2,
+            R.drawable.bg_livevideo_praiselist_tabs3,
+            R.drawable.bg_livevideo_praiselist_tabs4,
+            R.drawable.bg_livevideo_praiselist_tabs5,
+    };
+    private int[] totalLikeCount = new int[MAX_TEAM_NUMBER];
+    private int[] latestLikeCount = new int[MAX_TEAM_NUMBER];
+    private int totalLikeSum = 0;
+    private int latestLikeSum = 0;
+    private List<PraiseListTeamEntity> mTeamList;
+//    private Drawable[] pressImg = new Drawable[MAX_TEAM_NUMBER];
+//    private Drawable[] normalImg = new Drawable[MAX_TEAM_NUMBER];
+
+    /**
+     * 弹幕消息
+     */
+    private RecyclerView rvDanmaku;
+    private DanmakuAdapter danmakuAdapter;
+    private List<PraiseListDanmakuEntity> teamDanmakuCache = new ArrayList<>();
+    private List<PraiseListDanmakuEntity> stuDanmakuCache = new ArrayList<>();
+    private List<PraiseListDanmakuEntity> myDanmakuCache = new ArrayList<>();
+    private List<PraiseListDanmakuEntity> danmakuList = new ArrayList<>();
+    private static final int DURATION_DANMAKU_SCROOL = 1000; // 弹幕每1s滚动一条
+    private Timer danmakuTimer; //弹幕定时器
+    private int teamDanmakuCount = 0; //弹幕计数
+    private int stuDanmakuCount = 0; //弹幕计数
+    private int myDanmakuCount = 0; //弹幕计数
+    private Timer likeTimer; //点赞定时器
+
+    private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            return false;
+        }
+    });
+
+    public PraiseListPager(Context context, ExcellentListEntity excellentListEntity, PraiseListPresenter presenter, PraiseListView praiseListView) {
         super(context);
-        mPraiseListType = PRAISE_LIST_TYPE_HONOR;
-        this.honorListEntity = honorListEntity;
-        if (honorListEntity != null && honorListEntity.getIsMy() == 1) {
+        listType = PRAISE_LIST_TYPE_EXECELLENT;
+        if (excellentListEntity.getIsMy() == 1) {
             isOnList = true;
         }
-        this.liveBll = liveBll;
-        this.mPraiseListBll = mPraiseListBll;
-        this.weakHandler = mVPlayVideoControlHandler;
+        this.excellentListEntity = excellentListEntity;
+        mTeamList = excellentListEntity.getTeamList();
+        this.mPresenter = presenter;
+        this.mPraiseListView = praiseListView;
         initData();
+        initListener();
     }
 
-    public PraiseListPager(Context context, ThumbsUpListEntity thumbsUpListEntity, PraiseListIRCBll liveBll, PraiseListBll
-            mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+    public PraiseListPager(Context context, MinimarketListEntity minimarketListEntity, PraiseListPresenter presenter, PraiseListView praiseListView) {
         super(context);
-        mPraiseListType = PRAISE_LIST_TYPE_THUMBS_UP;
-        this.thumbsUpListEntity = thumbsUpListEntity;
-        if (thumbsUpListEntity != null && thumbsUpListEntity.getIsMy() == 1) {
+        listType = PRAISE_LIST_TYPE_MINI_MARKET;
+        if (minimarketListEntity.getIsMy() == 1) {
             isOnList = true;
         }
-        this.liveBll = liveBll;
-        this.mPraiseListBll = mPraiseListBll;
-        this.weakHandler = mVPlayVideoControlHandler;
+        this.minimarketListEntity = minimarketListEntity;
+        mTeamList = minimarketListEntity.getTeamList();
+        this.mPresenter = presenter;
+        this.mPraiseListView = praiseListView;
         initData();
+        initListener();
     }
 
-    public PraiseListPager(Context context, ProgressListEntity progressListEntity, PraiseListIRCBll liveBll, PraiseListBll
-            mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+    public PraiseListPager(Context context, LikeListEntity likeListEntity, PraiseListPresenter presenter, PraiseListView praiseListView) {
         super(context);
-        mPraiseListType = PRAISE_LIST_TYPE_PROGRESS;
-        this.progressListEntity = progressListEntity;
-        if (progressListEntity != null && progressListEntity.getIsMy() == 1) {
+        listType = PRAISE_LIST_TYPE_LIKE;
+        if (likeListEntity.getIsMy() == 1) {
             isOnList = true;
         }
-        this.liveBll = liveBll;
-        this.mPraiseListBll = mPraiseListBll;
-        this.weakHandler = mVPlayVideoControlHandler;
+        this.likeListEntity = likeListEntity;
+        mTeamList = likeListEntity.getTeamList();
+        this.mPresenter = presenter;
+        this.mPraiseListView = praiseListView;
         initData();
+        initListener();
     }
 
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_praiselist, null);
-        lottieAnimationBGView = (LottieAnimationView) mView.findViewById(R.id.lav_livevideo_praise_pager_bg);
-        lottieAnimationLoopBGView = (LottieAnimationView) mView.findViewById(R.id.lav_livevideo_praise_loop_pager_bg);
-        lottieAnimationThanksView = (LottieAnimationView) mView.findViewById(R.id.lav_livevideo_praise_thanks);
-        lottieAnimationThanksGroup = mView.findViewById(R.id.fl_livevideo_praise_thanks_group);
-
-        lottieAnimationTeacherView = (LottieAnimationView) mView.findViewById(R.id.lav_livevideo_praise_teacher);
-        lottieAnimationTeacherGroup = mView.findViewById(R.id.fl_livevideo_praise_teacher_group);
-        teacherTipsView = (TextView) mView.findViewById(R.id.tv_livevideo_praise_teacher_tips);
-
+        lottieAnimationLoopLightView = mView.findViewById(R.id.lav_livevideo_praiselist_looplight);
+        lottieAnimationBGView = mView.findViewById(R.id.lav_livevideo_praiselist_pager_bg);
+        lottieAnimationTeacherView = mView.findViewById(R.id.lav_livevideo_praiselist_teacher);
+        lottieAnimationTeacherGroup = mView.findViewById(R.id.rl_livevideo_praiselist_teacher_group);
+        teacherTipsView = mView.findViewById(R.id.tv_livevideo_praiselist_teacher_tips);
         contentGroup = mView.findViewById(R.id.rl_livevideo_praiselist_content);
-
-        tvTipsView = (TextView) mView.findViewById(R.id.tv_livevideo_praiselist_tips);
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tvTipsView.getLayoutParams();
-        params.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 138));
-        tvTipsView.setLayoutParams(params);
-
-        rvPraiseListView = (RecyclerView) mView.findViewById(R.id.gv_livevideo_praiselist);
-        rvPraiseListView.addItemDecoration(new SpaceItemDecoration(SizeUtils.Dp2Px(mContext, 5)));
-        rvPraiseListView.setHasFixedSize(true);
-        GridLayoutAnimationController animationController = (GridLayoutAnimationController)
-                AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_praise_student_list);
-        rvPraiseListView.setLayoutAnimation(animationController);
-        rvPraiseListView.scheduleLayoutAnimation();
-
-        tvDanmakuView = (AutoVerticalScrollTextView) mView.findViewById(R.id.tv_livevideo_praiselist_danmaku);
-        btnThumbsUpView = (Button) mView.findViewById(R.id.btn_livevideo_praise);
-        noteView = (TextView) mView.findViewById(R.id.tv_livevideo_note);
-
-
-        lottieAnimationBGView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
-                .OnGlobalLayoutListener() {
-
-            @Override
-            public void onGlobalLayout() {
-                //计算列表的位置
-                RelativeLayout.LayoutParams listParams = (RelativeLayout.LayoutParams) rvPraiseListView
-                        .getLayoutParams();
-                if (isOnList) {
-                    listParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 179));
-                } else {
-                    listParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 179 - 39));
-                }
-                if (mPraiseListType == PRAISE_LIST_TYPE_THUMBS_UP) {
-                    listParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 64));
-                } else {
-                    listParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 144));
-                }
-                listParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 97));
-                listParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 88));
-                rvPraiseListView.setLayoutParams(listParams);
-
-                //计算点赞区域的位置
-                RelativeLayout.LayoutParams danmakuLayoutParams = (RelativeLayout.LayoutParams) tvDanmakuView
-                        .getLayoutParams();
-                danmakuLayoutParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 271));
-                danmakuLayoutParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 83));
-                danmakuLayoutParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 168));
-                tvDanmakuView.setLayoutParams(danmakuLayoutParams);
-
-                RelativeLayout.LayoutParams thumbsUpLayoutParams = (RelativeLayout.LayoutParams) btnThumbsUpView
-                        .getLayoutParams();
-                thumbsUpLayoutParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 252));
-                thumbsUpLayoutParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 345));
-                thumbsUpLayoutParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 69));
-                btnThumbsUpView.setLayoutParams(thumbsUpLayoutParams);
-
-
-                //计算备注的位置
-                RelativeLayout.LayoutParams noteParams = (RelativeLayout.LayoutParams) noteView.getLayoutParams();
-                noteParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 313));
-                noteParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 76));
-
-
-                //计算老师点赞学生文字位置
-                RelativeLayout.LayoutParams teacherTipsParams = (RelativeLayout.LayoutParams) teacherTipsView
-                        .getLayoutParams();
-                teacherTipsParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 236));
-                teacherTipsParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 109));
-                teacherTipsParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 105));
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    lottieAnimationBGView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    lottieAnimationBGView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-        });
-//        preloadBitmap();
+        lottieAnimationLoopStarView = mView.findViewById(R.id.lav_livevideo_praiselist_loopstar);
+        lottieClickLikeGroup = mView.findViewById(R.id.rl_livevideo_praiselist_lottie_click_like);
+        lottieAnimationDoubleCardView = mView.findViewById(R.id.lav_livevideo_praiselist_double_card);
+        tvCongratulations = mView.findViewById(R.id.tv_livevideo_praiselist_congratulations);
+        btnClose = mView.findViewById(R.id.btn_livevideo_praiselist_close);
+        likeContentGroup = mView.findViewById(R.id.rl_livevideo_praiselist_like_content);
+        btnLike = mView.findViewById(R.id.btn_livevideo_praiselist_like);
+        tvLikeCount = mView.findViewById(R.id.tv_livevideo_praiselist_like_count);
+        tvNotes = mView.findViewById(R.id.tv_livevideo_notes);
+        rvStudentlist = mView.findViewById(R.id.rv_livevideo_praiselist_student);
+        rvTeamList = mView.findViewById(R.id.rv_livevideo_praiselist_team);
+        rvDanmaku = mView.findViewById(R.id.rv_livevideo_praiselist_danmaku);
         return mView;
     }
 
-    /**
-     * 预加载一部分图片，避免动画太卡
-     */
-    private void preloadBitmap() {
-        mBitmapCache = new LruCache<String, Bitmap>(10 * 1024 * 1024) {
-            @Override
-            protected int sizeOf(String key, Bitmap value) {
-                return value.getByteCount();
-            }
-        };
-        InputStream in = null;
-        try {
-            AssetManager assets = mContext.getAssets();
-            String dir = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
-            String[] list = assets.list(dir);
-            for (int i = 0; i < list.length; i++) {
-                in = mContext.getAssets().open(dir + File.separator + list[i]);
-                Bitmap bitmap = BitmapFactory.decodeStream(in);
-                mBitmapCache.put(list[i], bitmap);
-                in.close();
-            }
+//    public void test() {
+//        Button button1 = mView.findViewById(R.id.btn_livevideo_praiselist_test1);
+//        Button button2 = mView.findViewById(R.id.btn_livevideo_praiselist_test2);
+//        Button button3 = mView.findViewById(R.id.btn_livevideo_praiselist_test3);
+//        Button button4 = mView.findViewById(R.id.btn_livevideo_praiselist_test4);
+//        button1.setText("学生点赞+1");
+//        button2.setText("战队点赞+1");
+//        button3.setText("老师表扬");
+//
+//        final List<PraiseListDanmakuEntity> tempList = new ArrayList<>();
+//        button1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                PraiseListDanmakuEntity danmakuEntity = new PraiseListDanmakuEntity();
+//                danmakuEntity.setName("詹姆斯哈登");
+//                danmakuEntity.setNumber(100);
+//                danmakuEntity.setBarrageType(1);
+//                tempList.add(danmakuEntity);
+//                receiveLikeNotice(tempList);
+//                tempList.clear();
+//            }
+//        });
+//        button2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                PraiseListDanmakuEntity danmakuEntity = new PraiseListDanmakuEntity();
+//                danmakuEntity.setName("休斯敦火箭");
+//                danmakuEntity.setNumber(200);
+//                danmakuEntity.setBarrageType(2);
+//                tempList.add(danmakuEntity);
+//                receiveLikeNotice(tempList);
+//                tempList.clear();
+//            }
+//        });
+//
+//        button3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startScrollAnimation("詹姆斯", "安东尼");
+//            }
+//        });
+//    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException exception) {
-                    exception.printStackTrace();
+    /**
+     * 校准布局
+     */
+    public void alignLayout() {
+        lottieAnimationBGView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                .OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                lottieAnimationBGView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                int measuredHeight = lottieAnimationBGView.getMeasuredHeight();
+                int measudredWidth = lottieAnimationBGView.getMeasuredWidth();
+                logger.d("lottieAnimationBGView: getMeasuredHeight() = " + measuredHeight + ", getMeasuredWidth() = " + measudredWidth);
+
+                int originHeight = measudredWidth * 3 / 4;
+                int differenceHeight = (originHeight - measuredHeight) / 2;
+
+                int originWidth = measuredHeight * 4 / 3;
+                int differenceWidth = (originWidth - measudredWidth) / 2;
+
+                //内容区域的位置
+                RelativeLayout.LayoutParams contentParams = (RelativeLayout.LayoutParams) contentGroup.getLayoutParams();
+                if (measudredWidth * 3 <= measuredHeight * 4) {
+                    //水平方向上截断
+                    contentParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 65));
+                    contentParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 45));
+                } else {
+                    //垂直方向上截断
+
+                    contentParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 65) - differenceHeight);
+                    contentParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 45) - differenceHeight);
+                }
+                contentParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 415));
+                contentGroup.setLayoutParams(contentParams);
+
+                //点赞区域的位置
+                RelativeLayout.LayoutParams likeContentParams = (RelativeLayout.LayoutParams) likeContentGroup.getLayoutParams();
+                if (measudredWidth * 3 <= measuredHeight * 4) {
+                    //水平方向上截断
+                    likeContentParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 65));
+                    likeContentParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 45));
+                } else {
+                    //垂直方向上截断
+
+                    likeContentParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 65) - differenceHeight);
+                    likeContentParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 45) - differenceHeight);
+                }
+                likeContentParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 435));
+                likeContentGroup.setLayoutParams(likeContentParams);
+
+                //金榜题名的位置
+                RelativeLayout.LayoutParams titleparams = (RelativeLayout.LayoutParams) tvCongratulations.getLayoutParams();
+                titleparams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 39));
+                tvCongratulations.setLayoutParams(titleparams);
+
+                //战队列表的位置
+                RelativeLayout.LayoutParams teamListParams = (RelativeLayout.LayoutParams) rvTeamList.getLayoutParams();
+                teamListParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 57));
+                teamListParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 42));
+                teamListParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 32));
+                teamListParams.height = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 58));
+                rvTeamList.setLayoutParams(teamListParams);
+
+                //学生列表的位置
+                RelativeLayout.LayoutParams studentListParams = (RelativeLayout.LayoutParams) rvStudentlist.getLayoutParams();
+                studentListParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 116));
+                studentListParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 45));
+                studentListParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 47));
+                studentListParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
+                rvStudentlist.setLayoutParams(studentListParams);
+
+                //点赞按钮的位置
+                RelativeLayout.LayoutParams likeParams = (RelativeLayout.LayoutParams) btnLike.getLayoutParams();
+                likeParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 25));
+                likeParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
+                likeParams.height = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
+                btnLike.setLayoutParams(likeParams);
+
+                //点赞计数的位置
+                RelativeLayout.LayoutParams likeCountParams = (RelativeLayout.LayoutParams) tvLikeCount.getLayoutParams();
+                likeCountParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 90));
+                likeCountParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 60));
+                tvLikeCount.setLayoutParams(likeCountParams);
+
+                //备注的位置
+                RelativeLayout.LayoutParams noteParams = (RelativeLayout.LayoutParams) tvNotes.getLayoutParams();
+                noteParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
+                noteParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 50));
+                tvNotes.setLayoutParams(noteParams);
+
+                //循环星星动画的位置
+                RelativeLayout.LayoutParams lottieStarParams = (RelativeLayout.LayoutParams) lottieAnimationLoopStarView.getLayoutParams();
+                lottieStarParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
+                lottieStarParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
+                lottieStarParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
+                lottieStarParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
+                lottieAnimationLoopStarView.setLayoutParams(lottieStarParams);
+
+                //二倍卡动画的位置
+                RelativeLayout.LayoutParams lottieDoubleCardParams = (RelativeLayout.LayoutParams) lottieAnimationDoubleCardView.getLayoutParams();
+                lottieDoubleCardParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
+                lottieDoubleCardParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
+                lottieDoubleCardParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
+                lottieDoubleCardParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
+                lottieAnimationDoubleCardView.setLayoutParams(lottieDoubleCardParams);
+
+                //老师表扬学生文本框的位置
+                RelativeLayout.LayoutParams teacherTipsParams = (RelativeLayout.LayoutParams) teacherTipsView.getLayoutParams();
+                teacherTipsParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 225));
+                teacherTipsParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 287));
+                teacherTipsView.setLayoutParams(teacherTipsParams);
+
+                if (teamAdapter != null) {
+                    teamAdapter.updateData(mTeamList);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void initData() {
+//        test();
+        alignLayout();
+        startBackgtoundAnimation();
+
+        while (mTeamList.size() > MAX_TEAM_NUMBER) {
+            mTeamList.remove(mTeamList.size() - 1);
+        }
+
+        //计算战队排名
+        if ((listType == PRAISE_LIST_TYPE_EXECELLENT || listType == PRAISE_LIST_TYPE_MINI_MARKET) && mTeamList.size() != 0) {
+            mTeamList.get(0).setTeamRanking(1);
+            for (int i = 1; i < mTeamList.size(); i++) {
+                if (mTeamList.get(i).getOnListNums() * mTeamList.get(i - 1).getTeamMemberNums() == mTeamList.get(i - 1).getOnListNums() * mTeamList.get(i).getTeamMemberNums()) {
+                    mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking());
+                } else {
+                    mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking() + 1);
+                }
+                if (mTeamList.get(i).getIsMy() == 1 || mTeamList.get(i).getIsMy() == 0) {
+                    if (mTeamList.get(i).getIsMy() == 1) {
+                        selectedTeamTabs = i;
+                    }
+                    myTeamTabs = i;
+                }
+            }
+        } else if (listType == PRAISE_LIST_TYPE_LIKE && mTeamList.size() != 0) {
+            mTeamList.get(0).setTeamRanking(1);
+            for (int i = 1; i < mTeamList.size(); i++) {
+                if (mTeamList.get(i).getPraiseTotalNum() == mTeamList.get(i - 1).getPraiseTotalNum()) {
+                    mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking());
+                } else {
+                    mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking() + 1);
+                }
+                if (mTeamList.get(i).getIsMy() == 1 || mTeamList.get(i).getIsMy() == 0) {
+                    if (mTeamList.get(i).getIsMy() == 1) {
+                        selectedTeamTabs = i;
+                    }
+                    myTeamTabs = i;
                 }
             }
         }
 
+        //播放声音
+        if (mSoundPool == null)
+            mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        if (soundPraiselistIn == 0) {
+            soundPraiselistIn = mSoundPool.load(mContext, R.raw.praise_list, 1);
+            mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                    soundPool.play(soundPraiselistIn, 1, 1, 0, 0, 1);
+                }
+            });
+        } else {
+            mSoundPool.play(soundPraiselistIn, 1, 1, 0, 0, 1);
+        }
 
+        //恭喜 金榜题名
+        if (isOnList) {
+            SpannableString successString = new SpannableString("恭喜 " + mPresenter.getStuName() + "同学 金榜题名，努力总有收获");
+            AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(SizeUtils.Dp2Px(mContext, 11));
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(mContext.getResources().getColor(R.color.white));
+            successString.setSpan(sizeSpan, "恭喜 ".length(), "恭喜 ".length() + mPresenter.getStuName().length() + "同学".length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            successString.setSpan(colorSpan, "恭喜 ".length(), "恭喜 ".length() + mPresenter.getStuName().length() + "同学".length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            tvCongratulations.setText(successString);
+        } else {
+            tvCongratulations.setText("不要灰心，努力一点，下次一定上榜");
+            tvCongratulations.setBackgroundResource(R.drawable.bg_livevideo_praiselist_congratulations_fail);
+        }
+
+        //备注
+        switch (listType) {
+            case PRAISE_LIST_TYPE_EXECELLENT:
+                tvNotes.setText("注:全对或者订正到全对的同学可以上榜哦~");
+
+                break;
+            case PRAISE_LIST_TYPE_MINI_MARKET:
+
+                if (minimarketListEntity.getTitleId() == 1) {
+                    tvNotes.setText("注:统计周期为上讲结束后到本讲当天");
+                } else {
+                    tvNotes.setText("注:统计周期为本周一到本讲当天");
+                }
+                break;
+            case PRAISE_LIST_TYPE_LIKE:
+                tvNotes.setText("注:点赞数高的同学可以上榜哦~");
+                rvDanmaku.setVisibility(View.GONE);
+                btnLike.setVisibility(View.GONE);
+                break;
+            default:
+                break;
+        }
+
+        //学生列表
+        studentAdapter = new RCommonAdapter(mContext, mTeamList.get(selectedTeamTabs).getStudentList());
+        studentAdapter.addItemViewDelegate(new StudentItem());
+        GridLayoutManager studentLayoutManager = new GridLayoutManager(mContext, MAX_STUDENT_COLUMN_NUMBER);
+        rvStudentlist.setLayoutManager(studentLayoutManager);
+        rvStudentlist.setAdapter(studentAdapter);
+        rvStudentlist.addItemDecoration(new SpaceItemDecoration(SizeUtils.Dp2Px(mContext, 20)));
+        rvStudentlist.setHasFixedSize(true);
+
+        //战队列表
+        teamAdapter = new RCommonAdapter(mContext, mTeamList);
+        teamAdapter.addItemViewDelegate(new TeamItem());
+        LinearLayoutManager teamLayoutManager = new LinearLayoutManager(mContext);
+        teamLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        teamLayoutManager.setInitialPrefetchItemCount(MAX_TEAM_NUMBER);
+        rvTeamList.setLayoutManager(teamLayoutManager);
+        rvTeamList.setAdapter(teamAdapter);
+
+        //默认直接展示自己战队的页卡
+        rvStudentlist.setBackgroundResource(tabsBackgroundRes[selectedTeamTabs]);
+        studentAdapter.updateData(mTeamList.get(selectedTeamTabs).getStudentList());
+
+        //弹幕消息
+        danmakuAdapter = new DanmakuAdapter(danmakuList);
+        rvDanmaku.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true));
+        rvDanmaku.setAdapter(danmakuAdapter);
+        rvDanmaku.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                int itemPosition = parent.getChildAdapterPosition(view);
+                int left = 0;
+                int right = 0;
+                int top = 0;
+                int bottom = 0;
+                if (itemPosition < danmakuList.size()) {
+                    top = SizeUtils.Dp2Px(mContext, 10);
+                }
+                outRect.set(left, top, right, bottom);
+            }
+        });
+    }
+
+    private class DanmakuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        private List<PraiseListDanmakuEntity> mData;
+
+        public DanmakuAdapter(List<PraiseListDanmakuEntity> data) {
+            mData = data;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new DanmakuItem(View.inflate(parent.getContext(), R.layout.item_livevideo_praiselist_danmaku, null));
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            int dataIndex = (mData.size() - 1) - position;
+            ((DanmakuItem) holder).bindData(mData.get(dataIndex));
+        }
+
+        @Override
+        public int getItemCount() {
+            return mData == null ? 0 : mData.size();
+        }
+    }
+
+    private class DanmakuItem extends RecyclerView.ViewHolder {
+        private TextView tvMsg;
+        private TextView tvTeam;
+
+        private DanmakuItem(View itemView) {
+            super(itemView);
+            tvMsg = itemView.findViewById(R.id.tv_livevideo_praiselist_danmaku_msg);
+            tvTeam = itemView.findViewById(R.id.tv_livevideo_praiselist_danmaku_team);
+        }
+
+        public void bindData(PraiseListDanmakuEntity data) {
+            tvMsg.setVisibility(View.VISIBLE);
+            if (data.getBarrageType() == 1) {
+                tvTeam.setVisibility(View.GONE);
+                if (mPresenter.getStuName() != null && mPresenter.getStuName().equals(data.getName())) {
+                    tvMsg.setText(data.getName() + "同学点了" + data.getNumber() + "个赞!!");
+                    tvMsg.setTextColor(Color.parseColor("#FFFFDB5C"));
+                } else {
+                    tvMsg.setText(data.getName() + "同学点了" + data.getNumber() + "个赞!!");
+                    tvMsg.setTextColor(mContext.getResources().getColor(R.color.white));
+                }
+
+            } else if (data.getBarrageType() == 2) {
+                tvTeam.setVisibility(View.VISIBLE);
+                tvMsg.setText(data.getName() + "共获得" + data.getNumber() + "个赞!!");
+                tvMsg.setTextColor(mContext.getResources().getColor(R.color.white));
+            }
+        }
+    }
+
+    private void addDanmaku(PraiseListDanmakuEntity danmakuEntity) {
+        danmakuList.add(danmakuEntity);
+        danmakuAdapter.notifyItemInserted(0);
+    }
+
+    private Runnable hideLikeCountRunnable = new Runnable() {
+        @Override
+        public void run() {
+            fadeOut();
+        }
+    };
+
+    private Runnable hideDoubleCardRunnable = new Runnable() {
+        @Override
+        public void run() {
+            duringDoubleCard = false;
+            tvLikeCount.setVisibility(View.VISIBLE);
+            tvLikeCount.setText("+" + totalLikeCount[selectedTeamTabs]);
+            lottieAnimationDoubleCardView.setVisibility(View.GONE);
+            mWeakHandler.postDelayed(hideLikeCountRunnable, 2000);
+        }
+    };
+
+    private int btnLikeClickTime = 0;
+    boolean duringDoubleCard = false;
+
+    @Override
+    public void initListener() {
+        //监听点赞按钮点击事件
+        btnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (soundLike == 0) {
+                    soundLike = mSoundPool.load(mContext, R.raw.thumbs_up, 1);
+                    mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                        public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                            soundPool.play(soundLike, 1, 1, 0, 0, 1);
+                        }
+                    });
+                } else {
+                    if (mSoundPool != null) {
+                        mSoundPool.play(soundLike, 1, 1, 0, 0, 1);
+                    }
+                }
+                startClickLikeAnimation();
+                lottieAnimationLoopStarView.setVisibility(View.GONE);
+
+                if (btnLikeClickTime >= 10) {
+                    if (duringDoubleCard) {
+                        return;
+                    }
+                    //发现二倍卡
+                    if (findDoubleCard()) {
+                        duringDoubleCard = true;
+                        tvLikeCount.setVisibility(View.GONE);
+                        totalLikeCount[selectedTeamTabs] *= 2;
+                        startDoubleCardAnimation();
+                        mWeakHandler.removeCallbacks(hideLikeCountRunnable);
+                        mWeakHandler.removeCallbacks(hideDoubleCardRunnable);
+                        mWeakHandler.postDelayed(hideDoubleCardRunnable, 2000);
+                    } else {
+                        if (tvLikeCount.getVisibility() == View.GONE) {
+                            tvLikeCount.setVisibility(View.VISIBLE);
+                            fadeIn();
+                        }
+                        totalLikeCount[selectedTeamTabs]++;
+                        tvLikeCount.setText("+" + totalLikeCount[selectedTeamTabs]);
+                        mWeakHandler.removeCallbacks(hideLikeCountRunnable);
+                        mWeakHandler.postDelayed(hideLikeCountRunnable, 2000);
+                    }
+                } else {
+                    if (tvLikeCount.getVisibility() == View.GONE) {
+                        tvLikeCount.setVisibility(View.VISIBLE);
+                        fadeIn();
+                    }
+                    totalLikeCount[selectedTeamTabs]++;
+                    tvLikeCount.setText("+" + totalLikeCount[selectedTeamTabs]);
+                    mWeakHandler.removeCallbacks(hideLikeCountRunnable);
+                    mWeakHandler.postDelayed(hideLikeCountRunnable, 2000);
+                }
+                if (likeTimer == null) {
+                    likeTimer = new Timer();
+                    likeTimer.schedule(new LikeTimerTask(), 0, 4000);
+                }
+                btnLikeClickTime++;
+            }
+        });
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final CloseConfirmDialog closeConfirmDialog = new CloseConfirmDialog(mContext);
+                closeConfirmDialog.setTitle("关闭后将无法再开启表扬榜哦，确定关闭吗？");
+                closeConfirmDialog.setTitleGravaty(Gravity.LEFT);
+                closeConfirmDialog.hideContent();
+                closeConfirmDialog.setOnClickCancelListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        closeConfirmDialog.cancelDialog();
+                    }
+                });
+                closeConfirmDialog.setOnClickConfirmlListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        closeConfirmDialog.cancelDialog();
+                        mPraiseListView.closePraiseList();
+                    }
+                });
+                closeConfirmDialog.showDialog();
+            }
+        });
+
+        teamAdapter.setOnItemClickListener(new RCommonAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                if (position < 0 || position == selectedTeamTabs) {
+                    //同时点击两个item，可能会返回小于0的positon
+                    return;
+                }
+                int oldSelectedTeamTabs = selectedTeamTabs;
+                selectedTeamTabs = position;
+                teamAdapter.notifyItemChanged(oldSelectedTeamTabs);
+                teamAdapter.notifyItemChanged(selectedTeamTabs);
+                btnLikeClickTime = 0;
+                studentAdapter.updateData(mTeamList.get(selectedTeamTabs).getStudentList());
+                rvStudentlist.setBackgroundResource(tabsBackgroundRes[selectedTeamTabs]);
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                return false;
+            }
+        });
+    }
+
+    private void fadeIn() {
+        float curTranslationX = tvLikeCount.getTranslationX();
+        ObjectAnimator translationY = ObjectAnimator.ofFloat(tvLikeCount, "translationY", caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20)), curTranslationX);
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(tvLikeCount, "alpha", 0f, 1f);
+        AnimatorSet animSet = new AnimatorSet();
+        animSet.play(translationY).with(alpha);
+        animSet.setDuration(500);
+        animSet.start();
+    }
+
+    private void fadeOut() {
+        float curTranslationX = tvLikeCount.getTranslationX();
+        ObjectAnimator translationY = ObjectAnimator.ofFloat(tvLikeCount, "translationY", curTranslationX, caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20)));
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(tvLikeCount, "alpha", 1f, 0f);
+        AnimatorSet animSet = new AnimatorSet();
+        animSet.play(translationY).with(alpha);
+        animSet.setDuration(500);
+        animSet.start();
+        animSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                tvLikeCount.setVisibility(View.GONE);
+                lottieAnimationLoopStarView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
     }
 
     /**
@@ -327,153 +805,20 @@ public class PraiseListPager extends LiveBasePager {
      * @return
      */
     private int caculateVerticalMargin(int rate) {
-        int screenHeight = ScreenUtils.getScreenHeight();
-        return (rate * screenHeight) / SizeUtils.Dp2Px(mContext, 375);
-    }
 
-    /**
-     * 根据效果图比例动态计算控件水平方向边距
-     *
-     * @param rate
-     * @return
-     */
-    private int caculateHorizontalMargin(int rate) {
-        int measuredWidth = lottieAnimationBGView.getMeasuredWidth();
-        return (rate * measuredWidth) / SizeUtils.Dp2Px(mContext, 500);
-    }
-
-
-    @Override
-    public void initData() {
-        //名字
-        stuName = liveBll.getStuName();
-        tvTipsView.setText("恭喜 " + stuName + " 同学金榜题名!");
-        //名字缩写
-        String abbStuName = stuName;
-        if (stuName != null && stuName.length() > 4) {
-            abbStuName = stuName.substring(0, 3) + "...";
-        }
-        thumbsUpCopywriting = new String[]{
-                " 为你点赞，" + abbStuName + "学神~下次榜单再相见！",
-                " 为你点赞，再接再厉哦，小学霸~",
-                " 为你点赞，" + abbStuName + "好厉害，向你学习！",
-                " 为你点赞，一起学习，一起进步",
-                " 为你点赞，下次一定赶超你~",
-                " 为你点赞，好羡慕能上榜~",
-                " 为你点赞，" + abbStuName + "学神请接收我的膜拜",
-                " 为你点赞，运气不错，额外获得<font color='#F13232'>1</font>颗赞哦~",
-                " 为你点赞，运气爆棚，额外获得<font color='#F13232'>2</font>颗赞哦!"};
-
-
-        weakHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startBGAnimation();
-            }
-        }, 300);
-
-
-        //播放声音
-        if (soundPool == null)
-            soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        if (soundPraiselistIn == 0) {
-            soundPraiselistIn = soundPool.load(mContext, R.raw.praise_list, 1);
-            soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-                public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                    // TODO Auto-generated method stub
-                    soundPool.play(soundPraiselistIn, 1, 1, 0, 0, 1);
-                }
-            });
+        int measuredHeight = lottieAnimationBGView.getMeasuredHeight();
+        int measudredWidth = lottieAnimationBGView.getMeasuredWidth();
+        if (measudredWidth * 3 <= measuredHeight * 4) {
+            //水平方向上截断
+            return (rate * measuredHeight) / SizeUtils.Dp2Px(mContext, 375);
         } else {
-            soundPool.play(soundPraiselistIn, 1, 1, 0, 0, 1);
+            //数值方向上截断
+            return (rate * measudredWidth) / SizeUtils.Dp2Px(mContext, 500);
         }
-
-        RCommonAdapter adapter = null;
-        GridLayoutManager layoutManager = null;
-        switch (mPraiseListType) {
-            case PRAISE_LIST_TYPE_HONOR:
-                noteView.setText("备注:全对或者订正到全对的同学可以上榜哦~");
-                adapter = new RCommonAdapter(mContext, honorListEntity.getHonorEntities());
-                adapter.addItemViewDelegate(new HonorItem());
-                layoutManager = new GridLayoutManager(mContext, 4);
-                rvPraiseListView.setLayoutManager(layoutManager);
-                rvPraiseListView.setAdapter(adapter);
-                if (honorListEntity.getPraiseStatus() != 0)
-                    btnThumbsUpView.setVisibility(View.INVISIBLE);
-
-                if (honorListEntity != null && honorListEntity.getIsMy() == 1) {
-                    tvTipsView.setVisibility(View.VISIBLE);
-                } else {
-                    tvTipsView.setVisibility(View.GONE);
-                }
-                break;
-            case PRAISE_LIST_TYPE_THUMBS_UP:
-                adapter = new RCommonAdapter(mContext, thumbsUpListEntity.getThumbsUpEntities());
-                adapter.addItemViewDelegate(new ThunbsUpItem());
-                layoutManager = new GridLayoutManager(mContext, 3);
-                rvPraiseListView.setLayoutManager(layoutManager);
-                rvPraiseListView.setAdapter(adapter);
-                if (thumbsUpListEntity != null && thumbsUpListEntity.getIsMy() == 1) {
-                    tvTipsView.setVisibility(View.VISIBLE);
-                } else {
-                    tvTipsView.setVisibility(View.GONE);
-                }
-                tvDanmakuView.setVisibility(View.GONE);
-                btnThumbsUpView.setVisibility(View.GONE);
-                noteView.setVisibility(View.GONE);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rvPraiseListView.getLayoutParams();
-                lp.setMargins(SizeUtils.Dp2Px(mContext, 20),
-                        SizeUtils.Dp2Px(mContext, 53),
-                        SizeUtils.Dp2Px(mContext, 20),
-                        SizeUtils.Dp2Px(mContext, 24));
-                break;
-            case PRAISE_LIST_TYPE_PROGRESS:
-                noteView.setText("备注:连续两次作业分数(百分制)有进步可以上榜哦~");
-                adapter = new RCommonAdapter(mContext, progressListEntity.getProgressEntities());
-                adapter.addItemViewDelegate(new ProgressItem());
-                layoutManager = new GridLayoutManager(mContext, 3);
-                rvPraiseListView.setLayoutManager(layoutManager);
-                rvPraiseListView.setAdapter(adapter);
-                if (progressListEntity.getPraiseStatus() != 0)
-                    btnThumbsUpView.setVisibility(View.INVISIBLE);
-
-                if (progressListEntity != null && progressListEntity.getIsMy() == 1) {
-                    tvTipsView.setVisibility(View.VISIBLE);
-                } else {
-                    tvTipsView.setVisibility(View.GONE);
-                }
-                break;
-            default:
-                break;
-        }
-        //监听点赞按钮点击事件
-        btnThumbsUpView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (soundThumbsUp == 0) {
-                    soundThumbsUp = soundPool.load(mContext, R.raw.thumbs_up, 1);
-                    soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-                        public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                            // TODO Auto-generated method stub
-                            soundPool.play(soundThumbsUp, 1, 1, 0, 0, 1);
-                        }
-                    });
-                } else {
-                    soundPool.play(soundThumbsUp, 1, 1, 0, 0, 1);
-                }
-                if (mPraiseListType == PRAISE_LIST_TYPE_HONOR)
-                    liveBll.getHonorList(1);
-                if (mPraiseListType == PRAISE_LIST_TYPE_PROGRESS)
-                    liveBll.getProgressList(1);
-                btnThumbsUpView.setEnabled(false);
-            }
-        });
-
     }
 
 
     public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
-
         private int space;
 
         public SpaceItemDecoration(int space) {
@@ -482,166 +827,405 @@ public class PraiseListPager extends LiveBasePager {
 
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            //不是第一个的格子都设一个左边和底部的间距
-//            outRect.left = space;
-            outRect.bottom = space;
-            //由于每行都只有3个，所以第一个都是3的倍数，把左边距设为0
-            if (parent.getChildLayoutPosition(view) % 4 == 0) {
-                outRect.left = 0;
+            if (parent.getChildLayoutPosition(view) < MAX_STUDENT_COLUMN_NUMBER) {
+                outRect.top = space / 2;
             }
         }
-
     }
 
-    /** 计算点赞数量的规则 */
-    public int calculateThumbsUpNum() {
-        int thumbsUpNum = 1;
-        int probability = mPraiseListBll.getThumbsUpProbability();
+    /**
+     * 二倍卡触发次数
+     */
+    int doubleCardCount = 0;
+    /**
+     * 普通学生最多触发2次
+     */
+    private static int NORMOL_MAX_DOUBLE_CARD_COUNT = 2;
+    /**
+     * 新生和未续保学生最多触发4次
+     */
+    private static int VIP_MAX_DOUBLE_CARD_COUNT = 4;
+
+    /**
+     * 是否触发二倍卡  1：概率不加倍  2：概率加倍
+     */
+    public boolean findDoubleCard() {
+        int probability = mPresenter.getProbability();
+        int maxCount;
+        if (probability == 2) {
+            maxCount = VIP_MAX_DOUBLE_CARD_COUNT;
+        } else {
+            maxCount = NORMOL_MAX_DOUBLE_CARD_COUNT;
+        }
+        if (doubleCardCount >= maxCount) {
+            return false;
+        }
+        if (myTeamTabs != selectedTeamTabs) {
+            //给其他战队点赞 概率加倍
+            probability = 2;
+        } else if (mTeamList.get(selectedTeamTabs).getTeamMemberNums() <= 10) {
+            //战队人数小于等于10人 概率加倍
+            probability = 2;
+        }
         Random random = new Random();
         int i;
-        if (probability == 1) {
-            //1：表示概率不加倍
-            i = random.nextInt(9);
-            if (i == 0) {
-                thumbsUpNum = 2;
-            } else {
-                i = random.nextInt(19);
-                if (i == 0)
-                    thumbsUpNum = 3;
-                else
-                    thumbsUpNum = 1;
+        if (probability == 2) {
+            i = random.nextInt(1000);
+            if (i < 10) {
+                doubleCardCount++;
+                return true;
             }
-        } else if (probability == 2) {
-            //2：表示概率加倍
-            i = random.nextInt(4);
-            if (i == 0) {
-                thumbsUpNum = 2;
-            } else {
-                i = random.nextInt(9);
-                if (i == 0)
-                    thumbsUpNum = 3;
-                else
-                    thumbsUpNum = 1;
+        } else {
+            i = random.nextInt(1000);
+            if (i < 4) {
+                doubleCardCount++;
+                return true;
             }
         }
-        return thumbsUpNum;
+        return false;
     }
 
-    /** 开始整个背景动画 */
-    public void startBGAnimation() {
-        logger.d("startBGAnimation");
+    /**
+     * 表扬榜背景 动画
+     */
+    public void startBackgtoundAnimation() {
+        logger.d("startBackgtoundAnimation");
 
-        String advanceResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
-        String advanceJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/data.json";
-        final LottieEffectInfo advanceEffectInfo = new LottieEffectInfo(advanceResPath, advanceJsonPath);
+        //优秀榜背景动画
+        String bacnkgroundResPath = LOTTIE_RES_ASSETS_ROOTDIR + "background/images";
+        String bacnkgroundJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "background/data.json";
+        final LottieEffectInfo backgroundEffectInfo = new LottieEffectInfo(bacnkgroundResPath, bacnkgroundJsonPath);
 
-        String praiseResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_praise";
-        final LottieEffectInfo praiseEffectInfo = new LottieEffectInfo(praiseResPath, advanceJsonPath);
+        //计算小超市背景动画
+        String miniMarketResPath = LOTTIE_RES_ASSETS_ROOTDIR + "background/images_mini_market";
+        final LottieEffectInfo miniMarketEffectInfo = new LottieEffectInfo(miniMarketResPath, bacnkgroundJsonPath);
 
-        String goodResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_good";
-        final LottieEffectInfo goodEffectInfo = new LottieEffectInfo(goodResPath, advanceJsonPath);
+        //点赞榜背景动画
+        String likeResPath = LOTTIE_RES_ASSETS_ROOTDIR + "background/images_like";
+        final LottieEffectInfo likeEffectInfo = new LottieEffectInfo(likeResPath, bacnkgroundJsonPath);
 
-        final ArrayList<String> praiseDeleteRes = new ArrayList<>(3);
-        praiseDeleteRes.add("img_11.png");
-        praiseDeleteRes.add("img_12.png");
+        //删除资源
+        final ArrayList<String> bacnkgroundDeleteRes = new ArrayList<>(3);
+        bacnkgroundDeleteRes.add("img_0.png");
+        bacnkgroundDeleteRes.add("img_1.png");
+        bacnkgroundDeleteRes.add("img_2.png");
+        bacnkgroundDeleteRes.add("img_3.png");
+        bacnkgroundDeleteRes.add("img_4.png");
+        bacnkgroundDeleteRes.add("img_5.png");
+        bacnkgroundDeleteRes.add("img_6.png");
+        bacnkgroundDeleteRes.add("img_7.png");
+        bacnkgroundDeleteRes.add("img_8.png");
+        bacnkgroundDeleteRes.add("img_8.png");
+        bacnkgroundDeleteRes.add("img_10.png");
+        bacnkgroundDeleteRes.add("img_15.png");
+        bacnkgroundDeleteRes.add("img_44.png");
 
-        final Map<String, String> praiseToAdvanceRes = new HashMap<>();
-        praiseToAdvanceRes.put("img_6.png", "img_11.png");
-        praiseToAdvanceRes.put("img_7.png", "img_12.png");
-        praiseToAdvanceRes.put("img_8.png", "img_13.png");
-        praiseToAdvanceRes.put("img_10.png", "img_15.png");
-        praiseToAdvanceRes.put("img_13.png", "img_17.png");
+        //计算小超市榜资源替换
+        final Map<String, String> miniMarketToBackgroundRes = new HashMap<>();
+        if (listType == PRAISE_LIST_TYPE_MINI_MARKET && minimarketListEntity != null) {
+            if (minimarketListEntity.getTitleId() == 1) {
+                miniMarketToBackgroundRes.put("img_9.png", "img_9_1.png");
+            } else {
+                miniMarketToBackgroundRes.put("img_9.png", "img_9_2.png");
+            }
+        }
 
-        final Map<String, String> goodToAdvanceRes = new HashMap<>();
-        goodToAdvanceRes.put("img_6.png", "img_11.png");
-        goodToAdvanceRes.put("img_7.png", "img_13.png");
-        goodToAdvanceRes.put("img_8.png", "img_12.png");
-        goodToAdvanceRes.put("img_10.png", "img_15.png");
+        //点赞榜资源替换
+        final Map<String, String> likeToBackgroundRes = new HashMap<>();
+        likeToBackgroundRes.put("img_9.png", "img_9.png");
 
-        lottieAnimationBGView.setAnimationFromJson(advanceEffectInfo.getJsonStrFromAssets(mContext),"praise_bg");
-        lottieAnimationBGView.useHardwareAcceleration(true);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
                 String fileName = lottieImageAsset.getFileName();
-                //优秀榜
-                if (mPraiseListType == PRAISE_LIST_TYPE_HONOR) {
-                    if (goodToAdvanceRes.containsKey(fileName)) {
-                        return goodEffectInfo.fetchBitmapFromAssets(lottieAnimationBGView, goodToAdvanceRes.get
-                                        (fileName),
-                                lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
-                                mContext);
-                    }
-
-
-                } else if (mPraiseListType == PRAISE_LIST_TYPE_THUMBS_UP) {
-                    if (praiseToAdvanceRes.containsKey(fileName)) {
-                        return praiseEffectInfo.fetchBitmapFromAssets(lottieAnimationBGView, praiseToAdvanceRes.get
-                                        (fileName),
-                                lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
-                                mContext);
-                    } else if (praiseDeleteRes.contains(fileName)) {
-                        return null;
-                    }
-
+                if (bacnkgroundDeleteRes.contains(fileName)) {
+                    return null;
                 }
-
-                return advanceEffectInfo.fetchBitmapFromAssets(lottieAnimationBGView, lottieImageAsset.getFileName(),
-                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
+                if (listType == PRAISE_LIST_TYPE_MINI_MARKET) {
+                    if (miniMarketToBackgroundRes.containsKey(fileName)) {
+                        return miniMarketEffectInfo.fetchBitmapFromAssets(
+                                lottieAnimationBGView,
+                                miniMarketToBackgroundRes.get(fileName),
+                                lottieImageAsset.getId(),
+                                lottieImageAsset.getWidth(),
+                                lottieImageAsset.getHeight(),
+                                mContext);
+                    }
+                } else if (listType == PRAISE_LIST_TYPE_LIKE) {
+                    if (likeToBackgroundRes.containsKey(fileName)) {
+                        return likeEffectInfo.fetchBitmapFromAssets(
+                                lottieAnimationBGView,
+                                likeToBackgroundRes.get(fileName),
+                                lottieImageAsset.getId(),
+                                lottieImageAsset.getWidth(),
+                                lottieImageAsset.getHeight(),
+                                mContext);
+                    }
+                }
+                return backgroundEffectInfo.fetchBitmapFromAssets(
+                        lottieAnimationBGView,
+                        lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(),
+                        lottieImageAsset.getWidth(),
+                        lottieImageAsset.getHeight(),
+                        mContext);
             }
         };
+
+        lottieAnimationBGView.setAnimationFromJson(backgroundEffectInfo.getJsonStrFromAssets(mContext), "background");
+        lottieAnimationBGView.useHardwareAcceleration(true);
         lottieAnimationBGView.setImageAssetDelegate(imageAssetDelegate);
         lottieAnimationBGView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float animatedFraction = animation.getAnimatedFraction();
-                if (animatedFraction > 0.8) {
+                if (animatedFraction > 0.1) {
+                    lottieAnimationBGView.removeUpdateListener(this);
                     contentGroup.setVisibility(View.VISIBLE);
+                    likeContentGroup.setVisibility(View.VISIBLE);
+                    if (listType != PRAISE_LIST_TYPE_LIKE) {
+                        startLoopStarAnimation();
+                    }
+                    startLoopLightAnimation();
                 }
             }
         });
-        lottieAnimationBGView.addAnimatorListener(new BGAnimatorListener(ANIMATOR_TYPE_MAIN));
+        lottieAnimationBGView.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                //截屏
+                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+                if (studyReportAction != null && isOnList) {
+                    if (listType == PRAISE_LIST_TYPE_EXECELLENT) {
+                        studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_5, mView, false, false);
+                    } else if (listType == PRAISE_LIST_TYPE_MINI_MARKET) {
+                        studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_4, mView, false, false);
+                    } else if (listType == PRAISE_LIST_TYPE_LIKE) {
+                        studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_6, mView, false, false);
+                    }
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
         lottieAnimationBGView.playAnimation();
+    }
 
+    /**
+     * 循环光芒 动画
+     */
+    private void startLoopLightAnimation() {
+        lottieAnimationLoopLightView.useHardwareAcceleration(true);
+        lottieAnimationLoopLightView.playAnimation();
+    }
 
-        String loopResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
-        String loopJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/data_loop.json";
-        final LottieEffectInfo loopEffectInfo = new LottieEffectInfo(loopResPath, loopJsonPath);
-        lottieAnimationLoopBGView.setAnimationFromJson(loopEffectInfo.getJsonStrFromAssets(mContext),"praise_loop_bg");
-        lottieAnimationLoopBGView.useHardwareAcceleration(true);
-        lottieAnimationLoopBGView.setRepeatCount(-1);
-        lottieAnimationLoopBGView.setImageAssetDelegate(imageAssetDelegate);
-        //截屏
-        StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
-        if (studyReportAction != null) {
-            lottieAnimationLoopBGView.addAnimatorListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    logger.d("lottieAnimationLoopBGView:onAnimationStart");
+    /**
+     * 点赞 循环星星 动画
+     */
+    private void startLoopStarAnimation() {
+        lottieAnimationLoopStarView.setVisibility(View.VISIBLE);
+        lottieAnimationLoopStarView.useHardwareAcceleration(true);
+        lottieAnimationLoopStarView.playAnimation();
+    }
+
+    /**
+     * 点赞 发现二倍卡 动画
+     */
+    private void startDoubleCardAnimation() {
+        lottieAnimationDoubleCardView.setVisibility(View.VISIBLE);
+        lottieAnimationDoubleCardView.useHardwareAcceleration(true);
+        lottieAnimationDoubleCardView.playAnimation();
+    }
+
+    /**
+     * 点赞 点击 动画
+     */
+    private void startClickLikeAnimation() {
+        final LottieAnimationView lottieAnimationClickLikeView = new LottieAnimationView(mContext);
+        lottieClickLikeGroup.addView(lottieAnimationClickLikeView);
+        lottieAnimationClickLikeView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        RelativeLayout.LayoutParams clickLikeParams = (RelativeLayout.LayoutParams) lottieAnimationClickLikeView.getLayoutParams();
+        clickLikeParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
+        clickLikeParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
+        clickLikeParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
+        clickLikeParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
+        lottieAnimationClickLikeView.setLayoutParams(clickLikeParams);
+        lottieAnimationClickLikeView.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                lottieClickLikeGroup.removeView(lottieAnimationClickLikeView);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+
+        String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "click_like/images";
+        String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "click_like/data.json";
+        final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath);
+        lottieAnimationClickLikeView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext), "click_like");
+        lottieAnimationClickLikeView.useHardwareAcceleration(true);
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return bubbleEffectInfo.fetchBitmapFromAssets(
+                        lottieAnimationClickLikeView,
+                        lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(),
+                        lottieImageAsset.getWidth(),
+                        lottieImageAsset.getHeight(),
+                        mContext);
+            }
+        };
+        lottieAnimationClickLikeView.setImageAssetDelegate(imageAssetDelegate);
+        lottieAnimationClickLikeView.playAnimation();
+    }
+
+    /**
+     * 老师表扬横幅 动画
+     */
+    public void startScrollAnimation(String stuName, String tecName) {
+        if (!isOnList) {
+            return;
+        }
+        String student = stuName + "同学";
+        String str1 = " 获得 ";
+        String teacher = tecName + "老师";
+        String str2 = " 的重点表扬，要努力继续上榜哦～";
+        SpannableString spanText = new SpannableString(student + str1 + teacher + str2);
+        spanText.setSpan(new AbsoluteSizeSpan(SizeUtils.Dp2Px(mContext, 18)), 0, student.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = student.length() + str1.length();
+        spanText.setSpan(new AbsoluteSizeSpan(SizeUtils.Dp2Px(mContext, 18)), start, start + teacher.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        teacherTipsView.setText(spanText);
+
+        teacherTipsView.setVisibility(View.GONE);
+        lottieAnimationTeacherGroup.setVisibility(View.VISIBLE);
+        lottieAnimationTeacherView.useHardwareAcceleration(true);
+        lottieAnimationTeacherView.playAnimation();
+
+        lottieAnimationTeacherView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float animatedFraction = valueAnimator.getAnimatedFraction();
+                if (animatedFraction > 0.1) {
+                    teacherTipsView.setVisibility(View.VISIBLE);
                 }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    logger.d("lottieAnimationLoopBGView:onAnimationEnd");
+                if (animatedFraction > 0.4) {
+                    lottieAnimationTeacherGroup.setVisibility(View.GONE);
+                    lottieAnimationTeacherView.cancelAnimation();
+                    lottieAnimationTeacherView.removeUpdateListener(this);
                 }
+            }
+        });
+    }
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
+    /**
+     * 收到老师广播赞数的消息
+     */
+    public void receiveLikeNotice(final List<PraiseListDanmakuEntity> danmakuList) {
+        for (int i = 0; i < danmakuList.size(); i++) {
+            if (danmakuList.get(i).getBarrageType() == 1) {
+                if (!danmakuList.get(i).getName().equals(mPresenter.getStuName())) {
+                    //过滤掉自己点赞数的消息
+                    this.stuDanmakuCache.add(danmakuList.get(i));
                 }
+            } else if (danmakuList.get(i).getBarrageType() == 2) {
+                this.teamDanmakuCache.add(danmakuList.get(i));
+            }
+        }
 
+        if (this.teamDanmakuCache.size() != 0 || this.stuDanmakuCache.size() != 0) {
+            //如果点赞消息列表不为空，开始滚动弹幕
+            if (danmakuTimer == null) {
+                danmakuTimer = new Timer();
+                danmakuTimer.schedule(new DanmakuTimerTask(), 0, DURATION_DANMAKU_SCROOL);
+            }
+        }
+    }
+
+    private class DanmakuTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            mWeakHandler.post(new Runnable() {
                 @Override
-                public void onAnimationRepeat(Animator animation) {
-                    lottieAnimationLoopBGView.removeAnimatorListener(this);
-                    logger.d("lottieAnimationLoopBGView:onAnimationRepeat");
-                    StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
-                    if (studyReportAction != null && isOnList) {
-                        if (mPraiseListType == PRAISE_LIST_TYPE_HONOR) {
-                            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_5, mView, false, false);
-                        } else if (mPraiseListType == PRAISE_LIST_TYPE_PROGRESS) {
-                            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_4, mView, false, false);
-                        } else if (mPraiseListType == PRAISE_LIST_TYPE_THUMBS_UP) {
-                            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_6, mView, false, false);
+                public void run() {
+                    //优先级：战队>自己>学生
+                    if (teamDanmakuCount < teamDanmakuCache.size()) {
+                        addDanmaku(teamDanmakuCache.get(teamDanmakuCount));
+                        teamDanmakuCount++;
+                    } else if (myDanmakuCount < myDanmakuCache.size()) {
+                        addDanmaku(myDanmakuCache.get(myDanmakuCount));
+                        myDanmakuCount++;
+                    } else if (stuDanmakuCount < stuDanmakuCache.size()) {
+                        addDanmaku(stuDanmakuCache.get(stuDanmakuCount));
+                        stuDanmakuCount++;
+                    }
+                }
+            });
+        }
+    }
+
+    private class LikeTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            mWeakHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    //自己的点赞数本地显示
+                    totalLikeSum = 0;
+                    latestLikeSum = 0;
+                    for (int i = 0; i < mTeamList.size(); i++) {
+                        totalLikeSum += totalLikeCount[i];
+                        latestLikeSum += latestLikeCount[i];
+                    }
+                    logger.i("totalLikeSum=" + totalLikeSum + " latestLikeSum=" + latestLikeSum);
+                    if (totalLikeSum != latestLikeSum) {
+                        PraiseListDanmakuEntity praiseListDanmakuEntity = new PraiseListDanmakuEntity();
+                        praiseListDanmakuEntity.setBarrageType(1);
+                        praiseListDanmakuEntity.setNumber(totalLikeSum);
+                        praiseListDanmakuEntity.setName(mPresenter.getStuName());
+
+                        myDanmakuCache.add(praiseListDanmakuEntity);
+                        if (myDanmakuCache.size() != 0) {
+                            //如果点赞消息列表不为空，开始滚动弹幕
+                            if (danmakuTimer == null) {
+                                danmakuTimer = new Timer();
+                                danmakuTimer.schedule(new DanmakuTimerTask(), 0, DURATION_DANMAKU_SCROOL);
+                            }
+                        }
+                    }
+
+                    //上传点赞数
+                    for (int i = 0; i < mTeamList.size(); i++) {
+                        if (totalLikeCount[i] != latestLikeCount[i]) {
+                            int increment = totalLikeCount[i] - latestLikeCount[i];
+                            mPresenter.sendLikeNum(increment, mTeamList.get(i).getPkTeamId(), 1);
+                            latestLikeCount[i] = totalLikeCount[i];
                         }
                     }
                 }
@@ -649,222 +1233,9 @@ public class PraiseListPager extends LiveBasePager {
         }
     }
 
-    /**
-     * 谢谢点赞
-     */
-    private void startThanksBGAnimation() {
-        String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "thanks/images";
-        String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "thanks/data.json";
-        final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(resPath, jsonPath);
-        lottieAnimationThanksView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
-        lottieAnimationThanksView.useHardwareAcceleration(true);
-        lottieAnimationThanksView.setImageAssetDelegate(new ImageAssetDelegate() {
-            @Override
-            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                return lottieEffectInfo.fetchBitmapFromAssets(lottieAnimationThanksView, lottieImageAsset.getFileName(),
-                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
-            }
-        });
-
-        lottieAnimationThanksView.addAnimatorListener(new BGAnimatorListener(ANIMATOR_TYPE_THANKS));
-        lottieAnimationThanksView.playAnimation();
-    }
-
-
-    /**
-     * 显示老师表扬横幅
-     *
-     * @param stuName
-     * @param tecName
-     */
-    public void startScrollAnimation(String stuName, String tecName) {
-        if (!isOnList)
-            return;
-        lottieAnimationTeacherGroup.setVisibility(View.VISIBLE);
-        String student = stuName + "同学";
-        String str1 = " 获得 ";
-        String teacher = tecName + "老师";
-        String str2 = " 的重点表扬,要努力继续上榜哦～";
-        SpannableString spanText = new SpannableString(student + str1 + teacher + str2);
-        spanText.setSpan(new AbsoluteSizeSpan(SizeUtils.Sp2Px(mContext, 18)), 0, student.length()
-                , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        int start = student.length() + str1.length();
-        spanText.setSpan(new AbsoluteSizeSpan(SizeUtils.Sp2Px(mContext, 18)), start,
-                start + teacher.length()
-                , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        teacherTipsView.setText(spanText);
-
-        String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "praise_teacher/images";
-        String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "praise_teacher/data.json";
-        final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(resPath, jsonPath);
-        lottieAnimationTeacherView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
-        lottieAnimationTeacherView.setImageAssetDelegate(new ImageAssetDelegate() {
-            @Override
-            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                return lottieEffectInfo.fetchBitmapFromAssets(lottieAnimationTeacherView, lottieImageAsset
-                                .getFileName(),
-                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
-            }
-        });
-        lottieAnimationTeacherView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float animatedFraction = animation.getAnimatedFraction();
-                if (animatedFraction > 0.1 && teacherTipsView.getVisibility() == View.INVISIBLE) {
-                    teacherTipsView.setVisibility(View.VISIBLE);
-                }
-                if (animatedFraction > 0.6) {
-                    teacherTipsView.setVisibility(View.INVISIBLE);
-                    lottieAnimationTeacherGroup.setVisibility(View.GONE);
-                }
-            }
-        });
-        lottieAnimationTeacherView.addAnimatorListener(new BGAnimatorListener(ANIMATOR_TYPE_TEACHER));
-        lottieAnimationTeacherView.playAnimation();
-
-    }
-
-
-    /**
-     * 动画监听不准确，屏幕上已经没有动画但是end方法过一段时间才能收到
-     */
-    class BGAnimatorListener implements Animator.AnimatorListener {
-
-        private int mType;
-
-        BGAnimatorListener(int type) {
-            this.mType = type;
-        }
-
-        @Override
-        public void onAnimationStart(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            if (mType == ANIMATOR_TYPE_THANKS) {
-                lottieAnimationThanksGroup.setVisibility(View.GONE);
-            } else if (mType == ANIMATOR_TYPE_TEACHER) {
-                lottieAnimationTeacherGroup.setVisibility(View.GONE);
-            } else if (mType == ANIMATOR_TYPE_MAIN) {
-                contentGroup.setVisibility(View.VISIBLE);
-
-                lottieAnimationBGView.setVisibility(View.GONE);
-                lottieAnimationLoopBGView.setVisibility(View.VISIBLE);
-//                //开启循环动画
-                lottieAnimationLoopBGView.playAnimation();
-
-            }
-        }
-
-        @Override
-        public void onAnimationCancel(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationRepeat(Animator animation) {
-
-        }
-
-    }
-
-
-    public void setThumbsUpBtnEnabled(boolean enabled) {
-        btnThumbsUpView.setEnabled(enabled);
-    }
-
-
-    /** 收到给我点赞的消息 */
-    public void receiveThumbsUpNotice(ArrayList<String> stuNames) {
-        int stuNamesSize = this.stuNames.size();
-        int random;
-        if (!isOnList)
-            return;
-        if (number > this.stuNames.size())
-            number = this.stuNames.size();
-        int totalNums = 0;
-        for (int i = 0; i < stuNames.size(); i++) {
-            int thumbsUpNum = calculateThumbsUpNum();
-            if (!stuNames.get(i).equals(stuName)) {
-                //过滤掉自己和同名
-                if (stuNames.get(i).length() > 4) {
-                    this.stuNames.add(stuNames.get(i).substring(0, 3) + "...");
-                } else {
-                    this.stuNames.add(stuNames.get(i));
-                }
-                if (thumbsUpNum == 1) {
-                    random = new Random().nextInt(6);
-                    this.thumbsUpCopywritingIndex.add(random);
-                } else if (thumbsUpNum == 2) {
-                    this.thumbsUpCopywritingIndex.add(7);
-                } else if (thumbsUpNum == 3) {
-                    this.thumbsUpCopywritingIndex.add(8);
-                }
-                this.thumbsUpNums.add(thumbsUpNum);
-            }
-            totalNums += thumbsUpNum;
-        }
-        //计算点赞总数，发送至教师端
-        liveBll.sendThumbsUpNum(totalNums);
-        if (this.stuNames.size() != 0 && this.stuNames.size() > stuNamesSize)
-            //如果给我点赞的同学的集合不为空，且数量增加，开启弹幕滚动
-            startTimer();
-    }
-
-    class TanmakuTimerTask extends TimerTask {
-
-        @Override
-        public void run() {
-            if (isStop)
-                stopTimer();
-            else {
-                weakHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        tvDanmakuView.next();
-                        tvDanmakuView.setText(Html.fromHtml(
-                                "<font color='#F13232'>" + stuNames.get(number % stuNames.size()) + "</font>"
-                                        + thumbsUpCopywriting[thumbsUpCopywritingIndex.get(number % stuNames.size())]
-                        ));
-                        number++;
-                    }
-                });
-                if (stuNames.size() == 1)
-                    stopTimer();
-            }
-        }
-    }
-
-    private void startTimer() {
-        if (mTimer == null) {
-            mTimer = new Timer();
-        }
-
-        if (mTimer != null && isStop) {
-            isStop = false;
-            mTimer.schedule(new TanmakuTimerTask(), 0, 2000);
-        }
-    }
-
-    private void stopTimer() {
-        isStop = true;
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer = null;
-        }
-    }
-
-
-    public void showThumbsUpToast() {
-        btnThumbsUpView.setVisibility(View.INVISIBLE);
-        lottieAnimationThanksGroup.setVisibility(View.VISIBLE);
-        startThanksBGAnimation();
-        liveBll.sendThumbsUp();
-
+    public void showLikeToast() {
         StableLogHashMap logHashMap = new StableLogHashMap("praisePraiseList");
-        logHashMap.put("listtype", mPraiseListType + "");
+        logHashMap.put("listtype", "" + listType);
         logHashMap.put("stable", "2");
         logHashMap.put("expect", "1");
         logHashMap.put("sno", "5");
@@ -874,168 +1245,237 @@ public class PraiseListPager extends LiveBasePager {
 
 
     /**
-     * 优秀榜item
+     * 战队列表item
      */
-    private class HonorItem implements RItemViewInterface<HonorListEntity.HonorEntity> {
-        TextView tvName;
-        TextView tvCounts;
+    class TeamItem implements RItemViewInterface<PraiseListTeamEntity> {
+        ImageView ivHead;
+        ImageView ivMedal;
+        ImageView ivLike;
+        TextView tvCount;
 
         @Override
         public int getItemLayoutId() {
-            return R.layout.item_livevideo_praiselist_honor;
+            return R.layout.item_livevideo_praiselist_team;
         }
 
         @Override
-        public void initView(ViewHolder viewHolder, int i) {
-            tvName = viewHolder.getView(R.id.tv_livevideo_praiselist_honor_name);
-            tvCounts = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_honor_counts);
-            tvCounts.setVisibility(View.GONE);
-        }
-
-        @Override
-        public boolean isShowView(HonorListEntity.HonorEntity honorEntity, int i) {
+        public boolean isShowView(PraiseListTeamEntity item, int position) {
             return true;
         }
 
         @Override
-        public void convert(ViewHolder viewHolder, HonorListEntity.HonorEntity honorEntity, int i) {
-            if (honorEntity != null) {
-                String stuName = honorEntity.getStuName();
-                if (!TextUtils.isEmpty(stuName)) {
-                    if (stuName.length() >= 5) {
-                        stuName = stuName.substring(0, 3) + "...";
-                    }
+        public void initView(ViewHolder holder, int position) {
+            ivHead = holder.getView(R.id.iv_livevideo_praiselist_team_head);
+            ivMedal = holder.getView(R.id.iv_livevideo_praiselist_team_medal);
+            ivLike = holder.getView(R.id.iv_livevideo_praiselist_team_like);
+            tvCount = holder.getView(R.id.tv_livevideo_praiselist_team_count);
+
+            RecyclerView.LayoutParams holderParams = (RecyclerView.LayoutParams) holder.getConvertView().getLayoutParams();
+            holderParams.width = rvTeamList.getMeasuredWidth() / MAX_TEAM_NUMBER;
+
+            RelativeLayout.LayoutParams headParams = (RelativeLayout.LayoutParams) ivHead.getLayoutParams();
+            if (selectedTeamTabs == position) {
+                headParams.height = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 48));
+            } else {
+                headParams.height = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
+            }
+
+            RelativeLayout.LayoutParams medalParams = (RelativeLayout.LayoutParams) ivMedal.getLayoutParams();
+            medalParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 13));
+            medalParams.height = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 16));
+        }
+
+        @Override
+        public void convert(ViewHolder holder, PraiseListTeamEntity teamEntity, final int position) {
+            if (selectedTeamTabs == position) {
+                //这里自己做缓存。因为频繁切换战队页情况下，Glide缓存有闪动
+//                if (pressImg[position] != null) {
+//                    ivHead.setImageDrawable(pressImg[position]);
+//                } else {
+//                    ivHead.setImageResource(R.drawable.icon_livevideo_praiselist_team_head_default);
+//                    ImageLoader.with(mContext).load(teamEntity.getPressImg()).asBitmap(new SingleConfig.BitmapListener() {
+//                        @Override
+//                        public void onSuccess(Drawable drawable) {
+//                            pressImg[position] = drawable;
+//                            ivHead.setImageDrawable(drawable);
+//                        }
+//
+//                        @Override
+//                        public void onFail() {
+//
+//                        }
+//                    });
+//                }
+
+                ImageLoader.with(mContext).load(teamEntity.getPressImg()).error(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivHead);
+            } else {
+//                if (normalImg[position] != null) {
+//                    ivHead.setImageDrawable(normalImg[position]);
+//                } else {
+//                    ivHead.setImageResource(R.drawable.icon_livevideo_praiselist_team_head_default);
+//                    ImageLoader.with(mContext).load(teamEntity.getNormalImg()).asBitmap(new SingleConfig.BitmapListener() {
+//                        @Override
+//                        public void onSuccess(Drawable drawable) {
+//                            normalImg[position] = drawable;
+//                            ivHead.setImageDrawable(drawable);
+//                        }
+//
+//                        @Override
+//                        public void onFail() {
+//                        }
+//                    });
+//                }
+
+                ImageLoader.with(mContext).load(teamEntity.getNormalImg()).error(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivHead);
+            }
+
+            switch (listType) {
+                case PRAISE_LIST_TYPE_EXECELLENT:
+                case PRAISE_LIST_TYPE_MINI_MARKET: {
+                    ivLike.setVisibility(View.GONE);
+                    tvCount.setText(teamEntity.getOnListNums() + "/" + teamEntity.getTeamMemberNums());
+                    break;
                 }
-                tvName.setText(stuName);
+                case PRAISE_LIST_TYPE_LIKE: {
+                    ivLike.setVisibility(View.VISIBLE);
+
+                    if (teamEntity.getPraiseTotalNum() >= 10000) {
+                        double d = (double) teamEntity.getPraiseTotalNum() / (double) 10000;
+                        BigDecimal b = new BigDecimal(d);
+                        d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                        tvCount.setText(d + "万");
+                    } else {
+                        tvCount.setText(teamEntity.getPraiseTotalNum() + "");
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+
+            switch (teamEntity.getTeamRanking()) {
+                case 1: {
+                    ivMedal.setVisibility(View.VISIBLE);
+                    ivMedal.setImageResource(R.drawable.livevideo_list_jin_icon);
+                    break;
+                }
+                case 2: {
+                    ivMedal.setVisibility(View.VISIBLE);
+                    ivMedal.setImageResource(R.drawable.livevideo_list_yin_icon);
+                    break;
+                }
+                case 3: {
+                    ivMedal.setVisibility(View.VISIBLE);
+                    ivMedal.setImageResource(R.drawable.livevido_list_tong_icon);
+                    break;
+                }
+                default:
+                    ivMedal.setVisibility(View.GONE);
+                    break;
             }
         }
     }
 
     /**
-     * 点赞榜item
+     * 学生列表item
      */
-    private class ThunbsUpItem implements RItemViewInterface<ThumbsUpListEntity.ThumbsUpEntity> {
+    private class StudentItem implements RItemViewInterface<PraiseListStudentEntity> {
         TextView tvName;
-        TextView tvCounts;
-        ImageView ivArrow;
-        LinearLayout rootview;
+        RelativeLayout rlCount;
+        ImageView ivLike;
+        TextView tvCount;
+
         int tvNameWidth;
-        int tvCountWidth;
 
         @Override
         public int getItemLayoutId() {
-            return R.layout.item_livevideo_praiselist_progress;
-        }
-
-        @Override
-        public boolean isShowView(ThumbsUpListEntity.ThumbsUpEntity thumbsUpEntity, int i) {
-            return true;
+            return R.layout.item_livevideo_praiselist_excellent;
         }
 
         @Override
         public void initView(ViewHolder viewHolder, int i) {
-            rootview = (LinearLayout) viewHolder.getView(R.id.rl_livevideo_praiselist_progress_root);
-            tvName = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_progress_name);
-            tvCounts = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_progress_counts);
-            ivArrow = (ImageView) viewHolder.getView(R.id.iv_livevideo_praiselist_progress_arrow);
-            ivArrow.setImageResource(R.drawable.ic_livevideo_praiselist_praise);
-            tvCountWidth = (int) Math.ceil(tvCounts.getPaint().measureText("999"));
-            float nameWidth = tvName.getPaint().measureText("一二三...");
-            tvNameWidth = (int) Math.ceil(nameWidth);
+            tvName = viewHolder.getView(R.id.tv_livevideo_praiselist_excellent_name);
+            rlCount = viewHolder.getView(R.id.rl_livevideo_praiselist_excellent_count);
+            ivLike = viewHolder.getView(R.id.iv_livevideo_praiselist_excellent_like);
+            tvCount = viewHolder.getView(R.id.tv_livevideo_praiselist_excellent_count);
+
+            tvNameWidth = (int) Math.ceil(tvName.getPaint().measureText("一二三... "));
         }
 
         @Override
-        public void convert(ViewHolder viewHolder, ThumbsUpListEntity.ThumbsUpEntity thumbsUpEntity, int i) {
-            if ((i + 1) % 3 == 1) {
-                rootview.setGravity(Gravity.LEFT);
-            } else if ((i + 1) % 3 == 0) {
-                rootview.setGravity(Gravity.RIGHT);
-            } else {
-                rootview.setGravity(Gravity.CENTER_HORIZONTAL);
-            }
-            if (thumbsUpEntity != null) {
-                String stuName = thumbsUpEntity.getStuName();
-                if (!TextUtils.isEmpty(stuName)) {
-                    if (stuName.length() >= 5) {
-                        stuName = stuName.substring(0, 3) + "...";
-                    }
-                }
-
-                tvName.setWidth(tvNameWidth);
-                tvName.setText(stuName);
-
-                tvCounts.setWidth(tvCountWidth);
-                tvCounts.setText(String.valueOf(thumbsUpEntity.getStuPraiseNum()));
-
-            }
-        }
-    }
-
-    /**
-     * 进步榜item
-     */
-    private class ProgressItem implements RItemViewInterface<ProgressListEntity.ProgressEntity> {
-        TextView tvName;
-        TextView tvCounts;
-        ImageView ivArrow;
-        LinearLayout rootview;
-        int tvNameWidth;
-        int tvCountWidth;
-
-        @Override
-        public int getItemLayoutId() {
-            return R.layout.item_livevideo_praiselist_progress;
-        }
-
-        @Override
-        public boolean isShowView(ProgressListEntity.ProgressEntity progressEntity, int i) {
+        public boolean isShowView(PraiseListStudentEntity studentEntity, int i) {
             return true;
         }
 
         @Override
-        public void initView(ViewHolder viewHolder, int i) {
-            rootview = (LinearLayout) viewHolder.getView(R.id.rl_livevideo_praiselist_progress_root);
-            tvName = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_progress_name);
-            tvCounts = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_progress_counts);
-            ivArrow = (ImageView) viewHolder.getView(R.id.iv_livevideo_praiselist_progress_arrow);
-            tvCountWidth = (int) Math.ceil(tvCounts.getPaint().measureText("100分"));
-            float nameWidth = tvName.getPaint().measureText("一二三...");
-            tvNameWidth = (int) Math.ceil(nameWidth);
-        }
-
-        @Override
-        public void convert(ViewHolder viewHolder, ProgressListEntity.ProgressEntity progressEntity, int i) {
-            if ((i + 1) % 3 == 1) {
-                rootview.setGravity(Gravity.LEFT);
-            } else if ((i + 1) % 3 == 0) {
-                rootview.setGravity(Gravity.RIGHT);
-            } else {
-                rootview.setGravity(Gravity.CENTER_HORIZONTAL);
-            }
-
-            if (progressEntity != null) {
-                String stuName = progressEntity.getStuName();
+        public void convert(ViewHolder viewHolder, PraiseListStudentEntity studentEntity, int i) {
+            if (studentEntity != null) {
+                String stuName = studentEntity.getStuName();
                 if (!TextUtils.isEmpty(stuName)) {
-                    if (stuName.length() >= 5) {
+                    if (stuName.length() > 4) {
                         stuName = stuName.substring(0, 3) + "...";
                     }
                 }
-                tvName.setWidth(tvNameWidth);
                 tvName.setText(stuName);
+                tvName.setWidth(tvNameWidth);
+                if (studentEntity.getIsMy() == 1) {
+                    //自己名字高亮
+                    tvName.setTextColor(Color.parseColor("#FFAE00"));
+                } else {
+                    tvName.setTextColor(Color.parseColor("#7D553F"));
+                }
 
-                String score = progressEntity.getProgressScore() + "分";
-                tvCounts.setWidth(tvCountWidth);
-                tvCounts.setText(score);
+                switch (listType) {
+                    case PRAISE_LIST_TYPE_EXECELLENT:
+                        rlCount.setVisibility(View.INVISIBLE);
+                        break;
+                    case PRAISE_LIST_TYPE_MINI_MARKET: {
+                        rlCount.setVisibility(View.VISIBLE);
+                        ivLike.setVisibility(View.GONE);
+                        tvCount.setText(studentEntity.getExcellentNum() + "次");
+                        break;
+                    }
+                    case PRAISE_LIST_TYPE_LIKE: {
+                        rlCount.setVisibility(View.VISIBLE);
+                        ivLike.setVisibility(View.VISIBLE);
+                        if (studentEntity.getExcellentNum() >= 10000) {
+                            double d = (double) studentEntity.getExcellentNum() / (double) 10000;
+                            BigDecimal b = new BigDecimal(d);
+                            d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                            tvCount.setText(d + "万");
+                        } else {
+                            tvCount.setText(studentEntity.getExcellentNum() + "");
+                        }
+                        break;
+                    }
+                    default:
+                        break;
+                }
             }
         }
     }
 
-    public void setDanmakuStop(boolean isStop) {
-        this.isStop = isStop;
+    private void stopDanmaku() {
+        if (danmakuTimer != null) {
+            danmakuTimer.cancel();
+        }
+        danmakuTimer = null;
+        if (likeTimer != null) {
+            likeTimer.cancel();
+        }
+        likeTimer = null;
     }
 
-    public void releaseSoundPool() {
-        if (soundPool != null)
-            soundPool.release();
+    private void releaseSoundPool() {
+        if (mSoundPool != null)
+            mSoundPool.release();
+        mSoundPool = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopDanmaku();
+        releaseSoundPool();
     }
 }

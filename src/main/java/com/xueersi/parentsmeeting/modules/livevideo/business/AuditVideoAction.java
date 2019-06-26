@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 
 /**
- * Created by lyqai on 2017/7/25.
+ * Created by linyuqiang on 2017/7/25.
  */
 
 public interface AuditVideoAction extends VideoAction {
@@ -14,6 +14,7 @@ public interface AuditVideoAction extends VideoAction {
     /**
      * 学生直播开始
      */
+    @Deprecated
     void onStudentLiveStart(PlayServerEntity server);
 
     /**

@@ -4,34 +4,34 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RoomAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyArtsLiveMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyPrimaryLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveMainMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallChineseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
@@ -39,6 +39,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBl
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveTrainMsgPager;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +52,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  * Created by linyuqiang on 2016/9/23.
  * 聊天消息，一些进入房间状态的消息
  */
-public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg,
+public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg,LiveMessageSend,
         KeyboardUtil.OnKeyboardShowingListener {
     private String TAG = "LiveMessageBll";
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -62,6 +64,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //    private BaseSmallEnglishLiveMessagePager mSmallEnglishLiveMessagePager;
 
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
+
+    private BaseLiveMediaControllerTop baseLiveMediaControllerTop;
+
     private Activity activity;
     private Handler mHandler = new Handler();
     public QuestionBll questionBll;
@@ -101,7 +106,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public LiveMessageBll(Activity activity, int liveType) {
         this.activity = activity;
         this.liveType = liveType;
-        ProxUtil.getProxUtil().put(activity, LiveMessageBll.class, this);
+        ProxUtil.getProxUtil().put(activity, LiveMessageSend.class, this);
         ProxUtil.getProxUtil().put(activity, KeyBordAction.class, this);
         ProxUtil.getProxUtil().put(activity, KeyboardShowingReg.class, this);
     }
@@ -124,6 +129,10 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
     public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         this.baseLiveMediaControllerBottom = baseLiveMediaControllerBottom;
+    }
+
+    public void setBaseLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
+        this.baseLiveMediaControllerTop = controllerTop;
     }
 
     public View getView() {
@@ -169,7 +178,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
 
@@ -233,32 +241,48 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             text = mLiveMessagePager.getMessageContentText();
             isRegister = mLiveMessagePager.isRegister();
             isHaveFlowers = mLiveMessagePager.isHaveFlowers();
+            isCloseChat = mLiveMessagePager.isCloseChat();
             mLiveMessagePager.onDestroy();
         }
 
 
         long before = System.currentTimeMillis();
-        HalfBodyLiveMessagePager liveMessagePager = null;
+        BaseLiveMessagePager liveMessagePager = null;
 
         //根据不同的直播类型创建不同皮肤
-        if (getInfo != null && getInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
-            // 语文
-            liveMessagePager = new HalfBodyArtsLiveMsgPager(activity, this,
-                    null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-        } else {
-            // 理科
-            liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
-                    null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+        if(getInfo != null && getInfo.isPreschool()){
+            // 幼教
+            liveMessagePager = new PreSchoolLiveMainMsgPager(activity, this,
+                    null, baseLiveMediaControllerBottom,baseLiveMediaControllerTop,liveMessageLandEntities, null);
+        }else{
+            if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
+                // 语文
+                if (getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                    liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
+                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, null, HalfBodyLiveConfig.SKIN_TYPE_CH);
+                } else {
+                    liveMessagePager = new HalfBodyArtsLiveMsgPager(activity, this,
+                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                }
+            } else {
+                // 理科
+                if (getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
+                    liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
+                            null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop, liveMessageLandEntities, null);
+                } else {
+                    liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
+                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, null, 0);
+                }
+            }
         }
 
         mLiveMessagePager = liveMessagePager;
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
-
+        mLiveMessagePager.closeChat(isCloseChat);
         if (text != null) {
             mLiveMessagePager.setEtMessageContentText(text);
         } else {
@@ -270,7 +294,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
         if (isAnaswer != -1) {
             //这表示收到过答题变化
-            mLiveMessagePager.onQuestionShow(null,isAnaswer == 1);
+            mLiveMessagePager.onQuestionShow(null, isAnaswer == 1);
         }
         if (mode != null) {
             mLiveMessagePager.onopenchat(openchat, mode, false);
@@ -318,15 +342,19 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
         long before = System.currentTimeMillis();
         if (!isSmallEnglish) {
-            if (LiveVideoConfig.isPrimary ) {
-                LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
-                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-                mLiveMessagePager = liveMessagePager;
-            } else if (LiveVideoConfig.isSmallChinese) {//如果是语文
+            if (LiveVideoConfig.isSmallChinese) {//如果是语文
                 SmallChineseLiveMessagePager chineseLiveMessagePager = new SmallChineseLiveMessagePager(activity, this, null, baseLiveMediaControllerBottom
                         , liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = chineseLiveMessagePager;
 
+            }else if(getInfo != null && getInfo.isPreschool()){
+                 PreSchoolLiveTrainMsgPager liveMessagePager = new PreSchoolLiveTrainMsgPager(activity, this, null,
+                    baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                    mLiveMessagePager = liveMessagePager;
+          } else if (LiveVideoConfig.isPrimary) {
+                LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
+                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                mLiveMessagePager = liveMessagePager;
             } else {
                 LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
@@ -344,7 +372,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
 
@@ -362,13 +389,20 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             mLiveMessagePager.onopenchat(openchat, mode, false);
         }
         rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
+
+
     }
 
     public void initView(RelativeLayout bottomContent, boolean isLand) {
         rlLiveMessageContent = new RelativeLayout(activity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlLiveMessageContent, params);
+        int pattern = activity.getIntent().getIntExtra("pattern", 0);
+        if (pattern == 2) {
+            bottomContent.addView(rlLiveMessageContent, 0, params);
+        } else {
+            bottomContent.addView(rlLiveMessageContent, params);
+        }
         String text = null;
         boolean isRegister = false;
         boolean isHaveFlowers = false;
@@ -419,7 +453,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.setIsRegister(isRegister);
@@ -456,30 +489,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             mLiveMessagePager.urlclick = urlclick;
             mLiveMessagePager.setGetInfo(getInfo);
         }
-    }
 
-    /**
-     * 开始倒计时
-     *
-     * @param time 倒计时时间
-     * @return
-     */
-    public Runnable startCountDown(final String tag, final int time) {
-        final AtomicInteger atomicInteger = new AtomicInteger(time);
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (mLiveMessagePager != null) {
-                    mLiveMessagePager.countDown(tag, atomicInteger.get());
-                }
-                if (atomicInteger.get() > 0) {
-                    atomicInteger.set(atomicInteger.get() - 1);
-                    rlLiveMessageContent.postDelayed(this, 1000);
-                }
-            }
-        };
-        rlLiveMessageContent.post(runnable);
-        return runnable;
     }
 
     public void onTitleShow(boolean show) {
@@ -600,8 +610,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            //老师不计算在内
 //            return;
 //        }
-      //  Loger.d("____join:  "+sender+"___peoplecount:  "+peopleCount);
-        if (!users.contains(sender)){
+        //  Loger.d("____join:  "+sender+"___peoplecount:  "+peopleCount);
+        if (!users.contains(sender)) {
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             users.add(sender);
             if (mLiveMessagePager != null) {
@@ -616,7 +626,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            //老师不计算在内
 //            return;
 //        }
-        if (users.contains(sourceNick)){
+        if (users.contains(sourceNick)) {
             peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             users.remove(sourceNick);
         }
@@ -700,7 +710,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     @Override
     public void onOpenVoiceNotic(boolean openVoice, String type) {
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.onOpenVoiceNotic(openVoice,type);
+            mLiveMessagePager.onOpenVoiceNotic(openVoice, type);
         }
     }
 
@@ -736,6 +746,18 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
     }
 
+    /**
+     * 设置连对num
+     *
+     * @param nowEvenNum      当前连对数
+     * @param highestRightNum 最高连对数
+     */
+    public void setEvenNum(String nowEvenNum, String highestRightNum) {
+        if (mLiveMessagePager instanceof LiveMessagePager) {
+            ((LiveMessagePager) mLiveMessagePager).setEvenText(nowEvenNum, highestRightNum);
+        }
+    }
+
     @Override
     public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
         isAnaswer = isShow ? 1 : 0;
@@ -762,18 +784,17 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     }
 
     /**
-     *
      * @param nicker joiner's nick
      * @return 是否已经加入房间
      */
-    private boolean contains(String nicker){
+    private boolean contains(String nicker) {
         StringBuilder sb = new StringBuilder();
-        for (String user : users){
+        for (String user : users) {
             sb.append(user);
         }
-       // Loger.d("___bug 44 : users:  "+sb.toString()+"____nicker:  "+nicker);
-        for (String user : users){
-            if (user.equals(nicker)){
+        // Loger.d("___bug 44 : users:  "+sb.toString()+"____nicker:  "+nicker);
+        for (String user : users) {
+            if (user.equals(nicker)) {
                 return true;
             }
         }

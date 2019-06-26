@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
 /**
- * Created by lyqai on 2018/7/11.
+ * Created by linyuqiang on 2018/7/11.
  */
 
 public class SampleLiveVPlayerListener implements LiveVPlayerListener {
@@ -79,4 +79,14 @@ public class SampleLiveVPlayerListener implements LiveVPlayerListener {
     public void onPlayError() {
 
     }
+
+    @Override
+    public void getPSServerList(int cur, int total, boolean modeChange) {
+
+    }
+
+//    @Override
+//    public void getPServerListFail() {
+//
+//    }
 }
