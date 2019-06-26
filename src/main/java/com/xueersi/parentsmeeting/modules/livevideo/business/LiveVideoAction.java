@@ -402,7 +402,10 @@ public class LiveVideoAction implements VideoAction {
                         }
                         case MediaErrorInfo.PSChannelNotExist: {
                             logger.i("PSChannelNotExist");
-                            tvLoadingHint.setText("视频播放失败[" + MediaErrorInfo.PSChannelNotExist + "],请耐心等待");
+                            String test = "视频播放失败[" + MediaErrorInfo.PSChannelNotExist + "],请耐心等待";
+                            if (!test.equals("" + tvLoadingHint.getText())) {
+                                tvLoadingHint.setText(test);
+                            }
                             break;
                         }
                         case MediaErrorInfo.PSServer403: {
