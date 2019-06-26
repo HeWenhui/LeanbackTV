@@ -36,7 +36,8 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected int mState = LiveBasePagerState.INITIALIZING;
 
     public LiveBasePager(Context context) {
-        super(context);
+        super(context, false);
+        mView = initView();
     }
 
     public BaseVideoQuestionEntity getBaseVideoQuestionEntity() {
@@ -54,7 +55,10 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
      * @param isNewView 是否初始化布局
      */
     public LiveBasePager(Context context, boolean isNewView) {
-        super(context, isNewView);
+        super(context, false);
+        if (isNewView) {
+            mView = initView();
+        }
     }
 
     /***
