@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 站立直播红包页面
  *
- * @author lyqai
+ * @author linyuqiang
  * @date 2018/3/21
  */
 public class RedPackagePage extends LiveBasePager {

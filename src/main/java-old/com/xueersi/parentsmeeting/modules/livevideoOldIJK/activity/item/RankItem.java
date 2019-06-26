@@ -8,7 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 /**
- * Created by lyqai on 2017/9/21.
+ * Created by linyuqiang on 2017/9/21.
  */
 public class RankItem implements AdapterItemInterface<RankEntity> {
     TextView tv_livevideo_rank_item_left;

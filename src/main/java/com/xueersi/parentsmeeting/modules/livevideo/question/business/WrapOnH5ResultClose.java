@@ -10,7 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5C
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
- * Created by lyqai on 2018/7/26.
+ * Created by linyuqiang on 2018/7/26.
  */
 
 public class WrapOnH5ResultClose implements EnglishH5CoursewareBll.OnH5ResultClose {

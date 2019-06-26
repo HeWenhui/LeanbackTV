@@ -73,8 +73,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
         liveBackExamQuestionCreat.setLiveGetInfo(liveGetInfo);
         int isArts = liveBackBll.getIsArts();
         liveBackExamQuestionCreat.setArts(isArts);
-        liveBackExamQuestionCreat.setLivePagerBack(questionBll);
-        liveBackExamQuestionCreat.setExamStop(new LiveBackExamStop(activity, questionBll));
+        liveBackExamQuestionCreat.setLivePagerBack(activity, questionBll);
         questionBll.setBaseExamQuestionCreat(liveBackExamQuestionCreat);
         //主观题结果页
         LiveBackSubjectResultCreat liveBackSubjectResultCreat = new LiveBackSubjectResultCreat();
@@ -130,7 +129,8 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
 
     /**
      * 发送语音评测
-     *  @param id
+     *
+     * @param id
      * @param stuAnswer
      * @param isSubmit
      * @param callBack
@@ -150,12 +150,12 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL,msg);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR,responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
             }
         };
         getCourseHttpManager().sendExpSpeechEvalResult(

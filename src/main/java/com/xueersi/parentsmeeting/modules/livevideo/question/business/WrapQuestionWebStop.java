@@ -11,7 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWe
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
- * Created by lyqai on 2018/7/26.
+ * Created by linyuqiang on 2018/7/26.
  */
 
 public class WrapQuestionWebStop implements BaseQuestionWebInter.StopWebQuestion {

@@ -5,7 +5,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
 
 public interface QuestionHttp {

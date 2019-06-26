@@ -16,7 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SetVolumeListener;
 
 /**
- * Created by lyqai on 2017/11/21.
+ * Created by linyuqiang on 2017/11/21.
  */
 
 public abstract class BaseSpeechAssessmentPager extends LiveBasePager {

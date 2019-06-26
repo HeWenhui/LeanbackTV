@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * Created by lyqai on 2018/9/8.
+ * Created by linyuqiang on 2018/9/8.
  */
 
 public class FileStringUtil {

@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -101,8 +102,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         liveBackExamQuestionCreat.setLiveGetInfo(liveGetInfo);
         int isArts = liveBackBll.getIsArts();
         liveBackExamQuestionCreat.setArts(isArts);
-        liveBackExamQuestionCreat.setLivePagerBack(questionBll);
-        liveBackExamQuestionCreat.setExamStop(new LiveBackExamStop(activity, questionBll));
+        liveBackExamQuestionCreat.setLivePagerBack(activity, questionBll);
         questionBll.setBaseExamQuestionCreat(liveBackExamQuestionCreat);
         //主观题结果页
         LiveBackSubjectResultCreat liveBackSubjectResultCreat = new LiveBackSubjectResultCreat();
@@ -350,7 +350,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         }
                     }, dealy * 1000);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 break;
             }
@@ -505,12 +505,12 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL,msg);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR,responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
             }
         };
 

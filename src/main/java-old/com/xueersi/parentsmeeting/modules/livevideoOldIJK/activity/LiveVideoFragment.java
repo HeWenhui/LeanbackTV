@@ -81,7 +81,6 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.videoaudiochat.busines
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.videochat.business.VideoChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.worddictation.business.WordDictationIRCBll;
-import com.xueersi.parentsmeeting.widget.praise.business.PraiseTutorBll;
 
 import java.lang.reflect.Constructor;
 import java.util.List;

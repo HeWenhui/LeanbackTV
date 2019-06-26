@@ -9,7 +9,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import java.io.File;
 
 /**
- * Created by lyqai on 2017/12/6.
+ * Created by linyuqiang on 2017/12/6.
  * 语音答题的一些接口
  */
 public interface QuestionSwitch {

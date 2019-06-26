@@ -145,7 +145,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             } catch (Exception e) {
                 pkTeamEntity = null;
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
@@ -182,7 +182,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     LiveEventBus.getDefault(mContext).register(classEndRec);
                 }
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -310,7 +310,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM, jsonObject.toString(), ShareDataManager.SHAREDATA_USER);
         } catch (JSONException e) {
             mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 
@@ -930,7 +930,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         }
                     } catch (Exception e) {
                         logger.d("XCR_ROOM_TEAMPK_GO", e);
-                        CrashReport.postCatchedException(e);
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
                 break;
@@ -978,7 +978,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         }
                     } catch (Exception e) {
                         mLogtf.e("CLASSBEGIN", e);
-                        CrashReport.postCatchedException(e);
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
                 break;

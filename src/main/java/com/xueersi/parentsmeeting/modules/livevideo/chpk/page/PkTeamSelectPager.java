@@ -9,15 +9,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.media.AudioManager;
-import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -32,16 +28,14 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.adapter.MemberAdapter;
-import com.xueersi.parentsmeeting.modules.livevideo.chpk.adapter.MemberHolder;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.adapter.TeamAdapter;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.business.ChinesePkBll;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
@@ -163,7 +157,7 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     @Override
     public View initView() {
         final View view;
-        if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+        if (liveGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
             view = View.inflate(mContext, R.layout.page_livevideo_chpk_teamselect_primary, null);
         } else {
             view = View.inflate(mContext, R.layout.page_livevideo_chpk_teamselect, null);
@@ -193,7 +187,7 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.iv_livevideo_chpk_selectReady) {
-            if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+            if (liveGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
                 closeTeamSelectPager();
             } else {
                 upLoadStudentReady();
@@ -333,7 +327,7 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                if (liveGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
                     showMarquee();
                 } else {
                     showTimeCutdown();
@@ -559,7 +553,7 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
         final Runnable action = new Runnable() {
             @Override
             public void run() {
-                if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                if (liveGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
                     ImageView ivReadyBtn = mView.findViewById(R.id.iv_livevideo_chpk_selectReady);
                     ivReadyBtn.setOnClickListener(PkTeamSelectPager.this);
                     ivReadyBtn.setVisibility(View.VISIBLE);

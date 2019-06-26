@@ -16,10 +16,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -82,7 +82,7 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
         String lottieJsonPath = "team_pk/pkresult/teacher_praise/data.json";
 
          // 兼容语文半身直播 老师点赞动画
-        if (mGetInfo.getIsArts() == 2 || (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH || (mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY
                 && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH)) {
             lottieResPath = "chinesePk/praise/images";
             lottieJsonPath = "chinesePk/praise/data.json";

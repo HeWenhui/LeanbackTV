@@ -7,6 +7,7 @@ import android.os.Build;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -18,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by lyqai on 2018/6/8.
+ * Created by linyuqiang on 2018/6/8.
  */
 
 public class HardWareUtil {
@@ -279,7 +280,7 @@ public class HardWareUtil {
             try {
                 totalRam = (int) Math.ceil((Float.valueOf(firstLine).doubleValue()));
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
         TOTAL_RAM = totalRam;

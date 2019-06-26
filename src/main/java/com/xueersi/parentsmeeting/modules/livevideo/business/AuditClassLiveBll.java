@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -558,16 +557,16 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             return;
         }*/
 
-        if (mGetInfo.getPattern() == 2) {
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
             ResponseEntity responseEntity = new ResponseEntity();
             responseEntity.setErrorMsg("家长旁听暂不支持全身直播，程序员哥哥正在夜以继日的开发哦!");
             onLiveError(responseEntity);
             return;
         }
-        if (mGetInfo.getIsArts() == 1) {
+        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
-        } else if (mGetInfo.getIsArts() == 2) {
+        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
             appID = UmsConstants.LIVE_CN_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
@@ -619,8 +618,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      */
     private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo){
         return liveGetInfo != null && liveGetInfo.getPattern()
-                == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
-                && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
+                == LiveVideoConfig.LIVE_TYPE_HALFBODY
+                && liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH;
     }
 
 
@@ -676,7 +675,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public synchronized void getHalfBodyLiveStudentLiveInfo() {
 
-        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE,
+        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH,
                 new HttpCallBack(false){
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

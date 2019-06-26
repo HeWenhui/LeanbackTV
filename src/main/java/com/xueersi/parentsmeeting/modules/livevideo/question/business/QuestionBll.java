@@ -792,6 +792,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 questionWebPager.setLivePagerBack(QuestionBll.this);
                                 QuestionBll.this.questionWebPager = questionWebPager;
                             }
+                            questionWebPager.setQuestionOnSubmit(new QuestionOnSubmit() {
+                                @Override
+                                public void onSubmit(int type, boolean isForceSubmit) {
+                                    QuestionBll.this.onSubmit(type, isForceSubmit);
+                                }
+                            });
                             rlQuestionContent.addView(questionWebPager.getRootView());
                             QuestionBll.this.questionWebPager = questionWebPager;
                             setHaveWebQuestion(true);
@@ -1482,7 +1488,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("testid", videoQuestionLiveEntity.id);
                 umsAgentDebugInter(examQuestionEventId, mData);
                 examQuestionPager = baseExamQuestionCreat.creatBaseExamQuestion(activity, liveid,
-                        videoQuestionLiveEntity);
+                        videoQuestionLiveEntity, new LiveBasePager.OnPagerClose() {
+                            @Override
+                            public void onClose(LiveBasePager basePager) {
+                                stopExam(videoQuestionLiveEntity.id, examQuestionPager);
+                            }
+                        });
+                examQuestionPager.setQuestionOnSubmit(new QuestionOnSubmit() {
+                    @Override
+                    public void onSubmit(int type, boolean isForceSubmit) {
+                        QuestionBll.this.onSubmit(type, isForceSubmit);
+                    }
+                });
                 rlQuestionContent.addView(examQuestionPager.getRootView());
                 setHaveExam(true);
                 activity.getWindow().getDecorView().requestLayout();
@@ -1696,7 +1713,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         return false;
     }
 
-    public void stopExam(String num, BaseExamQuestionInter baseExamQuestionInter) {
+    private void stopExam(String num, BaseExamQuestionInter baseExamQuestionInter) {
         mExamAndBool.add("" + num);
         rlQuestionContent.removeView(baseExamQuestionInter.getRootView());
         baseExamQuestionInter.onDestroy();
@@ -2393,7 +2410,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
-    public void onSubmit(int type, boolean isForceSubmit) {
+    private void onSubmit(int type, boolean isForceSubmit) {
         submitTime = System.currentTimeMillis();
         questionHttp.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
         if (isForceSubmit) {
@@ -2416,7 +2433,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     private void showFullMarkList(final int type, final List<FullMarkListEntity> lst, int delayTime) {
-
         if (mAnswerRankBll == null) {
             return;
         }
@@ -2482,10 +2498,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setSpeechEndAction(SpeechEndAction speechEndAction) {
         this.speechEndAction = speechEndAction;
-    }
-
-    public SpeechEndAction getSpeechEndAction() {
-        return speechEndAction;
     }
 
     /**
@@ -2634,7 +2646,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             questionShowAction.onQuestionShow(videoQuestionLiveEntity, isShow);
         }
     }
-
 
     public void onDestroy() {
         EventBus.getDefault().unregister(this);

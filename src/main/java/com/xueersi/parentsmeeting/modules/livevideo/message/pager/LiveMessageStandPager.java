@@ -79,8 +79,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessSysItem;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
@@ -709,12 +710,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mSdm = ShareDataManager.getInstance();
         isShowSpeechRecog = mSdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager.SHAREDATA_USER);
         cpuRecogTime = mSdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_USER);
-        liveThreadPoolExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                LiveIRCMessageBll.requestGoldTotal(mContext);
-            }
-        });
+        if (getInfoGoldNum == 0) {
+            liveThreadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    UserGoldTotal.requestGoldTotal(mContext);
+                }
+            });
+        } else {
+            goldNum = "" + getInfoGoldNum;
+        }
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
@@ -815,15 +820,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 //        });
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
-        if (!dir.exists())
-
-        {
+        if (!dir.exists()) {
             dir.mkdirs();
         }
 
-        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5)
-
-        {
+        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5) {
             String fileName = "live_stand_head.json";
 
             @Override
@@ -907,7 +908,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         if (noSpeechTimer != null) {
             noSpeechTimer.cancel();
         }
-        if (vwvVoiceChatWave != null){
+        if (vwvVoiceChatWave != null) {
             vwvVoiceChatWave.stop();
             vwvVoiceChatWave.setVisibility(View.GONE);
         }
@@ -1179,9 +1180,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = getInfo.getMainTeacherInfo().getTeacherName();
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = getInfo.getTeacherName();
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
@@ -1887,45 +1888,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 initBtMesOpenAnimation(true);
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
-
-    }
-
-    LiveAndBackDebug mLiveBll;
-
-    @Override
-    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugSys(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugInter(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-
-    }
-
-    @Override
-    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
-
     }
 
     private void uploadLOG(String msg) {

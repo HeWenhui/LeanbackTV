@@ -54,7 +54,7 @@ import okhttp3.Call;
 import okhttp3.Response;
 
 /**
- * Created by lyqai on 2017/9/20.
+ * Created by linyuqiang on 2017/9/20.
  */
 
 public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBottom.MediaChildViewClick, NoticeAction, MessageAction {
@@ -112,7 +112,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
-        if (mGetInfo.getPattern() == 2) {
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
             onTitleShow(true);
         }
     }

@@ -71,7 +71,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 //import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 
 /**
- * Created by lyqai on 2018/6/26.
+ * Created by linyuqiang on 2018/6/26.
  */
 
 public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction {

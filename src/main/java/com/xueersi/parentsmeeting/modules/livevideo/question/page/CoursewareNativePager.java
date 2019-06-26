@@ -49,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
@@ -211,7 +212,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         try {
             NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         initData();
     }
@@ -320,7 +321,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 try {
                     String type = message.getString("type");
                     if (CourseMessage.REC_close.equals(type)) {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
 
@@ -389,7 +390,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("data", resultData);
                     staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                     mLogtf.e("btCourseSubmit", e);
                 }
             }
@@ -433,6 +434,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         return url;
     }
 
+    @Override
+    public void setQuestionOnSubmit(QuestionOnSubmit questionOnSubmit) {
+
+    }
+
     private void getTodayQues() {
         String string = mShareDataManager.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
         JSONObject jsonObject = getTodayLive(string);
@@ -446,7 +452,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     startQueTime = todayLiveObj.optLong("start-" + queskey);
                 }
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("getTodayQues", e);
             }
         }
@@ -484,7 +490,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             todayObj.put(liveId, todayLiveObj);
             return jsonObject;
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("getTodayLive", e);
         }
         return null;
@@ -507,7 +513,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 mShareDataManager.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("saveThisQues", e);
         }
     }
@@ -528,13 +534,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 mShareDataManager.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("saveThisQues", e);
         }
     }
 
     private void onAnswer(final JSONObject message) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 NewCourseSec.Test oldTest = tests.get(currentIndex);
@@ -543,7 +549,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     oldTest.setUserAnswerContent(userAnswerContent);
                     saveThisQues(currentIndex, userAnswerContent);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 logger.d("onAnswer:answer:getAnswerType=" + getAnswerType + ",index=" + currentIndex);
                 if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_SUBMIT || getAnswerType == LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT) {
@@ -654,7 +660,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     private void onLoadComplete(final String where, final JSONObject message) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (LiveQueConfig.GET_ANSWERTYPE_WHERE_MESSAGE.equals(where)) {
@@ -784,7 +790,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("data", resultData);
                     staticWeb.sendToCourseware(jsonData, "*");
                 } catch (JSONException e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                     mLogtf.e("submitData", e);
                 }
                 if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
@@ -1126,7 +1132,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 json.put("userAnswerContent", userAnswerContent);
                 testInfos.put(test.getId(), json);
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submit", e);
             }
         }
@@ -1208,7 +1214,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } catch (Exception e) {
                     CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
-                handler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         staticWeb.testCourseware();
@@ -1320,7 +1326,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     negative.getAndIncrement();
                     tvCourseTimeText.setTextColor(Color.RED);
                 }
-                handler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         String timeStr = getTimeNegativePrimary(releaseTime, startTime, negative);
@@ -1332,7 +1338,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             tvCourseTimeText.setTextColor(Color.RED);
                         }
                         tvCourseTimeText.setText(timeStr);
-                        handler.postDelayed(this, 1000);
+                        mainHandler.postDelayed(this, 1000);
                     }
                 }, 1000);
             }
@@ -1350,14 +1356,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     startTime = newCourseSec.getReleaseTime();
                     tvCourseTimeText.setText(getTimePositive(startTime));
                 }
-                handler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         tvCourseTimeText.setText(getTimePositive(startTime));
                         if (loadResult || mView.getParent() == null) {
                             return;
                         }
-                        handler.postDelayed(this, 1000);
+                        mainHandler.postDelayed(this, 1000);
                     }
                 }, 1000);
             }
@@ -1371,7 +1377,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 final long releaseTime = newCourseSec.getReleaseTime() * 60;
                 final long startTime = System.currentTimeMillis() / 1000;
                 tvCourseTimeText.setText(getTimeNegativeEn(releaseTime, startTime));
-                handler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         String timeStr = getTimeNegativeEn(releaseTime, startTime);
@@ -1379,7 +1385,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             return;
                         }
                         tvCourseTimeText.setText(timeStr);
-                        handler.postDelayed(this, 1000);
+                        mainHandler.postDelayed(this, 1000);
                     }
                 }, 1000);
             }
@@ -1662,7 +1668,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 wvSubjectWeb.stopLoading();
@@ -1682,7 +1688,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
-                    handler.post(new Runnable() {
+                    mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             wvSubjectWeb.stopLoading();

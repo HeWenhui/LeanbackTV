@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -56,7 +57,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/8/3.
  * 直播和回放的基础控制
  */
-public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback {
+public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback, LiveProvide {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     BaseActivity activity;
     /** 视频的名称，用于显示在播放器上面的信息栏 */

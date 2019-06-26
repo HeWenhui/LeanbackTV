@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 
 /**
- * Created by lyqai on 2018/7/17.
+ * Created by linyuqiang on 2018/7/17.
  */
 
 public class NBH5PlayBackBll extends LiveBackBaseBll {

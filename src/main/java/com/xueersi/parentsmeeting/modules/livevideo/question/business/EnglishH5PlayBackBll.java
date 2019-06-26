@@ -25,7 +25,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -33,7 +32,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsSpeakEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.event.NbCourseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
@@ -386,7 +384,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
     protected EnglishH5CoursewareHttp getHttp() {
         int isArts = liveBackBll.getIsArts();
-        if (isArts == LiveVideoSAConfig.ART_EN || (isArts == LiveVideoSAConfig.ART_SEC && liveBackBll.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY)) {
+        if (isArts == LiveVideoSAConfig.ART_EN || (isArts == LiveVideoSAConfig.ART_SEC && liveBackBll.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY)) {
             return new EnglishH5CoursewareSecImpl();
         }
         return new EnglishH5CoursewareImpl();
@@ -474,7 +472,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                             englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce, "0", callBack);
                 }
             } else if (LiveVideoSAConfig.ART_SEC == liveBackBll.getIsArts()){
-                if (liveBackBll.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY && LiveQueConfig.CHI_COURESWARE_TYPE_SPEAKING_CHINESE.equals(detailInfo.englishH5Entity.getPackageAttr())){
+                if (liveBackBll.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY && LiveQueConfig.CHI_COURESWARE_TYPE_SPEAKING_CHINESE.equals(detailInfo.englishH5Entity.getPackageAttr())){
                     EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                     String classId = liveGetInfo.getStudentLiveInfo().getClassId();
                     String[] res = getSrcType(englishH5Entity);

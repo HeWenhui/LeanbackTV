@@ -57,8 +57,8 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
     private VerifyCancelAlertDialog verifyCancelAlertDialog;
     private String mRankId;
 
-    public ArtsPraiseListBll(Context context, LiveBll2 liveBll) {
-        super((Activity) context, liveBll);
+    public ArtsPraiseListBll(Activity activity, LiveBll2 liveBll) {
+        super(activity, liveBll);
         mLiveBll = liveBll;
     }
 

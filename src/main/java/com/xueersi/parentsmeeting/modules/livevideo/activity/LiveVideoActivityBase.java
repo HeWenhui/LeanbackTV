@@ -58,6 +58,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlay
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
@@ -82,7 +83,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 林玉强
  */
 public class LiveVideoActivityBase extends XesActivity implements LiveMediaController.MediaPlayerControl,
-        VideoView.SurfaceCallback {
+        VideoView.SurfaceCallback, LiveProvide {
     private String TAG = "LiveVideoActivityBaseLog";
     /** 布局默认资源 */
     protected int mLayoutVideo = R.layout.activity_video_live;

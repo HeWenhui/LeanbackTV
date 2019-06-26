@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -55,6 +56,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private WebView wvSubjectWeb;
     private View errorView;
     private QuestionBll questionBll;
+    private QuestionOnSubmit onSubmit;
     private String liveid;
     private String num;
     /** 用户名称 */
@@ -70,20 +72,18 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private String isShowRankList;
     int isArts;
     String stuCouId;
-    private int isTeamPkRoom;
     private int mGoldNum;
     private int mEnergyNum;
     private boolean allowTeamPk;
-    /**是否接收到或者展示过答题结果页面**/
+    /** 是否接收到或者展示过答题结果页面 **/
     private boolean isAnswerResultRecived;
     /**
      * 答题结果是否是 由强制提交 得到的
      */
     private boolean resultGotByForceSubmit;
 
-    public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId
-            , String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String isShowRankList,
-                               int isArts, String stuCouId, boolean allowTeamPk) {
+    public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId, String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity,
+                               String isShowRankList, int isArts, String stuCouId, boolean allowTeamPk) {
         super(context);
         this.questionBll = questionBll;
         this.livePagerBack = questionBll;
@@ -98,8 +98,11 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         this.allowTeamPk = allowTeamPk;
         mLogtf.i("ExamQuestionX5Pager:liveid=" + liveid + ",num=" + num);
         this.isShowRankList = isShowRankList;
-        this.isTeamPkRoom = isTeamPkRoom;
         initData();
+    }
+
+    public void setQuestionOnSubmit(QuestionOnSubmit onSubmit) {
+        this.onSubmit = onSubmit;
     }
 
     @Override
@@ -141,7 +144,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                questionBll.stopExam(num, ExamQuestionX5Pager.this);
+                onPagerClose.onClose(ExamQuestionX5Pager.this);
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -219,7 +222,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     }
 
     @android.webkit.JavascriptInterface
-    private void addJavascriptInterface() {
+    public void addJavascriptInterface() {
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setJavaScriptEnabled(true);
         webSetting.setDomStorageEnabled(true);
@@ -360,14 +363,14 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
             logger.e("======> shouldOverrideUrlLoading:" + url);
 
             if (url.contains("/LiveExam/examResult")) {
-                if (questionBll instanceof QuestionBll) {
-                    ((QuestionBll) questionBll).onSubmit(XESCODE.EXAM_STOP, url.contains("submitType=force"));
+                if (onSubmit != null) {
+                    onSubmit.onSubmit(XESCODE.EXAM_STOP, url.contains("submitType=force"));
                 }
                 return false;
             }
             mLogtf.i("shouldOverrideUrlLoading:url=" + url);
             if ("xueersi://livevideo/examPaper/close".equals(url) || url.contains("baidu.com")) {
-                questionBll.stopExam(num, ExamQuestionX5Pager.this);
+                onPagerClose.onClose(ExamQuestionX5Pager.this);
                 Map<String, String> mData = new HashMap<>();
                 mData.put("logtype", "examClose");
                 mData.put("examid", num);
@@ -415,11 +418,10 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
      * 理科 课件 答题结果回调
      */
     @JavascriptInterface
-    public void onAnswerResult_LiveVideo(String data){
+    public void onAnswerResult_LiveVideo(String data) {
         isAnswerResultRecived = true;
         EventBus.getDefault().post(new AnswerResultEvent(data));
     }
-
 
 
     @Override

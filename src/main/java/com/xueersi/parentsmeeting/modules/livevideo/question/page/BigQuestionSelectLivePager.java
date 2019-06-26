@@ -241,7 +241,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
     private void submitBigTestInteraction(final int isForce) {
         mLogtf.d("submitBigTestInteraction:isForce=" + isForce + ",resultPager=null?" + (resultPager == null));
         if (resultPager != null) {
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (resultPager.isAttach()) {
@@ -340,7 +340,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
             }
         });
         if (isForce == 1) {
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (resultPager.isAttach()) {

@@ -190,12 +190,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                                 hashMap.put("size", oldSize + "-" + size);
                                 UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
                             } catch (Exception e) {
-                                CrashReport.postCatchedException(e);
+                                CrashReport.postCatchedException(new LiveException(TAG, e));
                             }
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             } else {
                 appID = UmsConstants.LIVE_APP_ID_BACK;
@@ -225,12 +225,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                                 hashMap.put("size", oldSize + "-" + size);
                                 UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
                             } catch (Exception e) {
-                                CrashReport.postCatchedException(e);
+                                CrashReport.postCatchedException(new LiveException(TAG, e));
                             }
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         }
@@ -262,7 +262,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 hashMap.put("liveid", "" + mVideoEntity.getLiveId());
                 UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -730,7 +730,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         }
     }
 
-    public interface ShowQuestion {
+    public interface ShowQuestion extends LiveProvide {
         void onShow(boolean isShow, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
         void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity);

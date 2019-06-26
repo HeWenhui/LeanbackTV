@@ -5,7 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.view.OrientationEventListener;
 
 /**
- * Created by lyqai on 2018/6/22.
+ * Created by linyuqiang on 2018/6/22.
  */
 
 public class VideoOrientationEventListener extends OrientationEventListener {

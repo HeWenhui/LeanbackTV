@@ -42,7 +42,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 
@@ -81,7 +80,7 @@ public class LiveBll2 extends BaseBll {
     private List<LiveBaseBll> businessBlls = new ArrayList<>();
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private AllLiveBasePagerIml allLiveBasePagerIml;
-    private LiveIRCMessageBll liveIRCMessageBll;
+    private TeacherAction teacherAction;
     private final int mLiveType;
     private LogToFile mLogtf;
     private String mLiveId;
@@ -251,15 +250,11 @@ public class LiveBll2 extends BaseBll {
     }
 
     public String getMainTeacherStr() {
-        return liveIRCMessageBll.getmMainTeacherStr();
+        return teacherAction.getmMainTeacherStr();
     }
 
     public String getCounTeacherStr() {
-        return liveIRCMessageBll.getmCounTeacherStr();
-    }
-
-    public String getModeTeacher() {
-        return liveIRCMessageBll.getModeTeacher(getMode());
+        return teacherAction.getmCounTeacherStr();
     }
 
     public LiveTopic getLiveTopic() {
@@ -333,8 +328,8 @@ public class LiveBll2 extends BaseBll {
         return businessBlls;
     }
 
-    public void setLiveIRCMessageBll(LiveIRCMessageBll liveIRCMessageBll) {
-        this.liveIRCMessageBll = liveIRCMessageBll;
+    public void setTeacherAction(TeacherAction teacherAction) {
+        this.teacherAction = teacherAction;
     }
 
     public void onCreate() {
@@ -418,10 +413,10 @@ public class LiveBll2 extends BaseBll {
         }
         liveUidRx.setLiveGetInfo(getInfo);
         getInfo.setStuCouId(mStuCouId);
-        if (mGetInfo.getIsArts() == 1) {
+        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
-        } else if (mGetInfo.getIsArts() == 2) {//
+        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {//
             appID = UmsConstants.LIVE_CN_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
@@ -567,7 +562,7 @@ public class LiveBll2 extends BaseBll {
      * @param getInfo
      */
     private void initExtInfo(LiveGetInfo getInfo) {
-        if (getInfo != null && getInfo.getIsArts() == 1 && !exInfoInited.get()) {
+        if (getInfo != null && getInfo.getIsArts() == LiveVideoSAConfig.ART_EN && !exInfoInited.get()) {
             logger.e("======>initExtInfo called:");
             exInfoInited.set(true);
             postDelayedIfNotFinish(initArtsExtLiveInfoTask, 0);
@@ -761,7 +756,7 @@ public class LiveBll2 extends BaseBll {
                         try {
                             mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(e);
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
 
                     }
@@ -1127,7 +1122,7 @@ public class LiveBll2 extends BaseBll {
     private boolean isPresent(String mode) {
         boolean isPresent = true;
         if (mIRCMessage != null && mIRCMessage.onUserList()) {
-            isPresent = liveIRCMessageBll.isPresent(mode);
+            isPresent = teacherAction.isPresent(mode);
         }
         return isPresent;
     }

@@ -68,8 +68,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -208,7 +209,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         switchFSPanelLinearLayout = (KPSwitchFSPanelLinearLayout) mView.findViewById(R.id
                 .rl_livevideo_message_panelroot);
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
-        logger.setLogMethod(false);
 
 //        if (getInfo.getIsOpenNewCourseWare() == 1) {
 //        ViewStub viewStub = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
@@ -560,12 +560,16 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initFlower(educationStage);
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    LiveIRCMessageBll.requestGoldTotal(mContext);
-                }
-            });
+            if (getInfoGoldNum == 0) {
+                liveThreadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        UserGoldTotal.requestGoldTotal(mContext);
+                    }
+                });
+            } else {
+                goldNum = "" + getInfoGoldNum;
+            }
             View view = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
             if (view != null) {
                 view.setVisibility(getInfo.getIsOpenNewCourseWare() == 1 ? View.VISIBLE : View.GONE);
@@ -1199,13 +1203,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         Loger.e("LiveMessagerPager", "=====>onMessage called");
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             // 专属老师，如果当前是辅导态，则不显示主讲老师发的聊天
             if (getInfo != null && getInfo.ePlanInfo != null && LiveTopic.MODE_TRANING.equals(getInfo.getMode())) {
                 return;
             }
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = getInfo.ePlanInfo == null ? "辅导老师" : "专属老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);

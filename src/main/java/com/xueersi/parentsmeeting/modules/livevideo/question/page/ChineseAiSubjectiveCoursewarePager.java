@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
@@ -45,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
@@ -347,7 +349,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 try {
                     String type = message.getString("type");
                     if (CourseMessage.REC_close.equals(type)) {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
 
@@ -407,6 +409,11 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
 
     }
 
+    @Override
+    public void setQuestionOnSubmit(QuestionOnSubmit questionOnSubmit) {
+
+    }
+
     private void getTodayQues() {
         String string = mShareDataManager.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}",
                 ShareDataManager.SHAREDATA_USER);
@@ -421,7 +428,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     startQueTime = todayLiveObj.optLong("start-" + queskey);
                 }
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("getTodayQues", e);
             }
         }
@@ -456,7 +463,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             todayObj.put(liveId, todayLiveObj);
             return jsonObject;
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("getTodayLive", e);
         }
         return null;
@@ -481,7 +488,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("saveThisQues", e);
         }
     }
@@ -504,13 +511,13 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("saveThisQues", e);
         }
     }
 
     private void onAnswer(final JSONObject message) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 NewCourseSec.Test oldTest = tests.get(currentIndex);
@@ -535,7 +542,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     }
                     saveThisQues(currentIndex, data);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 logger.d("onAnswer:answer:getAnswerType=" + getAnswerType + ",index=" + currentIndex);
                 if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_SUBMIT || getAnswerType == LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT) {
@@ -614,7 +621,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     }
 
     private void onLoadComplete(final String where, final JSONObject message) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (LiveQueConfig.GET_ANSWERTYPE_WHERE_MESSAGE.equals(where)) {
@@ -716,7 +723,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 jsonData.put("data", resultData);
                 StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submitData", e);
             }
 //            XESToastUtils.showToast(mContext, "时间到,停止作答!");
@@ -797,7 +804,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 dataJson.put("userAnswerContent", userAnswerContent);
                 data.put(test.getId(), dataJson);
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submit", e);
             }
         }
@@ -1194,7 +1201,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 wvSubjectWeb.stopLoading();
@@ -1209,7 +1216,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
-                    handler.post(new Runnable() {
+                    mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             wvSubjectWeb.stopLoading();

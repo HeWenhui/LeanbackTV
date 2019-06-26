@@ -17,14 +17,11 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.util.LoadSoCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEvent;
@@ -502,10 +499,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             mLogtf.d("startAchievement:isDestory=true");
             return;
         }
-        if (mGetInfo.getPattern() == 2) {
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
             smallEnglish = 1;
             englishSpeekMode = new EnglishSpeekModeStand();
-        } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+        } else if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
             englishSpeekMode = new EnglishSpeekModHalfBody();
         } else {
             englishSpeekMode = new EnglishSpeekModeNomal();

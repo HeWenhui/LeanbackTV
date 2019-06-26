@@ -61,9 +61,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -128,7 +128,6 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
     private ImageView ivExpressionCancle;
     private Activity liveVideoActivity;
-    private QuestionBll questionBll;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
     LiveAndBackDebug liveAndBackDebug;
@@ -607,12 +606,16 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         super.initData();
         logger.i( "initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        liveThreadPoolExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                LiveIRCMessageBll.requestGoldTotal(mContext);
-            }
-        });
+        if (getInfoGoldNum == 0) {
+            liveThreadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    UserGoldTotal.requestGoldTotal(mContext);
+                }
+            });
+        } else {
+            goldNum = "" + getInfoGoldNum;
+        }
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
         btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
@@ -911,7 +914,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private void upLoadHotWordLog(String hotwordCmd) {
         try {
             //非语文半身直播  上传热词埋点数据
-            if(getInfo != null && getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY && getInfo.getUseSkin()
+            if(getInfo != null && getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY && getInfo.getUseSkin()
                     != HalfBodyLiveConfig.SKIN_TYPE_CH){
                 HotWordLog.hotWordSend(this.liveAndBackDebug,hotwordCmd,HotWordLog.LIVETYPE_PRESCHOOL,
                         getInfo.getStudentLiveInfo().getClassId(),getInfo.getStudentLiveInfo().getTeamId(),getInfo.getStudentLiveInfo().getCourseId());
@@ -1354,9 +1357,9 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         Loger.e("LiveMessagerPager", "=====>onMessage called");
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);

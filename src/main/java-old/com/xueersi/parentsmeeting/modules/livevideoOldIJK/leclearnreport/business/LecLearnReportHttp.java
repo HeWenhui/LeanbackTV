@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.leclearnreport.busine
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 
 /**
- * Created by lyqai on 2018/7/18.
+ * Created by linyuqiang on 2018/7/18.
  */
 
 public interface LecLearnReportHttp {

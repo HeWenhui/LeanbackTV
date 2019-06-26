@@ -28,15 +28,19 @@ public class ProxUtil {
     //**把类和对象按context保存,以实现以后多个直播通知存在的情况*/
     public <T> void put(Context context, Class<T> clazz, T obj) {
         if (context.getClass().getName().contains("CourseDetailActivity")) {
-            logger.d( "put:context", new Exception());
+            logger.d("put:context", new Exception());
         }
-        logger.d( "put:context=" + context);
+        logger.d("put:context=" + context);
         Prox prox = proxHashMap.get(context);
         if (prox == null) {
             prox = new Prox();
             proxHashMap.put(context, prox);
         }
         prox.put(clazz, obj);
+    }
+
+    public static <T> T getProvide(Context context, Class<T> clazz) {
+        return getProxUtil().get(context, clazz);
     }
 
     public <T> T get(Context context, Class<T> clazz) {
@@ -69,7 +73,7 @@ public class ProxUtil {
         if (prox != null) {
             size = prox.clear();
         }
-        logger.d( "clear:proxHashMap=" + proxHashMap.size() + ",clear=" + size);
+        logger.d("clear:proxHashMap=" + proxHashMap.size() + ",clear=" + size);
     }
 
     private class Prox {

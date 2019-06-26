@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * 直播聊天调度
  *
- * @author lyqai
+ * @author linyuqiang
  * @date 2018/5/22
  */
 public class IRCTalkConf {

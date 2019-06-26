@@ -52,7 +52,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  * Created by linyuqiang on 2016/9/23.
  * 聊天消息，一些进入房间状态的消息
  */
-public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg,
+public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg,LiveMessageSend,
         KeyboardUtil.OnKeyboardShowingListener {
     private String TAG = "LiveMessageBll";
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -106,7 +106,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public LiveMessageBll(Activity activity, int liveType) {
         this.activity = activity;
         this.liveType = liveType;
-        ProxUtil.getProxUtil().put(activity, LiveMessageBll.class, this);
+        ProxUtil.getProxUtil().put(activity, LiveMessageSend.class, this);
         ProxUtil.getProxUtil().put(activity, KeyBordAction.class, this);
         ProxUtil.getProxUtil().put(activity, KeyboardShowingReg.class, this);
     }
@@ -178,7 +178,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
 
@@ -258,7 +257,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }else{
             if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                 // 语文
-                if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                if (getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
                     liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
                             null, baseLiveMediaControllerBottom, liveMessageLandEntities, null, HalfBodyLiveConfig.SKIN_TYPE_CH);
                 } else {
@@ -267,7 +266,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 }
             } else {
                 // 理科
-                if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+                if (getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
                     liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
                             null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop, liveMessageLandEntities, null);
                 } else {
@@ -281,7 +280,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.closeChat(isCloseChat);
@@ -374,7 +372,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
 
@@ -456,7 +453,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.setIsRegister(isRegister);
@@ -494,30 +490,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             mLiveMessagePager.setGetInfo(getInfo);
         }
 
-    }
-
-    /**
-     * 开始倒计时
-     *
-     * @param time 倒计时时间
-     * @return
-     */
-    public Runnable startCountDown(final String tag, final int time) {
-        final AtomicInteger atomicInteger = new AtomicInteger(time);
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (mLiveMessagePager != null) {
-                    mLiveMessagePager.countDown(tag, atomicInteger.get());
-                }
-                if (atomicInteger.get() > 0) {
-                    atomicInteger.set(atomicInteger.get() - 1);
-                    rlLiveMessageContent.postDelayed(this, 1000);
-                }
-            }
-        };
-        rlLiveMessageContent.post(runnable);
-        return runnable;
     }
 
     public void onTitleShow(boolean show) {

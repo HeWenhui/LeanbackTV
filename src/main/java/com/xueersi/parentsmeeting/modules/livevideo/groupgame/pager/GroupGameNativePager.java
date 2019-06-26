@@ -309,7 +309,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         rlGroupGameSingle.setVisibility(View.VISIBLE);
         tvFireSum.setText("0");
 
-        handler.postDelayed(new Runnable() {
+        mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mWaveView.initialize();
@@ -454,7 +454,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 wvSubjectWeb.stopLoading();
@@ -468,7 +468,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
-                    handler.post(new Runnable() {
+                    mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             wvSubjectWeb.stopLoading();
@@ -498,7 +498,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     private void onLoadComplete(String where, JSONObject message) {
         logger.d("onLoadComplete");
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 preLoad.onStop();
@@ -559,7 +559,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     }
                     if (resultEntity.getNewSenIdx() >= 0) {
                         singleModeAction.onHitSentence(resultEntity);
-                        handler.removeCallbacks(onCoursewareComeOnRunable);
+                        mainHandler.removeCallbacks(onCoursewareComeOnRunable);
                         isComeOnRunablePosted = false;
                     }
                 }
@@ -569,7 +569,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void onVolumeUpdate(int volume) {
                 if (volume > 10) {
                     if (!isComeOnRunablePosted) {
-                        handler.postDelayed(onCoursewareComeOnRunable, 3000);
+                        mainHandler.postDelayed(onCoursewareComeOnRunable, 3000);
                         isComeOnRunablePosted = true;
                     }
                 }
@@ -583,7 +583,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private void onRecognizeStop(ResultEntity resultEntity) {
         existingVoiceTime = voiceTime;
         if (isAttach() && !gameOver) {
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     startSpeechRecognize();
@@ -592,7 +592,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
         if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode.MUTE) {
             tvVoiceTip.setVisibility(View.VISIBLE);
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     tvVoiceTip.setVisibility(View.GONE);
@@ -920,14 +920,14 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void startTimer() {
-            handler.removeCallbacks(onCoursewareComeOnRunable);
+            mainHandler.removeCallbacks(onCoursewareComeOnRunable);
             isComeOnRunablePosted = false;
-            handler.removeCallbacks(turnPageRunnable);
+            mainHandler.removeCallbacks(turnPageRunnable);
             presentTime = System.currentTimeMillis();
             singleCount = 0;
             if (pageNum >= mAnswersList.size()) {
                 gameOver = true;
-                handler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         submitData(false);
@@ -936,9 +936,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             } else {
                 content = new StringBuilder(mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get
                         (pageNum).getText());
-                handler.postDelayed(startSpeechRecognizeRunnable, 1000);
+                mainHandler.postDelayed(startSpeechRecognizeRunnable, 1000);
                 int time = mAnswersList.get(pageNum).getSingleTime() + 1;
-                handler.postDelayed(turnPageRunnable, time * 1000);
+                mainHandler.postDelayed(turnPageRunnable, time * 1000);
             }
         }
 
@@ -1001,8 +1001,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void onDestory() {
-            handler.removeCallbacks(turnPageRunnable);
-            handler.removeCallbacks(startSpeechRecognizeRunnable);
+            mainHandler.removeCallbacks(turnPageRunnable);
+            mainHandler.removeCallbacks(startSpeechRecognizeRunnable);
         }
 
         @Override
@@ -1095,7 +1095,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 tvFireSum.setText("" + fireNum);
                 flFireAdd.setVisibility(View.VISIBLE);
                 tvFireAdd.setText("+1");
-                handler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         flFireAdd.setVisibility(View.GONE);
@@ -1112,7 +1112,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 return;
             }
             tvOops.setVisibility(View.VISIBLE);
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     tvOops.setVisibility(View.GONE);
@@ -1143,8 +1143,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         public void startTimer() {
             presentTime = System.currentTimeMillis();
             int time = mTestInfoEntity.getAnswerLimitTime() + 1;
-            handler.removeCallbacks(stopTimerRunnable);
-            handler.postDelayed(stopTimerRunnable, time * 1000);
+            mainHandler.removeCallbacks(stopTimerRunnable);
+            mainHandler.postDelayed(stopTimerRunnable, time * 1000);
         }
 
         @Override
@@ -1222,8 +1222,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         if (mIse != null) {
                             mIse.cancel();
                         }
-                        handler.removeCallbacks(stopTimerRunnable);
-                        handler.postDelayed(new Runnable() {
+                        mainHandler.removeCallbacks(stopTimerRunnable);
+                        mainHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 submitData(false);
@@ -1239,7 +1239,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void onDestory() {
-            handler.removeCallbacks(stopTimerRunnable);
+            mainHandler.removeCallbacks(stopTimerRunnable);
         }
 
         @Override
@@ -1315,7 +1315,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             tvFireSum.setText("" + fireNum);
             flFireAdd.setVisibility(View.VISIBLE);
             tvFireAdd.setText("+1");
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     flFireAdd.setVisibility(View.GONE);
@@ -1328,7 +1328,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
          */
         private void onOops() {
             tvOops.setVisibility(View.VISIBLE);
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     tvOops.setVisibility(View.GONE);

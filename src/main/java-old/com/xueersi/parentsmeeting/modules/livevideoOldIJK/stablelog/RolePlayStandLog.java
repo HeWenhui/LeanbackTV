@@ -5,7 +5,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 /**
- * Created by lyqai on 2018/6/12.
+ * Created by linyuqiang on 2018/6/12.
  */
 
 public class RolePlayStandLog {

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Created by lyqai on 2018/1/6.
+ * Created by linyuqiang on 2018/1/6.
  * 稳定性日志
  */
 public class StableLogHashMap {

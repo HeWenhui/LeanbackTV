@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/11.
+ * Created by linyuqiang on 2018/7/11.
  */
 public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent, NoticeAction, TopicAction, VideoAudioChatHttp, MessageAction {
     private VideoAudioChatBll videoChatAction;

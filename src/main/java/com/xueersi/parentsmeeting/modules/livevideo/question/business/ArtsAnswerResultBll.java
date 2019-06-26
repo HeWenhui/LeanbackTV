@@ -37,8 +37,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -205,7 +207,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         post(new Runnable() {
             @Override
             public void run() {
-                if (mGetInfo.getPattern() == 2) {
+                if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
                     showH5Result(mAnswerReulst);
                     close = false;
                 } else {
@@ -215,10 +217,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 try {
                     VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
                     if (detailInfo != null) {
-                        NewCourseLog.sno8(contextLiveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0,detailInfo.isTUtor());
+                        NewCourseLog.sno8(contextLiveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0, detailInfo.isTUtor());
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });
@@ -540,7 +542,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent("closeAnswerResult1"));
         }
-        if (mGetInfo.getPattern() == 2) {
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
             EventBus.getDefault().post(new AnswerResultCplShowEvent("closeAnswerResult2"));
         }
 
@@ -824,7 +826,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 break;
             case XESCODE.ARTS_STOP_QUESTION:
                 mArtsAnswerResultEvent = null;
-                if (mGetInfo.getPattern() == 2) {
+                if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
                     rlAnswerResultLayout.post(new Runnable() {
                         @Override
                         public void run() {
@@ -843,7 +845,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 String status = data.optString("status", "off");
                 mArtsAnswerResultEvent = null;
                 if ("off".equals(status)) {
-                    if (mGetInfo.getPattern() == 2) {
+                    if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
                         rlAnswerResultLayout.post(new Runnable() {
                             @Override
                             public void run() {
@@ -998,7 +1000,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         //    .getScore() + ":" + voiceAnswerResultEvent.getTestId());
                         saveVoiceAnswerResult(voiceAnswerResultEvent);
                         //全身直播不弹结果页
-                        if (mGetInfo.getPattern() != 2) {
+                        if (mGetInfo.getPattern() != LiveVideoConfig.LIVE_PATTERN_2) {
                             speechResultEntity.score = score;
                             speechResultEntity.gold = gold;
                             speechResultEntity.energy = energy;

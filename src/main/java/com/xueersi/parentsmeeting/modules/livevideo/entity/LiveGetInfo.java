@@ -1213,6 +1213,7 @@ public class LiveGetInfo {
          * 童音测评
          */
         private String learning_stage = "";
+        private int goldNum;
 
         public String getCourseId() {
             return courseId;
@@ -1308,6 +1309,14 @@ public class LiveGetInfo {
 
         public void setLearning_stage(String learning_stage) {
             this.learning_stage = learning_stage;
+        }
+
+        public int getGoldNum() {
+            return goldNum;
+        }
+
+        public void setGoldNum(int goldNum) {
+            this.goldNum = goldNum;
         }
     }
 

@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business;
 
 /**
- * Created by lyqai on 2017/7/20.
+ * Created by linyuqiang on 2017/7/20.
  */
 
 public interface AuditIRCCallback extends IRCCallback {

@@ -39,7 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageSend;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -810,16 +810,16 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         logger.d( "onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
         if (dbStart) {
             dbStart = false;
-            LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
+            LiveMessageSend liveMessageSend = ProxUtil.getProxUtil().get(activity, LiveMessageSend.class);
             if (sendDbDuration == 0) {
                 liveBll.setNotOpeningNum();
-                if (liveMessageBll != null) {
-                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                if (liveMessageSend != null) {
+                    liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                             "大声的说出来，老师很想听到你的声音哦~");
                 }
             } else {
-                if (lastdbDuration == 0 && liveMessageBll != null) {
-                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                if (lastdbDuration == 0 && liveMessageSend != null) {
+                    liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                             "没错，就是这样，继续坚持下去！");
                 }
             }

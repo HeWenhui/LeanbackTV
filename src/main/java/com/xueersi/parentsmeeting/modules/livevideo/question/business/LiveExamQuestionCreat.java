@@ -6,13 +6,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
 
 import java.util.ArrayList;
 
 /**
- * Created by lyqai on 2018/7/25.
+ * Created by linyuqiang on 2018/7/25.
  */
 
 public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
@@ -43,7 +44,7 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
     }
 
     @Override
-    public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity) {
+    public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, LiveBasePager.OnPagerClose onPagerClose) {
         AnswerRankBll mAnswerRankBll = null;
         if (mAnswerRankIRCBll != null) {
             mAnswerRankBll = mAnswerRankIRCBll.getAnswerRankBll();
@@ -55,6 +56,7 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
         BaseExamQuestionInter examQuestionPager = new ExamQuestionX5Pager(activity, questionBll, liveGetInfo.getStuId
                 (), liveGetInfo.getUname(), liveid, videoQuestionLiveEntity, mAnswerRankBll == null ? "0" : mAnswerRankBll
                 .getIsShow(), isArts, liveGetInfo.getStuCouId(), "1".equals(liveGetInfo.getIsAllowTeamPk()));
+        ((ExamQuestionX5Pager) examQuestionPager).setOnPagerClose(onPagerClose);
         return examQuestionPager;
     }
 }

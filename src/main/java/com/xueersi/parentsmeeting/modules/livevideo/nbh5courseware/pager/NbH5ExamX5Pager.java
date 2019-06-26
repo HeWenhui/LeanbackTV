@@ -793,7 +793,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 wvSubjectWeb.stopLoading();
@@ -810,7 +810,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
-                    handler.post(new Runnable() {
+                    mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             wvSubjectWeb.stopLoading();

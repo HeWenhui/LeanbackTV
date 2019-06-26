@@ -18,7 +18,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  * Created by linyuqiang on 2018/8/2.
  * 键盘事件
  */
-public class KeyboardObserverReg {
+public class KeyboardObserverReg implements LiveProvide {
     Logger logger = LoggerFactory.getLogger("KeyboardObserverReg");
     ArrayList<KeyboardPopWindow.KeyboardObserver> observers = new ArrayList<>();
     private KeyboardPopWindow keyboardPopWindow;

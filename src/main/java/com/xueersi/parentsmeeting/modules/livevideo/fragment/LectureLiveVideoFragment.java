@@ -11,6 +11,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
@@ -21,26 +22,26 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
+import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.leclearnreport.business.LecLearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -187,13 +188,38 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
         mLiveBll.addBusinessBll(liveIRCMessageBll);
-        mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
-        mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
-        mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll));
-        mLiveBll.addBusinessBll(new LecAdvertIRCBll(activity, mLiveBll));
-        mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
-        mLiveBll.addBusinessBll(new LecLearnReportIRCBll(activity, mLiveBll));
-        mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
+        mLiveBll.setTeacherAction(liveIRCMessageBll);
+
+        ArrayList<BllConfigEntity> bllConfigEntities = AllBllConfig.getLiveBusinessLec();
+
+        for (int i = 0; i < bllConfigEntities.size(); i++) {
+            String className = "";
+            try {
+                BllConfigEntity bllConfigEntity = bllConfigEntities.get(i);
+                className = bllConfigEntity.className;
+                Class<?> c = Class.forName(className);
+                Class<? extends LiveBaseBll> clazz;
+                if (BusinessCreat.class.isAssignableFrom(c)) {
+                    Class<? extends BusinessCreat> creatClazz = (Class<? extends BusinessCreat>) c;
+                    BusinessCreat businessCreat = creatClazz.newInstance();
+                    clazz = businessCreat.getClassName(activity.getIntent());
+                    if (clazz == null) {
+                        continue;
+                    }
+                } else if (LiveBaseBll.class.isAssignableFrom(c)) {
+                    clazz = (Class<? extends LiveBaseBll>) c;
+                } else {
+                    continue;
+                }
+                Constructor<? extends LiveBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBll2.class});
+                LiveBaseBll liveBaseBll = constructor.newInstance(activity, mLiveBll);
+                mLiveBll.addBusinessBll(liveBaseBll);
+                logger.d("addBusiness:business=" + className);
+            } catch (Exception e) {
+                logger.d("addBusiness:business=" + className, e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+        }
     }
 
     @Override

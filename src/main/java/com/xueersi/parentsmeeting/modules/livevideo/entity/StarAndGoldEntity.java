@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 /**
- * Created by lyqai on 2017/9/27.
+ * Created by linyuqiang on 2017/9/27.
  */
 
 public class StarAndGoldEntity {

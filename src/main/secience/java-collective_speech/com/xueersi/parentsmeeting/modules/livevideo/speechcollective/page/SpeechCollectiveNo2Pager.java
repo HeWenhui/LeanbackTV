@@ -87,8 +87,8 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
     }
 
     public void start() {
-        handler.post(microphoneShowRunnable);
-        handler.postDelayed(new Runnable() {
+        mainHandler.post(microphoneShowRunnable);
+        mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 ivClose.setVisibility(View.VISIBLE);
@@ -140,7 +140,7 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
         mLogtf.d("onNoVolume");
         ivSpeechcollectiveNoVolume.setVisibility(View.VISIBLE);
         ivSpeechcollectiveNoVolume.setText("说错了没关系，勇敢尝试吧");
-        handler.postDelayed(new Runnable() {
+        mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 onTipHide.hide();
@@ -215,7 +215,7 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
                     if (!haveVolume) {
                         ivSpeechcollectiveNoVolume.setVisibility(View.VISIBLE);
                         ivSpeechcollectiveNoVolume.setText("大声说出你的答案吧");
-                        handler.postDelayed(new Runnable() {
+                        mainHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 if (onTipHide != null) {

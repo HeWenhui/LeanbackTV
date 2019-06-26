@@ -50,10 +50,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsSpeakEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
@@ -352,8 +352,8 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 if (isPlayBack) {
                     resetMediaCtr();
                 }
-                if (handler != null) {
-                    handler.removeCallbacks(null);
+                if (mainHandler != null) {
+                    mainHandler.removeCallbacks(null);
                 }
                 ChsSpeakEvent event = new ChsSpeakEvent();
                 event.setEventType(ChsSpeakEvent.EVENT_TYPE_PAGE_CLOSE);
@@ -414,7 +414,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 try {
                     String type = message.getString("type");
                     if (CourseMessage.REC_close.equals(type)) {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
 
@@ -502,6 +502,11 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
 
     }
 
+    @Override
+    public void setQuestionOnSubmit(QuestionOnSubmit questionOnSubmit) {
+
+    }
+
     private void getTodayQues() {
         String string = mShareDataManager.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}",
                 ShareDataManager.SHAREDATA_USER);
@@ -516,7 +521,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     startQueTime = todayLiveObj.optLong("start-" + queskey);
                 }
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("getTodayQues", e);
             }
         }
@@ -551,7 +556,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             todayObj.put(liveId, todayLiveObj);
             return jsonObject;
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("getTodayLive", e);
         }
         return null;
@@ -575,7 +580,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                         ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("saveThisQues", e);
         }
     }
@@ -583,7 +588,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     private void onAnswer(final JSONObject message) {
         recognizeSuccess = true;
         cancleAssess();
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 NewCourseSec.Test oldTest = tests.get(currentIndex);
@@ -608,7 +613,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                         submit(0, nonce, data);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 logger.d("onAnswer:answer:getAnswerType=" + getAnswerType + ",index=" + currentIndex);
 
@@ -617,7 +622,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     }
 
     private void onLoadComplete(final String where, final JSONObject message) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (LiveQueConfig.GET_ANSWERTYPE_WHERE_MESSAGE.equals(where)) {
@@ -812,7 +817,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                             logger.i("result score" + score + "result text" + word);
                                         }
                                     } catch (JSONException e) {
-                                        CrashReport.postCatchedException(e);
+                                        CrashReport.postCatchedException(new LiveException(TAG, e));
                                         mLogtf.e("submitData", e);
                                     }
                                     logger.d("onResult: status:" + result.getStatus() +
@@ -865,10 +870,10 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     private void startAssess() {
         if (startAssesByRefresh) {
             startAssesByRefresh = false;
-            handler.removeCallbacks(assessTask);
-            handler.postDelayed(assessTask, 900);
+            mainHandler.removeCallbacks(assessTask);
+            mainHandler.postDelayed(assessTask, 900);
         } else {
-            handler.removeCallbacks(assessTask);
+            mainHandler.removeCallbacks(assessTask);
             assessTask.run();
         }
     }
@@ -884,7 +889,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      **/
     private void onRecognizeStop() {
         if (isAttach()) {
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (!recognizeSuccess && !isDestory && isSpeakAnswer) {
@@ -970,7 +975,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 jsonData.put("data", resultData);
                 StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submitData", e);
             }
             XESToastUtils.showToast(mContext, "时间到,停止作答!");
@@ -1263,7 +1268,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 wvSubjectWeb.stopLoading();
@@ -1278,7 +1283,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
-                    handler.post(new Runnable() {
+                    mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             wvSubjectWeb.stopLoading();

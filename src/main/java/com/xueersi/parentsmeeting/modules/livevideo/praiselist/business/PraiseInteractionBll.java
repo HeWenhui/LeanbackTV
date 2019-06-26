@@ -26,7 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ArtsPraiseHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageSend;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseInteractionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -78,8 +78,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     private Map<String, String> userLogMap = new HashMap<String, String>();
 
 
-    public PraiseInteractionBll(Context context, LiveBll2 liveBll) {
-        super((Activity) context, liveBll);
+    public PraiseInteractionBll(Activity activity, LiveBll2 liveBll) {
+        super(activity, liveBll);
         logger.d("PraiseInteractionBll construct");
         mLiveBll = liveBll;
 
@@ -377,8 +377,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                     }
                 });
 
-                LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
-                if (liveMessageBll != null) {
+                LiveMessageSend liveMessageSend = ProxUtil.getProxUtil().get(activity, LiveMessageSend.class);
+                if (liveMessageSend != null) {
                     String teacherType = "主讲";
                     if ("f".equals(from)) {
                         teacherType = "辅导";
@@ -388,7 +388,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                         status = "开启";
                     }
                     String message = teacherType + "老师" + status + "了点赞功能";
-                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                    liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                             message);
 
                 }

@@ -29,7 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulClos
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.UpdatePkState;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageSend;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.SpeechCollectiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog.SpeechStartDialog;
@@ -204,9 +204,9 @@ public class SpeechCollectiveNo2Bll {
         }
         String message = teacherType + "老师" + status + "了集体发言";
 
-        LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(context, LiveMessageBll.class);
-        if (liveMessageBll != null) {
-            liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+        LiveMessageSend liveMessageSend = ProxUtil.getProvide(context, LiveMessageSend.class);
+        if (liveMessageSend != null) {
+            liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                     message);
         }
     }

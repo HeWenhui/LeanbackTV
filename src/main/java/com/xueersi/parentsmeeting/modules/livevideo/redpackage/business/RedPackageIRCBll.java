@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
 public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     private RedPackageAction redPackageAction;
@@ -66,7 +66,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        if (mGetInfo.getPattern() == 2) {
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
             RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, true, contextLiveAndBackDebug);
             redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
                 @Override

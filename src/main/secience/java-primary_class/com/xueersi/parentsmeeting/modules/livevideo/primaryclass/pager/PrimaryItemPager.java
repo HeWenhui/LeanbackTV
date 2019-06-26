@@ -26,7 +26,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePagerState;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.BasePrimaryTeamItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.BasePrimaryTeamPeopleItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamEmptyItem;
@@ -156,7 +155,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         } else {
             rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
             ivPkState.setVisibility(View.VISIBLE);
-            handler.postDelayed(ivPkStateRun, 10000);
+            mainHandler.postDelayed(ivPkStateRun, 10000);
         }
     }
 
@@ -172,7 +171,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             } else {
                 rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
                 ivPkState.setVisibility(View.VISIBLE);
-                handler.postDelayed(ivPkStateRun, 10000);
+                mainHandler.postDelayed(ivPkStateRun, 10000);
             }
         }
     }
@@ -222,7 +221,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     public void onModeChange(final String mode) {
         this.mode = mode;
         mLogtf.d("onModeChange:mode=" + mode);
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 clPrimaryTeamInter.setVisibility(View.GONE);
@@ -231,8 +230,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     mView.setVisibility(View.VISIBLE);
                     rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
                     ivPkState.setVisibility(View.VISIBLE);
-                    handler.removeCallbacks(ivPkStateRun);
-                    handler.postDelayed(ivPkStateRun, 10000);
+                    mainHandler.removeCallbacks(ivPkStateRun);
+                    mainHandler.postDelayed(ivPkStateRun, 10000);
                     if (teamInfoEntity != null) {
                         joinChannel();
                     } else {
@@ -372,7 +371,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 mLogtf.d("onEngineCreate:mRtcEngine=" + (mRtcEngine == null));
                 if (mRtcEngine != null) {
                     fileFullPath = path;
-                    handler.post(new Runnable() {
+                    mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             addItem();
@@ -419,7 +418,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 tvPrimaryTeamNameMid.setText("欢迎加入 “" + teamInfoEntity.getTeamName() + "”");
                 tvPrimaryTeamNameMid.setVisibility(View.VISIBLE);
                 ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(ivPrimaryTeamIcon);
-                handler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         tvPrimaryTeamNameMid.setVisibility(View.GONE);
@@ -441,8 +440,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
         rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
         ivPkState.setVisibility(View.VISIBLE);
-        handler.removeCallbacks(ivPkStateRun);
-        handler.postDelayed(ivPkStateRun, 10000);
+        mainHandler.removeCallbacks(ivPkStateRun);
+        mainHandler.postDelayed(ivPkStateRun, 10000);
     }
 
     private int totalEnergy;
@@ -586,7 +585,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     };
 
     private void doRenderRemoteUi(final int uid, final BasePrimaryTeamItem courseGroupItem) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 SurfaceView surfaceV = RtcEngine.CreateRendererView(mContext);
@@ -711,7 +710,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     };
 
     private void preview(final BasePrimaryTeamItem courseGroupItem) {
-        handler.post(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 SurfaceView surfaceV = RtcEngine.CreateRendererView(mContext);
@@ -729,7 +728,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
             if (videoStatus != open) {
                 videoStatus = open;
-                handler.post(new Runnable() {
+                mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         tvPrimaryTeamInterLeft.setEnabled(videoStatus);
@@ -778,7 +777,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         mLogtf.d("onMessage:videoopen=" + videoopen + ",audioopen=" + audioopen + ",state=" + mState);
         if (videoStatus != videoopen) {
             videoStatus = videoopen;
-            handler.post(new Runnable() {
+            mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     tvPrimaryTeamInterLeft.setEnabled(videoStatus);
@@ -847,7 +846,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     }
                 }
             });
-            handler.postDelayed(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     onCheckPermission();

@@ -54,8 +54,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -217,7 +218,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         params.width = liveVideoPoint.getRightMargin();
         params.topMargin = liveVideoPoint.y3;
-        logger.setLogMethod(false);
         logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
 
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
@@ -792,12 +792,16 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initFlower(educationStage);
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    LiveIRCMessageBll.requestGoldTotal(mContext);
-                }
-            });
+            if (getInfoGoldNum == 0) {
+                liveThreadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        UserGoldTotal.requestGoldTotal(mContext);
+                    }
+                });
+            } else {
+                goldNum = "" + getInfoGoldNum;
+            }
         }
     }
 
@@ -1134,9 +1138,9 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         logger.e("=====>onMessage called");
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);

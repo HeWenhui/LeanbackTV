@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/10.
+ * Created by linyuqiang on 2018/7/10.
  */
 
 public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCallHttp {

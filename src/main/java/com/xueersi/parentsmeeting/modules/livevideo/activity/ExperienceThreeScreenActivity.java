@@ -1104,7 +1104,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         // 关联聊天人数
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(liveMessageBll);
 
         // TODO: 2018/8/11 设置ircState
         //mLiveMessagePager.setLiveBll(mLiveBll);
