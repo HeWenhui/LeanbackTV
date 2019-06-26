@@ -1512,9 +1512,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("tests", tests+"");
-        params.addBodyParam("ctId", ctId+"");
-        params.addBodyParam("pSrc", pSrc+"");
+        params.addBodyParam("tests", tests + "");
+        params.addBodyParam("ctId", ctId + "");
+        params.addBodyParam("pSrc", pSrc + "");
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params,
                 requestCallBack);
@@ -1713,9 +1713,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("tests", tests+"");
-        params.addBodyParam("ctId", ctId+"");
-        params.addBodyParam("pSrc", pSrc+"");
+        params.addBodyParam("tests", tests + "");
+        params.addBodyParam("ctId", ctId + "");
+        params.addBodyParam("pSrc", pSrc + "");
         params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL(isHalfBody) + "/" + liveId, params, requestCallBack);
@@ -1879,7 +1879,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     *
      * 文科三分屏上传精彩瞬间截图url，半身直播走理科的接口
      */
     public void sendWonderfulMoment(String stuId, String liveId, String stuCouId, String type, String url, HttpCallBack httpCallBack) {
@@ -1891,6 +1890,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("url", url);
         sendPost(LiveVideoConfig.ART_TRIPLE_WONDERFUL_MOMENT, params, httpCallBack);
     }
+
     public void saveStuPlanOnlineTime(String stuId, String gradeId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("stuId", "" + stuId);
@@ -1962,7 +1962,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void saveEvaluationTeacher(String liveId, String courseId, String teacherId, String teacherScore, String
             teacherOption, String counselorId, String counselorScore, String
-                                                  counselorOption, String classId,String mainInput,String tutorInput, HttpCallBack requestCallBack) {
+                                              counselorOption, String classId, String mainInput, String tutorInput, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("courseId", courseId);
@@ -2324,18 +2324,63 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("videoDuration", videoDuration);
         sendPost(LiveVideoConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
     }
+
     /**
      * 教师反馈
+     *
      * @param liveId
      * @param courseId
      * @param isPlayBack
      * @param httpCallBack
      */
-    public void getFeedBack(String liveId,String courseId,String isPlayBack,HttpCallBack httpCallBack) {
+    public void getFeedBack(String liveId, String courseId, String isPlayBack, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("courseId", courseId);
         params.addBodyParam("isPlayBack", isPlayBack);
         sendPost(LiveVideoConfig.URL_LIVE_COURSE_GETEVALUATE, params, httpCallBack);
+    }
+
+    /**
+     * 智能语音反馈学生提交接口
+     * wiki :http://wiki.xesv5.com/pages/viewpage.action?pageId=18918969
+     *
+     * @param stuId
+     * @param materialId
+     * @param isPlayBack
+     * @param answers
+     * @param liveId
+     * @param stuCouId
+     * @param correctCase
+     * @param rereadCase
+     * @param answerTime
+     * @param useClient
+     * @param useClientVer
+     */
+    public void getIntellgentRecognition(String stuId,
+                                         String materialId,
+                                         String isPlayBack,
+                                         String answers,
+                                         String liveId,
+                                         String stuCouId,
+                                         String correctCase,
+                                         String rereadCase,
+                                         String answerTime,
+                                         String useClient,
+                                         String useClientVer,
+                                         HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("materialId", materialId);
+        params.addBodyParam("isPlayBack", isPlayBack);
+        params.addBodyParam("answers", answers);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("correctCase", correctCase);
+        params.addBodyParam("rereadCase", rereadCase);
+        params.addBodyParam("answerTime", answerTime);
+        params.addBodyParam("useClient", useClient);
+        params.addBodyParam("useClientVer", useClientVer);
+        sendPost(LiveVideoConfig.ART_TRIPLE_WONDERFUL_MOMENT, params, httpCallBack);
     }
 }

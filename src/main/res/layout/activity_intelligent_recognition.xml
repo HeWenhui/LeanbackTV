@@ -57,4 +57,13 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
         app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
         app:layout_constraintRight_toRightOf="@+id/iv_livevideo_intelligent_recognition_background_textview" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_view_livevideo_intelligent_recognition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:lottie_fileName="intelligent_recognition_study_v2/english/data.json"
+        app:lottie_imageAssetsFolder="intelligent_recognition_study_v2/english/images"
+        app:lottie_loop="true" />
+
 </android.support.constraint.ConstraintLayout>
