@@ -37,7 +37,7 @@ public class LiveBackExamQuestionCreat implements BaseExamQuestionCreat {
     }
 
     @Override
-    public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, final VideoQuestionLiveEntity videoQuestionLiveEntity, final LiveBasePager.OnPagerClose onPagerClose) {
+    public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, final VideoQuestionLiveEntity videoQuestionLiveEntity, LivePagerBack livePagerBack, final LiveBasePager.OnPagerClose onPagerClose) {
         ExamQuestionX5PlaybackPager examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(activity,
                 liveid, videoQuestionLiveEntity, isArts, liveGetInfo.getStuCouId(), livePagerBack);
         examQuestionPlaybackPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
@@ -51,6 +51,7 @@ public class LiveBackExamQuestionCreat implements BaseExamQuestionCreat {
                 mediaPlayerControl.start();
             }
         });
+        examQuestionPlaybackPager.setLivePagerBack(livePagerBack);
         return examQuestionPlaybackPager;
     }
 }

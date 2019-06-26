@@ -98,9 +98,8 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * Created by linyuqiang on 2016/9/23.
  * 互动题bll
  */
-public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebInter
-        .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardUtil
-        .OnKeyboardShowingListener, KeyboardPopWindow.KeyboardObserver, LivePagerBack {
+public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardUtil
+        .OnKeyboardShowingListener, KeyboardPopWindow.KeyboardObserver, LivePagerBack, TeacherClose {
     private String TAG = "QuestionBll";
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private SpeechUtils mIse;
@@ -622,7 +621,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             questionWebPager = null;
                         }
                         QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity,
-                                videoQuestionLiveEntity, QuestionBll.this, liveGetInfo
+                                videoQuestionLiveEntity, liveGetInfo
                                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
                                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
                                 videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), liveGetInfo.getIsArts
@@ -631,6 +630,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         questionWebPager.setOpenNewCourseWare(liveGetInfo.getIsOpenNewCourseWare());
                         questionWebPager.setLivePagerBack(QuestionBll.this);
                         rlQuestionContent.addView(questionWebPager.getRootView());
+                        questionWebPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+                            @Override
+                            public void onClose(LiveBasePager basePager) {
+                                stopWebQuestion(basePager, liveGetInfo.getId(), videoQuestionLiveEntity);
+                            }
+                        });
+                        questionWebPager.setTeacherClose(QuestionBll.this);
                         QuestionBll.this.questionWebPager = questionWebPager;
                         setHaveWebQuestion(true);
                     }
@@ -787,7 +793,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 questionWebPager.setLivePagerBack(QuestionBll.this);
                                 QuestionBll.this.questionWebPager = questionWebPager;
                             } else {
-                                QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this,
+                                QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity,
                                         videoQuestionLiveEntity, liveGetInfo.getId());
                                 questionWebPager.setLivePagerBack(QuestionBll.this);
                                 QuestionBll.this.questionWebPager = questionWebPager;
@@ -799,7 +805,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 }
                             });
                             rlQuestionContent.addView(questionWebPager.getRootView());
-                            QuestionBll.this.questionWebPager = questionWebPager;
                             setHaveWebQuestion(true);
                             activity.getWindow().getDecorView().requestLayout();
                             activity.getWindow().getDecorView().invalidate();
@@ -1175,13 +1180,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 String url = liveGetInfo.getSubjectiveTestAnswerResult() + "?stuId=" + liveGetInfo.getStuId() +
                         "&testId=" + videoQuestionLiveEntity.getvQuestionID();
                 logger.d("showQuestion:url=" + url);
-                subjectResultPager = baseSubjectResultCreat.creat(activity, this,
+                subjectResultPager = baseSubjectResultCreat.creat(activity,
                         liveGetInfo.getSubjectiveTestAnswerResult(),
-                        liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity, stuCouId);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
-                        .MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
-                rlQuestionContent.addView(subjectResultPager.getRootView(), params);
+                        liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity, stuCouId, new LiveBasePager.OnPagerClose() {
+                            @Override
+                            public void onClose(LiveBasePager basePager) {
+                                subjectResultPager = null;
+                                questionHttp.getStuGoldCount("onAnswerReslut");
+                            }
+                        });
+                rlQuestionContent.addView(subjectResultPager.getRootView(), ViewGroup.LayoutParams
+                        .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             } else {
                 type = entity.getResultType();
                 if (entity.getIsAnswer() == 1) {
@@ -1488,7 +1497,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mData.put("testid", videoQuestionLiveEntity.id);
                 umsAgentDebugInter(examQuestionEventId, mData);
                 examQuestionPager = baseExamQuestionCreat.creatBaseExamQuestion(activity, liveid,
-                        videoQuestionLiveEntity, new LiveBasePager.OnPagerClose() {
+                        videoQuestionLiveEntity, QuestionBll.this, new LiveBasePager.OnPagerClose() {
                             @Override
                             public void onClose(LiveBasePager basePager) {
                                 stopExam(videoQuestionLiveEntity.id, examQuestionPager);
@@ -1709,10 +1718,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         return false;
     }
 
-    public boolean onBack() {
-        return false;
-    }
-
     private void stopExam(String num, BaseExamQuestionInter baseExamQuestionInter) {
         mExamAndBool.add("" + num);
         rlQuestionContent.removeView(baseExamQuestionInter.getRootView());
@@ -1722,26 +1727,19 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         questionHttp.getStuGoldCount("stopExam");
     }
 
-    @Override
-    public void stopWebQuestion(BasePager pager, String testId, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+    private void stopWebQuestion(BasePager pager, String testId, BaseVideoQuestionEntity baseVideoQuestionEntity) {
         if (pager instanceof BaseQuestionWebInter) {
             mQueAndBool.add("" + testId);
             if (questionWebPager != null) {
                 questionWebPager.onDestroy();
             }
             setHaveWebQuestion(false);
-            JSONObject object = new JSONObject();
             saveH5AnswerRecord(QUESTION, testId);
             if (!isAnaswer) {
                 onQuestionShow(null, false, "stopWebQuestion");
             }
-        } else {
-            subjectResultPager = null;
         }
         questionHttp.getStuGoldCount("stopWebQuestion");
-
-        // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
-        //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
     }
 
 

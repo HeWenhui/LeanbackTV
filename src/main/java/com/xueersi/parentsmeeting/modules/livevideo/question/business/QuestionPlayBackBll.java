@@ -107,9 +107,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         //主观题结果页
         LiveBackSubjectResultCreat liveBackSubjectResultCreat = new LiveBackSubjectResultCreat();
         liveBackSubjectResultCreat.setLiveGetInfo(liveGetInfo);
-        WrapQuestionWebStop wrapQuestionWebStop = new WrapQuestionWebStop(activity);
-        wrapQuestionWebStop.setStopWebQuestion(questionBll);
-        liveBackSubjectResultCreat.setWrapQuestionWebStop(wrapQuestionWebStop);
         questionBll.setBaseSubjectResultCreat(liveBackSubjectResultCreat);
         questionBll.setQuestionWebCreate(new LiveBackQuestionWebCreate());
         if (isArts == LiveVideoSAConfig.ART_SEC) {

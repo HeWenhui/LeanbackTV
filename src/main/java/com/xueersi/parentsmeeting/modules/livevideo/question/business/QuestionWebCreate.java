@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
 
 /**
@@ -13,6 +12,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5P
  * 创建普通互动题，h5显示页面
  */
 public interface QuestionWebCreate {
-    QuestionWebX5Pager create(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, BaseQuestionWebInter.StopWebQuestion questionBll, LiveGetInfo liveGetInfo,
+    QuestionWebX5Pager create(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, LiveGetInfo liveGetInfo,
                               int isArts, String stuCouId);
 }

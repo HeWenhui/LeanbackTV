@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
@@ -30,8 +29,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.TeacherClose;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -50,12 +49,12 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuestionInter {
 
     private String EXAM_URL = "https://live.xueersi.com/LiveExam/examPaper";
-    String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
+    private String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
     private Button btSubjectClose;
-    Button bt_livevideo_subject_calljs;
+    private Button bt_livevideo_subject_calljs;
     private WebView wvSubjectWeb;
     private View errorView;
-    private QuestionBll questionBll;
+    private TeacherClose teacherClose;
     private QuestionOnSubmit onSubmit;
     private String liveid;
     private String num;
@@ -82,11 +81,10 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
      */
     private boolean resultGotByForceSubmit;
 
-    public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId, String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity,
+    public ExamQuestionX5Pager(Context context, TeacherClose teacherClose, String stuId, String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity,
                                String isShowRankList, int isArts, String stuCouId, boolean allowTeamPk) {
         super(context);
-        this.questionBll = questionBll;
-        this.livePagerBack = questionBll;
+        this.teacherClose = teacherClose;
         this.stuId = stuId;
         this.stuName = stuName;
         this.liveid = liveid;
@@ -190,9 +188,9 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
             public void onViewDetachedFromWindow(View v) {
                 mLogtf.d("onViewDetachedFromWindow");
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent.H5_TYPE_EXAM, num);
-                if (questionBll != null && questionBll instanceof QuestionBll) {
-                    event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
-                    ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
+                if (teacherClose != null) {
+                    event.setCloseByTeahcer(teacherClose.isWebViewCloseByTeacher());
+                    teacherClose.setWebViewCloseByTeacher(false);
                 }
                 event.setForceSubmit(resultGotByForceSubmit);
                 EventBus.getDefault().post(event);

@@ -36,8 +36,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.TeacherClose;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
@@ -71,7 +71,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private int refreshTimes = 0;
     private WebView wvSubjectWeb;
     private View errorView;
-    private StopWebQuestion questionBll;
+    private TeacherClose teacherClose;
     private QuestionOnSubmit onSubmit;
     /** 用户名称 */
     private String stuName;
@@ -114,7 +114,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     /** 新课件缓存 */
     private NewCourseCache newCourseCache;
 
-    public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
+    public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
                               String nonce, String isShowRanks, int isArts, String stuCouId, boolean allowTeamPk) {
         super(context);
@@ -123,7 +123,6 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 //            isLive = baseVideoQuestionEntity.isLive();
 //        }
         this.isArts = isArts;
-        this.questionBll = questionBll;
         this.stuId = stuId;
         this.stuName = stuName;
         this.liveid = liveid;
@@ -150,17 +149,19 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         this.onSubmit = questionOnSubmit;
     }
 
+    public void setTeacherClose(TeacherClose teacherClose) {
+        this.teacherClose = teacherClose;
+    }
+
     /**
      * 重载构造方法 支持 文科新课件平台 H5 题
      *
      * @param context
-     * @param questionBll
-     * @param testInfo    试题信息
+     * @param testInfo 试题信息
      */
-    public QuestionWebX5Pager(Context context, StopWebQuestion questionBll, VideoQuestionLiveEntity testInfo, String liveid) {
+    public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity testInfo, String liveid) {
         super(context);
         isArts = LiveVideoSAConfig.ART_EN;
-        this.questionBll = questionBll;
         examUrl = testInfo.getUrl();
         isNewArtsTest = testInfo.isNewArtsH5Courseware();
         testId = testInfo.getvQuestionID();
@@ -250,8 +251,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 //                }
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
-                questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId, getBaseVideoQuestionEntity());
-
+                onPagerClose.onClose(QuestionWebX5Pager.this);
             }
         });
         btSubjectCalljs.setOnClickListener(new View.OnClickListener() {
@@ -301,10 +301,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             @Override
             public void onViewDetachedFromWindow(View v) {
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEngerNum, LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
-                if (questionBll != null && questionBll instanceof QuestionBll) {
-                    logger.e("=======> postEvent closeByTeacher:" + ((QuestionBll) questionBll).isWebViewCloseByTeacher());
-                    event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
-                    ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
+                if (teacherClose != null) {
+                    logger.e("=======> postEvent closeByTeacher:" + teacherClose.isWebViewCloseByTeacher());
+                    event.setCloseByTeahcer(teacherClose.isWebViewCloseByTeacher());
+                    teacherClose.setWebViewCloseByTeacher(false);
                 }
                 event.setForceSubmit(isForceSubmit);
                 EventBus.getDefault().post(event);
@@ -656,7 +656,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 if (group != null) {
                     group.removeView(mView);
                 }
-                questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId, getBaseVideoQuestionEntity());
+                onPagerClose.onClose(QuestionWebX5Pager.this);
                 Map<String, String> mData = new HashMap<>();
                 mData.put("testid", "" + testId);
                 mData.put("closetype", "clickWebCloseButton");

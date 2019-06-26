@@ -78,9 +78,6 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
         //主观题结果页
         LiveBackSubjectResultCreat liveBackSubjectResultCreat = new LiveBackSubjectResultCreat();
         liveBackSubjectResultCreat.setLiveGetInfo(liveGetInfo);
-        WrapQuestionWebStop wrapQuestionWebStop = new WrapQuestionWebStop(activity);
-        wrapQuestionWebStop.setStopWebQuestion(questionBll);
-        liveBackSubjectResultCreat.setWrapQuestionWebStop(wrapQuestionWebStop);
         questionBll.setBaseSubjectResultCreat(liveBackSubjectResultCreat);
     }
 

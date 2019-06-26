@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
 
 /**
@@ -14,9 +13,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5P
  */
 public class LiveQuestionWebCreate implements QuestionWebCreate {
     @Override
-    public QuestionWebX5Pager create(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, BaseQuestionWebInter.StopWebQuestion questionBll, LiveGetInfo liveGetInfo, int isArts, String stuCouId) {
+    public QuestionWebX5Pager create(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, LiveGetInfo liveGetInfo, int isArts, String stuCouId) {
         videoQuestionLiveEntity.setLive(true);
-        QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(context, videoQuestionLiveEntity, questionBll, liveGetInfo
+        QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(context, videoQuestionLiveEntity, liveGetInfo
                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
                 videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), isArts, stuCouId,

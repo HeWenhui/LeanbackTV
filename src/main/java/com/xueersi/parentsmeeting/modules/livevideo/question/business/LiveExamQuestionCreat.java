@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.app.Activity;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -21,7 +22,7 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
     private LiveGetInfo liveGetInfo;
     private AnswerRankIRCBll mAnswerRankIRCBll;
     QuestionHttp questionHttp;
-    QuestionBll questionBll;
+    TeacherClose questionBll;
 
     public void setisArts(int isArts) {
         this.isArts = isArts;
@@ -35,7 +36,7 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
         this.mAnswerRankIRCBll = mAnswerRankBll;
     }
 
-    public void setQuestionBll(QuestionBll questionBll) {
+    public void setQuestionBll(TeacherClose questionBll) {
         this.questionBll = questionBll;
     }
 
@@ -44,7 +45,7 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
     }
 
     @Override
-    public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, LiveBasePager.OnPagerClose onPagerClose) {
+    public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, LivePagerBack livePagerBack, LiveBasePager.OnPagerClose onPagerClose) {
         AnswerRankBll mAnswerRankBll = null;
         if (mAnswerRankIRCBll != null) {
             mAnswerRankBll = mAnswerRankIRCBll.getAnswerRankBll();
@@ -57,6 +58,7 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
                 (), liveGetInfo.getUname(), liveid, videoQuestionLiveEntity, mAnswerRankBll == null ? "0" : mAnswerRankBll
                 .getIsShow(), isArts, liveGetInfo.getStuCouId(), "1".equals(liveGetInfo.getIsAllowTeamPk()));
         ((ExamQuestionX5Pager) examQuestionPager).setOnPagerClose(onPagerClose);
+        ((ExamQuestionX5Pager) examQuestionPager).setLivePagerBack(livePagerBack);
         return examQuestionPager;
     }
 }

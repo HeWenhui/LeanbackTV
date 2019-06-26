@@ -46,7 +46,6 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
     private Button bt_livevideo_subject_calljs;
     private WebView wvSubjectWeb;
     private View errorView;
-    private BaseQuestionWebInter.StopWebQuestion questionBll;
     /** 用户名称 */
     private String stuName;
     /** 用户Id */
@@ -58,10 +57,9 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
     private String testPaperUrl;
     private String stuCouId;
 
-    public SubjectResultX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, BaseQuestionWebInter.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
+    public SubjectResultX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
-        this.questionBll = questionBll;
         this.stuId = stuId;
         this.liveid = liveid;
         this.testId = testId;
@@ -99,7 +97,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
             public void onClick(View v) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
-                questionBll.stopWebQuestion(SubjectResultX5Pager.this, testId, getBaseVideoQuestionEntity());
+                onPagerClose.onClose(SubjectResultX5Pager.this);
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -267,7 +265,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
                 if (group != null) {
                     group.removeView(mView);
                 }
-                questionBll.stopWebQuestion(SubjectResultX5Pager.this, testId, getBaseVideoQuestionEntity());
+                onPagerClose.onClose(SubjectResultX5Pager.this);
                 Map<String, String> mData = new HashMap<>();
                 mData.put("testid", "" + testId);
                 mData.put("closetype", "clickWebCloseButton");

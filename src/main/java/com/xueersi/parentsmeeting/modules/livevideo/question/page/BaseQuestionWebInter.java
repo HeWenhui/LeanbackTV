@@ -31,7 +31,4 @@ public interface BaseQuestionWebInter {
      */
     boolean isResultRecived();
 
-    interface StopWebQuestion {
-        void stopWebQuestion(BasePager pager, String testId, BaseVideoQuestionEntity baseVideoQuestionEntity);
-    }
 }
