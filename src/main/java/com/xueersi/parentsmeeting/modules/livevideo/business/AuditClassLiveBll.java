@@ -728,8 +728,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                 super.liveGetPlayServer(mode, modechange);
             }
         };
-        liveGetPlayServer.setHttpManager(mHttpManager);
-        liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
         liveGetPlayServer.setVideoAction(mVideoAction);
         liveGetPlayServer(mLiveTopic.getMode(), false);
     }

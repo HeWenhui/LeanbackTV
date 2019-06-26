@@ -166,8 +166,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 return teacherIsPresent.isPresent();
             }
         }, mLiveType, getInfo, liveTopic);
-        liveGetPlayServer.setHttpManager(mHttpManager);
-        liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
         liveGetPlayServer.setVideoAction(mVideoAction);
         liveGetPlayServer(liveTopic.getMode(), false);
     }
