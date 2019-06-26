@@ -67,11 +67,18 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         });
     }
 
+    @Override
+    public void onCreate(HashMap<String, Object> data) {
+        super.onCreate(data);
+        BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = getInstance(BaseLiveMediaControllerBottom.class);
+        setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
+    }
+
     public void setLiveFragmentBase(LiveFragmentBase liveFragmentBase) {
         this.liveFragmentBase = liveFragmentBase;
     }
 
-    public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
+    private void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         this.baseLiveMediaControllerBottom = baseLiveMediaControllerBottom;
     }
 

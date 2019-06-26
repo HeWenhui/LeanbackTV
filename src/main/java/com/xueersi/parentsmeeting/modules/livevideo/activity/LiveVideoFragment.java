@@ -210,13 +210,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         if (isArts == 1) {
             bllConfigEntities = AllBllConfig.getLiveBusinessArts();
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-            videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             videoChatIRCBll.setLiveFragmentBase(this);
             mLiveBll.addBusinessBll(videoChatIRCBll);
         } else if (isArts == 2) {
             bllConfigEntities = AllBllConfig.getLiveBusinessCn();
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-            videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             videoChatIRCBll.setLiveFragmentBase(this);
             mLiveBll.addBusinessBll(videoChatIRCBll);
         } else {
@@ -224,12 +222,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
             if (allowLinkMicNew == 1) {
                 VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
-                videoAudioChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
                 videoAudioChatIRCBll.setLiveFragmentBase(this);
                 mLiveBll.addBusinessBll(videoAudioChatIRCBll);
             } else {
                 VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-                videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
                 videoChatIRCBll.setLiveFragmentBase(this);
                 mLiveBll.addBusinessBll(videoChatIRCBll);
             }
