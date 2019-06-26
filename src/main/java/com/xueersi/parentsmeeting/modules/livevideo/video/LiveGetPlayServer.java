@@ -59,8 +59,6 @@ public class LiveGetPlayServer {
     private Handler mHandler = new Handler(Looper.getMainLooper());
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
-    private LiveVideoBll mLivevideoBll;
-
     /** 是否使用PS的播放器 */
 //    private int isPSPlayer = 1;
     public LiveGetPlayServer(Activity context, TeacherIsPresent isPresent, int mLiveType, LiveGetInfo mGetInfo, LiveTopic liveTopic) {
@@ -69,7 +67,6 @@ public class LiveGetPlayServer {
         this.mLiveType = mLiveType;
         this.mGetInfo = mGetInfo;
         this.mLiveTopic = liveTopic;
-        this.mLivevideoBll = mLivevideoBll;
         mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
@@ -158,9 +155,8 @@ public class LiveGetPlayServer {
             mGetPlayServerCancle.cancel();
             mGetPlayServerCancle = null;
         }
-        final URLDNS urldns = new URLDNS();
         if (!MediaPlayer.getIsNewIJK()) {
-             
+
         } else {
             if (mVideoAction instanceof LiveFragmentBase) {
                 ((LiveFragmentBase) mVideoAction).psRePlay(modechange);

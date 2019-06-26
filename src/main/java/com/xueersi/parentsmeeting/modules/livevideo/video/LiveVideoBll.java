@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -19,12 +18,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
@@ -34,7 +31,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,7 +38,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -68,7 +63,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     private ArrayList<PlayServerEntity.PlayserverEntity> failFlvPlayserverEntity = new ArrayList<>();
     private BasePlayerFragment videoFragment;
     private Activity activity;
-    private LiveBll2 mLiveBll;
+    private TeacherIsPresent teacherIsPresent;
     private LiveHttpManager mHttpManager;
     private LiveHttpResponseParser mHttpResponseParser;
     /** 上次播放统计开始时间 */
@@ -103,9 +98,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
     private int mLiveType;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
-    public LiveVideoBll(Activity activity, LiveBll2 liveBll, int liveType) {
+    public LiveVideoBll(Activity activity, TeacherIsPresent teacherIsPresent, int liveType) {
         this.activity = activity;
-        this.mLiveBll = liveBll;
+        this.teacherIsPresent = teacherIsPresent;
         this.mLiveType = liveType;
         mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
@@ -168,7 +163,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
             @Override
             public boolean isPresent() {
-                return mLiveBll.isPresent();
+                return teacherIsPresent.isPresent();
             }
         }, mLiveType, getInfo, liveTopic);
         liveGetPlayServer.setHttpManager(mHttpManager);
@@ -611,7 +606,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    if (!mLiveBll.isPresent() && mVideoAction != null) {
+                    if (!teacherIsPresent.isPresent() && mVideoAction != null) {
                         mVideoAction.onTeacherNotPresent(true);
                     }
                 }
