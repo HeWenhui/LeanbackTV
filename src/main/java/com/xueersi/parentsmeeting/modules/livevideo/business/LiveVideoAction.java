@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
@@ -382,9 +383,9 @@ public class LiveVideoAction implements VideoAction {
                             int netWorkState = NetWorkHelper.getNetWorkState(activity);
                             if (netWorkState == NetWorkHelper.NO_NETWORK) {
                                 playErrorCode = PlayErrorCode.PLAY_NO_WIFI;
-                                tvLoadingHint.setText(PlayErrorCode.PLAY_NO_WIFI.getTip());
+                                ViewUtil.setText(tvLoadingHint,PlayErrorCode.PLAY_NO_WIFI.getTip());
                             } else {
-                                tvLoadingHint.setText("视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "]");
+                                ViewUtil.setText(tvLoadingHint,"视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "]");
                             }
 
                             LiveTopic.RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
@@ -397,19 +398,17 @@ public class LiveVideoAction implements VideoAction {
                         }
                         case MediaErrorInfo.PSDispatchFailed: {
                             logger.i("调度失败");
-                            tvLoadingHint.setText("视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "],正在重试...");
+                            ViewUtil.setText(tvLoadingHint,"视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "],正在重试...");
                             break;
                         }
                         case MediaErrorInfo.PSChannelNotExist: {
                             logger.i("PSChannelNotExist");
-                            String test = "视频播放失败[" + MediaErrorInfo.PSChannelNotExist + "],请耐心等待";
-                            if (!test.equals("" + tvLoadingHint.getText())) {
-                                tvLoadingHint.setText(test);
-                            }
+                            String text = "视频播放失败[" + MediaErrorInfo.PSChannelNotExist + "],请耐心等待";
+                            ViewUtil.setText(tvLoadingHint, text);
                             break;
                         }
                         case MediaErrorInfo.PSServer403: {
-                            tvLoadingHint.setText("鉴权失败" + MediaErrorInfo.PSServer403 + "，正在重试...");
+                            ViewUtil.setText(tvLoadingHint,"鉴权失败" + MediaErrorInfo.PSServer403 + "，正在重试...");
                             break;
                         }
                         default: {
