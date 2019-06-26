@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class AllBllConfig {
     //"com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
     private static String[] secClassPath = {
+            "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkCreat",
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.RankBll",
@@ -32,6 +33,7 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.practice.PraiseTutorBll",
     };
     private static String[] engClassPath = {
+            "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.RankBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll",
@@ -48,7 +50,9 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.practice.PraiseTutorBll",
             "com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnTeamPkIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll"};
-    private static String[] cnClassPath = {"com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
+    private static String[] cnClassPath = {
+            "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.chpk.business.ChinesePkBll",
@@ -71,6 +75,7 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll",
     };
     private static String[] lecClassPath = {
+            "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll",

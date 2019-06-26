@@ -120,6 +120,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
     public LiveIRCMessageBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+        liveBll.setTeacherAction(this);
         this.mLiveType = liveBll.getLiveType();
         mLogtf = new LogToFile(context, TAG);
         mRoomAction = new LiveMessageBll(context, mLiveType);
@@ -171,14 +172,18 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 mRoomAction.onTitleShow(show);
             }
         });
+        mRoomAction.setLiveBll(new LiveIRCState());
+        BaseLiveMediaControllerTop controllerTop = getInstance(BaseLiveMediaControllerTop.class);
+        setLiveMediaControllerTop(controllerTop);
+        BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = getInstance(BaseLiveMediaControllerBottom.class);
+        setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
 
-    public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
-        mRoomAction.setLiveBll(new LiveIRCState());
+    private void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         mRoomAction.setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
 
-    public void setLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
+    private void setLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
         mRoomAction.setBaseLiveMediaControllerTop(controllerTop);
     }
 

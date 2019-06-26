@@ -203,36 +203,24 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      * @param activity
      */
     protected void addBusiness(Activity activity) {
+        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerTop.class, baseLiveMediaControllerTop);
+        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
         //是文科
         ArrayList<BllConfigEntity> bllConfigEntities;
-        LiveIRCMessageBll liveIRCMessageBll;
         if (isArts == 1) {
             bllConfigEntities = AllBllConfig.getLiveBusinessArts();
-            liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
-            liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
-            mLiveBll.addBusinessBll(liveIRCMessageBll);
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
             videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             videoChatIRCBll.setLiveFragmentBase(this);
             mLiveBll.addBusinessBll(videoChatIRCBll);
         } else if (isArts == 2) {
             bllConfigEntities = AllBllConfig.getLiveBusinessCn();
-            liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
-            liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
-            mLiveBll.addBusinessBll(liveIRCMessageBll);
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
             videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             videoChatIRCBll.setLiveFragmentBase(this);
             mLiveBll.addBusinessBll(videoChatIRCBll);
         } else {
             bllConfigEntities = AllBllConfig.getLiveBusinessScience(activity.getIntent());
-            liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
-            liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
-            mLiveBll.addBusinessBll(liveIRCMessageBll);
-
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
             if (allowLinkMicNew == 1) {
                 VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
@@ -253,7 +241,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             addSwitchFlowBll();
             initSwitchFlowListener();
         }
-        mLiveBll.setTeacherAction(liveIRCMessageBll);
         for (int i = 0; i < bllConfigEntities.size(); i++) {
             String className = "";
             try {
