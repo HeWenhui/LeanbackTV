@@ -54,7 +54,10 @@ public class LiveQueHttpConfig {
     /** 辅导 获取课件结果 */
     public static String LIVE_GET_COURSEWARE_TUTOR_RESULT = LiveHttpConfig.LIVE_HOST + "/science/Tutorship/getStuTestResult";
 
-
+    /** 投票查询是否已作答 */
+    public static String LIVE_IS_SUBMIT_COURSEWARE_VOTE = LiveHttpConfig.HTTP_APP_VOTE_HOST + "/vote/stuCheckCommit";
+    /** 投票提交投票 */
+    public static String LIVE_SUBMIT_COURSEWARE_VOTE = LiveHttpConfig.HTTP_APP_VOTE_HOST + "/vote/stuCommitVote";
 
 
 }

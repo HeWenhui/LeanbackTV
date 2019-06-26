@@ -338,6 +338,59 @@ public class CourseWareHttpManager {
             }
         });
     }
+    public void isSubmitH5Vote(String userAnswer, String testId, String stuId, int isPlayBack, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("testId", "" + testId);
+        httpRequestParams.addBodyParam("stuId", "" + stuId);
+        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_IS_SUBMIT_COURSEWARE_VOTE, httpRequestParams, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("submitH5Vote:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                callBack.onDataSucess(responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("submitH5Vote:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("submitH5Vote:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    public void submitH5Vote(String userAnswer, String testId, String stuId, int isPlayBack, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("userAnswer", userAnswer);
+        httpRequestParams.addBodyParam("testId", "" + testId);
+        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
+        httpRequestParams.addBodyParam("stuId", "" + stuId);
+        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOTE, httpRequestParams, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("submitH5Vote:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                callBack.onDataSucess(responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("submitH5Vote:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("submitH5Vote:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
 
     /**
      * 小组互动 - 拉题

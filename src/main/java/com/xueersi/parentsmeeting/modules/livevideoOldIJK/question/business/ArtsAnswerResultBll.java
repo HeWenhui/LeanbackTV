@@ -52,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ArtsPSEAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.VoteAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.SpeechResultPager;
@@ -929,6 +930,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mArtsAnswerResultEvent = event;
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()
                     || ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK == event.getType()) {
+                VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
+                if(TextUtils.equals(detailInfo.type,"21")){
+                    mDsipalyer = new VoteAnswerResultPager(mContext, mAnswerReulst, this);
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                            (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
+                    return;
+                }
                 boolean resultFromVoice = event.getType() == ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK;
                 onAnswerResult(event, event.getDataStr(), resultFromVoice);
                 StringBuilder stringBuilder = new StringBuilder();

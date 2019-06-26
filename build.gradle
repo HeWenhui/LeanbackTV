@@ -26,6 +26,7 @@ android {
             res.srcDirs += ['src/main/secience/res-teacher_praise']
             //assets.srcDirs += ['src/main/secience/assets']
             // assets.srcDirs += ['src/main/live_assets']
+            assets.srcDirs += ['src/main/live_assets_v2']
         }
     }
     compileSdkVersion 26
