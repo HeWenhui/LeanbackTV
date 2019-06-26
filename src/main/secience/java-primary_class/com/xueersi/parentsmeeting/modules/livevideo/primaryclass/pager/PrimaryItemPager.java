@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.AudioManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.permission.XesPermission;
@@ -21,6 +23,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AgoraUpload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
@@ -758,6 +761,18 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             }
         } else if (type == PrimaryClassConfig.MMTYPE_AUDIO) {
             if (audioStatus != open) {
+                try {
+                    AudioManager mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
+                    int mode = mAM.getMode();
+                    mLogtf.d("onMessage:mode=" + mode);
+                    if (open) {
+                        mAM.setMode(AudioManager.MODE_IN_COMMUNICATION);
+                    } else {
+                        mAM.setMode(AudioManager.MODE_NORMAL);
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 audioStatus = open;
                 if (open) {
                     foreach(new ItemCall() {

@@ -108,16 +108,18 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginBottom="3dp"
+        android:gravity="left"
         android:shadowColor="#1a000000"
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="3.0"
+        android:singleLine="true"
         android:text="小铝孩"
         android:textColor="#ffffffff"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/rl_livevideo_primary_team_tip" />
+        app:layout_constraintRight_toLeftOf="@id/rl_livevideo_primary_team_voice_open" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_primary_team_tip"
