@@ -11,6 +11,7 @@ import com.xueersi.common.base.BaseBll;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -45,6 +46,8 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     protected LogToFile mLogtf;
     protected LiveVideoPoint liveVideoPoint;
     private AtomicBoolean mIsLand;
+    protected int mState = LiveActivityState.INITIALIZING;
+    private boolean mDestroyed;
 
     public LiveBaseBll(Activity context, LiveBll2 liveBll) {
         super(context);
@@ -265,8 +268,16 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     /**
      * activity onDestory
      */
-    public void onDestory() {
+    public void onDestroy() {
+        mDestroyed = true;
+    }
 
+    /**
+     * Returns true if the final {@link #onDestroy()} call has been made
+     * on the Activity, so this instance is now dead.
+     */
+    public boolean isDestroyed() {
+        return mDestroyed;
     }
 
     ///公共管理View 添加、移除、虚拟键引起布局 变化相关

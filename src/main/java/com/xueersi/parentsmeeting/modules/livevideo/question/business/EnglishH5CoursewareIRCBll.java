@@ -39,7 +39,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoti
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
 import org.greenrobot.eventbus.EventBus;
@@ -1069,8 +1068,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (englishH5CoursewareBll != null) {
             englishH5CoursewareBll.destroy();
         }

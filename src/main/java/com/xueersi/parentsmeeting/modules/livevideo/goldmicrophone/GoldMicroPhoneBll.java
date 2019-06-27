@@ -437,8 +437,8 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     };
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         stopRecord();
     }
 

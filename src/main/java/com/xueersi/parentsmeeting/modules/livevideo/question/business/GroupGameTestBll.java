@@ -2,19 +2,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
-import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameMVPPager;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameNativePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.util.HashMap;
 
@@ -84,8 +79,8 @@ public class GroupGameTestBll extends LiveBaseBll {
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (groupGameNativePager != null) {
             groupGameNativePager.onDestroy();
         }

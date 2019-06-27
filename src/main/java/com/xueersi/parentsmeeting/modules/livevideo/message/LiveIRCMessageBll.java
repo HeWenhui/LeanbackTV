@@ -1,9 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -17,11 +14,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.log.Loger;
-import com.xueersi.lib.log.LoggerFactory;
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -1330,8 +1323,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         mRoomAction.onDestroy();
         onSendMsgs.clear();
         EventBus.getDefault().unregister(this);

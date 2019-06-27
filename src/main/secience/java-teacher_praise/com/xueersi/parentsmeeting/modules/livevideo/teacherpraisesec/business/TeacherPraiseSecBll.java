@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business;
 
 import android.app.Activity;
-import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -202,9 +200,9 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
-        teacherPraiseBll.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
+        teacherPraiseBll.onDestroy();
     }
 
     @Override

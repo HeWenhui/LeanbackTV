@@ -391,7 +391,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     public void onDestory() {
         super.onDestory();
         if (speechCollectiveBll != null) {
-            speechCollectiveBll.stop("onDestory");
+            speechCollectiveBll.stop("onDestroy");
             speechCollectiveBll = null;
         }
     }

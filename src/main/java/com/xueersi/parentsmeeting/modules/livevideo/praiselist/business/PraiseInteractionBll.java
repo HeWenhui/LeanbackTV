@@ -301,7 +301,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         if (praiseInteractionPager != null) {
             praiseInteractionPager.onDestroy();
         }

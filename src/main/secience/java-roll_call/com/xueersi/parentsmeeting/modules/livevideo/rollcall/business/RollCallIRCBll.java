@@ -110,8 +110,8 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         rollCallBll.forceCloseRollCall();
     }
 

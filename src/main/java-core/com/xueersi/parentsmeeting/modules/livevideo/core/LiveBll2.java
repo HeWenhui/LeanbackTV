@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -121,7 +122,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      */
 //    private boolean isNewIRC = false;
     LiveAndBackDebugIml liveAndBackDebugIml;
-
+    private int mState = LiveActivityState.INITIALIZING;
     /**
      * 直播的
      *
@@ -1074,7 +1075,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      */
     public void onDestory() {
         for (LiveBaseBll businessBll : businessBlls) {
-            businessBll.onDestory();
+            businessBll.onDestroy();
         }
         allLiveBasePagerIml.onDestory();
         businessShareParamMap.clear();

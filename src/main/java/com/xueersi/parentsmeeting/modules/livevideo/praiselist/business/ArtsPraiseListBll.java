@@ -1,10 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.praiselist.business;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Rect;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -198,7 +196,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
         post(new Runnable() {
             @Override
             public void run() {
-                onDestory();
+                onDestroy();
             }
         });
     }
@@ -326,7 +324,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         if (artsPraisePager != null) {
             artsPraisePager.onDestroy();
         }
