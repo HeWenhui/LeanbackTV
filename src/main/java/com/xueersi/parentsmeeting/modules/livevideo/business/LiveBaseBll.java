@@ -241,34 +241,39 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
      * 直播间创建
      */
     public void onCreate(HashMap<String, Object> data) {
+        mState = LiveActivityState.CREATED;
+    }
 
+    public void onStart() {
+        mState = LiveActivityState.STARTED;
     }
 
     /**
      * activity onPause
      */
     public void onPause() {
-
+        mState = LiveActivityState.STARTED;
     }
 
     /**
      * activity onStop
      */
     public void onStop() {
-
+        mState = LiveActivityState.STOPPED;
     }
 
     /**
      * activity onResume
      */
     public void onResume() {
-
+        mState = LiveActivityState.RESUMED;
     }
 
     /**
      * activity onDestroy
      */
     public void onDestroy() {
+        mState = LiveActivityState.INITIALIZING;
         mDestroyed = true;
     }
 

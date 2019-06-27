@@ -335,6 +335,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
     public void onCreate() {
+        mState = LiveActivityState.CREATED;
         liveUidRx = new LiveUidRx(mContext, true);
         liveUidRx.onCreate();
         //activity创建
@@ -1021,6 +1022,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * activity onPasuse
      */
     public void onPause() {
+        mState = LiveActivityState.STARTED;
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onPause();
         }
@@ -1051,8 +1053,19 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * activity onResume
      */
     public void onResume() {
+        mState = LiveActivityState.RESUMED;
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onResume();
+        }
+    }
+
+    /**
+     * activity onStart
+     */
+    public void onStart() {
+        mState = LiveActivityState.STARTED;
+        for (LiveBaseBll businessBll : businessBlls) {
+            businessBll.onStart();
         }
     }
 
@@ -1060,6 +1073,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * activity onStop
      */
     public void onStop() {
+        mState = LiveActivityState.STOPPED;
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onStop();
         }
@@ -1074,6 +1088,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * activity  onDestroy
      */
     public void onDestroy() {
+        mState = LiveActivityState.INITIALIZING;
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onDestroy();
         }
