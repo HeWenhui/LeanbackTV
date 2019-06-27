@@ -1157,10 +1157,10 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         isFinishing = true;
         mHandler.removeCallbacks(mPlayDuration);
         isPlay = false;
-        liveBackBll.onDestory();
+        liveBackBll.onDestroy();
         ProxUtil.getProxUtil().clear(activity);
         if (liveStandFrameAnim != null) {
-            liveStandFrameAnim.onDestory();
+            liveStandFrameAnim.onDestroy();
         }
     }
 

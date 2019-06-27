@@ -697,8 +697,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (englishH5Cache != null) {
             englishH5Cache.stop();
         }

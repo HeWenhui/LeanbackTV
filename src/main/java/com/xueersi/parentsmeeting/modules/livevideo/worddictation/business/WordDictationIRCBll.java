@@ -137,7 +137,7 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
     public void onDestroy() {
         super.onDestroy();
         if (wordDictationAction != null) {
-            wordDictationAction.onDestory();
+            wordDictationAction.onDestroy();
         }
     }
 }

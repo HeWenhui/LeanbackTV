@@ -274,7 +274,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 rlGroupGameSingle.setVisibility(View.GONE);
                 mWaveView.stop();
                 wvSubjectWeb.reload();
-                singleModeAction.onDestory();
+                singleModeAction.onDestroy();
             }
         });
         mWaveView.setOnTouchListener(new View.OnTouchListener() {
@@ -632,7 +632,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
         wvSubjectWeb.destroy();
         mWaveView.destroy();
-        singleModeAction.onDestory();
+        singleModeAction.onDestroy();
 
         if (liveAudioManager != null && !isVolumeResume) {
             liveAudioManager.setVolume(mVolume);
@@ -1000,7 +1000,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
 
         @Override
-        public void onDestory() {
+        public void onDestroy() {
             mainHandler.removeCallbacks(turnPageRunnable);
             mainHandler.removeCallbacks(startSpeechRecognizeRunnable);
         }
@@ -1238,7 +1238,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
 
         @Override
-        public void onDestory() {
+        public void onDestroy() {
             mainHandler.removeCallbacks(stopTimerRunnable);
         }
 

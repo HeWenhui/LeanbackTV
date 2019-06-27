@@ -1104,8 +1104,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         logger.e("======>onDestroy");
         if (mFocusPager != null) {
             mFocusPager.onDestroy();

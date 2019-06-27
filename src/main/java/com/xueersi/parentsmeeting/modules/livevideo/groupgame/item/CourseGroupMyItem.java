@@ -408,7 +408,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         if (bitmap6 != null) {
             bitmap6.recycle();
         }

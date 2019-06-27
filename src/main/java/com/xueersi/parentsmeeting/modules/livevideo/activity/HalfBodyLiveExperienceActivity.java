@@ -1195,7 +1195,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_EXIT);
         ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_EXIT, logHashMap.getData());
         AppBll.getInstance().unRegisterAppEvent(this);
-        liveBackBll.onDestory();
+        liveBackBll.onDestroy();
         mLiveMessagePager = null;
         if (mIRCMessage != null) {
             mIRCMessage.setCallback(null);

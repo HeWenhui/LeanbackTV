@@ -1254,8 +1254,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         destory = true;
         if (classEndReg != null) {
             classEndReg.destory();

@@ -144,7 +144,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
     public void onDestroy() {
         super.onDestroy();
         if(h5CoursewareAction != null){
-            h5CoursewareAction.onDestory();
+            h5CoursewareAction.onDestroy();
         }
     }
 

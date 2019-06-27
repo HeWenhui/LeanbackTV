@@ -139,7 +139,7 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
     @Override
     public void onDestroy() {
         if (lecAdvertPopBll != null) {
-            lecAdvertPopBll.onDestory();
+            lecAdvertPopBll.onDestroy();
         }
     }
 }

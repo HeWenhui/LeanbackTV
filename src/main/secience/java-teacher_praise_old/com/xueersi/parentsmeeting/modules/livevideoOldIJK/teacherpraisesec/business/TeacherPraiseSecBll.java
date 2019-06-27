@@ -202,9 +202,9 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
-        teacherPraiseBll.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
+        teacherPraiseBll.onDestroy();
     }
 
     @Override

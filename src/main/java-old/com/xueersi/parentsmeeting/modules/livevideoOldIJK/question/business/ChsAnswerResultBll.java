@@ -164,8 +164,8 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         mAnswerReulst = null;
         EventBus.getDefault().unregister(this);
     }

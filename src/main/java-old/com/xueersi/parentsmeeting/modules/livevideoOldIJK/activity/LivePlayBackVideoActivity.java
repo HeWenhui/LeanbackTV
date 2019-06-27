@@ -748,7 +748,7 @@
 //    public void onDestroy() {
 //        AppBll.getInstance().unRegisterAppEvent(this);
 //        super.onDestroy();
-//        liveBackBll.onDestory();
+//        liveBackBll.onDestroy();
 //        ProxUtil.getProxUtil().clear(this);
 //    }
 //

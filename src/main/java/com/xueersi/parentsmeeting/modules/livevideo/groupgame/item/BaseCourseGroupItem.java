@@ -141,7 +141,7 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
         tvCourseItemFire.setText("" + entity.getEnergy());
     }
 
-    public void onDestory() {
+    public void onDestroy() {
 
     }
 

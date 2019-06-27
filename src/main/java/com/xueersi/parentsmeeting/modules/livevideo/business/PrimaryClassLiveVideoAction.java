@@ -560,8 +560,8 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

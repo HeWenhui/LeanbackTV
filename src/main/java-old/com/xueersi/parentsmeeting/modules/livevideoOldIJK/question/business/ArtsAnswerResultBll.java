@@ -1061,8 +1061,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (mAnswerResultList != null) {
             mAnswerResultList.clear();
         }

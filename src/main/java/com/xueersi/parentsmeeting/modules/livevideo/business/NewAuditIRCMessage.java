@@ -741,7 +741,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     public void destory() {
         mIsDestory = true;
         if (mChatClient != null) {
-            logger.i("ircsdk ondestory");
+            logger.i("ircsdk onDestroy");
             mChatClient.logout("relogin");
             if (roomid != null && !roomid.isEmpty()) {
                 mChatClient.getRoomManager().leaveChatRooms(roomid);

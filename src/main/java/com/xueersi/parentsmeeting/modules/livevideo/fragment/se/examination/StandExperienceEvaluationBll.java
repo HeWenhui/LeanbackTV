@@ -62,8 +62,8 @@ public class StandExperienceEvaluationBll extends
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (mView instanceof StandExperienceEvaluationPager) {
             ((StandExperienceEvaluationPager) mView).onDestroy();
         }

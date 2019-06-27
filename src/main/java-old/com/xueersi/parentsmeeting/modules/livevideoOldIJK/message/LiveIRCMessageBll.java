@@ -1360,8 +1360,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         mRoomAction.onDestroy();
         onSendMsgs.clear();
         EventBus.getDefault().unregister(this);

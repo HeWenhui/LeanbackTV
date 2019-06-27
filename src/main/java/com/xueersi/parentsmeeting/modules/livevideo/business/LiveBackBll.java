@@ -911,15 +911,15 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         }
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
-            businessBll.onDestory();
+            businessBll.onDestroy();
         }
-        allLiveBasePagerIml.onDestory();
+        allLiveBasePagerIml.onDestroy();
         businessShareParamMap.clear();
         liveBackBaseBlls.clear();
         if (liveUidRx != null) {
-            liveUidRx.onDestory();
+            liveUidRx.onDestroy();
         }
     }
 

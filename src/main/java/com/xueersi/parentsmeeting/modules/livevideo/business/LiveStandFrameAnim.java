@@ -498,7 +498,7 @@ public class LiveStandFrameAnim {
         }
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         cancle = true;
         if (zipExtractorTask != null) {
             logger.d("onDestroy:cancle");

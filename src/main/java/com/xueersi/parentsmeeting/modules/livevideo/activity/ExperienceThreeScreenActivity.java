@@ -668,7 +668,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             stopPlayer();
         }
 
-        liveBackBll.onDestory();
+        liveBackBll.onDestroy();
         mLiveMessagePager = null;
         mIRCMessage.setCallback(null);
 

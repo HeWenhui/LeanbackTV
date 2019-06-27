@@ -266,7 +266,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     }
 
     /**
-     * activity onDestory
+     * activity onDestroy
      */
     public void onDestroy() {
         mDestroyed = true;

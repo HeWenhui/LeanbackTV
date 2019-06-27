@@ -10,5 +10,5 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
  */
 public interface MultModeAction extends StaticWeb.OnMessage {
 
-    void onDestory();
+    void onDestroy();
 }

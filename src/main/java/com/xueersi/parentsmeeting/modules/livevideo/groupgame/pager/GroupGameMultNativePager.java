@@ -615,7 +615,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
 
         @Override
-        public void onDestory() {
+        public void onDestroy() {
             if (turnRun != null) {
                 mainHandler.removeCallbacks(turnRun);
             }
@@ -758,7 +758,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
 
         @Override
-        public void onDestory() {
+        public void onDestroy() {
             if (cleanUpTurnRun != null) {
                 mainHandler.removeCallbacks(cleanUpTurnRun);
             }
@@ -2014,7 +2014,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     public void onDestroy() {
         super.onDestroy();
         wvSubjectWeb.destroy();
-        multModeAction.onDestory();
+        multModeAction.onDestroy();
         if (mIse != null) {
             mIse.cancel();
         }
@@ -2035,7 +2035,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         Set<String> keySet = courseGroupItemHashMap.keySet();
         for (String key : keySet) {
             BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(key);
-            baseCourseGroupItem.onDestory();
+            baseCourseGroupItem.onDestroy();
             long videoTime = baseCourseGroupItem.getVideoTime();
             long audioTime = baseCourseGroupItem.getAudioTime();
             logger.d("onDestroy:key=" + key + ",videoTime=" + videoTime + ",audioTime=" + audioTime);

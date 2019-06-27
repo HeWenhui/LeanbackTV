@@ -895,7 +895,7 @@ public class NewIRCMessage implements IIRCMessage {
     @Override
     public void destory() {
         if (mChatClient != null) {
-            logger.i("ircsdk ondestory");
+            logger.i("ircsdk onDestroy");
             mChatClient.logout("relogin");
             if (roomid != null && !roomid.isEmpty()) {
                 mChatClient.getRoomManager().leaveChatRooms(roomid);

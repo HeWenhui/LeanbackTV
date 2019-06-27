@@ -130,8 +130,8 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (speechFeedBackAction != null) {
             speechFeedBackAction.stop();
         }

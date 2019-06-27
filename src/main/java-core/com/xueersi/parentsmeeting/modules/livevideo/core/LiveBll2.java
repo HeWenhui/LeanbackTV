@@ -1073,11 +1073,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     /**
      * activity  onDestroy
      */
-    public void onDestory() {
+    public void onDestroy() {
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onDestroy();
         }
-        allLiveBasePagerIml.onDestory();
+        allLiveBasePagerIml.onDestroy();
         businessShareParamMap.clear();
         businessBlls.clear();
         mNoticeActionMap.clear();
@@ -1088,7 +1088,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             mIRCMessage.destory();
         }
         if (liveUidRx != null) {
-            liveUidRx.onDestory();
+            liveUidRx.onDestroy();
         }
     }
 

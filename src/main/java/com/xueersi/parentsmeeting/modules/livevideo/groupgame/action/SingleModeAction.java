@@ -11,6 +11,6 @@ public interface SingleModeAction {
     void startTimer();
     void onLoadComplete();
     void onHitSentence(ResultEntity resultEntity);
-    void onDestory();
+    void onDestroy();
     void saveUserAnser();
 }

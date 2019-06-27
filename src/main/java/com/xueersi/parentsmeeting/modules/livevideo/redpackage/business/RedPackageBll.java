@@ -411,7 +411,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         mVPlayVideoControlHandler.postDelayed(r, delayMillis);
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         if (mVPlayVideoControlHandler != null) {
             mVPlayVideoControlHandler.removeCallbacksAndMessages(null);
         }

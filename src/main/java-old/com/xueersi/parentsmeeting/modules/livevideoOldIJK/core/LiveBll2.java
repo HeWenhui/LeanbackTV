@@ -1152,11 +1152,11 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     /**
      * activity  onDestroy
      */
-    public void onDestory() {
+    public void onDestroy() {
         for (LiveBaseBll businessBll : businessBlls) {
-            businessBll.onDestory();
+            businessBll.onDestroy();
         }
-        allLiveBasePagerIml.onDestory();
+        allLiveBasePagerIml.onDestroy();
         businessShareParamMap.clear();
         businessBlls.clear();
         mNoticeActionMap.clear();
@@ -1167,7 +1167,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mIRCMessage.destory();
         }
         if (liveUidRx != null) {
-            liveUidRx.onDestory();
+            liveUidRx.onDestroy();
         }
     }
 

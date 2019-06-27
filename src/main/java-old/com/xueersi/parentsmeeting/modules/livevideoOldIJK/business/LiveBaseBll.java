@@ -232,9 +232,9 @@ public class LiveBaseBll extends BaseBll {
     }
 
     /**
-     * activity onDestory
+     * activity onDestroy
      */
-    public void onDestory() {
+    public void onDestroy() {
 
     }
 
