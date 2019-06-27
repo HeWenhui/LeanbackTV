@@ -39,7 +39,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.create.LiveBigQueCreate;
@@ -106,10 +105,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         mAnswerRankBll = getInstance(AnswerRankIRCBll.class);
         mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);
         mLogtf.d("onCreate:mAnswerRankBll=" + mAnswerRankBll + "," + mLiveAutoNoticeBll);
-        KeyboardShowingReg keyboardShowingReg = getInstance(KeyboardShowingReg.class);
-        if (keyboardShowingReg != null) {
-            keyboardShowingReg.addKeyboardShowing(mQuestionAction);
-        }
         mQuestionAction.setLiveType(mLiveType);
         String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6", "18", "19"};
         questiongtype = Arrays.asList(ptTypeFilters);
