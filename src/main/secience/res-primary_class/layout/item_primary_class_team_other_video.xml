@@ -104,11 +104,10 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_primary_team_people_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginBottom="3dp"
-        android:gravity="left"
         android:shadowColor="#1a000000"
         android:shadowDx="0"
         android:shadowDy="0"

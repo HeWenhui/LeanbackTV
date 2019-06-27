@@ -185,14 +185,24 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         HttpCallBack callback = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                StudentPkResultEntity resultEntity = mHttpResponseParser.parseStuPkResult(responseEntity);
-                ChinesePkBll.this.isWin = resultEntity.getMyTeamResultInfo().getEnergy() >= resultEntity.getCompetitorResultInfo().getEnergy();
-                showPkFinallyResult(resultEntity);
+                try {
+                    StudentPkResultEntity resultEntity = mHttpResponseParser.parseStuPkResult(responseEntity);
+                    ChinesePkBll.this.isWin = resultEntity.getMyTeamResultInfo().getEnergy() >= resultEntity.getCompetitorResultInfo().getEnergy();
+                    showPkFinallyResult(resultEntity);
+                }catch (Exception e){
+                    logger.d("showPkResult",e);
+                    CrashReport.postCatchedException(new LiveException(TAG,e));
+                }
             }
 
             @Override
-            public void onFailure(Call call, IOException e) {
-                super.onFailure(call, e);
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
             }
         };
 
