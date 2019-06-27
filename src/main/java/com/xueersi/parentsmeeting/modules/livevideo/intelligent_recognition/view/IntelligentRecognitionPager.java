@@ -1,14 +1,24 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
 
-import android.content.Context;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.unity3d.player.UnityPlayer;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IEResult;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionViewModel;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionView;
 import com.xueersi.ui.widget.WaveView;
@@ -28,15 +38,25 @@ import io.reactivex.functions.Predicate;
  */
 public class IntelligentRecognitionPager extends BasePager implements IIntelligentRecognitionView {
 
+    private LottieAnimationView waveLottie;
     private WaveView waveView;
 
     private IIntelligentRecognitionPresenter presenter;
 
-    private LottieAnimationView lottieAnimationView;
+    private LottieAnimationView scoreLottieView;
 
-    public IntelligentRecognitionPager(Context context) {
+    private FragmentActivity mActivity;
+
+    private TextView tvContent;
+
+    private LottieAnimationView readyGoLottieView;
+
+    private UnityPlayer unityPlayer;
+
+    public IntelligentRecognitionPager(FragmentActivity context) {
         super(context, false);
-        this.presenter = presenter;
+        this.mActivity = context;
+        initData();
     }
 
     @Override
@@ -47,14 +67,33 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
     public View initView(LayoutInflater inflater, ViewGroup containter) {
         mView = inflater.inflate(R.layout.activity_intelligent_recognition, containter, false);
         waveView = mView.findViewById(R.id.wv_livevideo_intelligent_recognition_energy_bar);
-        delayWaveView();
-        lottieAnimationView = mView.findViewById(R.id.lottie_view_livevideo_intelligent_recognition);
+        waveLottie = mView.findViewById(R.id.lottie_view_livevideo_intelligent_recognition_waveview_open_start);
+        tvContent = mView.findViewById(R.id.tv_livevideo_intelligent_recognition_textview);
+        readyGoLottieView = mView.findViewById(R.id.lottie_view_livevideo_intelligent_recognition_ready_go);
+
+        scoreLottieView = mView.findViewById(R.id.lottie_view_livevideo_intelligent_recognition_get_score);
+        performOpenViewStart();
         return mView;
     }
 
-    /**
-     * 延迟初始化WaveView
-     */
+    private void performOpenViewStart() {
+        showReadyGo();
+        delayWaveView();
+    }
+
+    /** 显示开场的ReadyGo动画 */
+    private void showReadyGo() {
+        scoreLottieView.playAnimation();
+        scoreLottieView.addAnimatorListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                scoreLottieView.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    /** 延迟初始化WaveView */
     private void delayWaveView() {
         Observable.
                 <Boolean>empty().
@@ -65,22 +104,49 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
                     public void accept(Boolean aBoolean) throws Exception {
                         waveView.initialize();
                         waveView.start();
+                        if(presenter!=null){
+
+                        }
                     }
                 });
     }
 
     /** 显示得分的Lottie动画 */
-    private void showGetGold() {
-        if (lottieAnimationView != null) {
-            lottieAnimationView.playAnimation();
-//            lottieAnimationView.
+    private void showGetGold(String gold) {
+        if (scoreLottieView != null) {
+            scoreLottieView.playAnimation();
         }
-
     }
 
     @Override
     public void initData() {
+        ViewModelProviders.
+                of(mActivity).
+                get(IntelligentRecognitionViewModel.class).
+                getIeResultData().
+                observe(mActivity, new Observer<IEResult>() {
+                    @Override
+                    public void onChanged(@Nullable IEResult ieResult) {
+                        handleResult(ieResult);
+                    }
+                });
+    }
 
+    private void handleResult(IEResult ieResult) {
+        String content;
+        if (TextUtils.isEmpty(content = ieResult.getContent())) {
+            tvContent.setText(content);
+        }
+        waveLottie.playAnimation();
+        waveLottie.addAnimatorListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (waveView.getVisibility() != View.VISIBLE) {
+                    waveView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     /**
@@ -116,6 +182,7 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        final String finalGold = gold;
         Observable.
                 <Boolean>just(XESCODE.ARTS_SEND_QUESTION == type).
                 filter(new Predicate<Boolean>() {
@@ -128,7 +195,7 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
                 subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
-                        showGetGold();
+                        showGetGold(finalGold);
                     }
                 });
 

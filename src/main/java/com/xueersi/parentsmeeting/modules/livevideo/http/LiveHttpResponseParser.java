@@ -31,8 +31,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.EvaluateContent;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
@@ -1860,7 +1858,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject data = (JSONObject) responseEntity.getJsonObject();
             if (data.has("starList")) {
                 JSONArray jsonArray = data.optJSONArray("starList");
-                if(jsonArray != null && jsonArray.length() >0){
+                if (jsonArray != null && jsonArray.length() > 0) {
                     JSONObject jsonObject = null;
                     List<TeamEnergyAndContributionStarEntity.ContributionStar> contributionStarList
                             = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
@@ -2565,4 +2563,5 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             contentEntityList.add(contentEntity);
         }
     }
+
 }
