@@ -98,8 +98,7 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * Created by linyuqiang on 2016/9/23.
  * 互动题bll
  */
-public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardUtil
-        .OnKeyboardShowingListener, KeyboardPopWindow.KeyboardObserver, LivePagerBack, TeacherClose {
+public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardPopWindow.KeyboardObserver, LivePagerBack, TeacherClose {
     private String TAG = "QuestionBll";
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private SpeechUtils mIse;
@@ -275,8 +274,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         this.stuCouId = stuCouId;
         liveQuestionCreat = new LiveQuestionCreat(activity, isAbLand, this);
         EventBus.getDefault().register(this);
-        KeyboardUtil.registKeyboardShowingListener(this);
+        KeyboardUtil.registKeyboardShowingListener(keyboardShowingListener);
     }
+
+    KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener = new KeyboardUtil.OnKeyboardShowingListener() {
+        @Override
+        public void onKeyboardShowing(boolean isShowing) {
+            QuestionBll.this.onKeyboardShowing(isShowing);
+        }
+    };
 
     public void setLiveVideoSAConfig(LiveVideoSAConfig liveVideoSAConfig) {
         this.liveVideoSAConfig = liveVideoSAConfig;
@@ -411,7 +417,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
-    @Override
     public void onKeyboardShowing(boolean isShowing) {
         if (examQuestionPager != null) {
             examQuestionPager.onKeyboardShowing(isShowing);
@@ -2632,7 +2637,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
-        KeyboardUtil.unRegistKeyboardShowingListener(this);
+        KeyboardUtil.unRegistKeyboardShowingListener(keyboardShowingListener);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
