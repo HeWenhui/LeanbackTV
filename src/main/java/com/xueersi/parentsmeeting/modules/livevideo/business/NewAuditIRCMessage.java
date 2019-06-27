@@ -603,15 +603,15 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         liveInfo.nickname = "p_" + mNickname;
         liveInfo.realname = myUserInfoEntity.getRealName();
         liveInfo.liveId = mLiveInfo.getId();
-        if (mLiveInfo.getStuName() != null) {
-            liveInfo.username = mLiveInfo.getStuName();
+        if (myUserInfoEntity.getNickName() != null) {
+            liveInfo.username = myUserInfoEntity.getNickName();
         } else {
-            liveInfo.username = "";
+            liveInfo.username = "p_" + mNickname;
         }
         if (mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null) {
             liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
         } else {
-            liveInfo.username = mNickname;
+            liveInfo.classId = "";
         }
         liveInfo.businessId = "1";
         if (myUserInfoEntity.getAreaCode() != null) {

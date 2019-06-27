@@ -12,6 +12,7 @@ import com.tal100.chatsdk.PMDefs;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.network.IpAddressUtil;
+import com.xueersi.lib.analytics.umsagent.DeviceInfo;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.are.ContextManager;
@@ -721,8 +722,8 @@ public class NewIRCMessage implements IIRCMessage {
         liveInfo.nickname = mNickname;
         liveInfo.realname = myUserInfoEntity.getRealName();
         liveInfo.liveId = mLiveInfo.getId();
-        if (mLiveInfo.getStuName() != null) {
-            liveInfo.username = mLiveInfo.getStuName();
+        if (mLiveInfo.getNickname() != null) {
+            liveInfo.username = myUserInfoEntity.getNickName();
         } else {
             liveInfo.username = mNickname;
         }
@@ -942,6 +943,7 @@ public class NewIRCMessage implements IIRCMessage {
         logMap.put("time", "" + System.currentTimeMillis());
         logMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
         logMap.put("liveId", mLiveInfo.getId());
+        logMap.put("devicename",DeviceInfo.getDeviceName());
         if (analysis == null) {
             analysis = new HashMap<>();
         }
