@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePagerState;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 
 public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
@@ -240,7 +240,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (mState == LiveBasePagerState.RESUMED) {
+                        if (mState == LiveActivityState.RESUMED) {
                             RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
                             if (mRtcEngine != null) {
                                 mRtcEngine.muteLocalAudio(!enable);

@@ -1,6 +1,10 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page;
+package com.xueersi.parentsmeeting.modules.livevideo.config;
 
-public class LiveBasePagerState {
+/**
+ * Created by linyuqiang on 2019/6/27.
+ * activity生命周期
+ */
+public class LiveActivityState {
     public static final int INVALID_STATE = -1;   // Invalid state used as a null value.
     public static final int INITIALIZING = 0;     // Not yet created.
     public static final int CREATED = 1;          // Created.
