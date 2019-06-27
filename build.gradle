@@ -7,6 +7,7 @@ def getSecSource(Object set) {
     print("getSecSource:set=" + set.getClass() + "--");
     set.java.srcDirs += ['src/main/secience/java-teampk']
     set.java.srcDirs += ['src/main/secience/java-roll_call']
+    set.res.srcDirs += ['src/main/secience/res-roll_call']
 }
 
 android {

@@ -12,6 +12,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -162,6 +163,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 int screenWidth = ScreenUtils.getScreenWidth();
                 int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
                 rlRollCallContent = new RelativeLayout(activity);
+                rlRollCallContent.setId(R.id.iv_livevideo_rollcall_contemt1);
                 bottomContent.addView(rlRollCallContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                         .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 //点名
@@ -280,14 +282,14 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                                     classSignEntity);
                             RelativeLayout.LayoutParams params =
                                     new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                                    .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                            .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                             params.addRule(RelativeLayout.CENTER_IN_PARENT);
                             rlRollCallContent.addView(mPrimaryScienceSignPager.getRootView(), params);
                         } else {
                             mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity);
                             RelativeLayout.LayoutParams params =
                                     new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                                    .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                            .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                             params.addRule(RelativeLayout.CENTER_IN_PARENT);
                             rlRollCallContent.addView(mClassSignPager.getRootView(), params);
                         }
@@ -552,7 +554,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                                 .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         params.addRule(RelativeLayout.CENTER_IN_PARENT);
                         rlRollCallContent.addView(mPrimaryScienceSignPager.getRootView(), params);
-                    }else {
+                    } else {
                         mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity);
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                                 .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);

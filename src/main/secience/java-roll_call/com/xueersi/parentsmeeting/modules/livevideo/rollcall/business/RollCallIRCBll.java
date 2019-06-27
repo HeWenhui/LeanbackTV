@@ -22,8 +22,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2018/7/10.
+ * 签到
  */
-
 public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCallHttp {
     RollCallBll rollCallBll;
 
@@ -40,13 +40,8 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        rollCallBll.initView(bottomContent);
-    }
-
-    @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        logger.e( "=======>onNotice:" + type);
+        logger.e("=======>onNotice:" + type);
         try {
             switch (type) {
                 case XESCODE.CLASSBEGIN:
