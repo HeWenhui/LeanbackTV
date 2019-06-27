@@ -50,7 +50,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  * Created by linyuqiang on 2016/9/23.
  * 聊天消息，一些进入房间状态的消息
  */
-public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg,LiveMessageSend,
+public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg, LiveMessageSend,
         KeyboardUtil.OnKeyboardShowingListener {
     private String TAG = "LiveMessageBll";
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -242,11 +242,11 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         BaseLiveMessagePager liveMessagePager = null;
 
         //根据不同的直播类型创建不同皮肤
-        if(getInfo != null && getInfo.isPreschool()){
+        if (getInfo != null && getInfo.isPreschool()) {
             // 幼教
             liveMessagePager = new PreSchoolLiveMainMsgPager(activity, this,
-                    null, baseLiveMediaControllerBottom,baseLiveMediaControllerTop,liveMessageLandEntities, null);
-        }else{
+                    null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop, liveMessageLandEntities, null);
+        } else {
             if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                 // 语文
                 if (getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
@@ -339,11 +339,11 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                         , liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = chineseLiveMessagePager;
 
-            }else if(getInfo != null && getInfo.isPreschool()){
-                 PreSchoolLiveTrainMsgPager liveMessagePager = new PreSchoolLiveTrainMsgPager(activity, this, null,
-                    baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-                    mLiveMessagePager = liveMessagePager;
-          } else if (LiveVideoConfig.isPrimary) {
+            } else if (getInfo != null && getInfo.isPreschool()) {
+                PreSchoolLiveTrainMsgPager liveMessagePager = new PreSchoolLiveTrainMsgPager(activity, this, null,
+                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                mLiveMessagePager = liveMessagePager;
+            } else if (LiveVideoConfig.isPrimary) {
                 LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
@@ -387,6 +387,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
     public void initView(RelativeLayout bottomContent, boolean isLand) {
         rlLiveMessageContent = new RelativeLayout(activity);
+        rlLiveMessageContent.setId(R.id.iv_livevideo_message_content1);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         int pattern = activity.getIntent().getIntExtra("pattern", 0);

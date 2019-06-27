@@ -163,11 +163,12 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 int screenWidth = ScreenUtils.getScreenWidth();
                 int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
                 rlRollCallContent = new RelativeLayout(activity);
-                rlRollCallContent.setId(R.id.iv_livevideo_rollcall_contemt1);
+                rlRollCallContent.setId(R.id.iv_livevideo_rollcall_content1);
                 bottomContent.addView(rlRollCallContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                         .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 //点名
                 RelativeLayout rlClassmateContent = new RelativeLayout(activity);
+                rlClassmateContent.setId(R.id.iv_livevideo_rollcall_content2);
                 classmateSignPager = new ClassmateSignPager(activity);
                 classmateSignPager.setClassSignStop(classSignStop);
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams

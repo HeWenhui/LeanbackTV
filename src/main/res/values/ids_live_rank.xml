@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="iv_livevideo_rank_temp" type="id" />
+    <item name="iv_livevideo_rank_temp_primary" type="id" />
+    <item name="iv_livevideo_rank_temp_middle" type="id" />
+</resources>

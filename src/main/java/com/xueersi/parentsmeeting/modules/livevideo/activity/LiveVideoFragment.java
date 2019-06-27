@@ -164,6 +164,19 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Override
     protected void onBusinessCreate() {
         super.onBusinessCreate();
+        bottomContent.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+            @Override
+            public void onChildViewAdded(View parent, View child) {
+                if (child.getId() == View.NO_ID) {
+                    logger.d("onChildViewAdded:child=" + child);
+                }
+            }
+
+            @Override
+            public void onChildViewRemoved(View parent, View child) {
+
+            }
+        });
         List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.initViewF(rlMessageBottom, bottomContent, mIsLand, mContentView);

@@ -189,7 +189,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     }
 
 
-//    public LiveHttpManager getmHttpManager() {
+    //    public LiveHttpManager getmHttpManager() {
 //        return mHttpManager;
 //    }
     public String getLiveId() {
@@ -208,10 +208,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     private void attachToRootView() {
         initData();
         rlTeamPkContent = new RelativeLayout(mActivity);
+        rlTeamPkContent.setId(R.id.rl_livevideo_content_teampk);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         addView(rlTeamPkContent, params);
         rlTopLayerContent = new RelativeLayout(mActivity);
+        rlTopLayerContent.setId(R.id.rl_livevideo_content_teampk_top);
         addView(rlTopLayerContent, params);
 
         showPkStateLayout();
