@@ -43,6 +43,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -401,6 +404,26 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                                 }
                             });
                             leaveChannel = false;
+                            final RtcEngine rtcEngine = workerThread.getAgoraRtcEngine();
+                            if (rtcEngine != null) {
+                                workerThread.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+//                                        JSONObject jsonObject = new JSONObject();
+//                                        try {
+//                                            jsonObject.put("che.video.enableRemoteViewMirror", true);
+//                                            int set = rtcEngine.setParameters(jsonObject.toString());
+//                                            logger.d("setParameters:set=" + set);
+//                                        } catch (JSONException e) {
+//                                            e.printStackTrace();
+//                                        }
+                                        RTCEngine mRtcEngine = workerThread.getRtcEngine();
+                                        if (mRtcEngine != null) {
+                                            mRtcEngine.setMirror(false);
+                                        }
+                                    }
+                                });
+                            }
                             workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
                                 @Override
                                 public void onJoinChannel(int joinChannel) {

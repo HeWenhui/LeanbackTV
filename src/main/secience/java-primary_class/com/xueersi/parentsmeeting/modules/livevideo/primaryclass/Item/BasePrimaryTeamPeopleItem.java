@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryC
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.VoiceImageView;
 
 public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
+    protected View root;
     protected RelativeLayout rlCourseItemVideo;
     protected RelativeLayout rlCourseItemVideoHead;
     protected TextView tv_livevideo_primary_team_people_name;
@@ -48,6 +49,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
 
     @Override
     public void initViews(View root) {
+        this.root = root;
         rlCourseItemVideo = root.findViewById(R.id.rl_livevideo_course_item_video);
         tv_livevideo_primary_team_people_name = root.findViewById(R.id.tv_livevideo_primary_team_people_name);
         rlCourseItemVideoHead = root.findViewById(R.id.rl_livevideo_course_item_video_head);

@@ -64,7 +64,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
 //                });
 //            }
 //        });
-        tv_livevideo_primary_team_people_name.setOnClickListener(new View.OnClickListener() {
+        root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onNameClick.onNameClick(entity, tv_livevideo_primary_team_people_name);
