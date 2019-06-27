@@ -1,5 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@id/iv_livevideo_rank_temp_primary"
+    android:id="@id/ll_livevideo_rank_rootview_primary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F52b1d1a"

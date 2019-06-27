@@ -156,6 +156,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     private void attachToRootView() {
         initData();
         rlTeamPkContent = new RelativeLayout(mActivity);
+        rlTeamPkContent.setId(R.id.rl_livevideo_content_teampk);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         addView(rlTeamPkContent, params);
