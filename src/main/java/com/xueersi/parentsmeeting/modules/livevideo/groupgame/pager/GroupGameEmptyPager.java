@@ -59,7 +59,7 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
         View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_groupgame_empty, null);
         group = (RelativeLayout) view;
         ivCourseRefresh = view.findViewById(R.id.iv_livevideo_course_refresh);
-        ivLoading = mView.findViewById(R.id.iv_data_loading_show);
+        ivLoading = view.findViewById(R.id.iv_data_loading_show);
         return group;
     }
 
