@@ -231,33 +231,40 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             initSwitchFlowListener();
         }
         for (int i = 0; i < bllConfigEntities.size(); i++) {
-            String className = "";
-            try {
-                BllConfigEntity bllConfigEntity = bllConfigEntities.get(i);
-                className = bllConfigEntity.className;
-                Class<?> c = Class.forName(className);
-                Class<? extends LiveBaseBll> clazz;
-                if (BusinessCreat.class.isAssignableFrom(c)) {
-                    Class<? extends BusinessCreat> creatClazz = (Class<? extends BusinessCreat>) c;
-                    BusinessCreat businessCreat = creatClazz.newInstance();
-                    clazz = businessCreat.getClassName(activity.getIntent());
-                    if (clazz == null) {
-                        continue;
-                    }
-                } else if (LiveBaseBll.class.isAssignableFrom(c)) {
-                    clazz = (Class<? extends LiveBaseBll>) c;
-                } else {
-                    continue;
-                }
-                Constructor<? extends LiveBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBll2.class});
-                LiveBaseBll liveBaseBll = constructor.newInstance(activity, mLiveBll);
+            LiveBaseBll liveBaseBll = creatBll(bllConfigEntities.get(i));
+            if (liveBaseBll != null) {
                 mLiveBll.addBusinessBll(liveBaseBll);
-                logger.d("addBusiness:business=" + className);
-            } catch (Exception e) {
-                logger.d("addBusiness:business=" + className, e);
-                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
+    }
+
+    protected LiveBaseBll creatBll(BllConfigEntity bllConfigEntity) {
+        String className = "";
+        try {
+            className = bllConfigEntity.className;
+            Class<?> c = Class.forName(className);
+            Class<? extends LiveBaseBll> clazz;
+            if (BusinessCreat.class.isAssignableFrom(c)) {
+                Class<? extends BusinessCreat> creatClazz = (Class<? extends BusinessCreat>) c;
+                BusinessCreat businessCreat = creatClazz.newInstance();
+                clazz = businessCreat.getClassName(activity.getIntent());
+                if (clazz == null) {
+                    return null;
+                }
+            } else if (LiveBaseBll.class.isAssignableFrom(c)) {
+                clazz = (Class<? extends LiveBaseBll>) c;
+            } else {
+                return null;
+            }
+            Constructor<? extends LiveBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBll2.class});
+            LiveBaseBll liveBaseBll = constructor.newInstance(activity, mLiveBll);
+            logger.d("creatBll:business=" + className);
+            return liveBaseBll;
+        } catch (Exception e) {
+            logger.d("creatBll:business=" + className, e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        return null;
     }
 
     /** 加载切流的Bll */

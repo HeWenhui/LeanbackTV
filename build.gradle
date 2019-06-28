@@ -27,11 +27,16 @@ def getSecSource(Object set) {
     //            java.srcDirs += ['src/main/secience/java-primary_class_old']
     set.java.srcDirs += ['src/main/secience/java-primary_class']
     set.res.srcDirs += ['src/main/secience/res-primary_class']
+    //小班体验
+    set.java.srcDirs += ['src/main/chinese/java-primary_class']
+    set.res.srcDirs += ['src/main/chinese/res-primary_class']
 }
 
 def getCnSource(Object set) {
     print("getCnSource:set=" + set.getClass() + "--");
     //小班体验
+    set.java.srcDirs += ['src/main/secience/java-primary_class']
+    set.res.srcDirs += ['src/main/secience/res-primary_class']
     set.java.srcDirs += ['src/main/chinese/java-primary_class']
     set.res.srcDirs += ['src/main/chinese/res-primary_class']
 }

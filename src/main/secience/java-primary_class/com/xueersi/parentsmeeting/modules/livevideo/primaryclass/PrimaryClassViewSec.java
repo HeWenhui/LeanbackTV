@@ -104,7 +104,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     @Override
     public void decorateItemPager(View view) {
         TextView tv_livevideo_primary_team_name_mid = view.findViewById(R.id.tv_livevideo_primary_team_name_mid);
-        tv_livevideo_primary_team_name_mid.setBackgroundResource(R.drawable.bg_live_tips_bg_normal_cn);
+        tv_livevideo_primary_team_name_mid.setBackgroundResource(R.drawable.bg_live_tips_bg_normal);
     }
 
     @Override
