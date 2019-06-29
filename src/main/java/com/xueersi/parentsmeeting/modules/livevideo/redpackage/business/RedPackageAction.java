@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.question.business;
+package com.xueersi.parentsmeeting.modules.livevideo.redpackage.business;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 
