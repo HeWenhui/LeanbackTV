@@ -46,26 +46,25 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback.SuperSpeakerBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5PlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -82,6 +81,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,10 +155,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
      * 全屏显示
      */
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
-    /** 全身直播 头像*/
+    /** 全身直播 头像 */
     LinearLayout llUserHeadImage;
-    /** 全身直播 头像*/
+    /** 全身直播 头像 */
     CircleImageView civUserHeadImage;
+
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
@@ -563,12 +564,13 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     //添加功能模块
     protected void addBusiness(Activity activity) {
-        liveBackBll.addBusinessBll(new QuestionPlayBackBll(activity, liveBackBll));
-        RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
-        liveBackBll.addBusinessBll(redPackagePlayBackBll);
-        liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
-        liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
-        liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
+        ArrayList<BllConfigEntity> bllConfigEntities = AllBackBllConfig.getLiveBackBusiness();
+        for (int i = 0; i < bllConfigEntities.size(); i++) {
+            LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntities.get(i));
+            if (liveBaseBll != null) {
+                liveBackBll.addBusinessBll(liveBaseBll);
+            }
+        }
         //直播
         if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
             //理科
@@ -589,11 +591,40 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 evaluateTeacherPlayBackBll.setLiveFragmentBase(liveBackPlayVideoFragment);
                 liveBackBll.addBusinessBll(evaluateTeacherPlayBackBll);
 
-                FeedbackTeacherLiveBackBll feedbackTeacherLiveBackBll = new FeedbackTeacherLiveBackBll(activity,liveBackBll);
+                FeedbackTeacherLiveBackBll feedbackTeacherLiveBackBll = new FeedbackTeacherLiveBackBll(activity, liveBackBll);
                 feedbackTeacherLiveBackBll.setLiveFragment(liveBackPlayVideoFragment);
                 liveBackBll.addBusinessBll(feedbackTeacherLiveBackBll);
             }
         }
+    }
+
+    protected LiveBackBaseBll creatBll(BllConfigEntity bllConfigEntity) {
+        String className = "";
+        try {
+            className = bllConfigEntity.className;
+            Class<?> c = Class.forName(className);
+            Class<? extends LiveBackBaseBll> clazz;
+            if (BackBusinessCreat.class.isAssignableFrom(c)) {
+                Class<? extends BackBusinessCreat> creatClazz = (Class<? extends BackBusinessCreat>) c;
+                BackBusinessCreat businessCreat = creatClazz.newInstance();
+                clazz = businessCreat.getClassName(activity.getIntent());
+                if (clazz == null) {
+                    return null;
+                }
+            } else if (LiveBackBaseBll.class.isAssignableFrom(c)) {
+                clazz = (Class<? extends LiveBackBaseBll>) c;
+            } else {
+                return null;
+            }
+            Constructor<? extends LiveBackBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBackBll.class});
+            LiveBackBaseBll liveBaseBll = constructor.newInstance(activity, liveBackBll);
+            logger.d("creatBll:business=" + className);
+            return liveBaseBll;
+        } catch (Exception e) {
+            logger.d("creatBll:business=" + className, e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        return null;
     }
 
     @Override
@@ -699,14 +730,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     /**
      * 老师统计
      */
-    private void umsTeacherChange(){
-      if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN && liveBackBll!=null) {
-          StableLogHashMap logHashMap = new StableLogHashMap("backup_teacher");
-          liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
-      } else if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR && liveBackBll!=null){
-          StableLogHashMap logHashMap = new StableLogHashMap("backup_coach");
-          liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT,logHashMap);
-      }
+    private void umsTeacherChange() {
+        if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN && liveBackBll != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("backup_teacher");
+            liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT, logHashMap);
+        } else if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR && liveBackBll != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("backup_coach");
+            liveBackBll.umsAgentDebugInter(LogConfig.LIVE_H5PLAT, logHashMap);
+        }
 
     }
 

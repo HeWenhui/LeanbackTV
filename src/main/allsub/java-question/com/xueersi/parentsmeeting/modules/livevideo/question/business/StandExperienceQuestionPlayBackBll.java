@@ -19,7 +19,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -52,7 +51,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
                     LiveQuestionSwitchImpl());
             questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
             //语音评测
-            LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll,
+            LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(liveBackBll,
                     questionBll);
             liveBackStandSpeechCreat.setIsExperience(((StandExperienceLiveBackBll) liveBackBll).getExperience());
             liveBackStandSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));

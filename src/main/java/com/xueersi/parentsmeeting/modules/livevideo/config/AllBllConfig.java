@@ -1,10 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
+import android.app.Activity;
 import android.content.Intent;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BusinessCreat;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 public class AllBllConfig {
@@ -126,4 +133,5 @@ public class AllBllConfig {
         }
         return arrayList;
     }
+
 }

@@ -22,7 +22,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
  * 站立直播的语音答题-回放
  */
 public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
-    QuestionPlayBackBll questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
     LivePagerBack livePagerBack;
     WrapSpeechEvalAction wrapSpeechEvalAction;
@@ -35,9 +34,8 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
         isExperience = experience;
     }
 
-    public LiveBackStandSpeechCreat(QuestionPlayBackBll questionIRCBll, LiveAndBackDebug liveAndBackDebug,
+    public LiveBackStandSpeechCreat(LiveAndBackDebug liveAndBackDebug,
                                     LivePagerBack livePagerBack) {
-        this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;
         this.livePagerBack = livePagerBack;
     }

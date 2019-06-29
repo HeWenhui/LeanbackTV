@@ -3,10 +3,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
@@ -32,6 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * created  at 2018/6/20 9:34
  */
 public class LiveBaseBll extends BaseBll implements LiveViewAction {
+
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected RelativeLayout mRootView;
     protected RelativeLayout rlMessageBottom;

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -40,6 +41,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/7/11.
  */
 public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent, NoticeAction, TopicAction, VideoAudioChatHttp, MessageAction {
+    static{
+        Log.d("VideoAudioChatIRCBll","VideoAudioChatIRCBll:static");
+    }
     private VideoAudioChatBll videoChatAction;
     private LivePlayAction livePlayAction;
     /** 接麦已经连接老师 */

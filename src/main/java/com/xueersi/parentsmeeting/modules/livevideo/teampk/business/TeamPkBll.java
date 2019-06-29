@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.teampk.business;
 import android.app.Activity;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -84,7 +85,9 @@ import okhttp3.Call;
  * 战队PK 相关业务处理
  */
 public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
-
+    static{
+        Log.d("TeamPkBll","TeamPkBll:static");
+    }
     public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
     /**
      * 开宝箱类型 班级宝箱列表

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.business;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
@@ -29,6 +30,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/7/11.
  */
 public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, NoticeAction, TopicAction, VideoChatHttp {
+    static{
+        Log.d("VideoChatIRCBll","VideoChatIRCBll:static");
+    }
     private VideoChatBll videoChatAction;
     private LivePlayAction livePlayAction;
     /** 接麦已经连接老师 */

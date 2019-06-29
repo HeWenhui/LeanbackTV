@@ -18,4 +18,9 @@ public class VideoChatCreat implements BusinessCreat {
             return VideoChatIRCBll.class;
         }
     }
+
+    @Override
+    public Class[] reloadClass() {
+        return new Class[]{VideoAudioChatIRCBll.class, VideoChatIRCBll.class};
+    }
 }

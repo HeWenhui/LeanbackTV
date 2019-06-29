@@ -62,6 +62,16 @@ public class StudyCenterMainStartService extends Service {
                 Class<?> c = Class.forName(className);
                 Class<? extends LiveBaseBll> clazz;
                 if (BusinessCreat.class.isAssignableFrom(c)) {
+                    Class<? extends BusinessCreat> creatClazz = (Class<? extends BusinessCreat>) c;
+                    BusinessCreat businessCreat = creatClazz.newInstance();
+                    Class[] classes = businessCreat.reloadClass();
+                    if (classes != null) {
+                        for (int j = 0; j < classes.length; j++) {
+                            Class clazz2 = classes[j];
+                            Constructor<? extends LiveBaseBll> constructor = clazz2.getConstructor(new Class[]{Activity.class, LiveBll2.class});
+                            logger.d("loadClass:clazz2=" + clazz2);
+                        }
+                    }
                     continue;
                 } else if (LiveBaseBll.class.isAssignableFrom(c)) {
                     clazz = (Class<? extends LiveBaseBll>) c;

@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.chpk.business;
 
 import android.app.Activity;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -68,7 +69,9 @@ import okhttp3.Call;
  * 战队PK 相关业务处理
  */
 public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicAction {
-
+    static{
+        Log.d("ChinesePkBll","ChinesePkBll:static");
+    }
 
     public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
     /**
