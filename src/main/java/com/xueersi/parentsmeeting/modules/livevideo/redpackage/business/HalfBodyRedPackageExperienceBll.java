@@ -12,13 +12,17 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PScienceRedPackageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.ui.dataload.DataLoadEntity;
+
+import java.util.HashMap;
 
 /**
 *半身直播体验课红包
@@ -29,9 +33,14 @@ public class HalfBodyRedPackageExperienceBll extends LiveBackBaseBll {
     RedPackageAction redPackageAction;
     String termId;
 
-    public HalfBodyRedPackageExperienceBll(Activity activity, LiveBackBll liveBackBll, String termId) {
+    public HalfBodyRedPackageExperienceBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
-        this.termId = termId;
+    }
+
+    @Override
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
+        super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+        this.termId = mVideoEntity.getChapterId();
     }
 
     @Override

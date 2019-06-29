@@ -43,16 +43,16 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
      */
     private String mHalfBodyUrl;
 
-    public EnglishH5HalfBodyExperienceBll(Activity activity, LiveBackBll liveBackBll, String termId,String halfbodyUrl) {
+    public EnglishH5HalfBodyExperienceBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
-        mTermid = termId;
-        mHalfBodyUrl = halfbodyUrl;
     }
 
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
             businessShareParamMap) {
         mRoomInitData = mVideoEntity;
+        mTermid = mVideoEntity.getChapterId();
+        mHalfBodyUrl = mVideoEntity.getHalfBodyH5Url();
         englishH5CoursewareBll = new EnglishH5CoursewareBll(activity);
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(mLiveType);

@@ -21,7 +21,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoCourseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
@@ -34,7 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -461,67 +459,67 @@ public class LectureLivePlayBackBll extends BaseBll {
                 });
     }
 
-    /**
-     * 请求并保存当前的聊天，并回调
-     *
-     * @param dir                保存的文件
-     * @param channel            房间名
-     * @param start              其实时间
-     * @param getLiveLectureMsgs 回调接口
-     */
-    public void getLiveLectureMsgs(final File dir, String channel, final String start, final
-    ArrayList<VideoQuestionEntity> timeEntities, final LectureLivePlayBackVideoActivity.GetLiveLectureMsgs
-                                           getLiveLectureMsgs) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        logger.i( "getLiveLectureMsgs:start=" + start);
-        File file = new File(dir, start);
-        LiveMessageGroupEntity liveMessageGroupEntity = getLiveLectureMsgsFromFile(file);
-        if (liveMessageGroupEntity != null && liveMessageGroupEntity.count > 0) {
-            ArrayList<LivePlayBackMessageEntity> liveMessageEntities = liveMessageGroupEntity.liveMessageEntities;
-            logger.i( "getLiveLectureMsgs:count=" + liveMessageGroupEntity.count + ",liveMessageEntities=" +
-                    liveMessageEntities.size());
-            getLiveLectureMsgs.getLiveLectureMsgs(liveMessageGroupEntity);
-            return;
-        }
-        mCourseHttpManager.getLiveLectureMsgs(myUserInfoEntity.getEnstuId(), channel, 50, start, 1, new
-                HttpCallBack(false) {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        JSONArray array = (JSONArray) responseEntity.getJsonObject();
-                        LiveMessageGroupEntity liveMessageGroupEntity = mCourseHttpResponseParser.liveMessagesParser(array);
-                        ArrayList<LivePlayBackMessageEntity> liveMessageEntities = liveMessageGroupEntity.liveMessageEntities;
-                        if (liveMessageGroupEntity.count > 0) {
-                            saveMsgToFile(dir, start, array, timeEntities);
-                        }
-                        File[] files = dir.listFiles();
-                        if (files != null) {
-                            for (int i = 0; i < files.length; i++) {
-                                File file = files[i];
-                                long time = Long.parseLong(file.getName());
-                                if (Long.parseLong(start) < time && time <= liveMessageGroupEntity.lastid) {
-                                    boolean delete = file.delete();
-                                    logger.i( "getLiveLectureMsgs:onPmSuccess:delete=" + delete);
-                                }
-                            }
-                        }
-                        logger.i( "getLiveLectureMsgs:onPmSuccess:liveMessageGroupEntity=" + liveMessageEntities.size()
-                                + "," + liveMessageGroupEntity.otherMessageEntities.size());
-                        getLiveLectureMsgs.getLiveLectureMsgs(liveMessageGroupEntity);
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        logger.i( "getLiveLectureMsgs:onPmFailure:msg=" + msg);
-                        getLiveLectureMsgs.onPmFailure();
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        logger.i( "getLiveLectureMsgs:onPmError:ErrorMsg=" + responseEntity.getErrorMsg());
-                    }
-                });
-    }
+//    /**
+//     * 请求并保存当前的聊天，并回调
+//     *
+//     * @param dir                保存的文件
+//     * @param channel            房间名
+//     * @param start              其实时间
+//     * @param getLiveLectureMsgs 回调接口
+//     */
+//    public void getLiveLectureMsgs(final File dir, String channel, final String start, final
+//    ArrayList<VideoQuestionEntity> timeEntities, final LectureLivePlayBackVideoActivity.GetLiveLectureMsgs
+//                                           getLiveLectureMsgs) {
+//        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        logger.i( "getLiveLectureMsgs:start=" + start);
+//        File file = new File(dir, start);
+//        LiveMessageGroupEntity liveMessageGroupEntity = getLiveLectureMsgsFromFile(file);
+//        if (liveMessageGroupEntity != null && liveMessageGroupEntity.count > 0) {
+//            ArrayList<LivePlayBackMessageEntity> liveMessageEntities = liveMessageGroupEntity.liveMessageEntities;
+//            logger.i( "getLiveLectureMsgs:count=" + liveMessageGroupEntity.count + ",liveMessageEntities=" +
+//                    liveMessageEntities.size());
+//            getLiveLectureMsgs.getLiveLectureMsgs(liveMessageGroupEntity);
+//            return;
+//        }
+//        mCourseHttpManager.getLiveLectureMsgs(myUserInfoEntity.getEnstuId(), channel, 50, start, 1, new
+//                HttpCallBack(false) {
+//
+//                    @Override
+//                    public void onPmSuccess(ResponseEntity responseEntity) {
+//                        JSONArray array = (JSONArray) responseEntity.getJsonObject();
+//                        LiveMessageGroupEntity liveMessageGroupEntity = mCourseHttpResponseParser.liveMessagesParser(array);
+//                        ArrayList<LivePlayBackMessageEntity> liveMessageEntities = liveMessageGroupEntity.liveMessageEntities;
+//                        if (liveMessageGroupEntity.count > 0) {
+//                            saveMsgToFile(dir, start, array, timeEntities);
+//                        }
+//                        File[] files = dir.listFiles();
+//                        if (files != null) {
+//                            for (int i = 0; i < files.length; i++) {
+//                                File file = files[i];
+//                                long time = Long.parseLong(file.getName());
+//                                if (Long.parseLong(start) < time && time <= liveMessageGroupEntity.lastid) {
+//                                    boolean delete = file.delete();
+//                                    logger.i( "getLiveLectureMsgs:onPmSuccess:delete=" + delete);
+//                                }
+//                            }
+//                        }
+//                        logger.i( "getLiveLectureMsgs:onPmSuccess:liveMessageGroupEntity=" + liveMessageEntities.size()
+//                                + "," + liveMessageGroupEntity.otherMessageEntities.size());
+//                        getLiveLectureMsgs.getLiveLectureMsgs(liveMessageGroupEntity);
+//                    }
+//
+//                    @Override
+//                    public void onPmFailure(Throwable error, String msg) {
+//                        logger.i( "getLiveLectureMsgs:onPmFailure:msg=" + msg);
+//                        getLiveLectureMsgs.onPmFailure();
+//                    }
+//
+//                    @Override
+//                    public void onPmError(ResponseEntity responseEntity) {
+//                        logger.i( "getLiveLectureMsgs:onPmError:ErrorMsg=" + responseEntity.getErrorMsg());
+//                    }
+//                });
+//    }
 
     /**
      * 保存消息到文件，过滤中断的
