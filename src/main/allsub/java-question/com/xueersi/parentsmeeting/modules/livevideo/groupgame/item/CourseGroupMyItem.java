@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.util.TextureVideoViewOutlineProvider;
 
 import java.io.IOException;
 

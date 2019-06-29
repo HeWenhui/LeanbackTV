@@ -15,9 +15,9 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
-import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.TextureVideoViewOutlineProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.VoiceImageView;
+import com.xueersi.parentsmeeting.modules.livevideo.util.TextureVideoViewOutlineProvider;
 
 public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     protected RelativeLayout rlCourseItemVideo;

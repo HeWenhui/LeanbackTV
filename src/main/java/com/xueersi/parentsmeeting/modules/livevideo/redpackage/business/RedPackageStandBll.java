@@ -16,7 +16,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.RedPackagePage;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
 

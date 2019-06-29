@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadP
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.config.GroupGameConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.util.TextureVideoViewOutlineProvider;
 
 import io.agora.rtc.RtcEngine;
 

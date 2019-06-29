@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.groupgame.item;
+package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import android.graphics.Outline;
 import android.graphics.Rect;

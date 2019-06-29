@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.question.web;
+package com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.web.NbCourseCache;
 
 import android.webkit.JavascriptInterface;
 
