@@ -224,17 +224,17 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (isArts == LiveVideoSAConfig.ART_EN) {
             queArtHttp = new QueArtHttp();
             liveExamQuestionCreat.setQuestionHttp(queArtHttp);
-            mQuestionAction.setLiveBll(queArtHttp);
+            mQuestionAction.setQuestionHttp(queArtHttp);
         } else {
             if (isArts == LiveVideoSAConfig.ART_SEC) {
                 QueSecIrcHttp queIrcHttp = new QueSecIrcHttp();
                 liveExamQuestionCreat.setQuestionHttp(queIrcHttp);
-                mQuestionAction.setLiveBll(queIrcHttp);
+                mQuestionAction.setQuestionHttp(queIrcHttp);
                 mQuestionAction.setBigQueCreate(new LiveBigQueCreate(activity, queIrcHttp));
             } else {
                 QueIrcHttp queIrcHttp = new QueIrcHttp();
                 liveExamQuestionCreat.setQuestionHttp(queIrcHttp);
-                mQuestionAction.setLiveBll(queIrcHttp);
+                mQuestionAction.setQuestionHttp(queIrcHttp);
             }
         }
         mQuestionAction.setBaseExamQuestionCreat(liveExamQuestionCreat);

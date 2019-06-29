@@ -75,7 +75,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         questionBll.setVSectionID(mVideoEntity.getLiveId());
         questionBll.setShareDataManager(mShareDataManager);
         questionBll.setLiveGetInfo(liveGetInfo);
-        questionBll.setLiveBll(this);
+        questionBll.setQuestionHttp(this);
         //站立直播
         if (liveBackBll.getPattern() == 2) {
             //语音答题

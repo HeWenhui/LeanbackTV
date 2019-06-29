@@ -51,7 +51,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         questionBll.setVSectionID(mVideoEntity.getLiveId());
         questionBll.setShareDataManager(mShareDataManager);
         questionBll.setLiveGetInfo(liveGetInfo);
-        questionBll.setLiveBll(this);
+        questionBll.setQuestionHttp(this);
         //语音答题
         WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                 LiveQuestionSwitchImpl());
