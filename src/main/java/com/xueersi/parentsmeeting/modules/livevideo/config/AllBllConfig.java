@@ -17,29 +17,53 @@ import java.util.ArrayList;
 public class AllBllConfig {
     //"com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
     private static String[] secClassPath = {
+            //聊天
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
+            //战队pk，分文理
             "com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkCreat",
+            //签到
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
+            //排行榜
             "com.xueersi.parentsmeeting.modules.livevideo.business.RankBll",
+            //互动题
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll",
+            //课件
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll",
+            //集体发言
             "com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechCollectiveIRCBll",
+            //老师点赞
             "com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business.TeacherPraiseSecBll",
+            //投票
             "com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll",
+            //智能私信
             "com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll",
+            //领奖台
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll",
+            //学习报告
             "com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportIRCBll",
+            //红包
             "com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll",
+            //nb实验
             "com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll",
+            //疑问标记点
             "com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll",
+            //懂了吗
             "com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll",
+            //语音弹幕
             "com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenIRCBll",
+            //表扬榜
             "com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter.PraiseListIRCBll",
+            //初高中理科点赞互动
             "com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseInteractionBll",
+            //精彩瞬间
             "com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportBll",
+            //辅导老师表扬榜
             "com.xueersi.parentsmeeting.modules.livevideo.practice.PraiseTutorBll",
+            //接麦，初中小学
             "com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoChatCreat",
+            //直播反馈
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
+            //教师反馈
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"
     };
     private static String[] engClassPath = {

@@ -41,13 +41,13 @@ def static getCnSource(Object set) {
     set.res.srcDirs += ['src/main/chinese/res-primary_class']
 }
 
-def getEngSource(Object set) {
+def static getEngSource(Object set) {
 //    java.srcDirs += ['src/main/english/java-en_teampk_old']
 //    java.srcDirs += ['src/main/java-achievement_old']
     set.java.srcDirs += ['src/main/java-en_teampk']
     set.res.srcDirs += ['src/main/res-en_teampk']
     set.java.srcDirs += ['src/main/java-achievement']
-    set.res.srcDirs += ['src/main/res-achievement']
+    set.res.srcDirs += ['src/main/english/res-achievement']
     set.assets.srcDirs += ['src/main/english/assets']
 }
 
