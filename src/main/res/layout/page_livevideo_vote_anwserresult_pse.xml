@@ -17,21 +17,21 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@id/lv_arts_answer_result_pse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="640dp"
+            android:layout_height="360dp"
             android:layout_centerInParent="true"
             android:scaleType="fitCenter" />
 
         <LinearLayout
             android:id="@id/ll_arts_answer_reslult_reward_info"
-            android:layout_width="100dp"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="80dp"
             android:background="@drawable/bg_zhanduipk_fantastic_jiangli"
             android:gravity="center"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="invisible">
 
             <ImageView
                 android:id="@id/iv_live_speech_result_mygold"
@@ -52,26 +52,64 @@
 
         </LinearLayout>
 
-        <com.xueersi.parentsmeeting.modules.livevideoOldIJK.widget.VoteView
-            android:id="@+id/ll_vote"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
             android:layout_width="300dp"
-            android:layout_height="150dp"
+            android:layout_height="140dp"
+            android:layout_marginTop="5dp"
             android:layout_below="@id/ll_arts_answer_reslult_reward_info"
+            android:layout_centerHorizontal="true">
+        </android.support.v4.view.ViewPager>
+        <ImageView
+            android:id="@+id/iv_livevideo_vote_left"
+            android:layout_toLeftOf="@id/viewpager"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/livevideo_vote_left_diss"
+            android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/iv_livevideo_vote_right"
+            android:layout_toRightOf="@id/viewpager"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/livevideo_vote_right_click"
+            android:visibility="gone"/>
+        <LinearLayout
+            android:id="@+id/ll_livevideo_vote_dian"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/viewpager"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:orientation="horizontal" />
+            android:visibility="gone">
+            <ImageView
+                android:id="@+id/iv_livevideo_vote_dian_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/livevideo_vote_dian_tu"/>
+            <ImageView
+                android:id="@+id/iv_livevideo_vote_dian_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/livevideo_vote_dian_ao"
+                android:layout_marginLeft="5dp"/>
+        </LinearLayout>
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_arts_answer_result_pse_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/lv_arts_answer_result_pse"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="85dp"
-            android:text="nicaiwozainaer"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="45dp"
+            android:layout_marginRight="197dp"
+            android:text="1234556"
             android:textColor="#ff8C8080"
             android:textSize="10sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

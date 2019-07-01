@@ -761,6 +761,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             return;
         }
         mLogtf.d(SysLogLable.ShellingCommit, "submitData:loadResult=" + loadResult);
+//        if(TextUtils.equals(detailInfo.type,"21")) {
+//            ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent("", ArtsAnswerResultEvent.TYPE_H5_VOTE_RESULT);
+//            artsAnswerResultEvent.setDetailInfo(detailInfo);
+//            artsAnswerResultEvent.setIspreload(ispreload);
+//            EventBus.getDefault().post(artsAnswerResultEvent);
+//            return;
+//        }
         isFinish = true;
         resultGotByForceSubmit = !loadResult;
         if (loadResult) {
@@ -833,7 +840,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private void submitVoice(final int isforce, String nonce) {
         NewCourseSec.Test test = tests.get(0);
         JSONArray userAnswerContent = test.getUserAnswerContent();
-        JSONArray userAnswerArray = new JSONArray();
+        final JSONArray userAnswerArray = new JSONArray();
         int length = 0;
         if (userAnswerContent != null) {
             length = userAnswerContent.length();
@@ -954,6 +961,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 try {
                     jsonObject1.put("stat", 1);
                     jsonObject1.put("data", jsonObject);
+                    if(TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21,detailInfo.getArtType())){
+                        jsonObject1.put("data", userAnswerArray);
+                    }
                     ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
                     artsAnswerResultEvent.setDetailInfo(detailInfo);
                     artsAnswerResultEvent.setIspreload(ispreload);
@@ -993,7 +1003,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
      * @param nonce
      */
     private void submitMultiTest(final int isforce, String nonce) {
-        JSONArray answerArray = new JSONArray();
+        final JSONArray answerArray = new JSONArray();
         for (int i = 0; i < tests.size(); i++) {
             NewCourseSec.Test test = tests.get(i);
             JSONObject jsonObject = new JSONObject();

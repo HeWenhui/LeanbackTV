@@ -45,6 +45,8 @@ public class TcpConstants {
     public final static int VOICE_CANNO_STATIS = 18;
     /** 消息类型，客户端发clean up数据 */
     public final static short CLEAN_UP_TYPE = 9;
+    /** 消息类型，服务器端推送投票实时数据 */
+    public final static short VOTE_TYPE = 10;
     /** 消息类型，客户端发clean up数据 */
     public final static int CLEAN_UP_SEND = 16;
     /** 消息类型，服务器clean up回复 */

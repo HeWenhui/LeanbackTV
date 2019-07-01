@@ -58,6 +58,8 @@ public class LiveQueHttpConfig {
     public static String LIVE_IS_SUBMIT_COURSEWARE_VOTE = LiveHttpConfig.HTTP_APP_VOTE_HOST + "/vote/stuCheckCommit";
     /** 投票提交投票 */
     public static String LIVE_SUBMIT_COURSEWARE_VOTE = LiveHttpConfig.HTTP_APP_VOTE_HOST + "/vote/stuCommitVote";
+    /** 投票学生点击折叠次数统计 */
+    public static String LIVE_SUBMIT_COURSEWARE_VOTE_FOLD_COUNT = LiveHttpConfig.HTTP_APP_VOTE_HOST + "/vote/stuCommitFold";
 
 
 }

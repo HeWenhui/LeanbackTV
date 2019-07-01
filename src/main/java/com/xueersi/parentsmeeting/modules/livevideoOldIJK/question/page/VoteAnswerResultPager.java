@@ -5,10 +5,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -24,17 +30,27 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.IArtsAnswerRsultDisplayer;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.widget.VoteView;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -46,13 +62,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsultDisplayer, View.OnClickListener {
 
-    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result_energy/";
-    /**
-     * 游戏试题类型
-     */
-    private static final int TYPE_GAME = 12;
-    private final String TAG = "ArtsPSEAnswerResultPager";
-    protected Logger logger = LoggerFactory.getLogger("ArtsPSEAnswerResultPager");
+    private final String TAG = "VoteAnswerResultPager";
+    protected Logger logger = LoggerFactory.getLogger("VoteAnswerResultPager");
 
     /**
      * 强制提交 展示答题结果 延时自动关闭
@@ -65,11 +76,6 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
     private final int CLOSEBTN_WIDTH = 35;
 
     /**
-     * 单选题 答案 展示item  距离顶部的  距离
-     */
-    private final int SINGLE_ANSWER_TOPMARGIN = 30;
-
-    /**
      * 答案列表 开始展示的时间点
      */
     private static final float FRACTION_RECYCLERVIEW_IN = 0.27f;
@@ -77,15 +83,12 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
      * 关闭按钮出现时间
      */
     private static final float FRACTION_SHOW_CLOSEBTN = 0.18f;
-    private static final int SPAN_COUNT = 1;
 
     private LottieAnimationView animationView;
     private LottieAnimationView resultAnimeView;
-    private RecyclerView recyclerView;
     private RelativeLayout rlAnswerRootLayout;
     private ImageView ivLookAnswer;
-    private int mRecyclHeight;
-    private AnswerResultEntity mData;
+    private String resultData;
     private final String BG_COLOR = "#CC000000";
     /**
      * 当前答案状态
@@ -101,23 +104,31 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
      * 奖励布局
      */
     LinearLayout llRewardInfo;
-    VoteView voteView;
+    ViewPager viewPager;
+    VotePagerAdapter votePagerAdapter;
+    private List<HashMap> mData;
+    LinearLayout ll_livevideo_vote_dian;
+    ImageView iv_livevideo_vote_dian_one;
+    ImageView iv_livevideo_vote_dian_two;
+    ImageView iv_livevideo_vote_left;
+    ImageView iv_livevideo_vote_right;
     /**
      * 金币数量
      */
     FangZhengCuYuanTextView tvGoldCount;
-    /**
-     * 能量值
-     */
-//    FangZhengCuYuanTextView tvEnergyCount;
 
     private TcpMessageReg tcpMessageReg;
+    private VoteTcpMessage voteTcpMessage;
+    protected Handler handler = new Handler(Looper.getMainLooper());
+    private Boolean closeVote = false;
+    private int foldCount = 0;
 
-    public VoteAnswerResultPager(Context context, AnswerResultEntity entity, AnswerResultStateListener stateListener) {
+    public VoteAnswerResultPager(Context context, String result, AnswerResultStateListener stateListener) {
         super(context);
-        mData = entity;
+        resultData = result;
         this.mStateListener = stateListener;
         initData();
+        logger.e("voteresultData:" + result);
     }
 
     @Override
@@ -128,9 +139,44 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         rlAnswerRootLayout = view.findViewById(R.id.rl_arts_pse_answer_result_root);
         ivLookAnswer = view.findViewById(R.id.iv_arts_answer_result_answer_btn);
         llRewardInfo = view.findViewById(R.id.ll_arts_answer_reslult_reward_info);
-        voteView = (VoteView) view.findViewById(R.id.ll_vote);
-//        tvEnergyCount = view.findViewById(R.id.tv_live_speech_result_myenergy);
         tvGoldCount = view.findViewById(R.id.tv_live_speech_result_mygold);
+        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        ll_livevideo_vote_dian = (LinearLayout) view.findViewById(R.id.ll_livevideo_vote_dian);
+        iv_livevideo_vote_dian_one = (ImageView) view.findViewById(R.id.iv_livevideo_vote_dian_one);
+        iv_livevideo_vote_dian_two = (ImageView) view.findViewById(R.id.iv_livevideo_vote_dian_two);
+        iv_livevideo_vote_left = (ImageView) view.findViewById(R.id.iv_livevideo_vote_left);
+        iv_livevideo_vote_right = (ImageView) view.findViewById(R.id.iv_livevideo_vote_right);
+        iv_livevideo_vote_left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewPager.setCurrentItem(0);
+            }
+        });
+        iv_livevideo_vote_right.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewPager.setCurrentItem(1);
+            }
+        });
+        mData = new ArrayList<>();
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int positon) {
+                // 滑动结束
+                changeView(positon);
+            }
+
+            @Override
+            public void onPageScrolled(int positon, float positonOffset, int positonOffsetPx) {
+                // 滑动过程
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int positon) {
+
+            }
+        });
 
         ivLookAnswer.setOnClickListener(this);
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -150,225 +196,168 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         return view;
     }
 
+    private void changeView(int position) {
+        switch (position) {
+            case 0:
+                iv_livevideo_vote_dian_one.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_tu));
+                iv_livevideo_vote_dian_two.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_ao));
+                iv_livevideo_vote_left.setEnabled(false);
+                iv_livevideo_vote_left.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_left_diss));
+                iv_livevideo_vote_right.setEnabled(true);
+                iv_livevideo_vote_right.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_right_click));
+                break;
+            case 1:
+                iv_livevideo_vote_dian_one.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_ao));
+                iv_livevideo_vote_dian_two.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_tu));
+                iv_livevideo_vote_left.setEnabled(true);
+                iv_livevideo_vote_left.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_left_click));
+                iv_livevideo_vote_right.setEnabled(false);
+                iv_livevideo_vote_right.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_right_diss));
+                break;
+        }
+    }
+
+    class VotePagerAdapter extends PagerAdapter {
+        private List<HashMap> mData;
+
+        public VotePagerAdapter(List<HashMap> list) {
+            mData = list;
+        }
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            View view = View.inflate(mContext, R.layout.fragment_vote, null);
+            VoteView voteView = view.findViewById(R.id.ll_vote);
+            voteView.updateVote(mData.get(position), resultData);
+            container.addView(view);
+            return view;
+        }
+
+        @Override
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+            container.removeView((View) object);
+        }
+
+        @Override
+        public int getCount() {
+            return mData.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+            return view == object;
+        }
+
+        @Override
+        public int getItemPosition(@NonNull Object object) {
+            return POSITION_NONE;
+        }
+    }
+
     @Override
     public void initData() {
+        try {
+            JSONObject jsonObject = new JSONObject(resultData);
+            JSONArray jsonArray = jsonObject.optJSONArray("data");
+            if (jsonArray.length() > 0) {
+                JSONObject jsonObject1 = jsonArray.getJSONObject(0);
+                resultData = jsonObject1.optString("useranswer");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         tcpMessageReg = ProxUtil.getProxUtil().get(mContext, TcpMessageReg.class);
-        tcpMessageReg.registTcpMessageAction(new TcpMessageAction() {
-            @Override
-            public void onMessage(short type, int operation, String msg) {
-                if (type == 10) {
-                    String msgr = msg;
-                }
-
-            }
-
-            @Override
-            public short[] getMessageFilter() {
-                return new short[]{10};
-            }
-        });
+        if (tcpMessageReg != null) {
+            voteTcpMessage = new VoteTcpMessage();
+        }
+        tcpMessageReg.registTcpMessageAction(voteTcpMessage);
     }
 
 
     @Override
     public void showAnswerReuslt() {
-
-//        resultType = mData.getIsRight();
-
-        String lottieJsonPath = null;
-        final LottieEffectInfo lottieEffectInfo;
-//        logger.d("showAnswerReuslt:resultType=" + resultType);
-        // 不是游戏题目
-//        if (!isGameResult()) {
-//            animationView.setVisibility(View.GONE);
-//            animationView.setImageAssetDelegate(null);
-//            animationView.removeAllAnimatorListeners();
-//            animationView.removeAllUpdateListeners();
-//            tvEnergyCount.setText("+"+mData.getEnergy());
-//            tvGoldCount.setText("+"+mData.getGold());
         displayDetailUi();
-        final ViewTreeObserver viewTreeObserver = resultAnimeView.getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int width = resultAnimeView.getMeasuredWidth();
-                int height = resultAnimeView.getMaxHeight();
-            }
-        });
-        return;
-//        } else {
-//            llRewardInfo.setVisibility(View.GONE);
-//        }
-//        if (resultType == RESULT_TYPE_CORRECT) {
-//            String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images";
-//            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/data.json";
-////            lottieResPath= LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images";
-//            ArtsAnswerPartRightEnergyStateLottieEffectInfo effectInfo = new ArtsAnswerPartRightEnergyStateLottieEffectInfo(lottieResPath,
-//                    lottieJsonPath, "img_20.png", "img_21.png");
-//            effectInfo.setCoinStr("+" + mData.getGold());
-//            effectInfo.setEnergyStr("+" + mData.getEnergy());
-//            lottieEffectInfo = effectInfo;
-//
-//        } else if (resultType == RESULT_TYPE_PART_CORRECT) {
-//            String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images";
-//            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/data.json";
-//            ArtsAnswerPartRightEnergyStateLottieEffectInfo effectInfo = new ArtsAnswerPartRightEnergyStateLottieEffectInfo(lottieResPath,
-//                    lottieJsonPath, "img_20.png", "img_21.png");
-//            effectInfo.setCoinStr("+" + mData.getGold());
-//            effectInfo.setEnergyStr("+" + mData.getEnergy());
-//            lottieEffectInfo = effectInfo;
-//
-//        } else {
-//            String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images";
-//            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/data.json";
-//            ArtsAnswerErrorEnergyStateLottieEffectInfo effectInfo = new ArtsAnswerErrorEnergyStateLottieEffectInfo(lottieResPath,
-//                    lottieJsonPath, "img_20.png", "img_21.png");
-//            effectInfo.setCoinStr("+" + mData.getGold());
-//            effectInfo.setEnergyStr("+" + mData.getEnergy());
-//            lottieEffectInfo = effectInfo;
-//        }
-//        animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
-//        animationView.setImageAssetDelegate(new ImageAssetDelegate() {
-//            @Override
-//            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-//                logger.d("showAnswerReuslt:FileName=" + lottieImageAsset.getFileName());
-//                return lottieEffectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
-//                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
-//                        mContext);
-//            }
-//        });
-//
-//        animationView.playAnimation();
-//        animationView.addAnimatorListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                animationView.setVisibility(View.GONE);
-//                animationView.setImageAssetDelegate(null);
-//                animationView.removeAllAnimatorListeners();
-//                animationView.removeAllUpdateListeners();
-//                    //游戏答题结果 只展示金币UI
-//                    if (getRootView() != null && getRootView().getParent() != null) {
-//                        ((ViewGroup) getRootView().getParent()).removeView(getRootView());
-//                    }
-//                    if (mStateListener != null) {
-//                        mStateListener.onCompeletShow();
-//                    }
-//
-//            }
-//        });
-
     }
-
-    /**
-     * 是否是新课件平台的 游戏答题结果
-     */
-    private boolean isGameResult() {
-        return mData != null && mData.getType() == TYPE_GAME;
-    }
-
 
     int latestMeasuerWidth;
+    final ImageView closeBtn = new ImageView(mContext);
+    TextView tvClose;
 
     /**
      * 添加 关闭 按钮
      */
-//    private void addCloseBtn() {
-//        closeBtnAdded = true;
-//        final ImageView closeBtn = new ImageView(mContext);
-//        closeBtn.setImageResource(R.drawable.selector_live_enpk_shell_window_guanbi_btn);
-//        closeBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//        closeBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mData.isVoice == 1) {
-//                    if (mStateListener != null) {
-//                        mStateListener.onAutoClose(VoteAnswerResultPager.this);
-//                    }
-//                } else {
-//                    closeReusltUi();
-//                }
-//            }
-//        });
-//
-//
-//        final ViewTreeObserver viewTreeObserver = resultAnimeView.getViewTreeObserver();
-//        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                if (resultAnimeView.getMeasuredWidth() > 0 && latestMeasuerWidth != resultAnimeView.getMeasuredWidth
-//                        ()) {
-//                    latestMeasuerWidth = resultAnimeView.getMeasuredWidth();
-//                    int designWidth = SizeUtils.Dp2Px(resultAnimeView.getContext(), 640f);
-//                    int designHeight = SizeUtils.Dp2Px(resultAnimeView.getContext(), 360f);
-//                    float scaleX = (latestMeasuerWidth * 1.0f) / designWidth;
-//                    float scaleY = (resultAnimeView.getMeasuredHeight() * 1.0f) / designHeight;
-//                    float scale = Math.min(scaleX, scaleY);
-//                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) closeBtn.getLayoutParams();
-//                    if(params == null){
-//                        params = new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH), SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT));
-//                    }
-//                    int offset = (int) ((1.0f - scale) * SizeUtils.Dp2Px(resultAnimeView.getContext(), 35f));
-//                    params.rightMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 120f) * scale) - offset;
-//                    params.topMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 45f) / scale) + offset;
-//                    params.addRule(RelativeLayout.ALIGN_TOP, R.id.lv_arts_answer_result_pse);
-//                    params.addRule(RelativeLayout.ALIGN_RIGHT, R.id.lv_arts_answer_result_pse);
-//
-//                    if(closeBtn.getParent() == null){
-//                        rlAnswerRootLayout.addView(closeBtn,params);
-//                        ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R
-//                                .anim.anim_livevideo_close_btn_in);
-//                        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
-//                        closeBtn.startAnimation(scaleAnimation);
-//                    }else{
-//                        LayoutParamsUtil.setViewLayoutParams(closeBtn, params);
-//                    }
-//                    //语音答题倒计时按钮位置
-//                    if (mData.isVoice == 1) {
-//                        TextView tvClose = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
-//                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvClose
-//                                .getLayoutParams();
-//                        layoutParams.bottomMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 85f) / scale);
-//                        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//                        layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.lv_arts_answer_result_pse);
-//                        LayoutParamsUtil.setViewLayoutParams(tvClose, layoutParams);
-//                    }
-//                    setRewardInfoPosition(scaleY);
-//                }
-//            }
-//        });
-//
-//        if (mData.isVoice == 1) {
-//            final TextView tvClose = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
-//            tvClose.setVisibility(View.VISIBLE);
-//            final AtomicInteger integer = new AtomicInteger(5);
-//            setCloseText(tvClose, integer);
-//            tvClose.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    int count = integer.decrementAndGet();
-//                    if (count == 0) {
-//                        answerListShowing = false;
-//                        if (mStateListener != null) {
-//                            mStateListener.onAutoClose(VoteAnswerResultPager.this);
-//                        } else {
-//                            ViewGroup group = (ViewGroup) mView.getParent();
-//                            group.removeView(mView);
-//                        }
-//                    } else {
-//                        setCloseText(tvClose, integer);
-//                        tvClose.postDelayed(this, 1000);
-//                    }
-//                }
-//            }, 1000);
-//        }
-//    }
+    private void addCloseBtn() {
+        closeBtnAdded = true;
+        closeBtn.setImageResource(R.drawable.selector_live_vote_shell_window_fold_btn);
+        closeBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (closeVote) {
+                    closeReusltUi();
+                    mStateListener.onUpdateVoteFoldCount(String.valueOf(foldCount));
+                } else {
+                    closeAnswerResult();
+                    foldCount++;
+                }
+            }
+        });
+
+
+        final ViewTreeObserver viewTreeObserver = resultAnimeView.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (resultAnimeView.getMeasuredWidth() > 0 && latestMeasuerWidth != resultAnimeView.getMeasuredWidth
+                        ()) {
+                    latestMeasuerWidth = resultAnimeView.getMeasuredWidth();
+                    int designWidth = SizeUtils.Dp2Px(resultAnimeView.getContext(), 640f);
+                    int designHeight = SizeUtils.Dp2Px(resultAnimeView.getContext(), 360f);
+                    float scaleX = (latestMeasuerWidth * 1.0f) / designWidth;
+                    float scaleY = (resultAnimeView.getMeasuredHeight() * 1.0f) / designHeight;
+                    float scale = Math.min(scaleX, scaleY);
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) closeBtn.getLayoutParams();
+                    if (params == null) {
+                        params = new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH), SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT));
+                    }
+                    int offset = (int) ((1.0f - scale) * SizeUtils.Dp2Px(resultAnimeView.getContext(), 35f));
+                    params.rightMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 120f) * scale) - offset;
+                    params.topMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 45f) / scale) + offset;
+                    params.addRule(RelativeLayout.ALIGN_TOP, R.id.lv_arts_answer_result_pse);
+                    params.addRule(RelativeLayout.ALIGN_RIGHT, R.id.lv_arts_answer_result_pse);
+
+                    if (closeBtn.getParent() == null) {
+                        rlAnswerRootLayout.addView(closeBtn, params);
+                        ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R
+                                .anim.anim_livevideo_close_btn_in);
+                        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
+                        closeBtn.startAnimation(scaleAnimation);
+                    } else {
+                        LayoutParamsUtil.setViewLayoutParams(closeBtn, params);
+                    }
+                    //倒计时位置
+                    tvClose = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvClose
+                            .getLayoutParams();
+                    layoutParams.rightMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 197f) * scale) - offset;
+                    layoutParams.topMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 65f) / scale) + offset;
+                    layoutParams.addRule(RelativeLayout.ALIGN_TOP, R.id.tv_arts_answer_result_pse_close);
+                    layoutParams.addRule(RelativeLayout.ALIGN_RIGHT, R.id.tv_arts_answer_result_pse_close);
+                    LayoutParamsUtil.setViewLayoutParams(tvClose, layoutParams);
+                    setRewardInfoPosition(scaleY);
+                }
+            }
+        });
+
+    }
 
     /**
      * 设置能量和金币位置
      */
     private void setRewardInfoPosition(float scale) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) llRewardInfo.getLayoutParams();
-        float scan = LiveVideoPoint.getInstance().screenHeight * SizeUtils.Dp2Px(mContext, 97) / SizeUtils.Dp2Px(mContext, 360);
+        float scan = LiveVideoPoint.getInstance().screenHeight * SizeUtils.Dp2Px(mContext, 80) / SizeUtils.Dp2Px(mContext, 360);
 
         params.topMargin = (int) scan;
 
@@ -398,8 +387,15 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         mView.setBackgroundColor(Color.parseColor(BG_COLOR));
     }
 
+    private void closeAnswerResult() {
+        ivLookAnswer.setVisibility(View.VISIBLE);
+        rlAnswerRootLayout.setVisibility(View.INVISIBLE);
+        mView.setBackgroundColor(Color.parseColor("#00000000"));
+    }
+
     private boolean answerListShowing = false;
     private boolean closeBtnAdded = false;
+    ArtsAnswerResultLottieEffectInfo effectInfo;
 
     /**
      * 展示答题详情
@@ -408,7 +404,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         String lottieResPath = "result_vote/images";
         String lottieJsonPath = "result_vote/data.json";
 
-        final ArtsAnswerResultLottieEffectInfo effectInfo = new ArtsAnswerResultLottieEffectInfo(lottieResPath,
+        effectInfo = new ArtsAnswerResultLottieEffectInfo(lottieResPath,
                 lottieJsonPath);
         resultAnimeView.useHardwareAcceleration();
         resultAnimeView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
@@ -424,104 +420,65 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         resultAnimeView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                if (animation.getAnimatedFraction() >= FRACTION_RECYCLERVIEW_IN && !answerListShowing) {
-                    llRewardInfo.setVisibility(View.VISIBLE);
-//                    showAnswerList();
-                    showVoteList();
-                }
                 if (animation.getAnimatedFraction() >= FRACTION_SHOW_CLOSEBTN && !closeBtnAdded) {
-//                    addCloseBtn();
+                    addCloseBtn();
                 }
             }
         });
     }
 
-    private void showVoteList() {
-        answerListShowing = true;
-        LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>();
-        map.put("A", 50);
-        map.put("B", 80);
-        map.put("C", 40);
-        map.put("D", 20);
-        map.put("E", 20);
-        voteView.initVew(map);
+    private void displayAnswerResult() {
+        resultAnimeView.updateBitmap("image_13", effectInfo.getBitMap(resultAnimeView));
     }
 
-//    private void showAnswerList() {
-//        answerListShowing = true;
-//        recyclerView = mView.findViewById(R.id.rcl_arts_answer_result_detail);
-//        recyclerView.setVisibility(View.VISIBLE);
-//        //动态设置宽度 适配虚拟按键
-//        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                if (resultAnimeView.getMeasuredWidth() > 0) {
-//                    int expectedWidth = (int) (resultAnimeView.getMeasuredWidth() * 0.54);
-//                    if (recyclerView.getMeasuredWidth() != expectedWidth) {
-//                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView
-//                                .getLayoutParams();
-//                        params.width = expectedWidth;
-//                        LayoutParamsUtil.setViewLayoutParams(recyclerView, params);
-//                    }
-//                }
-//            }
-//        });
-//        AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
-//                .anim_livevido_arts_answer_result_alpha_in);
-//        recyclerView.setLayoutManager(new GridLayoutManager(mContext, SPAN_COUNT, LinearLayoutManager.VERTICAL,
-//                false));
-//        final RCommonAdapter<AnswerResultEntity.Answer > mAdapter = new RCommonAdapter(mContext,mData.getAnswerList());
-//        mAdapter.addItemViewDelegate(1,new ItemHolder());
-//        recyclerView.setAdapter(mAdapter);
-//        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//
-//
-//            @Override
-//            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-//                logger.e("=======> getItemOffsets:" + recyclerView.computeVerticalScrollRange());
-//                if (mAdapter.getItemCount() > 1) {
-//                    int itemPosition = parent.getChildAdapterPosition(view);
-//                    int left = 0;
-//                    int right = 0;
-//                    int top = 0;
-//                    int bottom = 0;
-//                    if (itemPosition >= SPAN_COUNT) {
-//                        top = SizeUtils.Dp2Px(mContext, 8);
-//                    }
-//                    outRect.set(left, top, right, bottom);
-//                } else {
-//
-//                    int widthSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.getMeasuredWidth(), View
-//                            .MeasureSpec.EXACTLY);
-//                    int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-//                    view.measure(widthSpec, heightSpec);
-//                    int topMargin = (recyclerView.getLayoutParams().height - view.getMeasuredHeight()) / 2;
-//                    outRect.set(0, topMargin < 0 ? 0 : topMargin, 0, 0);
-//                }
-//            }
-//        });
-//        //RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-//       // Point point = new Point();
-//       // ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
-//        // int realY = Math.min(point.x, point.y);
-//      //  params.topMargin = (int) (realY * 0.30);
-//      //  recyclerView.setLayoutParams(params);
-//        recyclerView.startAnimation(alphaAnimation);
-//        if (mStateListener != null) {
-//
-//            mStateListener.onCompeletShow();
-//        }
-//    }
+    /**
+     * 多于6个选项分成两页
+     */
+    private void showVoteList(String gold, LinkedHashMap<String, Integer> map) {
+        llRewardInfo.setVisibility(View.VISIBLE);
+        tvGoldCount.setText("+" + gold);
+        if (map.size() < 7) {
+            mData.clear();
+            mData.add(map);
+            if (answerListShowing) {
+                votePagerAdapter.notifyDataSetChanged();
+            } else {
+                votePagerAdapter = new VotePagerAdapter(mData);
+                viewPager.setAdapter(votePagerAdapter);
+            }
+        } else {
+            ll_livevideo_vote_dian.setVisibility(View.VISIBLE);
+            iv_livevideo_vote_left.setVisibility(View.VISIBLE);
+            iv_livevideo_vote_right.setVisibility(View.VISIBLE);
+            LinkedHashMap<String, Integer> map1 = new LinkedHashMap<String, Integer>();
+            LinkedHashMap<String, Integer> map2 = new LinkedHashMap<String, Integer>();
+            int i = 0;
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                if (i < 6) {
+                    map1.put(entry.getKey(), entry.getValue());
+                } else {
+                    map2.put(entry.getKey(), entry.getValue());
+                }
+                i++;
+            }
+            mData.clear();
+            mData.add(map1);
+            mData.add(map2);
+            if (answerListShowing) {
+                votePagerAdapter.notifyDataSetChanged();
+            } else {
+                votePagerAdapter = new VotePagerAdapter(mData);
+                viewPager.setAdapter(votePagerAdapter);
+            }
+        }
+        answerListShowing = true;
+    }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.iv_arts_answer_result_answer_btn) {
             revealAnswerResult();
         }
-    }
-
-    private int getColor(int corlorId) {
-        return mContext.getResources().getColor(corlorId);
     }
 
     @Override
@@ -551,7 +508,46 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
     @Override
     public void remindSubmit() {
+        closeVote = true;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                displayAnswerResult();
+                closeBtn.setImageResource(R.drawable.selector_live_enpk_shell_window_guanbi_btn);
+                tvClose.setVisibility(View.VISIBLE);
+                final AtomicInteger integer = new AtomicInteger(3);
+                setCloseText(tvClose, integer);
+                tvClose.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        int count = integer.decrementAndGet();
+                        if (count == 0) {
+                            answerListShowing = false;
+                            if (mStateListener != null) {
+                                mStateListener.onAutoClose(VoteAnswerResultPager.this);
+                                mStateListener.onUpdateVoteFoldCount(String.valueOf(foldCount));
+                            } else {
+                                ViewGroup group = (ViewGroup) mView.getParent();
+                                group.removeView(mView);
+                            }
+                        } else {
+                            setCloseText(tvClose, integer);
+                            tvClose.postDelayed(this, 1000);
+                        }
+                    }
+                }, 1000);
+            }
+        });
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (tcpMessageReg != null) {
+            if (voteTcpMessage != null) {
+                tcpMessageReg.unregistTcpMessageAction(voteTcpMessage);
+            }
+        }
     }
 
     @Override
@@ -559,5 +555,38 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         return this.getRootView();
     }
 
+    /**
+     * 长连接推送答案
+     */
+    class VoteTcpMessage implements TcpMessageAction {
+        @Override
+        public void onMessage(short type, int operation, String msg) {
+            if (type == TcpConstants.VOTE_TYPE) {
+                try {
+                    JSONObject jsonObject = new JSONObject(msg);
+                    final int gold = jsonObject.optInt("gold");
+                    JSONObject voteObj = jsonObject.getJSONObject("vote");
+                    Iterator iterator = voteObj.keys();
+                    final LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>();
+                    while (iterator.hasNext()) {
+                        String key = (String) iterator.next();
+                        map.put(key, voteObj.getInt(key));
+                    }
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            showVoteList(String.valueOf(gold), map);
+                        }
+                    });
+                } catch (JSONException e) {
+                }
 
+            }
+        }
+
+        @Override
+        public short[] getMessageFilter() {
+            return new short[]{TcpConstants.VOTE_TYPE};
+        }
+    }
 }
