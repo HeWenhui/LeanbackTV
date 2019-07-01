@@ -419,7 +419,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 //                                        }
                                         RTCEngine mRtcEngine = workerThread.getRtcEngine();
                                         if (mRtcEngine != null) {
-                                            mRtcEngine.setMirror(false);
+                                            mRtcEngine.setRemoteMirror(true);
+//                                            mRtcEngine.setMirror(false);
                                         }
                                     }
                                 });
