@@ -82,7 +82,7 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
             float scale = (float) width / 1334f;
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tpkL_teampk_pkstate_root.getLayoutParams();
             int rightMargin = (int) (237 * scale) + (ScreenUtils.getScreenWidth() - width) / 2;
-            int topMargin =  (ScreenUtils.getScreenHeight() - height) / 2 + (int) (23 * scale);
+            int topMargin =  (ScreenUtils.getScreenHeight() - height) / 2 + (int) (21 * scale);
             boolean change = false;
             if (rightMargin != lp.rightMargin || topMargin != lp.topMargin) {
                 lp.rightMargin = rightMargin;

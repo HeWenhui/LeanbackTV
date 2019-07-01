@@ -32,7 +32,7 @@ public class VoiceImageView extends ImageView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.save();
-        canvas.translate((getWidth() - bg_live_voicewave_bg1.getWidth()) / 2, 0);
+        canvas.translate(((float) getWidth() - (float) bg_live_voicewave_bg1.getWidth()) / 2, 0);
         canvas.drawBitmap(bg_live_voicewave_bg1, src, src, null);
         canvas.restore();
     }
@@ -47,6 +47,7 @@ public class VoiceImageView extends ImageView {
     }
 
     public void setVoice(int volume) {
+//        volume = 255;
         src.top = bg_live_voicewave_bg1.getHeight() - (int) ((float) volume * height / 255.0f);
         logger.d("setVoice:uid=" + uid + ",volume=" + volume + ",top=" + src.top + ",height=" + height);
         postInvalidate();

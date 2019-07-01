@@ -51,6 +51,8 @@
         android:layout_alignTop="@id/rl_livevideo_primary_team_content"
         android:layout_alignRight="@id/rl_livevideo_primary_team_content"
         android:layout_alignBottom="@id/rl_livevideo_primary_team_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:src="@drawable/bg_live_ke_energy_zhunbei_icon_normal"
         android:visibility="gone" />
 
