@@ -112,7 +112,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
         float scale = (float) width / 1334f;
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_primary_team_content.getLayoutParams();
-            int lpwidth = (int) (193 * scale);
+            int lpwidth = (int) (194 * scale);
             int lpheight = (int) (54 * scale);
             int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1124 * scale);
             int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (24 * scale);
@@ -147,7 +147,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
                 for (int i = 0; i < ll_livevideo_primary_team_content.getChildCount(); i++) {
                     View child = ll_livevideo_primary_team_content.getChildAt(i);
                     ViewGroup.MarginLayoutParams childLp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
-                    int childHeight = (int) (149 * scale);
+                    int childHeight = (int) (150 * scale);
                     int margin = (int) (10 * scale);
                     if (childLp.height != childHeight || childLp.bottomMargin != margin) {
                         childLp.height = childHeight;

@@ -458,6 +458,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 }, 2000);
             }
         }
+//        ivPrimaryTeamIcon
         ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(ivPrimaryTeamIcon);
     }
 
