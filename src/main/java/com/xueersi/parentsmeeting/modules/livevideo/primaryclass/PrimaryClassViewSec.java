@@ -42,27 +42,26 @@ public class PrimaryClassViewSec implements PrimaryClassView {
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         int screenWidth = liveVideoPoint.screenWidth;
         int screenHeight = liveVideoPoint.screenHeight;
-        int left = (oldBitmap.getWidth() - width - (screenWidth - width) / 2) / 2;
-        int top = (oldBitmap.getHeight() - height - (screenHeight - height) / 2) / 2;
+        int bitHeight = oldBitmap.getHeight();
+        int bitWidth = oldBitmap.getWidth();
+        int newWidth = bitHeight * screenWidth / screenHeight;
+        int left = (oldBitmap.getWidth() - newWidth) / 2;
+        int top = 0;
         if (left < 0) {
             left = 0;
         }
-        if (top < 0) {
-            top = 0;
-        }
         int right = left;
-        int bottom = top;
         int width2 = oldBitmap.getWidth() - left - right;
-        int height2 = oldBitmap.getHeight() - top - bottom;
-        logger.d("decorateBack:left=" + left + ",top=" + top + ",width2=" + width2 + ",height2=" + height2);
-        if (width2 < 1 || height2 < 1) {
+        logger.d("decorateBack:left=" + left + ",width=" + bitWidth + "," + width2 + ",height2=" + bitHeight);
+        if (width2 < 1 || bitHeight < 1) {
             rl_course_video_contentview.setBackground(new BitmapDrawable(context.getResources(), oldBitmap));
             return;
         }
-        Bitmap drawBitmap = Bitmap.createBitmap(oldBitmap, left, top, width2, height2);
+        Bitmap drawBitmap = Bitmap.createBitmap(oldBitmap, left, top, width2, bitHeight);
         oldBitmap.recycle();
         if (lastDrawBitmap != null) {
             lastDrawBitmap.recycle();
+            lastDrawBitmap = null;
         }
         lastDrawBitmap = drawBitmap;
         rl_course_video_contentview.setBackground(new BitmapDrawable(context.getResources(), drawBitmap));
