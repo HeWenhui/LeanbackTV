@@ -167,6 +167,11 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     }
 
     @Override
+    public void decorateItemPeople(View view) {
+
+    }
+
+    @Override
     public void decorateItemMy(View view) {
 
     }

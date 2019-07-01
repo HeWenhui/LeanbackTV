@@ -20,6 +20,8 @@ public interface PrimaryClassView {
 
     void decorateItemPagerView(RelativeLayout rl_livevideo_primary_team_content, ImageView iv_livevideo_primary_team_icon, LinearLayout ll_livevideo_primary_team_content, TextView tv_livevideo_primary_team_name_mid, int width, int height);
 
+    void decorateItemPeople(View view);
+
     void decorateItemMy(View view);
 
     void decorateItemOther(View view);

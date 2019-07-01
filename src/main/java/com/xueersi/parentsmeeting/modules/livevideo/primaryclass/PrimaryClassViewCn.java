@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -160,6 +161,14 @@ public class PrimaryClassViewCn implements PrimaryClassView {
                 LayoutParamsUtil.setViewLayoutParams(tv_livevideo_primary_team_name_mid, lp);
             }
         }
+    }
+
+    @Override
+    public void decorateItemPeople(View view) {
+        ImageView iv_livevideo_primary_team_voice_open = view.findViewById(R.id.iv_livevideo_primary_team_voice_open);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_primary_team_voice_open.getLayoutParams();
+        lp.bottomMargin = SizeUtils.Dp2Px(view.getContext(), -2);
+        LayoutParamsUtil.setViewLayoutParams(iv_livevideo_primary_team_voice_open, lp);
     }
 
     /** {@link R.layout#item_primary_class_team_video } */
