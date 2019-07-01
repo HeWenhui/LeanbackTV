@@ -18,6 +18,7 @@ import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.widget.DataLoadManager;
@@ -59,6 +60,9 @@ public class LiveAssetsLoadUtil {
         if (!XesPermission.checkPermissionNoAlert(ContextManager.getApplication(), PermissionConfig
                 .PERMISSION_CODE_STORAGE)) {
             XESToastUtils.showToast(context, "请检查存储权限");
+            if (context instanceof LiveVideoTransferActivity) {
+                context.finish();
+            }
             return;
         }
 

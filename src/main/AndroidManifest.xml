@@ -118,6 +118,20 @@
             android:screenOrientation="portrait"
             android:theme="@style/style_live_compat"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferActivity"
+            android:process=":livevideo"
+            android:screenOrientation="portrait"
+            android:theme="@style/style_live_compat"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:exported="false"
+            >
+
+            <intent-filter>
+                <action android:name="${applicationId}.LiveVideoTransferActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <!--<activity-->
         <!--android:name=".activity.LiveVideoActivity"-->
