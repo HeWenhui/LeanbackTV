@@ -883,16 +883,19 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     public void onResume() {
         super.onResume();
         if (workerThread != null && LiveTopic.MODE_CLASS.equals(mode)) {
-            workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
-                @Override
-                public void onJoinChannel(int joinChannel) {
-                    PrimaryTeamMyItem basePrimaryTeamItem = (PrimaryTeamMyItem) courseGroupItemHashMap.get("" + stuid);
-                    if (basePrimaryTeamItem != null) {
+            mLogtf.d("onResume:havepause=" + havepause);
+            if (havepause) {
+                workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
+                    @Override
+                    public void onJoinChannel(int joinChannel) {
+                        PrimaryTeamMyItem basePrimaryTeamItem = (PrimaryTeamMyItem) courseGroupItemHashMap.get("" + stuid);
+                        if (basePrimaryTeamItem != null) {
 //                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, audioStatus, mState);
-                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus, mState);
+                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus, mState);
+                        }
                     }
-                }
-            });
+                });
+            }
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
