@@ -129,17 +129,32 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:id="@id/tv_livevideo_primary_team_energy"
+            android:id="@id/tv_livevideo_primary_team_energy_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="7dp"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="99"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_livevideo_primary_team_energy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="0"
             android:textColor="@color/white"
             android:textSize="9sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/tv_livevideo_primary_team_energy_back"
+            app:layout_constraintRight_toRightOf="@id/tv_livevideo_primary_team_energy_back"
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 

@@ -82,10 +82,10 @@ public class PrimaryClassViewSec implements PrimaryClassView {
         LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
         int leftGap = (videoPoint.screenWidth - width) / 2;
         int topGap = (videoPoint.screenHeight - height) / 2;
-        int leftMargin = (int) (13 * scale) + leftGap;
+        int leftMargin = (int) (14 * scale) + leftGap;
         int bottomMargin = (int) (13 * scale) + topGap;
         int rightMargin = (int) (219 * scale) + leftGap;
-        int topMargin = (int) (96 * scale) + topGap;
+        int topMargin = (int) (101 * scale) + topGap;
         if (lp.leftMargin != leftMargin || lp.bottomMargin != bottomMargin || lp.rightMargin != rightMargin || lp.topMargin != topMargin) {
             lp.leftMargin = leftMargin;
             lp.bottomMargin = bottomMargin;
