@@ -3,14 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.xueersi.common.base.BaseActivity;
-import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -22,7 +19,6 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.util.LoadCallback;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -42,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.dataload.DataLoadManager;
@@ -99,9 +96,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
         CREATE_TIMES++;
 
         mDataLoadEntity = new DataLoadEntity(this);
-        if(LiveVideoConfig.assetsDownloadTag){
+        if (LiveVideoConfig.assetsDownloadTag) {
             loadAssertsResource();
-        }else{
+        } else {
             mDataLoadEntity.beginLoading();
             DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
             initData();
@@ -184,7 +181,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
     }
 
     private void initData() {
-
+        if (AppConfig.DEBUG) {
+            startActivity(new Intent(this, IntelligentRecognitionActivity.class));
+            finish();
+            return;
+        }
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
         final String vSectionID = intent.getStringExtra("vSectionID");

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition;
 
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 
 import org.json.JSONObject;
 

@@ -11,17 +11,21 @@ import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionBroadcast;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionViewModel;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionView;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget.MyObserver;
 
 import java.io.File;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
 
-public class IntelligentRecognitionPresenter implements IIntelligentRecognitionPresenter, MyObserver {
+public class IntelligentRecognitionPresenter implements IIntelligentRecognitionPresenter<IIntelligentRecognitionView>, MyObserver {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     private IIntelligentRecognitionView baseView;
 
@@ -31,8 +35,7 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
 
     private SpeechUtils mSpeechUtils;
 
-    public IntelligentRecognitionPresenter(Context context, IIntelligentRecognitionView mView) {
-        this.baseView = mView;
+    public IntelligentRecognitionPresenter(Context context) {
         this.mContext = context;
     }
 
@@ -146,16 +149,23 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
             @Override
             public void onFileSuccess() {
                 // 文件初始化完了，评测准备就绪
+                logger.i("Speech Success");
                 isSpeechReady = true;
                 onReadyRefresh();
             }
 
             @Override
             public void onFileFail() {
+                logger.i("Speech Fail");
                 isSpeechReady = false;
                 XESToastUtils.showToast(mContext.getApplicationContext(), "加载评测模型失败");
             }
         });
+    }
+
+    @Override
+    public void setView(IIntelligentRecognitionView view) {
+        this.baseView = view;
     }
 
     private class IrcReceiverImpl implements IntelligentRecognitionBroadcast.IRCReceiver {

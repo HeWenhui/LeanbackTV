@@ -1,11 +1,19 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
 
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionViewModel;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
 
 public interface IntelligentRecognitionContract {
     String FILTER_ACTION = "com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition";
 
-    interface IIntelligentRecognitionPresenter {
+    interface BaseView<T> {
+        void setPresenter(T presenter);
+    }
+
+    interface BasePresenter<V> {
+        void setView(V view);
+    }
+
+    interface IIntelligentRecognitionPresenter<V> extends BasePresenter<V> {
         /** 注册监听消息 */
         void registerMessage();
 
@@ -17,9 +25,8 @@ public interface IntelligentRecognitionContract {
         void startSpeech();
     }
 
-    interface IIntelligentRecognitionView {
+    interface IIntelligentRecognitionView<T> extends BaseView<T> {
         void receiveStopEvent(String goldJSON);
 
-        void setPresenter(IIntelligentRecognitionPresenter mPresenter);
     }
 }

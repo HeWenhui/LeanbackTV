@@ -13,7 +13,11 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application>
-        <activity android:name=".intelligent_recognition.IntelligentRecognitionActivity"></activity>
+        <activity
+            android:name=".intelligent_recognition.IntelligentRecognitionActivity"
+            android:process=":livevideo"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme" />
         <!-- <activity -->
         <!-- android:name=".activity.LivePlayBackVideoActivity" -->
         <!-- android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation" -->

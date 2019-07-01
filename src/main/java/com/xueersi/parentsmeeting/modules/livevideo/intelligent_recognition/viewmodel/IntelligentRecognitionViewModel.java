@@ -1,10 +1,10 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IEResult;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionRecord;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 
 public class IntelligentRecognitionViewModel extends ViewModel {
     private MutableLiveData<IntelligentRecognitionRecord> recordData = new MutableLiveData<>();
