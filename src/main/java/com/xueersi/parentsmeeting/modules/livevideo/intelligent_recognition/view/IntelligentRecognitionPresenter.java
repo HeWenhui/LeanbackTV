@@ -1,25 +1,50 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
+import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.tal.speech.utils.SpeechUtils;
+import com.xueersi.common.config.AppConfig;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionBroadcast;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.RxFilter;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionView;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget.IntelligentRecognitionBroadcast;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget.MyObserver;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
 
@@ -27,19 +52,25 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
 
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    private IIntelligentRecognitionView baseView;
+    private FragmentActivity mActivity;
 
-    private Context mContext;
-
-    private IntelligentRecognitionViewModel mViewModel;
+    IntelligentRecognitionBroadcast broadcast;
 
     private SpeechUtils mSpeechUtils;
 
-    public IntelligentRecognitionPresenter(Context context) {
-        this.mContext = context;
-    }
+    private MediaPlayer mediaPlayer;
 
-    IntelligentRecognitionBroadcast broadcast;
+    private IntelligentRecognitionViewModel mViewModel;
+
+    private IIntelligentRecognitionView baseView;
+
+    private IntelligentRecognitionRecord mRecord;
+
+    public IntelligentRecognitionPresenter(FragmentActivity context) {
+        this.mActivity = context;
+        this.mViewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
+        this.mRecord = mViewModel.getRecordData();
+    }
 
     /**
      * 注册广播事件
@@ -49,31 +80,28 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
         broadcast.setIrcReceiver(new IrcReceiverImpl());
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(FILTER_ACTION);
-        mContext.registerReceiver(broadcast, intentFilter);
+        mActivity.registerReceiver(broadcast, intentFilter);
     }
 
+    /** 注册消息接受者 */
     @Override
     public void registerMessage() {
         registEvent();
     }
 
+    /** 注销消息接收者 */
     @Override
     public void unregisterMessage() {
         unregistEvent();
     }
 
     @Override
-    public void setViewModel(IntelligentRecognitionViewModel mViewModel) {
-        this.mViewModel = mViewModel;
-    }
-
-    @Override
     public void startSpeech() {
         isSpeechStart = true;
-        judgeSpeech();
+        performStartRecord();
     }
 
-    private void judgeSpeech() {
+    private void performStartRecord() {
         if (isSpeechStart && isSpeechReady) {
             startRecordSound();
         }
@@ -83,45 +111,280 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
 
     private void unregistEvent() {
         if (broadcast != null) {
-            mContext.unregisterReceiver(broadcast);
+            mActivity.unregisterReceiver(broadcast);
         }
 
     }
 
     private volatile boolean isSpeechReady = false;
 
-    private void onReadyRefresh() {
-
-    }
-
+    /**
+     * 开始语音测评
+     */
     private void startRecordSound() {
-        String videoSavePath = mContext.getDir("chinese_parterner", Context.MODE_PRIVATE).getPath() + File.separator + "sound.mp3";
+        String videoSavePath = mActivity.getDir("chinese_parterner", Context.MODE_PRIVATE).getPath() + File.separator + "sound.mp3";
         SpeechParamEntity mParam = new SpeechParamEntity();
-        mParam.setRecogType(SpeechConfig.SPEECH_CHINESE_EVALUATOR_OFFLINE);
+        mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         mParam.setLocalSavePath(videoSavePath);
         mParam.setMultRef(false);
-        mParam.setLearning_stage("-1");
-        mParam.setEarly_return_sec("90");
-        mParam.setVad_pause_sec("5");
-        mParam.setVad_max_sec("90");
-        mParam.setIsRct("1");
+        mParam.setPcm(true);
+        String aiRecogStr = mViewModel.getRecordData().getAnswers();
+        if (TextUtils.isEmpty(aiRecogStr) && AppConfig.DEBUG) {
+            aiRecogStr = "are you ok";
+        }
+        mParam.setStrEvaluator(aiRecogStr);
         mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
             @Override
             public void onBeginOfSpeech() {
-
+                logger.i("speech begin");
             }
 
             @Override
             public void onResult(ResultEntity result) {
-
+//                logger.i("speech resultCurString:" + result.getCurString());
+//                logger.i("speech resultStatus:" + result.getStatus());
+                if (AppConfig.DEBUG) {
+                    logger.i("speech result = " + getResultString(result));
+                }
+                handleResult(result);
             }
 
             @Override
             public void onVolumeUpdate(int volume) {
-
+                logger.i("speech volume:" + volume);
+                mViewModel.getVolume().setValue(volume);
             }
         });
-//        mParam.setStrEvaluator();
+    }
+
+//    private List<PhoneScore> phoneScores;
+
+    /** 处理语音评测结果 */
+    private void handleResult(ResultEntity resultEntity) {
+        //连贯性
+        int contScore = resultEntity.getContScore();
+        //准确性
+        int pronScore = resultEntity.getPronScore();
+        //总得分
+        int score = resultEntity.getScore();
+        if (score == 100) {
+            performPerfact();
+        } else if (contScore >= 60 && pronScore >= 60) {
+            performGood();
+        } else if (contScore >= 60 && pronScore < 60) {
+            if (judgeSpeechStatus(resultEntity) == STATUS_1) {
+                performRepeatSentence();
+            } else {
+                performRepeatWord(resultEntity.getLstPhonemeScore());
+            }
+        } else {
+            performRepeatSentence();
+        }
+    }
+
+    /** 重读整个句子 */
+    private void performRepeatSentence() {
+        if (mViewModel.getIeResultData() == null) return;
+        final Map<String, String> audioHashMap = mViewModel.getIeResultData().getValue().getAudioHashMap();
+        final String sentenceKey = mViewModel.getIeResultData().getValue().getSentence();
+        if (audioHashMap == null)
+            return;
+        Observable.
+                just(sentenceKey).
+                filter(RxFilter.<String>filterNull()).
+                map(new Function<String, String>() {
+                    @Override
+                    public String apply(String s) throws Exception {
+                        return audioHashMap.get(sentenceKey);
+                    }
+                }).
+                filter(RxFilter.<String>filterNull()).
+                subscribeOn(Schedulers.io()).
+                subscribe(getRepeatWordConsumer());
+    }
+
+    /** 重读某个单词，分数最低的某个单词 */
+    private void performRepeatWord(final List<PhoneScore> phoneScores) {
+        sortResult(phoneScores);
+//        PhoneScore repeatUrl = getFilterWord(phoneScores);
+//        String urlAudio = null;
+//        if (repeatUrl == null || repeatUrl.getWord() == null)
+//            return urlAudio;
+        if (mViewModel.getIeResultData() == null) return;
+        Map<String, String> audioHashMap = mViewModel.getIeResultData().getValue().getAudioHashMap();
+//        Observable.
+//                just(audioHashMap).
+//                filter(new Predicate<Map<String, String>>() {
+//                    @Override
+//                    public boolean test(Map<String, String> stringStringMap) throws Exception {
+//                        return stringStringMap != null;
+//                    }
+//                }).
+//                flatMapIterable(new Function<Map<String, String>, Iterable<Map.Entry<String, String>>>() {
+//                    @Override
+//                    public Iterable<Map.Entry<String, String>> apply(Map<String, String> stringStringMap) throws Exception {
+//                        return stringStringMap.entrySet();
+//                    }
+//                }).
+//                filter(getRepeatWordPredicate(getFilterWord(phoneScores))).
+//                subscribe(getRepeatWordCon());
+        if (audioHashMap == null)
+            return;
+        Observable.
+                fromIterable(audioHashMap.entrySet()).
+                filter(getRepeatWordPredicate(getFilterWord(phoneScores))).
+                subscribeOn(Schedulers.io()).
+                map(new Function<Map.Entry<String, String>, String>() {
+                    @Override
+                    public String apply(Map.Entry<String, String> stringStringEntry) throws Exception {
+                        return stringStringEntry.getValue();
+                    }
+                }).
+                filter(RxFilter.<String>filterNull()).
+                subscribe(getRepeatWordConsumer());
+    }
+
+    /** 得到需要重复的word的filter */
+    private Predicate<Map.Entry<String, String>> getRepeatWordPredicate(final PhoneScore phoneScore) {
+        return new Predicate<Map.Entry<String, String>>() {
+            @Override
+            public boolean test(Map.Entry<String, String> stringStringEntry) throws Exception {
+                return stringStringEntry.getKey() != null && phoneScore != null
+                        && stringStringEntry.getKey().equals(phoneScore.getWord());
+            }
+        };
+    }
+
+    /** 处理重复单词的consumer */
+    private Consumer<String> getRepeatWordConsumer() {
+        return new Consumer<String>() {
+            @Override
+            public void accept(String stringStringEntry) throws Exception {
+                playAudio(stringStringEntry);
+            }
+        };
+    }
+
+    /** 播放重复的句子 */
+    private void playAudio(String url) {
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
+        if (mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer();
+        }
+        try {
+            mediaPlayer.setDataSource(url);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /***
+     * 获取过滤的单词
+     * @param list
+     * @return
+     */
+    private PhoneScore getFilterWord(List<PhoneScore> list) {
+        PhoneScore repeatWord = null;
+        for (PhoneScore phoneScore : list) {
+            if (!filterWordList.contains(phoneScore.getWord())) {
+                repeatWord = phoneScore;
+            }
+        }
+        return repeatWord;
+    }
+
+    private List<String> filterWordList = new ArrayList<>();
+
+    /**
+     * 获取排好序的List
+     *
+     * @param list
+     */
+    private void sortResult(List<PhoneScore> list) {
+        Collections.sort(list, new Comparator<PhoneScore>() {
+            @Override
+            public int compare(PhoneScore o1, PhoneScore o2) {
+                if (o1.getScore() < o2.getScore()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
+    }
+
+    /** 得到满分点赞 */
+    private void performPerfact() {
+
+    }
+
+    /** 表现良好，双分都大于60 */
+    private void performGood() {
+        String audio60Url = "";
+        playAudio(audio60Url);
+    }
+
+    /** 判断当前的测评状态 */
+    private int judgeSpeechStatus(ResultEntity resultEntity) {
+        //低于60分的单词个数
+        int lowNum = 0;
+        List<PhoneScore> phoneScores = resultEntity.getLstPhonemeScore();
+        if (phoneScores == null) {
+            return STATUS_0;
+        }
+        for (PhoneScore phoneScore : phoneScores) {
+            if (phoneScore.getScore() < 60) {
+                lowNum++;
+            }
+        }
+        if (lowNum > phoneScores.size() / 2) {
+            return STATUS_1;
+        } else {
+            return STATUS_2;
+        }
+    }
+
+    //情况0，状态出现异常
+    private final int STATUS_0 = 0;
+    //情况1,50%及以上的单词分数低于60分
+    private final int STATUS_1 = 1;
+    //情况2，50%及以下的单词分数低于60分
+    private final int STATUS_2 = 2;
+
+    /**
+     * log使用，会去result详细信息
+     *
+     * @param resultEntity
+     * @return
+     */
+    private String getResultString(ResultEntity resultEntity) {
+//        List<PhoneScore> list = resultEntity.getLstPhonemeScore();
+        StringBuilder stringBuilder = new StringBuilder();
+        if (resultEntity.getLstPhonemeScore() == null) {
+            return null;
+        }
+        for (PhoneScore phoneScore : resultEntity.getLstPhonemeScore()) {
+            stringBuilder.append(phoneScore.getWord() + " " + phoneScore.getScore() + " ");
+        }
+        stringBuilder.append("@@@");
+        if (resultEntity.getScores() == null) {
+            return null;
+        }
+        for (Integer integer : resultEntity.getScores()) {
+            stringBuilder.append(integer + " ");
+        }
+        stringBuilder.append("@@@");
+        return stringBuilder.toString() + " status:" + resultEntity.getStatus()
+                + " curStatus " + resultEntity.getCurStatus()
+                + " contScore " + resultEntity.getContScore()
+                + " partScore " + resultEntity.getPartScore()
+                + " Score " + resultEntity.getScore()
+                + " curString " + resultEntity.getCurString()
+                + " PronScore " + resultEntity.getPronScore();
     }
 
     @Override
@@ -132,14 +395,61 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
     @Override
     public void onCreate() {
         createSpeech();
+//        getRemoteEntity();
+    }
+
+    /**
+     * 获取接口数据
+     * {
+     * "answer": "friend",
+     * "choiceType": 0,
+     * "gold": "2",
+     * "id": [
+     * "3282277"
+     * ],
+     * "isAllow42": 1,
+     * "isTestUseH5": "0",
+     * "nonce": "a451339510194553b2198a0f99cbe300",
+     * "num": 0,
+     * "package_source": "2",
+     * "ptype": 30,
+     * "refresh": false,
+     * "time": "3",
+     * "type": "1104"
+     * }
+     */
+    private void getRemoteEntity() {
+//        final HttpManager httpManager = new HttpManager(mActivity);
+        HttpManager.getIEResult(
+                mActivity,
+                mRecord.getLiveId(),
+                mRecord.getMaterialId(),
+                mRecord.getStuId(),
+                mRecord.getStuCouId(),
+                new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        HttpResponseParser httpResponseParser = new HttpResponseParser();
+                        IEResult ieResult = httpResponseParser.parseResponse(responseEntity);
+                        if (ieResult != null) {
+                            ViewModelProviders.
+                                    of(mActivity).
+                                    get(IntelligentRecognitionViewModel.class).
+                                    getIeResultData().
+                                    setValue(ieResult);
+                        } else {
+
+                        }
+                    }
+                });
     }
 
     /** 初始化语音测评模块 */
     private void createSpeech() {
         if (mSpeechUtils == null) {
-            mSpeechUtils = SpeechUtils.getInstance(mContext);
+            mSpeechUtils = SpeechUtils.getInstance(mActivity);
         }
-        mSpeechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
+        mSpeechUtils = SpeechUtils.getInstance(mActivity.getApplicationContext());
         mSpeechUtils.prepar(Constants.ASSESS_PARAM_LANGUAGE_CH, new SpeechEvaluatorUtils.OnFileSuccess() {
             @Override
             public void onFileInit(int code) {
@@ -151,14 +461,15 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
                 // 文件初始化完了，评测准备就绪
                 logger.i("Speech Success");
                 isSpeechReady = true;
-                onReadyRefresh();
+                mViewModel.getIsSpeechReady().setValue(true);
             }
 
             @Override
             public void onFileFail() {
                 logger.i("Speech Fail");
                 isSpeechReady = false;
-                XESToastUtils.showToast(mContext.getApplicationContext(), "加载评测模型失败");
+                mViewModel.getIsSpeechReady().setValue(false);
+                XESToastUtils.showToast(mActivity.getApplicationContext(), "加载评测模型失败");
             }
         });
     }

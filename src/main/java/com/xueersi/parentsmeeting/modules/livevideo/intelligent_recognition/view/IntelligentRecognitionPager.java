@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
@@ -13,14 +12,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.unity3d.player.UnityPlayer;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.lib.unity3d.UnityCommandPlay;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
@@ -32,9 +27,11 @@ import com.xueersi.ui.widget.WaveView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
@@ -44,22 +41,25 @@ import io.reactivex.functions.Predicate;
  */
 public class IntelligentRecognitionPager extends BasePager implements IIntelligentRecognitionView<IIntelligentRecognitionPresenter> {
 
+    private FragmentActivity mActivity;
+
+    IntelligentRecognitionViewModel viewModel;
+
+    private IIntelligentRecognitionPresenter mPresenter;
+
     private LottieAnimationView waveLottie;
+
     private WaveView waveView;
 
-    private IIntelligentRecognitionPresenter presenter;
-
     private LottieAnimationView scoreLottieView;
-
-    private FragmentActivity mActivity;
 
     private TextView tvContent;
 
     private LottieAnimationView readyGoLottieView;
 
-    private UnityPlayer unityPlayer;
-
     private Handler handler = new Handler(Looper.getMainLooper());
+    /** 使用回答时间 */
+    private int answerTime;
 
     public IntelligentRecognitionPager(FragmentActivity context) {
         super(context, false);
@@ -84,105 +84,68 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
     }
 
     private void performOpenViewStart() {
-        addUnityView();
+//        addUnityView();
         showReadyGo();
-        delayWaveView();
-        unityInit();
+//        delayWaveView();
+//        unityInit();
     }
 
-    /**
-     * Unity初始化
-     */
-    private void unityInit() {
-
-        UnityCommandPlay.downloadModel(Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/monavater7");
-        UnityCommandPlay.downloadModel(Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/monscene6");
-
-        int width = ScreenUtils.getScreenWidth();
-        int height = ScreenUtils.getScreenHeight();
-        int resolutionX = Math.max(width, height);
-        int resolutionY = Math.min(width, height);
-
-        UnityCommandPlay.setResolutionRatio(resolutionX + "/" + resolutionY);
-        UnityCommandPlay.setScreenOrientation("LandscapeLeft/false");
-        UnityCommandPlay.setScreenOrientation("LandscapeRight/false");
-        UnityCommandPlay.setScreenOrientation("Portrait/false");
-        UnityCommandPlay.setScreenOrientation("PortraitUpsideDown/false");
-    }
-
-    private void addUnityView() {
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-        unityPlayer = new UnityPlayer(mActivity);
-        ((ViewGroup) mView).addView(unityPlayer, lp);
+    private class Action implements Runnable {
+        @Override
+        public void run() {
+            if (viewModel != null) {
+                viewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
+            }
+            viewModel.getIsFinish().setValue(true);
+        }
     }
 
     /** 显示开场的ReadyGo动画 */
     private void showReadyGo() {
+        if (readyGoLottieView.getVisibility() != View.VISIBLE) {
+            readyGoLottieView.setVisibility(View.VISIBLE);
+        }
         readyGoLottieView.playAnimation();
         readyGoLottieView.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 readyGoLottieView.setVisibility(View.GONE);
+                logger.i("ready go end");
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation, boolean isReverse) {
+                logger.i("ready go start");
             }
         });
     }
 
-    /**
-     * 该方法是unity返回回调不要删除
-     */
-    public void FailedLoad(String model) {
-        logger.e("FailedLoad = " + model);
-    }
-
-
-    /**
-     * 该方法是unity返回回调不要删除
-     */
-    public void onLoadedEnd(String model) {
-        logger.i("onLoadedEnd");
-//        if (++modelCount < 2) {
-//            return;
-//        }
-
-//        Runnable action = new Runnable() {
-//            @Override
-//            public void run() {
-//                UnityCommandPlay.cameraAnimatorAll();
-//            }
-//        };
-//
-//        mHandler.post(action);
-//
-//        action = new Runnable() {
-//            @Override
-//            public void run() {
-//                UnityCommandPlay.onScreenCoordinate("avater");
-//                UnityCommandPlay.translationModule("x/1");
-//                UnityCommandPlay.translationModule("y/1");
-//                UnityCommandPlay.onScreenCoordinate("avater");
-//            }
-//        };
-//
-//        mUnityPlayer.postDelayed(action, 3000);
-    }
+    private boolean waveViewinit = false;
 
     /** 延迟初始化WaveView */
-    private void delayWaveView() {
-        Observable.
+    private Observable delayWaveView() {
+        return Observable.
                 <Boolean>empty().
                 delay(400, TimeUnit.MILLISECONDS).
-                observeOn(AndroidSchedulers.mainThread()).
-                subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        waveView.initialize();
-                        waveView.start();
-                        if (presenter != null) {
+                observeOn(AndroidSchedulers.mainThread());
+//                subscribe(getConsumer());
+    }
 
-                        }
-                    }
-                });
+    private Consumer getConsumer() {
+        return new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean aBoolean) throws Exception {
+                logger.i("waveView init");
+                waveView.initialize();
+                logger.i("waveView start");
+                waveView.start();
+                waveViewinit = true;
+//                        if (mPresenter != null) {
+//
+//                        }
+            }
+        };
     }
 
     /** 显示得分的Lottie动画 */
@@ -192,18 +155,84 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
         }
     }
 
+    /** speech是否初始化成功 */
+    private boolean isSpeechReady = true;
+    /** 是否拿到后台接口返回的数据 */
+    private boolean isResultGet = true;
+
     @Override
     public void initData() {
-        ViewModelProviders.
+        viewModel = ViewModelProviders.
                 of(mActivity).
-                get(IntelligentRecognitionViewModel.class).
-                getIeResultData().
+                get(IntelligentRecognitionViewModel.class);
+
+        viewModel.getIeResultData().
                 observe(mActivity, new Observer<IEResult>() {
                     @Override
                     public void onChanged(@Nullable IEResult ieResult) {
+                        isResultGet = true;
                         handleResult(ieResult);
                     }
                 });
+        viewModel.getIsSpeechReady().
+                observe(mActivity, new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(@Nullable Boolean aBoolean) {
+                        isSpeechReady = aBoolean;
+//                        if (isSpeechReady && isResultGet) {
+                        performStartWaveLottie();
+//                        }
+                    }
+                });
+        viewModel.getVolume().
+                observe(mActivity, new Observer<Integer>() {
+                    @Override
+                    public void onChanged(@Nullable Integer integer) {
+                        if (waveViewinit) {
+                            waveView.setWaveAmplitude((float) (integer / 15.0));
+                        }
+                    }
+                });
+//        String sTime = viewModel.getRecordData().getAnswerTime();
+//        if (TextUtils.isEmpty(sTime)) {
+//            answerTime = Integer.valueOf(sTime);
+//        }
+//        mView.postDelayed(new Action(), answerTime);
+    }
+
+    /**
+     * 显示WaveView和lottieView
+     */
+    private void performStartWaveLottie() {
+        if (isSpeechReady && isResultGet) {
+            if (waveLottie.getVisibility() != View.VISIBLE) {
+                waveLottie.setVisibility(View.VISIBLE);
+            }
+            waveLottie.playAnimation();
+            waveLottie.addAnimatorListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    logger.i("waveLottie end");
+                    super.onAnimationEnd(animation);
+                    if (waveView.getVisibility() != View.VISIBLE) {
+                        waveView.setVisibility(View.VISIBLE);
+                    }
+                    mPresenter.startSpeech();
+                    Observable.
+                            <Boolean>empty().
+                            defer(new Callable<ObservableSource<? extends Boolean>>() {
+                                @Override
+                                public ObservableSource<? extends Boolean> call() throws Exception {
+                                    return delayWaveView();
+                                }
+                            }).
+                            delay(1, TimeUnit.SECONDS).
+                            observeOn(AndroidSchedulers.mainThread()).
+                            subscribe(getConsumer());
+                }
+            });
+
+        }
     }
 
     private void handleResult(IEResult ieResult) {
@@ -211,16 +240,7 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
         if (TextUtils.isEmpty(content = ieResult.getContent())) {
             tvContent.setText(content);
         }
-        waveLottie.playAnimation();
-        waveLottie.addAnimatorListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                if (waveView.getVisibility() != View.VISIBLE) {
-                    waveView.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+        performStartWaveLottie();
     }
 
     /**
@@ -277,7 +297,7 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
 
     @Override
     public void setPresenter(IIntelligentRecognitionPresenter mPresenter) {
-        this.presenter = mPresenter;
+        this.mPresenter = mPresenter;
     }
 
 }

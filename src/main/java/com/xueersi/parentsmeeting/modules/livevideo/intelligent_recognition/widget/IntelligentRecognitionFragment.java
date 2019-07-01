@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,21 +18,24 @@ import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.BaseView;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
 
 public class IntelligentRecognitionFragment extends Fragment {
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private FragmentActivity mActivity;
 
-    private IntelligentRecognitionPresenter mPresenter;
+//    private IntelligentRecognitionPresenter mPresenter;
+
+    private IntelligentRecognitionRecord mRecord;
+
+    private IntelligentRecognitionViewModel mViewModel;
 
     public static Fragment newInstance(Bundle bundle) {
-
         Fragment fragment = new IntelligentRecognitionFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
 
-    IntelligentRecognitionRecord mRecord;
 
     @Override
     public void onAttach(Context context) {
@@ -38,6 +43,8 @@ public class IntelligentRecognitionFragment extends Fragment {
         logger.i("onAttach");
         mActivity = (FragmentActivity) context;
         mRecord = getArguments().getParcelable("intelligentRecognitionRecord");
+        mViewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
+        mViewModel.setRecordData(mRecord);
     }
 
     @Override
@@ -49,8 +56,9 @@ public class IntelligentRecognitionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         IntelligentRecognitionPager pager = new IntelligentRecognitionPager(mActivity);
-        pager.initView(inflater, container,false);
-        mPresenter = new IntelligentRecognitionPresenter(mActivity);
+        pager.initView(inflater, container, false);
+        IntelligentRecognitionPresenter mPresenter = new IntelligentRecognitionPresenter(mActivity);
+
         associatePV(pager, mPresenter);
 //        IntelligentRecognitionViewModel viewModel = ViewModelProviders.of(this).get(IntelligentRecognitionViewModel.class);
 
@@ -64,7 +72,23 @@ public class IntelligentRecognitionFragment extends Fragment {
         return pager.getRootView();
     }
 
-//    private void handleResult(IEResult ieResult) {
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    private void observeViewModel() {
+        mViewModel.getIsFinish().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                if (aBoolean) {
+                    mActivity.finish();
+                }
+            }
+        });
+    }
+    //    private void handleResult(IEResult ieResult) {
 //
 //    }
 

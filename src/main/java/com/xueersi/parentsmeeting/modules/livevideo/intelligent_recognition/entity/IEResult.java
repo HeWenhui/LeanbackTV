@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity;
 
+import java.util.HashMap;
+
 public class IEResult {
 
     /**
@@ -23,10 +25,38 @@ public class IEResult {
     private String materialName;
     private String materiaTypeId;
     private String content;
-    private ResourceBean resource;
+    //    private ResourceBean resource;
+    //audio的hashMap
+    private HashMap<String, String> audioHashMap;
+    private String imgSrc;
     private String setAnswerTime;
     private String releaseGold;
     private String answered;
+    private String sentence;
+
+    public String getSentence() {
+        return sentence;
+    }
+
+    public void setSentence(String sentence) {
+        this.sentence = sentence;
+    }
+
+    public HashMap<String, String> getAudioHashMap() {
+        return audioHashMap;
+    }
+
+    public void setAudioHashMap(HashMap<String, String> audioHashMap) {
+        this.audioHashMap = audioHashMap;
+    }
+
+    public String getImgSrc() {
+        return imgSrc;
+    }
+
+    public void setImgSrc(String imgSrc) {
+        this.imgSrc = imgSrc;
+    }
 
     public String getLiveId() {
         return liveId;
@@ -84,13 +114,13 @@ public class IEResult {
         this.content = content;
     }
 
-    public ResourceBean getResource() {
-        return resource;
-    }
+//    public ResourceBean getResource() {
+//        return resource;
+//    }
 
-    public void setResource(ResourceBean resource) {
-        this.resource = resource;
-    }
+//    public void setResource(ResourceBean resource) {
+//        this.resource = resource;
+//    }
 
     public String getSetAnswerTime() {
         return setAnswerTime;
@@ -116,70 +146,70 @@ public class IEResult {
         this.answered = answered;
     }
 
-    public static class ResourceBean {
-
-        /**
-         * ball : https://xesfile.xesimg.com/knowledge_material/audio/15578235206140.mp3
-         * is : https://xesfile.xesimg.com/knowledge_material/audio/15578235209780.mp3
-         * it : https://xesfile.xesimg.com/knowledge_material/audio/15578235204341.mp3
-         * soccer : https://xesfile.xesimg.com/knowledge_material/audio/15578235204262.mp3
-         * whose : https://xesfile.xesimg.com/knowledge_material/audio/15578235212318.mp3
-         * Whose_soccer_ball_is_it : https://xesfile.xesimg.com/knowledge_material/audio/15578235214563.mp3
-         */
-
-        private String ball;
-        private String is;
-        private String it;
-        private String soccer;
-        private String whose;
-        private String Whose_soccer_ball_is_it;
-
-        public String getBall() {
-            return ball;
-        }
-
-        public void setBall(String ball) {
-            this.ball = ball;
-        }
-
-        public String getIs() {
-            return is;
-        }
-
-        public void setIs(String is) {
-            this.is = is;
-        }
-
-        public String getIt() {
-            return it;
-        }
-
-        public void setIt(String it) {
-            this.it = it;
-        }
-
-        public String getSoccer() {
-            return soccer;
-        }
-
-        public void setSoccer(String soccer) {
-            this.soccer = soccer;
-        }
-
-        public String getWhose() {
-            return whose;
-        }
-
-        public void setWhose(String whose) {
-            this.whose = whose;
-        }
-
-        public String getWhose_soccer_ball_is_it() {
-            return Whose_soccer_ball_is_it;
-        }
-
-        public void setWhose_soccer_ball_is_it(String Whose_soccer_ball_is_it) {
-            this.Whose_soccer_ball_is_it = Whose_soccer_ball_is_it;
-        }
-    }
+//    public static class ResourceBean {
+//
+//        /**
+//         * ball : https://xesfile.xesimg.com/knowledge_material/audio/15578235206140.mp3
+//         * is : https://xesfile.xesimg.com/knowledge_material/audio/15578235209780.mp3
+//         * it : https://xesfile.xesimg.com/knowledge_material/audio/15578235204341.mp3
+//         * soccer : https://xesfile.xesimg.com/knowledge_material/audio/15578235204262.mp3
+//         * whose : https://xesfile.xesimg.com/knowledge_material/audio/15578235212318.mp3
+//         * Whose_soccer_ball_is_it : https://xesfile.xesimg.com/knowledge_material/audio/15578235214563.mp3
+//         */
+//
+//        private String ball;
+//        private String is;
+//        private String it;
+//        private String soccer;
+//        private String whose;
+//        private String Whose_soccer_ball_is_it;
+//
+//        public String getBall() {
+//            return ball;
+//        }
+//
+//        public void setBall(String ball) {
+//            this.ball = ball;
+//        }
+//
+//        public String getIs() {
+//            return is;
+//        }
+//
+//        public void setIs(String is) {
+//            this.is = is;
+//        }
+//
+//        public String getIt() {
+//            return it;
+//        }
+//
+//        public void setIt(String it) {
+//            this.it = it;
+//        }
+//
+//        public String getSoccer() {
+//            return soccer;
+//        }
+//
+//        public void setSoccer(String soccer) {
+//            this.soccer = soccer;
+//        }
+//
+//        public String getWhose() {
+//            return whose;
+//        }
+//
+//        public void setWhose(String whose) {
+//            this.whose = whose;
+//        }
+//
+//        public String getWhose_soccer_ball_is_it() {
+//            return Whose_soccer_ball_is_it;
+//        }
+//
+//        public void setWhose_soccer_ball_is_it(String Whose_soccer_ball_is_it) {
+//            this.Whose_soccer_ball_is_it = Whose_soccer_ball_is_it;
+//        }
+//    }
 }

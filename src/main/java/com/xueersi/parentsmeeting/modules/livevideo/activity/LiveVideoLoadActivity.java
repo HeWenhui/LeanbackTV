@@ -17,6 +17,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.LoadFileCallBack;
@@ -38,7 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.dataload.DataLoadManager;
@@ -181,17 +182,26 @@ public class LiveVideoLoadActivity extends BaseActivity {
     }
 
     private void initData() {
-        if (AppConfig.DEBUG) {
-            startActivity(new Intent(this, IntelligentRecognitionActivity.class));
-            finish();
-            return;
-        }
+
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
         final String vSectionID = intent.getStringExtra("vSectionID");
         final int liveType = bundle.getInt("type", 0);
         final int from = intent.getIntExtra("", 0);
-
+        if (AppConfig.DEBUG) {
+            Bundle newBundle = new Bundle();
+            IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
+            intelligentRecognitionRecord.setAnswers("1000");
+            intelligentRecognitionRecord.setAnswerTime("121322");
+            intelligentRecognitionRecord.setLiveId(vSectionID);
+            intelligentRecognitionRecord.setStuId("1111");
+            intelligentRecognitionRecord.setStuCouId("1234");
+            newBundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
+            XueErSiRouter.startModule(this, "/english/intelligent_recognition", newBundle);
+//            startActivity(new Intent(this, IntelligentRecognitionActivity.class));
+            finish();
+            return;
+        }
 
         final LiveHttpManager httpManager = new LiveHttpManager(this);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {

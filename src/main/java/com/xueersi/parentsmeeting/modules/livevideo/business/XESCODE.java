@@ -316,4 +316,8 @@ public interface XESCODE {
         int XEP_MODE_CHANGE = 500;
         int XEP_BACK_FINISH = 501;
     }
+
+//    int intelligent_recognition_open = 1104;
+
+//    int intelligent_recognition_close = 1105;
 }

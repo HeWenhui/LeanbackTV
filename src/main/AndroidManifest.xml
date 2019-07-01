@@ -14,7 +14,7 @@
 
     <application>
         <activity
-            android:name=".intelligent_recognition.IntelligentRecognitionActivity"
+            android:name=".intelligent_recognition.widget.IntelligentRecognitionActivity"
             android:process=":livevideo"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme" />

@@ -1,21 +1,20 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.intelligent_recognition_sign;
 
 public class IntelligentRecognitionBroadcast extends BroadcastReceiver {
-    final String Init = "";
-    final String launchIntent = "";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        if (FILTER_ACTION.equals(ircReceiver)) {
+        if (FILTER_ACTION.equals(action)) {
             if (ircReceiver != null) {
-                ircReceiver.stop(intent.getStringExtra(""));
+                ircReceiver.stop(intent.getStringExtra(intelligent_recognition_sign));
             }
         }
     }

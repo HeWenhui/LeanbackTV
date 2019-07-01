@@ -1,9 +1,12 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http;
 
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class HttpResponseParser {
 
@@ -18,16 +21,25 @@ public class HttpResponseParser {
         ieResult.setMaterialName(json.optString("materialName"));
         ieResult.setMateriaTypeId(json.optString("materiaTypeId"));
         ieResult.setContent(json.optString("content"));
-        ieResult.setAnswered(json.optString(""));
+        ieResult.setSetAnswerTime(json.optString("setAnswerTime"));
         ieResult.setAnswered(json.optString(""));
         ieResult.setAnswered(json.optString(""));
         JSONObject itemJson = json.optJSONObject("resource");
-        IEResult.ResourceBean resourceBean = new IEResult.ResourceBean();
         if (itemJson != null) {
-//            resourceBean.setBall(itemJson.optString());
-
+            JSONObject audioJSON = itemJson.optJSONObject("audio");
+            HashMap<String, String> map = new HashMap<>();
+            if (audioJSON != null) {
+                Iterator iterator = audioJSON.keys();
+                while (iterator.hasNext()) {
+                    String key = (String) iterator.next();
+                    String value = audioJSON.optString("key");
+                    map.put(key, value);
+                }
+                ieResult.setAudioHashMap(map);
+            }
+            String imgSrc = audioJSON.optString("img");
+            ieResult.setImgSrc(imgSrc);
         }
-        ieResult.setResource(resourceBean);
         return ieResult;
     }
 }

@@ -95,33 +95,8 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
             layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
         //如果有录音权限
-//        if (isHasRecordPermission()) {
         logger.i("has record permission");
         parentView.addView(iView.getView(), layoutParams);
-//        }
-//        else {
-//            logger.i("no record permission");
-//            final ViewGroup.LayoutParams finalLayoutParams = layoutParams;
-//            boolean have = XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
-//                        @Override
-//                        public void onFinish() {
-//
-//                        }
-//
-//                        @Override
-//                        public void onDeny(String permission, int position) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onGuarantee(String permission, int position) {
-//                            parentView.addView(iView.getView(), finalLayoutParams);
-//                        }
-//                    },
-//                    PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
-//
-//        }
-
     }
 
     //阿里云地址

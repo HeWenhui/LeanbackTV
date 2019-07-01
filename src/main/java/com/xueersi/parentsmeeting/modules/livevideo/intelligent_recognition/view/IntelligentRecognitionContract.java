@@ -1,9 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
 
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
-
 public interface IntelligentRecognitionContract {
-    String FILTER_ACTION = "com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition";
+    String FILTER_ACTION = "com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition_sign";
+    String intelligent_recognition_sign = "intelligent_recognition_sign";
 
     interface BaseView<T> {
         void setPresenter(T presenter);
@@ -20,9 +19,11 @@ public interface IntelligentRecognitionContract {
         /** 取消注册监听消息 */
         void unregisterMessage();
 
-        void setViewModel(IntelligentRecognitionViewModel model);
+//        void setViewModel(IntelligentRecognitionViewModel model);
 
         void startSpeech();
+
+//        void setEntity(E entity);
     }
 
     interface IIntelligentRecognitionView<T> extends BaseView<T> {
