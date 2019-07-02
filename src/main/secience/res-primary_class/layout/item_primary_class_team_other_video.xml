@@ -117,7 +117,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/rl_livevideo_primary_team_voice_open"
-        app:shadow_shadowColor="#15000000"
+        app:shadow_shadowColor="#13000000"
         app:shadow_shadowDx="3"
         app:shadow_shadowDy="3"
         app:shadow_shadowRadius="3" />
