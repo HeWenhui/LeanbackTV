@@ -38,7 +38,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
 
     @Override
     public void decorateBack(int width, int height, RelativeLayout rl_course_video_contentview) {
-        Bitmap oldBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_livevideo_priclass_normal);
+        Bitmap oldBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_livevideo_priclass_normal_cn);
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         int screenWidth = liveVideoPoint.screenWidth;
         int screenHeight = liveVideoPoint.screenHeight;
@@ -81,10 +81,10 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
         int leftGap = (videoPoint.screenWidth - width) / 2;
         int topGap = (videoPoint.screenHeight - height) / 2;
-        int leftMargin = (int) (13 * scale) + leftGap;
-        int bottomMargin = (int) (13 * scale) + topGap;
+        int leftMargin = (int) (12 * scale) + leftGap;
+        int bottomMargin = (int) (15 * scale) + topGap;
         int rightMargin = (int) (226 * scale) + leftGap;
-        int topMargin = (int) (90 * scale) + topGap;
+        int topMargin = (int) (89 * scale) + topGap;
         if (lp.leftMargin != leftMargin || lp.bottomMargin != bottomMargin || lp.rightMargin != rightMargin || lp.topMargin != topMargin) {
             lp.leftMargin = leftMargin;
             lp.bottomMargin = bottomMargin;
