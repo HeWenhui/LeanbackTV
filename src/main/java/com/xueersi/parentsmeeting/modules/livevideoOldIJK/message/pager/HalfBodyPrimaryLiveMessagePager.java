@@ -86,7 +86,7 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
             if (useSkin == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                 top = 16;
             } else {
-                top = 21;
+                top = 18;
             }
             int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (top * scale);
             boolean change = false;

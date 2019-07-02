@@ -82,7 +82,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         int leftGap = (videoPoint.screenWidth - width) / 2;
         int topGap = (videoPoint.screenHeight - height) / 2;
         int leftMargin = (int) (12 * scale) + leftGap;
-        int bottomMargin = (int) (15 * scale) + topGap;
+        int bottomMargin = (int) (16 * scale) + topGap;
         int rightMargin = (int) (226 * scale) + leftGap;
         int topMargin = (int) (89 * scale) + topGap;
         if (lp.leftMargin != leftMargin || lp.bottomMargin != bottomMargin || lp.rightMargin != rightMargin || lp.topMargin != topMargin) {
