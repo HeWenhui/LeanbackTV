@@ -141,6 +141,9 @@ public class LiveAssetsLoadUtil {
                 mDataLoadEntity.webDataSuccess();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
 
+                if (context instanceof LiveVideoTransferActivity) {
+                    context.finish();
+                }
                 callback.fail(errorCode, errorMsg);
             }
         });
