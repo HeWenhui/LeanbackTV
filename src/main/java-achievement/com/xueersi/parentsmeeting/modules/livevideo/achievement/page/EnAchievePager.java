@@ -56,7 +56,6 @@ public class EnAchievePager extends LiveBasePager {
     private ProgressBar pgAchivePk;
     private FrameLayout flProgress;
     private ImageView progressImageView;
-    //    private ImageView progressImageView;
     private Activity activity;
     private TextView tvAchiveNumStar;
     private TextView tvAchiveNumGold;
@@ -71,8 +70,6 @@ public class EnAchievePager extends LiveBasePager {
 
     /**
      * 小目标控件
-     *
-     * @author zhangyuansun
      */
     private TextView tvAchiveAimEmpty;
     private RelativeLayout rlAchiveAimContent;
@@ -111,8 +108,6 @@ public class EnAchievePager extends LiveBasePager {
 
         /**
          * 小目标控件绑定
-         *
-         * @author zhangyuansun
          */
         tvAchiveAimEmpty = mView.findViewById(R.id.tv_livevideo_en_achive_aim_empty);
         rlAchiveAimContent = mView.findViewById(R.id.rl_livevideo_en_achive_aim_content);
@@ -419,17 +414,13 @@ public class EnAchievePager extends LiveBasePager {
 
     /**
      * 接收本场小目标
-     *
-     * @author zhangyuansun
      */
     public void onReceiveBetterMe(BetterMeEntity betterMeEntity) {
         this.mBetterMeEntity = betterMeEntity;
     }
 
     /**
-     * 小目标实时更新
-     *
-     * @author zhangyuansun
+     * 小目标更新
      */
     public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
         if (mBetterMeEntity == null) {
@@ -459,8 +450,6 @@ public class EnAchievePager extends LiveBasePager {
 
     /**
      * 设置小目标进度
-     *
-     * @author zhangyuansun
      */
     private void setEngAimPro(int progress) {
         logger.i("setEngAimPro:progress=" + progress);
@@ -473,18 +462,16 @@ public class EnAchievePager extends LiveBasePager {
             @Override
             public boolean onPreDraw() {
                 pgAchiveAim.getViewTreeObserver().removeOnPreDrawListener(this);
-                setTipsLayout();
+                alignProTips();
                 return false;
             }
         });
     }
 
     /**
-     * 小提示和进度条对齐
-     *
-     * @author zhangyuansun
+     * 设置Tips指向当前进度
      */
-    private void setTipsLayout() {
+    private void alignProTips() {
         int[] loc = ViewUtil.getLoc(pgAchiveAim, rlAchiveAimContent);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
         lp.leftMargin = loc[0] - tvAchiveAimTips.getWidth() / 2 + pgAchiveAim.getWidth() * pgAchiveAim.getProgress() / pgAchiveAim.getMax();

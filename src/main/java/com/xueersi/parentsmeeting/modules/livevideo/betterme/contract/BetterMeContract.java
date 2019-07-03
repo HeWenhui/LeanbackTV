@@ -4,7 +4,6 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.BasePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.BaseView;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
@@ -22,7 +21,7 @@ public interface BetterMeContract {
 
         void showLevelDisplayPager();
 
-        void showReceiveTargetPager(StuSegmentEntity stuSegmentEntity, BetterMeEntity betterMeEntity);
+        void showReceiveTargetPager();
 
         void showCompleteTargetPager(StuAimResultEntity stuAimResultEntity);
     }
@@ -31,5 +30,7 @@ public interface BetterMeContract {
         void getStuSegment();
         void getBetterMe();
         void getStuAimResult();
+        BetterMeEntity getBetterMeEntity();
+        StuSegmentEntity getStuSegmentEntity();
     }
 }

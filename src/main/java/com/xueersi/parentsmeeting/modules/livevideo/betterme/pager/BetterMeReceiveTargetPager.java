@@ -10,8 +10,7 @@ import android.widget.TextView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnPagerClose;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 
@@ -44,7 +43,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
      * 升级提示
      */
     private TextView tvReceiveTarUpdateTips;
-    private OnPagerClose mOnpagerClose;
+    private OnBettePagerClose onBettePagerClose;
     /**
      * 按钮 - 准备好啦
      */
@@ -70,11 +69,11 @@ public class BetterMeReceiveTargetPager extends BasePager {
      */
     private LinearLayout llReveivetarNextLevel;
 
-    public BetterMeReceiveTargetPager(StuSegmentEntity stuSegmentEntity, BetterMeEntity betterMeEntity, Context context, OnPagerClose onPagerClose) {
+    public BetterMeReceiveTargetPager(StuSegmentEntity stuSegmentEntity, BetterMeEntity betterMeEntity, Context context, OnBettePagerClose onBettePagerClose) {
         super(context);
         this.mStuSegmentEntity = stuSegmentEntity;
         this.mBetterMeEntity = betterMeEntity;
-        this.mOnpagerClose = onPagerClose;
+        this.onBettePagerClose = onBettePagerClose;
         initData();
         initListener();
     }
@@ -189,7 +188,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
                 if (mCountDownTimer != null) {
                     mCountDownTimer.cancel();
                 }
-                mOnpagerClose.onClose(BetterMeReceiveTargetPager.this);
+                onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
             }
         });
     }
@@ -214,7 +213,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
 
         @Override
         public void onFinish() {
-            mOnpagerClose.onClose(BetterMeReceiveTargetPager.this);
+            onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
         }
     };
 

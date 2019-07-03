@@ -25,20 +25,11 @@ public class LiveVideoHttpEnConfig {
     public static String URL_LIVE_REPORT_STULIKE = LiveVideoConfig.APP_ARTS_WXEN_HTTP_HOST + "/team-pk/reportStuLike";
 
     /** 英语小目标 -获取学生段位信息 */
-    public static String URL_LIVE_GET_STU_SEGMENT = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourses/getStuSegment";
+    public static String URL_LIVE_GET_STU_SEGMENT = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getStuSegment";
     /** 英语小目标 -获取学生这节课小目标 */
-    public static String URL_LIVE_BETTER_ME = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourses/betterMe";
+    public static String URL_LIVE_BETTER_ME = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/betterMe";
     /** 英语小目标 -实时获取学生目标完成度 */
-    public static String URL_LIVE_GET_STU_AIM_REALTIME_VAL = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourses/getStuAimRealTimeVal";
+    public static String URL_LIVE_GET_STU_AIM_REALTIME_VAL = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getStuAimRealTimeVal";
     /** 英语小目标 -获取小目标结果 */
-    public static String URL_LIVE_GET_STU_AIM_RESULT = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourses/getStuAimResult";
-
-    static {
-        if (AppConfig.DEBUG) {
-            URL_LIVE_GET_STU_SEGMENT = "http://10.99.2.49:7300/mock/5bc837b4e2d3f348f1284293/example/getStuSegment";
-            URL_LIVE_BETTER_ME = "http://10.99.2.49:7300/mock/5bc837b4e2d3f348f1284293/example/betterMe";
-            URL_LIVE_GET_STU_AIM_RESULT = "http://10.99.2.49:7300/mock/5bc837b4e2d3f348f1284293/example/getStuAimResult";
-            URL_LIVE_GET_STU_AIM_REALTIME_VAL = "http://10.99.2.49:7300/mock/5bc837b4e2d3f348f1284293/example/getStuAimRealTimeVal";
-        }
-    }
+    public static String URL_LIVE_GET_STU_AIM_RESULT = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getStuAimResult";
 }

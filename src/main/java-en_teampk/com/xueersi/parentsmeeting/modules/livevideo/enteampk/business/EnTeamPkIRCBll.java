@@ -14,10 +14,14 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImp;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -41,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
@@ -56,6 +61,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -63,12 +69,15 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import okhttp3.Call;
+
 /**
  * @author linyuqiang
  * created  at 2018/11/6
  * 英语战队PK 相关业务处理
  */
-public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
+public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction, BetterMeContract
+        .BetterMePresenter {
     private EnTeamPkAction enTeamPkAction;
     private String unique_id;
     private boolean psOpen = false;
@@ -93,6 +102,13 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private InteractiveTeam mInteractiveTeam;
     private ArrayList<TeamMemberEntity> entities = new ArrayList<>();
 
+    private BetterMeContract.BetterMeView mBetterMeView;
+    private StuSegmentEntity mStuSegmentEntity;
+    private BetterMeEntity mBetterMeEntity;
+    private StuAimResultEntity mStuAimResultEntity;
+    //小目标是否迟到 1---迟到  2----没有迟到
+    private boolean isArriveLate = true;
+
     public EnTeamPkIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
@@ -100,6 +116,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+
+        mBetterMeView = new BetterMeViewImp(mContext);
+        mBetterMeView.setPresenter(this);
+        mBetterMeView.setRootView(mRootView);
+
         LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
         logger.d("onLiveInited:use=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
@@ -190,6 +211,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onArtsExtLiveInited(LiveGetInfo getInfo) {
         ArtsExtLiveInfo artsExtLiveInfo = getInfo.getArtsExtLiveInfo();
+
+        this.isArriveLate = artsExtLiveInfo.isArriveLate();
+
         int isGroupGmaeCourseWare = artsExtLiveInfo.getIsGroupGameCourseWare();
         logger.d("onArtsExtLiveInited:isGroupGmaeCourseWare=" + isGroupGmaeCourseWare);
         if (isGroupGmaeCourseWare == 1) {
@@ -258,6 +282,93 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         } else {
             mLogtf.d("connect:method=" + method);
         }
+    }
+
+    /**
+     * 获取学生这节课小目标
+     */
+    @Override
+    public void getBetterMe() {
+        String liveId = mLiveBll.getLiveId();
+        String courseId = mLiveBll.getCourseId();
+        getHttpManager().getBetterMe(liveId, courseId, new HttpCallBack(true) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.i("getBetterMe:onPmSuccess():json=" + responseEntity.getJsonObject());
+                mBetterMeEntity = getHttpResponseParser().parseBetterMeInfo(responseEntity);
+                if (mBetterMeEntity != null) {
+                    if (mStuSegmentEntity != null) {
+                        if (mBetterMeEntity.isFirstReceive()) {
+                            mBetterMeView.showIntroductionPager();
+                        } else {
+                            mBetterMeView.showReceiveTargetPager();
+                        }
+                    } else {
+                        getStuSegment();
+                    }
+                }
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+            }
+
+            @Override
+            public void onFailure(String postUrl, Exception e, String msg) {
+                super.onFailure(postUrl, e, msg);
+            }
+        });
+    }
+
+    /**
+     * 获取小目标结果
+     */
+    @Override
+    public void getStuAimResult() {
+        String liveId = mLiveBll.getLiveId();
+        String courseId = mLiveBll.getCourseId();
+        getHttpManager().getStuAimResult(liveId, courseId, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.i("getBetterMe:onPmSuccess():json=" + responseEntity.getJsonObject());
+                mStuAimResultEntity = getHttpResponseParser().parseStuAimResultInfo(responseEntity);
+                if (mStuAimResultEntity != null) {
+                    mBetterMeView.showCompleteTargetPager(mStuAimResultEntity);
+                }
+            }
+        });
+    }
+
+    @Override
+    public BetterMeEntity getBetterMeEntity() {
+        return mBetterMeEntity;
+    }
+
+    @Override
+    public StuSegmentEntity getStuSegmentEntity() {
+        return mStuSegmentEntity;
+    }
+
+    /**
+     * 获取学生段位信息
+     */
+    @Override
+    public void getStuSegment() {
+        getHttpManager().getStuSegment(new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.i("getStuSegment:onPmSuccess():json=" + responseEntity.getJsonObject());
+                mStuSegmentEntity = getHttpResponseParser().parseStuSegmentInfo(responseEntity);
+                if (mStuSegmentEntity != null) {
+                    if (mBetterMeEntity.isFirstReceive()) {
+                        mBetterMeView.showIntroductionPager();
+                    } else {
+                        mBetterMeView.showReceiveTargetPager();
+                    }
+                }
+            }
+        });
     }
 
     private class ClassEndRec {
@@ -905,34 +1016,36 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         switch (type) {
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN:
                 logger.d("onNotice:XCR_ROOM_TEAMPK_OPEN");
+                getBetterMe();
                 if (!psOpen) {
                     psOpen = true;
-                    if (enTeamPkAction != null) {
-                        enTeamPkAction.onRankStart(true);
-                    }
+//                    if (enTeamPkAction != null) {
+//                        enTeamPkAction.onRankStart(true);
+//                    }
                 }
                 break;
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT:
                 logger.d("onNotice:XCR_ROOM_TEAMPK_RESULT:pkTeamEntity=" + pkTeamEntity);
-                getEnglishPkTotalRank();
+                getStuAimResult();
+//                getEnglishPkTotalRank();
                 break;
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO:
                 logger.d("onNotice:XCR_ROOM_TEAMPK_GO:data=" + data);
-                if (pkTeamEntity == null) {
-                    try {
-                        ResponseEntity responseEntity = new ResponseEntity();
-                        responseEntity.setJsonObject(data.getJSONObject("teamInfo"));
-                        pkTeamEntity = parsegetSelfTeamInfo(responseEntity);
-                        enTeamPkAction.setPkTeamEntity(pkTeamEntity);
-                        if (pkTeamEntity != null) {
-                            pkTeamEntity.setCreateWhere(PkTeamEntity.CREATE_TYPE_IRC);
-                            saveTeam(responseEntity);
-                        }
-                    } catch (Exception e) {
-                        logger.d("XCR_ROOM_TEAMPK_GO", e);
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
-                    }
-                }
+//                if (pkTeamEntity == null) {
+//                    try {
+//                        ResponseEntity responseEntity = new ResponseEntity();
+//                        responseEntity.setJsonObject(data.getJSONObject("teamInfo"));
+//                        pkTeamEntity = parsegetSelfTeamInfo(responseEntity);
+//                        enTeamPkAction.setPkTeamEntity(pkTeamEntity);
+//                        if (pkTeamEntity != null) {
+//                            pkTeamEntity.setCreateWhere(PkTeamEntity.CREATE_TYPE_IRC);
+//                            saveTeam(responseEntity);
+//                        }
+//                    } catch (Exception e) {
+//                        logger.d("XCR_ROOM_TEAMPK_GO", e);
+//                        CrashReport.postCatchedException(new LiveException(TAG, e));
+//                    }
+//                }
                 break;
             case XESCODE.ARTS_STOP_QUESTION:
                 onCourseEnd();

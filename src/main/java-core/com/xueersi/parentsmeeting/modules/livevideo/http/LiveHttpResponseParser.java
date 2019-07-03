@@ -2056,6 +2056,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
         info.setIsGroupGameCourseWare(data.optInt("isGroupGameCourseWare", -1));
         info.setSummerCourseWareSize(data.optString("summerCourseWareSize"));
+        info.setArriveLate("1".equals(data.optString("isArriveLate")));
+        info.setUseBetterMe("1".equals(data.optString("isUseBetterMe")));
+        info.setSegment(data.optString("segment"));
+        info.setSegmentType(data.optString("segmentType"));
+        info.setStar(data.optString("star"));
         UmsAgentTrayPreference.getInstance().put(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, info.getSummerCourseWareSize());
         return info;
     }
@@ -2609,6 +2614,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             betterMeEntity.setAimType(jsonObject.getString("aimType"));
             betterMeEntity.setAimValue(jsonObject.getString("aimValue"));
+            betterMeEntity.setFirstReceive("1".equals(jsonObject.optString("isFirstReceive","0")));
             return  betterMeEntity;
         } catch (Exception e) {
             e.printStackTrace();

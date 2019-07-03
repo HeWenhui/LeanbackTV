@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.pager;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.CountDownTimer;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -10,19 +9,16 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnPagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
@@ -33,7 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
  * created  at 2018/12/10
  */
 public class BetterMeCompleteTargetPager extends LiveBasePager {
-    private OnPagerClose mOnpagerClose;
+    private OnBettePagerClose mOnpagerClose;
     /**
      * 图标 - 标题
      */
@@ -80,7 +76,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
     StuAimResultEntity mStuAimResultEntity;
     private static final String CONGRATULATIONS_TO_UPGRADE = "恭喜你升级为";
 
-    public BetterMeCompleteTargetPager(StuAimResultEntity stuAimResultEntity, Context context, OnPagerClose onPagerClose) {
+    public BetterMeCompleteTargetPager(StuAimResultEntity stuAimResultEntity, Context context, OnBettePagerClose onPagerClose) {
         super(context);
         this.mStuAimResultEntity = stuAimResultEntity;
         this.mOnpagerClose = onPagerClose;

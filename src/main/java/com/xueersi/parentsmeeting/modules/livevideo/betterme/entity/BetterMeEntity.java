@@ -16,6 +16,8 @@ public class BetterMeEntity {
      */
     private String aimValue;
 
+    private boolean isFirstReceive;
+
     public String getAimType() {
         return aimType;
     }
@@ -30,5 +32,13 @@ public class BetterMeEntity {
 
     public void setAimValue(String aimValue) {
         this.aimValue = aimValue;
+    }
+
+    public boolean isFirstReceive() {
+        return isFirstReceive;
+    }
+
+    public void setFirstReceive(boolean firstReceive) {
+        isFirstReceive = firstReceive;
     }
 }

@@ -13,9 +13,9 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeLevelEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMePager;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnPagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImp;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.util.ArrayList;
@@ -45,14 +45,14 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
     private LinearLayout llPagerIndicator;
     private BetterMeLevelDisplayPagerAdapter mPagerAdapter;
     private List<BetterMeLevelEntity> mLevelEntityList = new ArrayList<>();
-    private OnPagerClose onPagerClose;
+    private OnBettePagerClose onPagerClose;
 
 
     public BetterMeLevelDisplayPager(Context context) {
         super(context);
     }
 
-    public BetterMeLevelDisplayPager(Context context, OnPagerClose onPagerClose) {
+    public BetterMeLevelDisplayPager(Context context, OnBettePagerClose onPagerClose) {
         super(context);
         this.onPagerClose = onPagerClose;
         initData();
@@ -92,7 +92,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
             @Override
             public void onClick(View v) {
                 onPagerClose.onClose(BetterMeLevelDisplayPager.this);
-                onPagerClose.onNext(BetterMePager.PAGER_INTRODUCTION);
+                onPagerClose.onNext(BetterMeViewImp.PAGER_INTRODUCTION);
             }
         });
         ivArrowLeft.setOnClickListener(new View.OnClickListener() {
@@ -196,9 +196,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 //为小圆点左右添加间距
                 params.leftMargin = SizeUtils.Dp2Px(mContext, 3);
-                ;
                 params.rightMargin = SizeUtils.Dp2Px(mContext, 3);
-                ;
                 //给小圆点一个默认大小
                 params.height = imgSize;
                 params.width = imgSize;

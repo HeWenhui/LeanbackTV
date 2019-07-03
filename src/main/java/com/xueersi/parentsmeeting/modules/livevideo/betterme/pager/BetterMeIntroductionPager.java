@@ -2,20 +2,16 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.pager;
 
 import android.animation.Animator;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMePager;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnPagerClose;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImp;
 
 /**
  * 英语小目标 小目标介绍
@@ -35,11 +31,11 @@ public class BetterMeIntroductionPager extends BasePager {
     private LottieAnimationView mLottieAnimationView;
     LinearLayout llContent;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_better_me/introduction/";
-    private OnPagerClose onPagerClose;
+    private OnBettePagerClose onBettePagerClose;
 
-    public BetterMeIntroductionPager(Context context, OnPagerClose onPagerClose) {
+    public BetterMeIntroductionPager(Context context, OnBettePagerClose onBettePagerClose) {
         super(context);
-        this.onPagerClose = onPagerClose;
+        this.onBettePagerClose = onBettePagerClose;
         initData();
         initListener();
     }
@@ -73,7 +69,7 @@ public class BetterMeIntroductionPager extends BasePager {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                llContent.setVisibility(View.VISIBLE);
+
             }
 
             @Override
@@ -86,7 +82,8 @@ public class BetterMeIntroductionPager extends BasePager {
 
             }
         });
-        mLottieAnimationView.playAnimation();
+//        mLottieAnimationView.playAnimation();
+        llContent.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -94,15 +91,15 @@ public class BetterMeIntroductionPager extends BasePager {
         tvViewLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPagerClose.onClose(BetterMeIntroductionPager.this);
-                onPagerClose.onNext(BetterMePager.PAGER_LEVEL_DISPLAY);
+                onBettePagerClose.onClose(BetterMeIntroductionPager.this);
+                onBettePagerClose.onNext(BetterMeViewImp.PAGER_LEVEL_DISPLAY);
             }
         });
         btnGotit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPagerClose.onClose(BetterMeIntroductionPager.this);
-                onPagerClose.onNext(BetterMePager.PAGER_RECEIVE_TARGET, 2000);
+                onBettePagerClose.onClose(BetterMeIntroductionPager.this);
+                onBettePagerClose.onNext(BetterMeViewImp.PAGER_RECEIVE_TARGET, 2000);
             }
         });
     }
