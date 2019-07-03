@@ -866,16 +866,19 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 mArtsAnswerResultEvent = null;
                 if ("off".equals(status)) {
                     if (mGetInfo.getPattern() == 2) {
-                        rlAnswerResultLayout.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!close) {
-                                    rlAnswerResultLayout.removeView(mRlResult);
-                                }
+                        if (data.optInt("ptype") == 21) {
+                            mDsipalyer.remindSubmit();
+                        } else {
+                            rlAnswerResultLayout.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!close) {
+                                        rlAnswerResultLayout.removeView(mRlResult);
+                                    }
 
-                            }
-                        });
-                        EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));
+                                }
+                            });
+                            EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));                        }
                     } else {
                         if (data.optInt("ptype") == 21) {
                             mDsipalyer.remindSubmit();
@@ -990,8 +993,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 resultEntity.setIdArray(idList);
                 resultEntity.setResultType(AnswerResultEntity.RESULT_TYPE_NEW_COURSE_WARE);
                 mAnswerResultList.add(resultEntity);
-            } else if (ArtsAnswerResultEvent.TYPE_H5_VOTE_RESULT == event.getType()) {
-                mDsipalyer.remindSubmit();
             }
         }
     }

@@ -25,10 +25,8 @@
     </item>
 
     <item android:id="@android:id/progress">
-        <!-- 定义ClipDrawable的剪裁方向为垂直 -->
-        <clip
-            android:clipOrientation="vertical"
-            android:gravity="bottom">
+        <scale android:scaleHeight="100%"
+            android:scaleGravity="bottom">
             <shape>
                 <corners android:radius="20dip" />
                 <gradient
@@ -38,7 +36,7 @@
                     android:endColor="#e87f43"
                     android:startColor="#e87f43" />
             </shape>
-        </clip>
+        </scale>
     </item>
 
 </layer-list>

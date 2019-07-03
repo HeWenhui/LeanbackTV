@@ -18,6 +18,8 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:indeterminateOnly="false"
         android:max="100"
         android:progressDrawable="@drawable/shape_live_votesubject_prog_max" />
