@@ -502,8 +502,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             });
 
             int time = 0;
-            if (currentAnswerIndex == 0 && LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo
-                    .type)) {
+            if (currentAnswerIndex == 0 && LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(gameType)) {
                 //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1秒再开始倒计时和收音
                 time += test.getAnswerList().size();
             }
@@ -1067,11 +1066,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         //设置提示的位置
         final View finalMyView = myView;
         if (finalMyView != null) {
-            //除了语音大炮。都把自己放右下角
-            if (!LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
-                llCourseItemContent.removeView(myView);
-                llCourseItemContent.addView(myView);
-            }
             tvMyVoiceTip.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
@@ -1564,7 +1558,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     allAnswerList.clear();
                 } else {
                     testEntity.setTotalTime(testEntity.getTotalTime() - nowPlayTime);
-                    if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
+                    if (LiveQueConfig.isTypeOfCannon(gameType)) {
                         // 游戏时间
                         long playTime = 0;
                         // 当前页数
@@ -1796,8 +1790,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 int rightNum = vidooCannonEntity.rightNum;
                 if (rightNum > 0) {
                     vidooCannonEntity.teamMemberEntity.gold = 2;
-                    if (rightNum > GroupGameConfig.CANNON_MAX_ENERGY) {
-                        vidooCannonEntity.teamMemberEntity.setEnergy(GroupGameConfig.CANNON_MAX_ENERGY);
+                    int maxNum;
+                    if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(gameType)) {
+                        maxNum = GroupGameConfig.WHATIS_MISSING_MAX_ENERGY;
+                    } else {
+                        maxNum = GroupGameConfig.CANNON_MAX_ENERGY;
+                    }
+                    if (rightNum > maxNum) {
+                        vidooCannonEntity.teamMemberEntity.setEnergy(maxNum);
                     } else {
                         vidooCannonEntity.teamMemberEntity.setEnergy(rightNum);
                     }
@@ -1823,6 +1823,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             }
             try {
                 answerData.put("tryTimes", tryTimes);
+                answerData.put("total", answerList.size());
                 JSONArray userAnswer = new JSONArray();
                 VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + stuid);
                 if (vidooCannonEntity != null && !tests.isEmpty()) {
@@ -1901,7 +1902,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             starNum = 5;
         }
         mLogtf.d("submit:averageScore=" + averageScore + ",starNum=" + starNum + ",energy=" + energy);
-        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
+        if (LiveQueConfig.isTypeOfCannon(gameType)) {
             GroupGameLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?
                     "0" : "1", 1);
         }
@@ -1926,7 +1927,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo);
                                 }
                             });
-                            if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
+                            if (LiveQueConfig.isTypeOfCannon(gameType)) {
                                 GroupGameLog.sno6(liveAndBackDebug, detailInfo.id, "" + entities.size(), 1);
                             }
                         } else {
@@ -2196,7 +2197,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             }
             return;
         }
-        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
+        if (LiveQueConfig.isTypeOfCannon(gameType)) {
             GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(0);
             speechContent = answersEntity.getText();
             if (allAnswerList.size() > 1) {

@@ -174,4 +174,10 @@ public class LiveQueConfig {
         }
         return false;
     }
+    public static boolean isTypeOfCannon(String type) {
+        if (EN_COURSE_TYPE_VOICE_CANNON.equals(type) || EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type) || EN_COURSE_TYPE_WHAT_IS_MISSING.equals(type)) {
+            return true;
+        }
+        return false;
+    }
 }

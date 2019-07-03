@@ -7,4 +7,6 @@ public class GroupGameConfig {
     public static int OPERATION_AUDIO = 2;
     /** 语音炮弹最大能量 */
     public static int CANNON_MAX_ENERGY = 50;
+    /** what's missing最大能量 */
+    public static int WHATIS_MISSING_MAX_ENERGY = 30;
 }
