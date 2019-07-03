@@ -1422,6 +1422,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     @Override
     public void submitData() {
         isForce = true;
+        showResult = false;
         submit();
     }
 

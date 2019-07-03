@@ -662,7 +662,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         submitData(true);
     }
 
-    private void submitData(boolean isForce) {
+    private void submitData(final boolean isForce) {
         if (!fetchCoursewareSuccess || isSubmit) {
             return;
         }
@@ -722,7 +722,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     @Override
                     public void onDataSucess(Object... objData) {
                         logger.d("submitGroupGame -> onDataSucess");
-                        showResultPager();
+                        if (!isForce) {
+                            showResultPager();
+                        }
                         GroupGameLog.sno6(liveAndBackDebug, detailInfo.id, "1", 0);
                     }
 
