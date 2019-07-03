@@ -55,7 +55,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
  * Created by linyuqiang on 2018/7/17.
  * 互动题回放
  */
-public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp, QuestionSecHttp {
+public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp, QuestionSecHttp,EnglishH5CoursewareSecHttp {
     QuestionBll questionBll;
     String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
     private List<String> questiongtype = Arrays.asList(ptTypeFilters);
@@ -298,6 +298,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+                        videoQuestionLiveEntity.setPlayBack(true);
                         if (questiongtype.contains(videoQuestionLiveEntity.type)) {
                             EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTIONS_SHOW, videoQuestionLiveEntity));
                             questionBll.showQuestion(videoQuestionLiveEntity);
@@ -535,6 +536,11 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
+    public void liveSubmitTestH5Answer(VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID, String testAnswer, String courseware_type, String isSubmit, double voiceTime, boolean isRight, QuestionSwitch.OnAnswerReslut onAnswerReslut) {
+
+    }
+
+    @Override
     public void speechEval42IsAnswered(String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         getCourseHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
@@ -622,5 +628,35 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     @Override
     public void getStuInteractionResult(VideoQuestionLiveEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
         getCourseWareHttpManager().getStuInteractionResult(UserBll.getInstance().getMyUserInfoEntity().getStuId(), videoQuestionLiveEntity.id, videoQuestionLiveEntity.getSrcType(), videoQuestionLiveEntity.getDotId(), 1, callBack);
+    }
+
+    @Override
+    public void getCourseWareTests(String url, String params, AbstractBusinessDataCallBack callBack) {
+
+    }
+
+    @Override
+    public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
+        getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
+    }
+
+    @Override
+    public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
+        getCourseWareHttpManager().submitMultiTest("" + testInfos, 2, isforce, callBack);
+    }
+
+    @Override
+    public void submitGroupGame(VideoQuestionLiveEntity detailInfo, int gameMode, int voiceTime, int pkTeamId, int gameGroupId, int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime, String answerData, AbstractBusinessDataCallBack callBack) {
+
+    }
+
+    @Override
+    public String getResultUrl(VideoQuestionLiveEntity detailInfo, int isforce, String nonce) {
+        return null;
+    }
+
+    @Override
+    public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isPlayBack, AbstractBusinessDataCallBack callBack) {
+
     }
 }

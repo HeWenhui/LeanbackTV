@@ -780,7 +780,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             if (liveGetInfo.isNewCourse()) {
                                 EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
                                 CoursewareNativePager questionWebPager = new CoursewareNativePager(activity,
-                                        videoQuestionLiveEntity, false, liveGetInfo.getId(), videoQuestionLiveEntity.id,
+                                        videoQuestionLiveEntity, videoQuestionLiveEntity.isPlayBack(), liveGetInfo.getId(), videoQuestionLiveEntity.id,
                                         englishH5Entity, "", "", new EnglishH5CoursewareBll.OnH5ResultClose() {
                                     @Override
                                     public void onH5ResultClose(BaseEnglishH5CoursewarePager
