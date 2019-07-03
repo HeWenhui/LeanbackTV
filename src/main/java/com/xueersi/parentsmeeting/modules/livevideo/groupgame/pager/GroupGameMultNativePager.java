@@ -212,6 +212,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private int rightNum = 0;
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
     private GroupGameUpload groupGameUpload;
+    private int MAX_ENERGY = GroupGameConfig.CANNON_MAX_ENERGY;
 
     public GroupGameMultNativePager(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
         super(context);
@@ -259,6 +260,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     @Override
     public void initData() {
         mLogtf.addCommon("testid", "" + detailInfo.id);
+        if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(gameType)) {
+            MAX_ENERGY = GroupGameConfig.WHATIS_MISSING_MAX_ENERGY;
+        }
         groupGameUpload = new GroupGameUpload(mContext, liveId, detailInfo.id);
         BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
         if (videoFragment != null) {
@@ -1791,14 +1795,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 int rightNum = vidooCannonEntity.rightNum;
                 if (rightNum > 0) {
                     vidooCannonEntity.teamMemberEntity.gold = 2;
-                    int maxNum;
-                    if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(gameType)) {
-                        maxNum = GroupGameConfig.WHATIS_MISSING_MAX_ENERGY;
-                    } else {
-                        maxNum = GroupGameConfig.CANNON_MAX_ENERGY;
-                    }
-                    if (rightNum > maxNum) {
-                        vidooCannonEntity.teamMemberEntity.setEnergy(maxNum);
+                    if (rightNum > MAX_ENERGY) {
+                        vidooCannonEntity.teamMemberEntity.setEnergy(MAX_ENERGY);
                     } else {
                         vidooCannonEntity.teamMemberEntity.setEnergy(rightNum);
                     }
@@ -2579,7 +2577,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     if (answer.getId() == word_id) {
                                         vidooCannonEntity.rightNum++;
                                         //一个单词一个能量
-                                        if (vidooCannonEntity.teamMemberEntity.getEnergy() < GroupGameConfig.CANNON_MAX_ENERGY) {
+                                        if (vidooCannonEntity.teamMemberEntity.getEnergy() < MAX_ENERGY) {
                                             vidooCannonEntity.teamMemberEntity.setEnergy(vidooCannonEntity.teamMemberEntity.getEnergy() + 1);
                                         }
                                         mLogtf.d("VOICE_CANNO_STATIS:word_id=" + word_id + ",who_id=" + who_id + ",energy=" + vidooCannonEntity.teamMemberEntity.getEnergy() + ",contains=" + allAnswerList.contains(answer));
@@ -2812,8 +2810,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             @Override
                                             public void run() {
                                                 TeamMemberEntity entity = courseGroupItem.getEntity();
-                                                if (total_energy > GroupGameConfig.CANNON_MAX_ENERGY) {
-                                                    entity.setEnergy(GroupGameConfig.CANNON_MAX_ENERGY);
+                                                if (total_energy > MAX_ENERGY) {
+                                                    entity.setEnergy(MAX_ENERGY);
                                                 } else {
                                                     entity.setEnergy(total_energy);
                                                 }
