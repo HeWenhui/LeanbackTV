@@ -2385,7 +2385,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
                 if (teamEntity != null) {
                     JSONObject bodyJson = new JSONObject();
-                    bodyJson.put("type", LiveQueConfig.EN_COURSE_GAME_TYPE_1);
+                    short tcpHeadType = 0;
+                    int tcpHeadOperation = 0;
+                    if (gameType.equals(LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON)) {
+                        bodyJson.put("type", LiveQueConfig.EN_COURSE_GAME_TYPE_1);
+                        tcpHeadType = TcpConstants.VOICE_CANNO_TYPE;
+                        tcpHeadOperation = TcpConstants.VOICE_CANNO_SEND;
+                    } else if (gameType.equals(LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING)) {
+                        bodyJson.put("type", LiveQueConfig.EN_COURSE_GAME_TYPE_3);
+                        tcpHeadType = TcpConstants.WHAT_IS_MISSING_TYPE;
+                        tcpHeadOperation = TcpConstants.WHAT_IS_MISSING_SEND;
+                    }
                     bodyJson.put("live_id", liveGetInfo.getId());
                     LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
                     bodyJson.put("class_id", studentLiveInfo.getClassId());
@@ -2410,7 +2420,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     userData.put("score", "" + score);
                     userData.put("incry_energy", 1);
                     bodyJson.put("userData", userData);
-                    tcpMessageReg.send(TcpConstants.VOICE_CANNO_TYPE, TcpConstants.VOICE_CANNO_SEND, bodyJson.toString(), new SendCallBack() {
+                    tcpMessageReg.send(tcpHeadType, tcpHeadOperation, bodyJson.toString(), new SendCallBack() {
                         String TAG = "SendCallBack:";
                         int seq;
 
@@ -2538,7 +2548,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public void onMessage(short type, int operation, String msg) {
             mLogtf.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
-            if (type == TcpConstants.VOICE_CANNO_TYPE) {
+            if (TcpConstants.isTypeOfCannon(type)) {
                 switch (operation) {
                     case TcpConstants.VOICE_CANNO_STATIS: {
                         try {
@@ -2857,7 +2867,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public short[] getMessageFilter() {
-            return new short[]{TcpConstants.VOICE_CANNO_TYPE};
+            return new short[]{TcpConstants.VOICE_CANNO_TYPE, TcpConstants.WHAT_IS_MISSING_TYPE};
         }
     }
 

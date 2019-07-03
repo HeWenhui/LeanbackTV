@@ -67,6 +67,8 @@ public class LiveQueConfig {
     public static final int EN_COURSE_GAME_TYPE_1 = 1;
     /** 直播-小组互动Cleaning up */
     public static final int EN_COURSE_GAME_TYPE_2 = 2;
+    /** 直播-小组互动what's missing */
+    public static final int EN_COURSE_GAME_TYPE_3 = 3;
 
     /** 游戏模式1 */
     public static int GAME_MODEL_1 = 1;
