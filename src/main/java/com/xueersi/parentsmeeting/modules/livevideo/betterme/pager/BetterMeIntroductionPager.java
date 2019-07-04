@@ -91,15 +91,14 @@ public class BetterMeIntroductionPager extends BasePager {
         tvViewLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBettePagerClose.onClose(BetterMeIntroductionPager.this);
-                onBettePagerClose.onNext(BetterMeViewImp.PAGER_LEVEL_DISPLAY);
+                onBettePagerClose.onShow(BetterMeViewImp.PAGER_LEVEL_DISPLAY);
             }
         });
         btnGotit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBettePagerClose.onClose(BetterMeIntroductionPager.this);
-                onBettePagerClose.onNext(BetterMeViewImp.PAGER_RECEIVE_TARGET, 2000);
+                onBettePagerClose.onShow(BetterMeViewImp.PAGER_RECEIVE_TARGET, 2000);
             }
         });
     }

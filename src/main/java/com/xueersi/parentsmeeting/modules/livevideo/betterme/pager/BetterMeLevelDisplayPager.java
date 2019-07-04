@@ -15,7 +15,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeLevelEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImp;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.util.ArrayList;
@@ -45,16 +44,16 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
     private LinearLayout llPagerIndicator;
     private BetterMeLevelDisplayPagerAdapter mPagerAdapter;
     private List<BetterMeLevelEntity> mLevelEntityList = new ArrayList<>();
-    private OnBettePagerClose onPagerClose;
+    private OnBettePagerClose onBettePagerClose;
 
 
     public BetterMeLevelDisplayPager(Context context) {
         super(context);
     }
 
-    public BetterMeLevelDisplayPager(Context context, OnBettePagerClose onPagerClose) {
+    public BetterMeLevelDisplayPager(Context context, OnBettePagerClose onBettePagerClose) {
         super(context);
-        this.onPagerClose = onPagerClose;
+        this.onBettePagerClose = onBettePagerClose;
         initData();
         initListener();
     }
@@ -91,8 +90,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPagerClose.onClose(BetterMeLevelDisplayPager.this);
-                onPagerClose.onNext(BetterMeViewImp.PAGER_INTRODUCTION);
+                onBettePagerClose.onClose(BetterMeLevelDisplayPager.this);
             }
         });
         ivArrowLeft.setOnClickListener(new View.OnClickListener() {

@@ -79,6 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:id="@+id/tv_livevideo_betterme_receivetarget_level_up"
                     android:drawableRight="@drawable/app_xiaomubiao_shellwindow_benchangxiaomubiao_icon_nor"
                     android:drawablePadding="6dp"
                     android:text="段位升级"

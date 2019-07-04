@@ -276,11 +276,6 @@ public interface XESCODE {
     /** 文科语音弹幕  表扬消息 */
     int XCR_ROOM_VOICEBARRAGEPRAISE = 1007;
 
-    /** 开启小目标 */
-    int XCR_ROOM_BETTERME_OPEN = 1055;
-    /** 小目标结果页 */
-    int XCR_ROOM_BETTERME_RESULT = 1056;
-
     /**
      * 文科新课件平台 对接notice 指令
      */

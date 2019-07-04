@@ -55,7 +55,8 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll",};
+            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.betterme.presenter.BetterMeIRCBll",};
     private static String[] cnClassPath = {
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",

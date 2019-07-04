@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConf
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImp;
 
 /**
  * 英语小目标 本场小目标
@@ -23,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEn
 public class BetterMeReceiveTargetPager extends BasePager {
     StuSegmentEntity mStuSegmentEntity;
     BetterMeEntity mBetterMeEntity;
+    private OnBettePagerClose onBettePagerClose;
     /**
      * 目标的类型
      */
@@ -31,6 +33,10 @@ public class BetterMeReceiveTargetPager extends BasePager {
      * 目标的值
      */
     private TextView tvReceiveTarValue;
+    /**
+     * 段位升级
+     */
+    private TextView tvReceiveTarLevelUp;
     /**
      * 当前段位
      */
@@ -43,7 +49,6 @@ public class BetterMeReceiveTargetPager extends BasePager {
      * 升级提示
      */
     private TextView tvReceiveTarUpdateTips;
-    private OnBettePagerClose onBettePagerClose;
     /**
      * 按钮 - 准备好啦
      */
@@ -85,6 +90,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
         tvCompletetarCountdown = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_countdown);
         tvReceiveTarType = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_type);
         tvReceiveTarValue = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_value);
+        tvReceiveTarLevelUp = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_level_up);
         tvReceiveTarCurrentLevel = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_current_level);
         tvReceiveTarNextLevel = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_next_level);
         tvReceiveTarUpdateTips = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_update_tips);
@@ -182,6 +188,12 @@ public class BetterMeReceiveTargetPager extends BasePager {
 
     @Override
     public void initListener() {
+        tvReceiveTarLevelUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBettePagerClose.onShow(BetterMeViewImp.PAGER_LEVEL_DISPLAY);
+            }
+        });
         ivReceivetarReady.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

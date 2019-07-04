@@ -5,7 +5,7 @@ import com.xueersi.common.base.BasePager;
 public interface OnBettePagerClose {
     void onClose(BasePager basePager);
 
-    void onNext(int pagerType, int duration);
+    void onShow(int pagerType, int duration);
 
-    void onNext(int pagerType);
+    void onShow(int pagerType);
 }

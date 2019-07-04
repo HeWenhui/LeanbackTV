@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.view;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -38,6 +39,8 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
     public static final int PAGER_LEVEL_DISPLAY = 2;
     public static final int PAGER_RECEIVE_TARGET = 3;
 
+    private BasePager currentPager;
+
     public BetterMeViewImp(Context context) {
         this.mContext = context;
     }
@@ -60,7 +63,8 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
                         ViewGroup.LayoutParams.MATCH_PARENT));
             }
         }
-        rlBetterMeContent.addView(new BetterMeIntroductionPager(mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+        currentPager = new BetterMeIntroductionPager(mContext, this);
+        rlBetterMeContent.addView(currentPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
@@ -76,6 +80,7 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
                         ViewGroup.LayoutParams.MATCH_PARENT));
             }
         }
+        currentPager.getRootView().setVisibility(View.GONE);
         rlBetterMeContent.addView(new BetterMeLevelDisplayPager(mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
@@ -92,7 +97,9 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
                         ViewGroup.LayoutParams.MATCH_PARENT));
             }
         }
-        rlBetterMeContent.addView(new BetterMeReceiveTargetPager(mBetterMePresenter.getStuSegmentEntity(),mBetterMePresenter.getBetterMeEntity(), mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+        currentPager = new BetterMeReceiveTargetPager(mBetterMePresenter.getStuSegmentEntity(), mBetterMePresenter
+                .getBetterMeEntity(), mContext, this);
+        rlBetterMeContent.addView(currentPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
@@ -108,7 +115,8 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
                         ViewGroup.LayoutParams.MATCH_PARENT));
             }
         }
-        rlBetterMeContent.addView(new BetterMeCompleteTargetPager(stuAimResultEntity, mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+        currentPager = new BetterMeCompleteTargetPager(stuAimResultEntity, mContext, this);
+        rlBetterMeContent.addView(currentPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
@@ -124,10 +132,10 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
      */
     @Override
     public void onClose(BasePager basePager) {
+        currentPager.getRootView().setVisibility(View.VISIBLE);
         if (rlBetterMeContent != null) {
             rlBetterMeContent.removeView(basePager.getRootView());
         }
-
     }
 
     /**
@@ -137,17 +145,17 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
      * @param duration
      */
     @Override
-    public void onNext(final int pagerType, int duration) {
+    public void onShow(final int pagerType, int duration) {
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                onNext(pagerType);
+                onShow(pagerType);
             }
         }, duration);
     }
 
     @Override
-    public void onNext(int pagerType) {
+    public void onShow(int pagerType) {
         switch (pagerType) {
             case PAGER_INTRODUCTION:
                 showIntroductionPager();
