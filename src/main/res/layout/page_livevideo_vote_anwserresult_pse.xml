@@ -24,12 +24,12 @@
 
         <LinearLayout
             android:id="@id/ll_arts_answer_reslult_reward_info"
-            android:layout_width="90dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/lv_arts_answer_result_pse"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="80dp"
-            android:background="@drawable/bg_zhanduipk_fantastic_jiangli"
+            android:layout_marginTop="83dp"
+            android:background="@drawable/bg_livevideo_vote_jiangli"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="invisible">
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
-                android:text=""
+                android:text="+0"
                 android:textColor="#FF824B"
                 android:textSize="14sp" />
 
@@ -56,10 +56,10 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="300dp"
-            android:layout_height="140dp"
+            android:layout_height="132dp"
             android:layout_below="@id/ll_arts_answer_reslult_reward_info"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"></android.support.v4.view.ViewPager>
+            android:layout_marginTop="13dp"></android.support.v4.view.ViewPager>
 
         <ImageView
             android:id="@+id/iv_livevideo_vote_left"
@@ -109,7 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/lv_arts_answer_result_pse"
             android:layout_alignTop="@+id/lv_arts_answer_result_pse"
-            android:text="3s后关闭"
+            android:text=""
             android:textColor="#ff8C8080"
             android:textSize="10sp"
             android:visibility="gone" />

@@ -874,6 +874,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             @Override
             public void onCloseByUser() {
             }
+
+            @Override
+            public void onUpdateVoteFoldCount(String count) {
+
+            }
         });
         initQuestionAnswerReslut(popupWindow_view, false);
         return popupWindow_view;

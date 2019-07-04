@@ -194,6 +194,9 @@ public class TcpDispatch {
                 for (int i = 0; i < tcpMessageActions.size(); i++) {
                     TcpMessageAction tcpMessageAction = tcpMessageActions.get(i);
                     tcpMessageAction.onMessage(type, operation, msg);
+                    if (type == TcpConstants.VOTE_TYPE) {
+                        TcpConstants.VOTE_TYPE_DATA = msg;
+                    }
                 }
             } else {
                 if (type != TcpConstants.REPLAY_TYPE) {

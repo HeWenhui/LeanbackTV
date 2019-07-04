@@ -170,6 +170,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     /** 课件题目数量 */
     private int totalQuestion = -1;
 
+    private JSONArray optionTitle;
+
     /**
      * 结果页面 是否是由强制提交 产生的
      */
@@ -694,6 +696,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         try {
             JSONObject data = message.getJSONObject("data");
             totalQuestion = data.optInt("totalQuestion", -1);
+            optionTitle = data.optJSONArray("optionTitle");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -833,7 +836,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private void submitVoice(final int isforce, String nonce) {
         NewCourseSec.Test test = tests.get(0);
         JSONArray userAnswerContent = test.getUserAnswerContent();
-        JSONArray userAnswerArray = new JSONArray();
+        final JSONArray userAnswerArray = new JSONArray();
         int length = 0;
         if (userAnswerContent != null) {
             length = userAnswerContent.length();
@@ -954,6 +957,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 try {
                     jsonObject1.put("stat", 1);
                     jsonObject1.put("data", jsonObject);
+                    if(TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21,detailInfo.getArtType())){
+                        jsonObject1.put("answerData", userAnswerArray);
+                        jsonObject1.put("optionTitle",optionTitle);
+                        jsonObject1.put("isForce",isforce);
+                        jsonObject1.put("gold", detailInfo.gold);
+                        onClose.onH5ResultClose(CoursewareNativePager.this,detailInfo);
+                    }
                     ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
                     artsAnswerResultEvent.setDetailInfo(detailInfo);
                     artsAnswerResultEvent.setIspreload(ispreload);

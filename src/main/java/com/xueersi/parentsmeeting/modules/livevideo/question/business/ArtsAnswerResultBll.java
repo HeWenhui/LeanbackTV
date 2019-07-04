@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +28,10 @@ import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.alibaba.fastjson.JSON;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.util.FontCache;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -52,12 +53,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoteAnswerResultPager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -146,6 +149,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private LiveSoundPool mLiveSoundPool;
     private RelativeLayout mRlResult;
 
+    private String testId;
+
     /**
      * @param context
      * @param liveBll
@@ -215,7 +220,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 try {
                     VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
                     if (detailInfo != null) {
-                        NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0,detailInfo.isTUtor());
+                        NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0, detailInfo.isTUtor());
                     }
                 } catch (Exception e) {
                     CrashReport.postCatchedException(e);
@@ -616,6 +621,16 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         closeAnswerResult(false);
     }
 
+    @Override
+    public void onUpdateVoteFoldCount(String count) {
+        getHttpManager().voteFoldCountCommit(count, testId, mGetInfo.getMainTeacherId(), mGetInfo.getTeacherId(), mGetInfo.getStuId(), mGetInfo.getStudentLiveInfo().getClassId(), new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("voteFoldCountCommit:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+            }
+        });
+    }
+
     /**
      * 表扬答题全对
      */
@@ -844,18 +859,30 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 mArtsAnswerResultEvent = null;
                 if ("off".equals(status)) {
                     if (mGetInfo.getPattern() == 2) {
-                        rlAnswerResultLayout.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!close) {
-                                    rlAnswerResultLayout.removeView(mRlResult);
-                                }
-
+                        if (data.optInt("ptype") == 21) {
+                            if (mDsipalyer != null) {
+                                mDsipalyer.remindSubmit();
                             }
-                        });
-                        EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));
+                        } else {
+                            rlAnswerResultLayout.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!close) {
+                                        rlAnswerResultLayout.removeView(mRlResult);
+                                    }
+
+                                }
+                            });
+                            EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));
+                        }
                     } else {
-                        closeAnswerResult(true);
+                        if (data.optInt("ptype") == 21) {
+                            if (mDsipalyer != null) {
+                                mDsipalyer.remindSubmit();
+                            }
+                        } else {
+                            closeAnswerResult(true);
+                        }
                     }
                 } else if ("on".equals(status)) {
                     forceSumbmit = false;
@@ -931,6 +958,15 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mArtsAnswerResultEvent = event;
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()
                     || ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK == event.getType()) {
+                VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
+                if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
+                    mDsipalyer = new VoteAnswerResultPager(mContext, event.getDataStr(), mGetInfo.getPattern(), this);
+                    testId = detailInfo.id;
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                            (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
+                    return;
+                }
                 boolean resultFromVoice = event.getType() == ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK;
                 onAnswerResult(event, event.getDataStr(), resultFromVoice);
                 StringBuilder stringBuilder = new StringBuilder();

@@ -65,4 +65,6 @@ public class TcpConstants {
     public final static short GROUP_GAME_TYPE = 12;
     /** 消息类型，客户端断线获取游戏离线数据包： */
     public final static int GROUP_GAME_SEND = 16;
+
+    public static String VOTE_TYPE_DATA = "";
 }

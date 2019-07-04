@@ -867,7 +867,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 if ("off".equals(status)) {
                     if (mGetInfo.getPattern() == 2) {
                         if (data.optInt("ptype") == 21) {
-                            mDsipalyer.remindSubmit();
+                            if (mDsipalyer != null) {
+                                mDsipalyer.remindSubmit();
+                            }
                         } else {
                             rlAnswerResultLayout.post(new Runnable() {
                                 @Override
@@ -878,10 +880,13 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
                                 }
                             });
-                            EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));                        }
+                            EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));
+                        }
                     } else {
                         if (data.optInt("ptype") == 21) {
-                            mDsipalyer.remindSubmit();
+                            if (mDsipalyer != null) {
+                                mDsipalyer.remindSubmit();
+                            }
                         } else {
                             closeAnswerResult(true);
                         }
@@ -962,7 +967,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     || ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK == event.getType()) {
                 VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
                 if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
-                    mDsipalyer = new VoteAnswerResultPager(mContext, event.getDataStr(), this);
+                    mDsipalyer = new VoteAnswerResultPager(mContext, event.getDataStr(), mGetInfo.getPattern(), this);
                     testId = detailInfo.id;
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
                             (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

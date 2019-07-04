@@ -36,9 +36,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.AnswerResultStateListener;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.IArtsAnswerRsultDisplayer;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.widget.VoteView;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 

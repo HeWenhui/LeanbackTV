@@ -111,6 +111,12 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                 GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, true, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
                 groupGameMultNativePager.setLivePagerBack(livePagerBack);
                 return groupGameMultNativePager;
+            }else if(LiveQueConfig.EN_COURSE_TYPE_21.equals(type)){
+                CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                        videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, "0"
+                        , isArts, false);
+                h5CoursewarePager.setLivePagerBack(livePagerBack);
+                return h5CoursewarePager;
             }
         }
 
