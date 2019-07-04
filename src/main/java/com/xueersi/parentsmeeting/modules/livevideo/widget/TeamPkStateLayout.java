@@ -414,7 +414,6 @@ public class TeamPkStateLayout extends FrameLayout {
         }
     }
 
-
     /**
      * 淡入淡出显示  控件
      *
@@ -422,6 +421,10 @@ public class TeamPkStateLayout extends FrameLayout {
      * @param duratrion
      */
     protected void showViewWithFadeInOutEffect(final View targetView, long duratrion) {
+        showViewWithFadeInOutEffect(targetView, duratrion, View.GONE);
+    }
+
+    protected void showViewWithFadeInOutEffect(final View targetView, long duratrion, final int visibility) {
         if (targetView == null) {
             return;
         }
@@ -441,7 +444,7 @@ public class TeamPkStateLayout extends FrameLayout {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        targetView.setVisibility(GONE);
+                        targetView.setVisibility(visibility);
                     }
 
                     @Override
@@ -453,8 +456,6 @@ public class TeamPkStateLayout extends FrameLayout {
             }
         }, duratrion);
     }
-
-
 //    public void setTeamPkBll(TeamPkBll teamPkBll) {
 //        liveAndBackDebug = teamPkBll;
 //    }

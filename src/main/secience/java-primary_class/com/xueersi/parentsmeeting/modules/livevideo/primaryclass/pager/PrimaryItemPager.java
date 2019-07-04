@@ -29,7 +29,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePagerState;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.BasePrimaryTeamItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.BasePrimaryTeamPeopleItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamEmptyItem;
@@ -42,9 +41,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryK
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -429,6 +425,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                                 @Override
                                 public void onJoinChannel(int joinChannel) {
                                     logger.d("onJoinChannel:joinChannel=" + joinChannel);
+                                    setAudioMode();
                                 }
                             });
                         }
@@ -786,19 +783,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             }
         } else if (type == PrimaryClassConfig.MMTYPE_AUDIO) {
             if (audioStatus != open) {
-                try {
-                    AudioManager mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
-                    int mode = mAM.getMode();
-                    mLogtf.d("onMessage:mode=" + mode);
-                    if (open) {
-                        mAM.setMode(AudioManager.MODE_IN_COMMUNICATION);
-                    } else {
-                        mAM.setMode(AudioManager.MODE_NORMAL);
-                    }
-                } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
-                }
                 audioStatus = open;
+                setAudioMode();
                 if (open) {
                     foreach(new ItemCall() {
                         @Override
@@ -816,6 +802,26 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 }
             }
         }
+    }
+
+    private void setAudioMode() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AudioManager mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
+                    int mode = mAM.getMode();
+                    mLogtf.d("setAudioMode:mode=" + mode + ",open=" + audioStatus);
+                    if (audioStatus) {
+                        mAM.setMode(AudioManager.MODE_IN_COMMUNICATION);
+                    } else {
+                        mAM.setMode(AudioManager.MODE_NORMAL);
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
+            }
+        }, 1000);
     }
 
     @Override

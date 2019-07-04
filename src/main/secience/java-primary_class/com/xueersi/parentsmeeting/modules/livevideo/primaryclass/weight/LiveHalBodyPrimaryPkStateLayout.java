@@ -60,7 +60,7 @@ public class LiveHalBodyPrimaryPkStateLayout extends TeamPkStateLayout {
         vContributionCotanier.setVisibility(VISIBLE);
         energy = energy < 0 ? 0 : energy;
         tvEnergyMyContribution.setText("我贡献了" + energy + "个能量");
-        showViewWithFadeInOutEffect(vContributionCotanier, ENERGY_MY_CONTRIBUTION_DURATION);
+        showViewWithFadeInOutEffect(vContributionCotanier, ENERGY_MY_CONTRIBUTION_DURATION, View.INVISIBLE);
         LiveEventBus.getDefault(getContext()).post(new PkAddEnergy(false, energy));
     }
 
