@@ -10,7 +10,6 @@ public interface IIRCMessage {
 
     String getNickname();
 
-    void setIrcTalkConf(IRCTalkConf ircTalkConf);
 
     void sendNotice(String notice);
 

@@ -48,24 +48,8 @@ public class NewIRCMessage implements IIRCMessage {
     private String[] mChannels;
     private String mNickname;
 
-    private IRCTalkConf ircTalkConf;
-    /**
-     * 从上面的列表选择一个服务器
-     */
-    private int mSelectTalk = 0;
     private LogToFile mLogtf;
-    /**
-     * 播放器是不是销毁
-     */
-    private boolean mIsDestory = false;
-    /**
-     * 网络类型
-     */
-    private int netWorkType;
-    /**
-     * 调度是不是在无网络下失败
-     */
-    private boolean connectError = false;
+
     /**
      * 是不是获得过用户列表
      */
@@ -76,7 +60,10 @@ public class NewIRCMessage implements IIRCMessage {
     Context mContext;
     File workSpaceDir = new File(context.getCacheDir(), "irc/workspace");
     private String currentMode;
-    LiveGetInfo mLiveInfo;
+    /** 直播ID*/
+    private String liveId;
+    /** 班级ID*/
+    private String classId;
     private List<String> roomid;
     private PMDefs.LiveInfo liveInfo;
     private boolean isConnected;
@@ -85,15 +72,15 @@ public class NewIRCMessage implements IIRCMessage {
     private Map<String, String> analysis;
     private UUID mSid = UUID.randomUUID();
 
-    public NewIRCMessage(Context context, int netWorkType, String login, String nickname, LiveGetInfo liveInfo, String... channel) {
-        this.netWorkType = netWorkType;
+    public NewIRCMessage(Context context,  String nickname, String liveId,String classId, String... channel) {
         this.mChannels = channel;
         this.mNickname = nickname;
         this.mContext = context;
-        this.mLiveInfo = liveInfo;
+        this.liveId = liveId;
+        this.classId = classId;
         mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
-        mLogtf.d("IRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
+        mLogtf.d("IRCMessage:channel=" + channel  + ",nickname=" + nickname);
     }
 
     /**
@@ -720,14 +707,14 @@ public class NewIRCMessage implements IIRCMessage {
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = mNickname;
         liveInfo.realname = myUserInfoEntity.getRealName();
-        liveInfo.liveId = mLiveInfo.getId();
-        if (mLiveInfo.getStuName() != null) {
-            liveInfo.username = mLiveInfo.getStuName();
+        liveInfo.liveId = liveId;
+        if (myUserInfoEntity.getNickName() != null) {
+            liveInfo.username = myUserInfoEntity.getNickName();
         } else {
             liveInfo.username = mNickname;
         }
-        if (mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null) {
-            liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
+        if (classId != null) {
+            liveInfo.classId = classId;
         } else {
             liveInfo.classId = "";
         }
@@ -793,10 +780,6 @@ public class NewIRCMessage implements IIRCMessage {
         return mNickname;
     }
 
-    @Override
-    public void setIrcTalkConf(IRCTalkConf ircTalkConf) {
-        this.ircTalkConf = ircTalkConf;
-    }
 
     /**
      * 发通知
@@ -910,10 +893,6 @@ public class NewIRCMessage implements IIRCMessage {
             UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
         }
         isConnected = false;
-        mIsDestory = true;
-        if (ircTalkConf != null) {
-            ircTalkConf.destory();
-        }
     }
 
     @Override
@@ -941,13 +920,13 @@ public class NewIRCMessage implements IIRCMessage {
         logMap.put("nickname", mNickname);
         logMap.put("time", "" + System.currentTimeMillis());
         logMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
-        logMap.put("liveId", mLiveInfo.getId());
+        logMap.put("liveId", liveId);
         if (analysis == null) {
             analysis = new HashMap<>();
         }
         analysis.put("timestamp", "" + System.currentTimeMillis());
-        analysis.put("userid", mLiveInfo.getStuId());
-        analysis.put("planid", mLiveInfo.getId());
+        analysis.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        analysis.put("planid", liveId);
         analysis.put("clientip", IpAddressUtil.USER_IP);
         analysis.put("traceid", "" + UUID.randomUUID());
         analysis.put("platform", "android");

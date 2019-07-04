@@ -1093,7 +1093,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
 
-        mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
+        mIRCMessage = new NewIRCMessage(this,  chatRoomUid, mGetInfo.getId(),"", channel);
 
         mExpIrcState = new ExperienceIrcState(mGetInfo, mGetInfo.getLiveTopic(), mIRCMessage, playBackEntity, mHttpManager);
 

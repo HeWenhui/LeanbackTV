@@ -38,32 +38,18 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     private String TAG = "AuditIRCMessage";
     protected Logger logger = LoggerFactory.getLogger(TAG);
     String eventid = LiveVideoConfig.LIVE_LISTEN;
-    //    private IRCConnection mConnection;
     private int mConnectCount = 0, mDisconnectCount = 0;
     private AuditIRCCallback mIRCCallback;
     private String mChannel;
     private String mNickname;
     private String childName;
     private UUID mSid = UUID.randomUUID();
-    /**
-     * 备用用户聊天服务配置列表
-     */
-    private List<NewTalkConfEntity> mNewTalkConf = new ArrayList<>();
-    private IRCTalkConf ircTalkConf;
-    /**
-     * 从上面的列表选择一个服务器
-     */
-    private int mSelectTalk = 0;
     private LogToFile mLogtf;
     /**
      * 播放器是不是销毁
      */
     private boolean mIsDestory = false;
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    /**
-     * 网络类型
-     */
-    private int netWorkType;
     /**
      * 调度是不是在无网络下失败
      */
@@ -81,24 +67,27 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     ChatClient mChatClient;
     Context mContext;
     File workSpaceDir = new File(context.getCacheDir(), "irc/workspace");
-    private String currentMode;
-    LiveGetInfo mLiveInfo;
+    private String liveId;
+    private String classId;
     private List<String> roomid;
     private PMDefs.LiveInfo liveInfo;
     private boolean isConnected;
     private boolean isFirstLogin = true;
 
-    public NewAuditIRCMessage(Context context, LiveGetInfo liveInfo, int netWorkType, String channel, String login, String nickname, LiveAndBackDebug liveAndBackDebug) {
-        this.netWorkType = netWorkType;
+    public NewAuditIRCMessage(Context context, String nickname, String liveId, String classId, String channel) {
         this.mChannel = channel;
         this.mNickname = nickname;
-        this.liveAndBackDebug = liveAndBackDebug;
-        mLiveInfo = liveInfo;
+        this.liveId = liveId;
+        this.classId = classId;
         mContext = context;
         mLogtf = new LogToFile(TAG);
         mLogtf.clear();
-        mLogtf.d("AuditIRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
+        mLogtf.d("AuditIRCMessage:channel=" + channel + ",nickname=" + nickname);
         enterTime = System.currentTimeMillis();
+    }
+
+    public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
+        this.liveAndBackDebug = liveAndBackDebug;
     }
 
     /**
@@ -140,7 +129,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             StableLogHashMap logHashMap = defaultlog("login");
             logHashMap.put("loginCode", "" + loginResp.code);
             logHashMap.put("loginInfo", "" + loginResp.info);
-            logHashMap.put("connectCount", ""+mConnectCount);
+            logHashMap.put("connectCount", "" + mConnectCount);
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
         }
 
@@ -597,16 +586,16 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = "p_" + mNickname;
         liveInfo.realname = myUserInfoEntity.getRealName();
-        liveInfo.liveId = mLiveInfo.getId();
-        if (mLiveInfo.getStuName() != null) {
-            liveInfo.username = mLiveInfo.getStuName();
+        liveInfo.liveId = liveId;
+        if (myUserInfoEntity.getNickName() != null) {
+            liveInfo.username = myUserInfoEntity.getNickName();
         } else {
             liveInfo.username = "";
         }
-        if (mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null) {
-            liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
+        if (classId != null) {
+            liveInfo.classId = classId;
         } else {
-            liveInfo.username = mNickname;
+            liveInfo.classId = "";
         }
         liveInfo.businessId = "1";
         if (myUserInfoEntity.getAreaCode() != null) {
@@ -632,7 +621,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("time", "" + System.currentTimeMillis());
         logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
         logHashMap.put("where", "NewIRCMessage");
-        logHashMap.put("liveId", mLiveInfo.getId());
+        logHashMap.put("liveId", liveId);
         liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
 
     }
@@ -693,11 +682,6 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         return "p_" + mNickname;
     }
 
-    @Override
-    public void setIrcTalkConf(IRCTalkConf ircTalkConf) {
-        this.ircTalkConf = ircTalkConf;
-    }
-
     /**
      * 发通知
      *
@@ -751,7 +735,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             mChatClient.getRoomManager().removeListener(mRoomListener);
             mChatClient.removeListener(mClientListener);
             StableLogHashMap logHashMap = defaultlog("unInit");
-            liveAndBackDebug.umsAgentDebugSys(eventid,logHashMap);
+            liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap);
         }
         mHandler.removeCallbacks(startVideoRun);
         mHandler.removeCallbacks(mStudyTimeoutRunnable);
@@ -775,9 +759,6 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (ircTalkConf != null) {
-            ircTalkConf.destory();
-        }
     }
 
     @Override
@@ -800,13 +781,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             mIRCCallback.onStudentLeave(true, stuPushStatus);
         }
     };
-    private StableLogHashMap defaultlog(String logType){
+
+    private StableLogHashMap defaultlog(String logType) {
         StableLogHashMap logMap = new StableLogHashMap(logType);
-        logMap.put("sid",mSid.toString());
+        logMap.put("sid", mSid.toString());
         logMap.put("nickname", mNickname);
         logMap.put("time", "" + System.currentTimeMillis());
         logMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
-        logMap.put("liveId", mLiveInfo.getId());
+        logMap.put("liveId", liveId);
         return logMap;
     }
 

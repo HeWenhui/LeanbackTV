@@ -176,7 +176,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
-        mIRCMessage = new NewIRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, liveGetInfo, channel);
+        mIRCMessage = new NewIRCMessage(mContext, chatRoomUid, liveGetInfo.getId(),"", channel);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
     }
