@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -101,20 +102,23 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     }
 
     @Override
-    public void decorateItemPager(View view) {
+    public void decorateItemPager(View view, PrimaryKuangjiaImageView ivLivePrimaryClassKuangjiaImgNormal) {
         TextView tv_livevideo_primary_team_name_mid = view.findViewById(R.id.tv_livevideo_primary_team_name_mid);
         tv_livevideo_primary_team_name_mid.setBackgroundResource(R.drawable.bg_live_tips_bg_normal);
+//        setPkMid(tv_livevideo_primary_team_name_mid, ivLivePrimaryClassKuangjiaImgNormal.getWidth(), ivLivePrimaryClassKuangjiaImgNormal.getHeight());
     }
 
     @Override
     public void decorateItemPagerView(RelativeLayout rl_livevideo_primary_team_content, ImageView iv_livevideo_primary_team_icon, LinearLayout ll_livevideo_primary_team_content, TextView tv_livevideo_primary_team_name_mid, int width, int height) {
         float scale = (float) width / 1334f;
+        int backLeft = (ScreenUtils.getScreenWidth() - width) / 2;
+        int backTop = (ScreenUtils.getScreenHeight() - height) / 2;
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_primary_team_content.getLayoutParams();
             int lpwidth = (int) (194 * scale);
             int lpheight = (int) (54 * scale);
-            int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1124 * scale);
-            int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (24 * scale);
+            int leftMargin = backLeft + (int) (1124 * scale);
+            int topMargin = backTop + (int) (24 * scale);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                 lp.width = lpwidth;
                 lp.height = lpheight;
@@ -135,8 +139,8 @@ public class PrimaryClassViewSec implements PrimaryClassView {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_primary_team_content.getLayoutParams();
             int lpwidth = (int) (195 * scale);
             int lpheight = (int) (630 * scale);
-            int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1126 * scale);
-            int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (101 * scale);
+            int leftMargin = backLeft + (int) (1126 * scale);
+            int topMargin = backTop + (int) (101 * scale);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                 lp.width = lpwidth;
                 lp.height = lpheight;
@@ -156,13 +160,23 @@ public class PrimaryClassViewSec implements PrimaryClassView {
                 }
             }
         }
-        {
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_primary_team_name_mid.getLayoutParams();
-            int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (114 * scale);
-            if (lp.topMargin != topMargin) {
-                lp.topMargin = topMargin;
-                LayoutParamsUtil.setViewLayoutParams(tv_livevideo_primary_team_name_mid, lp);
-            }
+        setPkMid(tv_livevideo_primary_team_name_mid, width, height);
+    }
+
+    private void setPkMid(TextView tv_livevideo_primary_team_name_mid, int width, int height) {
+        float scale = (float) width / 1334f;
+        int backLeft = (ScreenUtils.getScreenWidth() - width) / 2;
+        int backTop = (ScreenUtils.getScreenHeight() - height) / 2;
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_primary_team_name_mid.getLayoutParams();
+        int topMargin = backTop / 2 + (int) (114 * scale);
+        int left = (int) (1126 * scale) - backLeft;
+        Bitmap bitmapDrawable = BitmapFactory.decodeResource(tv_livevideo_primary_team_name_mid.getResources(), R.drawable.bg_live_tips_bg_normal);
+        int leftMargin = (left - bitmapDrawable.getWidth()) / 2;
+        if (lp.topMargin != topMargin || lp.leftMargin != leftMargin) {
+            lp.topMargin = topMargin;
+            lp.leftMargin = leftMargin;
+            logger.d("setPkMid:leftMargin=" + leftMargin);
+            LayoutParamsUtil.setViewLayoutParams(tv_livevideo_primary_team_name_mid, lp);
         }
     }
 

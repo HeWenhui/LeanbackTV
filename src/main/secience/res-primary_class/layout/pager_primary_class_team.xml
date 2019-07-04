@@ -60,12 +60,12 @@
         android:id="@id/tv_livevideo_primary_team_name_mid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:gravity="center"
+        android:paddingLeft="3dp"
         android:text="欢迎进入“冰原白狐队”"
         android:textColor="#ffc33c00"
         android:textSize="14sp"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <include
         layout="@layout/item_primary_class_team_inter"

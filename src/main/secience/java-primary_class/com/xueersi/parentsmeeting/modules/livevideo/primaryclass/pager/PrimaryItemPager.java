@@ -150,7 +150,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         super.initData();
         logger.d("initData:mode=" + mode);
         ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
-        primaryClassView.decorateItemPager(mView);
+        primaryClassView.decorateItemPager(mView, ivLivePrimaryClassKuangjiaImgNormal);
         addItem();
         setLayout();
         if (LiveTopic.MODE_TRANING.equals(mode)) {
@@ -453,6 +453,10 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         tvPrimaryTeamNameMid.setVisibility(View.GONE);
                     }
                 }, 2000);
+//                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tvPrimaryTeamNameMid.getLayoutParams();
+//                int leftMargin = (ScreenUtils.getScreenWidth() - ivLivePrimaryClassKuangjiaImgNormal.getWidth()) / 2 + (int) (1121 * scale);
+//                lp.leftMargin = leftMargin / 2;
+//                tvPrimaryTeamNameMid.setLayoutParams(lp);
             }
         }
 //        ivPrimaryTeamIcon
