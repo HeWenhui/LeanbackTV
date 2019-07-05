@@ -353,7 +353,7 @@ public class CourseWareHttpManager {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     Boolean isSubmit = jsonObject.optBoolean("isSubmit");
                     if (isSubmit) {
-                        callBack.onDataSucess(responseEntity.getJsonObject());
+                        callBack.onDataSucess(responseEntity.getJsonObject(),true);
                     } else {
                         submitH5Vote(userAnswer, testId, classId, stuId, isPlayBack, isforce, callBack);
                     }
@@ -402,7 +402,7 @@ public class CourseWareHttpManager {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("submitH5Vote:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
-                callBack.onDataSucess(responseEntity.getJsonObject());
+                callBack.onDataSucess(responseEntity.getJsonObject(),false);
             }
 
             @Override

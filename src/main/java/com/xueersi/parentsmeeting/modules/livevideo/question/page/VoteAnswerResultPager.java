@@ -264,7 +264,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         @Override
         public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivLookAnswer.getLayoutParams();
-            if (pattern != 2) {
+            if (pattern == 1) {
                 params.rightMargin = LiveVideoPoint.getInstance().getRightMargin() + SizeUtils.Dp2Px(mContext, 7);
                 params.bottomMargin = getBottomMargin() + SizeUtils.Dp2Px(mContext, 7);
             } else {
@@ -287,7 +287,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         voteVideoSize = new VoteVideoSize();
         LiveVideoPoint.getInstance().addVideoSizeChange(mContext, voteVideoSize);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivLookAnswer.getLayoutParams();
-        if (pattern != 2) {
+        if (pattern == 1) {
             params.rightMargin = LiveVideoPoint.getInstance().getRightMargin() + SizeUtils.Dp2Px(mContext, 7);
             params.bottomMargin = getBottomMargin() + SizeUtils.Dp2Px(mContext, 7);
         } else {
