@@ -103,23 +103,29 @@
             android:src="@drawable/bg_lvie_xuesheng_shipin_mid_diaoxian_normal" />
     </RelativeLayout>
 
-    <com.xueersi.parentsmeeting.modules.livevideo.widget.ShadowTextView
-        android:id="@id/tv_livevideo_primary_team_people_name"
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
-        android:padding="3dp"
-        android:singleLine="true"
-        android:text="小铝孩"
-        android:textColor="#ffffffff"
-        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/rl_livevideo_primary_team_voice_open"
-        app:shadow_shadowColor="#13000000"
-        app:shadow_shadowDx="3"
-        app:shadow_shadowDy="3"
-        app:shadow_shadowRadius="3" />
+        app:layout_constraintRight_toLeftOf="@id/rl_livevideo_primary_team_voice_open">
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.ShadowTextView
+            android:id="@id/tv_livevideo_primary_team_people_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:singleLine="true"
+            android:text="小铝孩"
+            android:textColor="#ffffffff"
+            android:textSize="12sp"
+            app:shadow_shadowColor="#13000000"
+            app:shadow_shadowDx="3"
+            app:shadow_shadowDy="3"
+            app:shadow_shadowRadius="3" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@id/rl_livevideo_primary_team_tip"
