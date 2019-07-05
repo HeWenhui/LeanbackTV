@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
+import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 
@@ -170,15 +171,19 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
         if (score == 100) {
             performPerfact();
         } else if (contScore >= 60 && pronScore >= 60) {
-            performGood();
+//            performGood();
+            performPerfact();
         } else if (contScore >= 60 && pronScore < 60) {
             if (judgeSpeechStatus(resultEntity) == STATUS_1) {
-                performRepeatSentence();
+//                performRepeatSentence();
+                performPerfact();
             } else {
-                performRepeatWord(resultEntity.getLstPhonemeScore());
+//                performRepeatWord(resultEntity.getLstPhonemeScore());
+                performPerfact();
             }
         } else {
-            performRepeatSentence();
+//            performRepeatSentence();
+            performPerfact();
         }
     }
 
@@ -203,7 +208,10 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
                 subscribe(getRepeatWordConsumer());
     }
 
-    /** 重读某个单词，分数最低的某个单词 */
+    /**
+     * 重读某个单词，分数最低的某个单词
+     * 处理评测结果时，一定不能在同一个线程里面播放音频
+     */
     private void performRepeatWord(final List<PhoneScore> phoneScores) {
         sortResult(phoneScores);
 //        PhoneScore repeatUrl = getFilterWord(phoneScores);
@@ -319,7 +327,45 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
 
     /** 得到满分点赞 */
     private void performPerfact() {
-
+        Observable.
+                <Boolean>empty().
+                doOnNext(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+//                        UnityCommandPlay.playFaceActionSingle(aiteacherInfoEntity.getCommand_content());
+                    }
+                }).
+                subscribeOn(Schedulers.io()).
+                subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (mediaPlayer == null) {
+                            mediaPlayer = new MediaPlayer();
+                        }
+                        try {
+//            AssetFileDescriptor fd = mActivity.getAssets().openFd("01_01_Well_done.mp3");
+                            String url = Environment.getExternalStorageDirectory() +
+                                    File.separator + "parentsmeeting" + File.separator + "livevideo" +
+                                    File.separator + "01_01_Well_done.mp3";
+                            File file = new File(url);
+                            if (!file.exists()) {
+                                logger.e(url + "不存在");
+                                return;
+                            }
+//                            else {
+//                                logger.e(url + " @@@@@");
+//                            }
+//                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//            String url = "sdcard/parentsmeeting/livevideo/01_01_Well_done.mp3";
+                            mediaPlayer.setDataSource(url);
+                            mediaPlayer.prepare();
+                            mediaPlayer.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            logger.e(e);
+                        }
+                    }
+                });
     }
 
     /** 表现良好，双分都大于60 */
@@ -389,7 +435,10 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
 
     @Override
     public void onDestroy() {
-
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
     }
 
     @Override
