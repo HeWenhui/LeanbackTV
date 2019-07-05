@@ -116,11 +116,12 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     public void decorateItemPagerView(RelativeLayout rl_livevideo_primary_team_content, ImageView iv_livevideo_primary_team_icon, LinearLayout ll_livevideo_primary_team_content, TextView tv_livevideo_primary_team_name_mid, int width, int height) {
         float scale = (float) width / 1334f;
         float scale2 = (float) width / 2001f;
+        logger.d("decorateItemPagerView:scale=" + scale + ",scale2=" + scale2);
         int backLeft = (ScreenUtils.getScreenWidth() - width) / 2;
         int backTop = (ScreenUtils.getScreenHeight() - height) / 2;
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_primary_team_content.getLayoutParams();
-            int lpwidth = (int) (194 * scale);
+            int lpwidth = (int) (198 * scale);
             int lpheight = (int) (54 * scale);
             int leftMargin = backLeft + (int) (1124 * scale);
             int topMargin = backTop + (int) (23 * scale);
