@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -21,28 +21,39 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
-
-public class PrimaryClassViewCn implements PrimaryClassView {
+public class PrimaryClassViewSecPx implements PrimaryClassView {
     private Context context;
     private Logger logger = LiveLoggerFactory.getLogger(this);
     private Bitmap lastDrawBitmap;
+    private int live_primary_right_width;
+    private int live_primary_right_state_width;
+    private int live_primary_right_left;
+    private int live_primary_right_team_top;
+    private int live_primary_right_head_top;
+    private int live_primary_right_head_height;
+    private int live_primary_right_head_gap;
 
-    public PrimaryClassViewCn(Context context) {
+    public PrimaryClassViewSecPx(Context context) {
         this.context = context;
         ProxUtil.getProxUtil().put(context, PrimaryClassView.class, this);
+        Resources resources = context.getResources();
+        live_primary_right_width = resources.getInteger(R.integer.live_primary_right_width);
+        live_primary_right_state_width = resources.getInteger(R.integer.live_primary_right_state_width);
+        live_primary_right_left = resources.getInteger(R.integer.live_primary_right_left);
+        live_primary_right_team_top = resources.getInteger(R.integer.live_primary_right_team_top);
+        live_primary_right_head_top = resources.getInteger(R.integer.live_primary_right_head_top);
+        live_primary_right_head_height = resources.getInteger(R.integer.live_primary_right_head_height);
+        live_primary_right_head_gap = resources.getInteger(R.integer.live_primary_right_head_gap);
     }
 
     @Override
     public void decorateFrame(ImageView imageView) {
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
-        lp.topMargin = lp.bottomMargin = 5;
-        imageView.setLayoutParams(lp);
-        imageView.setImageResource(R.drawable.bg_live_primary_class_kuangjia_img_normal_cn);
+        imageView.setImageResource(R.drawable.bg_live_primary_class_kuangjia_img_normal);
     }
 
     @Override
     public void decorateBack(int width, int height, RelativeLayout rl_course_video_contentview) {
-        Bitmap oldBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_livevideo_priclass_normal_cn);
+        Bitmap oldBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_livevideo_priclass_normal);
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         int screenWidth = liveVideoPoint.screenWidth;
         int screenHeight = liveVideoPoint.screenHeight;
@@ -73,22 +84,23 @@ public class PrimaryClassViewCn implements PrimaryClassView {
 
     @Override
     public void decorateNovideo(View view) {
-        view.setBackgroundColor(0xff2D2D2D);
+        view.setBackgroundColor(0xff222222);
         ImageView imageView = view.findViewById(R.id.iv_course_video_novideo);
-        imageView.setImageResource(R.drawable.bg_livevideo_paly_novidwo_bg_cn);
+        imageView.setImageResource(R.drawable.bg_livevideo_paly_novidwo_bg);
     }
 
     @Override
     public void decorateRlContent(View rlContent, int width, int height) {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
         float scale = (float) width / 1334f;
+
         LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
         int leftGap = (videoPoint.screenWidth - width) / 2;
         int topGap = (videoPoint.screenHeight - height) / 2;
-        int leftMargin = (int) (12 * scale) + leftGap;
-        int bottomMargin = (int) (16 * scale) + topGap;
-        int rightMargin = (int) (226 * scale) + leftGap;
-        int topMargin = (int) (89 * scale) + topGap;
+        int leftMargin = (int) (14 * scale) + leftGap;
+        int bottomMargin = (int) (13 * scale) + topGap;
+        int rightMargin = (int) (219 * scale) + leftGap;
+        int topMargin = (int) (101 * scale) + topGap;
         if (lp.leftMargin != leftMargin || lp.bottomMargin != bottomMargin || lp.rightMargin != rightMargin || lp.topMargin != topMargin) {
             lp.leftMargin = leftMargin;
             lp.bottomMargin = bottomMargin;
@@ -96,29 +108,34 @@ public class PrimaryClassViewCn implements PrimaryClassView {
             lp.topMargin = topMargin;
             LayoutParamsUtil.setViewLayoutParams(rlContent, lp);
         }
+//        lp.leftMargin = (int) (13 * scale);
+//        lp.bottomMargin = (int) (13 * scale);
+//        lp.rightMargin = (int) (219 * scale);
+//        lp.topMargin = (int) (96 * scale);
+//        rlContent.setLayoutParams(lp);
     }
 
     @Override
     public void decorateItemPager(View view, PrimaryKuangjiaImageView ivLivePrimaryClassKuangjiaImgNormal) {
         TextView tv_livevideo_primary_team_name_mid = view.findViewById(R.id.tv_livevideo_primary_team_name_mid);
-        tv_livevideo_primary_team_name_mid.setTextColor(0xff7B583E);
-        tv_livevideo_primary_team_name_mid.setBackgroundResource(R.drawable.bg_live_tips_bg_normal_cn);
-        TextView tv_livevideo_primary_team_name = view.findViewById(R.id.tv_livevideo_primary_team_name);
-        tv_livevideo_primary_team_name.setTextColor(0xff408474);
+        tv_livevideo_primary_team_name_mid.setBackgroundResource(R.drawable.bg_live_tips_bg_normal);
 //        setPkMid(tv_livevideo_primary_team_name_mid, ivLivePrimaryClassKuangjiaImgNormal.getWidth(), ivLivePrimaryClassKuangjiaImgNormal.getHeight());
     }
 
     @Override
     public void decorateItemPagerView(RelativeLayout rl_livevideo_primary_team_content, ImageView iv_livevideo_primary_team_icon, LinearLayout ll_livevideo_primary_team_content, TextView tv_livevideo_primary_team_name_mid, int width, int height) {
         float scale = (float) width / 1334f;
+        float scale2 = (float) width / 2001f;
+        float scaleY = (float) height / 1107f;
         int backLeft = (ScreenUtils.getScreenWidth() - width) / 2;
         int backTop = (ScreenUtils.getScreenHeight() - height) / 2;
+        logger.d("decorateItemPagerView:scale=" + scale + ",scale2=" + scale2 + ",scaleY=" + scaleY + ",backLeft=" + backLeft + ",backTop=" + backTop);
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_primary_team_content.getLayoutParams();
-            int lpwidth = (int) (188 * scale);
-            int lpheight = (int) (72 * scale);
-            int leftMargin = backLeft + (int) (1124 * scale);
-            int topMargin = backTop + (int) (0 * scale);
+            int lpwidth = (int) (live_primary_right_width * scale2);
+            int lpheight = (int) (live_primary_right_state_width * scale2);
+            int leftMargin = backLeft + (int) (live_primary_right_left * scale2);
+            int topMargin = backTop + (int) (live_primary_right_team_top * scale2);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                 lp.width = lpwidth;
                 lp.height = lpheight;
@@ -137,10 +154,12 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         }
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_primary_team_content.getLayoutParams();
-            int lpwidth = (int) (195 * scale);
-            int lpheight = (int) (630 * scale);
-            int leftMargin = backLeft + (int) (1121 * scale);
-            int topMargin = backTop + (int) (88 * scale);
+            int lpwidth = (int) (live_primary_right_width * scale2);
+            int childHeight = (int) (live_primary_right_head_height * scale2);
+            int margin = (int) (live_primary_right_head_gap * scale2);
+            int lpheight = childHeight * 4 + margin * 3;
+            int leftMargin = backLeft + (int) (live_primary_right_left * scale2);
+            int topMargin = backTop + (int) (live_primary_right_head_top * scale2);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                 lp.width = lpwidth;
                 lp.height = lpheight;
@@ -150,8 +169,6 @@ public class PrimaryClassViewCn implements PrimaryClassView {
                 for (int i = 0; i < ll_livevideo_primary_team_content.getChildCount(); i++) {
                     View child = ll_livevideo_primary_team_content.getChildAt(i);
                     ViewGroup.MarginLayoutParams childLp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
-                    int childHeight = (int) (148 * scale);
-                    int margin = (int) (11 * scale);
                     if (childLp.height != childHeight || childLp.bottomMargin != margin) {
                         childLp.height = childHeight;
                         childLp.bottomMargin = margin;
@@ -182,42 +199,22 @@ public class PrimaryClassViewCn implements PrimaryClassView {
 
     @Override
     public void decorateItemPeople(View view) {
-        ImageView iv_livevideo_primary_team_voice_open = view.findViewById(R.id.iv_livevideo_primary_team_voice_open);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_primary_team_voice_open.getLayoutParams();
-        lp.bottomMargin = SizeUtils.Dp2Px(view.getContext(), -2);
-        LayoutParamsUtil.setViewLayoutParams(iv_livevideo_primary_team_voice_open, lp);
+
     }
 
-    /** {@link R.layout#item_primary_class_team_video } */
     @Override
     public void decorateItemMy(View view) {
-        ImageView iv_livevideo_primary_team_energy = view.findViewById(R.id.iv_livevideo_primary_team_energy);
-        iv_livevideo_primary_team_energy.setImageResource(R.drawable.bg_livevideo_toast_energe2_icon_normal_cn);
-        RelativeLayout rl_livevideo_course_item_video_off = view.findViewById(R.id.rl_livevideo_course_item_video_off);
-        rl_livevideo_course_item_video_off.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
-        RelativeLayout rl_livevideo_course_item_video_ufo = view.findViewById(R.id.rl_livevideo_course_item_video_ufo);
-        rl_livevideo_course_item_video_ufo.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
-        ImageView iv_livevideo_course_item_video_ufo = view.findViewById(R.id.iv_livevideo_course_item_video_ufo);
-        iv_livevideo_course_item_video_ufo.setImageResource(R.drawable.bg_live_xuesheng_shipin_mid_ufo_normal_cn);
-        ImageView iv_live_xuesheng_shipin_mid_daijiaru_normal = view.findViewById(R.id.iv_live_xuesheng_shipin_mid_daijiaru_normal);
-        iv_live_xuesheng_shipin_mid_daijiaru_normal.setImageResource(R.drawable.bg_lvie_xuesheng_shipin_mid_diaoxian_normal_cn);
-        RelativeLayout rl_livevideo_course_item_video_nocamera = view.findViewById(R.id.rl_livevideo_course_item_video_nocamera);
-        rl_livevideo_course_item_video_nocamera.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
-        ImageView iv_livevideo_course_item_video_nocamera = view.findViewById(R.id.iv_livevideo_course_item_video_nocamera);
-        iv_livevideo_course_item_video_nocamera.setImageResource(R.drawable.bg_live_xuesheng_shipin_mid_carmer_normal_cn);
+
     }
 
-    /** {@link R.layout#item_primary_class_team_other_video } */
     @Override
     public void decorateItemOther(View view) {
-        RelativeLayout rl_livevideo_course_item_video_off = view.findViewById(R.id.rl_livevideo_course_item_video_off);
-        rl_livevideo_course_item_video_off.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
-        RelativeLayout rl_livevideo_course_item_video_ufo = view.findViewById(R.id.rl_livevideo_course_item_video_ufo);
-        rl_livevideo_course_item_video_ufo.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
-        ImageView iv_livevideo_course_item_video_ufo = view.findViewById(R.id.iv_livevideo_course_item_video_ufo);
-        iv_livevideo_course_item_video_ufo.setImageResource(R.drawable.bg_live_xuesheng_shipin_mid_ufo_normal_cn);
-        ImageView iv_live_xuesheng_shipin_mid_daijiaru_normal = view.findViewById(R.id.iv_live_xuesheng_shipin_mid_daijiaru_normal);
-        iv_live_xuesheng_shipin_mid_daijiaru_normal.setImageResource(R.drawable.bg_lvie_xuesheng_shipin_mid_diaoxian_normal_cn);
+
+    }
+
+    @Override
+    public void decorateItemEmpty(View view) {
+
     }
 
     @Override
@@ -225,17 +222,9 @@ public class PrimaryClassViewCn implements PrimaryClassView {
 
     }
 
-    /** {@link R.layout#item_primary_class_team_empty_video } */
-    @Override
-    public void decorateItemEmpty(View view) {
-        view.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
-        ImageView iv_live_xuesheng_shipin_mid_daijiaru_normal = view.findViewById(R.id.iv_live_xuesheng_shipin_mid_daijiaru_normal);
-        iv_live_xuesheng_shipin_mid_daijiaru_normal.setImageResource(R.drawable.bg_live_xuesheng_shipin_mid_daijiaru_normal_cn);
-    }
-
     @Override
     public void decorateItemMyAddEnergy(View view) {
-        ImageView iv_livevideo_primary_team_energy = view.findViewById(R.id.iv_livevideo_primary_team_energy);
-        iv_livevideo_primary_team_energy.setImageResource(R.drawable.bg_livevideo_toast_energe1_icon_normal_cn);
+
     }
+
 }
