@@ -957,13 +957,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 try {
                     jsonObject1.put("stat", 1);
                     jsonObject1.put("data", jsonObject);
-                    if(TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21,detailInfo.getArtType())){
+                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
                         Boolean isSubmitVote = (Boolean) objData[1];
-                        if (isSubmitVote) {
+                        if (isSubmitVote && !isPlayBack) {
                             String msg = jsonObject.optString("msg");
-                            XESToastUtils.showToast(mContext, msg);
+                            if (!TextUtils.isEmpty(msg))
+                                XESToastUtils.showToast(mContext, msg);
                             jsonObject1.put("gold", 0);
-                        }else {
+                        } else {
                             jsonObject1.put("gold", detailInfo.gold);
                         }
                         jsonObject1.put("answerData", userAnswerArray);
