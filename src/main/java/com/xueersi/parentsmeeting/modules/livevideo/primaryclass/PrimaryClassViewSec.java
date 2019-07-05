@@ -6,6 +6,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -26,10 +27,13 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     private Context context;
     private Logger logger = LiveLoggerFactory.getLogger(this);
     private Bitmap lastDrawBitmap;
+    private int live_primary_right_head_gap;
 
     public PrimaryClassViewSec(Context context) {
         this.context = context;
         ProxUtil.getProxUtil().put(context, PrimaryClassView.class, this);
+        Resources resources = context.getResources();
+        live_primary_right_head_gap = resources.getInteger(R.integer.live_primary_right_head_gap);
     }
 
     @Override
@@ -111,6 +115,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     @Override
     public void decorateItemPagerView(RelativeLayout rl_livevideo_primary_team_content, ImageView iv_livevideo_primary_team_icon, LinearLayout ll_livevideo_primary_team_content, TextView tv_livevideo_primary_team_name_mid, int width, int height) {
         float scale = (float) width / 1334f;
+        float scale2 = (float) width / 2001f;
         int backLeft = (ScreenUtils.getScreenWidth() - width) / 2;
         int backTop = (ScreenUtils.getScreenHeight() - height) / 2;
         {
@@ -118,7 +123,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
             int lpwidth = (int) (194 * scale);
             int lpheight = (int) (54 * scale);
             int leftMargin = backLeft + (int) (1124 * scale);
-            int topMargin = backTop + (int) (24 * scale);
+            int topMargin = backTop + (int) (23 * scale);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                 lp.width = lpwidth;
                 lp.height = lpheight;
@@ -139,6 +144,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_primary_team_content.getLayoutParams();
             int lpwidth = (int) (195 * scale);
             int lpheight = (int) (630 * scale);
+            int margin = (int) (10 * scale);
             int leftMargin = backLeft + (int) (1126 * scale);
             int topMargin = backTop + (int) (101 * scale);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
@@ -151,7 +157,6 @@ public class PrimaryClassViewSec implements PrimaryClassView {
                     View child = ll_livevideo_primary_team_content.getChildAt(i);
                     ViewGroup.MarginLayoutParams childLp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
                     int childHeight = (int) (150 * scale);
-                    int margin = (int) (10 * scale);
                     if (childLp.height != childHeight || childLp.bottomMargin != margin) {
                         childLp.height = childHeight;
                         childLp.bottomMargin = margin;

@@ -425,7 +425,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                                 @Override
                                 public void onJoinChannel(int joinChannel) {
                                     logger.d("onJoinChannel:joinChannel=" + joinChannel);
-                                    setAudioMode();
+                                    setAudioMode("joinChannel");
                                 }
                             });
                         }
@@ -788,7 +788,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         } else if (type == PrimaryClassConfig.MMTYPE_AUDIO) {
             if (audioStatus != open) {
                 audioStatus = open;
-                setAudioMode();
+                setAudioMode("onMessage");
                 if (open) {
                     foreach(new ItemCall() {
                         @Override
@@ -808,14 +808,14 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
     }
 
-    private void setAudioMode() {
+    private void setAudioMode(final String method) {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 try {
                     AudioManager mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
                     int mode = mAM.getMode();
-                    mLogtf.d("setAudioMode:mode=" + mode + ",open=" + audioStatus);
+                    mLogtf.d("setAudioMode:mode=" + mode + ",open=" + audioStatus + ",method=" + method);
                     if (audioStatus) {
                         mAM.setMode(AudioManager.MODE_IN_COMMUNICATION);
                     } else {
@@ -903,6 +903,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 //                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, audioStatus, mState);
                             basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus, mState);
                         }
+                        setAudioMode("onResume");
                     }
                 });
             }

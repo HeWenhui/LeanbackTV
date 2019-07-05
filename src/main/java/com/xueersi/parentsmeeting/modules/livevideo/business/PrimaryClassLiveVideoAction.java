@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassView;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewCn;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewSec;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewSecPx;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -98,6 +99,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             primaryClassView = new PrimaryClassViewCn(activity);
         } else {
             primaryClassView = new PrimaryClassViewSec(activity);
+//            primaryClassView = new PrimaryClassViewSecPx(activity);
         }
         ivLivePrimaryClassKuangjiaImgNormal.setMode(mode);
         setKuangjia();

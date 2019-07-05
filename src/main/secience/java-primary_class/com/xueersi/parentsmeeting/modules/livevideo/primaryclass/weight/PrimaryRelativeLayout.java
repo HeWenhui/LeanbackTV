@@ -21,8 +21,5 @@ public class PrimaryRelativeLayout extends RelativeLayout {
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
         logger.d("setVisibility:visibility=" + visibility);
-        if (visibility != VISIBLE) {
-            CrashReport.postCatchedException(new LiveException(TAG, new Exception()));
-        }
     }
 }
