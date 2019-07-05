@@ -92,6 +92,8 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
     private JSONArray optionTitleArray;
     private int isforce = 1;
     private int gold;
+    private Boolean isPlayBack;
+    private String playBackVoteData;
     private final String BG_COLOR = "#CC000000";
 
     private AnswerResultStateListener mStateListener;
@@ -126,8 +128,8 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         resultData = result;
         this.mStateListener = stateListener;
         this.pattern = pattern;
-        initData();
         logger.e("voteresultData:" + result);
+        initData();
     }
 
     @Override
@@ -262,7 +264,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         @Override
         public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivLookAnswer.getLayoutParams();
-            if (pattern != 2) {
+            if (pattern == 1) {
                 params.rightMargin = LiveVideoPoint.getInstance().getRightMargin() + SizeUtils.Dp2Px(mContext, 7);
                 params.bottomMargin = getBottomMargin() + SizeUtils.Dp2Px(mContext, 7);
             } else {
@@ -285,7 +287,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         voteVideoSize = new VoteVideoSize();
         LiveVideoPoint.getInstance().addVideoSizeChange(mContext, voteVideoSize);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivLookAnswer.getLayoutParams();
-        if (pattern != 2) {
+        if (pattern == 1) {
             params.rightMargin = LiveVideoPoint.getInstance().getRightMargin() + SizeUtils.Dp2Px(mContext, 7);
             params.bottomMargin = getBottomMargin() + SizeUtils.Dp2Px(mContext, 7);
         } else {
@@ -303,14 +305,18 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
             optionTitleArray = jsonObject.optJSONArray("optionTitle");
             isforce = jsonObject.optInt("isForce");
             gold = jsonObject.optInt("gold");
+            isPlayBack = jsonObject.optBoolean("isPlayBack");
+            playBackVoteData = jsonObject.optString("data");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        tcpMessageReg = ProxUtil.getProxUtil().get(mContext, TcpMessageReg.class);
-        if (tcpMessageReg != null) {
-            voteTcpMessage = new VoteTcpMessage();
+        if (!isPlayBack) {
+            tcpMessageReg = ProxUtil.getProxUtil().get(mContext, TcpMessageReg.class);
+            if (tcpMessageReg != null) {
+                voteTcpMessage = new VoteTcpMessage();
+            }
+            tcpMessageReg.registTcpMessageAction(voteTcpMessage);
         }
-        tcpMessageReg.registTcpMessageAction(voteTcpMessage);
     }
 
 
@@ -319,7 +325,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
      */
     @Override
     public void showAnswerReuslt() {
-        if (isforce != 1) {
+        if (isforce != 1 || isPlayBack) {
             forceSubmit();
         } else {
             displayDetailUi();
@@ -335,7 +341,8 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
      */
     private void addCloseBtn() {
         closeBtnAdded = true;
-        if (isforce != 1) {
+        if (isforce != 1 || isPlayBack) {
+            closeVote = true;
             closeBtn.setImageResource(R.drawable.selector_live_enpk_shell_window_guanbi_btn);
         } else {
             closeBtn.setImageResource(R.drawable.selector_live_vote_shell_window_fold_btn);
@@ -346,7 +353,8 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
             public void onClick(View v) {
                 if (closeVote) {
                     closeReusltUi();
-                    mStateListener.onUpdateVoteFoldCount(String.valueOf(foldCount));
+                    if (!isPlayBack)
+                        mStateListener.onUpdateVoteFoldCount(String.valueOf(foldCount));
                 } else {
                     closeAnswerResult();
                     foldCount++;
@@ -527,8 +535,10 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
      * 更新分页数据
      */
     private void showVoteList(String gold, LinkedHashMap<String, Integer> map) {
-        llRewardInfo.setVisibility(View.VISIBLE);
-        tvGoldCount.setText("+" + gold);
+        if (isPlayBack) {
+            llRewardInfo.setVisibility(View.VISIBLE);
+            tvGoldCount.setText("+" + gold);
+        }
         if (voteViewList.size() == 1) {
             voteViewList.get(0).updateVote(map, resultData);
         } else if (voteViewList.size() == 2) {
@@ -593,11 +603,17 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
             public void onAnimationUpdate(ValueAnimator animation) {
                 if (animation.getAnimatedFraction() >= FRACTION_RECYCLERVIEW_IN && !answerListShowing) {
                     llRewardInfo.setVisibility(View.VISIBLE);
-                    if (!TextUtils.isEmpty(resultData))
-                        tvGoldCount.setText("+" + String.valueOf(gold));
-                    initVoteList();
-                    //直接显示结果页先显示缓存的长连接数据，防止进入页面推送数据不及时
-                    analysisVoteData(TcpConstants.VOTE_TYPE_DATA);
+                    if (isPlayBack) {
+                        initVoteList();
+                        //回放直接显示数据
+                        analysisVoteData(playBackVoteData);
+                    } else {
+                        if (!TextUtils.isEmpty(resultData))
+                            tvGoldCount.setText("+" + String.valueOf(gold));
+                        initVoteList();
+                        //直接显示结果页先显示缓存的长连接数据，防止进入页面推送数据不及时
+                        analysisVoteData(TcpConstants.VOTE_TYPE_DATA);
+                    }
                 }
                 if (animation.getAnimatedFraction() >= FRACTION_SHOW_CLOSEBTN && !closeBtnAdded) {
                     addCloseBtn();
@@ -664,6 +680,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         public void onMessage(short type, int operation, String msg) {
             if (type == TcpConstants.VOTE_TYPE) {
                 analysisVoteData(msg);
+                logger.e("voteresultData1:" + msg);
             }
         }
 

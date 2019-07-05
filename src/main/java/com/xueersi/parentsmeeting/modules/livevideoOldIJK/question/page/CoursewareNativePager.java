@@ -965,10 +965,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonObject1.put("stat", 1);
                     jsonObject1.put("data", jsonObject);
                     if(TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21,detailInfo.getArtType())){
+//                        String msg = jsonObject.optString("msg");
+//                        XESToastUtils.showToast(mContext, msg);
                         jsonObject1.put("answerData", userAnswerArray);
                         jsonObject1.put("optionTitle",optionTitle);
                         jsonObject1.put("isForce",isforce);
                         jsonObject1.put("gold", detailInfo.gold);
+                        jsonObject1.put("isPlayBack", isPlayBack);
                         onClose.onH5ResultClose(CoursewareNativePager.this,detailInfo);
                     }
                     ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);

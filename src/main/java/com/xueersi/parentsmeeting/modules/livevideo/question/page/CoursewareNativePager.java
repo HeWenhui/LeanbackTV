@@ -962,6 +962,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         jsonObject1.put("optionTitle",optionTitle);
                         jsonObject1.put("isForce",isforce);
                         jsonObject1.put("gold", detailInfo.gold);
+                        jsonObject1.put("isPlayBack", isPlayBack);
                         onClose.onH5ResultClose(CoursewareNativePager.this,detailInfo);
                     }
                     ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);

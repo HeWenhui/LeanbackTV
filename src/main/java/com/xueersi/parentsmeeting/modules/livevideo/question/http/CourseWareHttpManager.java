@@ -340,7 +340,7 @@ public class CourseWareHttpManager {
         });
     }
 
-    public void isSubmitH5Vote(final String userAnswer, final String testId, final String stuId, final int isPlayBack, final int isforce, final AbstractBusinessDataCallBack callBack) {
+    public void isSubmitH5Vote(final String userAnswer, final String testId, final String classId, final String stuId, final int isPlayBack, final int isforce, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("testId", "" + testId);
@@ -355,7 +355,7 @@ public class CourseWareHttpManager {
                     if (isSubmit) {
                         callBack.onDataSucess(responseEntity.getJsonObject());
                     } else {
-                        submitH5Vote(userAnswer, testId, stuId, isPlayBack, isforce, callBack);
+                        submitH5Vote(userAnswer, testId, classId, stuId, isPlayBack, isforce, callBack);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -376,7 +376,7 @@ public class CourseWareHttpManager {
         });
     }
 
-    public void submitH5Vote(String userAnswer, String testId, String stuId, int isPlayBack, final int isforce, final AbstractBusinessDataCallBack callBack) {
+    public void submitH5Vote(String userAnswer, String testId, String classId, String stuId, int isPlayBack, final int isforce, final AbstractBusinessDataCallBack callBack) {
         try {
             JSONArray jsonArray = new JSONArray(userAnswer);
             if (jsonArray.length() > 0) {
@@ -390,12 +390,13 @@ public class CourseWareHttpManager {
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("userAnswer", userAnswer);
         httpRequestParams.addBodyParam("testId", "" + testId);
-        if(isforce==1){
+        if (isforce == 1) {
             httpRequestParams.addBodyParam("forceSubmit", "" + false);
-        }else {
+        } else {
             httpRequestParams.addBodyParam("forceSubmit", "" + true);
         }
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
+        httpRequestParams.addBodyParam("classId", "" + classId);
         httpRequestParams.addBodyParam("stuId", "" + stuId);
         liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOTE, httpRequestParams, new HttpCallBack(false) {
             @Override
