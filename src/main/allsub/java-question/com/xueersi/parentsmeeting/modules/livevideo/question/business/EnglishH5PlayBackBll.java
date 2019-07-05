@@ -384,10 +384,10 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
     protected EnglishH5CoursewareHttp getHttp() {
         int isArts = liveBackBll.getIsArts();
-        if (isArts == LiveVideoSAConfig.ART_EN || (isArts == LiveVideoSAConfig.ART_SEC && liveBackBll.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY)) {
+        //if (isArts == LiveVideoSAConfig.ART_EN || (isArts == LiveVideoSAConfig.ART_SEC && liveBackBll.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY)) {
             return new EnglishH5CoursewareSecImpl();
-        }
-        return new EnglishH5CoursewareImpl();
+       // }
+        //return new EnglishH5CoursewareImpl();
     }
 
     public CourseWareHttpManager getCourseWareHttpManager() {
@@ -471,14 +471,23 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                     getCourseWareHttpManager().getCourseWareTests(detailInfo,liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
                             englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce, "0", callBack);
                 }
-            } else if (LiveVideoSAConfig.ART_SEC == liveBackBll.getIsArts()){
-                if (liveBackBll.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY && LiveQueConfig.CHI_COURESWARE_TYPE_SPEAKING_CHINESE.equals(detailInfo.englishH5Entity.getPackageAttr())){
-                    EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
-                    String classId = liveGetInfo.getStudentLiveInfo().getClassId();
-                    String[] res = getSrcType(englishH5Entity);
-                    getCourseWareHttpManager().getCourseWareTests(detailInfo,liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                            englishH5Entity.getReleasedPageInfos(), 1, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce, "0", callBack);
-                }
+            }
+//            else if (LiveVideoSAConfig.ART_SEC == liveBackBll.getIsArts()){
+//                if (liveBackBll.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY && LiveQueConfig.CHI_COURESWARE_TYPE_SPEAKING_CHINESE.equals(detailInfo.englishH5Entity.getPackageAttr())){
+//                    EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+//                    String classId = liveGetInfo.getStudentLiveInfo().getClassId();
+//                    String[] res = getSrcType(englishH5Entity);
+//                    getCourseWareHttpManager().getCourseWareTests(detailInfo,liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+//                            englishH5Entity.getReleasedPageInfos(), 1, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce, "0", callBack);
+//                }
+//            }
+            else {
+
+                EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+                String classId = liveGetInfo.getStudentLiveInfo().getClassId();
+                String[] res = getSrcType(englishH5Entity);
+                getCourseWareHttpManager().getCourseWareTests(detailInfo,liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                        englishH5Entity.getReleasedPageInfos(), 1, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce, "0", callBack);
             }
         }
 
