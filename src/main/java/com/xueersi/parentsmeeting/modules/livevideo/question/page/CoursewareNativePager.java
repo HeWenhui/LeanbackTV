@@ -423,7 +423,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     @Override
     public void close() {
-
+        onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
     }
 
     @Override

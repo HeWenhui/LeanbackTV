@@ -964,7 +964,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 //                }
                 if (LiveQueConfig.getSubmitMultiTestTypes().contains(detailInfo.getArtType())) {
                     getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
-                } else if (TextUtils.equals(com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
+                } else if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
                     getCourseWareHttpManager().isSubmitH5Vote("" + testInfos, detailInfo.id, mGetInfo.getStudentLiveInfo().getClassId(), mGetInfo.getStuId(), 1, isforce, callBack);
                 } else {
                     getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.getArtType(), mGetInfo.getStuId(), 1, isforce, callBack);
