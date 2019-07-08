@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.alibaba.fastjson.JSON;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
@@ -552,6 +553,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     private VideoQuestionEntity getPlayQuetion(int playPosition) {
         List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+        logger.e( "=====>lstVideoQuestion:" + JSON.toJSONString(lstVideoQuestion));
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
             return null;
         }
@@ -563,6 +565,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
             startTime = videoQuestionEntity.getvQuestionInsretTime();
             endTime = videoQuestionEntity.getvEndTime();
+
             // 红包只有开始时间
             if (LocalCourseConfig.CATEGORY_REDPACKET == videoQuestionEntity.getvCategory()) {
                 if (startTime == playPosition) {

@@ -959,6 +959,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()
                     || ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK == event.getType()) {
                 VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
+                if(detailInfo!=null)
                 if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
                     mDsipalyer = new VoteAnswerResultPager(mContext, event.getDataStr(), mGetInfo.getPattern(), this);
                     testId = detailInfo.id;

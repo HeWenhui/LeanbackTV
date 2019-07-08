@@ -15,7 +15,7 @@
     <ProgressBar
         android:id="@+id/pb_bar"
         android:layout_width="14dp"
-        android:layout_height="93dp"
+        android:layout_height="91dp"
         android:layout_gravity="center"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"

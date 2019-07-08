@@ -56,10 +56,10 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="300dp"
-            android:layout_height="132dp"
+            android:layout_height="130dp"
             android:layout_below="@id/ll_arts_answer_reslult_reward_info"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="13dp"></android.support.v4.view.ViewPager>
+            android:layout_marginTop="10dp"></android.support.v4.view.ViewPager>
 
         <ImageView
             android:id="@+id/iv_livevideo_vote_left"

@@ -526,7 +526,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
     }
 
     private void displayAnswerResult() {
-        if (isforce == 1) {
+        if (isforce == 1 && !isPlayBack) {
             resultAnimeView.updateBitmap("image_13", effectInfo.getBitMap(resultAnimeView));
         }
     }
@@ -632,7 +632,11 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 displayAnswerResult();
                 closeBtn.setImageResource(R.drawable.selector_live_enpk_shell_window_guanbi_btn);
                 tvClose.setVisibility(View.VISIBLE);
-                final AtomicInteger integer = new AtomicInteger(3);
+                int time = 3;
+                if(isPlayBack){
+                    time = 5;
+                }
+                final AtomicInteger integer = new AtomicInteger(time);
                 setCloseText(tvClose, integer);
                 tvClose.postDelayed(new Runnable() {
                     @Override
