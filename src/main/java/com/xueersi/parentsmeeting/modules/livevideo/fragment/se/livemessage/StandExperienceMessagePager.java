@@ -1113,7 +1113,7 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
                         addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"), jsonObject.getString("path"));
+                                .getString("msg"), jsonObject.optString("path",""));
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
