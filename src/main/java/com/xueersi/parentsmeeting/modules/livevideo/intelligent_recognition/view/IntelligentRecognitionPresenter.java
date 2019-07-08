@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Environment;
@@ -40,8 +39,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -123,39 +124,69 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
      * 开始语音测评
      */
     private void startRecordSound() {
-        String videoSavePath = mActivity.getDir("chinese_parterner", Context.MODE_PRIVATE).getPath() + File.separator + "sound.mp3";
-        SpeechParamEntity mParam = new SpeechParamEntity();
+//        String videoSavePath = mActivity.getDir("chinese_parterner", Context.MODE_PRIVATE).getPath() + File.separator + "sound.mp3";
+        String videoSavePath = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo";
+        final SpeechParamEntity mParam = new SpeechParamEntity();
         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+        File file = new File(videoSavePath, "sound.mp3");
+        logger.i(file.getPath() + " " + file.exists());
+        if (!file.exists()) {
+            logger.i(" file null or file not exists");
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+//            return;
+        }
         mParam.setLocalSavePath(videoSavePath);
         mParam.setMultRef(false);
+//        mParam.setLearning_stage("-1");
         mParam.setPcm(true);
+        mParam.setLearning_stage("-1");
+//        mParam.setEarly_return_sec("90");
+        mParam.setVad_pause_sec("3");
+        mParam.setVad_max_sec("30");
+//        mParam.setIsRct("1");
+//        mParam.setLearning_stage("-1");
+//        mParam.setEarly_return_sec("10");
+//        mParam.setVad_pause_sec("3");
+//        mParam.setVad_max_sec("30");
+//        mParam.setIsRct("1");
         String aiRecogStr = mViewModel.getRecordData().getAnswers();
-        if (TextUtils.isEmpty(aiRecogStr) && AppConfig.DEBUG) {
-            aiRecogStr = "are you ok";
-        }
+//        if (TextUtils.isEmpty(aiRecogStr) && AppConfig.DEBUG) {
+        aiRecogStr = "Are you ok";
+//        }
         mParam.setStrEvaluator(aiRecogStr);
-        mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
+        logger.i("strRecog:" + aiRecogStr);
+        Observable.just(true).delay(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
             @Override
-            public void onBeginOfSpeech() {
-                logger.i("speech begin");
-            }
+            public void accept(Boolean aBoolean) throws Exception {
+                mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
+                    @Override
+                    public void onBeginOfSpeech() {
+                        logger.i("speech begin");
+                    }
 
-            @Override
-            public void onResult(ResultEntity result) {
+                    @Override
+                    public void onResult(ResultEntity result) {
 //                logger.i("speech resultCurString:" + result.getCurString());
 //                logger.i("speech resultStatus:" + result.getStatus());
-                if (AppConfig.DEBUG) {
-                    logger.i("speech result = " + getResultString(result));
-                }
-                handleResult(result);
-            }
+                        if (AppConfig.DEBUG) {
+                            logger.i("speech result = " + getResultString(result));
+                        }
+                        handleResult(result);
+                    }
 
-            @Override
-            public void onVolumeUpdate(int volume) {
-                logger.i("speech volume:" + volume);
-                mViewModel.getVolume().setValue(volume);
+                    @Override
+                    public void onVolumeUpdate(int volume) {
+                        logger.i("speech volume:" + volume);
+                        mViewModel.getVolume().setValue(volume);
+                    }
+                });
             }
         });
+
     }
 
 //    private List<PhoneScore> phoneScores;
@@ -172,18 +203,18 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
             performPerfact();
         } else if (contScore >= 60 && pronScore >= 60) {
 //            performGood();
-            performPerfact();
+//            performPerfact();
         } else if (contScore >= 60 && pronScore < 60) {
             if (judgeSpeechStatus(resultEntity) == STATUS_1) {
 //                performRepeatSentence();
-                performPerfact();
+//                performPerfact();
             } else {
 //                performRepeatWord(resultEntity.getLstPhonemeScore());
-                performPerfact();
+//                performPerfact();
             }
         } else {
 //            performRepeatSentence();
-            performPerfact();
+//            performPerfact();
         }
     }
 
@@ -191,9 +222,10 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
     private void performRepeatSentence() {
         if (mViewModel.getIeResultData() == null) return;
         final Map<String, String> audioHashMap = mViewModel.getIeResultData().getValue().getAudioHashMap();
-        final String sentenceKey = mViewModel.getIeResultData().getValue().getSentence();
         if (audioHashMap == null)
             return;
+        final String sentenceKey = mViewModel.getIeResultData().getValue().getSentence();
+
         Observable.
                 just(sentenceKey).
                 filter(RxFilter.<String>filterNull()).
@@ -220,24 +252,23 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
 //            return urlAudio;
         if (mViewModel.getIeResultData() == null) return;
         Map<String, String> audioHashMap = mViewModel.getIeResultData().getValue().getAudioHashMap();
-//        Observable.
-//                just(audioHashMap).
-//                filter(new Predicate<Map<String, String>>() {
-//                    @Override
-//                    public boolean test(Map<String, String> stringStringMap) throws Exception {
-//                        return stringStringMap != null;
-//                    }
-//                }).
-//                flatMapIterable(new Function<Map<String, String>, Iterable<Map.Entry<String, String>>>() {
-//                    @Override
-//                    public Iterable<Map.Entry<String, String>> apply(Map<String, String> stringStringMap) throws Exception {
-//                        return stringStringMap.entrySet();
-//                    }
-//                }).
-//                filter(getRepeatWordPredicate(getFilterWord(phoneScores))).
-//                subscribe(getRepeatWordCon());
         if (audioHashMap == null)
             return;
+//        Observable.
+//                just(audioHashMap).
+//                filter(RxFilter.<Map<String, String>>filterNull()).
+//                flatMap(new Function<Map<String, String>, ObservableSource<?>>() {
+//                    @Override
+//                    public ObservableSource<?> apply(Map<String, String> stringStringMap) throws Exception {
+//                        return Observable.fromArray(stringStringMap);
+//                    }
+//                })
+//                flatMapIterable(new Function<Map<String, String>, Iterable<?>>() {
+//                    @Override
+//                    public Iterable<?> apply(Map<String, String> stringStringMap) throws Exception {
+//                        return stringStringMap.entrySet();
+//                    }
+//                })
         Observable.
                 fromIterable(audioHashMap.entrySet()).
                 filter(getRepeatWordPredicate(getFilterWord(phoneScores))).
@@ -327,45 +358,89 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
 
     /** 得到满分点赞 */
     private void performPerfact() {
+        logger.i("performPerfact");
+        String url = Environment.getExternalStorageDirectory() +
+                File.separator + "parentsmeeting" + File.separator + "livevideo" +
+                File.separator + "01_01_Well_done.mp3";
         Observable.
-                <Boolean>empty().
-                doOnNext(new Consumer<Boolean>() {
+                just(url).
+                map(new Function<String, File>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-//                        UnityCommandPlay.playFaceActionSingle(aiteacherInfoEntity.getCommand_content());
+                    public File apply(String s) throws Exception {
+                        return new File(s);
                     }
                 }).
-                subscribeOn(Schedulers.io()).
-                subscribe(new Consumer<Boolean>() {
+                filter(new Predicate<File>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
+                    public boolean test(File file) throws Exception {
+                        return file != null && file.exists();
+                    }
+                }).
+                delay(1, TimeUnit.SECONDS).
+                subscribe(new Consumer<File>() {
+                    @Override
+                    public void accept(File file) throws Exception {
                         if (mediaPlayer == null) {
                             mediaPlayer = new MediaPlayer();
                         }
-                        try {
-//            AssetFileDescriptor fd = mActivity.getAssets().openFd("01_01_Well_done.mp3");
-                            String url = Environment.getExternalStorageDirectory() +
-                                    File.separator + "parentsmeeting" + File.separator + "livevideo" +
-                                    File.separator + "01_01_Well_done.mp3";
-                            File file = new File(url);
-                            if (!file.exists()) {
-                                logger.e(url + "不存在");
-                                return;
-                            }
-//                            else {
-//                                logger.e(url + " @@@@@");
-//                            }
-//                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-//            String url = "sdcard/parentsmeeting/livevideo/01_01_Well_done.mp3";
-                            mediaPlayer.setDataSource(url);
-                            mediaPlayer.prepare();
-                            mediaPlayer.start();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            logger.e(e);
-                        }
+                        logger.i(file.getPath());
+                        mediaPlayer.setDataSource(file.getPath());
+                        mediaPlayer.prepare();
+                        mediaPlayer.start();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        logger.e(throwable.getStackTrace());
+                        throwable.printStackTrace();
                     }
                 });
+
+//        Observable.
+//                <Boolean>just(true).
+//                subscribeOn(AndroidSchedulers.mainThread()).
+//                doOnNext(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//                        logger.i("playAction");
+////                        UnityCommandPlay.playActionNow("A_YW_DOG_ZKZB2");
+//                    }
+//                }).
+//                observeOn(Schedulers.io()).
+//                subscribe(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//                        if (mediaPlayer == null) {
+//                            mediaPlayer = new MediaPlayer();
+//                        }
+////                        try {
+////            AssetFileDescriptor fd = mActivity.getAssets().openFd("01_01_Well_done.mp3");
+//                        String url = Environment.getExternalStorageDirectory() +
+//                                File.separator + "parentsmeeting" + File.separator + "livevideo" +
+//                                File.separator + "01_01_Well_done.mp3";
+//                        File file = new File(url);
+//                        if (!file.exists()) {
+//                            logger.e(url + "不存在");
+//                            return;
+//                        } else {
+//                            logger.i(url + " @@@@@");
+//                        }
+////                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+////            String url = "sdcard/parentsmeeting/livevideo/01_01_Well_done.mp3";
+//                        mediaPlayer.setDataSource(url);
+//                        mediaPlayer.prepare();
+//                        mediaPlayer.start();
+////                        } catch (Exception e) {
+////                            e.printStackTrace();
+////                            logger.e(e);
+////                        }
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        throwable.printStackTrace();
+//                    }
+//                });
     }
 
     /** 表现良好，双分都大于60 */

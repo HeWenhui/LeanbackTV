@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
@@ -914,9 +913,9 @@ public class CoursewarePreload {
                 isIP = true;
             }
             int tryCount = downTryCount.get();
-            logger.d("download zip fail trycount" + tryCount);
+            logger.d("download zip fail trycount" + tryCount + " listener Pointer:" + toString());
             if (tryCount < ips.size()) {
-                logger.i(ips.size() + "");
+                logger.i("“ips.size = " + ips.size() + "");
                 int index = cdns.get(tryCount % cdnLength.get()).indexOf("/") + 2;
                 DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mMorecachein.getAbsolutePath(), mFileName + ".temp", md5);
                 logger.d("now url path:  " + ip + url + "   file name:" + mFileName + ".zip");

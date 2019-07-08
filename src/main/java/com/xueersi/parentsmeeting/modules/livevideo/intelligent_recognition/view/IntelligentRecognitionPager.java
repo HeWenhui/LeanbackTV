@@ -27,11 +27,9 @@ import com.xueersi.ui.widget.WaveView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
@@ -124,14 +122,12 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
     private boolean waveViewinit = false;
 
     /** 延迟初始化WaveView */
-    private Observable delayWaveView() {
-        return Observable.
-                <Boolean>empty().
-                delay(400, TimeUnit.MILLISECONDS).
-                observeOn(AndroidSchedulers.mainThread());
+//    private Observable delayWaveView() {
+//        return Observable.
+//                <Boolean>empty().
+//                delay(400, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread());
 //                subscribe(getConsumer());
-    }
-
+//    }
     private Consumer getConsumer() {
         return new Consumer<Boolean>() {
             @Override
@@ -189,7 +185,8 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
                     @Override
                     public void onChanged(@Nullable Integer integer) {
                         if (waveViewinit) {
-                            waveView.setWaveAmplitude((float) (integer / 15.0));
+                            logger.i("wave Volume:" + integer);
+                            waveView.setWaveAmplitude(integer / 15.0f);
                         }
                     }
                 });
@@ -212,22 +209,15 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
             waveLottie.addAnimatorListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    logger.i("waveLottie end");
+                    logger.i("waveLottie end,waveView show");
                     super.onAnimationEnd(animation);
                     if (waveView.getVisibility() != View.VISIBLE) {
                         waveView.setVisibility(View.VISIBLE);
                     }
                     mPresenter.startSpeech();
                     Observable.
-                            <Boolean>empty().
-                            defer(new Callable<ObservableSource<? extends Boolean>>() {
-                                @Override
-                                public ObservableSource<? extends Boolean> call() throws Exception {
-                                    return delayWaveView();
-                                }
-                            }).
-                            delay(1, TimeUnit.SECONDS).
-                            observeOn(AndroidSchedulers.mainThread()).
+                            just(true).
+                            delay(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).
                             subscribe(getConsumer());
                 }
             });

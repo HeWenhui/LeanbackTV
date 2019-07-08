@@ -4,12 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!--Ready GO!欢迎页面-->
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_view_livevideo_intelligent_recognition_ready_go"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/iv_livevideo_intelligent_recognition_background_textview"
@@ -61,11 +55,13 @@
 
     <com.xueersi.ui.widget.WaveView
         android:id="@+id/wv_livevideo_intelligent_recognition_energy_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@+id/lottie_view_livevideo_intelligent_recognition_waveview_open_start"
-        app:layout_constraintRight_toRightOf="@+id/lottie_view_livevideo_intelligent_recognition_waveview_open_start"
-        app:layout_constraintTop_toTopOf="@+id/lottie_view_livevideo_intelligent_recognition_waveview_open_start" />
+        android:layout_width="230dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="230dp"
+
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_intelligent_recognition_background_textview" />
     <!--显示得分动画-->
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_view_livevideo_intelligent_recognition_get_score"
@@ -75,4 +71,14 @@
         app:lottie_fileName="intelligent_recognition_study_v2/english/get_score/data.json"
         app:lottie_imageAssetsFolder="intelligent_recognition_study_v2/english/get_score/images"
         app:lottie_loop="true" />
+
+    <!--Ready GO!欢迎页面-->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_view_livevideo_intelligent_recognition_ready_go"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:lottie_fileName="intelligent_recognition_study_v2/english/ready_go/data.json"
+        app:lottie_imageAssetsFolder="intelligent_recognition_study_v2/english/ready_go/images" />
+
 </android.support.constraint.ConstraintLayout>

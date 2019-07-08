@@ -9,12 +9,19 @@ import android.widget.FrameLayout;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.unity3d.player.UnityPlayer;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.lib.unity3d.UnityCommandPlay;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
+
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 
 /**
  * 英语语音测评使用的Activity
@@ -36,6 +43,28 @@ public class IntelligentRecognitionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intelligent_recognition);
         addUnity();
         addFragment();
+        handleUnity3D();
+    }
+
+    private void handleUnity3D() {
+        if (AppConfig.DEBUG) {
+            Observable.
+                    <Boolean>just(true).
+                    delay(5, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).
+                    subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean aBoolean) throws Exception {
+                            logger.i("UnityCommandPlay.playBodyActionSingle");
+                            UnityCommandPlay.playBodyActionSingle(IntelligentParam.A_MON_RH_CL);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            logger.e(throwable.getStackTrace());
+                            throwable.printStackTrace();
+                        }
+                    });
+        }
     }
 
     private void addUnityView() {
@@ -81,6 +110,7 @@ public class IntelligentRecognitionActivity extends AppCompatActivity {
 
 
     /**
+     * {@link #ParternerConfig}
      * 该方法是unity返回回调不要删除
      */
     public void onLoadedEnd(String model) {
@@ -99,6 +129,10 @@ public class IntelligentRecognitionActivity extends AppCompatActivity {
         UnityCommandPlay.setScreenOrientation("LandscapeRight/false");
         UnityCommandPlay.setScreenOrientation("Portrait/false");
         UnityCommandPlay.setScreenOrientation("PortraitUpsideDown/false");
+
+        logger.i("onLoadedEnd");
+
+
     }
 
     @Override

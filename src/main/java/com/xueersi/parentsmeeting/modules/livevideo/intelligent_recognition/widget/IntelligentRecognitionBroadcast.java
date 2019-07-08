@@ -21,9 +21,9 @@ public class IntelligentRecognitionBroadcast extends BroadcastReceiver {
 
     private IRCReceiver ircReceiver;
 
-    public IRCReceiver getIrcReceiver() {
-        return ircReceiver;
-    }
+//    public IRCReceiver getIrcReceiver() {
+//        return ircReceiver;
+//    }
 
     public void setIrcReceiver(IRCReceiver ircReceiver) {
         this.ircReceiver = ircReceiver;
