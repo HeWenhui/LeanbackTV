@@ -901,10 +901,6 @@ public class NewIRCMessage implements IIRCMessage {
     }
 
 
-    @Override
-    public void setConnectService(IConnectService connectService) {
-    }
-
     //模式切换
     @Override
     public void modeChange(String mode) {

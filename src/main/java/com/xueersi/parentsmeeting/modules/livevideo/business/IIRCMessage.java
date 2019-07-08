@@ -10,7 +10,6 @@ public interface IIRCMessage {
 
     String getNickname();
 
-
     void sendNotice(String notice);
 
     void sendNotice(String target, String notice);
@@ -22,8 +21,6 @@ public interface IIRCMessage {
     void destory();
 
     void setCallback(IRCCallback ircCallback);
-
-    void setConnectService(IConnectService connectService);
 
     void modeChange(String mode);
 
