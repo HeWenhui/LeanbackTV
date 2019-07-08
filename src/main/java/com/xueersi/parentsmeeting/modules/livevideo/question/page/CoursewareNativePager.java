@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
@@ -971,11 +972,34 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         jsonObject1.put("optionTitle", optionTitle);
                         jsonObject1.put("isForce", isforce);
                         jsonObject1.put("isPlayBack", isPlayBack);
-                        onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
                     }
                     ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
                     artsAnswerResultEvent.setDetailInfo(detailInfo);
                     artsAnswerResultEvent.setIspreload(ispreload);
+                    if (isPlayBack) {
+                        ViewGroup group = (ViewGroup) mView.getParent();
+                        artsAnswerResultEvent.setAnswerResultStateListener(new AnswerResultStateListener() {
+                            @Override
+                            public void onCompeletShow() {
+
+                            }
+
+                            @Override
+                            public void onAutoClose(BasePager basePager) {
+                                onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                            }
+
+                            @Override
+                            public void onCloseByUser() {
+                                onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                            }
+
+                            @Override
+                            public void onUpdateVoteFoldCount(String count) {
+
+                            }
+                        });
+                    }
                     EventBus.getDefault().post(artsAnswerResultEvent);
                 } catch (JSONException e) {
                     e.printStackTrace();
