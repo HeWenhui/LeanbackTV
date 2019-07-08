@@ -20,6 +20,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:indeterminateOnly="false"
+        android:layout_marginTop="2dp"
         android:max="100"
         android:progressDrawable="@drawable/shape_live_votesubject_prog_max" />
 

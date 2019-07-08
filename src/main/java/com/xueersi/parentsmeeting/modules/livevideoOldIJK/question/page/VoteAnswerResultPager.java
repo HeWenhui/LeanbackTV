@@ -279,7 +279,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
      * 获取查看按钮底部距离
      */
     public int getBottomMargin() {
-        return (LiveVideoPoint.getInstance().screenHeight - ((LiveVideoPoint.getInstance().x3 - LiveVideoPoint.getInstance().x2) * 9 / 16)) / 2 + LiveVideoPoint.getInstance().screenHeight - LiveVideoPoint.getInstance().y4;
+        return (LiveVideoPoint.getInstance().screenHeight - ((LiveVideoPoint.getInstance().x3 - LiveVideoPoint.getInstance().x2) * 9 / 16)) / 2;
     }
 
     @Override
@@ -641,8 +641,9 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
                         if (count == 0) {
                             answerListShowing = false;
                             if (mStateListener != null) {
+                                if (!isPlayBack)
+                                    mStateListener.onUpdateVoteFoldCount(String.valueOf(foldCount));
                                 mStateListener.onAutoClose(VoteAnswerResultPager.this);
-                                mStateListener.onUpdateVoteFoldCount(String.valueOf(foldCount));
                             } else {
                                 ViewGroup group = (ViewGroup) mView.getParent();
                                 group.removeView(mView);
