@@ -96,9 +96,9 @@
                         android:background="@drawable/livevideo_enteampk_xiaomubiao_tips_bg_nor"
                         android:gravity="center_horizontal|bottom"
                         android:paddingBottom="1dp"
+                        android:text="0%"
                         android:textColor="@color/white"
-                        android:textSize="9dp"
-                        android:text="0%" />
+                        android:textSize="9dp" />
 
                 </RelativeLayout>
             </LinearLayout>
@@ -111,14 +111,15 @@
                 android:orientation="vertical">
 
                 <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@+id/tv_livevideo_betterme_completetarget_level_introduction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:drawableRight="@drawable/app_xiaomubiao_shellwindow_benchangxiaomubiao_icon_nor"
                     android:drawablePadding="6dp"
+                    android:text="段位升级"
                     android:textColor="#ffe65c00"
-                    android:textSize="13dp"
-                    android:text="段位升级" />
+                    android:textSize="13dp" />
 
                 <ImageView
                     android:layout_width="132dp"

@@ -894,24 +894,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     }
 
     /**
-     * 获取学生这节课小目标
-     */
-    public void getBetterMe() {
-        String liveId = mLiveBll.getLiveId();
-        String courseId = mLiveBll.getCourseId();
-        getHttpManager().getBetterMe(liveId, courseId, new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                logger.i("getBetterMe:onPmSuccess():json=" + responseEntity.getJsonObject());
-                BetterMeEntity betterMeEntity = getHttpResponseParser().parseBetterMeInfo(responseEntity);
-                if (betterMeEntity != null) {
-                    betterMeInteractAction.onReceiveBetterMe(betterMeEntity);
-                }
-            }
-        });
-    }
-
-    /**
      * 实时获取学生目标完成度
      */
     public void getStuAimRealTimeVal() {

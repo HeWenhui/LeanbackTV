@@ -1,22 +1,30 @@
 package com.xueersi.parentsmeeting.modules.livevideo.betterme.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.airbnb.lottie.ImageAssetDelegate;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.lottie.BubbleLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeCompleteTargetPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeIntroductionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeLevelDisplayPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeReceiveTargetPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 
 /**
  * 英语小目标 view层
@@ -51,7 +59,7 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
     }
 
     /**
-     * 小目标介绍
+     * 小目标介绍弹窗
      */
     @Override
     public void showIntroductionPager() {
@@ -69,7 +77,7 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
     }
 
     /**
-     * 段位展示
+     * 段位展示弹窗
      */
     @Override
     public void showLevelDisplayPager() {
@@ -81,12 +89,13 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
             }
         }
         currentPager.getRootView().setVisibility(View.GONE);
-        rlBetterMeContent.addView(new BetterMeLevelDisplayPager(mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+        rlBetterMeContent.addView(new BetterMeLevelDisplayPager(mContext, this).getRootView(), new ViewGroup
+                .LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     /**
-     * 收到本场小目标
+     * 收到本场小目标弹窗
      */
     @Override
     public void showReceiveTargetPager() {
@@ -104,7 +113,7 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
     }
 
     /**
-     * 完成本场小目标
+     * 完成本场小目标弹窗
      */
     @Override
     public void showCompleteTargetPager(StuAimResultEntity stuAimResultEntity) {
@@ -118,6 +127,57 @@ public class BetterMeViewImp implements BetterMeContract.BetterMeView, OnBettePa
         currentPager = new BetterMeCompleteTargetPager(stuAimResultEntity, mContext, this);
         rlBetterMeContent.addView(currentPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    @Override
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
+
+    }
+
+    private void showUpdateBubble(String current, String target, boolean increasing) {
+    }
+
+    /**
+     * 本场小目标气泡
+     */
+    private void showTargetBubble(String text) {
+        if (rlBetterMeContent == null) {
+            rlBetterMeContent = new RelativeLayout(mContext);
+            if (mRootView != null) {
+                mRootView.addView(rlBetterMeContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+        }
+
+        final LottieEffectInfo bubbleEffectInfo = new BubbleLottieEffectInfo(mContext, text);
+        final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return bubbleEffectInfo.fetchBitmapFromAssets(
+                        lottieAnimationView,
+                        lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(),
+                        lottieImageAsset.getWidth(),
+                        lottieImageAsset.getHeight(),
+                        mContext);
+            }
+        };
+        lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext), "bubble");
+        lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
+        lottieAnimationView.useHardwareAcceleration(true);
+        lottieAnimationView.playAnimation();
+
+        LiveVideoPoint point = LiveVideoPoint.getInstance();
+        int bottomMargin = point.screenHeight - point.y3;
+        int rightMargin = point.screenWidth - point.x4;
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        layoutParams.bottomMargin = bottomMargin;
+        layoutParams.rightMargin = rightMargin;
+        rlBetterMeContent.addView(lottieAnimationView, layoutParams);
     }
 
     @Override

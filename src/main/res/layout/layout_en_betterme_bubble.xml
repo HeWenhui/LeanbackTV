@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_livevideo_en_betterme_bubble_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/pc_livevideo_enteampk_benchangchengjiu_tips_bg_nor"
+    android:gravity="center"
+    android:includeFontPadding="false"
+    android:text="本场目标: 开口市场达到12:56"
+    android:textColor="#009CE5"
+    android:paddingBottom="5dp"
+    android:textSize="9dp">
+
+</com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView>
