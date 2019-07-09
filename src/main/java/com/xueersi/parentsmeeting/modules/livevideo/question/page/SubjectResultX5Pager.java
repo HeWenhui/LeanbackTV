@@ -17,6 +17,7 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.logerhelper.LogerTag;
@@ -117,7 +118,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
 //        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName;
         if(LiveVideoConfig.isNewArts){
-            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId + "&token=" + AppBll.getInstance().getUserToken();
+            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId + "&token=" + UserBll.getInstance().getTalToken();
 //            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId;
             Log.e("Duncan","examUrl:" + examUrl);
         } else {

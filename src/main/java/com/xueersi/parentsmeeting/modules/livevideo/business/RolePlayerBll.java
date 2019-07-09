@@ -80,7 +80,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 连接地址
      */
     private String webSocketUrl = "ws://wsarts.xueersi" +
-            ".com/roleplay/index?userId=%1$s&role=1&cookie=%2$s&liveId=%3$s&xes_rfh=%4$s";
+            ".com/roleplay/index?userId=%1$s&role=1&cookie=%2$s&liveId=%3$s";
 
     /**
      * RolePlayer数据实体
@@ -376,8 +376,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }
 
         mWebSocket = new WebSocketConn();
-        webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), AppBll
-                .getInstance().getUserToken(), mLiveId, AppBll.getInstance().getUserRfh());
+        webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), UserBll.getInstance().getTalToken(), mLiveId);
         //webSocketUrl = String.format(webSocketUrl, "1237", "1111111", "1234");
         logger.i( "websocket:" + webSocketUrl);
         mWebSocket.connect(webSocketUrl, new WebSocketConn.WebSocketCallBack() {

@@ -69,14 +69,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        String token = AppBll.getInstance().getUserToken();
+        String token = UserBll.getInstance().getTalToken();
         //如果没有token，只能重新点击进入了
         if (StringUtils.isEmpty(token)) {
             XESToastUtils.showToast(this, "登录信息失效，重新登录");
             StableLogHashMap logHashMap = new StableLogHashMap();
-            String rfh = AppBll.getInstance().getUserRfh();
-            logHashMap.put("token", "" + token);
-            logHashMap.put("rfh", "" + rfh);
             logHashMap.put("create_times", "" + CREATE_TIMES);
             //距离进程创建的时间
             logHashMap.put("app_time", "" + (System.currentTimeMillis() - UmsConstants.PROCRESS_CREATE_TIME));
@@ -99,9 +96,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
         CREATE_TIMES++;
 
         mDataLoadEntity = new DataLoadEntity(this);
-        if(LiveVideoConfig.assetsDownloadTag){
+        if (LiveVideoConfig.assetsDownloadTag) {
             loadAssertsResource();
-        }else{
+        } else {
             mDataLoadEntity.beginLoading();
             DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
             initData();
@@ -281,7 +278,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                if (mGetInfo.getPattern() == 2) {
 //                    StandLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle, -1);
 //                } else {
-//                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+//                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo
+//                    (LiveVideoLoadActivity.this, bundle);
 //                }
                     if (1 == mGetInfo.getIsEnglish()) {
                         gotoEnglish(bundle);
@@ -323,7 +321,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 return true;
             }
         }
-        String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
+        String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "",
+                ShareDataManager.SHAREDATA_USER);
         if (liveIds.contains(",")) {
             String[] preLoadLiveId = liveIds.split(",");
             for (String tempPreLoadLiveId : preLoadLiveId) {
@@ -407,9 +406,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     public void onDeny(String permission, int position) {
                         logger.i("onDeny");
 //                        if (MediaPlayer.getIsNewIJK()) {
-//                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+//                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo
+//                            (LiveVideoLoadActivity.this, bundle);
 //                        } else {
-//                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+//                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo
+//                            (LiveVideoLoadActivity.this, bundle);
 //                        }
 //                        finish();
                     }
@@ -451,7 +452,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
             if (MediaPlayer.getIsNewIJK()) {
                 intent = new Intent(context, DeviceDetectionActivity.class);
             } else {
-                intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
+                intent = new Intent(context,
+                        com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
             }
             context.startActivity(intent);
             return;
@@ -461,7 +463,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
         if (MediaPlayer.getIsNewIJK()) {
             intent = new Intent(context, LiveVideoLoadActivity.class);
         } else {
-            intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.class);
+            intent = new Intent(context,
+                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.class);
         }
         intent.putExtras(bundle);
         context.startActivityForResult(intent, requestCode);

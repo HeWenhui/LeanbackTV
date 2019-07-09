@@ -160,7 +160,7 @@ public class TcpDispatch {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("uid", stuId);
                 jsonObject.put("role", 1);
-                jsonObject.put("xes_rfh", xes_rfh);
+                jsonObject.put("tal_token", xes_rfh);
                 jsonObject.put("live_id", live_id);
                 jsonObject.put("class_id", class_id);
                 jsonObject.put("device_id", "1");

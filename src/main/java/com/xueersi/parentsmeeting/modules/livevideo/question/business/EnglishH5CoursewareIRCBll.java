@@ -610,8 +610,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
                 .getStuId())
-                .append("&xesrfh=").append(AppBll.getInstance().getUserRfh())
-                .append("&cookie=").append(AppBll.getInstance().getUserToken())
+                .append("&cookie=").append(UserBll.getInstance().getTalToken())
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
         return sb.toString();

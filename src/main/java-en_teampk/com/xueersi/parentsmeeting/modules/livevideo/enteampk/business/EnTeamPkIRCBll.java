@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
@@ -246,7 +247,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (mInteractiveTeam != null) {
                 iid = mInteractiveTeam.getInteractive_team_id();
             }
-            tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), AppBll.getInstance().getUserRfh(), mGetInfo.getId(), classInt + "", -1, pid, iid, "");
+            tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), UserBll.getInstance().getTalToken(), mGetInfo.getId(), classInt + "", -1, pid, iid, "");
             tcpDispatch.setOnTcpConnects(onTcpConnects);
             tcpDispatch.setAddresses(addresses);
             tcpDispatch.registTcpMessageAction(new TeamMessageAction());

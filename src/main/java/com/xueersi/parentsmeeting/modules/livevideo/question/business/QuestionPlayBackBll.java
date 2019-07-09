@@ -650,8 +650,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         sb.append(url).append("?liveId=").append(mVideoEntity.getLiveId())
                 .append("&testId=").append(id).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&stuId=").append(UserBll.getInstance().getMyUserInfoEntity().getStuId())
-                .append("&xesrfh=").append(AppBll.getInstance().getUserRfh())
-                .append("&cookie=").append(AppBll.getInstance().getUserToken());
+                .append("&cookie=").append(UserBll.getInstance().getTalToken());
         return sb.toString();
     }
 
@@ -679,8 +678,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         sb.append(new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_ARTS_H5_URL).append("?liveId=").append(mVideoEntity.getLiveId())
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append("2")
                 .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&stuId=").append(UserBll.getInstance().getMyUserInfoEntity().getStuId())
-                .append("&xesrfh=").append(AppBll.getInstance().getUserRfh())
-                .append("&cookie=").append(AppBll.getInstance().getUserToken())
+                .append("&cookie=").append(UserBll.getInstance().getTalToken())
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
         return sb.toString();
