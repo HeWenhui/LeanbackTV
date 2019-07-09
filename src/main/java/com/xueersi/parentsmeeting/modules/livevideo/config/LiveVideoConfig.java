@@ -351,6 +351,7 @@ public class LiveVideoConfig {
     /** 讲座直播广告Id */
     public static String LECTUREADID;
 
+    @Deprecated
     public static Boolean isNewEnglishH5 = false;
     /** 一题多发发题和收题的标志 */
     public static Boolean isSend = false;

@@ -298,12 +298,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
 //                    }
 //                    EventBus.getDefault().post(event);
 //                }
-
-                if (englishH5Entity.getNewEnglishH5()) {
-                    LiveVideoConfig.isNewEnglishH5 = true;
-                } else {
-                    LiveVideoConfig.isNewEnglishH5 = false;
-                }
                 preLoad.onStop();
             }
         });
