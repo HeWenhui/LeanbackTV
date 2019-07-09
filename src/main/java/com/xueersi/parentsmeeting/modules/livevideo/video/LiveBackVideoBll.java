@@ -108,6 +108,28 @@ public class LiveBackVideoBll {
         liveBackPlayVideoFragment.changePlayLive(pos, MediaPlayer.VIDEO_PROTOCOL_MP4);
     }
 
+    /** 切换到下一条线路 */
+    public void changeNextLine() {
+        this.nowPos++;
+        //当前线路小于总线路数
+        if (this.nowPos < totalRouteNum) {
+            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        } else {
+            if (totalRouteNum != 0) {
+                this.nowPos = 0;
+                changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            } else {
+                playNewVideo();
+            }
+        }
+    }
+
+    private void changePlayLive(int pos, int protol) {
+        if (liveBackPlayVideoFragment != null) {
+            liveBackPlayVideoFragment.changePlayLive(pos, protol);
+        }
+    }
+
     /**
      * 播放新的视频
      */
@@ -144,7 +166,15 @@ public class LiveBackVideoBll {
             return;
         }
         if (vPlayer != null && mUri != null) {
-            ShareDataManager.getInstance().put(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart,
+            String videoPath;
+            String url = mVideoEntity.getVideoPath();
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+
+            ShareDataManager.getInstance().put(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart,
                     ShareDataManager.SHAREDATA_USER);
         }
     }
@@ -179,11 +209,21 @@ public class LiveBackVideoBll {
         }
     }
 
+    private int nowPos = 0;
+    private int totalRouteNum = 0;
+
     public VPlayerCallBack.VPlayerListener getPlayListener() {
         return mPlayListener;
     }
 
     private VPlayerCallBack.VPlayerListener mPlayListener = new VPlayerCallBack.SimpleVPlayerListener() {
+
+        @Override
+        public void getPSServerList(int cur, int total, boolean modeChange) {
+            super.getPSServerList(cur, total, modeChange);
+            nowPos = cur;
+            totalRouteNum = total;
+        }
 
         @Override
         public void onOpenFailed(int arg1, int arg2) {

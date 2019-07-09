@@ -338,7 +338,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case OPEN_FILE:
-                    // 打开新的视频时长统计初始化
+                    // 打c开新的视频时长统计初始化
                     // 准备开始播放指定视频
                     synchronized (mOpenLock) {
                         if (!mOpened.get() && vPlayer != null) {

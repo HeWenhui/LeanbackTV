@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
@@ -64,6 +65,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5PlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -158,7 +164,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     LinearLayout llUserHeadImage;
     /** 全身直播 头像 */
     CircleImageView civUserHeadImage;
-
+    boolean isTutorVideo = false;
+    boolean isNetWorkEnable = false;
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
@@ -190,9 +197,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
         if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_TUTOR) {
             mVideoEntity = mVideoTutorEntity;
+            isTutorVideo = true;
 
         } else {
             mVideoEntity = mVideoMainEntity;
+            isTutorVideo = false;
         }
 
         if (mVideoEntity == null) {
@@ -488,7 +497,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 @Override
                 public boolean onPreDraw() {
                     activity.getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
-                    if (AppBll.getInstance(activity).isNetWorkAlert()) {
+                    if (AppBll.getInstance(activity).isNetWorkAlert() || isNetWorkEnable) {
                         // 互动题播放地址
                         AppBll.getInstance(activity.getApplication());
                         playNewVideo();
@@ -970,7 +979,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             videoPlayStatus = MediaPlayer.VIDEO_TEACHER_TUTOR;
             mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER,
                     MediaPlayer.VIDEO_TEACHER_TUTOR, "");
-
+            isNetWorkEnable = true;
             startNewVideo();
             return;
         }

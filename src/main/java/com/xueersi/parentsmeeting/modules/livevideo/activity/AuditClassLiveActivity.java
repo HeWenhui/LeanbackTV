@@ -759,7 +759,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         }
     };
 
-    private void changeNextLine() {
+    protected void changeNextLine() {
         this.nowPos++;
         if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
             //初始化
