@@ -221,6 +221,7 @@ public class LiveGetInfo {
      */
     private String mode = LiveTopic.MODE_TRANING;
     private TotalOpeningLength totalOpeningLength;
+    private EnglishBetterMe englishBetterMe = new EnglishBetterMe();
     private EnglishPk englishPk = new EnglishPk();
     private EnPkEnergy enpkEnergy = new EnPkEnergy();
     /**
@@ -1036,6 +1037,14 @@ public class LiveGetInfo {
         this.totalOpeningLength = totalOpeningLength;
     }
 
+    public EnglishBetterMe getEnglishBetterMe() {
+        return englishBetterMe;
+    }
+
+    public void setEnglishBetterMe(EnglishBetterMe englishBetterMe) {
+        this.englishBetterMe = englishBetterMe;
+    }
+
     public EnglishPk getEnglishPk() {
         return englishPk;
     }
@@ -1506,6 +1515,15 @@ public class LiveGetInfo {
         public String eTeacherId;
         public String eClassId;
         public String fakePlanId;
+    }
+
+    public static class EnglishBetterMe {
+        public boolean isArriveLate;
+        public boolean isUserBetterMe;
+        public String segment;
+        public String segmentType;
+        public String star;
+        public String aimNumber;
     }
 
     /**

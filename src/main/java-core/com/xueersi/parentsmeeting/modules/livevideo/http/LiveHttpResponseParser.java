@@ -259,6 +259,15 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setSmallEnglish(false);
             LiveVideoConfig.isSmallChinese = false;
         }
+        //英语小目标
+        LiveGetInfo.EnglishBetterMe betterMe = getInfo.getEnglishBetterMe();
+        betterMe.isArriveLate = "1".equals(data.optString("isArriveLate"));
+        betterMe.isUserBetterMe = "1".equals(data.optString("isUserBetterMe"));
+        betterMe.segment = data.optString("segment");
+        betterMe.segmentType = data.optString("segmentType");
+        betterMe.star = data.optString("star");
+        betterMe.aimNumber = data.optString("aimNumber");
+
         JSONObject englishPkObj = data.optJSONObject("englishPk");
         if (englishPkObj != null) {
             LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
@@ -2056,11 +2065,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
         info.setIsGroupGameCourseWare(data.optInt("isGroupGameCourseWare", -1));
         info.setSummerCourseWareSize(data.optString("summerCourseWareSize"));
-        info.setArriveLate("1".equals(data.optString("isArriveLate")));
-        info.setUseBetterMe("1".equals(data.optString("isUseBetterMe")));
-        info.setSegment(data.optString("segment"));
-        info.setSegmentType(data.optString("segmentType"));
-        info.setStar(data.optString("star"));
         UmsAgentTrayPreference.getInstance().put(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, info.getSummerCourseWareSize());
         return info;
     }
