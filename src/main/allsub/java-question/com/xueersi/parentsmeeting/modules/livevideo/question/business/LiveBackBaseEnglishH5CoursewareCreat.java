@@ -122,6 +122,9 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
 
     @Override
     public BaseEnglishH5CoursewarePager creat(Context context, VideoQuestionLiveEntity videoQuestionH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose, String mVSectionID) {
+
+        wrapOnH5ResultClose.setOnH5ResultClose(onH5ResultClose);
+        wrapOnH5ResultClose.setVideoQuestionH5Entity(videoQuestionH5Entity);
         if (videoQuestionH5Entity.isTUtor()) {
             setArts(LiveVideoSAConfig.ART_SEC);
         }
