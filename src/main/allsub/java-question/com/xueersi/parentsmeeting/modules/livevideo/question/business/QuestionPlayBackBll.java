@@ -298,7 +298,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
-                        videoQuestionLiveEntity.setPlayBack(true);
+                        videoQuestionLiveEntity.setLive(false);
                         if (questiongtype.contains(videoQuestionLiveEntity.type)) {
                             EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTIONS_SHOW, videoQuestionLiveEntity));
                             questionBll.showQuestion(videoQuestionLiveEntity);

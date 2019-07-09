@@ -92,15 +92,6 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     /** 辅导态 */
     private boolean isTUtor = false;
 
-    /** 是不是回放 */
-    private boolean isPlayBack;
-    public boolean isPlayBack() {
-        return isPlayBack;
-    }
-
-    public void setPlayBack(boolean playBack) {
-        isPlayBack = playBack;
-    }
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
     }
