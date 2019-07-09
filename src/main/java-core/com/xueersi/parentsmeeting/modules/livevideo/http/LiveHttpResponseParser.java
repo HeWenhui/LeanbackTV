@@ -1990,7 +1990,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 entity.setCompetitorResultInfo(resultInfo);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.d("parseStuPkResult",e);
             MobAgent.httpResponseParserError(TAG, "parseStuPkResult", e.getMessage());
         }
         return entity;

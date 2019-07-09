@@ -111,11 +111,12 @@ public class PrimaryKuangjiaImageView extends ImageView {
 //            lp.height = bitmap.getHeight();
                 float radio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
                 LiveVideoPoint point = LiveVideoPoint.getInstance();
-                float viewRadio = (float) point.screenWidth / (float) point.screenHeight;
+                int screenHeight = point.screenHeight - (lp.topMargin * 2);
+                float viewRadio = (float) point.screenWidth / (float) screenHeight;
                 int width;
                 int height;
                 if (viewRadio > radio) {
-                    height = point.screenHeight;
+                    height = screenHeight;
                     width = (int) ((float) height / (float) bitmap.getHeight() * (float) bitmap.getWidth());
                     if (lp.width != width || lp.height != height) {
                         lp.width = width;

@@ -4,11 +4,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
     <RelativeLayout
         android:id="@id/rl_teampk_pkstate_container_2"
         android:layout_width="219dp"
         android:layout_height="25dp"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/fl_live_halfbody_coin_container">
 
         <ImageView
@@ -77,11 +77,11 @@
             android:textSize="12dp" />
     </RelativeLayout>
 
-
     <FrameLayout
         android:id="@id/fl_live_halfbody_coin_container"
         android:layout_width="76dp"
         android:layout_height="25dp"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="9dp">
 
@@ -110,7 +110,6 @@
             android:textSize="14dp" />
     </FrameLayout>
 
-
     <ImageView
         android:id="@id/iv_live_halfbody_pk_state"
         android:layout_width="41dp"
@@ -129,7 +128,7 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/rl_teampk_pkstate_container_2"
         android:background="@drawable/bg_live_halfbody_energy_contribution"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_live_halfbody_energy_contribution"
@@ -156,6 +155,5 @@
             android:src="@drawable/live_halfbody_pk_star" />
 
     </RelativeLayout>
-
 
 </RelativeLayout>

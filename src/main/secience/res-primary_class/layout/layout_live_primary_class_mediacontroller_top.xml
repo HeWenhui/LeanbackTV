@@ -8,7 +8,8 @@
         android:id="@id/rl_video_mediacontroller_info_panel"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:background="@drawable/shape_primary_media_ctrl_back">
         <!-- 退出按钮 （横屏的时候变成竖屏，竖屏的时候退出当前Activity） -->
         <ImageView
             android:id="@id/iv_video_mediacontroller_back"

@@ -114,7 +114,6 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     public void doRenderRemoteUi(SurfaceView surfaceV) {
         super.doRenderRemoteUi(surfaceV);
         haveVideo = true;
-//        rl_livevideo_course_item_video_nocamera.setVisibility(View.GONE);
         rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
     }
 
@@ -198,7 +197,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
         super.onOtherDis(type, enable, mState);
         mLogtf.d("onOtherDis:type=" + type + ",enable=" + enable + ",noMic=" + noMic + ",state=" + mState);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
-            //不屏蔽自己的视频
+            //不屏蔽自己的视频界面，但是屏蔽推流
 //            handler.post(new Runnable() {
 //                @Override
 //                public void run() {
@@ -216,7 +215,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
 //                public void run() {
 //                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
 //                    if (mRtcEngine != null) {
-//                        mRtcEngine.enableLocalVideo(enable);
+//                        mRtcEngine.muteLocalVideo(!enable);
 //                    }
 //                }
 //            });
