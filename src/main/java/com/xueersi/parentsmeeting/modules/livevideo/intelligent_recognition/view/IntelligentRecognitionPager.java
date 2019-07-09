@@ -19,6 +19,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionView;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
@@ -190,11 +191,57 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
                         }
                     }
                 });
-//        String sTime = viewModel.getRecordData().getAnswerTime();
-//        if (TextUtils.isEmpty(sTime)) {
-//            answerTime = Integer.valueOf(sTime);
-//        }
-//        mView.postDelayed(new Action(), answerTime);
+        viewModel.getIntelligentSpeechResult().
+                observe(mActivity, new Observer<Integer>() {
+                    @Override
+                    public void onChanged(@Nullable Integer integer) {
+//                        if (waveLottie != null) {
+                        revertLottie(waveLottie);
+//                        }
+                        if (integer == IntelligentConstants.REPEAT_SENTENCE) {
+
+                        }
+                    }
+                });
+        viewModel.getIsSpeechJudgeFinish().
+                observe(mActivity, new Observer<Integer>() {
+                    @Override
+                    public void onChanged(@Nullable Integer integer) {
+                        if (integer == IntelligentConstants.PERFECT) {
+                            positivePlayLottieView(waveLottie);
+                        }
+                    }
+                });
+    }
+
+    private void positivePlayLottieView(LottieAnimationView loView) {
+        logger.i("positivePlayLottieView");
+        if (loView != null) {
+            loView.setSpeed(1.5f);
+//            loView.addAnimatorListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    super.onAnimationEnd(animation);
+//
+//                }
+//            });
+            loView.playAnimation();
+        }
+        if (waveView != null && waveView.getVisibility() != View.VISIBLE) {
+            waveView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /** 反转Wave动画 */
+    private void revertLottie(LottieAnimationView loView) {
+        logger.i("revertLottie");
+        if (loView != null) {
+            loView.setSpeed(-1.5f);
+            loView.playAnimation();
+        }
+        if (waveView != null && waveView.getVisibility() != View.GONE) {
+            waveView.setVisibility(View.GONE);
+        }
     }
 
     /**

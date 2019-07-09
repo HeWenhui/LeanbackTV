@@ -26,6 +26,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.enti
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.AudioPlayerDataManager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.Unity3DPlayManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionView;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
@@ -48,6 +51,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.REPEAT_WORD;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
 
 public class IntelligentRecognitionPresenter implements IIntelligentRecognitionPresenter<IIntelligentRecognitionView>, MyObserver {
@@ -169,7 +173,9 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
                                 if (AppConfig.DEBUG) {
                                     logger.i("speech result = " + getResultString(result));
                                 }
-                                handleResult(result);
+                                if (result.getStatus() == ResultEntity.SUCCESS) {
+                                    handleResult(result);
+                                }
                             }
 
                             @Override
@@ -201,14 +207,14 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
         if (score == 100) {
             performPerfact();
         } else if (contScore >= 60 && pronScore >= 60) {
-//            performGood();
+            performGood();
 //            performPerfact();
         } else if (contScore >= 60 && pronScore < 60) {
             if (judgeSpeechStatus(resultEntity) == STATUS_1) {
-//                performRepeatSentence();
+                performRepeatSentence();
 //                performPerfact();
             } else {
-//                performRepeatWord(resultEntity.getLstPhonemeScore());
+                performRepeatWord(resultEntity.getLstPhonemeScore());
 //                performPerfact();
             }
         } else {
@@ -219,6 +225,7 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
 
     /** 重读整个句子 */
     private void performRepeatSentence() {
+
         if (mViewModel.getIeResultData() == null) return;
         final Map<String, String> audioHashMap = mViewModel.getIeResultData().getValue().getAudioHashMap();
         if (audioHashMap == null)
@@ -244,6 +251,14 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
      * 处理评测结果时，一定不能在同一个线程里面播放音频
      */
     private void performRepeatWord(final List<PhoneScore> phoneScores) {
+
+        playUnity3DANDAudio(REPEAT_WORD, new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+
+            }
+        });
+
         sortResult(phoneScores);
 //        PhoneScore repeatUrl = getFilterWord(phoneScores);
 //        String urlAudio = null;
@@ -303,8 +318,15 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
         };
     }
 
+    private void playUnity3DANDAudio(int status, MediaPlayer.OnCompletionListener listener) {
+//        AudioPlayerDataManager audioRespository = ;
+
+        playAudio(AudioPlayerDataManager.getInstance().getAudioUrl(REPEAT_WORD), status, listener);
+    }
+
+
     /** 播放重复的句子 */
-    private void playAudio(String url) {
+    private void playAudio(String url, final int status, MediaPlayer.OnCompletionListener listener) {
         if (TextUtils.isEmpty(url)) {
             return;
         }
@@ -314,6 +336,7 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
         try {
             mediaPlayer.setDataSource(url);
             mediaPlayer.prepare();
+            mediaPlayer.setOnCompletionListener(listener);
             mediaPlayer.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -358,11 +381,10 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
     /** 得到满分点赞 */
     private void performPerfact() {
         logger.i("performPerfact");
-        String url = Environment.getExternalStorageDirectory() +
-                File.separator + "parentsmeeting" + File.separator + "livevideo" +
-                File.separator + "01_01_Well_done.mp3";
+
+        Unity3DPlayManager.play_A_MON_T_U();
         Observable.
-                just(url).
+                just(AudioPlayerDataManager.getInstance().getAudioUrl(IntelligentConstants.PERFECT)).
                 map(new Function<String, File>() {
                     @Override
                     public File apply(String s) throws Exception {

@@ -16,6 +16,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.lib.unity3d.UnityCommandPlay;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.Unity3DPlayManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +44,7 @@ public class IntelligentRecognitionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intelligent_recognition);
         addUnity();
         addFragment();
-        handleUnity3D();
+//        handleUnity3D();
     }
 
     private void handleUnity3D() {
@@ -55,7 +56,7 @@ public class IntelligentRecognitionActivity extends AppCompatActivity {
                         @Override
                         public void accept(Boolean aBoolean) throws Exception {
                             logger.i("UnityCommandPlay.playBodyActionSingle");
-                            UnityCommandPlay.playBodyActionSingle(IntelligentParam.A_MON_RH_CL);
+                            UnityCommandPlay.playBodyActionSingle(Unity3DPlayManager.IntelligentUnity3DParam.A_MON_RH_CL);
                         }
                     }, new Consumer<Throwable>() {
                         @Override

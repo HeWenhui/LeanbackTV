@@ -17,10 +17,29 @@ public class IntelligentRecognitionViewModel extends ViewModel {
     private MutableLiveData<Integer> volume = new MutableLiveData<>();
     /** 当前Activity是否结束 */
     private MutableLiveData<Boolean> isFinish = new MutableLiveData<>();
+    /** 语音测评显示结果 */
+    private MutableLiveData<Integer> intelligentSpeechResult = new MutableLiveData<>();
+    /** 语音测评评价完成 */
+    private MutableLiveData<Integer> isSpeechJudgeFinish = new MutableLiveData<>();
 
     public IntelligentRecognitionRecord getRecordData() {
         return recordData;
     }
+
+    public MutableLiveData<Integer> getIsSpeechJudgeFinish() {
+        return isSpeechJudgeFinish;
+    }
+
+    public MutableLiveData<Integer> getIntelligentSpeechResult() {
+        return intelligentSpeechResult;
+    }
+//    public MutableLiveData<Boolean> getIsPerface() {
+//        return isPerfact;
+//    }
+
+//    public void setIsPerface(MutableLiveData<Boolean> isPerface) {
+//        this.isPerfact = isPerface;
+//    }
 
     public void setRecordData(IntelligentRecognitionRecord recordData) {
         this.recordData = recordData;
