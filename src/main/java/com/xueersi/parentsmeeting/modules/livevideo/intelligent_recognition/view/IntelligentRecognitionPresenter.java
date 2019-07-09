@@ -40,9 +40,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -99,26 +99,26 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
 
     @Override
     public void startSpeech() {
-        isSpeechStart = true;
+//        isSpeechStart = true;
         performStartRecord();
     }
 
     private void performStartRecord() {
-        if (isSpeechStart && isSpeechReady) {
+
+        if (!isSpeechStart.get() && isSpeechReady.get()) {
             startRecordSound();
         }
     }
 
-    public boolean isSpeechStart = false;
+    public AtomicBoolean isSpeechStart = new AtomicBoolean(false);
 
     private void unregistEvent() {
         if (broadcast != null) {
             mActivity.unregisterReceiver(broadcast);
         }
-
     }
 
-    private volatile boolean isSpeechReady = false;
+    private AtomicBoolean isSpeechReady = new AtomicBoolean(false);
 
     /**
      * 开始语音测评
@@ -127,7 +127,6 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
 //        String videoSavePath = mActivity.getDir("chinese_parterner", Context.MODE_PRIVATE).getPath() + File.separator + "sound.mp3";
         String videoSavePath = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo";
         final SpeechParamEntity mParam = new SpeechParamEntity();
-        mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         File file = new File(videoSavePath, "sound.mp3");
         logger.i(file.getPath() + " " + file.exists());
         if (!file.exists()) {
@@ -139,54 +138,54 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
             }
 //            return;
         }
-        mParam.setLocalSavePath(videoSavePath);
+        mParam.setLocalSavePath(file.getPath());
+        mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         mParam.setMultRef(false);
-//        mParam.setLearning_stage("-1");
         mParam.setPcm(true);
-        mParam.setLearning_stage("-1");
-//        mParam.setEarly_return_sec("90");
-        mParam.setVad_pause_sec("3");
-        mParam.setVad_max_sec("30");
-//        mParam.setIsRct("1");
-//        mParam.setLearning_stage("-1");
-//        mParam.setEarly_return_sec("10");
-//        mParam.setVad_pause_sec("3");
-//        mParam.setVad_max_sec("30");
-//        mParam.setIsRct("1");
         String aiRecogStr = mViewModel.getRecordData().getAnswers();
 //        if (TextUtils.isEmpty(aiRecogStr) && AppConfig.DEBUG) {
-        aiRecogStr = "Are you ok";
+        aiRecogStr = "you are right";
 //        }
         mParam.setStrEvaluator(aiRecogStr);
         logger.i("strRecog:" + aiRecogStr);
-        Observable.just(true).delay(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean aBoolean) throws Exception {
-                mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
-                    @Override
-                    public void onBeginOfSpeech() {
-                        logger.i("speech begin");
-                    }
 
+        Observable.
+                just(mSpeechUtils.isOfflineSuccess()).
+                filter(RxFilter.filterTrue()).
+                delay(5, TimeUnit.SECONDS, Schedulers.io()).
+                subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void onResult(ResultEntity result) {
-//                logger.i("speech resultCurString:" + result.getCurString());
-//                logger.i("speech resultStatus:" + result.getStatus());
-                        if (AppConfig.DEBUG) {
-                            logger.i("speech result = " + getResultString(result));
-                        }
-                        handleResult(result);
-                    }
+                    public void accept(Boolean aBoolean) throws Exception {
+                        mSpeechUtils.cancel();
+                        mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
+                            @Override
+                            public void onBeginOfSpeech() {
+                                isSpeechStart.set(true);
+                                logger.i("speech begin");
+                            }
 
+                            @Override
+                            public void onResult(ResultEntity result) {
+                                if (AppConfig.DEBUG) {
+                                    logger.i("speech result = " + getResultString(result));
+                                }
+                                handleResult(result);
+                            }
+
+                            @Override
+                            public void onVolumeUpdate(int volume) {
+                                logger.i("speech volume:" + volume);
+                                mViewModel.getVolume().setValue(volume);
+                            }
+                        });
+                    }
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void onVolumeUpdate(int volume) {
-                        logger.i("speech volume:" + volume);
-                        mViewModel.getVolume().setValue(volume);
+                    public void accept(Throwable throwable) throws Exception {
+                        logger.e(throwable.getStackTrace());
+                        throwable.printStackTrace();
                     }
                 });
-            }
-        });
-
     }
 
 //    private List<PhoneScore> phoneScores;
@@ -486,20 +485,30 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
 //        List<PhoneScore> list = resultEntity.getLstPhonemeScore();
         StringBuilder stringBuilder = new StringBuilder();
         if (resultEntity.getLstPhonemeScore() == null) {
-            return null;
+            return "Lst null" + getNext(resultEntity);
         }
         for (PhoneScore phoneScore : resultEntity.getLstPhonemeScore()) {
             stringBuilder.append(phoneScore.getWord() + " " + phoneScore.getScore() + " ");
         }
         stringBuilder.append("@@@");
-        if (resultEntity.getScores() == null) {
-            return null;
-        }
-        for (Integer integer : resultEntity.getScores()) {
-            stringBuilder.append(integer + " ");
-        }
+//        if (resultEntity.getScores() == null) {
+//            return "scores null" + stringBuilder + getNext(resultEntity);
+//        }
+//        for (Integer integer : resultEntity.getScores()) {
+//            stringBuilder.append(integer + " ");
+//        }
         stringBuilder.append("@@@");
         return stringBuilder.toString() + " status:" + resultEntity.getStatus()
+                + " curStatus " + resultEntity.getCurStatus()
+                + " contScore " + resultEntity.getContScore()
+                + " partScore " + resultEntity.getPartScore()
+                + " Score " + resultEntity.getScore()
+                + " curString " + resultEntity.getCurString()
+                + " PronScore " + resultEntity.getPronScore();
+    }
+
+    private String getNext(ResultEntity resultEntity) {
+        return " status:" + resultEntity.getStatus()
                 + " curStatus " + resultEntity.getCurStatus()
                 + " contScore " + resultEntity.getContScore()
                 + " partScore " + resultEntity.getPartScore()
@@ -571,7 +580,7 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
     /** 初始化语音测评模块 */
     private void createSpeech() {
         if (mSpeechUtils == null) {
-            mSpeechUtils = SpeechUtils.getInstance(mActivity);
+            mSpeechUtils = SpeechUtils.getInstance(mActivity.getApplicationContext());
         }
         mSpeechUtils = SpeechUtils.getInstance(mActivity.getApplicationContext());
         mSpeechUtils.prepar(Constants.ASSESS_PARAM_LANGUAGE_CH, new SpeechEvaluatorUtils.OnFileSuccess() {
@@ -584,14 +593,14 @@ public class IntelligentRecognitionPresenter implements IIntelligentRecognitionP
             public void onFileSuccess() {
                 // 文件初始化完了，评测准备就绪
                 logger.i("Speech Success");
-                isSpeechReady = true;
+                isSpeechReady.set(true);
                 mViewModel.getIsSpeechReady().setValue(true);
             }
 
             @Override
             public void onFileFail() {
                 logger.i("Speech Fail");
-                isSpeechReady = false;
+                isSpeechReady.set(false);
                 mViewModel.getIsSpeechReady().setValue(false);
                 XESToastUtils.showToast(mActivity.getApplicationContext(), "加载评测模型失败");
             }

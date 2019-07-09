@@ -12,4 +12,13 @@ public class RxFilter {
             }
         };
     }
+
+    public static Predicate<Boolean> filterTrue() {
+        return new Predicate<Boolean>() {
+            @Override
+            public boolean test(Boolean aBoolean) throws Exception {
+                return aBoolean;
+            }
+        };
+    }
 }
