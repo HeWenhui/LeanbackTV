@@ -287,6 +287,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveVideoConfig.isSmallChinese = false;
         LiveVideoConfig.isPrimary = false;
         LiveVideoConfig.isScience = false;
+        LiveVideoConfig.isMulLiveBack = false;
     }
 
     /**
@@ -1864,7 +1865,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject data = (JSONObject) responseEntity.getJsonObject();
             if (data.has("starList")) {
                 JSONArray jsonArray = data.optJSONArray("starList");
-                if(jsonArray != null && jsonArray.length() >0){
+                if (jsonArray != null && jsonArray.length() > 0) {
                     JSONObject jsonObject = null;
                     List<TeamEnergyAndContributionStarEntity.ContributionStar> contributionStarList
                             = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
@@ -1989,7 +1990,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 entity.setCompetitorResultInfo(resultInfo);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.d("parseStuPkResult",e);
             MobAgent.httpResponseParserError(TAG, "parseStuPkResult", e.getMessage());
         }
         return entity;

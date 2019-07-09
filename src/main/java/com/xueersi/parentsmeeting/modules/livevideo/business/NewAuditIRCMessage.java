@@ -596,17 +596,21 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = "p_" + mNickname;
-        liveInfo.realname = myUserInfoEntity.getRealName();
+        if (myUserInfoEntity.getRealName() != null){
+            liveInfo.realname = myUserInfoEntity.getRealName();
+        }else {
+            liveInfo.realname = mNickname;
+        }
         liveInfo.liveId = mLiveInfo.getId();
-        if (mLiveInfo.getStuName() != null) {
-            liveInfo.username = mLiveInfo.getStuName();
+        if (myUserInfoEntity.getNickName() != null) {
+            liveInfo.username = myUserInfoEntity.getNickName();
         } else {
-            liveInfo.username = "";
+            liveInfo.username = "p_" + mNickname;
         }
         if (mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null) {
             liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
         } else {
-            liveInfo.username = mNickname;
+            liveInfo.classId = "";
         }
         liveInfo.businessId = "1";
         if (myUserInfoEntity.getAreaCode() != null) {
@@ -614,7 +618,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         } else {
             liveInfo.location = "";
         }
-        mChatClient.setLiveInfo(liveInfo);
+        int infocode = mChatClient.setLiveInfo(liveInfo);
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
         int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
         logger.i("irc sdk logincode:" + logincode);
@@ -628,6 +632,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("PsAppClientKey", myUserInfoEntity.getPsAppClientKey());
         logHashMap.put("PsImId", myUserInfoEntity.getPsimId());
         logHashMap.put("PsImPwd", myUserInfoEntity.getPsimPwd());
+        logHashMap.put("infocode",""+infocode);
+        logHashMap.put("realname",liveInfo.realname);
+        logHashMap.put("nickname",liveInfo.nickname);
+        logHashMap.put("username",liveInfo.username);
+        logHashMap.put("classId",liveInfo.classId);
+        logHashMap.put("businessId",liveInfo.businessId);
+        logHashMap.put("location",liveInfo.location);
+        logHashMap.put("liveId",liveInfo.liveId);
         logHashMap.put("workspace", workSpaceDir.getAbsolutePath());
         logHashMap.put("time", "" + System.currentTimeMillis());
         logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());

@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.AudioManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.permission.XesPermission;
@@ -21,6 +23,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AgoraUpload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
@@ -147,7 +150,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         super.initData();
         logger.d("initData:mode=" + mode);
         ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
-        primaryClassView.decorateItemPager(mView);
+        primaryClassView.decorateItemPager(mView, ivLivePrimaryClassKuangjiaImgNormal);
         addItem();
         setLayout();
         if (LiveTopic.MODE_TRANING.equals(mode)) {
@@ -364,6 +367,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     }
 
     private void joinChannel() {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                addItem();
+            }
+        });
         workerThread = new CloudWorkerThreadPool(mContext, teamInfoEntity.getToken());
         workerThread.setOnEngineCreate(new CloudWorkerThreadPool.OnEngineCreate() {
             @Override
@@ -374,7 +383,6 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            addItem();
                             workerThread.execute(new Runnable() {
                                 @Override
                                 public void run() {
@@ -392,10 +400,32 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                                 }
                             });
                             leaveChannel = false;
+                            final RtcEngine rtcEngine = workerThread.getAgoraRtcEngine();
+                            if (rtcEngine != null) {
+                                workerThread.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+//                                        JSONObject jsonObject = new JSONObject();
+//                                        try {
+//                                            jsonObject.put("che.video.enableRemoteViewMirror", true);
+//                                            int set = rtcEngine.setParameters(jsonObject.toString());
+//                                            logger.d("setParameters:set=" + set);
+//                                        } catch (JSONException e) {
+//                                            e.printStackTrace();
+//                                        }
+                                        RTCEngine mRtcEngine = workerThread.getRtcEngine();
+                                        if (mRtcEngine != null) {
+                                            mRtcEngine.setRemoteMirror(true);
+//                                            mRtcEngine.setMirror(false);
+                                        }
+                                    }
+                                });
+                            }
                             workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
                                 @Override
                                 public void onJoinChannel(int joinChannel) {
                                     logger.d("onJoinChannel:joinChannel=" + joinChannel);
+                                    setAudioMode("joinChannel");
                                 }
                             });
                         }
@@ -417,15 +447,20 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             if (!teamInfoEntity.isFromLocal()) {
                 tvPrimaryTeamNameMid.setText("欢迎加入 “" + teamInfoEntity.getTeamName() + "”");
                 tvPrimaryTeamNameMid.setVisibility(View.VISIBLE);
-                ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(ivPrimaryTeamIcon);
                 mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         tvPrimaryTeamNameMid.setVisibility(View.GONE);
                     }
                 }, 2000);
+//                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tvPrimaryTeamNameMid.getLayoutParams();
+//                int leftMargin = (ScreenUtils.getScreenWidth() - ivLivePrimaryClassKuangjiaImgNormal.getWidth()) / 2 + (int) (1121 * scale);
+//                lp.leftMargin = leftMargin / 2;
+//                tvPrimaryTeamNameMid.setLayoutParams(lp);
             }
         }
+//        ivPrimaryTeamIcon
+        ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(ivPrimaryTeamIcon);
     }
 
     @Override
@@ -772,6 +807,26 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
     }
 
+    private void setAudioMode(final String method) {
+        mainHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    AudioManager mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
+                    int mode = mAM.getMode();
+                    mLogtf.d("setAudioMode:mode=" + mode + ",open=" + audioStatus + ",method=" + method);
+                    if (audioStatus) {
+                        mAM.setMode(AudioManager.MODE_IN_COMMUNICATION);
+                    } else {
+                        mAM.setMode(AudioManager.MODE_NORMAL);
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
+            }
+        }, 1000);
+    }
+
     @Override
     public void onMessage(boolean videoopen, boolean audioopen) {
         mLogtf.d("onMessage:videoopen=" + videoopen + ",audioopen=" + audioopen + ",state=" + mState);
@@ -837,15 +892,20 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     public void onResume() {
         super.onResume();
         if (workerThread != null && LiveTopic.MODE_CLASS.equals(mode)) {
-            workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
-                @Override
-                public void onJoinChannel(int joinChannel) {
-                    PrimaryTeamMyItem basePrimaryTeamItem = (PrimaryTeamMyItem) courseGroupItemHashMap.get("" + stuid);
-                    if (basePrimaryTeamItem != null) {
-                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus, mState);
+            mLogtf.d("onResume:havepause=" + havepause);
+            if (havepause) {
+                workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
+                    @Override
+                    public void onJoinChannel(int joinChannel) {
+                        PrimaryTeamMyItem basePrimaryTeamItem = (PrimaryTeamMyItem) courseGroupItemHashMap.get("" + stuid);
+                        if (basePrimaryTeamItem != null) {
+//                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, audioStatus, mState);
+                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus, mState);
+                        }
+                        setAudioMode("onResume");
                     }
-                }
-            });
+                });
+            }
             mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {

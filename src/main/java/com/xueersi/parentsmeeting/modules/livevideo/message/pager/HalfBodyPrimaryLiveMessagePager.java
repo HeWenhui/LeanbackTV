@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.adapter.CommonAdapter;
 
@@ -81,15 +82,21 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
             float scale = (float) width / 1334f;
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tpkL_teampk_pkstate_root.getLayoutParams();
             int rightMargin = (int) (237 * scale) + (ScreenUtils.getScreenWidth() - width) / 2;
-            int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + SizeUtils.Dp2Px(mContext, 2);
+            int top;
+            if (useSkin == HalfBodyLiveConfig.SKIN_TYPE_CH) {
+                top = 16;
+            } else {
+                top = 18;
+            }
+            int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (top * scale);
             boolean change = false;
             if (rightMargin != lp.rightMargin || topMargin != lp.topMargin) {
                 lp.rightMargin = rightMargin;
                 lp.topMargin = topMargin;
-                tpkL_teampk_pkstate_root.setLayoutParams(lp);
+                LayoutParamsUtil.setViewLayoutParams(tpkL_teampk_pkstate_root, lp);
                 change = true;
             }
-            logger.d("setTeamPkRight:right=" + rightMargin + ",top=" + topMargin + ",change=" + change);
+            logger.d("setTeamPkRight:right=" + rightMargin + ",top=" + ((ScreenUtils.getScreenHeight() - height)) + "," + topMargin + ",change=" + change);
         }
     };
 

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.SurfaceView;
 
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
@@ -28,6 +29,7 @@ import com.xes.ps.rtcstream.RTCEngine;
 public class CloudWorkerThreadPool {
     private final static String TAG = "CloudWorkerThreadPool";
     protected static Logger logger = LiveLoggerFactory.getLogger(TAG);
+    LogToFile logToFile;
     /** 和服务器的ping，线程池 */
     private static ThreadPoolExecutor poolExecutor;
     private final Context mContext;
@@ -94,14 +96,13 @@ public class CloudWorkerThreadPool {
         poolExecutor.execute(new WorkRun("joinChannel", new Runnable() {
             @Override
             public void run() {
-
-                try {
-                    ensureRtcEngineReadyLock();
-                } catch (Exception e) {
+                if (mRtcEngine == null) {
                     onJoinChannel.onJoinChannel(-11111);
+                    logToFile.d("joinChannel:mRtcEngine=null");
                     return;
                 }
                 int joinChannel = mRtcEngine.joinRoom();
+                logToFile.d("joinChannel:joinChannel=" + joinChannel);
                 onJoinChannel.onJoinChannel(joinChannel);
                 enablePreProcessor();
             }
@@ -112,6 +113,7 @@ public class CloudWorkerThreadPool {
         poolExecutor.execute(new WorkRun("leaveChannel", new Runnable() {
             @Override
             public void run() {
+                logToFile.d("leaveChannel:mRtcEngine=" + (mRtcEngine == null));
                 if (mRtcEngine != null) {
                     mRtcEngine.leaveRoom();
                 }
@@ -132,9 +134,8 @@ public class CloudWorkerThreadPool {
         poolExecutor.execute(new WorkRun("configEngine", new Runnable() {
             @Override
             public void run() {
-                try {
-                    ensureRtcEngineReadyLock();
-                } catch (Exception e) {
+                if (mRtcEngine == null) {
+                    logToFile.d("configEngine:mRtcEngine=null");
                     return;
                 }
                 mEngineConfig.mClientRole = cRole;
@@ -148,9 +149,8 @@ public class CloudWorkerThreadPool {
         poolExecutor.execute(new WorkRun("preview", new Runnable() {
             @Override
             public void run() {
-                try {
-                    ensureRtcEngineReadyLock();
-                } catch (Exception e) {
+                if (mRtcEngine == null) {
+                    logToFile.d("preview:mRtcEngine=null");
                     return;
                 }
                 if (start) {
@@ -253,6 +253,7 @@ public class CloudWorkerThreadPool {
                 mReady = false;
                 if (mRtcEngine != null) {
                     mRtcEngine.destory();
+                    mRtcEngine = null;
                 }
                 logger.d("exit() > end");
             }
@@ -261,6 +262,7 @@ public class CloudWorkerThreadPool {
     }
 
     public CloudWorkerThreadPool(Context context, String token) {
+        logToFile = new LogToFile(context, TAG);
         this.mContext = context;
         this.token = token;
         this.mEngineConfig = new EngineConfig();

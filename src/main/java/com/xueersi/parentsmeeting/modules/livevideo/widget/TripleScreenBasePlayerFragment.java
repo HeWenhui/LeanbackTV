@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +21,19 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 三分屏直播的基础播放Fragment，这里主要作用是现实自定义的加载中
@@ -159,7 +166,7 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                 if (videoView != null) {
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
-                                vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                boolean isPlayerCreated = vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
                                 setVideoConfig();
                                 if (isChangeLine) {
                                     try {
@@ -167,13 +174,24 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                         isChangeLine = false;
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        Map<String, String> map = new HashMap<>();
+                                        map.put("changeLinePos", changeLinePos + "");
+                                        map.put("protocol", protocol + "");
+                                        map.put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
+                                        map.put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.CHANGE_LINE_EXCEPTION);
+                                        if (getActivity() != null) {
+                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map);
+                                        }
                                     }
                                 } else {
-                                    String userName;
-                                    String userId;
+                                    String userName = null;
+                                    String userId = null;
                                     try {
                                         userName = AppBll.getInstance().getAppInfoEntity().getChildName();
                                         userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        if (TextUtils.isEmpty(userName)) {
+                                            userName = "";
+                                        }
                                         if (videoConfigEntity != null) {
                                             videoConfigEntity.setUserName(userName);
                                             videoConfigEntity.setUserId(userId);
@@ -184,10 +202,35 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                         vPlayer.playPSVideo(streamId, protocol);
                                     } catch (IOException e) {
                                         vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
+                                        StableLogHashMap map = new StableLogHashMap();
+                                        map.put("userName", userName).
+                                                put("userId", userId + "").
+                                                put("streamId", streamId).
+                                                put("protocol", String.valueOf(protocol)).
+                                                put("isPlayerCreated", String.valueOf(isPlayerCreated)).
+                                                put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
+                                                put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
+                                                put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
+                                        if (getActivity() != null) {
+                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
+                                        }
                                         e.printStackTrace();
                                     } catch (Exception e) {
                                         if (videoConfigEntity != null) {
                                             recordFailData(videoConfigEntity.toJSONObject().toString());
+                                        } else {
+                                            StableLogHashMap map = new StableLogHashMap();
+                                            map.put("userName", userName).
+                                                    put("userId", userId).
+                                                    put("streamId", streamId).
+                                                    put("protocol", String.valueOf(protocol)).
+                                                    put("isPlayerCreated", String.valueOf(isPlayerCreated)).
+                                                    put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
+                                                    put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
+                                                    put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
+                                            if (getActivity() != null) {
+                                                UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
+                                            }
                                         }
                                         e.printStackTrace();
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));

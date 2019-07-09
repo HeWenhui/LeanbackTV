@@ -157,6 +157,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     LinearLayout llUserHeadImage;
     /** 全身直播 头像*/
     CircleImageView civUserHeadImage;
+    boolean isTutorVideo = false;
+
+    boolean isNetWorkEnable = false;
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
@@ -188,9 +191,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
         if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_TUTOR) {
             mVideoEntity = mVideoTutorEntity;
+            isTutorVideo = true;
 
         } else {
             mVideoEntity = mVideoMainEntity;
+            isTutorVideo = false;
         }
 
 
@@ -453,7 +458,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 @Override
                 public boolean onPreDraw() {
                     activity.getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
-                    if (AppBll.getInstance(activity).isNetWorkAlert()) {
+                    if (AppBll.getInstance(activity).isNetWorkAlert() || isNetWorkEnable) {
                         // 互动题播放地址
                         AppBll.getInstance(activity.getApplication());
                         playNewVideo();
@@ -653,6 +658,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             videoPlayStatus = status;
             umsTeacherChange();
         }
+        isNetWorkEnable = true;
         startNewVideo();
         return code;
     }
@@ -897,7 +903,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             videoPlayStatus = MediaPlayer.VIDEO_TEACHER_TUTOR;
             mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER,
                     MediaPlayer.VIDEO_TEACHER_TUTOR, "");
-
+            isNetWorkEnable = true;
             startNewVideo();
             return;
         }

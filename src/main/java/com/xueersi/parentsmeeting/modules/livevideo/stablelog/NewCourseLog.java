@@ -121,6 +121,7 @@ public class NewCourseLog {
         if(isTutor){
             questionType = QUESTION_TYPE_TUTOR;
         }
+        logHashMap.put("questiontype", questionType+"");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
@@ -137,6 +138,7 @@ public class NewCourseLog {
         if(isTutor){
             questionType = QUESTION_TYPE_TUTOR;
         }
+        logHashMap.put("questiontype", questionType+"");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
@@ -154,6 +156,7 @@ public class NewCourseLog {
         if(isTutor){
             questionType = QUESTION_TYPE_TUTOR;
         }
+        logHashMap.put("questiontype", questionType+"");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
@@ -168,6 +171,7 @@ public class NewCourseLog {
         if(isTutor){
             questionType = QUESTION_TYPE_TUTOR;
         }
+        logHashMap.put("questiontype", questionType+"");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
@@ -183,6 +187,7 @@ public class NewCourseLog {
         if(isTutor){
             questionType = QUESTION_TYPE_TUTOR;
         }
+        logHashMap.put("questiontype", questionType+"");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 

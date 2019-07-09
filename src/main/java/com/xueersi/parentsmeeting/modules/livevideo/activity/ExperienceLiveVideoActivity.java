@@ -1406,7 +1406,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             if (!MediaPlayer.getIsNewIJK()) {
                 playNewVideo(Uri.parse(mWebPath), mSectionName);
             } else {
-//                playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_MP4);
                 String videoPath;
                 String url = mVideoEntity.getVideoPath();
                 if (url.contains("http") || url.contains("https")) {
@@ -1414,7 +1413,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 } else {
                     videoPath = url;
                 }
-                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                changeNextLine();
+//                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
                 setmDisplayName(mSectionName);
             }
         }
@@ -1539,7 +1539,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             if (!MediaPlayer.getIsNewIJK()) {
                 playNewVideo(Uri.parse(mWebPath), mSectionName);
             } else {
-//                playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_MP4);
                 String videoPath;
                 String url = mVideoEntity.getVideoPath();
                 if (url.contains("http") || url.contains("https")) {
@@ -1547,7 +1546,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 } else {
                     videoPath = url;
                 }
-                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                changeNextLine();
+//                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
                 setmDisplayName(mSectionName);
             }
         } else {
