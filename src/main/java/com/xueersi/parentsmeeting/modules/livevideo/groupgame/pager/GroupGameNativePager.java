@@ -317,39 +317,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         }, 50);
         singleModeAction.startTimer();
-        boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO);
-        // 检查用户麦克风权限
-        if (hasAudidoPermission) {
-            startSpeechRecognize();
-        } else {
-            //如果没有麦克风权限，申请麦克风权限
-            XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
-                /**
-                 * 结束
-                 */
-                @Override
-                public void onFinish() {
-                    logger.i("onFinish()");
-                }
-
-                /**
-                 * 用户拒绝某个权限
-                 */
-                @Override
-                public void onDeny(String permission, int position) {
-                    logger.i("onDeny()");
-                }
-
-                /**
-                 * 用户允许某个权限
-                 */
-                @Override
-                public void onGuarantee(String permission, int position) {
-                    logger.i("onGuarantee()");
-                    startSpeechRecognize();
-                }
-            }, PermissionConfig.PERMISSION_CODE_AUDIO);
-        }
         videoSizeChange(LiveVideoPoint.getInstance());
     }
 
@@ -516,6 +483,39 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     private void startSpeechRecognize() {
+        boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO);
+        // 检查用户麦克风权限
+        if (!hasAudidoPermission) {
+            //如果没有麦克风权限，申请麦克风权限
+            XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
+                /**
+                 * 结束
+                 */
+                @Override
+                public void onFinish() {
+                    logger.i("onFinish()");
+                }
+
+                /**
+                 * 用户拒绝某个权限
+                 */
+                @Override
+                public void onDeny(String permission, int position) {
+                    logger.i("onDeny()");
+                }
+
+                /**
+                 * 用户允许某个权限
+                 */
+                @Override
+                public void onGuarantee(String permission, int position) {
+                    logger.i("onGuarantee()");
+                    startSpeechRecognize();
+                }
+            }, PermissionConfig.PERMISSION_CODE_AUDIO);
+            return;
+        }
+
         File dir = LiveCacheFile.geCacheFile(mContext, "groupgame");
         //只有第一次删除
         if (saveVideoFile == null) {
@@ -940,17 +940,29 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     }
                 }, 1000);
             } else {
-                int startSpeechRecognizeTime = 1;
-                int turnPagetime = mAnswersList.get(pageNum).getSingleTime() + 1;
+                double startSpeechRecognizeTime = 1;
+                double turnPagetime = mAnswersList.get(pageNum).getSingleTime() + 1;
                 content = new StringBuilder(mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get
                         (pageNum).getText());
-                if (pageNum == 0 && LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
-                    //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1秒再开始倒计时和收音
-                    startSpeechRecognizeTime += mAnswersList.size();
-                    turnPagetime += mAnswersList.size();
+                if (pageNum == 0) {
+                    if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
+                        //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1秒再开始倒计时和收音
+                        startSpeechRecognizeTime += mAnswersList.size();
+                        turnPagetime += mAnswersList.size();
+                    } else if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
+                        //语音炮弹开场动画3s
+                        startSpeechRecognizeTime = 3;
+                    } else if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type)) {
+                        startSpeechRecognizeTime = 0;
+                    }
+                } else {
+                    if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
+                        startSpeechRecognizeTime += 0.5;
+                        turnPagetime += 0.5;
+                    }
                 }
-                handler.postDelayed(startSpeechRecognizeRunnable, startSpeechRecognizeTime * 1000);
-                handler.postDelayed(turnPageRunnable, turnPagetime * 1000);
+                handler.postDelayed(startSpeechRecognizeRunnable, (int)(startSpeechRecognizeTime * 1000));
+                handler.postDelayed(turnPageRunnable, (int)(turnPagetime * 1000));
             }
         }
 
