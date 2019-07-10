@@ -976,29 +976,33 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
                     artsAnswerResultEvent.setDetailInfo(detailInfo);
                     artsAnswerResultEvent.setIspreload(ispreload);
-                    if (isPlayBack) {
-                        ViewGroup group = (ViewGroup) mView.getParent();
-                        artsAnswerResultEvent.setAnswerResultStateListener(new AnswerResultStateListener() {
-                            @Override
-                            public void onCompeletShow() {
+                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
+                        if (isPlayBack) {
+                            ViewGroup group = (ViewGroup) mView.getParent();
+                            artsAnswerResultEvent.setAnswerResultStateListener(new AnswerResultStateListener() {
+                                @Override
+                                public void onCompeletShow() {
 
-                            }
+                                }
 
-                            @Override
-                            public void onAutoClose(BasePager basePager) {
-                                onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
-                            }
+                                @Override
+                                public void onAutoClose(BasePager basePager) {
+                                    onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                                }
 
-                            @Override
-                            public void onCloseByUser() {
-                                onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
-                            }
+                                @Override
+                                public void onCloseByUser() {
+                                    onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                                }
 
-                            @Override
-                            public void onUpdateVoteFoldCount(String count) {
+                                @Override
+                                public void onUpdateVoteFoldCount(String count) {
 
-                            }
-                        });
+                                }
+                            });
+                        } else {
+                            onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                        }
                     }
                     EventBus.getDefault().post(artsAnswerResultEvent);
                 } catch (JSONException e) {

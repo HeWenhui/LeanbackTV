@@ -405,7 +405,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
                     layoutParams.addRule(RelativeLayout.ALIGN_RIGHT, R.id.lv_arts_answer_result_pse);
                     LayoutParamsUtil.setViewLayoutParams(tvClose, layoutParams);
 //                    logger.e( "====>showOnClose:" + params.rightMargin+"--"+params.topMargin+"--"+layoutParams.rightMargin+"--"+layoutParams.topMargin);
-                    if (isforce != 1) {
+                    if (isforce != 1 || isPlayBack) {
                         remindSubmit();
                     }
                 }
@@ -633,7 +633,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 closeBtn.setImageResource(R.drawable.selector_live_enpk_shell_window_guanbi_btn);
                 tvClose.setVisibility(View.VISIBLE);
                 int time = 3;
-                if(isPlayBack){
+                if (isPlayBack) {
                     time = 5;
                 }
                 final AtomicInteger integer = new AtomicInteger(time);

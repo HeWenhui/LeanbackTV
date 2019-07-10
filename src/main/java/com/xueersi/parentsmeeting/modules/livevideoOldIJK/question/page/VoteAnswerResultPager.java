@@ -405,7 +405,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
                     layoutParams.addRule(RelativeLayout.ALIGN_RIGHT, R.id.lv_arts_answer_result_pse);
                     LayoutParamsUtil.setViewLayoutParams(tvClose, layoutParams);
 //                    logger.e( "====>showOnClose:" + params.rightMargin+"--"+params.topMargin+"--"+layoutParams.rightMargin+"--"+layoutParams.topMargin);
-                    if (isforce != 1) {
+                    if (isforce != 1 || isPlayBack) {
                         remindSubmit();
                     }
                 }

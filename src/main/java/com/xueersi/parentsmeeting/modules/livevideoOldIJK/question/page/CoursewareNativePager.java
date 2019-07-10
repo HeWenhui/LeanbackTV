@@ -33,27 +33,28 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
-import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.dialog.CourseTipDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.MiddleResult;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.OnHttpCode;
@@ -978,11 +979,38 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         jsonObject1.put("optionTitle", optionTitle);
                         jsonObject1.put("isForce", isforce);
                         jsonObject1.put("isPlayBack", isPlayBack);
-                        onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
                     }
                     ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
                     artsAnswerResultEvent.setDetailInfo(detailInfo);
                     artsAnswerResultEvent.setIspreload(ispreload);
+                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
+                        if (isPlayBack) {
+                            ViewGroup group = (ViewGroup) mView.getParent();
+                            artsAnswerResultEvent.setAnswerResultStateListener(new AnswerResultStateListener() {
+                                @Override
+                                public void onCompeletShow() {
+
+                                }
+
+                                @Override
+                                public void onAutoClose(BasePager basePager) {
+                                    onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                                }
+
+                                @Override
+                                public void onCloseByUser() {
+                                    onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                                }
+
+                                @Override
+                                public void onUpdateVoteFoldCount(String count) {
+
+                                }
+                            });
+                        } else {
+                            onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                        }
+                    }
                     EventBus.getDefault().post(artsAnswerResultEvent);
                 } catch (JSONException e) {
                     e.printStackTrace();
