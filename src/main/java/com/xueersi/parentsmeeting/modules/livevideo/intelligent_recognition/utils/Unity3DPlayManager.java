@@ -8,23 +8,84 @@ import java.util.List;
 import java.util.Map;
 
 public class Unity3DPlayManager {
-
+    /**
+     *
+     */
+//    private static final String start_Mouth = "1";
     private static final Map<Integer, List<String>> mapList = new HashMap() {
         {
-            mapList.put(IntelligentConstants.PERFECT, Arrays.<String>asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S2));
-            mapList.put(IntelligentConstants.GOOD, Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_E, IntelligentUnity3DFaceParam.A_MON_SP));
+            mapList.put(IntelligentConstants.PERFECT,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S2));
+
+            mapList.put(IntelligentConstants.GOOD,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_E, IntelligentUnity3DFaceParam.A_MON_SP));
+
+            mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_1_0,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_SK));
+
+            mapList.put(IntelligentConstants.FEED_BACK_WORD_1,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_SK,
+                            IntelligentUnity3DBodyParam.A_MON_LH_U));
+
+            mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_1_1,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_BH_C, IntelligentUnity3DFaceParam.A_MON_SK));
+
+            mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_2_0,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_SK));
+
+            mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_2_1,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_BH_C, IntelligentUnity3DFaceParam.A_MON_S1));
+
+            mapList.put(IntelligentConstants.FEED_BACK_WORD_3_0,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S2));
+
+            mapList.put(IntelligentConstants.FEED_BACK_WORD_3_1,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S1));
 //            mapList.put(IntelligentConstants.REPEAT_SENTENCE,Arrays.asList());
         }
 
-//        {
-//            mapList.put(IntelligentConstants.REPEAT_WORD, Arrays.asList());
-//        }
     };
 
+    public static void playUnity3D(int status) {
+        switch (status) {
+            case IntelligentConstants.PERFECT: {
+//                play_A_MON_LH_U();
+                play_A_MON_S2();
+
+                break;
+            }
+            case IntelligentConstants.GOOD: {
+
+                break;
+            }
+//            case IntelligentConstants.REPEAT_SENTENCE: {
+//                break;
+//            }
+//            case IntelligentConstants.REPEAT_WORD: {
+//                break;
+//            }
+        }
+
+    }
+
+    /** 开始说话 */
+    public static void playSayStart() {
+        UnityCommandPlay.playSayStart();
+    }
+
+    /** 停止说话 */
+    public static void playSayStop() {
+        UnityCommandPlay.playSayStop();
+    }
 
     //右手抬起，竖起大拇指表示赞
     public static void play_A_MON_T_U() {
         UnityCommandPlay.playBodyActionSingle(IntelligentUnity3DBodyParam.A_MON_T_U);
+    }
+
+    //大笑
+    public static void play_A_MON_S2() {
+        UnityCommandPlay.playFaceActionSingle(IntelligentUnity3DFaceParam.A_MON_S2);
     }
 
     //左手指向左图片方向指

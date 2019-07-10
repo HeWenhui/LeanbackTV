@@ -60,6 +60,13 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
     /** 使用回答时间 */
     private int answerTime;
 
+    /** speech是否初始化成功 */
+    private boolean isSpeechReady = true;
+    /** 是否拿到后台接口返回的数据 */
+    private boolean isResultGet = true;
+    /** waveViews是否初始化成功 */
+    private boolean waveViewinit = false;
+
     public IntelligentRecognitionPager(FragmentActivity context) {
         super(context, false);
         this.mActivity = context;
@@ -83,7 +90,6 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
     }
 
     private void performOpenViewStart() {
-//        addUnityView();
         showReadyGo();
 //        delayWaveView();
 //        unityInit();
@@ -120,7 +126,6 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
         });
     }
 
-    private boolean waveViewinit = false;
 
     /** 延迟初始化WaveView */
 //    private Observable delayWaveView() {
@@ -152,10 +157,6 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
         }
     }
 
-    /** speech是否初始化成功 */
-    private boolean isSpeechReady = true;
-    /** 是否拿到后台接口返回的数据 */
-    private boolean isResultGet = true;
 
     @Override
     public void initData() {
@@ -198,9 +199,9 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
 //                        if (waveLottie != null) {
                         revertLottie(waveLottie);
 //                        }
-                        if (integer == IntelligentConstants.REPEAT_SENTENCE) {
-
-                        }
+//                        if (integer == IntelligentConstants.REPEAT_SENTENCE) {
+//
+//                        }
                     }
                 });
         viewModel.getIsSpeechJudgeFinish().

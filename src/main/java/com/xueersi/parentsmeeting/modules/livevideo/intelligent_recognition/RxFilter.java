@@ -1,5 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition;
 
+import android.text.TextUtils;
+
+import java.io.File;
+
 import io.reactivex.functions.Predicate;
 
 public class RxFilter {
@@ -18,6 +22,24 @@ public class RxFilter {
             @Override
             public boolean test(Boolean aBoolean) throws Exception {
                 return aBoolean;
+            }
+        };
+    }
+
+    public static Predicate<File> filterFile() {
+        return new Predicate<File>() {
+            @Override
+            public boolean test(File file) throws Exception {
+                return file != null && file.exists();
+            }
+        };
+    }
+
+    public static Predicate<String> filterString() {
+        return new Predicate<String>() {
+            @Override
+            public boolean test(String s) throws Exception {
+                return !TextUtils.isEmpty(s);
             }
         };
     }

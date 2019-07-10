@@ -213,7 +213,7 @@ public class LiveVideoEnter {
             @Override
             public void success() {
 
-                if (MediaPlayer.getIsNewIJK()) {
+                if (false) {
                     AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID);
                 } else {
                     com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID);
