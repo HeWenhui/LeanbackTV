@@ -80,7 +80,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 连接地址
      */
     private String webSocketUrl = "ws://wsarts.xueersi" +
-            ".com/roleplay/index?userId=%1$s&role=1&cookie=%2$s&liveId=%3$s";
+            ".com/roleplay/index?userId=%1$s&role=1&tal_token=%2$s&liveId=%3$s";
 
     /**
      * RolePlayer数据实体
