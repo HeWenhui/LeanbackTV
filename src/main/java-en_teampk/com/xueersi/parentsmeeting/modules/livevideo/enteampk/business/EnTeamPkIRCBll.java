@@ -14,11 +14,7 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImp;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -61,7 +57,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -69,14 +64,13 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import okhttp3.Call;
-
 /**
  * @author linyuqiang
  * created  at 2018/11/6
  * 英语战队PK 相关业务处理
  */
-public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
+public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction,
+        BetterMeTeamPKContract {
     private EnTeamPkAction enTeamPkAction;
     private String unique_id;
     private boolean psOpen = false;
@@ -110,10 +104,16 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.onLiveInited(getInfo);
         LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
         logger.d("onLiveInited:use=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//            englishPk.canUsePK = 1;
+//            englishPk.isTwoLose = 1;
+//            englishPk.hasGroup = 0;
+//        }
         if (englishPk.canUsePK == 0) {
             mLiveBll.removeBusinessBll(this);
             return;
         }
+        ProxUtil.getProxUtil().put(mContext, BetterMeTeamPKContract.class, this);
         unique_id = mGetInfo.getId() + "_" + mGetInfo.getStudentLiveInfo().getClassId();
         logger.d("onLiveInited:unique_id=" + unique_id);
         EnTeamPkBll teamPkBll = new EnTeamPkBll(activity, mGetInfo.getId());
@@ -138,7 +138,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (jsonObject.has(getInfo.getId())) {
                     ResponseEntity responseEntity = new ResponseEntity();
                     responseEntity.setJsonObject(jsonObject.getJSONObject(getInfo.getId()));
-//                    parsegetSelfTeamInfo(responseEntity);
                     pkTeamEntity = parsegetSelfTeamInfo(responseEntity);
                     logger.d("onLiveInited:pkTeamEntity=null?" + (pkTeamEntity == null));
                     if (pkTeamEntity != null) {
@@ -151,6 +150,29 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//            java.util.Random random = new java.util.Random();
+//            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
+//            enTeamPkRankEntity.setApkTeamId(2);
+//            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
+//            for (int i = 0; i < 7; i++) {
+//                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+//                teamMemberEntity.id = 100 + i;
+//                if (i == 2) {
+//                    teamMemberEntity.isMy = true;
+//                }
+//                teamMemberEntity.headurl = "https://xesfile.xesimg.com/user/h/57375.jpg";
+//                teamMemberEntity.name = "测试测试测试测试测试" + i;
+//                teamMemberEntity.energy = 110 + i;
+//                memberEntities.add(teamMemberEntity);
+//            }
+//            enTeamPkRankEntity.setBpkTeamId(3);
+//            enTeamPkRankEntity.setMyTeamCurrent(3);
+//            enTeamPkRankEntity.setMyTeamTotal(154);
+//            enTeamPkRankEntity.setOpTeamCurrent(3);
+//            enTeamPkRankEntity.setOpTeamTotal(154);
+//            enTeamPkAction.onRankLead(enTeamPkRankEntity, "1", TeamPkLeadPager.TEAM_TYPE_1);
+//        }
         if (getInfo.getStudentLiveInfo() != null) {
             String classId = getInfo.getStudentLiveInfo().getClassId();
             try {
@@ -238,6 +260,18 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         } else {
             mLogtf.d("connect:method=" + method);
         }
+    }
+
+    @Override
+    public void onPKStart(boolean showPk) {
+        if (enTeamPkAction != null) {
+            enTeamPkAction.onRankStart(showPk);
+        }
+    }
+
+    @Override
+    public void onPKEnd() {
+        getEnglishPkTotalRank();
     }
 
     private class ClassEndRec {
@@ -353,6 +387,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             if (abstractBusinessDataCallBack != null) {
                                 abstractBusinessDataCallBack.onDataSucess(responseEntity);
                             }
+//                    if (AppConfig.DEBUG) {
+//                        if (enTeamPkAction != null) {
+//                            enTeamPkAction.onRankStart();
+//                        }
+//                    }
                         }
 
                         @Override

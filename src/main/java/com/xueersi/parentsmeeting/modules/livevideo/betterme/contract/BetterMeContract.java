@@ -27,14 +27,17 @@ public interface BetterMeContract {
         void showCompleteTargetPager(StuAimResultEntity stuAimResultEntity);
 
         void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity);
+
+        void showTargetBubble();
     }
 
     interface BetterMePresenter extends BasePresenter {
-        void getStuSegment();
-        void getBetterMe();
+        void getStuSegment(boolean isNotice);
+        void getBetterMe(boolean isNotice);
         void getStuAimResult();
         void getStuAimRealTimeVal();
         BetterMeEntity getBetterMeEntity();
         StuSegmentEntity getStuSegmentEntity();
+        boolean isArriveLate();
     }
 }

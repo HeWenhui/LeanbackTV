@@ -11,7 +11,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImp;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImpl;
 
 /**
  * 英语小目标 小目标介绍
@@ -29,7 +29,7 @@ public class BetterMeIntroductionPager extends BasePager {
      */
     private ImageView btnGotit;
     private LottieAnimationView mLottieAnimationView;
-    LinearLayout llContent;
+    private LinearLayout llContent;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_better_me/introduction/";
     private OnBettePagerClose onBettePagerClose;
 
@@ -91,14 +91,14 @@ public class BetterMeIntroductionPager extends BasePager {
         tvViewLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBettePagerClose.onShow(BetterMeViewImp.PAGER_LEVEL_DISPLAY);
+                onBettePagerClose.onShow(BetterMeViewImpl.PAGER_LEVEL_DISPLAY);
             }
         });
         btnGotit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBettePagerClose.onClose(BetterMeIntroductionPager.this);
-                onBettePagerClose.onShow(BetterMeViewImp.PAGER_RECEIVE_TARGET, 2000);
+                onBettePagerClose.onShow(BetterMeViewImpl.PAGER_RECEIVE_TARGET, 2000);
             }
         });
     }

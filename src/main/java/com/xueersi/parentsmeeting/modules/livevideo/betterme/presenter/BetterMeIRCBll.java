@@ -5,11 +5,12 @@ import android.app.Activity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImp;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImpl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -17,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,15 +31,15 @@ import org.json.JSONObject;
  */
 public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, BetterMeContract
         .BetterMePresenter {
-    BetterMeContract.BetterMeView mBetterMeView;
-    StuSegmentEntity mStuSegmentEntity;
-    BetterMeEntity mBetterMeEntity;
-    StuAimResultEntity mStuAimResultEntity;
-    private boolean isArriveLate = false;
+    private BetterMeContract.BetterMeView mBetterMeView;
+    private StuSegmentEntity mStuSegmentEntity;
+    private BetterMeEntity mBetterMeEntity;
+    private StuAimResultEntity mStuAimResultEntity;
+    private boolean isArriveLate;
     /**
      * 小目标接口开关
      */
-    private boolean isUseBetterMe = true;
+    private boolean isUseBetterMe;
     /**
      * 是否展示过本场小目标
      */
@@ -45,7 +47,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     public BetterMeIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
-        mBetterMeView = new BetterMeViewImp(mContext);
+        mBetterMeView = new BetterMeViewImpl(mContext);
         mBetterMeView.setPresenter(this);
     }
 
@@ -53,7 +55,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         switch (type) {
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN: {
-                getBetterMe();
+                getBetterMe(true);
                 break;
             }
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT: {
@@ -77,13 +79,8 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         mBetterMeView.setRootView(mRootView);
-    }
-
-    @Override
-    public void onArtsExtLiveInited(LiveGetInfo getInfo) {
-        super.onArtsExtLiveInited(getInfo);
-//        this.isArriveLate = getInfo.getArtsExtLiveInfo().isArriveLate();
-//        this.isUseBetterMe = getInfo.getArtsExtLiveInfo().isUseBetterMe();
+        this.isUseBetterMe = getInfo.getEnglishBetterMe().isUserBetterMe;
+        this.isArriveLate = getInfo.getEnglishBetterMe().isArriveLate;
     }
 
     @Override
@@ -95,7 +92,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (teamPKObj != null) {
                 boolean status = teamPKObj.optBoolean("status", false);
                 if (status) {
-                    getBetterMe();
+                    getBetterMe(false);
                 }
             }
         } catch (JSONException e) {
@@ -107,8 +104,16 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      * 获取学生这节课小目标
      */
     @Override
-    synchronized public void getBetterMe() {
-        if (isShowBetterMe || !isUseBetterMe) {
+    synchronized public void getBetterMe(final boolean isNotice) {
+        //小目标接口开关
+        if (!isUseBetterMe) {
+            return;
+        }
+        //迟到
+        if (isArriveLate) {
+            return;
+        }
+        if (isShowBetterMe) {
             return;
         }
         isShowBetterMe = true;
@@ -121,27 +126,39 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 mBetterMeEntity = getHttpResponseParser().parseBetterMeInfo(responseEntity);
                 if (mBetterMeEntity != null) {
                     if (mStuSegmentEntity != null) {
-                        if (mBetterMeEntity.isFirstReceive()) {
-                            mBetterMeView.showIntroductionPager();
+                        if (isNotice) {
+                            if (mBetterMeEntity.isFirstReceive()) {
+                                mBetterMeView.showIntroductionPager();
+                            } else {
+                                mBetterMeView.showReceiveTargetPager();
+                            }
                         } else {
-                            mBetterMeView.showReceiveTargetPager();
+                            mBetterMeView.showTargetBubble();
                         }
                     } else {
-                        getStuSegment();
+                        getStuSegment(isNotice);
                     }
+                } else {
+                    onBetterMeFailure(isNotice);
                 }
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
+                onBetterMeFailure(isNotice);
             }
 
             @Override
             public void onFailure(String postUrl, Exception e, String msg) {
                 super.onFailure(postUrl, e, msg);
+                onBetterMeFailure(isNotice);
             }
         });
+    }
+
+    private void onBetterMeFailure(final boolean isNotice) {
+        ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(isNotice);
     }
 
     /**
@@ -158,30 +175,70 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 mStuAimResultEntity = getHttpResponseParser().parseStuAimResultInfo(responseEntity);
                 if (mStuAimResultEntity != null) {
                     mBetterMeView.showCompleteTargetPager(mStuAimResultEntity);
+                } else {
+                    onResultFailure();
                 }
             }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                onResultFailure();
+            }
+
+            @Override
+            public void onFailure(String postUrl, Exception e, String msg) {
+                super.onFailure(postUrl, e, msg);
+                onResultFailure();
+            }
         });
+    }
+
+    private void onResultFailure() {
+        ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKEnd();
     }
 
     /**
      * 小目标：获取学生段位信息
      */
     @Override
-    synchronized public void getStuSegment() {
+    synchronized public void getStuSegment(final boolean isNotice) {
         getHttpManager().getStuSegment(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.i("getStuSegment:onPmSuccess():json=" + responseEntity.getJsonObject());
                 mStuSegmentEntity = getHttpResponseParser().parseStuSegmentInfo(responseEntity);
                 if (mStuSegmentEntity != null) {
-                    if (mBetterMeEntity.isFirstReceive()) {
-                        mBetterMeView.showIntroductionPager();
+                    if (isNotice) {
+                        if (mBetterMeEntity.isFirstReceive()) {
+                            mBetterMeView.showIntroductionPager();
+                        } else {
+                            mBetterMeView.showReceiveTargetPager();
+                        }
                     } else {
-                        mBetterMeView.showReceiveTargetPager();
+                        mBetterMeView.showTargetBubble();
                     }
+                } else {
+                    onSegmentFailure(isNotice);
                 }
             }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                onSegmentFailure(isNotice);
+            }
+
+            @Override
+            public void onFailure(String postUrl, Exception e, String msg) {
+                super.onFailure(postUrl, e, msg);
+                onSegmentFailure(isNotice);
+            }
         });
+    }
+
+    private void onSegmentFailure(boolean isNotice) {
+        ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(isNotice);
     }
 
     /**
@@ -217,6 +274,11 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public StuSegmentEntity getStuSegmentEntity() {
         return mStuSegmentEntity;
+    }
+
+    @Override
+    public boolean isArriveLate() {
+        return isArriveLate;
     }
 
 }

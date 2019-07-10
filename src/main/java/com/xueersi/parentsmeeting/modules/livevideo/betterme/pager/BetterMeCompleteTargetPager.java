@@ -19,7 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImp;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImpl;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
@@ -225,7 +225,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         ivLevelIndroduction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnpagerClose.onShow(BetterMeViewImp.PAGER_LEVEL_DISPLAY);
+                mOnpagerClose.onShow(BetterMeViewImpl.PAGER_LEVEL_DISPLAY);
             }
         });
     }

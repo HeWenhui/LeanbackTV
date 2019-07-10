@@ -10,10 +10,12 @@ import android.widget.TextView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImp;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImpl;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
  * 英语小目标 本场小目标
@@ -191,7 +193,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
         tvReceiveTarLevelUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBettePagerClose.onShow(BetterMeViewImp.PAGER_LEVEL_DISPLAY);
+                onBettePagerClose.onShow(BetterMeViewImpl.PAGER_LEVEL_DISPLAY);
             }
         });
         ivReceivetarReady.setOnClickListener(new View.OnClickListener() {
@@ -201,6 +203,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
                     mCountDownTimer.cancel();
                 }
                 onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
+                ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(true);
             }
         });
     }
@@ -226,13 +229,14 @@ public class BetterMeReceiveTargetPager extends BasePager {
         @Override
         public void onFinish() {
             onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
+            ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(true);
         }
     };
 
     /**
      * 当前段位的索引
      */
-    public int getCurrentLevelIndex(String level) {
+    private int getCurrentLevelIndex(String level) {
         for (int i = 0; i < BetterMeConfig.LEVEL_NAMES.length; i++) {
             if (BetterMeConfig.LEVEL_NAMES[i].equals(level)) {
                 return i;
@@ -244,7 +248,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
     /**
      * 当前星星的数量
      */
-    public int getCurrentStarsNumber(String star) {
+    private int getCurrentStarsNumber(String star) {
         int stasNumber = -1;
         try {
             stasNumber = Integer.parseInt(star);
