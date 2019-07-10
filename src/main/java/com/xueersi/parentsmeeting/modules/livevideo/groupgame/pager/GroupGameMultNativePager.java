@@ -430,6 +430,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
      */
     class VoiceCannonOnMessage implements MultModeAction {
         VoiceCannonTurnRun turnRun;
+        boolean isLoaded = false;
 
         @Override
         public void postMessage(String where, final JSONObject message, String origin) {
@@ -560,6 +561,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
 
         private void coursewareOnloading(final int pageNum) {
+            if (isLoaded) {
+                return;
+            }
+            isLoaded = true;
             handler.post(new Runnable() {
                 @Override
                 public void run() {
