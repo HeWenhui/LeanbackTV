@@ -1130,6 +1130,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             groupGameUpload.uploadWonderMoment(saveVideoFile, oldSpeechContent, getCurrentScore(oldSpeechContent), 0);
         }
         final String finalSpeechContent = speechContent;
+        int turnOverInterval = 1000;
+        if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(gameType)) {
+            turnOverInterval = 1500;
+        }
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1140,7 +1144,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     startSpeechRecognize();
                 }
             }
-        }, 900);
+        }, turnOverInterval);
         handler.removeCallbacks(onCoursewareComeOnRunable);
         isComeOnRunablePosted = false;
     }
