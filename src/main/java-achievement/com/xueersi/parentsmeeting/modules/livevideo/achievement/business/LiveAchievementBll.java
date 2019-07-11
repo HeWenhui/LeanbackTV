@@ -23,6 +23,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -96,7 +97,7 @@ public class LiveAchievementBll implements StarInteractAction {
     private int goldCount;
     boolean mIsLand;
     int topMargin;
-    RelativeLayout bottomContent;
+    private LiveViewAction liveViewAction;
     /**
      * 右侧星星数字动画出现
      */
@@ -197,8 +198,8 @@ public class LiveAchievementBll implements StarInteractAction {
         this.liveAndBackDebug = liveAndBackDebug;
     }
 
-    public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
-        this.bottomContent = bottomContent;
+    public void initView(LiveViewAction liveViewAction, RelativeLayout mContentView) {
+        this.liveViewAction = liveViewAction;
 //        if (myView != null) {
 //            ViewGroup group = (ViewGroup) myView.getParent();
 //            if (group != null) {
@@ -298,24 +299,23 @@ public class LiveAchievementBll implements StarInteractAction {
 //                }
 //            });
 //        }
-        View rl_livevideo_starinteract_layout = bottomContent.findViewById(R.id.rl_livevideo_starinteract_layout);
+        View rl_livevideo_starinteract_layout = liveViewAction.findViewById(R.id.rl_livevideo_starinteract_layout);
         if (rl_livevideo_starinteract_layout != null) {//移除旧的view
 //            bottomContent.removeView(rl_livevideo_starinteract_layout);
             flyStat = rl_livevideo_starinteract_layout;
         } else {
-            flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly, bottomContent, false);
-            bottomContent.addView(flyStat);
+            flyStat = liveViewAction.inflateView(R.layout.item_livevideo_stat_fly);
+            liveViewAction.addView(flyStat);
         }
         flyStat.setVisibility(View.INVISIBLE);
-        View rl_livevideo_starinteract_stat_light_layout = bottomContent.findViewById(R.id
+        View rl_livevideo_starinteract_stat_light_layout = liveViewAction.findViewById(R.id
                 .rl_livevideo_starinteract_stat_light_layout);
         if (rl_livevideo_starinteract_stat_light_layout != null) {//移除旧的view
 //            bottomContent.removeView(rl_livevideo_starinteract_stat_light_layout);
             flyLight = rl_livevideo_starinteract_stat_light_layout;
         } else {
-            flyLight = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly_light, bottomContent,
-                    false);
-            bottomContent.addView(flyLight);
+            flyLight = liveViewAction.inflateView(R.layout.item_livevideo_stat_fly_light);
+            liveViewAction.addView(flyLight);
         }
         flyLight.setVisibility(View.INVISIBLE);
         getLayoutParams();
@@ -572,8 +572,7 @@ public class LiveAchievementBll implements StarInteractAction {
         } else {
             tvStarInteractCountHind.setText(isSmallEnglish ? "" + starCount : "×" + starCount);
         }
-        final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_english_stat_fly,
-                bottomContent, false);
+        final View flyStat = liveViewAction.inflateView(R.layout.item_livevideo_english_stat_fly);
         //隐藏进度条星星动画
         if (!isStarVisible) {
             flyStat.setVisibility(View.GONE);
@@ -582,7 +581,7 @@ public class LiveAchievementBll implements StarInteractAction {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
         params.leftMargin = (int) startPoint.getX();
         params.topMargin = (int) startPoint.getY();
-        bottomContent.addView(flyStat, params);
+        liveViewAction.addView(flyStat, params);
         final ImageView iv_livevideo_starinteract_stat = (ImageView) flyStat.findViewById(R.id
                 .iv_livevideo_starinteract_stat);
         iv_livevideo_starinteract_stat.setImageResource(isSmallEnglish ?
@@ -643,7 +642,7 @@ public class LiveAchievementBll implements StarInteractAction {
                         String location1 = outLocation[0] + "-" + outLocation[1];
                         ivStarInteractStat.getLocationInWindow(outLocation);
                         String location2 = outLocation[0] + "-" + outLocation[1];
-                        bottomContent.removeView(flyStat);
+                        liveViewAction.removeView(flyStat);
 //                        String status = "true";
 //                        Map<String, String> mData = new HashMap<>();
 //                        mData.put("logtype", "showAnimation");
@@ -679,15 +678,14 @@ public class LiveAchievementBll implements StarInteractAction {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
             startPoint = new Point(params.leftMargin, params.topMargin);
         }
-        final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly, bottomContent,
-                false);
+        final View flyStat = liveViewAction.inflateView(R.layout.item_livevideo_stat_fly);
         TextView tv_livevideo_statinteract_count = (TextView) flyStat.findViewById(R.id
                 .tv_livevideo_starinteract_count);
         tv_livevideo_statinteract_count.setText("×" + starCount);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
         params.leftMargin = (int) startPoint.getX();
         params.topMargin = (int) startPoint.getY();
-        bottomContent.addView(flyStat, params);
+        liveViewAction.addView(flyStat, params);
         AllAnimation allAnimation;
         if (!allAnimations.isEmpty()) {
             allAnimation = allAnimations.remove(0);
@@ -866,7 +864,7 @@ public class LiveAchievementBll implements StarInteractAction {
                             mData.put("location1", location1);
                             mData.put("location2", location2);
                             liveAndBackDebug.umsAgentDebugPv(eventId, mData);
-                            bottomContent.removeView(flyStat);
+                            liveViewAction.removeView(flyStat);
                             allAnimations.add(AllAnimation.this);
                         }
                     });

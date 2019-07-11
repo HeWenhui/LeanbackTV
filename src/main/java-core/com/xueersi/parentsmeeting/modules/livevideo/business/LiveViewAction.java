@@ -21,4 +21,6 @@ public interface LiveViewAction {
 //    void addView(LiveVideoLevel level, View child, int index, ViewGroup.LayoutParams params);
 
     View inflateView(int resource);
+
+    <T extends View> T findViewById(int id);
 }

@@ -11,9 +11,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 public class LiveViewActionIml implements LiveViewAction {
     Activity activity;
     RelativeLayout bottomContent;
+    RelativeLayout mContentView;
 
-    public LiveViewActionIml(Activity activity, RelativeLayout bottomContent) {
+    public LiveViewActionIml(Activity activity, RelativeLayout mContentView, RelativeLayout bottomContent) {
         this.activity = activity;
+        this.mContentView = mContentView;
         this.bottomContent = bottomContent;
     }
 
@@ -64,5 +66,9 @@ public class LiveViewActionIml implements LiveViewAction {
         final View view1 = LayoutInflater.from(activity).inflate(resource, bottomContent,
                 false);
         return view1;
+    }
+
+    public <T extends View> T findViewById(int id) {
+        return mContentView.findViewById(id);
     }
 }
