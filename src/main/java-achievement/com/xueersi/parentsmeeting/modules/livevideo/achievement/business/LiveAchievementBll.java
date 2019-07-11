@@ -198,7 +198,7 @@ public class LiveAchievementBll implements StarInteractAction {
         this.liveAndBackDebug = liveAndBackDebug;
     }
 
-    public void initView(LiveViewAction liveViewAction, RelativeLayout mContentView) {
+    public void initView(LiveViewAction liveViewAction) {
         this.liveViewAction = liveViewAction;
 //        if (myView != null) {
 //            ViewGroup group = (ViewGroup) myView.getParent();
@@ -214,10 +214,7 @@ public class LiveAchievementBll implements StarInteractAction {
 //            return;
 //        }
 //        myView = activity.getLayoutInflater().inflate(R.layout.item_livevideo_stat, bottomContent, false);
-        myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_star_content);
-        if (myView == null) {
-            myView = mContentView.findViewById(R.id.rl_livevideo_star_content);
-        }
+        myView = liveViewAction.findViewById(R.id.rl_livevideo_star_content);
         myView.setVisibility(View.VISIBLE);
 
         View layout_livevideo_stat_gold;

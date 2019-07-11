@@ -158,7 +158,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
     }
 
     public boolean initView(LiveViewAction liveViewAction, String mode, TalLanguage talLanguage, AtomicBoolean
-            audioRequest, RelativeLayout mContentView) {
+            audioRequest) {
         if (speakerRecognitioner != null) {
 
         } else {

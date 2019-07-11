@@ -21,6 +21,7 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AgoraUpload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -65,7 +66,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private TextView tvPrimaryTeamName;
     /** 战队icon */
     private ImageView ivPrimaryTeamIcon;
-    private RelativeLayout mContentView;
+    private LiveViewAction liveViewAction;
     private PrimaryKuangjiaImageView ivLivePrimaryClassKuangjiaImgNormal;
     /** 用户交互，不看他，举报 */
     private View clPrimaryTeamInter;
@@ -102,9 +103,9 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private boolean haveaudio;
     private PrimaryClassView primaryClassView;
 
-    public PrimaryItemPager(Context context, RelativeLayout mContentView, String mode) {
+    public PrimaryItemPager(Context context, LiveViewAction liveViewAction, String mode) {
         super(context);
-        this.mContentView = mContentView;
+        this.liveViewAction = liveViewAction;
         this.mode = mode;
         primaryClassView = ProxUtil.getProxUtil().get(mContext, PrimaryClassView.class);
         agoraUpload = new AgoraUpload(mContext);
@@ -149,7 +150,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     public void initData() {
         super.initData();
         logger.d("initData:mode=" + mode);
-        ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
+        ivLivePrimaryClassKuangjiaImgNormal = liveViewAction.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
         primaryClassView.decorateItemPager(mView, ivLivePrimaryClassKuangjiaImgNormal);
         addItem();
         setLayout();

@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -68,7 +66,7 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
         setTotalOpeningLength(liveGetInfo.getTotalOpeningLength());
     }
 
-    public boolean initView(LiveViewAction liveViewAction, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest, RelativeLayout mContentView) {
+    public boolean initView(LiveViewAction liveViewAction, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest) {
         this.mode = mode;
         this.liveViewAction = liveViewAction;
         logger.d("initView:mode=" + mode + ",Request=" + audioRequest.get());

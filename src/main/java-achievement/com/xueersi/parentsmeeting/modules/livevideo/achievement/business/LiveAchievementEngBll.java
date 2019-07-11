@@ -44,7 +44,7 @@ public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAc
         liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
     }
 
-    public void initView(LiveViewAction liveViewAction, RelativeLayout mContentView) {
+    public void initView(LiveViewAction liveViewAction) {
         RelativeLayout relativeLayout = liveViewAction.findViewById(R.id.rl_livevideo_star_content);
         relativeLayout.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams layoutParams = relativeLayout.getLayoutParams();

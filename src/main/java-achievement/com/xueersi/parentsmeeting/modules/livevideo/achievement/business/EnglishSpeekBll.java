@@ -178,7 +178,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //        lastSecond = (int) totalOpeningLength.duration;
     }
 
-    public boolean initView(LiveViewAction liveViewAction, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest, RelativeLayout mContentView) {
+    public boolean initView(LiveViewAction liveViewAction, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest) {
         if (speakerRecognitioner != null) {
 
         } else {
@@ -203,11 +203,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             logger.d("initView:time1=" + (System.currentTimeMillis() - before));
         }
         this.liveViewAction = liveViewAction;
-        myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
-        //使用Fragment以后 ，这可能为空
-        if (myView == null) {
-            myView = mContentView.findViewById(R.id.rl_livevideo_english_content);
-        }
+        myView = liveViewAction.findViewById(R.id.rl_livevideo_english_content);
         myView.setVisibility(View.VISIBLE);
         final View layout_livevideo_stat_gold;
         if (!isSmallEnglish) {

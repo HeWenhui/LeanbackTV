@@ -229,14 +229,14 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
     public void sendPraiseNotice() {
         prasieBtnClickTime++;
         long timePasted = System.currentTimeMillis() - lastSendTime;
-        mRootView.removeCallbacks(clickTimeSendTask);
+        removeCallbacks(clickTimeSendTask);
         if (timePasted >= SEND_MSG_INTERVAL) {
             doSend();
         } else {
             if (prasieBtnClickTime > 0) {
                 long sendDelay = SEND_MSG_INTERVAL - timePasted;
                 sendDelay = sendDelay < 0 ? 0 : sendDelay;
-                mRootView.postDelayed(clickTimeSendTask, sendDelay);
+                postDelayed(clickTimeSendTask, sendDelay);
             }
         }
     }
@@ -331,9 +331,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
         if (verifyCancelAlertDialog != null) {
             verifyCancelAlertDialog.cancelDialog();
         }
-        if(mRootView != null){
-            mRootView.removeCallbacks(clickTimeSendTask);
-        }
+        removeCallbacks(clickTimeSendTask);
     }
 
 

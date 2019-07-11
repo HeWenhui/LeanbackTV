@@ -223,7 +223,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     @Override
     public void initView() {
         PrimaryClassInterIml primaryClassInterIml = new PrimaryClassInterIml();
-        PrimaryItemPager primaryItemPager = new PrimaryItemPager(activity, mContentView, mLiveBll.getMode());
+        PrimaryItemPager primaryItemPager = new PrimaryItemPager(activity, getLiveViewAction(), mLiveBll.getMode());
         primaryItemPager.setPrimaryClassInter(primaryClassInterIml);
         primaryItemView = primaryItemPager;
     }
