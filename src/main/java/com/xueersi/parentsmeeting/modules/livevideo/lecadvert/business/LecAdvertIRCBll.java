@@ -51,7 +51,7 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
                             lecAdvertAction = new LecAdvertBll(activity);
                             lecAdvertAction.setLecAdvertHttp(LecAdvertIRCBll.this);
                             lecAdvertAction.setLiveid(mLiveId);
-                            lecAdvertAction.initView(mRootView, mLiveBll.getmIsLand().get());
+                            lecAdvertAction.initView(getLiveViewAction(), mLiveBll.getmIsLand().get());
                             startAdvert(object);
                         }
                     });
@@ -125,7 +125,7 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         if (lecAdvertAction != null) {
-            lecAdvertAction.initView(bottomContent, mIsLand.get());
+            lecAdvertAction.initView(getLiveViewAction(), mIsLand.get());
         }
         lecAdvertPopBll.setmIsLand(mIsLand);
     }
