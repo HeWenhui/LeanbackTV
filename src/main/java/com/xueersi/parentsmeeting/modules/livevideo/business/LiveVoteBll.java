@@ -92,8 +92,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
             voteWaitDialog.cancelDialog();
             voteWaitDialog = null;
         }
-        final View view1 = LayoutInflater.from(context).inflate(R.layout.layout_livevideo_vote_result, mRootView,
-                false);
+        final View view1 = inflateView(R.layout.layout_livevideo_vote_result);
         contentView = new RelativeLayout(context);
         contentView.addView(view1);
         addView(contentView);

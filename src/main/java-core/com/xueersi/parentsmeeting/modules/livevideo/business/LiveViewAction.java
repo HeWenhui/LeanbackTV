@@ -19,4 +19,6 @@ public interface LiveViewAction {
 //    void addView(View child, int index, ViewGroup.LayoutParams params);
 
 //    void addView(LiveVideoLevel level, View child, int index, ViewGroup.LayoutParams params);
+
+    View inflateView(int resource);
 }

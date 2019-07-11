@@ -224,7 +224,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
     protected void initView() {
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
-        liveViewAction = new LiveViewActionIml(bottomContent);
+        liveViewAction = new LiveViewActionIml(activity, bottomContent);
         logger.e("========>:initView:" + bottomContent);
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);

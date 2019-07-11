@@ -354,6 +354,9 @@ public class LiveBaseBll extends BaseBll {
         liveViewAction.addView(level, child, params);
     }
 
+    public View inflateView(int resource) {
+        return liveViewAction.inflateView(resource);
+    }
 //    public void addView(View child, int index, ViewGroup.LayoutParams params) {
 //        liveViewAction.addView(child, index, params);
 //    }

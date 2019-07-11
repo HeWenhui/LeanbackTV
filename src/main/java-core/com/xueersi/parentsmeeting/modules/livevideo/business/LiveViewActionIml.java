@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.app.Activity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -7,9 +9,11 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 
 public class LiveViewActionIml implements LiveViewAction {
+    Activity activity;
     RelativeLayout bottomContent;
 
-    public LiveViewActionIml(RelativeLayout bottomContent) {
+    public LiveViewActionIml(Activity activity, RelativeLayout bottomContent) {
+        this.activity = activity;
         this.bottomContent = bottomContent;
     }
 
@@ -55,4 +59,10 @@ public class LiveViewActionIml implements LiveViewAction {
 //    public void addView(LiveVideoLevel level, View child, int index, ViewGroup.LayoutParams params) {
 //        bottomContent.addView(child, index, params);
 //    }
+
+    public View inflateView(int resource) {
+        final View view1 = LayoutInflater.from(activity).inflate(resource, bottomContent,
+                false);
+        return view1;
+    }
 }

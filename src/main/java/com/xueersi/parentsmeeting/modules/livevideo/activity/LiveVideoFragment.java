@@ -439,7 +439,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void initView() {
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
-        liveViewAction = new LiveViewActionIml(bottomContent);
+        liveViewAction = new LiveViewActionIml(activity, bottomContent);
         rlMessageBottom = mContentView.findViewById(R.id.rl_course_message_bottom);
 
 //        tvLoadingTint = mContentView.findViewById(R.id.tv_course_video_loading_content);
