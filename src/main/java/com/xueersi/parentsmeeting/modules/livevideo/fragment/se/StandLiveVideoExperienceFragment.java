@@ -50,6 +50,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBack
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -102,6 +104,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      * 互动题的布局下层（垂直方向的下层）
      */
     private RelativeLayout rlQuestionContentBottom;
+    private LiveViewAction liveViewAction;
     /**
      * 互动题的布局上层（垂直方向的上层，防止被后面的view遮挡住）
      */
@@ -227,7 +230,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         rlQuestionContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
-        //为
+        liveViewAction = new LiveViewActionIml(activity, mContentView, rlQuestionContent);
     }
 
     protected void updateLoadingImage() {
@@ -518,7 +521,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         try {
             for (LiveBackBaseBll businessBll : businessBlls) {
-                businessBll.initViewF(rlQuestionContentBottom, rlQuestionContent, mIsLand);
+                businessBll.initViewF(liveViewAction, rlQuestionContentBottom, rlQuestionContent, mIsLand);
             }
         } catch (Exception e) {
             e.printStackTrace();

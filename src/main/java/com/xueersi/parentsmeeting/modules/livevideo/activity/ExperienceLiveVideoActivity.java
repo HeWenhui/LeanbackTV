@@ -67,6 +67,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -331,6 +333,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
      * 互动题的布局
      */
     private RelativeLayout rlQuestionContent;
+    private LiveViewAction liveViewAction;
     /**
      * 初始进入播放器时的预加载界面
      */
@@ -471,6 +474,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //                rlQuestionContent = null;
 //            }
 //        }
+        liveViewAction = new LiveViewActionIml(this, null, rlQuestionContent);
         loadData();
 
         return true;
@@ -881,7 +885,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         addBusiness(this);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(null, rlQuestionContent, new AtomicBoolean(mIsLand));
+            businessBll.initViewF(liveViewAction, null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
 //        ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);

@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -8,6 +10,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
@@ -27,10 +30,11 @@ import java.util.HashMap;
 public class StandSpeechTop3Bll implements SpeechEndAction {
     String TAG = "StandSpeechTop3Bll";
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    private Context context;
     SpeechEvalHttp questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
     StandSpeechTop3Pager standSpeechTop3Pager;
-    RelativeLayout bottomContent;
+    LiveViewAction liveViewAction;
     GoldTeamStatus entity;
     boolean stop = false;
     HashMap<String, GoldTeamStatus> goldTeamStatusHashMap = new HashMap<>();
@@ -38,19 +42,21 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     LogToFile logToFile;
 
     public StandSpeechTop3Bll(Context context, SpeechEvalHttp questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
+        this.context = context;
         this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;
         logToFile = new LogToFile(context, TAG);
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent) {
-        this.bottomContent = bottomContent;
+    public void initView(LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
     }
 
     @Override
     public void examSubmitAll(final BaseSpeechAssessmentPager speechAssessmentPager, final String num) {
-        bottomContent.postDelayed(new Runnable() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 //原生语音评测
@@ -143,11 +149,11 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
             logger.d("initTop:num=" + num);
             return;
         }
-        standSpeechTop3Pager = new StandSpeechTop3Pager(bottomContent.getContext(), entity);
+        standSpeechTop3Pager = new StandSpeechTop3Pager(context, entity);
         standSpeechTop3Pager.setId(num);
         standSpeechTop3Pager.initData();
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(standSpeechTop3Pager.getRootView(), lp);
+        liveViewAction.addView(standSpeechTop3Pager.getRootView(), lp);
         StandSpeechTop3Bll.this.entity = null;
         goldTeamStatusHashMap.remove(num);
         stop = false;

@@ -9,9 +9,9 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 
 public class LiveViewActionIml implements LiveViewAction {
-    Activity activity;
-    RelativeLayout bottomContent;
-    RelativeLayout mContentView;
+    private Activity activity;
+    private RelativeLayout bottomContent;
+    private RelativeLayout mContentView;
 
     public LiveViewActionIml(Activity activity, RelativeLayout mContentView, RelativeLayout bottomContent) {
         this.activity = activity;
@@ -69,6 +69,12 @@ public class LiveViewActionIml implements LiveViewAction {
     }
 
     public <T extends View> T findViewById(int id) {
-        return mContentView.findViewById(id);
+        if (mContentView != null) {
+            T view = mContentView.findViewById(id);
+            if (view != null) {
+                return view;
+            }
+        }
+        return activity.findViewById(id);
     }
 }

@@ -20,7 +20,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -96,7 +95,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
 
     @Override
     public void initView() {
-        questionBll.initView(mRootView, mIsLand.get());
+        questionBll.initView(null, mRootView, mIsLand.get());
     }
 
     @Override

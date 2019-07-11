@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  * created  at 2018/6/20 9:34
  */
-public class LiveBaseBll extends BaseBll {
+public class LiveBaseBll extends BaseBll implements LiveViewAction {
 
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected RelativeLayout mRootView;

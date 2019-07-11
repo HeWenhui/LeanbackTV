@@ -69,11 +69,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
-import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
@@ -332,6 +333,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
      * 互动题的布局
      */
     private RelativeLayout rlQuestionContent;
+    private LiveViewAction liveViewAction;
     /**
      * 初始进入播放器时的预加载界面
      */
@@ -465,6 +467,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 //        if (mIsLand) {
         // 加载横屏时互动题的列表布局
         rlQuestionContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_contents);
+        liveViewAction = new LiveViewActionIml(this, null, rlQuestionContent);
 //        } else {
 //            if (rlQuestionContent != null) {
 //                rlQuestionContent.removeAllViews();
@@ -881,7 +884,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         addBusiness(this);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(null, rlQuestionContent, new AtomicBoolean(mIsLand));
+            businessBll.initViewF(liveViewAction, null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
 //        ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
