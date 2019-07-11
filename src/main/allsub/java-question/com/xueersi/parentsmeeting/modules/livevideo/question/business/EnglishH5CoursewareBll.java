@@ -327,7 +327,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             @Override
             public void run() {
                 if ("on".equals(status)) {
-                    if (LiveVideoConfig.isSend || videoQuestionLiveEntity.englishH5Entity.getNewEnglishH5()) {
+                    if (LiveVideoConfig.isMulLiveBack || videoQuestionLiveEntity.englishH5Entity.getNewEnglishH5()) {
                         if (h5CoursewarePager != null) {
                             if (LiveVideoConfig.englishH5Entity.equals(videoQuestionLiveEntity.englishH5Entity)) {
                                 logToFile.i("onH5Courseware:equals:English=" + h5CoursewarePager.getEnglishH5Entity());
@@ -493,8 +493,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     private void showH5Paper(final VideoQuestionLiveEntity videoQuestionH5Entity) {
         mUrl = videoQuestionH5Entity.getUrl();
-        if (LiveVideoConfig.isSend) {
-            EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
+        EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
+        if (englishH5Entity.getNewEnglishH5()) {
             logToFile.i("showH5Paper:packageId=" + englishH5Entity.getPackageId() + ",Released=" + englishH5Entity.getReleasedPageInfos());
         } else {
             logToFile.i("showH5Paper:url=" + videoQuestionH5Entity.getUrl());
