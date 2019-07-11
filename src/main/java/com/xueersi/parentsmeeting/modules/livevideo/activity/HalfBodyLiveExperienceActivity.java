@@ -65,6 +65,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -294,6 +296,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
      * 互动题的布局
      */
     private RelativeLayout rlQuestionContent;
+    private LiveViewAction liveViewAction;
     /**
      * 初始进入播放器时的预加载界面
      */
@@ -422,6 +425,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
         // 加载横屏时互动题的列表布局
         rlQuestionContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_contents);
+        liveViewAction = new LiveViewActionIml(this, null, rlQuestionContent);
         initAllBll();
         loadData();
         return true;
@@ -785,7 +789,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         addBusiness(this);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(null, rlQuestionContent, new AtomicBoolean(mIsLand));
+            businessBll.initViewF(liveViewAction, null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
         ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
         if (!MediaPlayer.getIsNewIJK()) {

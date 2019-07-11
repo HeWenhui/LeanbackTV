@@ -116,7 +116,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
     }
 
-    public EnglishH5CoursewareX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
+    public EnglishH5CoursewareX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
                                       final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
                                       String isShowRanks, int isArts, boolean allowTeamPk) {
         super(context);

@@ -232,7 +232,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     private LiveHttpManager mLiveHttpManager;
     private boolean isFirstAI = true;
 
-    public ChineseAiSubjectiveCoursewarePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
+    public ChineseAiSubjectiveCoursewarePager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity,
                                               boolean isPlayBack, String liveId, String id,
                                               EnglishH5Entity englishH5Entity,
                                               final String courseware_type, String nonce,

@@ -75,8 +75,8 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
      */
     private boolean isCanRolePlay = true;
 
-    public RolePlayMachineBll(Context context, RelativeLayout bottomContent, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo, boolean islive) {
-        super(context, bottomContent, liveBll, liveGetInfo);
+    public RolePlayMachineBll(Context context, LiveViewAction liveViewAction, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo, boolean islive) {
+        super(context, liveViewAction, liveBll, liveGetInfo);
         mIsLive = islive;
         this.mLiveBll = liveBll;
         this.mLiveGetInfo = liveGetInfo;

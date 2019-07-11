@@ -165,10 +165,10 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     private AnswerResultEntity mAnswerReulst;
     private VideoQuestionLiveEntity mDetail;
 
-    public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, String headUrl, String userName) {
+    public VoiceAnswerStandPager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, String headUrl, String userName) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
-        this.mDetail = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+        this.mDetail = baseVideoQuestionEntity;
         isNewArts = mDetail.isNewArtsH5Courseware();
         this.questionSwitch = questionSwitch;
         this.type = type;

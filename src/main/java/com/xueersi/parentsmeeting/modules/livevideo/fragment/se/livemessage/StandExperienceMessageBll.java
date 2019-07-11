@@ -267,7 +267,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                                      String message) {
             logger.i("=====>onPrivateMessage:isSelf=" + isSelf);
             if (isSelf && "T".equals(message)) {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         XESToastUtils.showToast(activity, "您的帐号已在其他设备登录，请重新进入直播间");

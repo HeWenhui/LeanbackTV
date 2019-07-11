@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnglishSpee
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -75,7 +76,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     /** 静态destory */
     static boolean isDestory2 = false;
     boolean isAudioStart = false;
-    RelativeLayout bottomContent;
+    LiveViewAction liveViewAction;
     private ViewGroup myView;
     /**
      * 能量条进度
@@ -177,7 +178,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //        lastSecond = (int) totalOpeningLength.duration;
     }
 
-    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest, RelativeLayout mContentView) {
+    public boolean initView(LiveViewAction liveViewAction, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest, RelativeLayout mContentView) {
         if (speakerRecognitioner != null) {
 
         } else {
@@ -199,9 +200,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             } else {
                 this.talLanguage = talLanguage;
             }
-            logger.d( "initView:time1=" + (System.currentTimeMillis() - before));
+            logger.d("initView:time1=" + (System.currentTimeMillis() - before));
         }
-        this.bottomContent = bottomContent;
+        this.liveViewAction = liveViewAction;
         myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
         //使用Fragment以后 ，这可能为空
         if (myView == null) {
@@ -252,8 +253,8 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //                            talAsrJni.LangIDReset(0);
                         }
                         if (isStarLottieVisible) {
-                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
-                        rl_livevideo_english_speak_error.setVisibility(View.GONE);
+                            rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+                            rl_livevideo_english_speak_error.setVisibility(View.GONE);
                         }
                         isDestory = false;
                         isDestory2 = false;
@@ -270,8 +271,8 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //                        talAsrJni.LangIDReset(0);
                     }
                     if (isStarLottieVisible) {
-                    rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
-                    rl_livevideo_english_speak_error.setVisibility(View.GONE);
+                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+                        rl_livevideo_english_speak_error.setVisibility(View.GONE);
                     }
                     isDestory = false;
                     isDestory2 = false;
@@ -303,14 +304,14 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //            tv_livevideo_english_time.setVisibility(View.GONE);
 //            }
             if (isStarLottieVisible) {
-            rl_livevideo_english_speak_content.setVisibility(View.GONE);
+                rl_livevideo_english_speak_content.setVisibility(View.GONE);
             }
 //            tv_livevideo_english_prog.setVisibility(View.GONE);
 //            rl_livevideo_english_stat.setVisibility(View.GONE);
 
         } else {
             if (isStarLottieVisible) {
-            rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+                rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
             }
 //            tv_livevideo_english_time.setVisibility(View.VISIBLE);
 //            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
@@ -448,7 +449,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void destory() {
-        logger.d( "destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
+        logger.d("destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
         isDestory = true;
         isDestory2 = true;
         stop(null);
@@ -474,9 +475,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             isDestory = true;
             isDestory2 = true;
             if (isStarLottieVisible) {
-            rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
-            //这里不能改为GONE，因为rl_livevideo_english_speak_error布局和rl_livevideo_english_speak_content在同一个高度和底部
-            rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
+                rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
+                //这里不能改为GONE，因为rl_livevideo_english_speak_error布局和rl_livevideo_english_speak_content在同一个高度和底部
+                rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
             }
 
             if (onAudioRequest != null) {
@@ -519,7 +520,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                     sendDbDuration = dbDuration;
                                     liveBll.sendDBStudent(dbDuration);
                                     lastDBTime = nowTime;
-                                    logger.d( "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
+                                    logger.d("onProcessData(sendDBStudent):dbDuration=" + dbDuration);
                                 }
                             }
                             if (totalOpeningLength.duration == 0) {
@@ -550,7 +551,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                         setTime(MAX_SECOND);
                                     }
                                 }
-                                logger.d( "onProcessData:second=" + second + ",oldProgress=" + oldProgress
+                                logger.d("onProcessData:second=" + second + ",oldProgress=" + oldProgress
                                         + ",newProgress=" + newProgress);
                                 if (newProgress != 45) {
                                     setProg(startProgress, newProgress);
@@ -611,7 +612,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onPredict(String predict) {
-        logger.d( "onPredict:predict=" + predict);
+        logger.d("onPredict:predict=" + predict);
         if (totalOpeningLength == null) {
             return;
         }
@@ -636,7 +637,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     sendDbDuration = dbDuration;
                     liveBll.sendDBStudent(dbDuration);
                     lastDBTime = nowTime;
-                    logger.d( "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
+                    logger.d("onProcessData(sendDBStudent):dbDuration=" + dbDuration);
                 }
             }
             second15 += totalSecond - lastSecond;
@@ -669,7 +670,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                 setTime(MAX_SECOND);
                             }
                         }
-                        logger.d( "onProcessData:second=" + second + ",oldProgress=" + oldProgress
+                        logger.d("onProcessData:second=" + second + ",oldProgress=" + oldProgress
                                 + ",newProgress=" + newProgress);
                         if (newProgress != 45) {
                             setProg(startProgress, newProgress);
@@ -740,7 +741,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                logger.i( "onAnimationCancel:equal=" + (lastValueAnimator ==
+                logger.i("onAnimationCancel:equal=" + (lastValueAnimator ==
                         valueAnimator));
             }
 
@@ -792,7 +793,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onDBStart() {
-        logger.d( "onDBStart:dbStart=" + dbStart);
+        logger.d("onDBStart:dbStart=" + dbStart);
         if (!dbStart) {
             dbStart = true;
             dbSecond = lastSecond;
@@ -807,7 +808,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onDBStop() {
-        logger.d( "onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
+        logger.d("onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
         if (dbStart) {
             dbStart = false;
             LiveMessageSend liveMessageSend = ProxUtil.getProxUtil().get(activity, LiveMessageSend.class);
@@ -834,14 +835,14 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onModeChange(final String mode, final boolean audioRequest) {
-        logger.d( "onModeChange:mode=" + mode + ",audioRequest=" + audioRequest);
+        logger.d("onModeChange:mode=" + mode + ",audioRequest=" + audioRequest);
         this.mode = mode;
         myView.post(new Runnable() {
             @Override
             public void run() {
                 if (LiveTopic.MODE_TRANING.equals(mode)) {
                     if (isStarLottieVisible) {
-                    rl_livevideo_english_speak_content.setVisibility(View.GONE);
+                        rl_livevideo_english_speak_content.setVisibility(View.GONE);
                     }
 //                    tv_livevideo_english_prog.setVisibility(View.GONE);
 //                    rl_livevideo_english_stat.setVisibility(View.GONE);
@@ -850,8 +851,8 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //                    tv_livevideo_english_prog.setVisibility(View.VISIBLE);
 //                    rl_livevideo_english_stat.setVisibility(View.VISIBLE);
                     if (isStarLottieVisible) {
-                    if (rl_livevideo_english_speak_error.getVisibility() != View.VISIBLE) {
-                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+                        if (rl_livevideo_english_speak_error.getVisibility() != View.VISIBLE) {
+                            rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
 
                         }
                     }
@@ -890,21 +891,20 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     @Override
     public void praise(int answer) {
 
-        logger.d( "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
+        logger.d("praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "sendPraise");
             mData.put("answer", "" + answer);
             mData.put("duration", "" + sendDbDuration);
             liveAndBackDebug.umsAgentDebugSys(eventId, mData);
-            bottomContent.post(new Runnable() {
+            handler.post(new Runnable() {
                 @Override
                 public void run() {
                     final View view;
                     RelativeLayout.LayoutParams lp;
                     if (!isSmallEnglish) {
-                        view = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_english_speek_praise,
-                                bottomContent, false);
+                        view = liveViewAction.inflateView(R.layout.layout_livevideo_english_speek_praise);
                         lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 
@@ -925,11 +925,11 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         imageView.setImageResource(R.drawable.bg_livevideo_english_speek_praise);
 
                         tv_livevideo_english_praise.setText("老师表扬了你！");
-                        bottomContent.addView(view, lp);
-                        bottomContent.postDelayed(new Runnable() {
+                        liveViewAction.addView(view, lp);
+                        handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                bottomContent.removeView(view);
+                                liveViewAction.removeView(view);
                             }
                         }, 1000);
 //                        }
@@ -939,16 +939,16 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                             englishSpeekPager = new EnglishSpeekPager(activity);
                         } else {
                             //移出之前的弹窗
-                            if (englishSpeekPager.getRootView().getParent() == bottomContent) {
-                                bottomContent.removeView(englishSpeekPager.getRootView());
+                            if (englishSpeekPager.getRootView().getParent() != null) {
+                                liveViewAction.removeView(englishSpeekPager.getRootView());
                             }
                         }
-                        bottomContent.removeCallbacks(removeViewRunnable);
+                        handler.removeCallbacks(removeViewRunnable);
                         view = englishSpeekPager.getRootView();
                         englishSpeekPager.updateStatus(EnglishSpeekPager.PRAISE);
                         lp = englishSpeekPager.getLayoutParams();
-                        bottomContent.addView(view, lp);
-                        bottomContent.postDelayed(removeViewRunnable, 1000);
+                        liveViewAction.addView(view, lp);
+                        handler.postDelayed(removeViewRunnable, 1000);
 //                        rlRemindOrPraise.setVisibility(View.GONE);
 //                        ivSmallEnglish.setVisibility(View.VISIBLE);
 //                        tv_livevideo_english_praise.setVisibility(View.GONE);
@@ -974,8 +974,8 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     Runnable removeViewRunnable = new Runnable() {
         @Override
         public void run() {
-            if (englishSpeekPager != null && englishSpeekPager.getRootView().getParent() == bottomContent) {
-                bottomContent.removeView(englishSpeekPager.getRootView());
+            if (englishSpeekPager != null && englishSpeekPager.getRootView().getParent() != null) {
+                liveViewAction.removeView(englishSpeekPager.getRootView());
             }
         }
     };
@@ -983,7 +983,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     @Override
     public void remind(int answer) {
 
-        logger.d( "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
+        logger.d("remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
 
         if (sendDbDuration <= answer) {
             Map<String, String> mData = new HashMap<>();
@@ -991,7 +991,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             mData.put("answer", "" + answer);
             mData.put("duration", "" + sendDbDuration);
             liveAndBackDebug.umsAgentDebugSys(eventId, mData);
-            bottomContent.post(new Runnable() {
+            handler.post(new Runnable() {
 
                 @Override
                 public void run() {
@@ -999,8 +999,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     RelativeLayout.LayoutParams lp;
                     //不是小英
                     if (!isSmallEnglish) {
-                        view = LayoutInflater.from(activity).inflate(R.layout
-                                .layout_livevideo_english_speek_praise, bottomContent, false);
+                        view = liveViewAction.inflateView(R.layout.layout_livevideo_english_speek_praise);
                         ImageView imageView = (ImageView) view.findViewById(R.id.iv_livevideo_english_praise);
                         TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
                                 .tv_livevideo_english_praise);
@@ -1013,11 +1012,11 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                         lp.rightMargin = praiseWidth;
-                        bottomContent.addView(view, lp);
-                        bottomContent.postDelayed(new Runnable() {
+                        liveViewAction.addView(view, lp);
+                        handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                bottomContent.removeView(view);
+                                liveViewAction.removeView(view);
                             }
                         }, 1000);
 
@@ -1027,16 +1026,16 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                             englishSpeekPager = new EnglishSpeekPager(activity);
                         } else {
                             //移出之前的弹窗
-                            if (englishSpeekPager.getRootView().getParent() == bottomContent) {
-                                bottomContent.removeView(englishSpeekPager.getRootView());
+                            if (englishSpeekPager.getRootView().getParent() != null) {
+                                liveViewAction.removeView(englishSpeekPager.getRootView());
                             }
                         }
-                        bottomContent.removeCallbacks(removeViewRunnable);
+                        handler.removeCallbacks(removeViewRunnable);
                         view = englishSpeekPager.getRootView();
                         englishSpeekPager.updateStatus(EnglishSpeekPager.REMIND);
                         lp = englishSpeekPager.getLayoutParams();
-                        bottomContent.addView(view, lp);
-                        bottomContent.postDelayed(removeViewRunnable, 1000);
+                        liveViewAction.addView(view, lp);
+                        handler.postDelayed(removeViewRunnable, 1000);
                     }
 
                     //小英

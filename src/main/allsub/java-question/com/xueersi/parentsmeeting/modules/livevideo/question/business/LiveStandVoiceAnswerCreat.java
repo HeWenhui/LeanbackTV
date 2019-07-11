@@ -91,7 +91,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     }
 
     @Override
-    public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
+    public BaseVoiceAnswerPager create(Context activity, VideoQuestionLiveEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
                                        RelativeLayout rlQuestionContent, SpeechUtils mIse) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         VoiceAnswerStandLog.sno2(this.liveAndBackDebug, videoQuestionLiveEntity);

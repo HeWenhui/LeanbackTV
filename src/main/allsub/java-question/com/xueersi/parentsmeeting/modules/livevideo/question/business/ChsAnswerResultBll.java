@@ -36,7 +36,6 @@ import org.json.JSONObject;
 public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, AnswerResultStateListener {
 
     private static final String TAG = "ArtsAnswerResultBll";
-    private RelativeLayout rlAnswerResultLayout;
     private IArtsAnswerRsultDisplayer mDsipalyer;
     boolean forceSumbmit;
     /** 当前答题结果 */
@@ -49,7 +48,6 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
 
     public ChsAnswerResultBll(Activity context, String liveId, int liveType, RelativeLayout rootView){
         super(context,liveId,liveType);
-        mRootView = rootView;
     }
 
     @Override
@@ -60,7 +58,6 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
 
     private void attachToView() {
         EventBus.getDefault().register(this);
-        rlAnswerResultLayout = mRootView;
     }
 
     private void showAnswerReulst(ChsAnswerResultEvent event) {
@@ -74,7 +71,7 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
             public void run() {
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
                         (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
+                addView(mDsipalyer.getRootLayout(), layoutParams);
             }
         },100);
         VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
@@ -137,7 +134,7 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
     @Override
     public void onAutoClose(BasePager basePager) {
         if (mDsipalyer != null) {
-            rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
+            removeView(mDsipalyer.getRootLayout());
             mDsipalyer = null;
         }
     }

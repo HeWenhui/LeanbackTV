@@ -99,7 +99,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     /**
      * 基础布局
      */
-    private RelativeLayout bottomContent;
+    private LiveViewAction liveViewAction;
     /**
      * 直播基础BLL
      */
@@ -113,9 +113,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     private boolean isGoToRobot;//是否开始了人机
 
-    public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo) {
+    public RolePlayerBll(Context context, LiveViewAction liveViewAction, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo) {
         super(context);
-        this.bottomContent = bottomContent;
+        this.liveViewAction = liveViewAction;
         this.mLiveBll = liveBll;
         this.mLiveGetInfo = liveGetInfo;
         mRolePlayerHttpManager = new RolePlayerHttpManager(mContext);
@@ -212,8 +212,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         if(mRolePlayerPager == null){
             mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo);
             mRolePlayerPager.initData();
-            if (bottomContent != null) {
-                bottomContent.addView(mRolePlayerPager.getRootView());
+            if (liveViewAction != null) {
+                liveViewAction.addView(mRolePlayerPager.getRootView());
             }
         }
         //用户弹出答题框
@@ -288,10 +288,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 关掉当前页面
      */
     public void closeCurPage() {
-        mLogtf.i( "closeCurPage:bottomContent=null?"+(bottomContent==null)+",pager=null?"+(mRolePlayerPager==null));
-        if (bottomContent != null && mRolePlayerPager != null) {
+        mLogtf.i( "closeCurPage:bottomContent=null?"+(liveViewAction==null)+",pager=null?"+(mRolePlayerPager==null));
+        if (liveViewAction != null && mRolePlayerPager != null) {
             logger.i( "onStopQuestion 关闭当前页面 ");
-            bottomContent.removeView(mRolePlayerPager.getRootView());
+            liveViewAction.removeView(mRolePlayerPager.getRootView());
             mRolePlayerPager.onDestroy();
             mRolePlayerPager = null;
             AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
@@ -334,8 +334,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             @Override
             public void run() {
                 //移除roleplay界面，并释放该界面资源
-                if (bottomContent != null && mRolePlayerPager != null) {
-                    bottomContent.removeView(mRolePlayerPager.getRootView());
+                if (liveViewAction != null && mRolePlayerPager != null) {
+                    liveViewAction.removeView(mRolePlayerPager.getRootView());
                     mRolePlayerPager.onDestroy();
                     mRolePlayerPager = null;
                     logger.d( "移除了原生页面");
@@ -1018,7 +1018,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         return mRolePlayerPager;
     }
 
-    public RelativeLayout getBottomView() {
-        return bottomContent;
+    public LiveViewAction getBottomView() {
+        return liveViewAction;
     }
 }

@@ -408,7 +408,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         btMsgCommon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if(!first){
+                if (!first) {
                     initCommonWord();
                     first = true;
                 }
@@ -422,7 +422,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 int[] location = new int[2];
                 v.getLocationOnScreen(location);
                 //在控件上方显示
-                logger.i( "onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
+                logger.i("onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
                 rlLivevideoCommonWord.setVisibility(View.VISIBLE);
 //                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word.getLayoutParams();
 //                int left = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
@@ -516,7 +516,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         btMessageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logger.i( "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                logger.i("onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                 Editable editable = etMessageContent.getText();
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
@@ -570,7 +570,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                         .OnKeyboardShowingListener() {
                     @Override
                     public void onKeyboardShowing(boolean isShowing) {
-                        logger.i( "onKeyboardShowing:isShowing=" + isShowing);
+                        logger.i("onKeyboardShowing:isShowing=" + isShowing);
                         if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                             onTitleShow(true);
                         }
@@ -604,7 +604,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     public void initData() {
         long before = System.currentTimeMillis();
         super.initData();
-        logger.i( "initData:time1=" + (System.currentTimeMillis() - before));
+        logger.i("initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         if (getInfoGoldNum == 0) {
             liveThreadPoolExecutor.execute(new Runnable() {
@@ -633,7 +633,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
-        logger.i( "initData:minisize=" + minisize);
+        logger.i("initData:minisize=" + minisize);
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
@@ -702,7 +702,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             }
         };
         lvMessage.setAdapter(messageAdapter);
-        logger.i( "initData:time2=" + (System.currentTimeMillis() - before));
+        logger.i("initData:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mView.post(new Runnable() {
             @Override
@@ -710,9 +710,9 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 initDanmaku();
             }
         });
-        logger.i( "initData:time3=" + (System.currentTimeMillis() - before));
+        logger.i("initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        logger.i( "initData:time4=" + (System.currentTimeMillis() - before));
+        logger.i("initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 
@@ -764,10 +764,10 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         });
         tvMessageGold = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold);
         tvMessageGoldLable = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold_lable);
-        logger.i( "initFlower:time1=" + (System.currentTimeMillis() - before));
+        logger.i("initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mFlowerWindow = flowerWindow;
-        logger.i( "initFlower:time2=" + (System.currentTimeMillis() - before));
+        logger.i("initFlower:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         Button flowerSend = flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend);
         mIce = flowerContentView.findViewById(R.id.iv_present_ice);
@@ -854,7 +854,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         });
 //        flowerWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
 //        flowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        logger.i( "initFlower:time3=" + (System.currentTimeMillis() - before));
+        logger.i("initFlower:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 
@@ -909,17 +909,18 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
     /**
      * 热词埋点日志
-     * @param hotwordCmd  热词指令
+     *
+     * @param hotwordCmd 热词指令
      */
     private void upLoadHotWordLog(String hotwordCmd) {
         try {
             //非语文半身直播  上传热词埋点数据
-            if(getInfo != null && getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY && getInfo.getUseSkin()
-                    != HalfBodyLiveConfig.SKIN_TYPE_CH){
-                HotWordLog.hotWordSend(this.liveAndBackDebug,hotwordCmd,HotWordLog.LIVETYPE_PRESCHOOL,
-                        getInfo.getStudentLiveInfo().getClassId(),getInfo.getStudentLiveInfo().getTeamId(),getInfo.getStudentLiveInfo().getCourseId());
+            if (getInfo != null && getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY && getInfo.getUseSkin()
+                    != HalfBodyLiveConfig.SKIN_TYPE_CH) {
+                HotWordLog.hotWordSend(this.liveAndBackDebug, hotwordCmd, HotWordLog.LIVETYPE_PRESCHOOL,
+                        getInfo.getStudentLiveInfo().getClassId(), getInfo.getStudentLiveInfo().getTeamId(), getInfo.getStudentLiveInfo().getCourseId());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1170,7 +1171,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
             if (cbMessageClock != null) {
-                int rightMargin = liveVideoPoint.getRightMargin();
+                int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
                 params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
                 if (params.rightMargin != rightMargin) {
                     params.rightMargin = rightMargin;
@@ -1189,55 +1190,6 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
             }
             int bottomMargin = liveVideoPoint.y2;
-            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
-            if (params.bottomMargin != bottomMargin) {
-                params.bottomMargin = bottomMargin;
-//                lvMessage.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
-            }
-        }
-    }
-
-    public void setVideoWidthAndHeight(int width, int height) {
-        final View contentView = liveVideoActivity.findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
-        int screenHeight = ScreenUtils.getScreenHeight();
-        if (width > 0) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
-            wradio += (screenWidth - width) / 2;
-            if (wradio != params.width) {
-                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
-                // + ",wradio=" + wradio + "," + params.width);
-                params.width = wradio;
-//                rlInfo.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-            }
-            if (cbMessageClock != null) {
-                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-                if (params.rightMargin != wradio) {
-                    params.rightMargin = wradio;
-//                cbMessageClock.setLayoutParams(params);
-                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
-                }
-            }
-        }
-        if (height > 0) {
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
-            int topMargin = (int) ((LiveVideoConfig.VIDEO_HEIGHT - LiveVideoConfig.VIDEO_HEAD_HEIGHT) * height /
-                    LiveVideoConfig.VIDEO_HEIGHT);
-            topMargin = height - topMargin + (screenHeight - height) / 2;
-            if (topMargin != params.topMargin) {
-                params.topMargin = topMargin;
-//                rlInfo.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-                logger.e( "setVideoWidthAndHeight:topMargin=" + params.topMargin);
-            }
-            int bottomMargin = (ScreenUtils.getScreenHeight() - height) / 2;
             params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
             if (params.bottomMargin != bottomMargin) {
                 params.bottomMargin = bottomMargin;

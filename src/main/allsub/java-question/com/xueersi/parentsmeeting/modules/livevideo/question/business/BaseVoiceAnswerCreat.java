@@ -8,6 +8,7 @@ import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 
@@ -30,7 +31,7 @@ public interface BaseVoiceAnswerCreat {
      * @param mIse
      * @return
      */
-    BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
+    BaseVoiceAnswerPager create(Context activity, VideoQuestionLiveEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
                                 RelativeLayout rlQuestionContent, SpeechUtils mIse);
 
     /**

@@ -312,7 +312,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType, mGetInfo, true);
 //                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
-                    liveAchievementEngBll.initView(mRootView, mContentView);
+                    liveAchievementEngBll.initView(getLiveViewAction(), mContentView);
                     liveAchievementEngBll.setLiveAchievementHttp(LiveAchievementIRCBll.this);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
@@ -320,7 +320,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
                     englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
-                    englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null, audioRequest, mContentView);
+                    englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), null, audioRequest, mContentView);
                     LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekBll;
                 } else {
                     LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo,//mGetInfo
@@ -329,14 +329,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             true);
                     starBll.setLiveBll(LiveAchievementIRCBll.this);
                     starBll.setLiveAndBackDebug(contextLiveAndBackDebug);
-                    starBll.initView(mRootView, mContentView);
+                    starBll.initView(getLiveViewAction(), mContentView);
                     LiveAchievementIRCBll.this.starAction = starBll;
                     //能量条
                     EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null, audioRequest, mContentView);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), null, audioRequest, mContentView);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -365,20 +365,20 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     liveAchievementEngStandBll = new LiveAchievementEngStandBll(activity, mLiveType, mGetInfo, true);
 //                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
-                    liveAchievementEngStandBll.initView(mRootView, mContentView);
+                    liveAchievementEngStandBll.initView(getLiveViewAction());
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngStandBll;
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
                     englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
-                    englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null, audioRequest, mContentView);
+                    englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), null, audioRequest, mContentView);
                     LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekBll;
                 } else {
                     LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType, mGetInfo, true);
 //                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
-                    liveAchievementEngBll.initView(mRootView, mContentView);
+                    liveAchievementEngBll.initView(getLiveViewAction(), mContentView);
                     liveAchievementEngBll.setLiveAchievementHttp(LiveAchievementIRCBll.this);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
                     LiveAchievementIRCBll.this.englishSpeekAction = null;
@@ -397,7 +397,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             .getStarCount(), mGetInfo.getGoldCount(), true);
                     starBll.setLiveBll(LiveAchievementIRCBll.this);
                     starBll.setLiveAndBackDebug(contextLiveAndBackDebug);
-                    starBll.initView(mRootView, mContentView);
+                    starBll.initView(getLiveViewAction());
                     starAction = starBll;
 
                     //能量条
@@ -405,7 +405,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -420,7 +420,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             , true);
                     starBll.setLiveBll(LiveAchievementIRCBll.this);
                     starBll.setLiveAndBackDebug(contextLiveAndBackDebug);
-                    starBll.initView(mRootView, mContentView);
+                    starBll.initView(getLiveViewAction(), mContentView);
                     starAction = starBll;
 
                     //能量条
@@ -428,7 +428,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -464,7 +464,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         .getStarCount(), mGetInfo.getGoldCount(), true);
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(mLiveBll);
-                starBll.initView(mRootView, mContentView);
+                starBll.initView(getLiveViewAction());
                 starAction = starBll;
 
                 englishSpeekAction = null;
@@ -473,14 +473,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo, true);
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(contextLiveAndBackDebug);
-                starBll.initView(mRootView, mContentView);
+                starBll.initView(getLiveViewAction(), mContentView);
                 starAction = starBll;
                 //能量条
                 EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(activity, mGetInfo);
                 if (speakerRecognitioner != null) {
                     englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                 }
-                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
+                boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
                 if (initView) {
                     englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                     englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);

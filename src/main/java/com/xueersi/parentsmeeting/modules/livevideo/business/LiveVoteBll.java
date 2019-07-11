@@ -84,10 +84,6 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     }
 
-    public void initView(final RelativeLayout bottomContent) {
-        this.mRootView = bottomContent;
-    }
-
     private void showResult(final LiveTopic.VoteEntity voteEntity) {
         if (contentView != null) {
             removeView(contentView);
@@ -96,8 +92,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
             voteWaitDialog.cancelDialog();
             voteWaitDialog = null;
         }
-        final View view1 = LayoutInflater.from(context).inflate(R.layout.layout_livevideo_vote_result, mRootView,
-                false);
+        final View view1 = inflateView(R.layout.layout_livevideo_vote_result);
         contentView = new RelativeLayout(context);
         contentView.addView(view1);
         addView(contentView);
@@ -226,7 +221,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                 if (contentView != null) {
                     removeView(contentView);
                 }
-                final View view = LayoutInflater.from(context).inflate(R.layout.page_livevideo_ps_vote_select, mRootView, false);
+                final View view = inflateView(R.layout.page_livevideo_ps_vote_select);
                 view.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
@@ -442,8 +437,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                     voteWaitDialog.cancelDialog();
                     voteWaitDialog = null;
                 }
-                final View view = LayoutInflater.from(context).inflate(R.layout.page_livevodeo_vote_select,
-                        mRootView, false);
+                final View view = inflateView(R.layout.page_livevodeo_vote_select);
                 view.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
@@ -565,7 +559,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
             voteWaitDialog.cancelDialog();
             voteWaitDialog = null;
         }
-        final View view1 = LayoutInflater.from(context).inflate(R.layout.layout_livevideo_ps_vote_result, mRootView, false);
+        final View view1 = inflateView(R.layout.layout_livevideo_ps_vote_result);
         contentView = new RelativeLayout(context);
         contentView.addView(view1);
         addView(contentView);

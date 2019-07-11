@@ -276,7 +276,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     private String assessContent;
 
 
-    public SpeakChineseCoursewarePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
+    public SpeakChineseCoursewarePager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity,
                                        boolean isPlayBack, String liveId, String id,
                                        EnglishH5Entity englishH5Entity,
                                        final String courseware_type, String nonce,

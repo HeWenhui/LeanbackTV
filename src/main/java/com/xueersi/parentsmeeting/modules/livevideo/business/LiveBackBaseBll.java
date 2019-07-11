@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BaseBll;
@@ -12,6 +14,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -26,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/7/17.
  * 直播回放总bll
  */
-public class LiveBackBaseBll extends BaseBll {
+public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected LiveBackBll liveBackBll;
     protected Activity activity;
@@ -36,9 +39,10 @@ public class LiveBackBaseBll extends BaseBll {
     protected VideoLivePlayBackEntity mVideoEntity;
     protected LiveGetInfo liveGetInfo;
     protected AtomicBoolean mIsLand;
-    protected Handler mHandler = new Handler(Looper.getMainLooper());
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     protected final int mLiveType;
     protected LiveVideoPoint liveVideoPoint;
+    private LiveViewAction liveViewAction;
 
     public LiveBackBaseBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity);
@@ -55,8 +59,9 @@ public class LiveBackBaseBll extends BaseBll {
     }
 
 
-    public final void initViewF(RelativeLayout rlQuestionContentBottom, RelativeLayout bottomContent, AtomicBoolean
+    public final void initViewF(LiveViewAction liveViewAction, RelativeLayout rlQuestionContentBottom, RelativeLayout bottomContent, AtomicBoolean
             mIsLand) {
+        this.liveViewAction = liveViewAction;
         mRootViewBottom = rlQuestionContentBottom;
         mRootView = bottomContent;
         this.mIsLand = mIsLand;
@@ -161,12 +166,47 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
-    /**
-     * 视屏结束时的回调
-     *
-     * @return
-     */
-    public void onUserBackPressed() {
+    public LiveViewAction getLiveViewAction() {
+        return liveViewAction;
+    }
 
+    public void addView(View child) {
+        liveViewAction.addView(child);
+    }
+
+    public void addView(LiveVideoLevel level, View child) {
+        liveViewAction.addView(level, child);
+    }
+
+    public void removeView(View child) {
+        liveViewAction.removeView(child);
+    }
+
+    public void addView(View child, ViewGroup.LayoutParams params) {
+        liveViewAction.addView(child, params);
+    }
+
+    public void addView(LiveVideoLevel level, View child, ViewGroup.LayoutParams params) {
+        liveViewAction.addView(level, child, params);
+    }
+
+    public View inflateView(int resource) {
+        return liveViewAction.inflateView(resource);
+    }
+
+    public <T extends View> T findViewById(int id) {
+        return liveViewAction.findViewById(id);
+    }
+
+    public final boolean post(Runnable r) {
+        return mHandler.post(r);
+    }
+
+    public final boolean postDelayed(Runnable r, long uptimeMillis) {
+        return mHandler.postDelayed(r, uptimeMillis);
+    }
+
+    public void removeCallbacks(Runnable action) {
+        mHandler.removeCallbacks(action);
     }
 }

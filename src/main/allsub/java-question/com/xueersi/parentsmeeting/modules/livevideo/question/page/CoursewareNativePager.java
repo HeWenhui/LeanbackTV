@@ -176,7 +176,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
      */
     private boolean resultGotByForceSubmit;
 
-    public CoursewareNativePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
+    public CoursewareNativePager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity,
                                  boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
                                  final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
                                  String isShowRanks, int isArts, boolean allowTeamPk) {
