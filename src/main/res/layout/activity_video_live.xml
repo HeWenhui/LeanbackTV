@@ -159,15 +159,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"></RelativeLayout>
 
-        <!-- 直播 表扬榜显示的界面位置 -->
-        <RelativeLayout
-            android:id="@id/rl_course_video_live_praiselist_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"></RelativeLayout>
-
         <!-- 直播回放 互动题显示的界面位置 -->
         <RelativeLayout
             android:id="@id/rl_course_video_live_question_content"

@@ -562,8 +562,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     private RelativeLayout rlLiveMessageContent;
 
-    private RelativeLayout praiselistContent;
-
     private ImageView ivTeacherNotpresent;
 
     private ImageView ivLoading;
@@ -1104,8 +1102,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
         ivTeacherNotpresent = findViewById(R.id.iv_course_video_teacher_notpresent);
 
-        praiselistContent = findViewById(R.id.rl_course_video_live_praiselist_content);
-        praiselistContent.setVisibility(View.VISIBLE);
         ivLoading = findViewById(R.id.iv_course_video_loading_bg);
         tvLoadingHint = findViewById(R.id.tv_course_video_loading_content);
 
