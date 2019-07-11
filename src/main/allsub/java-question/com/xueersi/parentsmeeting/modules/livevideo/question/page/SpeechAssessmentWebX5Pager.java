@@ -141,7 +141,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         this.isExperience = experience;
     }
 
-    public SpeechAssessmentWebX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String
+    public SpeechAssessmentWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String
             liveid, String testId, String stuId, boolean isLive,
                                       String nonce,
                                       SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE,

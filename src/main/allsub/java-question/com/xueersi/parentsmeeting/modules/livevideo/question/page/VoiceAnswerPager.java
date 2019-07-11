@@ -88,7 +88,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     private long entranceTime;
     private VideoQuestionLiveEntity mDetail;
 
-    public VoiceAnswerPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref,
+    public VoiceAnswerPager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, JSONObject assess_ref,
                             String type, QuestionSwitch questionSwitch) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
