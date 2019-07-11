@@ -35,11 +35,11 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
 
     @Override
     public void initView() {
-        mAnswerResultBll = new ArtsAnswerResultBll((Activity) mContext, liveGetInfo.getId(), liveGetInfo.getLiveType(), getLiveViewAction());
+        mAnswerResultBll = new ArtsAnswerResultBll((Activity) mContext, liveGetInfo.getId(), liveGetInfo.getLiveType());
+        mAnswerResultBll.setLiveViewAction(getLiveViewAction());
         mAnswerResultBll.onLiveInited(liveGetInfo);
         EventBus.getDefault().register(this);
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLiveBackQuestionEvent(LiveBackQuestionEvent event) {

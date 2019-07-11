@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -356,11 +355,10 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
+    public void initView() {
         tempView = new View(activity);
         tempView.setId(R.id.iv_livevideo_rank_temp);
-        bottomContent.addView(tempView);
+        addView(tempView);
     }
 
     @Override

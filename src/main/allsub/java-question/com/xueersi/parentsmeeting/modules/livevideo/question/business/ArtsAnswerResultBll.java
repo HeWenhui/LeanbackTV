@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ScoreRange;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
@@ -162,13 +163,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 用于直播回放
      *
      * @param context
-     * @param liveViewAction
      */
-    public ArtsAnswerResultBll(Activity context, String liveId, int liveType, LiveViewAction liveViewAction) {
+    public ArtsAnswerResultBll(Activity context, String liveId, int liveType) {
         super(context, liveId, liveType);
-        this.liveViewAction = liveViewAction;
     }
 
+    public void setLiveViewAction(LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
+    }
 
     private void attachToView() {
         EventBus.getDefault().register(this);

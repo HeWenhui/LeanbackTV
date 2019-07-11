@@ -95,7 +95,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
 
     @Override
     public void initView() {
-        questionBll.initView(null, mRootView, mIsLand.get());
+        questionBll.initView(getLiveViewAction(), mIsLand.get());
     }
 
     @Override

@@ -227,11 +227,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
     }
 
-    @Override
-    public void initView(final RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
-    }
-
     private synchronized void connect(String method, ArrayList<InetSocketAddress> addresses) {
         if (tcpDispatch == null) {
             if (destory) {

@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.leclearnreport.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
@@ -17,8 +16,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LecLearnReportBll;
 
 import org.json.JSONObject;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2018/7/18.
@@ -131,9 +128,9 @@ public class LecLearnReportIRCBll extends LiveBaseBll implements NoticeAction, L
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+    public void initView() {
         if (learnReportBll != null) {
-            learnReportBll.initView(bottomContent);
+            learnReportBll.initView(mRootView);
         }
     }
 

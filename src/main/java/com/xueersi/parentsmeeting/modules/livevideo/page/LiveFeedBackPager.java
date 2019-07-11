@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.opengl.Visibility;
 import android.os.CountDownTimer;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,42 +11,32 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.SizeUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.EvaluateContent;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.LiveTeacherFeedbackItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.RecyclerViewSpacesItemDecoration;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll;
 import com.xueersi.ui.adapter.RCommonAdapter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import okhttp3.Call;
-
 public class LiveFeedBackPager extends LiveBasePager {
-    RelativeLayout bottomContent;
     LiveHttpManager mHttpManager;
     RelativeLayout  rlFeedbackContent;
     /** 主讲布局 */
@@ -131,10 +120,8 @@ public class LiveFeedBackPager extends LiveBasePager {
     }
 
     public LiveFeedBackPager(Context context, String liveId, FeedBackEntity feedBackEntity, LiveGetInfo getInfo,
-                             RelativeLayout
-                                     bottomContent, LiveHttpManager mHttpManager) {
+                             LiveHttpManager mHttpManager) {
         super(context, feedBackEntity, true);
-        this.bottomContent = bottomContent;
         this.mGetInfo = getInfo;
         this.liveId = liveId;
         this.mHttpManager = mHttpManager;

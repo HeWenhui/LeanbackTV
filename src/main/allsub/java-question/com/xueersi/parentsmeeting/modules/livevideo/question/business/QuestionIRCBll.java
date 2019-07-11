@@ -56,7 +56,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 
@@ -156,8 +155,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
-        mQuestionAction.initView(getLiveViewAction(), bottomContent, isLand.get());
+    public void initView() {
+        mQuestionAction.initView(getLiveViewAction(), mIsLand.get());
         //     testPraise(bottomContent);
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity answerResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity();

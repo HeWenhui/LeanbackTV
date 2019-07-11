@@ -46,7 +46,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     protected Activity activity;
     protected LogToFile mLogtf;
     protected LiveVideoPoint liveVideoPoint;
-    private AtomicBoolean mIsLand;
+    protected AtomicBoolean mIsLand;
     protected int mState = LiveActivityState.INITIALIZING;
     private boolean mDestroyed;
     protected LiveViewAction liveViewAction;
@@ -233,10 +233,10 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
         this.liveViewAction = liveViewAction;
         this.mContentView = mContentView;
         this.mIsLand = mIsLand;
-        initView(bottomContent, mIsLand);
+        initView();
     }
 
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+    public void initView() {
 
     }
 

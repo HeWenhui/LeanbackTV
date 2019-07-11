@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business;
 
 import android.app.Activity;
 import android.view.ViewTreeObserver;
-import android.widget.RelativeLayout;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -33,7 +32,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, TopicAction {
     PrimaryClassHttp primaryClassHttp;
@@ -223,8 +221,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
+    public void initView() {
         PrimaryClassInterIml primaryClassInterIml = new PrimaryClassInterIml();
         PrimaryItemPager primaryItemPager = new PrimaryItemPager(activity, mContentView, mLiveBll.getMode());
         primaryItemPager.setPrimaryClassInter(primaryClassInterIml);

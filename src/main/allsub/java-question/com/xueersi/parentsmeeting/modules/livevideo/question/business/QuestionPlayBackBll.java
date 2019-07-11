@@ -55,7 +55,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
  * Created by linyuqiang on 2018/7/17.
  * 互动题回放
  */
-public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp, QuestionSecHttp,EnglishH5CoursewareSecHttp {
+public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp, QuestionSecHttp, EnglishH5CoursewareSecHttp {
     QuestionBll questionBll;
     String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
     private List<String> questiongtype = Arrays.asList(ptTypeFilters);
@@ -161,7 +161,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
     @Override
     public void initView() {
-        questionBll.initView(null, mRootView, mIsLand.get());
+        questionBll.initView(getLiveViewAction(), mIsLand.get());
     }
 
     @Override

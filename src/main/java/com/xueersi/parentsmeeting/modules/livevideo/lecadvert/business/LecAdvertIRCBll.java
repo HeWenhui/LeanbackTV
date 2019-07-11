@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
@@ -17,7 +16,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 
@@ -123,7 +121,7 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+    public void initView() {
         if (lecAdvertAction != null) {
             lecAdvertAction.initView(getLiveViewAction(), mIsLand.get());
         }

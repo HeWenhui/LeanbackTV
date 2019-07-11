@@ -369,7 +369,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
-    public void initView(LiveViewAction liveViewAction, RelativeLayout bottomContent, boolean isLand) {
+    public void initView(LiveViewAction liveViewAction, boolean isLand) {
         this.isLand = isLand;
         isAbLand.set(isLand);
         //互动题
@@ -377,13 +377,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             rlQuestionContent = new RelativeLayout(activity);
             rlQuestionContent.setId(R.id.rl_livevideo_content_question);
         }
-        if (liveViewAction != null) {
-            liveViewAction.addView(LiveVideoLevel.LEVEL_QUES, rlQuestionContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-        } else {
-            bottomContent.addView(rlQuestionContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-        }
+        liveViewAction.addView(LiveVideoLevel.LEVEL_QUES, rlQuestionContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
         if (rlQuestionResContent == null) {
             rlQuestionResContent = new RelativeLayout(activity);
             rlQuestionResContent.setId(R.id.rl_livevideo_content_result_question);
@@ -393,7 +388,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 group.removeView(rlQuestionResContent);
             }
         }
-        bottomContent.addView(rlQuestionResContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        liveViewAction.addView(rlQuestionResContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         if (videoQuestionLiveEntity != null) {
             showQuestion(videoQuestionLiveEntity);
