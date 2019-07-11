@@ -131,7 +131,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
         //应该是没有为null的时候
         if (liveGetInfo != null) {
-            if (isArts == LiveVideoSAConfig.ART_CH && LiveTopic.MODE_CLASS.equals(liveGetInfo.getMode())) {
+            if (isArts == LiveVideoSAConfig.ART_CH ) {
                 String educationstage = liveGetInfo.getEducationStage();
                 videoQuestionH5Entity.setEducationstage(educationstage);
                 //语文
@@ -159,7 +159,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                     }
                 }
             }
-            if (liveGetInfo.isNewCourse() || LiveTopic.MODE_TRANING.equals(liveGetInfo.getMode())) {
+            if (liveGetInfo.isNewCourse()) {
                 if (isArts == LiveVideoSAConfig.ART_SEC) {
                     String educationstage = liveGetInfo.getEducationStage();
                     videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
