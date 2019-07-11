@@ -25,6 +25,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -54,6 +56,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     protected BaseLiveMediaControllerBottom liveMediaControllerBottom;
     RelativeLayout bottomContent;
+    protected LiveViewAction liveViewAction;
     private PopupWindow mPopupWindows;
     LecLiveVideoAction lecLiveVideoAction;
     /** onPause状态不暂停视频 */
@@ -221,6 +224,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
     protected void initView() {
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
+        liveViewAction = new LiveViewActionIml(bottomContent);
         logger.e("========>:initView:" + bottomContent);
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
@@ -374,7 +378,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 before = System.currentTimeMillis();
                 List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
                 for (LiveBaseBll businessBll : businessBlls) {
-                    businessBll.initViewF(null, bottomContent, mIsLand, mContentView);
+                    businessBll.initViewF(liveViewAction, null, bottomContent, mIsLand, mContentView);
                 }
                 firstInitView = true;
                 logger.d("changeLandAndPort:time2=" + (System.currentTimeMillis() - before));
@@ -426,7 +430,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 before = System.currentTimeMillis();
                 List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
                 for (LiveBaseBll businessBll : businessBlls) {
-                    businessBll.initViewF(null, bottomContent, mIsLand, mContentView);
+                    businessBll.initViewF(liveViewAction, null, bottomContent, mIsLand, mContentView);
                 }
                 firstInitView = true;
                 logger.d("changeLandAndPort:time4=" + (System.currentTimeMillis() - before));
@@ -459,7 +463,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
             firstInitView = true;
             List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
             for (LiveBaseBll businessBll : businessBlls) {
-                businessBll.initViewF(null, bottomContent, mIsLand, mContentView);
+                businessBll.initViewF(liveViewAction, null, bottomContent, mIsLand, mContentView);
             }
         }
     }

@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePage
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
@@ -98,7 +99,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         params.leftMargin = LiveVideoPoint.getInstance().x2;
-        addView(rlPraiseContentView, 0, params);
+        addView(new LiveVideoLevel(2),rlPraiseContentView, params);
     }
 
     private class SpecailGiftTimerTask extends TimerTask {

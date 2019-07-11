@@ -8,6 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodyLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMediaCtrlTop;
@@ -117,6 +118,7 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
         //super.initView();
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
+        liveViewAction = new LiveViewActionIml(bottomContent);
         rlMessageBottom = mContentView.findViewById(R.id.rl_course_message_bottom);
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         RelativeLayout mediaContainer = mContentView.findViewById(R.id.rl_live_halfbody_mediacontroll_container);

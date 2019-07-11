@@ -199,7 +199,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initHalfBodyLive(mRootView);
             } else {
-                mRoomAction.initViewLive(mRootView);
+                mRoomAction.initViewLive(getLiveViewAction());
             }
         }
         //中学连对激励系统，教师广播发送学报消息
@@ -242,7 +242,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     if (LiveTopic.MODE_CLASS.equals(mode)) {
                         mRoomAction.initViewLiveStand(mRootView);
                     } else {
-                        mRoomAction.initViewLive(mRootView);
+                        mRoomAction.initViewLive(getLiveViewAction());
                     }
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
@@ -265,7 +265,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             if (LiveTopic.MODE_CLASS.equals(mode)) {
                                 mRoomAction.initHalfBodyLive(mRootView);
                             } else {
-                                mRoomAction.initViewLive(mRootView);
+                                mRoomAction.initViewLive(getLiveViewAction());
                             }
 
                             if (view != null) {
@@ -1082,7 +1082,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        mRoomAction.initView(bottomContent, mIsLand.get());
+        mRoomAction.initView(getLiveViewAction(), mIsLand.get());
     }
 
     //发送聊天消息所需要的IRCState

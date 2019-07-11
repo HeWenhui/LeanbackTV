@@ -26,10 +26,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePage
 import com.xueersi.parentsmeeting.modules.livevideo.business.BusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -73,6 +76,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         mLayoutVideo = R.layout.activity_video_live_new;
     }
 
+    protected LiveViewAction liveViewAction;
     protected RelativeLayout bottomContent;
     protected RelativeLayout rlMessageBottom;
     protected String vStuCourseID;
@@ -179,7 +183,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         });
         List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
         for (LiveBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(rlMessageBottom, bottomContent, mIsLand, mContentView);
+            businessBll.initViewF(liveViewAction, rlMessageBottom, bottomContent, mIsLand, mContentView);
         }
     }
 
@@ -435,6 +439,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void initView() {
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
+        liveViewAction = new LiveViewActionIml(bottomContent);
         rlMessageBottom = mContentView.findViewById(R.id.rl_course_message_bottom);
 
 //        tvLoadingTint = mContentView.findViewById(R.id.tv_course_video_loading_content);

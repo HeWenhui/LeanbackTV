@@ -84,10 +84,6 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     }
 
-    public void initView(final RelativeLayout bottomContent) {
-        this.mRootView = bottomContent;
-    }
-
     private void showResult(final LiveTopic.VoteEntity voteEntity) {
         if (contentView != null) {
             removeView(contentView);

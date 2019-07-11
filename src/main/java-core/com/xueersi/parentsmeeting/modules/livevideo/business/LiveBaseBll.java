@@ -14,6 +14,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -33,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  * created  at 2018/6/20 9:34
  */
-public class LiveBaseBll extends BaseBll implements LiveViewAction {
+public class LiveBaseBll extends BaseBll {
 
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected RelativeLayout mRootView;
@@ -51,6 +52,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     private AtomicBoolean mIsLand;
     protected int mState = LiveActivityState.INITIALIZING;
     private boolean mDestroyed;
+    private LiveViewAction liveViewAction;
 
     public LiveBaseBll(Activity context, LiveBll2 liveBll) {
         super(context);
@@ -229,8 +231,9 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
 
     }
 
-    public final void initViewF(RelativeLayout rlMessageBottom, RelativeLayout bottomContent, AtomicBoolean mIsLand, RelativeLayout mContentView) {
-        mRootView = bottomContent;
+    public final void initViewF(LiveViewAction liveViewAction, RelativeLayout rlMessageBottom, RelativeLayout bottomContent, AtomicBoolean mIsLand, RelativeLayout mContentView) {
+        this.mRootView = bottomContent;
+        this.liveViewAction = liveViewAction;
         this.rlMessageBottom = rlMessageBottom;
         this.mContentView = mContentView;
         this.mIsLand = mIsLand;
@@ -327,23 +330,37 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
         ProxUtil.getProxUtil().put(mContext, clazz, object);
     }
 
-    public void addView(View child) {
-        mRootView.addView(child);
+    public LiveViewAction getLiveViewAction() {
+        return liveViewAction;
     }
 
-    @Override
+    public void addView(View child) {
+        liveViewAction.addView(child);
+    }
+
+    public void addView(LiveVideoLevel level, View child) {
+        liveViewAction.addView(level, child);
+    }
+
     public void removeView(View child) {
-        mRootView.removeView(child);
+        liveViewAction.removeView(child);
     }
 
     public void addView(View child, ViewGroup.LayoutParams params) {
-        mRootView.addView(child, params);
+        liveViewAction.addView(child, params);
     }
 
-    @Override
-    public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        mRootView.addView(child, index, params);
+    public void addView(LiveVideoLevel level, View child, ViewGroup.LayoutParams params) {
+        liveViewAction.addView(level, child, params);
     }
+
+//    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+//        liveViewAction.addView(child, index, params);
+//    }
+
+//    public void addView(LiveVideoLevel level, View child, int index, ViewGroup.LayoutParams params) {
+//        liveViewAction.addView(level, child, index, params);
+//    }
 
     public final boolean post(Runnable r) {
         return mHandler.post(r);
