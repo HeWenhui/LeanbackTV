@@ -133,18 +133,17 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         return rlLiveMessageContent;
     }
 
-
     /**
      * 站立直播聊天
      *
-     * @param bottomContent
+     * @param liveViewAction
      */
-    public void initViewLiveStand(RelativeLayout bottomContent) {
+    public void initViewLiveStand(LiveViewAction liveViewAction) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
             rlLiveMessageContent = new RelativeLayout(activity);
-            bottomContent.addView(rlLiveMessageContent, 0, params);
+            liveViewAction.addView(LiveVideoLevel.LEVEL_MES, rlLiveMessageContent, params);
         } else {
             rlLiveMessageContent.removeAllViews();
         }
@@ -202,26 +201,25 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         });
     }
 
-
     /**
      * 半身直播 聊天
      *
-     * @param bottomContent
+     * @param liveViewAction
      */
-    public void initHalfBodyLive(final RelativeLayout bottomContent) {
+    public void initHalfBodyLive(final LiveViewAction liveViewAction) {
         final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
             rlLiveMessageContent = new RelativeLayout(activity);
             //调整 消息面板的层级
-            RelativeLayout msgContainer = bottomContent.findViewById(R.id.rl_live_halfbody_livemsg_container);
+            RelativeLayout msgContainer = liveViewAction.findViewById(R.id.rl_live_halfbody_livemsg_container);
             msgContainer.addView(rlLiveMessageContent, params);
         } else {
             //调整 消息面板的层级
             //rlLiveMessageContent.removeAllViews();
             rlLiveMessageContent.removeAllViewsInLayout();
             ((ViewGroup) rlLiveMessageContent.getParent()).removeView(rlLiveMessageContent);
-            RelativeLayout msgContainer = bottomContent.findViewById(R.id.rl_live_halfbody_livemsg_container);
+            RelativeLayout msgContainer = liveViewAction.findViewById(R.id.rl_live_halfbody_livemsg_container);
             msgContainer.addView(rlLiveMessageContent, params);
         }
 

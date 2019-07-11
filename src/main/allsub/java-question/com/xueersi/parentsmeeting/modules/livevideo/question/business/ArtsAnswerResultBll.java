@@ -35,6 +35,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -161,10 +162,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 用于直播回放
      *
      * @param context
-     * @param rootView
+     * @param liveViewAction
      */
-    public ArtsAnswerResultBll(Activity context, String liveId, int liveType, RelativeLayout rootView) {
+    public ArtsAnswerResultBll(Activity context, String liveId, int liveType, LiveViewAction liveViewAction) {
         super(context, liveId, liveType);
+        this.liveViewAction = liveViewAction;
     }
 
 

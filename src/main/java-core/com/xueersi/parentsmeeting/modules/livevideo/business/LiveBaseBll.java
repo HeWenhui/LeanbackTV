@@ -49,7 +49,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     private AtomicBoolean mIsLand;
     protected int mState = LiveActivityState.INITIALIZING;
     private boolean mDestroyed;
-    private LiveViewAction liveViewAction;
+    protected LiveViewAction liveViewAction;
 
     public LiveBaseBll(Activity context, LiveBll2 liveBll) {
         super(context);

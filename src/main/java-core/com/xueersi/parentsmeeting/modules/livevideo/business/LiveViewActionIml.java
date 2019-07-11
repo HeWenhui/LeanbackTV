@@ -35,7 +35,7 @@ public class LiveViewActionIml implements LiveViewAction {
 
     @Override
     public void addView(LiveVideoLevel levelEntity, View child) {
-        logger.d("addView2:levelEntity=" + levelEntity.getLevel());
+        logger.d("addView2:child=" + child + ",levelEntity=" + levelEntity.getLevel());
         if (levelEntity == LiveVideoLevel.LEVEL_MES) {
             bottomContent.addView(child, 0);
         } else {
@@ -73,7 +73,7 @@ public class LiveViewActionIml implements LiveViewAction {
 
     @Override
     public void addView(LiveVideoLevel levelEntity, View child, ViewGroup.LayoutParams params) {
-        logger.d("addView4:levelEntity=" + levelEntity.getLevel());
+        logger.d("addView4:child=" + child + ",levelEntity=" + levelEntity.getLevel());
         if (levelEntity == LiveVideoLevel.LEVEL_MES) {
             bottomContent.addView(child, 0, params);
         } else {

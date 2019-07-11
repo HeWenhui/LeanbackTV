@@ -15,14 +15,17 @@ import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * 文科答题统计面板 直播回放业务处理类
+ *
  * @author chekun
  * created  at 2018/9/29 18:54
-*/
+ */
 public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
     private ArtsAnswerResultBll mAnswerResultBll;
+
     /**
      * 0 liveback
      * 1 experience
+     *
      * @param activity
      * @param liveBackBll
      */
@@ -32,7 +35,7 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
 
     @Override
     public void initView() {
-        mAnswerResultBll = new ArtsAnswerResultBll((Activity) mContext,liveGetInfo.getId(),liveGetInfo.getLiveType(),mRootView);
+        mAnswerResultBll = new ArtsAnswerResultBll((Activity) mContext, liveGetInfo.getId(), liveGetInfo.getLiveType(), getLiveViewAction());
         mAnswerResultBll.onLiveInited(liveGetInfo);
         EventBus.getDefault().register(this);
     }
@@ -40,13 +43,13 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLiveBackQuestionEvent(LiveBackQuestionEvent event) {
-        if(event.getEnvetnType() == LiveBackQuestionEvent.QUSTIONS_SHOW){
+        if (event.getEnvetnType() == LiveBackQuestionEvent.QUSTIONS_SHOW) {
             mAnswerResultBll.closeAnswerResult(false);
-        }else if(event.getEnvetnType() == LiveBackQuestionEvent.QUSTION_CLOSE){
-            if(liveGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2){
+        } else if (event.getEnvetnType() == LiveBackQuestionEvent.QUSTION_CLOSE) {
+            if (liveGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
                 EventBus.getDefault().post(new AnswerResultCplShowEvent("onLiveBackQuestionEvent"));
-                Log.e("mqtt","submitData" + "hahaha");
-            }else{
+                Log.e("mqtt", "submitData" + "hahaha");
+            } else {
                 mAnswerResultBll.closeAnswerResult(true);
             }
         }
@@ -55,7 +58,7 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mAnswerResultBll != null){
+        if (mAnswerResultBll != null) {
             mAnswerResultBll.onDestroy();
         }
         EventBus.getDefault().unregister(this);

@@ -194,10 +194,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.setLiveGetInfo(getInfo);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (getInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
-                mRoomAction.initViewLiveStand(mRootView);
+                mRoomAction.initViewLiveStand(getLiveViewAction());
             } else if ((getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY || getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS)
                     && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
-                mRoomAction.initHalfBodyLive(mRootView);
+                mRoomAction.initHalfBodyLive(getLiveViewAction());
             } else {
                 mRoomAction.initViewLive(getLiveViewAction());
             }
@@ -240,7 +240,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         view.setVisibility(View.INVISIBLE);
                     }
                     if (LiveTopic.MODE_CLASS.equals(mode)) {
-                        mRoomAction.initViewLiveStand(mRootView);
+                        mRoomAction.initViewLiveStand(getLiveViewAction());
                     } else {
                         mRoomAction.initViewLive(getLiveViewAction());
                     }
@@ -263,7 +263,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             }
 
                             if (LiveTopic.MODE_CLASS.equals(mode)) {
-                                mRoomAction.initHalfBodyLive(mRootView);
+                                mRoomAction.initHalfBodyLive(getLiveViewAction());
                             } else {
                                 mRoomAction.initViewLive(getLiveViewAction());
                             }
