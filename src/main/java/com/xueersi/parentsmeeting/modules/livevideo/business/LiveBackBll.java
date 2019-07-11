@@ -369,6 +369,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             String getInfoStr = mVideoEntity.getGetInfoStr();
             if (getInfoStr != null) {
                 JSONObject liveInfo = new JSONObject(getInfoStr);
+                //isHFNewProject 是1 代表去壳
+                liveGetInfo.setNewCourse("1".equals(liveInfo.optString("isHFNewProject")));
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
                 liveGetInfo.setPrimaryChinese("2".equals(liveInfo.optString("useSkin")));
                 liveGetInfo.setsTime(liveInfo.optLong("stime"));
