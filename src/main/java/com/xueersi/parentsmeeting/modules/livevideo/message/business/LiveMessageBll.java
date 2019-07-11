@@ -212,15 +212,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         if (rlLiveMessageContent == null) {
             rlLiveMessageContent = new RelativeLayout(activity);
             //调整 消息面板的层级
-            RelativeLayout msgContainer = liveViewAction.findViewById(R.id.rl_live_halfbody_livemsg_container);
-            msgContainer.addView(rlLiveMessageContent, params);
+            liveViewAction.addView(LiveVideoLevel.LEVEL_MES, rlLiveMessageContent, params);
         } else {
             //调整 消息面板的层级
             //rlLiveMessageContent.removeAllViews();
             rlLiveMessageContent.removeAllViewsInLayout();
-            ((ViewGroup) rlLiveMessageContent.getParent()).removeView(rlLiveMessageContent);
-            RelativeLayout msgContainer = liveViewAction.findViewById(R.id.rl_live_halfbody_livemsg_container);
-            msgContainer.addView(rlLiveMessageContent, params);
+            liveViewAction.removeView(rlLiveMessageContent);
+            liveViewAction.addView(LiveVideoLevel.LEVEL_MES, rlLiveMessageContent, params);
         }
 
         String text = null;

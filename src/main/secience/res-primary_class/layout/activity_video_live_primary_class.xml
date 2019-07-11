@@ -192,22 +192,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:visibility="gone">
-        <!--消息面板展示UI 层级-->
-        <RelativeLayout
-            android:id="@id/rl_live_halfbody_livemsg_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <RelativeLayout
-            android:id="@id/rl_live_halfbody_mediacontroll_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
     </RelativeLayout>
 
     <!-- 体验课直播回放 互动题显示的界面位置 -->
     <RelativeLayout
-        android:id="@+id/rl_course_video_live_question_contents"
+        android:id="@id/rl_course_video_live_question_contents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
