@@ -4,9 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.constraint.Group;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -56,10 +55,11 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
 
     private LottieAnimationView readyGoLottieView;
 
-    private Handler handler = new Handler(Looper.getMainLooper());
+//    private Handler handler = new Handler(Looper.getMainLooper());
     /** 使用回答时间 */
     private int answerTime;
-
+    //结束前的提示结束提示
+    private Group groupEndTip;
     /** speech是否初始化成功 */
     private boolean isSpeechReady = true;
     /** 是否拿到后台接口返回的数据 */
@@ -67,10 +67,13 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
     /** waveViews是否初始化成功 */
     private boolean waveViewinit = false;
 
+    protected ViewGroup settingViewGroup;
+
     public IntelligentRecognitionPager(FragmentActivity context) {
         super(context, false);
         this.mActivity = context;
         initData();
+        initListener();
     }
 
     @Override
@@ -85,25 +88,25 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
         tvContent = mView.findViewById(R.id.tv_livevideo_intelligent_recognition_textview);
         readyGoLottieView = mView.findViewById(R.id.lottie_view_livevideo_intelligent_recognition_ready_go);
         scoreLottieView = mView.findViewById(R.id.lottie_view_livevideo_intelligent_recognition_get_score);
+        groupEndTip = mView.findViewById(R.id.group_livevideo_intelligent_recognition_end_tip);
+        settingViewGroup = mView.findViewById(R.id.layout_livevideo_intelligent_recognition_permission);
         performOpenViewStart();
         return mView;
     }
 
-    private void performOpenViewStart() {
+    protected void performOpenViewStart() {
         showReadyGo();
-//        delayWaveView();
-//        unityInit();
     }
 
-    private class Action implements Runnable {
-        @Override
-        public void run() {
-            if (viewModel != null) {
-                viewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
-            }
-            viewModel.getIsFinish().setValue(true);
-        }
-    }
+    //    private class Action implements Runnable {
+//        @Override
+//        public void run() {
+//            if (viewModel != null) {
+//                viewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
+//            }
+//            viewModel.getIsFinish().setValue(true);
+//        }
+//    }
 
     /** 显示开场的ReadyGo动画 */
     private void showReadyGo() {
@@ -164,55 +167,78 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
                 of(mActivity).
                 get(IntelligentRecognitionViewModel.class);
 
-        viewModel.getIeResultData().
-                observe(mActivity, new Observer<IEResult>() {
-                    @Override
-                    public void onChanged(@Nullable IEResult ieResult) {
-                        isResultGet = true;
-                        handleResult(ieResult);
-                    }
-                });
-        viewModel.getIsSpeechReady().
-                observe(mActivity, new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(@Nullable Boolean aBoolean) {
-                        isSpeechReady = aBoolean;
+        viewModel.getIeResultData().observe(mActivity, new Observer<IEResult>() {
+            @Override
+            public void onChanged(@Nullable IEResult ieResult) {
+                isResultGet = true;
+                handleResult(ieResult);
+            }
+        });
+        viewModel.getIsSpeechReady().observe(mActivity, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                isSpeechReady = aBoolean;
 //                        if (isSpeechReady && isResultGet) {
-                        performStartWaveLottie();
+                performStartWaveLottie();
 //                        }
-                    }
-                });
-        viewModel.getVolume().
-                observe(mActivity, new Observer<Integer>() {
-                    @Override
-                    public void onChanged(@Nullable Integer integer) {
-                        if (waveViewinit) {
-                            logger.i("wave Volume:" + integer);
-                            waveView.setWaveAmplitude(integer / 15.0f);
-                        }
-                    }
-                });
-        viewModel.getIntelligentSpeechResult().
-                observe(mActivity, new Observer<Integer>() {
-                    @Override
-                    public void onChanged(@Nullable Integer integer) {
+            }
+        });
+        viewModel.getVolume().observe(mActivity, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer integer) {
+                if (waveViewinit) {
+                    logger.i("wave Volume:" + integer);
+                    waveView.setWaveAmplitude(integer / 15.0f);
+                }
+            }
+        });
+        viewModel.getIsIntelligentSpeechFinish().observe(mActivity, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean b) {
 //                        if (waveLottie != null) {
-                        revertLottie(waveLottie);
+                revertLottie(waveLottie);
 //                        }
 //                        if (integer == IntelligentConstants.REPEAT_SENTENCE) {
 //
 //                        }
-                    }
-                });
-        viewModel.getIsSpeechJudgeFinish().
-                observe(mActivity, new Observer<Integer>() {
+            }
+        });
+        viewModel.getIsSpeechJudgeFinish().observe(mActivity, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer integer) {
+                if (integer == IntelligentConstants.PERFECT) {
+                    positivePlayLottieView(waveLottie);
+                }
+            }
+        });
+        viewModel.getIsFinish().observe(mActivity, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+
+                Observable.just(true).subscribeOn(AndroidSchedulers.mainThread()).doOnNext(new Consumer<Boolean>() {
                     @Override
-                    public void onChanged(@Nullable Integer integer) {
-                        if (integer == IntelligentConstants.PERFECT) {
-                            positivePlayLottieView(waveLottie);
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (groupEndTip != null &&
+                                groupEndTip.getVisibility() != View.VISIBLE) {
+                            groupEndTip.setVisibility(View.VISIBLE);
                         }
                     }
+                }).delay(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).doOnNext(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (groupEndTip.getVisibility() == View.VISIBLE) {
+                            groupEndTip.setVisibility(View.GONE);
+                        }
+                    }
+                }).delay(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        mActivity.finish();
+                    }
                 });
+
+            }
+        });
     }
 
     private void positivePlayLottieView(LottieAnimationView loView) {
@@ -248,7 +274,7 @@ public class IntelligentRecognitionPager extends BasePager implements IIntellige
     /**
      * 显示WaveView和lottieView
      */
-    private void performStartWaveLottie() {
+    protected void performStartWaveLottie() {
         if (isSpeechReady && isResultGet) {
             if (waveLottie.getVisibility() != View.VISIBLE) {
                 waveLottie.setVisibility(View.VISIBLE);

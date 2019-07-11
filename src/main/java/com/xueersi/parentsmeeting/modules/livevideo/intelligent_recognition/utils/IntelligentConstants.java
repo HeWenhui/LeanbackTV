@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils;
 
 public interface IntelligentConstants {
+
     int PERFECT = 1;
     //
     int GOOD = 2;
@@ -22,4 +23,18 @@ public interface IntelligentConstants {
     int FEED_BACK_WORD_3_0 = 10;
     // 二次反馈  分数<60
     int FEED_BACK_WORD_3_1 = 11;
+    //byebye动作1
+    // 1）	点评前/时收到结束指令，播放完评价话术直接接下次见（多套）配合拜拜动作
+    int END_GOOD_BYE_1 = 12;
+    //byebye动作2
+    // 2）	播放重读提示/纠音提示时收到结束指令，播放完当前话术，紧接课下多练习哦！下次见。（多套）配合拜拜动作。
+    int END_GOOD_BYE_2 = 13;
+    //byebye动作3
+    // 3）	学生正在重读时收到指令，直接语音反馈课下多练习哦！下次见。（多套）配合拜拜动作。
+    int END_GOOD_BYE_3 = 13;
+    //byebye动作4
+    // 4）	一旦收到收题指令，题干板区域toast提示3s倒计时收题。提示文案“3s后收题”。
+    int END_GOOD_BYE_4 = 13;
+
+
 }

@@ -2,10 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.vie
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.IntentFilter;
-import android.media.MediaPlayer;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
 
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.Constants;
@@ -26,10 +24,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.enti
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.EvaluationAudioPlayerDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.SoundEffectPlayer;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.Unity3DPlayManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionView;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
@@ -38,35 +32,24 @@ import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widg
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
 
 public abstract class BaseIntelligentRecognitionPresenter implements IIntelligentRecognitionPresenter<IIntelligentRecognitionView>, MyObserver {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     protected FragmentActivity mActivity;
 
     IntelligentRecognitionBroadcast broadcast;
 
-    private SpeechUtils mSpeechUtils;
+    SpeechUtils mSpeechUtils;
 
-    private MediaPlayer mediaPlayer;
+//    protected MediaPlayer mediaPlayer;
 
     protected IntelligentRecognitionViewModel mViewModel;
 
@@ -74,13 +57,21 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
 
     protected IntelligentRecognitionRecord mRecord;
 
-    /** 播放第几个语音 */
-    private int audioPlayNum = 0;
+    private AtomicBoolean isSpeechStart = new AtomicBoolean(false);
+    //第几次语音测评
+    private int speechNum = 0;
+    /** speech模型是否加载成功 */
+    private AtomicBoolean isSpeechReady = new AtomicBoolean(false);
 
     public BaseIntelligentRecognitionPresenter(FragmentActivity context) {
         this.mActivity = context;
         this.mViewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
         this.mRecord = mViewModel.getRecordData();
+    }
+
+    //返回当前是第几个speechNum
+    int getSpeechNum() {
+        return speechNum;
     }
 
     /**
@@ -108,17 +99,14 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
 
     @Override
     public void startSpeech() {
-//        isSpeechStart = true;
         performStartRecord();
     }
 
-    private void performStartRecord() {
+    protected void performStartRecord() {
         if (!isSpeechStart.get() && isSpeechReady.get()) {
             startRecordSound();
         }
     }
-
-    public AtomicBoolean isSpeechStart = new AtomicBoolean(false);
 
     private void unregistEvent() {
         if (broadcast != null) {
@@ -126,12 +114,11 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
         }
     }
 
-    private AtomicBoolean isSpeechReady = new AtomicBoolean(false);
 
     /**
      * 开始语音测评
      */
-    private void startRecordSound() {
+    protected void startRecordSound() {
         speechNum++;
 //        String videoSavePath = mActivity.getDir("chinese_parterner", Context.MODE_PRIVATE).getPath() + File.separator + "sound.mp3";
         String videoSavePath = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo";
@@ -161,7 +148,6 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
         Observable.
                 just(mSpeechUtils.isOfflineSuccess()).
                 filter(RxFilter.filterTrue()).
-                delay(5, TimeUnit.SECONDS, Schedulers.io()).
                 subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
@@ -204,438 +190,8 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
     /** 处理语音评测结果 */
     protected abstract void handleResult(ResultEntity resultEntity);
 
-
-    /** 重读整个句子 */
-    private void performRepeatSentence(int status) {
-
-        if (mViewModel.getIeResultData() == null) return;
-        final Map<String, String> audioHashMap = mViewModel.getIeResultData().getValue().getAudioHashMap();
-        if (audioHashMap == null)
-            return;
-        final String sentenceKey = mViewModel.getIeResultData().getValue().getSentence();
-
-        Observable.
-                just(sentenceKey).
-                filter(RxFilter.<String>filterNull()).
-                map(new Function<String, String>() {
-                    @Override
-                    public String apply(String s) throws Exception {
-                        return audioHashMap.get(sentenceKey);
-                    }
-                }).
-                filter(RxFilter.<String>filterNull()).
-                subscribeOn(Schedulers.io()).
-                subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String s) throws Exception {
-
-                        audioPlayNum = 1;
-//                        SoundEffectPlayer.SoundPlayListener soundPlayListener =
-//                                ;
-                        SoundEffectPlayer soundEffectPlayer = new SoundEffectPlayer(s);
-                        soundEffectPlayer.setPlayListener(new SoundEffectPlayer.SoundPlayListener() {
-                            @Override
-                            public void onSoundFinish() {
-                                audioPlayNum++;
-                                if (audioPlayNum == 2) {
-                                    mViewModel.getIsSpeechJudgeFinish().postValue(1);
-                                    startSpeech();
-                                }
-                            }
-                        });
-                        soundEffectPlayer.start();
-                    }
-                });
-
-
-    }
-
-    /**
-     * 重读某个单词，分数最低的某个单词
-     * 处理评测结果时，一定不能在同一个线程里面播放音频
-     */
-    private void performRepeatWord(final List<PhoneScore> phoneScores, int status) {
-
-//        playUnity3DANDAudio(REPEAT_WORD, new MediaPlayer.OnCompletionListener() {
-//            @Override
-//            public void onCompletion(MediaPlayer mp) {
-//
-//            }
-//        });
-//        SoundEffectPlayer soundEffectPlayer = new SoundEffectPlayer(Arrays.asList());
-        sortResult(phoneScores);
-//        PhoneScore repeatUrl = getFilterWord(phoneScores);
-//        String urlAudio = null;
-//        if (repeatUrl == null || repeatUrl.getWord() == null)
-//            return urlAudio;
-        if (mViewModel.getIeResultData() == null) return;
-        Map<String, String> audioHashMap = mViewModel.getIeResultData().getValue().getAudioHashMap();
-        if (audioHashMap == null)
-            return;
-//        Observable.
-//                just(audioHashMap).
-//                filter(RxFilter.<Map<String, String>>filterNull()).
-//                flatMap(new Function<Map<String, String>, ObservableSource<?>>() {
-//                    @Override
-//                    public ObservableSource<?> apply(Map<String, String> stringStringMap) throws Exception {
-//                        return Observable.fromArray(stringStringMap);
-//                    }
-//                })
-//                flatMapIterable(new Function<Map<String, String>, Iterable<?>>() {
-//                    @Override
-//                    public Iterable<?> apply(Map<String, String> stringStringMap) throws Exception {
-//                        return stringStringMap.entrySet();
-//                    }
-//                })
-        Observable.zip(
-                Observable.
-                        fromIterable(audioHashMap.entrySet()).
-                        filter(getRepeatWordPredicate(getFilterWord(phoneScores))).
-                        map(new Function<Map.Entry<String, String>, String>() {
-                            @Override
-                            public String apply(Map.Entry<String, String> stringStringEntry) throws Exception {
-                                return stringStringEntry.getValue();
-                            }
-                        }).
-                        filter(RxFilter.<String>filterNull()),
-                Observable.just(EvaluationAudioPlayerDataManager.getInstance().
-                        getJudgeAudioUrl(status)).
-                        filter(RxFilter.<String>filterNull()),
-                new BiFunction<String, String, List<String>>() {
-                    @Override
-                    public List<String> apply(String s, String s2) throws Exception {
-                        return Arrays.asList(s, s2);
-                    }
-                }).
-                filter(new Predicate<List<String>>() {
-                    @Override
-                    public boolean test(List<String> strings) throws Exception {
-                        for (String string : strings) {
-                            logger.i("play audio url" + string);
-                        }
-                        return strings != null && strings.size() != 0;
-                    }
-                }).
-                observeOn(Schedulers.io()).
-                subscribe(new Consumer<List<String>>() {
-                    @Override
-                    public void accept(List<String> strings) throws Exception {
-                        if (soundPlayer != null) {
-                            soundPlayer.cancle();
-                        }
-                        soundPlayer = new SoundEffectPlayer(strings);
-                        soundPlayer.setPlayListener(new SoundEffectPlayer.SoundPlayListener() {
-                            @Override
-                            public void onSoundFinish() {
-                                speechNum++;
-                                if (speechNum == 2) {
-                                    mViewModel.getIsSpeechJudgeFinish().postValue(1);
-                                    startSpeech();
-                                }
-                            }
-                        });
-                        soundPlayer.start();
-                    }
-                });
-//        Observable.
-//                fromIterable(audioHashMap.entrySet()).
-//                filter(getRepeatWordPredicate(getFilterWord(phoneScores))).
-//                subscribeOn(Schedulers.io()).
-//                map(new Function<Map.Entry<String, String>, String>() {
-//                    @Override
-//                    public String apply(Map.Entry<String, String> stringStringEntry) throws Exception {
-//                        return stringStringEntry.getValue();
-//                    }
-//                }).
-//                filter(RxFilter.<String>filterNull()).
-//                subscribe(new Consumer<String>() {
-//                    @Override
-//                    public void accept(String s) throws Exception {
-////                        List<String> list =
-////                                Arrays.asList(
-////                                        EvaluationAudioPlayerDataManager.getInstance().getJudgeAudioUrl(REPEAT_WORD),
-////                                        s);
-//                        if (soundPlayer != null) {
-//                            soundPlayer.cancle();
-//
-//                        }
-////                        else {
-////                        soundPlayer = new SoundEffectPlayer(list);
-////                        }
-////                        if (soundPlayer == null) {
-//                        soundPlayer = new SoundEffectPlayer(
-//                                Arrays.asList(
-//                                        EvaluationAudioPlayerDataManager.getInstance().getJudgeAudioUrl(REPEAT_WORD),
-//                                        s));
-////                        }
-////                        soundPlayer.setPlayListener(new SoundEffectPlayer.SoundPlayListener() {
-////                            @Override
-////                            public void onSoundFinish() {
-////
-////                            }
-////                        });
-//                        soundPlayer.start();
-//                    }
-//                }, new Consumer<Throwable>() {
-//                    @Override
-//                    public void accept(Throwable throwable) throws Exception {
-//                        throwable.printStackTrace();
-//                        logger.e(throwable.getStackTrace());
-//                    }
-//                });
-    }
-
-    SoundEffectPlayer soundPlayer;
-
-    /** 得到需要重复的word的filter */
-    private Predicate<Map.Entry<String, String>> getRepeatWordPredicate(final PhoneScore phoneScore) {
-        return new Predicate<Map.Entry<String, String>>() {
-            @Override
-            public boolean test(Map.Entry<String, String> stringStringEntry) throws Exception {
-                return stringStringEntry.getKey() != null && phoneScore != null
-                        && stringStringEntry.getKey().equals(phoneScore.getWord());
-            }
-        };
-    }
-
-    /** 处理重复单词的consumer */
-    private Consumer<String> getRepeatWordConsumer() {
-        return new Consumer<String>() {
-            @Override
-            public void accept(String stringStringEntry) throws Exception {
-//                playAudio(stringStringEntry);
-            }
-        };
-    }
-
-    private void playUnity3DANDAudio(int status) {
-//        EvaluationAudioPlayerDataManager audioRespository = ;
-
-//        playAudio(EvaluationAudioPlayerDataManager.getInstance().getJudgeAudioUrl(), status);
-    }
-
-
-    /** 播放重复的句子 */
-    private void playAudio(String url, final int status, MediaPlayer.OnCompletionListener listener) {
-        if (TextUtils.isEmpty(url)) {
-            return;
-        }
-        if (mediaPlayer == null) {
-            mediaPlayer = new MediaPlayer();
-        }
-        try {
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.prepare();
-            mediaPlayer.setOnCompletionListener(listener);
-            mediaPlayer.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /***
-     * 获取过滤的单词
-     * @param list
-     * @return
-     */
-    private PhoneScore getFilterWord(List<PhoneScore> list) {
-        PhoneScore repeatWord = null;
-        for (PhoneScore phoneScore : list) {
-            if (!filterWordList.contains(phoneScore.getWord())) {
-                repeatWord = phoneScore;
-            }
-        }
-        return repeatWord;
-    }
-
-    private List<String> filterWordList = new ArrayList<>();
-
-    /**
-     * 获取排好序的List
-     *
-     * @param list
-     */
-    private void sortResult(List<PhoneScore> list) {
-        Collections.sort(list, new Comparator<PhoneScore>() {
-            @Override
-            public int compare(PhoneScore o1, PhoneScore o2) {
-                if (o1.getScore() < o2.getScore()) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            }
-        });
-    }
-
-    /** 得到满分点赞 */
-    private void performPerfact() {
-        logger.i("performPerfact");
-
-        Unity3DPlayManager.play_A_MON_T_U();
-        Observable.
-                just(EvaluationAudioPlayerDataManager.getInstance().getJudgeAudioUrl(IntelligentConstants.PERFECT)).
-                map(new Function<String, File>() {
-                    @Override
-                    public File apply(String s) throws Exception {
-                        return new File(s);
-                    }
-                }).
-                filter(new Predicate<File>() {
-                    @Override
-                    public boolean test(File file) throws Exception {
-                        return file != null && file.exists();
-                    }
-                }).
-                delay(1, TimeUnit.SECONDS).
-                subscribe(new Consumer<File>() {
-                    @Override
-                    public void accept(File file) throws Exception {
-                        if (mediaPlayer == null) {
-                            mediaPlayer = new MediaPlayer();
-                        }
-                        logger.i(file.getPath());
-                        mediaPlayer.setDataSource(file.getPath());
-                        mediaPlayer.prepare();
-                        mediaPlayer.start();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        logger.e(throwable.getStackTrace());
-                        throwable.printStackTrace();
-                    }
-                });
-
-//        Observable.
-//                <Boolean>just(true).
-//                subscribeOn(AndroidSchedulers.mainThread()).
-//                doOnNext(new Consumer<Boolean>() {
-//                    @Override
-//                    public void accept(Boolean aBoolean) throws Exception {
-//                        logger.i("playAction");
-////                        UnityCommandPlay.playActionNow("A_YW_DOG_ZKZB2");
-//                    }
-//                }).
-//                observeOn(Schedulers.io()).
-//                subscribe(new Consumer<Boolean>() {
-//                    @Override
-//                    public void accept(Boolean aBoolean) throws Exception {
-//                        if (mediaPlayer == null) {
-//                            mediaPlayer = new MediaPlayer();
-//                        }
-////                        try {
-////            AssetFileDescriptor fd = mActivity.getAssets().openFd("01_01_Well_done.mp3");
-//                        String url = Environment.getExternalStorageDirectory() +
-//                                File.separator + "parentsmeeting" + File.separator + "livevideo" +
-//                                File.separator + "01_01_Well_done.mp3";
-//                        File file = new File(url);
-//                        if (!file.exists()) {
-//                            logger.e(url + "不存在");
-//                            return;
-//                        } else {
-//                            logger.i(url + " @@@@@");
-//                        }
-////                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-////            String url = "sdcard/parentsmeeting/livevideo/01_01_Well_done.mp3";
-//                        mediaPlayer.setDataSource(url);
-//                        mediaPlayer.prepare();
-//                        mediaPlayer.start();
-////                        } catch (Exception e) {
-////                            e.printStackTrace();
-////                            logger.e(e);
-////                        }
-//                    }
-//                }, new Consumer<Throwable>() {
-//                    @Override
-//                    public void accept(Throwable throwable) throws Exception {
-//                        throwable.printStackTrace();
-//                    }
-//                });
-    }
-
-    /** 表现良好，双分都大于60 */
-    private void performGood() {
-//        String audio60Url = "";
-//        playAudio(audio60Url);
-
-    }
-
-    /** 判断当前的测评状态 */
-    private int judgeSpeechStatus(ResultEntity resultEntity) {
-        //低于60分的单词个数
-        int lowNum = 0;
-        List<PhoneScore> phoneScores = resultEntity.getLstPhonemeScore();
-        if (phoneScores == null) {
-            return STATUS_0;
-        }
-        for (PhoneScore phoneScore : phoneScores) {
-            if (phoneScore.getScore() < 60) {
-                lowNum++;
-            }
-        }
-        if (lowNum > phoneScores.size() / 2) {
-            return STATUS_1;
-        } else {
-            return STATUS_2;
-        }
-    }
-
-    //情况0，状态出现异常
-    private final int STATUS_0 = 0;
-    //情况1,50%及以上的单词分数低于60分
-    private final int STATUS_1 = 1;
-    //情况2，50%及以下的单词分数低于60分
-    private final int STATUS_2 = 2;
-
-    /**
-     * log使用，会去result详细信息
-     *
-     * @param resultEntity
-     * @return
-     */
-    private String getResultString(ResultEntity resultEntity) {
-//        List<PhoneScore> list = resultEntity.getLstPhonemeScore();
-        StringBuilder stringBuilder = new StringBuilder();
-        if (resultEntity.getLstPhonemeScore() == null) {
-            return "Lst null" + getNext(resultEntity);
-        }
-        for (PhoneScore phoneScore : resultEntity.getLstPhonemeScore()) {
-            stringBuilder.append(phoneScore.getWord() + " " + phoneScore.getScore() + " ");
-        }
-        stringBuilder.append("@@@");
-//        if (resultEntity.getScores() == null) {
-//            return "scores null" + stringBuilder + getNext(resultEntity);
-//        }
-//        for (Integer integer : resultEntity.getScores()) {
-//            stringBuilder.append(integer + " ");
-//        }
-        stringBuilder.append("@@@");
-        return stringBuilder.toString() + " status:" + resultEntity.getStatus()
-                + " curStatus " + resultEntity.getCurStatus()
-                + " contScore " + resultEntity.getContScore()
-                + " partScore " + resultEntity.getPartScore()
-                + " Score " + resultEntity.getScore()
-                + " curString " + resultEntity.getCurString()
-                + " PronScore " + resultEntity.getPronScore();
-    }
-
-    private String getNext(ResultEntity resultEntity) {
-        return " status:" + resultEntity.getStatus()
-                + " curStatus " + resultEntity.getCurStatus()
-                + " contScore " + resultEntity.getContScore()
-                + " partScore " + resultEntity.getPartScore()
-                + " Score " + resultEntity.getScore()
-                + " curString " + resultEntity.getCurString()
-                + " PronScore " + resultEntity.getPronScore();
-    }
-
     @Override
     public void onDestroy() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-        }
     }
 
     @Override
@@ -731,5 +287,47 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
         public void stop(String goldJSON) {
             baseView.receiveStopEvent(goldJSON);
         }
+    }
+
+    /**
+     * log使用，会去result详细信息
+     *
+     * @param resultEntity
+     * @return
+     */
+    private String getResultString(ResultEntity resultEntity) {
+//        List<PhoneScore> list = resultEntity.getLstPhonemeScore();
+        StringBuilder stringBuilder = new StringBuilder();
+        if (resultEntity.getLstPhonemeScore() == null) {
+            return "Lst null" + getNext(resultEntity);
+        }
+        for (PhoneScore phoneScore : resultEntity.getLstPhonemeScore()) {
+            stringBuilder.append(phoneScore.getWord() + " " + phoneScore.getScore() + " ");
+        }
+        stringBuilder.append("@@@");
+//        if (resultEntity.getScores() == null) {
+//            return "scores null" + stringBuilder + getNext(resultEntity);
+//        }
+//        for (Integer integer : resultEntity.getScores()) {
+//            stringBuilder.append(integer + " ");
+//        }
+        stringBuilder.append("@@@");
+        return stringBuilder.toString() + " status:" + resultEntity.getStatus()
+                + " curStatus " + resultEntity.getCurStatus()
+                + " contScore " + resultEntity.getContScore()
+                + " partScore " + resultEntity.getPartScore()
+                + " Score " + resultEntity.getScore()
+                + " curString " + resultEntity.getCurString()
+                + " PronScore " + resultEntity.getPronScore();
+    }
+
+    private String getNext(ResultEntity resultEntity) {
+        return " status:" + resultEntity.getStatus()
+                + " curStatus " + resultEntity.getCurStatus()
+                + " contScore " + resultEntity.getContScore()
+                + " partScore " + resultEntity.getPartScore()
+                + " Score " + resultEntity.getScore()
+                + " curString " + resultEntity.getCurString()
+                + " PronScore " + resultEntity.getPronScore();
     }
 }

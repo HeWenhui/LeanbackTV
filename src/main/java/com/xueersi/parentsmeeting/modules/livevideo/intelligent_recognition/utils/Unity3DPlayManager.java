@@ -36,35 +36,54 @@ public class Unity3DPlayManager {
             mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_2_1,
                     Arrays.asList(IntelligentUnity3DBodyParam.A_MON_BH_C, IntelligentUnity3DFaceParam.A_MON_S1));
 
+            mapList.put(IntelligentConstants.FEED_BACK_WORD_2_0,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S2));
+
+            mapList.put(IntelligentConstants.FEED_BACK_WORD_2_1,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_BH_C, IntelligentUnity3DFaceParam.A_MON_S1));
+
             mapList.put(IntelligentConstants.FEED_BACK_WORD_3_0,
                     Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S2));
 
             mapList.put(IntelligentConstants.FEED_BACK_WORD_3_1,
                     Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S1));
-//            mapList.put(IntelligentConstants.REPEAT_SENTENCE,Arrays.asList());
+
+            mapList.put(IntelligentConstants.END_GOOD_BYE_1,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
+
+            mapList.put(IntelligentConstants.END_GOOD_BYE_2,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
+
+            mapList.put(IntelligentConstants.END_GOOD_BYE_3,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
+
+            mapList.put(IntelligentConstants.END_GOOD_BYE_4,
+                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
         }
 
     };
 
     public static void playUnity3D(int status) {
-        switch (status) {
-            case IntelligentConstants.PERFECT: {
-//                play_A_MON_LH_U();
-                play_A_MON_S2();
-
-                break;
-            }
-            case IntelligentConstants.GOOD: {
-
-                break;
-            }
-//            case IntelligentConstants.REPEAT_SENTENCE: {
+        UnityCommandPlay.playBodyActionSingle(mapList.get(status).get(0));
+        UnityCommandPlay.playFaceActionSingle(mapList.get(status).get(1));
+//        switch (status) {
+//            case IntelligentConstants.PERFECT: {
+////                play_A_MON_LH_U();
+//                play_A_MON_S2();
+//
 //                break;
 //            }
-//            case IntelligentConstants.REPEAT_WORD: {
+//            case IntelligentConstants.GOOD: {
+//
 //                break;
 //            }
-        }
+////            case IntelligentConstants.REPEAT_SENTENCE: {
+////                break;
+////            }
+////            case IntelligentConstants.REPEAT_WORD: {
+////                break;
+////            }
+//        }
 
     }
 

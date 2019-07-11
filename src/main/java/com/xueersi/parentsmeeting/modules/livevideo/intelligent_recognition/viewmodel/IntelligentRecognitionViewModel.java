@@ -18,8 +18,8 @@ public class IntelligentRecognitionViewModel extends ViewModel {
     /** 当前Activity是否结束 */
     private MutableLiveData<Boolean> isFinish = new MutableLiveData<>();
     /** 语音测评完成，显示结果 */
-    private MutableLiveData<Integer> intelligentSpeechResult = new MutableLiveData<>();
-    /** 语音测评评价完成 */
+    private MutableLiveData<Boolean> isIntelligentSpeechFinish = new MutableLiveData<>();
+    /** 对语音测评结果的评价完成(unity3D说完话) */
     private MutableLiveData<Integer> isSpeechJudgeFinish = new MutableLiveData<>();
     /** 是否取消测评 */
     private MutableLiveData<Boolean> isCancelSpeech = new MutableLiveData<>();
@@ -36,8 +36,8 @@ public class IntelligentRecognitionViewModel extends ViewModel {
         return isSpeechJudgeFinish;
     }
 
-    public MutableLiveData<Integer> getIntelligentSpeechResult() {
-        return intelligentSpeechResult;
+    public MutableLiveData<Boolean> getIsIntelligentSpeechFinish() {
+        return isIntelligentSpeechFinish;
     }
 //    public MutableLiveData<Boolean> getIsPerface() {
 //        return isPerfact;
@@ -55,31 +55,31 @@ public class IntelligentRecognitionViewModel extends ViewModel {
         return ieResultData;
     }
 
-    public void setIeResultData(MutableLiveData<IEResult> ieResultData) {
-        this.ieResultData = ieResultData;
-    }
+//    public void setIeResultData(MutableLiveData<IEResult> ieResultData) {
+//        this.ieResultData = ieResultData;
+//    }
 
     public MutableLiveData<Boolean> getIsSpeechReady() {
         return isSpeechReady;
     }
 
-    public void setIsSpeechReady(MutableLiveData<Boolean> isSpeechReady) {
-        this.isSpeechReady = isSpeechReady;
-    }
+//    public void setIsSpeechReady(MutableLiveData<Boolean> isSpeechReady) {
+//        this.isSpeechReady = isSpeechReady;
+//    }
 
     public MutableLiveData<Integer> getVolume() {
         return volume;
     }
 
-    public void setVolume(MutableLiveData<Integer> volume) {
-        this.volume = volume;
-    }
+//    public void setVolume(MutableLiveData<Integer> volume) {
+//        this.volume = volume;
+//    }
 
     public MutableLiveData<Boolean> getIsFinish() {
         return isFinish;
     }
 
-    public void setIsFinish(MutableLiveData<Boolean> isFinish) {
-        this.isFinish = isFinish;
-    }
+//    public void setIsFinish(MutableLiveData<Boolean> isFinish) {
+//        this.isFinish = isFinish;
+//    }
 }

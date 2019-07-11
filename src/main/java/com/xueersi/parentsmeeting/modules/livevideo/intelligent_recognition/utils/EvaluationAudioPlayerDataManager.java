@@ -32,6 +32,10 @@ public class EvaluationAudioPlayerDataManager {
         queue.add(IntelligentConstants.FEED_BACK_WORD_2_1);
         queue.add(IntelligentConstants.FEED_BACK_WORD_3_0);
         queue.add(IntelligentConstants.FEED_BACK_WORD_3_1);
+        queue.add(IntelligentConstants.END_GOOD_BYE_1);
+        queue.add(IntelligentConstants.END_GOOD_BYE_2);
+        queue.add(IntelligentConstants.END_GOOD_BYE_3);
+        queue.add(IntelligentConstants.END_GOOD_BYE_4);
 //        queue.add(IntelligentConstants.GOOD);
 //        queue.add(IntelligentConstants.PERFECT);
 //        queue.add(IntelligentConstants.GOOD);
@@ -40,8 +44,6 @@ public class EvaluationAudioPlayerDataManager {
     private static volatile EvaluationAudioPlayerDataManager instance;
 
     private EvaluationAudioPlayerDataManager() {
-        List list = Arrays.asList(queue.toArray());
-
     }
 
     public static EvaluationAudioPlayerDataManager getInstance() {
@@ -156,10 +158,6 @@ public class EvaluationAudioPlayerDataManager {
     }
 
 
-    private void initRepeat_sentence() {
-
-    }
-
     public String getJudgeAudioUrl(Integer integer) {
         if (map != null && map.get(integer) != null) {
             return map.get(integer).getAndIncreateAudioUrl();
@@ -167,4 +165,5 @@ public class EvaluationAudioPlayerDataManager {
             return null;
         }
     }
+
 }

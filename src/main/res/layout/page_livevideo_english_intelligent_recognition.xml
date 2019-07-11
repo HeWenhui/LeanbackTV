@@ -53,6 +53,45 @@
         app:lottie_fileName="intelligent_recognition_study_v2/english/waveview_open_start/data.json"
         app:lottie_imageAssetsFolder="intelligent_recognition_study_v2/english/waveview_open_start/images" />
 
+    <include
+        android:id="@+id/layout_livevideo_intelligent_recognition_permission"
+        layout="@layout/page_livevideo_english_intelligent_recognition_item_permission"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/wv_livevideo_intelligent_recognition_energy_bar"
+        app:layout_constraintLeft_toLeftOf="@+id/wv_livevideo_intelligent_recognition_energy_bar"
+        app:layout_constraintRight_toRightOf="@+id/wv_livevideo_intelligent_recognition_energy_bar" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_intelligent_recognition_end_tip_background"
+        android:layout_width="159dp"
+        android:layout_height="28dp"
+        android:src="@drawable/bg_livevideo_intelligent_recognition_end_tip_background"
+        app:layout_constraintBottom_toTopOf="@+id/wv_livevideo_intelligent_recognition_energy_bar"
+        app:layout_constraintLeft_toLeftOf="@+id/wv_livevideo_intelligent_recognition_energy_bar"
+        app:layout_constraintRight_toRightOf="@+id/wv_livevideo_intelligent_recognition_energy_bar" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@+id/tv_livevideo_intelligent_recognition_end_tip_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3s后结束语音评测"
+        android:textColor="@color/COLOR_D4D4D4"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_intelligent_recognition_end_tip_background"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_intelligent_recognition_end_tip_background"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_intelligent_recognition_end_tip_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_intelligent_recognition_end_tip_background" />
+    <!--关闭提示-->
+    <android.support.constraint.Group
+        android:id="@+id/group_livevideo_intelligent_recognition_end_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="iv_livevideo_intelligent_recognition_end_tip_background,
+                tv_livevideo_intelligent_recognition_end_tip_text" />
+
     <com.xueersi.ui.widget.WaveView
         android:id="@+id/wv_livevideo_intelligent_recognition_energy_bar"
         android:layout_width="230dp"
