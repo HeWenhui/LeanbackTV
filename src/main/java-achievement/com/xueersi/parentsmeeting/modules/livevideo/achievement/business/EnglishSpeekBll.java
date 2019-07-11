@@ -4,8 +4,6 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Rect;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -69,7 +67,6 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     private Activity activity;
     private EnglishSpeekHttp liveBll;
     private LiveAndBackDebug liveAndBackDebug;
-    private Handler handler = new Handler(Looper.getMainLooper());
     String eventId = LiveVideoConfig.LIVE_ENGLISH_SPEEK;
     private static final String ENGLISH_TIP = LiveVideoConfig.LIVE_ENGLISH_TIP;
     private int MAX_TIPS = 1;

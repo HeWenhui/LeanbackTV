@@ -39,8 +39,6 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
     private EnglishSpeekHttp liveBll;
     private LiveAndBackDebug liveAndBackDebug;
     private LiveViewAction liveViewAction;
-    Handler handler = new Handler(Looper.getMainLooper());
-
     LiveGetInfo.TotalOpeningLength totalOpeningLength;
 
     boolean dbStart = false;

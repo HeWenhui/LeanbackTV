@@ -165,7 +165,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      */
     public ArtsAnswerResultBll(Activity context, String liveId, int liveType, RelativeLayout rootView) {
         super(context, liveId, liveType);
-        mRootView = rootView;
     }
 
 

@@ -365,7 +365,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     liveAchievementEngStandBll = new LiveAchievementEngStandBll(activity, mLiveType, mGetInfo, true);
 //                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
-                    liveAchievementEngStandBll.initView(mRootView, mContentView);
+                    liveAchievementEngStandBll.initView(getLiveViewAction());
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngStandBll;
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
@@ -405,7 +405,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -464,7 +464,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         .getStarCount(), mGetInfo.getGoldCount(), true);
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(mLiveBll);
-                starBll.initView(mRootView, mContentView);
+                starBll.initView(getLiveViewAction());
                 starAction = starBll;
 
                 englishSpeekAction = null;
