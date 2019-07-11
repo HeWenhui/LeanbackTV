@@ -112,6 +112,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ExperienceThreeScreenActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom.MediaChildViewClick, ViewTreeObserver.OnGlobalLayoutListener {
     private String TAG = "ExperienceThreeScreenActivity";
+
     public static void intentTo(Activity context, Bundle bundle, String where, int requestCode) {
         Intent intent = new Intent(context, ExperienceThreeScreenActivity.class);
         intent.putExtras(bundle);
@@ -1130,7 +1131,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         rlLiveMessageContent = new RelativeLayout(this);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlLiveMessageContent, params);
+        bottomContent.addView(rlLiveMessageContent, 0, params);
 
         String channel = IRC_CHANNEL_PREFIX + expChatId;
         String chatRoomUid = "s_" + "4" + "_" + expChatId + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();

@@ -142,7 +142,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
             rlLiveMessageContent = new RelativeLayout(activity);
-            bottomContent.addView(rlLiveMessageContent, params);
+            bottomContent.addView(rlLiveMessageContent, 0, params);
         } else {
             rlLiveMessageContent.removeAllViews();
         }
@@ -311,7 +311,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
             rlLiveMessageContent = new RelativeLayout(activity);
-            bottomContent.addView(rlLiveMessageContent, params);
+            bottomContent.addView(rlLiveMessageContent, 0, params);
         } else {
             //rlLiveMessageContent.removeAllViews();
             rlLiveMessageContent.removeAllViewsInLayout();
@@ -390,12 +390,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         rlLiveMessageContent.setId(R.id.iv_livevideo_message_content1);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        int pattern = activity.getIntent().getIntExtra("pattern", 0);
-        if (pattern == 2) {
-            bottomContent.addView(rlLiveMessageContent, 0, params);
-        } else {
-            bottomContent.addView(rlLiveMessageContent, params);
-        }
+        bottomContent.addView(rlLiveMessageContent, 0, params);
         String text = null;
         boolean isRegister = false;
         boolean isHaveFlowers = false;

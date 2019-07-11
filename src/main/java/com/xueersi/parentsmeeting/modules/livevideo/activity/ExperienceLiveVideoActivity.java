@@ -797,7 +797,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         rlLiveMessageContent = new RelativeLayout(this);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlLiveMessageContent, params);
+        bottomContent.addView(rlLiveMessageContent, 0, params);
         long before = System.currentTimeMillis();
         mLiveMessagePager = new LiveMessagePager(this, ums, liveMediaControllerBottom,
                 liveMessageLandEntities, null);

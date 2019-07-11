@@ -1023,7 +1023,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
             if (cbMessageClock != null) {
-                int rightMargin = liveVideoPoint.getRightMargin();
+                int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
                 params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
                 if (params.rightMargin != rightMargin) {
                     params.rightMargin = rightMargin;
