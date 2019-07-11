@@ -336,7 +336,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null, audioRequest, mContentView);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), null, audioRequest, mContentView);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -428,7 +428,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -480,7 +480,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 if (speakerRecognitioner != null) {
                     englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                 }
-                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
+                boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
                 if (initView) {
                     englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                     englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
