@@ -240,8 +240,6 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                                                 msg = "摄像头已禁用";
                                             } else if ("disconnect".equals(status)) {
                                                 msg = "未连接摄像头";
-                                            } else if ("disconnect".equals(status)) {
-                                                msg = "未连接摄像头";
                                             } else if ("unsupported".equals(status)) {
                                                 msg = "设备暂不支持";
                                             } else {
@@ -577,10 +575,11 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         mChatClient.addListener(mClientListener);
         mChatClient.getRoomManager().addListener(mRoomListener);
         mChatClient.getPeerManager().addListener(mPeerListener);
-        String appid = myUserInfoEntity.getPsAppId();
+        String appid = myUserInfoEntity.getPsAppId() == null ? "" : myUserInfoEntity.getPsAppId();
+        String appkey = myUserInfoEntity.getPsAppClientKey() == null ? "" : myUserInfoEntity.getPsAppClientKey();
         //irc sdk初始化  code: 0 成功 ，1 参数错误 ， 19 已初始化
-        int initcode = mChatClient.init(mContext.getApplicationContext(), myUserInfoEntity.getPsAppId(), myUserInfoEntity.getPsAppClientKey(), workSpaceDir.getAbsolutePath());
-        logger.i("psAppId:" + myUserInfoEntity.getPsAppId() + " PsAppClientKey:" + myUserInfoEntity.getPsAppClientKey() + " workspace:" + workSpaceDir.getAbsolutePath());
+        int initcode = mChatClient.init(mContext.getApplicationContext(), appid, appkey, workSpaceDir.getAbsolutePath());
+        logger.i("psAppId:" + appid + " PsAppClientKey:" + appkey + " workspace:" + workSpaceDir.getAbsolutePath());
         logger.i("irc sdk initcode: " + initcode);
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
@@ -605,7 +604,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         }
         mChatClient.setLiveInfo(liveInfo);
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
-        int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
+        String psimId = myUserInfoEntity.getPsimId() == null ? "":myUserInfoEntity.getPsimId();
+        String psimKey = myUserInfoEntity.getPsimPwd() == null ? "":myUserInfoEntity.getPsimPwd();
+        int logincode = mChatClient.login(psimId, psimKey);
         logger.i("irc sdk logincode:" + logincode);
         StableLogHashMap logHashMap = defaultlog("IRCMessage");
         logHashMap.put("initcode", "" + initcode);
@@ -613,10 +614,10 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("logincode", "" + logincode);
         logHashMap.put("initLoginState", PMDefs.ResultCode.Result_Success == logincode ? "success" : "fail");
         logHashMap.put("nickname", mNickname);
-        logHashMap.put("PsAppId", myUserInfoEntity.getPsAppId());
-        logHashMap.put("PsAppClientKey", myUserInfoEntity.getPsAppClientKey());
-        logHashMap.put("PsImId", myUserInfoEntity.getPsimId());
-        logHashMap.put("PsImPwd", myUserInfoEntity.getPsimPwd());
+        logHashMap.put("PsAppId", appid);
+        logHashMap.put("PsAppClientKey", appkey);
+        logHashMap.put("PsImId", psimId);
+        logHashMap.put("PsImPwd", psimKey);
         logHashMap.put("workspace", workSpaceDir.getAbsolutePath());
         logHashMap.put("time", "" + System.currentTimeMillis());
         logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
