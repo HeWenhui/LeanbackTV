@@ -1,17 +1,26 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+
+import java.util.HashMap;
 
 public class LiveViewActionIml implements LiveViewAction {
+    private String TAG = "LiveViewActionIml";
+    private Logger logger = LiveLoggerFactory.getLogger(TAG);
     private Activity activity;
     private RelativeLayout bottomContent;
     private RelativeLayout mContentView;
+    private SparseArray<View> views = new SparseArray<View>();
+    private HashMap<View, LiveVideoLevel> liveVideoLevelHashMap = new HashMap<>();
 
     public LiveViewActionIml(Activity activity, RelativeLayout mContentView, RelativeLayout bottomContent) {
         this.activity = activity;
@@ -26,11 +35,30 @@ public class LiveViewActionIml implements LiveViewAction {
 
     @Override
     public void addView(LiveVideoLevel levelEntity, View child) {
+        logger.d("addView2:levelEntity=" + levelEntity.getLevel());
         if (levelEntity == LiveVideoLevel.LEVEL_MES) {
             bottomContent.addView(child, 0);
         } else {
-            bottomContent.addView(child);
+            boolean add = false;
+            for (int i = 0; i < bottomContent.getChildCount(); i++) {
+                View view = bottomContent.getChildAt(i);
+                LiveVideoLevel levelEntity2 = liveVideoLevelHashMap.get(view);
+                if (levelEntity2 != null) {
+                    int index = bottomContent.indexOfChild(view);
+                    int level = levelEntity2.getLevel();
+                    logger.d("addView2:levelEntity2=" + level + ",index=" + index);
+                    if (level >= levelEntity.getLevel()) {
+                        add = true;
+                        bottomContent.addView(child, index - 1);
+                        break;
+                    }
+                }
+            }
+            if (!add) {
+                bottomContent.addView(child);
+            }
         }
+        liveVideoLevelHashMap.put(child, levelEntity);
     }
 
     @Override
@@ -45,11 +73,30 @@ public class LiveViewActionIml implements LiveViewAction {
 
     @Override
     public void addView(LiveVideoLevel levelEntity, View child, ViewGroup.LayoutParams params) {
+        logger.d("addView4:levelEntity=" + levelEntity.getLevel());
         if (levelEntity == LiveVideoLevel.LEVEL_MES) {
             bottomContent.addView(child, 0, params);
         } else {
-            bottomContent.addView(child, params);
+            boolean add = false;
+            for (int i = 0; i < bottomContent.getChildCount(); i++) {
+                View view = bottomContent.getChildAt(i);
+                LiveVideoLevel levelEntity2 = liveVideoLevelHashMap.get(view);
+                if (levelEntity2 != null) {
+                    int index = bottomContent.indexOfChild(view);
+                    int level = levelEntity2.getLevel();
+                    logger.d("addView4:levelEntity2=" + level + ",index=" + index);
+                    if (level >= levelEntity.getLevel()) {
+                        add = true;
+                        bottomContent.addView(child, index - 1, params);
+                        break;
+                    }
+                }
+            }
+            if (!add) {
+                bottomContent.addView(child, params);
+            }
         }
+        liveVideoLevelHashMap.put(child, levelEntity);
     }
 
 //    @Override

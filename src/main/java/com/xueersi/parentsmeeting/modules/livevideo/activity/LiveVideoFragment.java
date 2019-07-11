@@ -437,7 +437,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
     @Override
     protected void initView() {
-        bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
+        bottomContent = mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
         liveViewAction = new LiveViewActionIml(activity, mContentView, bottomContent);
         rlMessageBottom = mContentView.findViewById(R.id.rl_course_message_bottom);
@@ -447,11 +447,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         createMediaControlerTop();
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         createMediaControllerBottom();
 
-        bottomContent.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         pattern = activity.getIntent().getIntExtra("pattern", LiveVideoConfig.LIVE_PATTERN_COMMON);
         if ((pattern == LiveVideoConfig.LIVE_PATTERN_COMMON)) {

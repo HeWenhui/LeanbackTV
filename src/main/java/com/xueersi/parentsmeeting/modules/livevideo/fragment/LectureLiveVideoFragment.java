@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
@@ -230,8 +231,8 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
         createMediaControllerBottom();
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        bottomContent.addView(liveMediaControllerBottom);
+        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom);
         baseLiveMediaControllerTop.setAutoOrientation(true);
     }
 
