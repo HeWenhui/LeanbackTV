@@ -120,7 +120,6 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
         liveViewAction = new LiveViewActionIml(activity, mContentView, bottomContent);
-        rlMessageBottom = mContentView.findViewById(R.id.rl_course_message_bottom);
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         createMediaControlerTop();
         liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams

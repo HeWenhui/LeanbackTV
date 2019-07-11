@@ -23,9 +23,11 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.MyEngineEventHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -43,8 +45,8 @@ public class ChatTipBll {
     String TAG = getClass().getSimpleName();
     protected Logger logger = LiveLoggerFactory.getLogger(TAG);
     Activity activity;
-    private RelativeLayout bottomContent;
-    Handler handler = new Handler(Looper.getMainLooper());
+    private LiveViewAction liveViewAction;
+    private Handler handler = new Handler(Looper.getMainLooper());
     private LiveAndBackDebug liveAndBackDebug;
     private String linkMicNonce = "";
     private VideoAudioChatHttp videoChatHttp;
@@ -124,8 +126,8 @@ public class ChatTipBll {
         stuPutUpHandsNum = getInfo.getStuPutUpHandsNum();
     }
 
-    public void setRootView(RelativeLayout bottomContent) {
-        this.bottomContent = bottomContent;
+    public void setRootView(LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
 //        videoChatPager = new VideoChatPager(activity);
 //        bottomContent.addView(videoChatPager.getRootView());
     }
@@ -195,7 +197,7 @@ public class ChatTipBll {
             return;
         }
         handler.postDelayed(waitRun, 1000);
-        vgRaisehand = (ViewGroup) LayoutInflater.from(activity).inflate(R.layout.layout_live_video_chat, bottomContent, false);
+        vgRaisehand = (ViewGroup) liveViewAction.inflateView(R.layout.layout_live_video_chat);
         rl_livevideo_content_left = vgRaisehand.findViewById(R.id.rl_livevideo_chat_content_left);
         ll_livevideo_chat_people = vgRaisehand.findViewById(R.id.ll_livevideo_chat_people);
         rl_livevideo_chat_raisehand_on = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand_on);
@@ -206,7 +208,7 @@ public class ChatTipBll {
         logToFile.d("initView:x2=" + LiveVideoPoint.getInstance().x2 + ",method=" + method + ",destory=" + destory);
         final int bottom = LiveVideoPoint.getInstance().screenHeight - LiveVideoPoint.getInstance().y4 + 200;
         vgRaisehand.setPadding(vgRaisehand.getLeft(), bottom, vgRaisehand.getRight(), bottom);
-        bottomContent.addView(vgRaisehand, lpRaisehand);
+        liveViewAction.addView(new LiveVideoLevel(3), vgRaisehand, lpRaisehand);
         rl_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand);
         bt_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.bt_livevideo_chat_raisehand);
         tv_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.tv_livevideo_chat_raisehand);
@@ -592,7 +594,7 @@ public class ChatTipBll {
             @Override
             public void run() {
                 if (vgRaisehand != null) {
-                    bottomContent.removeView(vgRaisehand);
+                    liveViewAction.removeView(vgRaisehand);
                     vgRaisehand = null;
                     destory = true;
                 }

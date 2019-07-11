@@ -34,7 +34,6 @@
     <item name="tv_livevideo_starinteract_gold_count" type="id" />
     <item name="tv_livevideo_starinteract_gold_hind" type="id" />
     <item name="rl_course_video_question_bottom" type="id" />
-    <item name="rl_course_message_bottom" type="id" />
     <!--说英语-->
     <item name="rl_livevideo_english_speak_content" type="id" />
     <item name="rl_livevideo_english_speak_error" type="id" />

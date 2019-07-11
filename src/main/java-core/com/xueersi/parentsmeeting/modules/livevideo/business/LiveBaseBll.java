@@ -36,7 +36,6 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
 
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected RelativeLayout mRootView;
-    protected RelativeLayout rlMessageBottom;
     protected RelativeLayout mContentView;
     protected LiveBll2 mLiveBll;
     protected LiveAndBackDebug contextLiveAndBackDebug;
@@ -229,10 +228,9 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
 
     }
 
-    public final void initViewF(LiveViewAction liveViewAction, RelativeLayout rlMessageBottom, RelativeLayout bottomContent, AtomicBoolean mIsLand, RelativeLayout mContentView) {
+    public final void initViewF(LiveViewAction liveViewAction, RelativeLayout bottomContent, AtomicBoolean mIsLand, RelativeLayout mContentView) {
         this.mRootView = bottomContent;
         this.liveViewAction = liveViewAction;
-        this.rlMessageBottom = rlMessageBottom;
         this.mContentView = mContentView;
         this.mIsLand = mIsLand;
         initView(bottomContent, mIsLand);

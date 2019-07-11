@@ -143,13 +143,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"></RelativeLayout>
 
-
-        <!-- 聊天下层 -->
-        <RelativeLayout
-            android:id="@id/rl_course_message_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
         <!-- 直播回放 互动题显示的界面位置 -->
         <RelativeLayout
             android:id="@id/rl_course_video_live_question_content"

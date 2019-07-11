@@ -59,7 +59,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        mPraiseListView.initView(rlMessageBottom);
+        mPraiseListView.initView(getLiveViewAction());
     }
 
     @Override
@@ -178,7 +178,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 if (mPraiseListView == null) {
                     mPraiseListView = new PraiseListBll(activity);
                     mPraiseListView.setPresenter(PraiseListIRCBll.this);
-                    mPraiseListView.initView(rlMessageBottom);
+                    mPraiseListView.initView(getLiveViewAction());
                 }
                 if (mPraiseListView != null) {
                     if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT) {

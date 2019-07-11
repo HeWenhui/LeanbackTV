@@ -379,7 +379,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 before = System.currentTimeMillis();
                 List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
                 for (LiveBaseBll businessBll : businessBlls) {
-                    businessBll.initViewF(liveViewAction, null, bottomContent, mIsLand, mContentView);
+                    businessBll.initViewF(liveViewAction, bottomContent, mIsLand, mContentView);
                 }
                 firstInitView = true;
                 logger.d("changeLandAndPort:time2=" + (System.currentTimeMillis() - before));
@@ -431,7 +431,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 before = System.currentTimeMillis();
                 List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
                 for (LiveBaseBll businessBll : businessBlls) {
-                    businessBll.initViewF(liveViewAction, null, bottomContent, mIsLand, mContentView);
+                    businessBll.initViewF(liveViewAction, bottomContent, mIsLand, mContentView);
                 }
                 firstInitView = true;
                 logger.d("changeLandAndPort:time4=" + (System.currentTimeMillis() - before));
@@ -464,7 +464,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
             firstInitView = true;
             List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
             for (LiveBaseBll businessBll : businessBlls) {
-                businessBll.initViewF(liveViewAction, null, bottomContent, mIsLand, mContentView);
+                businessBll.initViewF(liveViewAction, bottomContent, mIsLand, mContentView);
             }
         }
     }

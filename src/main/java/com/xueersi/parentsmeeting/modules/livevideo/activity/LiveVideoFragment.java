@@ -50,9 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchRouteSucces
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
-import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoAudioChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -78,7 +76,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
     protected LiveViewAction liveViewAction;
     protected RelativeLayout bottomContent;
-    protected RelativeLayout rlMessageBottom;
     protected String vStuCourseID;
     protected String courseId;
     /** 小学英语 */
@@ -183,7 +180,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         });
         List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
         for (LiveBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(liveViewAction, rlMessageBottom, bottomContent, mIsLand, mContentView);
+            businessBll.initViewF(liveViewAction, bottomContent, mIsLand, mContentView);
         }
     }
 
@@ -440,7 +437,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         bottomContent = mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
         liveViewAction = new LiveViewActionIml(activity, mContentView, bottomContent);
-        rlMessageBottom = mContentView.findViewById(R.id.rl_course_message_bottom);
 
 //        tvLoadingTint = mContentView.findViewById(R.id.tv_course_video_loading_content);
 
