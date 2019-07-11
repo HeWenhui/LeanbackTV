@@ -354,6 +354,7 @@ public class LiveVideoConfig {
     @Deprecated
     public static Boolean isNewEnglishH5 = false;
     /** 一题多发发题和收题的标志 */
+    @Deprecated
     public static Boolean isSend = false;
     public static String newEnglishH5 = "NewEnglishH5";
     /** 强制收题的标志 */

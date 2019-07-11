@@ -25,6 +25,8 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -206,7 +208,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             Log.e("Duncan", "js:");
         } else {
             String command;
-            if (isArts == 0 && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
+            if (isArts == LiveVideoSAConfig.ART_SEC && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
                 command = jsClientSubmit;
             } else {
                 command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
@@ -337,6 +339,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                LiveCrashReport.postCatchedException(TAG,e);
             }
             return true;
         }
@@ -422,6 +425,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                                 return webResourceResponse;
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
+                                LiveCrashReport.postCatchedException(TAG,e);
                             }
                         }
                     }
@@ -471,7 +475,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                                 "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId +
                                 "&educationStage=" + LiveVideoConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1" + "&nonce="
                                 + "" + UUID.randomUUID();
-                        if(isArts == 2 && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
+                        if(isArts == LiveVideoSAConfig.ART_CH && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
                             mLoadUrls += "&aiUrl="+detailInfo.getSubjectiveItem2AIUrl()+"&deviceId=8&gradeType="+Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
                         }
                     }
@@ -502,7 +506,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         classTestId = jsonObject.optString("classTestId");
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(TAG,e);
                         mLogtf.e("initData:string=" + string, e);
                     }
                     if (StringUtils.isEmpty(packageId) || StringUtils.isEmpty(stuCouId)) {
@@ -510,7 +514,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     }
                     String defaulturl;
                     boolean useMine = false;
-                    if (isArts == 0) {
+                    if (isArts == LiveVideoSAConfig.ART_SEC) {
                         useMine = true;
                         defaulturl = englishH5Entity.getDynamicurl();
                     } else {
@@ -522,7 +526,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     } else {
                         dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
                     }
-                    if(isArts == 2 && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
+                    if(isArts == LiveVideoSAConfig.ART_CH && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
                         dynamicurl = englishH5Entity.getDynamicurl();
                     }
                     mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId +
@@ -530,7 +534,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos="
                             + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" +
                             LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
-                    if(isArts == 2 && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
+                    if(isArts == LiveVideoSAConfig.ART_CH && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
                         mLoadUrls += "&aiUrl="+detailInfo.getSubjectiveItem2AIUrl()+"&deviceId=8&gradeType="+Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
                     }
                     // 上传接收到教师端指令的日志
@@ -705,25 +709,13 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.e(TAG, "======> LiveVideoConfig.isAITrue:" + LiveVideoConfig.isAITrue);
     }
 
-    private void parseData(String data) {
-        try {
-            JSONObject jsonObject = new JSONObject(data);
-            JSONObject dataObject = jsonObject.optJSONObject("data");
-            if (dataObject.has("total")) {
-                JSONObject totalObject = dataObject.getJSONObject("total");
-                mGold = totalObject.optString("gold");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void parseAIData(String data) {
         try {
             JSONObject jsonObject = new JSONObject(data);
             LiveVideoConfig.isAITrue = jsonObject.optBoolean("isRight");
         } catch (JSONException e) {
             e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG,e);
         }
     }
 
