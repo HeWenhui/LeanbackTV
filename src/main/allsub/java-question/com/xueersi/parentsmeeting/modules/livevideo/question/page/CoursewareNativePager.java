@@ -1728,7 +1728,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     /**
-     * 显示 理科互动题 结果页
+     * 显示 文科，理科互动题 结果页,
      *
      * @param isforce
      */
@@ -1775,7 +1775,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     /**
-     * 对外广播 答题结果
+     * 对外广播 答题结果，通知战队pk,更新能量
      *
      * @param entity
      */
