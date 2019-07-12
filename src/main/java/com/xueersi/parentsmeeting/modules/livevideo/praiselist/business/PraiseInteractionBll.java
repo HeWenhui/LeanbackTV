@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.praiselist.business;
 
 import android.app.Activity;
-import android.content.Context;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -10,7 +9,6 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -26,8 +24,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.http.ArtsPraiseHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageSend;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseInteractionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -47,7 +43,6 @@ import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 /**
  * 初高中理科点赞互动
  */
@@ -55,10 +50,7 @@ import java.util.TimerTask;
 public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
 
     private LiveBll2 mLiveBll;
-    private RelativeLayout rlPraiseContentView;
     private PraiseInteractionPager praiseInteractionPager;
-    private LiveHttpManager mHttpManager;
-    private ArtsPraiseHttpResponseParser mParser;
 
     //同班同学特效礼物
     private Stack<PraiseMessageEntity> otherSpecialGiftStack = new Stack<>();
@@ -91,15 +83,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         super.onCreate(data);
         EventBus.getDefault().register(this);
 
-    }
-
-    public void attachToRootView() {
-        rlPraiseContentView = new RelativeLayout(mContext);
-        rlPraiseContentView.setId(R.id.iv_livevideo_praise_interact_content1);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
-                LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        params.leftMargin = LiveVideoPoint.getInstance().x2;
-        addView(new LiveVideoLevel(2),rlPraiseContentView, params);
     }
 
     private class SpecailGiftTimerTask extends TimerTask {
@@ -138,13 +121,18 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
             removeCallbacks(delayRemoveRunalbe);
             isOpen = true;
+            if (praiseInteractionPager != null && praiseInteractionPager.getRootView() != null) {
+                removeView(praiseInteractionPager.getRootView());
+            }
             praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, contextLiveAndBackDebug, mGetInfo);
-            rlPraiseContentView.removeAllViews();
+
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
             int rightMargin = getRightMargin();
             params.rightMargin = rightMargin;
-            rlPraiseContentView.addView(praiseInteractionPager.getRootView(), params);
+
+            params.leftMargin = LiveVideoPoint.getInstance().x2;
+            addView(new LiveVideoLevel(2), praiseInteractionPager.getRootView(), params);
 
             praiseInteractionPager.openPraise();
 
@@ -268,7 +256,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
 
     private void closePraise() {
-        if (isOpen == true) {
+        if (isOpen) {
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), this.getClass().getSimpleName(),
                     userLogMap);
             isOpen = false;
@@ -282,11 +270,9 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         }
     }
 
-
     private int getRightMargin() {
         return LiveVideoPoint.getInstance().getRightMargin();
     }
-
 
     @Override
     public void onStop() {
@@ -313,17 +299,18 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     private Runnable delayRemoveRunalbe = new Runnable() {
         @Override
         public void run() {
-            rlPraiseContentView.removeAllViews();
+            if (praiseInteractionPager != null && praiseInteractionPager.getRootView() != null) {
+                removeView(praiseInteractionPager.getRootView());
+            }
         }
     };
 
     public void closePager() {
-        if (rlPraiseContentView != null) {
+        if (praiseInteractionPager != null) {
             praiseInteractionPager.closePraise();
             postDelayed(delayRemoveRunalbe, 1000);
         }
     }
-
 
     /**
      * notice 指令集
@@ -336,15 +323,13 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         logger.d("onLiveInited");
-        mHttpManager = getHttpManager();
-        attachToRootView();
     }
 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
         logger.d("onModeChange oldMode=" + oldMode + ",mode=" + mode);
-        rlPraiseContentView.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 closePraise();
@@ -368,7 +353,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                 if (isFilterMessage(from)) {
                     return;
                 }
-                rlPraiseContentView.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         if (open) {
@@ -412,7 +397,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         }
         if (mainRoomstatus != null) {
             final boolean openlike = mainRoomstatus.isOpenlike();
-            rlPraiseContentView.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     if (openlike) {
