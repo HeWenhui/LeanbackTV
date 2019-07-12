@@ -48,10 +48,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         try {
             JSONObject jsonObject = new JSONObject(paramsJson);
             int status = jsonObject.optInt("status");
-            String vStuCourseId = jsonObject.optString("vStuCourseId");
+            String vStuCourseId = jsonObject.optString("stuCouId");
             String courseId = jsonObject.optString("courseId");
-            String vChapterId = jsonObject.optString("vChapterId");
-            String chapterName = jsonObject.optString("chapterName");
+            String vChapterId = jsonObject.optString("planId");
+            String chapterName = jsonObject.optString("planName");
             switch (status) {
                 case LiveNewStatus.LIVE_UNBEGIN://未开始
                     break;
@@ -59,7 +59,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                     startLivePlay(vStuCourseId, courseId, vChapterId);
                     break;
                 case LiveNewStatus.LIVE_WAIT_PLAYBACK://等待回放
-                    break;
                 case LiveNewStatus.LIVE_CAN_PLAYBACK: //未完成
                 case LiveNewStatus.LIVE_CAN_PLAYBACK_PLUS: { //已完成
                     VideoSectionEntity sectionEntity = new VideoSectionEntity();
