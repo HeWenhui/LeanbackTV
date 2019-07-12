@@ -907,6 +907,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         switch (type) {
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN:
                 logger.d("onNotice:XCR_ROOM_TEAMPK_OPEN");
+                if (mGetInfo.getEnglishBetterMe().isUseBetterMe && !mGetInfo.getEnglishBetterMe().isArriveLate) {
+                    break;
+                }
                 if (!psOpen) {
                     psOpen = true;
                     if (enTeamPkAction != null) {
@@ -915,6 +918,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
                 break;
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT:
+                if (mGetInfo.getEnglishBetterMe().isUseBetterMe && !mGetInfo.getEnglishBetterMe().isArriveLate) {
+                    break;
+                }
                 logger.d("onNotice:XCR_ROOM_TEAMPK_RESULT:pkTeamEntity=" + pkTeamEntity);
                 getEnglishPkTotalRank();
                 break;

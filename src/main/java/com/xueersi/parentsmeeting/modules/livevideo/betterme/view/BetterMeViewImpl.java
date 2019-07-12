@@ -15,6 +15,7 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
@@ -31,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRank
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkBetterMeRewardsPager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
  * 英语小目标 view层
@@ -53,6 +55,7 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
     public static final int PAGER_LEVEL_DISPLAY = 2;
     public static final int PAGER_RECEIVE_TARGET = 3;
     private BasePager currentPager;
+    private AimRealTimeValEntity mAimRealTimeValEntity;
 
     public BetterMeViewImpl(Context context) {
         this.mContext = context;
@@ -134,11 +137,6 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    @Override
-    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
-
-    }
-
     /**
      * 小目标奖励页面
      */
@@ -155,9 +153,35 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
     }
 
     /**
-     * 更新小目标完成情况气泡
+     * 更新小目标气泡
      */
-    private void showUpdateBubble(String current, String target, boolean increasing) {
+    @Override
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
+        StringBuilder message = new StringBuilder();
+        String current = aimRealTimeValEntity.getRealTimeVal();
+        String target = aimRealTimeValEntity.getAimValue();
+        boolean increasing;
+        if (mAimRealTimeValEntity != null) {
+            //如果有上次目标值的记录
+            double doubleCurrent = (Double.valueOf(target));
+            double doublePrevious = (Double.valueOf(mAimRealTimeValEntity.getRealTimeVal()));
+            increasing = doubleCurrent > doublePrevious;
+        } else {
+            if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
+                message.append(BetterMeConfig.CORRECTRATE);
+                current = (int) (Double.valueOf(current) * 100) + "%";
+                target = (int) (Double.valueOf(target) * 100) + "%";
+            } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
+                message.append(BetterMeConfig.PARTICIPATERATE);
+                current = (int) (Double.valueOf(current) * 100) + "%";
+                target = (int) (Double.valueOf(target) * 100) + "%";
+            } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
+                message.append(BetterMeConfig.TALKTIME);
+            }
+            message.append("当前").append(current).append(" ").append("目标").append(target);
+            showTargetBubble(message.toString());
+        }
+        mAimRealTimeValEntity = aimRealTimeValEntity;
     }
 
     /**
@@ -178,11 +202,17 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
             message.append(BetterMeConfig.TALKTIME);
         }
         message.append("达到").append(target);
+        showTargetBubble(message.toString());
+    }
 
+    /**
+     * 蓝色气泡动效
+     */
+    private void showTargetBubble(String msg) {
         ViewGroup rlLivevideoinfo = ((Activity) mContext).findViewById(R.id.rl_livevideo_info);
         if (rlLivevideoinfo != null) {
             ViewGroup viewGroup = (ViewGroup) rlLivevideoinfo.getParent();
-            final LottieEffectInfo bubbleEffectInfo = new BubbleLottieEffectInfo(mContext, message.toString());
+            final LottieEffectInfo bubbleEffectInfo = new BubbleLottieEffectInfo(mContext, msg);
             final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
             ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
                 @Override
@@ -222,9 +252,14 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
      */
     @Override
     public void onClose(BasePager basePager) {
-        currentPager.getRootView().setVisibility(View.VISIBLE);
-        if (rlBetterMeContent != null) {
-            rlBetterMeContent.removeView(basePager.getRootView());
+        if(basePager instanceof BetterMeLevelDisplayPager){
+            currentPager.getRootView().setVisibility(View.VISIBLE);
+            if (rlBetterMeContent != null) {
+                rlBetterMeContent.removeView(basePager.getRootView());
+            }
+        }
+      else{
+            rlBetterMeContent.removeAllViews();
         }
     }
 

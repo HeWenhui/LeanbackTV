@@ -19,8 +19,10 @@ import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.presenter.BetterMeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -40,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessage
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -158,6 +161,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             });
                         }
                     }, 500);
+                    updateBetterMe();
                 }
 
                 @Override
@@ -167,6 +171,34 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         EnPkInteractAction enPkInteractAction = (EnPkInteractAction) starAction;
                         enPkInteractAction.updateEnpk(enTeamPkRankEntity);
                     }
+                }
+
+                /**
+                 * 小目标：实时获取学生目标完成度
+                 */
+                @Override
+                public void updateBetterMe() {
+                    logger.d("updateBetterMe");
+                    String liveId = mLiveBll.getLiveId();
+                    String courseId = mLiveBll.getCourseId();
+                    getHttpManager().getStuAimRealTimeVal(liveId, courseId, new HttpCallBack(false) {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) {
+                            logger.i("getStuAimRealTimeVal:onPmSuccess():json=" + responseEntity.getJsonObject());
+                            AimRealTimeValEntity aimRealTimeValEntity = getHttpResponseParser().parseAimRealTimeValInfo
+                                    (responseEntity);
+                            if (aimRealTimeValEntity != null && betterMeInteractAction != null) {
+                                betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity);
+                                ProxUtil.getProxUtil().get(mContext, BetterMeContract.BetterMeView.class)
+                                        .onBetterMeUpdate(aimRealTimeValEntity);
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onReceiveBetterMe(BetterMeEntity betterMeEntity) {
+                    betterMeInteractAction.onReceiveBetterMe(betterMeEntity);
                 }
             });
             AppInfoEntity appInfoEntity = AppBll.getInstance().getAppInfoEntity();
@@ -891,23 +923,5 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         if (englishSpeekAction != null) {
             handler.sendEmptyMessageDelayed(1, 2000);
         }
-    }
-
-    /**
-     * 实时获取学生目标完成度
-     */
-    public void getStuAimRealTimeVal() {
-        String liveId = mLiveBll.getLiveId();
-        String courseId = mLiveBll.getCourseId();
-        getHttpManager().getStuAimRealTimeVal(liveId, courseId, new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                logger.i("getStuAimRealTimeVal:onPmSuccess():json=" + responseEntity.getJsonObject());
-                AimRealTimeValEntity aimRealTimeValEntity = getHttpResponseParser().parseAimRealTimeValInfo(responseEntity);
-                if (aimRealTimeValEntity != null) {
-                    betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity);
-                }
-            }
-        });
     }
 }

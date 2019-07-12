@@ -8,6 +8,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.entity;
  */
 public class AimRealTimeValEntity {
     /**
+     * 是否完成目标
+     */
+    boolean isDoneAim;
+    /**
      * 目标的类型
      */
     private String type;
@@ -15,7 +19,18 @@ public class AimRealTimeValEntity {
      * 实时目标的完成值
      */
     private String realTimeVal;
+    /**
+     * 目标值
+     */
+    private String aimValue;
 
+    public boolean isDoneAim() {
+        return isDoneAim;
+    }
+
+    public void setDoneAim(boolean doneAim) {
+        isDoneAim = doneAim;
+    }
     public String getType() {
         return type;
     }
@@ -30,5 +45,13 @@ public class AimRealTimeValEntity {
 
     public void setRealTimeVal(String realTimeVal) {
         this.realTimeVal = realTimeVal;
+    }
+
+    public String getAimValue() {
+        return aimValue;
+    }
+
+    public void setAimValue(String aimValue) {
+        this.aimValue = aimValue;
     }
 }

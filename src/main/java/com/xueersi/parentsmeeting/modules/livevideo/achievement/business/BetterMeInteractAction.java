@@ -11,4 +11,5 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnti
  */
 public interface BetterMeInteractAction {
     void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity);
+    void onReceiveBetterMe(BetterMeEntity betterMeEntity);
 }

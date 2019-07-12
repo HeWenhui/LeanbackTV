@@ -17,10 +17,12 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImpl;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
 /**
@@ -112,22 +114,28 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         if (mCountDownTimer != null) {
             mCountDownTimer.start();
         }
-
+        String reult = mStuAimResultEntity.getRealTimeVal();
+        String target = mStuAimResultEntity.getAimValue();
         //目标类型
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(mStuAimResultEntity.getAimType())) {
             tvAimType.setText(BetterMeConfig.CORRECTRATE);
+            reult = (int) (Double.valueOf(reult) * 100) + "%";
+            target = (int) (Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(mStuAimResultEntity.getAimType())) {
             tvAimType.setText(BetterMeConfig.PARTICIPATERATE);
+            reult = (int) (Double.valueOf(reult) * 100) + "%";
+            target = (int) (Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(mStuAimResultEntity.getAimType())) {
             tvAimType.setText(BetterMeConfig.TALKTIME);
         }
 
-        tvAimValue.setText("目标" + mStuAimResultEntity.getAimValue());
+        tvAimValue.setText("目标" + target);
+        tvTips.setText(reult);
 
         try {
-            int realTimeVal = Integer.parseInt(mStuAimResultEntity.getRealTimeVal());
-            int aimVal = Integer.parseInt(mStuAimResultEntity.getAimValue());
-            int persents = (int) ((float) realTimeVal / (float) aimVal * 100);
+            double realTimeVal = Double.valueOf(mStuAimResultEntity.getRealTimeVal());
+            double aimVal = Double.valueOf(mStuAimResultEntity.getAimValue());
+            int persents = (int) (realTimeVal / aimVal * 100);
             setEngTargetPro(persents);
         } catch (Exception e) {
             e.printStackTrace();
@@ -220,6 +228,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
                     mCountDownTimer.cancel();
                 }
                 mOnpagerClose.onClose(BetterMeCompleteTargetPager.this);
+                ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKEnd();
             }
         });
         ivLevelIndroduction.setOnClickListener(new View.OnClickListener() {
@@ -251,6 +260,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         @Override
         public void onFinish() {
             mOnpagerClose.onClose(BetterMeCompleteTargetPager.this);
+            ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKEnd();
         }
     };
 
@@ -284,8 +294,6 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
             return;
         }
         pgComeletetar.setProgress(progress);
-        tvTips.setText(progress + "%");
-
         pgComeletetar.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {

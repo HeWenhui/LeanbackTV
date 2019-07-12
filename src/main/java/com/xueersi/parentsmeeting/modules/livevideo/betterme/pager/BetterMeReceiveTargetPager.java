@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
@@ -109,14 +110,17 @@ public class BetterMeReceiveTargetPager extends BasePager {
         if (mCountDownTimer != null) {
             mCountDownTimer.start();
         }
+        String target = mBetterMeEntity.getAimValue();
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(mBetterMeEntity.getAimType())) {
             tvReceiveTarType.setText(BetterMeConfig.CORRECTRATE);
+            target = (int) (Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(mBetterMeEntity.getAimType())) {
             tvReceiveTarType.setText(BetterMeConfig.PARTICIPATERATE);
+            target = (int) (Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(mBetterMeEntity.getAimType())) {
             tvReceiveTarType.setText(BetterMeConfig.TALKTIME);
         }
-        tvReceiveTarValue.setText(mBetterMeEntity.getAimValue());
+        tvReceiveTarValue.setText(target);
 
         tvReceiveTarCurrentLevel.setText(mStuSegmentEntity.getSegment() + mStuSegmentEntity.getStar() + "星");
         tvReceiveTarUpdateTips.setText("还需完成" + mStuSegmentEntity.getAimNumber() + "场目标可升级");

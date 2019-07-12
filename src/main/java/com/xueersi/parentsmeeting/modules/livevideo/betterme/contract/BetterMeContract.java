@@ -35,9 +35,7 @@ public interface BetterMeContract {
         void getStuSegment(boolean isNotice);
         void getBetterMe(boolean isNotice);
         void getStuAimResult();
-        void getStuAimRealTimeVal();
         BetterMeEntity getBetterMeEntity();
         StuSegmentEntity getStuSegmentEntity();
-        boolean isArriveLate();
     }
 }

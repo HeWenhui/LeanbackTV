@@ -187,4 +187,11 @@ public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAc
             enAchievePager.onBetterMeUpdate(aimRealTimeValEntity);
         }
     }
+
+    @Override
+    public void onReceiveBetterMe(BetterMeEntity betterMeEntity) {
+        if (enAchievePager != null) {
+            enAchievePager.onReceiveBetterMe(betterMeEntity);
+        }
+    }
 }

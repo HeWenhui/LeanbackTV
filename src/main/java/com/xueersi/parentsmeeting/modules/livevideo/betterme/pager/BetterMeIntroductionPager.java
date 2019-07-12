@@ -56,7 +56,7 @@ public class BetterMeIntroductionPager extends BasePager {
 
     @Override
     public void initData() {
-        final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
+  /*      final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
         final String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
         mLottieAnimationView.setAnimation(lottieJsonPath);
         mLottieAnimationView.setImageAssetsFolder(lottieResPath);
@@ -82,7 +82,7 @@ public class BetterMeIntroductionPager extends BasePager {
 
             }
         });
-//        mLottieAnimationView.playAnimation();
+        mLottieAnimationView.playAnimation();*/
         llContent.setVisibility(View.VISIBLE);
     }
 

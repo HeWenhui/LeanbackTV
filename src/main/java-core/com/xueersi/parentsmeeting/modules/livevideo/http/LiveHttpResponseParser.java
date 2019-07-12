@@ -262,7 +262,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         //英语小目标
         LiveGetInfo.EnglishBetterMe betterMe = getInfo.getEnglishBetterMe();
         betterMe.isArriveLate = "1".equals(data.optString("isArriveLate"));
-        betterMe.isUserBetterMe = "1".equals(data.optString("isUserBetterMe"));
+        betterMe.isUseBetterMe = "1".equals(data.optString("isUseBetterMe"));
         betterMe.segment = data.optString("segment");
         betterMe.segmentType = data.optString("segmentType");
         betterMe.star = data.optString("star");
@@ -2638,8 +2638,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         try {
             AimRealTimeValEntity aimRealTimeValEntity = new AimRealTimeValEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            aimRealTimeValEntity.setDoneAim("1".equals(jsonObject.getString("isDoneAim")));
             aimRealTimeValEntity.setType(jsonObject.getString("type"));
             aimRealTimeValEntity.setRealTimeVal(jsonObject.getString("realTimeVal"));
+            aimRealTimeValEntity.setAimValue(jsonObject.getString("aimValue"));
             return  aimRealTimeValEntity;
         } catch (Exception e) {
             e.printStackTrace();

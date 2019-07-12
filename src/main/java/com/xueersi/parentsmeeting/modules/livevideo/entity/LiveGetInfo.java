@@ -1519,7 +1519,7 @@ public class LiveGetInfo {
 
     public static class EnglishBetterMe {
         public boolean isArriveLate;
-        public boolean isUserBetterMe;
+        public boolean isUseBetterMe;
         public String segment;
         public String segmentType;
         public String star;

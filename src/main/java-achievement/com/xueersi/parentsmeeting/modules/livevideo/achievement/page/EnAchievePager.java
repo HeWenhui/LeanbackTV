@@ -78,8 +78,6 @@ public class EnAchievePager extends LiveBasePager {
     private ProgressBar pgAchiveAim;
     private TextView tvAchiveAimTips;
 
-    private BetterMeEntity mBetterMeEntity;
-
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
@@ -412,20 +410,7 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumStar.setText("" + starCount);
     }
 
-    /**
-     * 接收本场小目标
-     */
     public void onReceiveBetterMe(BetterMeEntity betterMeEntity) {
-        this.mBetterMeEntity = betterMeEntity;
-    }
-
-    /**
-     * 小目标更新
-     */
-    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
-        if (mBetterMeEntity == null) {
-            return;
-        }
         //隐藏没有小目标时的默认视图
         if (tvAchiveAimEmpty != null) {
             tvAchiveAimEmpty.setVisibility(View.GONE);
@@ -434,16 +419,50 @@ public class EnAchievePager extends LiveBasePager {
         if (rlAchiveAimContent != null) {
             rlAchiveAimContent.setVisibility(View.VISIBLE);
         }
+        String target = betterMeEntity.getAimValue();
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(betterMeEntity.getAimType())) {
+            tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
+            target = (int) (Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(betterMeEntity.getAimType())) {
+            tvAchiveAimType.setText(BetterMeConfig.PARTICIPATERATE);
+            target = (int) (Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_TALKTIME.equals(betterMeEntity.getAimType())) {
+            tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
+        }
+        tvAchiveAimValue.setText("目标" + target);
+        tvAchiveAimTips.setText("0%");
+        setEngAimPro(0);
+    }
+
+    /**
+     * 小目标更新
+     */
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
+        //隐藏没有小目标时的默认视图
+        if (tvAchiveAimEmpty != null) {
+            tvAchiveAimEmpty.setVisibility(View.GONE);
+        }
+        //显示小目标的内容
+        if (rlAchiveAimContent != null) {
+            rlAchiveAimContent.setVisibility(View.VISIBLE);
+        }
+        String current = aimRealTimeValEntity.getRealTimeVal();
+        String target = aimRealTimeValEntity.getAimValue();
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
             tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
+            current = (int) (Double.valueOf(current) * 100) + "%";
+            target = (int) (Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
             tvAchiveAimType.setText(BetterMeConfig.PARTICIPATERATE);
+            current = (int) (Double.valueOf(current) * 100) + "%";
+            target = (int) (Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
             tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
         }
-        tvAchiveAimValue.setText("目标" + mBetterMeEntity.getAimValue());
+        tvAchiveAimValue.setText("目标" + aimRealTimeValEntity.getAimValue());
+        tvAchiveAimTips.setText(current);
         float realTimeVal = Float.parseFloat(aimRealTimeValEntity.getRealTimeVal());
-        float aimVal = Float.parseFloat(mBetterMeEntity.getAimValue());
+        float aimVal = Float.parseFloat(aimRealTimeValEntity.getAimValue());
         int progress = (int) (realTimeVal / aimVal * 100);
         setEngAimPro(progress);
     }
@@ -457,7 +476,6 @@ public class EnAchievePager extends LiveBasePager {
             return;
         }
         pgAchiveAim.setProgress(progress);
-
         pgAchiveAim.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {

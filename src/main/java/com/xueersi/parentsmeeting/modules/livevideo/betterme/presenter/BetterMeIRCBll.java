@@ -4,9 +4,9 @@ import android.app.Activity;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
@@ -49,6 +49,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super(context, liveBll);
         mBetterMeView = new BetterMeViewImpl(mContext);
         mBetterMeView.setPresenter(this);
+        putInstance(BetterMeContract.BetterMeView.class, mBetterMeView);
     }
 
     @Override
@@ -79,8 +80,9 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         mBetterMeView.setRootView(mRootView);
-        this.isUseBetterMe = getInfo.getEnglishBetterMe().isUserBetterMe;
+        this.isUseBetterMe = getInfo.getEnglishBetterMe().isUseBetterMe;
         this.isArriveLate = getInfo.getEnglishBetterMe().isArriveLate;
+        logger.d("isUseBetterMe = " + isUseBetterMe + "; isArriveLate = " + isArriveLate);
     }
 
     @Override
@@ -131,9 +133,13 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 mBetterMeView.showIntroductionPager();
                             } else {
                                 mBetterMeView.showReceiveTargetPager();
+                                ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).onReceiveBetterMe
+                                        (mBetterMeEntity);
                             }
                         } else {
                             mBetterMeView.showTargetBubble();
+                            ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).onReceiveBetterMe
+                                    (mBetterMeEntity);
                         }
                     } else {
                         getStuSegment(isNotice);
@@ -214,9 +220,13 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             mBetterMeView.showIntroductionPager();
                         } else {
                             mBetterMeView.showReceiveTargetPager();
+                            ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).onReceiveBetterMe
+                                    (mBetterMeEntity);
                         }
                     } else {
                         mBetterMeView.showTargetBubble();
+                        ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).onReceiveBetterMe
+                                (mBetterMeEntity);
                     }
                 } else {
                     onSegmentFailure(isNotice);
@@ -242,25 +252,6 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     /**
-     * 小目标：实时获取学生目标完成度
-     */
-    public void getStuAimRealTimeVal() {
-        String liveId = mLiveBll.getLiveId();
-        String courseId = mLiveBll.getCourseId();
-        getHttpManager().getStuAimRealTimeVal(liveId, courseId, new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                logger.i("getStuAimRealTimeVal:onPmSuccess():json=" + responseEntity.getJsonObject());
-                AimRealTimeValEntity aimRealTimeValEntity = getHttpResponseParser().parseAimRealTimeValInfo
-                        (responseEntity);
-                if (aimRealTimeValEntity != null) {
-                    mBetterMeView.onBetterMeUpdate(aimRealTimeValEntity);
-                }
-            }
-        });
-    }
-
-    /**
      * 小目标：获取本场小目标实体
      */
     @Override
@@ -275,10 +266,4 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public StuSegmentEntity getStuSegmentEntity() {
         return mStuSegmentEntity;
     }
-
-    @Override
-    public boolean isArriveLate() {
-        return isArriveLate;
-    }
-
 }
