@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RankPage.SmallChine
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.MiddleScienceEvenDrivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleSciencePager;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -62,7 +63,6 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     BaseLiveMediaControllerBottom liveMediaControllerBottom;
     Button rl_livevideo_common_rank;//排名
     View relativeLayout;
-    View tempView;
     /** 动画出现 */
     private Animation mAnimSlideIn;
     /** 动画隐藏 */
@@ -355,16 +355,9 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     }
 
     @Override
-    public void initView() {
-        tempView = new View(activity);
-        tempView.setId(R.id.iv_livevideo_rank_temp);
-        addView(tempView);
-    }
-
-    @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        initView(mRootView);
+        initView(getLiveViewAction());
         BaseLiveMediaControllerBottom.RegMediaChildViewClick regMediaChildViewClick = ProxUtil.getProxUtil().get
                 (activity, BaseLiveMediaControllerBottom.RegMediaChildViewClick.class);
         if (regMediaChildViewClick != null) {
@@ -392,7 +385,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
      * 连对时为连对
      */
 //    private TextView tvEvenDriveTitleRight;
-    public void initView(final RelativeLayout bottomContent) {
+    public void initView(final LiveViewAction liveViewAction) {
         //小英
         Log.i("testRankBll", mGetInfo.getGrade() + " " + mGetInfo.getIsArts());
         mArtsGroupCommonAdapter = new CommonAdapter<RankEntity>(mArtsRankEntities) {
@@ -406,8 +399,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         }
         if (isSmallEnglish) {
 //            Log.i("testRankBll", mGetInfo.getGrade() + " " + mGetInfo.getIsArts());
-            relativeLayout = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_small_english_rank,
-                    bottomContent, false);
+            relativeLayout = liveViewAction.inflateView(R.layout.layout_livevideo_small_english_rank);
             //小组
             final ImageView ivMyGroup = relativeLayout.findViewById(R.id.iv_livevideo_small_english_rank_mygroup);
             //组内
@@ -523,11 +515,9 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 relativeLayout = scienceEvenDrivePager.getRootView();
             } else {
                 if (LiveVideoConfig.isPrimary) {
-                    relativeLayout = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_psrank, bottomContent,
-                            false);
+                    relativeLayout = liveViewAction.inflateView(R.layout.layout_livevideo_psrank);
                 } else {
-                    relativeLayout = LayoutInflater.from(activity).inflate(R.layout.layout_livevodeo_rank, bottomContent,
-                            false);
+                    relativeLayout = liveViewAction.inflateView(R.layout.layout_livevodeo_rank);
                 }
 
 //            rankEvenDriveTipsLayout = relativeLayout.findViewById(R.id.ctlayout_livevideo_rank_middle_science_even_drive_tips);
@@ -650,9 +640,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 RelativeLayout.LayoutParams.MATCH_PARENT);
 //        relativeLayout.setBackgroundColor(liveVideoActivity.getResources().getColor(R.color.translucent_black));
         lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        int index = bottomContent.indexOfChild(tempView);
-        bottomContent.removeViewInLayout(tempView);
-        bottomContent.addView(relativeLayout, index, lp);
+        liveViewAction.addView(new LiveVideoLevel(11), relativeLayout, lp);
         setVideoLayout();
     }
 

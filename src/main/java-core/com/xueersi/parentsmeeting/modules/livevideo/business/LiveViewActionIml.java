@@ -49,7 +49,7 @@ public class LiveViewActionIml implements LiveViewAction {
                     logger.d("addView2:levelEntity2=" + level + ",index=" + index);
                     if (level >= levelEntity.getLevel()) {
                         add = true;
-                        bottomContent.addView(child, index - 1);
+                        bottomContent.addView(child, index);
                         break;
                     }
                 }
@@ -87,7 +87,7 @@ public class LiveViewActionIml implements LiveViewAction {
                     logger.d("addView4:levelEntity2=" + level + ",index=" + index);
                     if (level >= levelEntity.getLevel()) {
                         add = true;
-                        bottomContent.addView(child, index - 1, params);
+                        bottomContent.addView(child, index, params);
                         break;
                     }
                 }

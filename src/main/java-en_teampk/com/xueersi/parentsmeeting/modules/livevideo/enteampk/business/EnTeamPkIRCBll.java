@@ -114,7 +114,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         unique_id = mGetInfo.getId() + "_" + mGetInfo.getStudentLiveInfo().getClassId();
         logger.d("onLiveInited:unique_id=" + unique_id);
         EnTeamPkBll teamPkBll = new EnTeamPkBll(activity, mGetInfo.getId());
-        teamPkBll.setRootView(mRootView);
+        teamPkBll.setRootView(getLiveViewAction());
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
         enTeamPkAction = teamPkBll;
         teamPkBll.onLiveInited(getInfo);
