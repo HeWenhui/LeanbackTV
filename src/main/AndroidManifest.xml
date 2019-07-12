@@ -8,8 +8,10 @@
     <!-- 调用摄像头 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <application>
         <!--<activity-->
         <!--android:name=".activity.LivePlayBackVideoActivity"-->
@@ -117,7 +119,18 @@
             android:process=":livevideo"
             android:screenOrientation="portrait"
             android:theme="@style/style_live_compat"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden">
+
+            <intent-filter>
+                <action android:name="android.intent.action.livevideo" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="dispatcher"
+                android:value="com.xueersi.parentsmeeting.modules.livevideo.dispatcher.LiveVideoDispatcher" />
+
+        </activity>
 
         <!--<activity-->
         <!--android:name=".activity.LiveVideoActivity"-->
