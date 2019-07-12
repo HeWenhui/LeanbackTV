@@ -157,7 +157,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
                 for (int i = 0; i < ll_livevideo_primary_team_content.getChildCount(); i++) {
                     View child = ll_livevideo_primary_team_content.getChildAt(i);
                     ViewGroup.MarginLayoutParams childLp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
-                    int childHeight = (int) (150 * scale);
+                    int childHeight = (int) (151 * scale);
                     if (childLp.height != childHeight || childLp.bottomMargin != margin) {
                         childLp.height = childHeight;
                         childLp.bottomMargin = margin;
