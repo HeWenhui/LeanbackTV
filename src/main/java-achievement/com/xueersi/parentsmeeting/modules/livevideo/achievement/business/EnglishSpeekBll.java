@@ -454,11 +454,6 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         stop(null);
     }
 
-    @Override
-    public void onAddTotalOpeningLength(double speechDuration) {
-
-    }
-
     String lastduration;
     ValueAnimator lastValueAnimator;
 

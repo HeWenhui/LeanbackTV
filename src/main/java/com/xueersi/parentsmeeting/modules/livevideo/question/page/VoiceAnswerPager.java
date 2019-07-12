@@ -535,7 +535,6 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         } else {
             double speechDuration = resultEntity.getSpeechDuration();
             EnglishSpeekAction englishSpeekAction = ProxUtil.getProxUtil().get(mContext,EnglishSpeekAction.class);
-            englishSpeekAction.onAddTotalOpeningLength(speechDuration);
 
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(type)) {
                 logger.e("选择题！！！" + "type:" + type);

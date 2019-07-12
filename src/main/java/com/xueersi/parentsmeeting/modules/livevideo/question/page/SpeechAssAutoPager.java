@@ -741,7 +741,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private void onSpeechEvalSuccess(ResultEntity resultEntity, int gold, int energy) {
         double speechDuration = resultEntity.getSpeechDuration();
         EnglishSpeekAction englishSpeekAction = ProxUtil.getProxUtil().get(mContext,EnglishSpeekAction.class);
-        englishSpeekAction.onAddTotalOpeningLength(speechDuration);
 
         rlSpeectevalBg.setVisibility(View.GONE);
         rlSpeectevalBg.removeAllViews();

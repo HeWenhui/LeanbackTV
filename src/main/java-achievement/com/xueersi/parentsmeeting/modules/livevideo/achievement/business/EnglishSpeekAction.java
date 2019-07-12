@@ -30,12 +30,4 @@ public interface EnglishSpeekAction {
     void setSpeakerRecognitioner(SpeakerRecognitioner speakerRecognitioner);
 
     void destory();
-
-    /**
-     * 其他语音相关业务 统计开口时长
-     *
-     * @param speechDuration
-     * @author zhangyuansun
-     */
-    void onAddTotalOpeningLength(double speechDuration);
 }

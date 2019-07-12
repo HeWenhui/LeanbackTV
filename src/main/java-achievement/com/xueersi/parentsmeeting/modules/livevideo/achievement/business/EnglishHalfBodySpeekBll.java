@@ -72,11 +72,6 @@ public class EnglishHalfBodySpeekBll extends BaseEnglishStandSpeekBll implements
 
     }
 
-    @Override
-    public void onAddTotalOpeningLength(double speechDuration) {
-
-    }
-
     public boolean initView(RelativeLayout mRootView, String mode, TalLanguage talLanguage, AtomicBoolean audioRequest, RelativeLayout mContentView) {
         return false;
     }
