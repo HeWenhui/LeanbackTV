@@ -113,20 +113,4 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
             mTransAnim.release();
         }
     }
-
-    @Override
-    protected void initView() {
-        //super.initView();
-        bottomContent = mContentView.findViewById(R.id.rl_course_video_live_question_content);
-        bottomContent.setVisibility(View.VISIBLE);
-        liveViewAction = new LiveViewActionIml(activity, mContentView, bottomContent);
-        mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
-        createMediaControlerTop();
-        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                .MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        createMediaControllerBottom();
-        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-    }
 }
