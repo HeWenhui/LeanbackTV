@@ -157,8 +157,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
-                int screenWidth = ScreenUtils.getScreenWidth();
-                int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
+                int wradio = LiveVideoPoint.getInstance().getRightMargin();
                 //点名
                 RelativeLayout rlClassmateContent = new RelativeLayout(activity);
                 rlClassmateContent.setId(R.id.iv_livevideo_rollcall_content2);
