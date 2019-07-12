@@ -20,26 +20,32 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.RxFilter;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.SpeechStopEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionView;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget.IntelligentLifecycleObserver;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget.IntelligentRecognitionBroadcast;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget.MyObserver;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
 
-public abstract class BaseIntelligentRecognitionPresenter implements IIntelligentRecognitionPresenter<IIntelligentRecognitionView>, MyObserver {
+public abstract class BaseIntelligentRecognitionPresenter implements IIntelligentRecognitionPresenter<IIntelligentRecognitionView>, IntelligentLifecycleObserver {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
@@ -57,16 +63,24 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
 
     protected IntelligentRecognitionRecord mRecord;
 
-    private AtomicBoolean isSpeechStart = new AtomicBoolean(false);
+    private HttpManager httpManager;
+    private HttpResponseParser httpResponseParser;
+    //    private AtomicBoolean isSpeechStart = new AtomicBoolean(false);
     //第几次语音测评
     private int speechNum = 0;
+    /** 当前测评所处状态 */
+    private AtomicInteger speechStatus = new AtomicInteger(IntelligentConstants.NOT_SPEECH);
     /** speech模型是否加载成功 */
     private AtomicBoolean isSpeechReady = new AtomicBoolean(false);
+    /** 语音测评开始时间 */
+    private long speechStartTime;
 
     public BaseIntelligentRecognitionPresenter(FragmentActivity context) {
         this.mActivity = context;
         this.mViewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
         this.mRecord = mViewModel.getRecordData();
+//        httpManager = new HttpManager();
+//        httpResponseParser = new HttpResponseParser();
     }
 
     //返回当前是第几个speechNum
@@ -83,6 +97,20 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(FILTER_ACTION);
         mActivity.registerReceiver(broadcast, intentFilter);
+    }
+
+    protected HttpResponseParser getHttpResponseParser() {
+        if (httpResponseParser == null) {
+            httpResponseParser = new HttpResponseParser();
+        }
+        return httpResponseParser;
+    }
+
+    protected HttpManager getHttpManager() {
+        if (httpManager == null) {
+            httpManager = new HttpManager();
+        }
+        return httpManager;
     }
 
     /** 注册消息接受者 */
@@ -103,7 +131,7 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
     }
 
     protected void performStartRecord() {
-        if (!isSpeechStart.get() && isSpeechReady.get()) {
+        if (speechStatus.get() == IntelligentConstants.NOT_SPEECH && isSpeechReady.get()) {
             startRecordSound();
         }
     }
@@ -155,17 +183,28 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
                         mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
                             @Override
                             public void onBeginOfSpeech() {
-                                isSpeechStart.set(true);
+                                if (speechNum >= 2) {
+                                    speechStatus.set(IntelligentConstants.SPEECH_AGIN);
+                                } else {
+                                    speechStatus.set(IntelligentConstants.SPEECH_ING);
+                                }
+                                speechStartTime = System.currentTimeMillis();
                                 logger.i("speech begin");
                             }
 
                             @Override
                             public void onResult(ResultEntity result) {
+                                if (result == null) {
+                                    logger.e("result = null");
+                                    return;
+                                }
                                 if (AppConfig.DEBUG) {
                                     logger.i("speech result = " + getResultString(result));
                                 }
+
                                 if (result.getStatus() == ResultEntity.SUCCESS) {
                                     handleResult(result);
+                                    speechStatus.set(IntelligentConstants.SPEECH_OVER_JUDGE);
                                 }
                             }
 
@@ -232,7 +271,7 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         HttpResponseParser httpResponseParser = new HttpResponseParser();
-                        IEResult ieResult = httpResponseParser.parseResponse(responseEntity);
+                        IEResult ieResult = httpResponseParser.parseIEResponse(responseEntity);
                         if (ieResult != null) {
                             ViewModelProviders.
                                     of(mActivity).
@@ -284,8 +323,21 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
     private class IrcReceiverImpl implements IntelligentRecognitionBroadcast.IRCReceiver {
 
         @Override
-        public void stop(String goldJSON) {
-            baseView.receiveStopEvent(goldJSON);
+        public void stop(String jsonString) {
+//            String goldJSON = "";
+            int type = 0;
+            String gold = "0";
+            try {
+                JSONObject jsonObject = new JSONObject(jsonString);
+                type = jsonObject.optInt("type");
+                gold = jsonObject.optString("gold");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            SpeechStopEntity stopEntity = new SpeechStopEntity();
+            stopEntity.setSpeechStatus(getSpeechStatus());
+            baseView.receiveStopEvent(stopEntity);
         }
     }
 
@@ -299,7 +351,7 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
 //        List<PhoneScore> list = resultEntity.getLstPhonemeScore();
         StringBuilder stringBuilder = new StringBuilder();
         if (resultEntity.getLstPhonemeScore() == null) {
-            return "Lst null" + getNext(resultEntity);
+            return "Lst null " + getNext(resultEntity);
         }
         for (PhoneScore phoneScore : resultEntity.getLstPhonemeScore()) {
             stringBuilder.append(phoneScore.getWord() + " " + phoneScore.getScore() + " ");
@@ -329,5 +381,23 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
                 + " Score " + resultEntity.getScore()
                 + " curString " + resultEntity.getCurString()
                 + " PronScore " + resultEntity.getPronScore();
+    }
+
+    /**
+     * 获取当前测评状态
+     *
+     * @return
+     */
+    protected int getSpeechStatus() {
+        return speechStatus.get();
+    }
+
+    /**
+     * 获取语音测评时间
+     *
+     * @return
+     */
+    protected long getSpeechTime() {
+        return System.currentTimeMillis() - speechStartTime;
     }
 }

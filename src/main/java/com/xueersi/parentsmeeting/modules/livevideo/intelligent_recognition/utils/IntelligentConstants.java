@@ -36,5 +36,12 @@ public interface IntelligentConstants {
     // 4）	一旦收到收题指令，题干板区域toast提示3s倒计时收题。提示文案“3s后收题”。
     int END_GOOD_BYE_4 = 13;
 
-
+    /** 并未测评 */
+    int NOT_SPEECH = 0;
+    /** 正在测评 */
+    int SPEECH_ING = 1;
+    /** 测评完成，正在评价 */
+    int SPEECH_OVER_JUDGE = 2;
+    /** 正在重读 */
+    int SPEECH_AGIN = 3;
 }

@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
 
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.SpeechStopEntity;
+
 public interface IntelligentRecognitionContract {
     String FILTER_ACTION = "com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition_sign";
     String intelligent_recognition_sign = "intelligent_recognition_sign";
@@ -27,7 +29,7 @@ public interface IntelligentRecognitionContract {
     }
 
     interface IIntelligentRecognitionView<T> extends BaseView<T> {
-        void receiveStopEvent(String goldJSON);
+        void receiveStopEvent(SpeechStopEntity stopEntity);
 
     }
 }

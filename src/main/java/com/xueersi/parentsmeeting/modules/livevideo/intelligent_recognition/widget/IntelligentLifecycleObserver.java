@@ -4,7 +4,7 @@ import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.OnLifecycleEvent;
 
-public interface MyObserver extends LifecycleObserver {
+public interface IntelligentLifecycleObserver extends LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onDestroy();
 

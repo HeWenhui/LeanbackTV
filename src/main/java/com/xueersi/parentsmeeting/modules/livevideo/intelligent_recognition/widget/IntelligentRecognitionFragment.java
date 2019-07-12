@@ -14,13 +14,12 @@ import android.view.ViewGroup;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.BasePresenter;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.BaseView;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
 
-public class IntelligentRecognitionFragment extends Fragment {
+public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private FragmentActivity mActivity;
 
@@ -55,7 +54,7 @@ public class IntelligentRecognitionFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        IntelligentRecognitionPager pager = new IntelligentRecognitionPager(mActivity);
+        IntelligentRecognitionPermissionPager pager = new IntelligentRecognitionPermissionPager(mActivity);
         pager.initView(inflater, container, false);
         IntelligentRecognitionPresenter mPresenter = new IntelligentRecognitionPresenter(mActivity);
 
@@ -88,9 +87,6 @@ public class IntelligentRecognitionFragment extends Fragment {
             }
         });
     }
-    //    private void handleResult(IEResult ieResult) {
-//
-//    }
 
 //    private <T extends BaseView> void craeteClass(Class<T> v, Class p) {
 //        try {
@@ -103,11 +99,17 @@ public class IntelligentRecognitionFragment extends Fragment {
 //        }
 //    }
 
-    protected final <V extends BaseView, P extends BasePresenter> void associatePV(V v, P p) {
-        v.setPresenter(p);
-        p.setView(v);
-        if (p instanceof MyObserver) {
-            getLifecycle().addObserver((MyObserver) p);
+
+    @Override
+    protected <P extends IntelligentRecognitionContract.BasePresenter> void addObserver(P p) {
+        if (p instanceof IntelligentLifecycleObserver) {
+            getLifecycle().addObserver((IntelligentLifecycleObserver) p);
         }
     }
+
+//    void addObserver() {
+//        if (p instanceof IntelligentLifecycleObserver) {
+//            getLifecycle().addObserver((IntelligentLifecycleObserver) p);
+//        }
+//    }
 }

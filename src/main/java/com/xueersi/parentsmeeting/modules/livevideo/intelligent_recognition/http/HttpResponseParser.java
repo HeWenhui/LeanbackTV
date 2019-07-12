@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.htt
 
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
 
 import org.json.JSONObject;
 
@@ -10,7 +11,7 @@ import java.util.Iterator;
 
 public class HttpResponseParser {
 
-    public IEResult parseResponse(ResponseEntity responseEntity) {
+    public IEResult parseIEResponse(ResponseEntity responseEntity) {
         IEResult ieResult = new IEResult();
         JSONObject json = (JSONObject) responseEntity.getJsonObject();
         ieResult.setAnswered(json.optString("answered"));
@@ -41,5 +42,16 @@ public class HttpResponseParser {
             ieResult.setImgSrc(imgSrc);
         }
         return ieResult;
+    }
+
+    public SpeechScoreEntity parseSpeechScore(ResponseEntity responseEntity) {
+        SpeechScoreEntity speechScoreEntity = new SpeechScoreEntity();
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        if (jsonObject != null) {
+            speechScoreEntity.setScore(jsonObject.optString("score"));
+            speechScoreEntity.setGold(jsonObject.optString("gold"));
+            speechScoreEntity.setStar(jsonObject.optString("star"));
+        }
+        return speechScoreEntity;
     }
 }

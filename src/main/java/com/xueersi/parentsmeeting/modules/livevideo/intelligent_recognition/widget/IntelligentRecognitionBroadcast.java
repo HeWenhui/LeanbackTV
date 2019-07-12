@@ -29,10 +29,10 @@ public class IntelligentRecognitionBroadcast extends BroadcastReceiver {
         this.ircReceiver = ircReceiver;
     }
 
-    public static interface IRCReceiver {
+    public interface IRCReceiver {
         /**
          * 收到irc的stop命令
          */
-        void stop(String goldJSON);
+        void stop(String stopEntity);
     }
 }

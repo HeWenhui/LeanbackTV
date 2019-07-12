@@ -2,14 +2,16 @@ package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.wid
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.unity3d.player.UnityPlayer;
+import com.xueersi.common.base.XrsBaseFragmentActivity;
+import com.xueersi.common.base.XrsUiManagerInterface;
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.lib.framework.UIData;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -27,12 +29,32 @@ import io.reactivex.functions.Consumer;
  * 英语语音测评使用的Activity
  */
 @Route(path = "/english/intelligent_recognition")
-public class IntelligentRecognitionActivity extends AppCompatActivity {
+public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
     private FrameLayout frameLayout;
     private UnityPlayer unityPlayer;
+
+    @Override
+    protected void initView() {
+
+    }
+
+    @Override
+    protected void initData(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    protected UIData initUIData() {
+        return null;
+    }
+
+    @Override
+    protected XrsUiManagerInterface initUi() {
+        return null;
+    }
 
     /**
      * @param savedInstanceState
@@ -178,6 +200,11 @@ public class IntelligentRecognitionActivity extends AppCompatActivity {
         if (unityPlayer != null) {
             unityPlayer.windowFocusChanged(hasFocus);
         }
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
 

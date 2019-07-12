@@ -545,5 +545,5 @@ public class LiveVideoConfig {
     /** 课后评价教师文案获取 */
     public static String URL_LIVE_COURSE_GETEVALUATE = AppConfig.HTTP_HOST + "/science/LiveCourse/getEvaluateContentNew";
 
-
+    public static String URL_INTELLIGENT_SPEECH_SUBMIT = "https://app.arts.xueersi.com/v2/intellectVoiceFeedback/submitIntellectVoice";
 }

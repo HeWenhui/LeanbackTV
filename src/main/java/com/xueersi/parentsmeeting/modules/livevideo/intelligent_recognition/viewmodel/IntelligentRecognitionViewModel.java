@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel;
 
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
 
 public class IntelligentRecognitionViewModel extends ViewModel {
     /** 跨进程传递进来的用户数据和试题数据 */
@@ -23,6 +24,12 @@ public class IntelligentRecognitionViewModel extends ViewModel {
     private MutableLiveData<Integer> isSpeechJudgeFinish = new MutableLiveData<>();
     /** 是否取消测评 */
     private MutableLiveData<Boolean> isCancelSpeech = new MutableLiveData<>();
+    /** 语音测评分数 */
+    private MutableLiveData<SpeechScoreEntity> speechScoreData = new MutableLiveData<>();
+
+    public MutableLiveData<SpeechScoreEntity> getSpeechScoreData() {
+        return speechScoreData;
+    }
 
     public MutableLiveData<Boolean> getIsCancelSpeech() {
         return isCancelSpeech;
