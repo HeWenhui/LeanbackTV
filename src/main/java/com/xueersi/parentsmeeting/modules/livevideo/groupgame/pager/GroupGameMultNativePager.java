@@ -392,7 +392,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         remove = allAnswerList.remove(answersEntity);
                         if (remove) {
                             currentAnswerIndex++;
-                            createSpeechContent("VoiceCannonTurnRun", false);
+                            createSpeechContent("VoiceCannonTurnRun", true);
                         }
                     }
                 }
@@ -2653,7 +2653,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                         isTurnPage = false;
                                     }
                                 }
-                                createSpeechContent("VOICE_CANNO_TYPE", false);
+                                createSpeechContent("VOICE_CANNO_TYPE", true);
                                 //来的单词是不是和当前一致
                                 final AtomicBoolean correntPager = new AtomicBoolean(true);
                                 GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
@@ -2846,7 +2846,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     mLogtf.d("VOICE_CANNO_SCENE:id=" + answersEntity.getId() + ",text=" + answersEntity.getText());
                                 }
                             }
-                            createSpeechContent("VOICE_CANNO_SCENE", false);
+                            createSpeechContent("VOICE_CANNO_SCENE", true);
                             getCurrent("SCENEend");
                             voiceCannonOnMessage.coursewareDoingLoad(currentAnswerIndex);
                         } catch (Exception e) {
