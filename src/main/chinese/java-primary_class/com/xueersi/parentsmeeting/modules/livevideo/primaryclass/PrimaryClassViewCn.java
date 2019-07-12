@@ -165,13 +165,14 @@ public class PrimaryClassViewCn implements PrimaryClassView {
 
     private void setPkMid(TextView tv_livevideo_primary_team_name_mid, int width, int height) {
         float scale = (float) width / 1334f;
-        int backLeft = (ScreenUtils.getScreenWidth() - width) / 2;
+        int leftGap = (ScreenUtils.getScreenWidth() - width) / 2;
         int backTop = (ScreenUtils.getScreenHeight() - height) / 2;
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_primary_team_name_mid.getLayoutParams();
         int topMargin = backTop / 2 + (int) (114 * scale);
-        int left = (int) (1126 * scale) - backLeft;
         Bitmap bitmapDrawable = BitmapFactory.decodeResource(tv_livevideo_primary_team_name_mid.getResources(), R.drawable.bg_live_tips_bg_normal);
-        int leftMargin = (left - bitmapDrawable.getWidth()) / 2;
+        int left = (int) (14 * scale) + leftGap;
+        int right = (int) (219 * scale) + leftGap;
+        int leftMargin = left + (ScreenUtils.getScreenWidth() - left - right - bitmapDrawable.getWidth()) / 2;
         if (lp.topMargin != topMargin || lp.leftMargin != leftMargin) {
             lp.topMargin = topMargin;
             lp.leftMargin = leftMargin;
