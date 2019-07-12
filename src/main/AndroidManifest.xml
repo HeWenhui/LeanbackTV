@@ -122,7 +122,7 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden">
 
             <intent-filter>
-                <action android:name="android.intent.action.livevideo" />
+                <action android:name="com.xueersi.parentsmeeting.action.livevideo" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
