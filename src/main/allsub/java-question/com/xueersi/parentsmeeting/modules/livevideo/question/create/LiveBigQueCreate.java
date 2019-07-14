@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.create;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSecHttp;
@@ -25,18 +26,18 @@ public class LiveBigQueCreate implements BigQueCreate {
     }
 
     @Override
-    public BaseLiveBigQuestionPager create(VideoQuestionLiveEntity videoQuestionLiveEntity, RelativeLayout rlQuestionResContent, LiveBasePager.OnPagerClose onPagerClose, OnSubmit onSubmit) {
+    public BaseLiveBigQuestionPager create(VideoQuestionLiveEntity videoQuestionLiveEntity, LiveViewAction liveViewAction, LiveBasePager.OnPagerClose onPagerClose, OnSubmit onSubmit) {
         if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_SELE || videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_MUL_SELE) {
             BigQuestionSelectLivePager bigQuestionSelectLivePager = new BigQuestionSelectLivePager(activity, videoQuestionLiveEntity);
             bigQuestionSelectLivePager.setQuestionSecHttp(questionSecHttp);
-            bigQuestionSelectLivePager.setRlQuestionResContent(rlQuestionResContent);
+            bigQuestionSelectLivePager.setRlQuestionResContent(liveViewAction);
             bigQuestionSelectLivePager.setOnPagerClose(onPagerClose);
             bigQuestionSelectLivePager.setOnSubmit(onSubmit);
             return bigQuestionSelectLivePager;
         } else if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_FILL) {
             BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, videoQuestionLiveEntity, false);
             bigQuestionFillInBlankLivePager.setQuestionSecHttp(questionSecHttp);
-            bigQuestionFillInBlankLivePager.setRlQuestionResContent(rlQuestionResContent);
+            bigQuestionFillInBlankLivePager.setRlQuestionResContent(liveViewAction);
             bigQuestionFillInBlankLivePager.setOnPagerClose(onPagerClose);
             bigQuestionFillInBlankLivePager.setOnSubmit(onSubmit);
             return bigQuestionFillInBlankLivePager;

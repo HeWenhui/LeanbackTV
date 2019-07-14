@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -20,7 +21,7 @@ import org.greenrobot.eventbus.EventBus;
 public abstract class BaseLiveBigQuestionPager extends LiveBasePager {
     protected QuestionSecHttp questionSecHttp;
     protected VideoQuestionLiveEntity videoQuestionLiveEntity;
-    protected RelativeLayout rlQuestionResContent;
+    protected LiveViewAction liveViewAction;
     protected BigQueCreate.OnSubmit onSubmit;
     protected boolean isPlayback = false;
 
@@ -28,8 +29,8 @@ public abstract class BaseLiveBigQuestionPager extends LiveBasePager {
         super(context);
     }
 
-    public void setRlQuestionResContent(RelativeLayout rlQuestionResContent) {
-        this.rlQuestionResContent = rlQuestionResContent;
+    public void setRlQuestionResContent(LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
     }
 
     public void setOnSubmit(BigQueCreate.OnSubmit onSubmit) {

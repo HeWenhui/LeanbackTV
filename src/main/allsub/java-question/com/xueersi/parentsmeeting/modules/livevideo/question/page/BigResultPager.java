@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
@@ -32,12 +33,12 @@ public class BigResultPager extends LiveBasePager {
     private RecyclerView rvBigqueResultList;
     /** 结果页关闭 */
     private ImageView ivBigqueResultClose;
-    private ViewGroup group;
+    private LiveViewAction liveViewAction;
     private ImageView ivResultTitleLight;
 
-    public BigResultPager(Context context, ViewGroup group, BigResultEntity bigResultEntitie) {
+    public BigResultPager(Context context, LiveViewAction liveViewAction, BigResultEntity bigResultEntitie) {
         super(context, false);
-        this.group = group;
+        this.liveViewAction = liveViewAction;
         mView = initView();
         this.bigResultEntitie = bigResultEntitie;
         bigResultItemEntities = bigResultEntitie.getBigResultItemEntityArrayList();
@@ -47,7 +48,7 @@ public class BigResultPager extends LiveBasePager {
 
     @Override
     public View initView() {
-        mView = LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_bigques_result, group, false);
+        mView = liveViewAction.inflateView(R.layout.page_livevideo_bigques_result);
         ivBigqueResultTitle = mView.findViewById(R.id.iv_livevideo_bigque_result_title);
         tvBigqueResultTitle = mView.findViewById(R.id.tv_livevideo_bigque_result_title);
         rvBigqueResultList = mView.findViewById(R.id.rv_livevideo_bigque_result_list);

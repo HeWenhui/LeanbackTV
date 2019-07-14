@@ -245,7 +245,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                 @Override
                 public void run() {
                     if (resultPager.isAttach()) {
-                        rlQuestionResContent.removeView(resultPager.getRootView());
+                        liveViewAction.removeView(resultPager.getRootView());
                         onPagerClose.onClose(BigQuestionSelectLivePager.this);
                     }
                 }
@@ -330,12 +330,12 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
     private void showResult(BigResultEntity bigResultEntity, int isForce) {
         mView.setVisibility(View.GONE);
         onSubmit.onSubmit(this);
-        resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
-        rlQuestionResContent.addView(resultPager.getRootView());
+        resultPager = new BigResultPager(mContext, liveViewAction, bigResultEntity);
+        liveViewAction.addView(resultPager.getRootView());
         resultPager.setOnPagerClose(new OnPagerClose() {
             @Override
             public void onClose(LiveBasePager basePager) {
-                rlQuestionResContent.removeView(basePager.getRootView());
+                liveViewAction.removeView(basePager.getRootView());
                 onPagerClose.onClose(BigQuestionSelectLivePager.this);
             }
         });
@@ -344,7 +344,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                 @Override
                 public void run() {
                     if (resultPager.isAttach()) {
-                        rlQuestionResContent.removeView(resultPager.getRootView());
+                        liveViewAction.removeView(resultPager.getRootView());
                         onPagerClose.onClose(BigQuestionSelectLivePager.this);
                     }
                 }
