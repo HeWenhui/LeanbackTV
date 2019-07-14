@@ -11,6 +11,8 @@ def static getAllSource(Object set) {
     //弹幕
     set.java.srcDirs += ['src/main/allsub/java-danmaku']
     set.res.srcDirs += ['src/main/allsub/res-danmaku']
+    //接麦
+    set.res.srcDirs += ['src/main/allsub/res-video_chat']
 }
 
 //com.android.build.gradle.api.AndroidSourceSet set

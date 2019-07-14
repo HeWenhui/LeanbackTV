@@ -71,6 +71,8 @@ public class ChatTipBll {
      */
     private ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
     private ViewGroup vgRaisehand;
+    //添加声网
+    private RelativeLayout rl_livevideo_agora_content;
     private boolean destory = false;
     private TextView tv_livevideo_chat_people;
     private TextView tv_livevideo_chat_people_hind;
@@ -198,6 +200,7 @@ public class ChatTipBll {
         }
         handler.postDelayed(waitRun, 1000);
         vgRaisehand = (ViewGroup) liveViewAction.inflateView(R.layout.layout_live_video_chat);
+        rl_livevideo_agora_content = (RelativeLayout) liveViewAction.inflateView(R.layout.layout_livevideo_video_chat);
         rl_livevideo_content_left = vgRaisehand.findViewById(R.id.rl_livevideo_chat_content_left);
         ll_livevideo_chat_people = vgRaisehand.findViewById(R.id.ll_livevideo_chat_people);
         rl_livevideo_chat_raisehand_on = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand_on);
@@ -208,7 +211,8 @@ public class ChatTipBll {
         logToFile.d("initView:x2=" + LiveVideoPoint.getInstance().x2 + ",method=" + method + ",destory=" + destory);
         final int bottom = LiveVideoPoint.getInstance().screenHeight - LiveVideoPoint.getInstance().y4 + 200;
         vgRaisehand.setPadding(vgRaisehand.getLeft(), bottom, vgRaisehand.getRight(), bottom);
-        liveViewAction.addView(new LiveVideoLevel(3), vgRaisehand, lpRaisehand);
+        liveViewAction.addView(new LiveVideoLevel(3), rl_livevideo_agora_content);
+        liveViewAction.addView(new LiveVideoLevel(4), vgRaisehand, lpRaisehand);
         rl_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand);
         bt_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.bt_livevideo_chat_raisehand);
         tv_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.tv_livevideo_chat_raisehand);
@@ -533,7 +537,7 @@ public class ChatTipBll {
             return;
         }
         initView("startRecord");
-        AgoraChatPager agoraChatPager = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp, msgFrom, micType, linkmicid);
+        AgoraChatPager agoraChatPager = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp, msgFrom, micType, linkmicid, ll_livevideo_chat_people, liveViewAction);
         agoraChatPager.setTestWorkerThread(testWorkerThread);
         videoChatInter = agoraChatPager;
         if (contain) {
@@ -597,6 +601,10 @@ public class ChatTipBll {
                     liveViewAction.removeView(vgRaisehand);
                     vgRaisehand = null;
                     destory = true;
+                }
+                if (rl_livevideo_agora_content != null) {
+                    liveViewAction.removeView(rl_livevideo_agora_content);
+                    rl_livevideo_agora_content = null;
                 }
                 if (videoChatInter != null) {
                     if (videoChatInter instanceof AgoraChatPager) {

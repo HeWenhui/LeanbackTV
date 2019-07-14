@@ -102,13 +102,6 @@
                 android:visibility="gone" />
         </FrameLayout>
 
-        <!-- 接麦老师视频界面位置 -->
-        <RelativeLayout
-            android:id="@id/rl_course_video_live_agora_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"></RelativeLayout>
-
         <!-- LiveMediaController界面位置 -->
         <RelativeLayout
             android:id="@id/rl_course_video_live_controller_content"

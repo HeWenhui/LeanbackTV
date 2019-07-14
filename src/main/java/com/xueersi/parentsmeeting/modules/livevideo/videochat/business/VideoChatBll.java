@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.airbnb.lottie.L;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.xueersi.common.base.BaseApplication;
@@ -91,6 +92,8 @@ public class VideoChatBll implements VideoChatAction {
     private LogToFile mLogtf;
     private long startTime;
     private VideoChatInter videoChatInter;
+    //添加声网
+    private RelativeLayout rl_livevideo_agora_content;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private LiveViewAction liveViewAction;
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
@@ -302,6 +305,9 @@ public class VideoChatBll implements VideoChatAction {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                //添加声网
+                rl_livevideo_agora_content = (RelativeLayout) liveViewAction.inflateView(R.layout.layout_livevideo_video_chat);
+                liveViewAction.addView(new LiveVideoLevel(3), rl_livevideo_agora_content);
                 if (nativeLibLoaded == 1) {
 //            videoChatInter = new LicodeVideoChatPager(activity, this, classmateEntities, getInfo, liveBll,
 // baseLiveMediaControllerBottom);
@@ -310,11 +316,12 @@ public class VideoChatBll implements VideoChatAction {
 //                    videoChatInter = new VideoChatPager(activity, liveBll, getInfo);
                     return;
                 } else {
-                    videoChatInter = new AgoraVideoChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent);
+                    videoChatInter = new AgoraVideoChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, liveViewAction);
                 }
                 startTime = System.currentTimeMillis();
                 int height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 int screenWidth = ScreenUtils.getScreenWidth();
+
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         height);
                 lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -324,7 +331,7 @@ public class VideoChatBll implements VideoChatAction {
                 } else {
                     int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
                     lp.rightMargin = wradio;
-                    liveViewAction.addView(rootView, lp);
+                    liveViewAction.addView(new LiveVideoLevel(4), rootView, lp);
                 }
                 getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
                 if (isHasPermission) {
@@ -742,6 +749,10 @@ public class VideoChatBll implements VideoChatAction {
                                 videoChatEvent.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
                             }
                         }
+                        if (rl_livevideo_agora_content != null) {
+                            liveViewAction.removeView(rl_livevideo_agora_content);
+                            rl_livevideo_agora_content = null;
+                        }
                     }
                 } else {//关麦-举手状态
                     if (videoChatInter != null) {
@@ -762,6 +773,10 @@ public class VideoChatBll implements VideoChatAction {
                         if (nativeLibLoaded != 2) {
                             videoChatEvent.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
                         }
+                    }
+                    if (rl_livevideo_agora_content != null) {
+                        liveViewAction.removeView(rl_livevideo_agora_content);
+                        rl_livevideo_agora_content = null;
                     }
                     if ("on".equals(openhands)) {
                         final Runnable runnable = new Runnable() {
@@ -1520,6 +1535,10 @@ public class VideoChatBll implements VideoChatAction {
                         videoChatEvent.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
                     }
                 }
+                if (rl_livevideo_agora_content != null) {
+                    liveViewAction.removeView(rl_livevideo_agora_content);
+                    rl_livevideo_agora_content = null;
+                }
             }
         });
     }
@@ -1553,6 +1572,10 @@ public class VideoChatBll implements VideoChatAction {
             stopRecord();
             videoChatInter = null;
             mLogtf.d("MIC_TIME:onDestroy:time=" + (System.currentTimeMillis() - startTime));
+        }
+        if (rl_livevideo_agora_content != null) {
+            liveViewAction.removeView(rl_livevideo_agora_content);
+            rl_livevideo_agora_content = null;
         }
         chatStatusChanges.clear();
     }
