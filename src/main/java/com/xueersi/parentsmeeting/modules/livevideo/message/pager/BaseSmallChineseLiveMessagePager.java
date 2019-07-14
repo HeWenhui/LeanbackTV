@@ -67,6 +67,7 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
         BITMAP_HEIGHT_ME = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_ME);
         CIRCEL_HEIGHT = SizeUtils.Dp2Px(context, CIRCEL_HEIGHT);
         CIRCEL_WIDTH = SizeUtils.Dp2Px(context, CIRCEL_WIDTH);
+
 //        backgroundDrawable = mContext.getResources().getDrawable(self ?
 //                R.drawable //采用.9的方式来显示
 //                .bg_livevideo_small_chinese_gift_danmu_my_background
@@ -78,7 +79,24 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
 //                .bg_livevideo_small_chinese_live_message_danmu_background_small);
     }
 
-//    @Override
+    @Override
+    public void initData() {
+        super.initData();
+        if (flowsTips != null) {
+            flowsTips = new String[]{"送老师一座自由女神", "送老师一座埃菲尔铁塔", "送老师一座长城"};
+        }
+        if (flowsDrawLittleTips != null) {
+            flowsDrawLittleTips = new int[]{R.drawable.bg_livevideo_small_chinese_danmu_small_gift,
+                    R.drawable.bg_livevideo_small_chinese_danmu_middle_gift,
+                    R.drawable.bg_livevideo_small_chinese_danmu_big_gift};
+            sendFlowerArray = new Drawable[]{
+                    mContext.getResources().getDrawable(flowsDrawLittleTips[0]),
+                    mContext.getResources().getDrawable(flowsDrawLittleTips[1]),
+                    mContext.getResources().getDrawable(flowsDrawLittleTips[2])};
+        }
+    }
+
+    //    @Override
 //    protected void initDanmaku() {
 //        if (flowsTips != null) {
 //            flowsTips = new String[]{"送老师一座自由女神", "送老师一座埃菲尔铁塔", "送老师一座长城"};
@@ -241,56 +259,6 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
 
 
         return spannable;
-    }
-
-    /**
-     * 绘制背景(自定义弹幕样式)
-     */
-    private class BackgroundCacheStuffer extends SpannedCacheStuffer {
-
-        // 通过扩展SimpleTextCacheStuffer或SpannedCacheStuffer个性化你的弹幕样式
-//        final Paint paint = new Paint();
-
-        @Override
-        public void measure(BaseDanmaku danmaku, TextPaint paint, boolean fromWorkerThread) {
-//=            danmaku.padding = 20;  // 在背景绘制模式下增加padding
-            super.measure(danmaku, paint, fromWorkerThread);
-        }
-
-        @Override
-        public void drawBackground(BaseDanmaku danmaku, Canvas canvas, float left, float top) {
-//            backgroundDrawable = mContext.getResources().getDrawable(danmaku.isGuest ?
-//                    R.drawable //采用.9的方式来显示
-////                .bg_livevideo_small_chinese_gift_danmu_my_background
-//                            .bg_livevideo_small_chinese_gift_danmu_my_background_mid
-//                    : R.drawable //采用.9的方式来显示
-//                    .bg_livevideo_small_chinese_gift_danmu_other_backgroud_mid);
-
-            backgroundDrawable = mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_live_messagen_back_ground);
-
-            float height = backgroundDrawable.getIntrinsicHeight();
-//            float offsetRight = (BITMAP_HEIGHT_ME - CIRCEL_HEIGHT) / 2;
-            logger.i("height = " + height + ",padding = " + danmaku.padding + ", left = " + left + ", bitmap_height = " + BITMAP_HEIGHT_ME);
-            //左边的偏移量
-
-//            int offsetLeft = (danmaku.isGuest ? 0 : SizeUtils.Dp2Px(mContext, 2));
-            int offsetLeft = 0;
-            //上面的偏移量，这里必须加上offsetTop，否则文字无法居中
-            float offsetTop = (BITMAP_HEIGHT_ME > height ? BITMAP_HEIGHT_ME - height : height - BITMAP_HEIGHT_ME) / 2;
-            backgroundDrawable.setBounds(
-                    (int) (left + danmaku.padding + offsetLeft),
-                    (int) (top + danmaku.padding + offsetTop),
-                    (int) (left + danmaku.paintWidth + offsetLeft),
-                    (int) (top + height + danmaku.padding + offsetTop))
-            ;
-            backgroundDrawable.draw(canvas);
-        }
-
-        @Override
-        public void drawStroke(BaseDanmaku danmaku, String lineText, Canvas canvas, float left, float top, Paint
-                paint) {
-            // 禁用描边绘制
-        }
     }
 
 }

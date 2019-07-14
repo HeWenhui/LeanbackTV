@@ -498,7 +498,7 @@ public class CoursewarePreload {
                             mMorecachein.getAbsolutePath(),
                             templateName + ".temp",
                             coursewareInfo.getTemplateMd5());
-                    logger.d("template url path:  " + ip + coursewareInfo.getTemplateUrl() + "   file name:" + templateName + ".zip");
+//                    logger.d("template url path:  " + ip + coursewareInfo.getTemplateUrl() + "   file name:" + templateName + ".zip");
                     if (isIP) {
                         templateDownLoadInfo.setHost(cdn);
                     }
