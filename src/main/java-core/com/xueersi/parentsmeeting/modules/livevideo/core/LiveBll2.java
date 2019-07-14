@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -237,6 +238,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
     public LiveHttpManager getHttpManager() {
+        return mHttpManager;
+    }
+
+    public LiveHttpAction getLiveHttpAction() {
         return mHttpManager;
     }
 

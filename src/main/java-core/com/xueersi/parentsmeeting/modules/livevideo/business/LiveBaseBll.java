@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -79,6 +80,14 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
 
     public LiveAndBackDebug getLiveAndBackDebug() {
         return contextLiveAndBackDebug;
+    }
+
+    /**
+     * 获取网络请求对象
+     */
+    protected final LiveHttpAction getLiveHttpAction() {
+        LiveHttpAction liveHttpAction = mLiveBll.getLiveHttpAction();
+        return liveHttpAction;
     }
 
     /**

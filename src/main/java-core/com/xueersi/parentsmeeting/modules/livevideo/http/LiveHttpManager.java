@@ -47,7 +47,7 @@ import okhttp3.Response;
 /**
  * 直播网络访问类
  */
-public class LiveHttpManager extends BaseHttpBusiness {
+public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction {
     String TAG = "LiveHttpManager";
     private final Logger logger = LoggerFactory.getLogger(TAG);
     HashMap<String, String> defaultKey = new HashMap<>();
@@ -82,6 +82,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
             String value = defaultKey.get(key);
             httpRequestParams.addBodyParam(key, value);
         }
+    }
+
+    public void sendPostDefault(String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
+        setDefaultParameter(httpRequestParams);
+        sendPost(url, httpRequestParams, httpCallBack);
     }
 
     public LiveVideoSAConfig getLiveVideoSAConfig() {
@@ -631,14 +636,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(url, httpRequestParams, callBack);
     }
 
-
-    public void getAllRanking(String enstuId, String liveId, String classId, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
-        params.addBodyParam("liveId", liveId);
-        setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_LIVE_GET_TEAM_RANK, params, requestCallBack);
-    }
 
     public void getStuRanking(String enstuId, String liveId, String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -1601,9 +1598,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("tests", tests+"");
-        params.addBodyParam("ctId", ctId+"");
-        params.addBodyParam("pSrc", pSrc+"");
+        params.addBodyParam("tests", tests + "");
+        params.addBodyParam("ctId", ctId + "");
+        params.addBodyParam("pSrc", pSrc + "");
         params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL(isHalfBody) + "/" + liveId, params, requestCallBack);
@@ -1724,18 +1721,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_ARTS_ROOM_INFO, params, requestCallBack);
     }
 
-
-    /**
-     * 文科获取 排行信息
-     *
-     * @param requestCallBack
-     */
-    public void getNewArtsAllRank(String liveId, String stuCouId, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_ARTS_TEAM_CLASS_RANK, params, requestCallBack);
-    }
-
     /**
      * 直播上传精彩瞬间截图接口
      *
@@ -1750,7 +1735,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     *
      * 文科三分屏上传精彩瞬间截图url，半身直播走理科的接口
      */
     public void sendWonderfulMoment(String stuId, String liveId, String stuCouId, String type, String url, HttpCallBack httpCallBack) {
@@ -1834,7 +1818,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void saveEvaluationTeacher(String liveId, String courseId, String teacherId, String teacherScore, String
             teacherOption, String counselorId, String counselorScore, String
-                                                  counselorOption, String classId,String mainInput,String tutorInput, HttpCallBack requestCallBack) {
+                                              counselorOption, String classId, String mainInput, String tutorInput, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("courseId", courseId);
@@ -2046,26 +2030,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 中学激励系统学生点赞
-     *
-     * @param url
-     * @param classId   班级id
-     * @param planId    场次id
-     * @param teamId    小组ID
-     * @param listFlag  榜单标识（1：排行榜 2：连对榜）
-     * @param bePraised 被点赞的ID
-     */
-    public void sendEvenDriveLike(String url, String classId, String planId, String teamId, String listFlag, String bePraised, HttpCallBack callBack) {
-        HttpRequestParams httpRequestParams = new HttpRequestParams();
-        httpRequestParams.addBodyParam("classId", classId);
-        httpRequestParams.addBodyParam("planId", planId);
-        httpRequestParams.addBodyParam("teamId", teamId);
-        httpRequestParams.addBodyParam("listFlag", listFlag);
-        httpRequestParams.addBodyParam("bePraised", bePraised);
-        sendPost(url, httpRequestParams, callBack);
-    }
-
-    /**
      * 学报接口地址
      *
      * @param url
@@ -2178,14 +2142,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("videoDuration", videoDuration);
         sendPost(LiveVideoConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
     }
+
     /**
      * 教师反馈
+     *
      * @param liveId
      * @param courseId
      * @param isPlayBack
      * @param httpCallBack
      */
-    public void getFeedBack(String liveId,String courseId,String isPlayBack,HttpCallBack httpCallBack) {
+    public void getFeedBack(String liveId, String courseId, String isPlayBack, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("courseId", courseId);

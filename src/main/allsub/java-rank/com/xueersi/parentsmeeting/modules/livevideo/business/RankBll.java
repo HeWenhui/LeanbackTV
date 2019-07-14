@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.http.RankHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -73,7 +74,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     ListView lv_livevideo_rank_list;
     int colorYellow;
     int colorWhite;
-
+    private RankHttp rankHttp;
     private Boolean isSmallEnglish = false;
     /** 小学语文排名 */
     private SmallChineseRankPager chineseRankPager;
@@ -106,6 +107,13 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 }
             });
         }
+    }
+
+    public RankHttp getRankHttp() {
+        if (rankHttp == null) {
+            rankHttp = new RankHttp(getLiveHttpAction());
+        }
+        return rankHttp;
     }
 
     @Override
@@ -273,7 +281,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
      */
     private void getArtsNewAllRanking(final AbstractBusinessDataCallBack callBack) {
         logger.e("======> rankBll getArtsNewAllRanking called:" + ":" + mGetInfo.getArtsExtLiveInfo().getNewCourseWarePlatform());
-        getHttpManager().getNewArtsAllRank(mGetInfo.getId(), mGetInfo.getStuCouId(), new HttpCallBack() {
+        getRankHttp().getNewArtsAllRank(mGetInfo.getId(), mGetInfo.getStuCouId(), new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 AllRankEntity allRankEntity = getHttpResponseParser().parseAllRank(responseEntity);
@@ -301,7 +309,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
-        getHttpManager().getAllRanking(enstuId, mGetInfo.getId(), classId, new HttpCallBack(false) {
+        getRankHttp().getAllRanking(enstuId, mGetInfo.getId(), classId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 AllRankEntity allRankEntity = getHttpResponseParser().parseAllRank(responseEntity);
@@ -501,7 +509,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 
                     @Override
                     public void sendLike(int listFlag, String bePraised, HttpCallBack httpCallBack) {
-                        getHttpManager().sendEvenDriveLike(
+                        getRankHttp().sendEvenDriveLike(
                                 mGetInfo.getGetThumbsUpUrl(),
                                 mGetInfo.getStudentLiveInfo().getClassId(),
                                 mGetInfo.getId(),

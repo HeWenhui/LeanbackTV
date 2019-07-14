@@ -13,6 +13,8 @@ def static getAllSource(Object set) {
     set.res.srcDirs += ['src/main/allsub/res-danmaku']
     //接麦
     set.res.srcDirs += ['src/main/allsub/res-video_chat']
+    //排行榜
+    set.java.srcDirs += ['src/main/allsub/java-rank']
 }
 
 //com.android.build.gradle.api.AndroidSourceSet set
