@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
@@ -350,7 +350,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 logger.d("addBusiness:business=" + className);
             } catch (Exception e) {
                 logger.d("addBusiness:business=", e);
-                CrashReport.postCatchedException(e);
+                LiveCrashReport.postCatchedException(e);
             }
         }
         FeedbackTeacherBll feedbackTeacherBll = new FeedbackTeacherBll(activity,mLiveBll);

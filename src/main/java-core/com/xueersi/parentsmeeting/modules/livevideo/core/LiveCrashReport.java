@@ -10,6 +10,10 @@ import com.tencent.bugly.crashreport.CrashReport;
  */
 public class LiveCrashReport {
     public static void postCatchedException(String TAG, Throwable var0) {
-        CrashReport.postCatchedException(new LiveException(TAG, var0));
+        LiveCrashReport.postCatchedException(new LiveException(TAG, var0));
+    }
+
+    public static void postCatchedException(Throwable var0) {
+        CrashReport.postCatchedException(var0);
     }
 }

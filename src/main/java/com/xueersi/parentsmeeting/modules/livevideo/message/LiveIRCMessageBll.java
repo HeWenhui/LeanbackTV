@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
@@ -1169,7 +1169,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         try {
                             onSendMsgs.get(i).onSendMsg(msg);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                     }
                 } catch (Exception e) {

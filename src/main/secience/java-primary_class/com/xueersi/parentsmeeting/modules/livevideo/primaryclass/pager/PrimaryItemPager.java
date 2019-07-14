@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.permission.XesPermission;
@@ -828,7 +828,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         mAM.setMode(AudioManager.MODE_NORMAL);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         }, 1000);

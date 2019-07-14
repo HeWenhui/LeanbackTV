@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.view.View;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
@@ -90,7 +90,7 @@ public class LiveAssetsLoadUtil {
                         DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 try {
                     HashMap<String, String> map = new HashMap<>();
@@ -98,7 +98,7 @@ public class LiveAssetsLoadUtil {
                     map.put("downtime", "" + (System.currentTimeMillis() - starttime));
                     UmsAgentManager.umsAgentDebug(context, TAG, map);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 callback.success();
             }
@@ -136,7 +136,7 @@ public class LiveAssetsLoadUtil {
                     map.put("times", "" + times);
                     UmsAgentManager.umsAgentDebug(context, TAG, map);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 mDataLoadEntity.webDataSuccess();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
@@ -189,7 +189,7 @@ public class LiveAssetsLoadUtil {
                         map.put("times", "" + failModule.get("livevdieo"));
                         UmsAgentManager.umsAgentDebug(context, TAG, map);
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             });
@@ -203,7 +203,7 @@ public class LiveAssetsLoadUtil {
                         map.put("times", "" + failModule.get("livevdieo"));
                         UmsAgentManager.umsAgentDebug(context, TAG, map);
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             });

@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.LoggerFactory;
@@ -134,7 +134,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                             logHashMap.put("length2", "" + destination.length());
                             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                     }
                 } catch (Exception e) {
@@ -151,7 +151,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                         logHashMap.put("length2", "" + destination.length());
                         UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
                     } catch (Exception e2) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e2));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e2));
                     }
                     destinationTemp.delete();
                     destination.delete();
@@ -192,7 +192,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
             logHashMap.put("exception", "" + Log.getStackTraceString(exception));
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_ERROR, logHashMap.getData());
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return exception;
     }

@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -166,7 +166,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 break;
             default:

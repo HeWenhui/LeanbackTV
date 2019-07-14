@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.content.Context;
 
 import com.tal.speech.utils.SpeechUtils;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -46,7 +46,7 @@ public abstract class BaseVoiceAnswerPager extends LiveBasePager {
                 stableLogHashMap.put("creattime", "" + creattime);
                 umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     };

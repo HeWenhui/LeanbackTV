@@ -4,7 +4,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page;
 import android.content.Context;
 
 import com.tal.speech.utils.SpeechUtils;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -49,7 +49,7 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
                 stableLogHashMap.put("creattime", "" + creattime);
                 umsAgentDebugSys(LIVE_STOP_VOLUME, stableLogHashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     };
@@ -73,7 +73,7 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
                 stableLogHashMap.put("creattime", "" + creattime);
                 umsAgentDebugSys(LIVE_STOP_VOLUME, stableLogHashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             logger.d("onDestroy:setVolume:null");
         }

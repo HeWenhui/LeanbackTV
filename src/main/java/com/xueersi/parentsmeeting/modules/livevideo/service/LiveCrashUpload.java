@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.service;
 
 import android.content.Context;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
@@ -65,7 +65,7 @@ public class LiveCrashUpload {
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_CRASH_UPLOAD, stableLogHashMap.getData());
                     saveFile.renameTo(uploadfile);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
 
@@ -80,7 +80,7 @@ public class LiveCrashUpload {
                     stableLogHashMap.put("havesignal", "" + haveSignal);
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_CRASH_UPLOAD, stableLogHashMap.getData());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });

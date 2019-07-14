@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -190,12 +190,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                                 hashMap.put("size", oldSize + "-" + size);
                                 UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
                             } catch (Exception e) {
-                                CrashReport.postCatchedException(new LiveException(TAG, e));
+                                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                             }
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             } else {
                 appID = UmsConstants.LIVE_APP_ID_BACK;
@@ -225,12 +225,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                                 hashMap.put("size", oldSize + "-" + size);
                                 UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
                             } catch (Exception e) {
-                                CrashReport.postCatchedException(new LiveException(TAG, e));
+                                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                             }
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         }
@@ -262,7 +262,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 hashMap.put("liveid", "" + mVideoEntity.getLiveId());
                 UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -727,7 +727,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 hashMap.put("category", "" + mQuestionEntity.getvCategory());
                 UmsAgentManager.umsAgentDebug(activity, LogConfig.LIVE_BACK_CATEGORY_UNKNOW, hashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }

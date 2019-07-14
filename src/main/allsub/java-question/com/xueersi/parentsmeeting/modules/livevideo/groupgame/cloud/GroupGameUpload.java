@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.groupgame.cloud;
 
 import android.content.Context;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
@@ -14,6 +14,7 @@ import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
@@ -67,7 +68,7 @@ public class GroupGameUpload {
                     stableLogHashMap.put("httppath", httpPath);
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_GAME_VOICE, stableLogHashMap.getData());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
 
@@ -85,7 +86,7 @@ public class GroupGameUpload {
                     stableLogHashMap.put("errorMsg", "" + result.getErrorMsg());
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_GAME_VOICE, stableLogHashMap.getData());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });
@@ -125,7 +126,7 @@ public class GroupGameUpload {
                     stableLogHashMap.put("httppath", httpPath);
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_GAME_VOICE, stableLogHashMap.getData());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
 
@@ -143,7 +144,7 @@ public class GroupGameUpload {
                     stableLogHashMap.put("errorMsg", "" + result.getErrorMsg());
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_GAME_VOICE, stableLogHashMap.getData());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });

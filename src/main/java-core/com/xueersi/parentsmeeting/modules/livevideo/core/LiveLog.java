@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 import android.content.Context;
 import android.util.Log;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
@@ -118,7 +118,7 @@ public class LiveLog implements LiveOnLineLogs {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
             }
         } catch (Exception err) {
-            CrashReport.postCatchedException(new LiveException(TAG, err));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, err));
         }
         logHashMap.put("liveeventid", "" + LogConfig.LIVE_DEBUG_MESSAGE);
         logHashMap.put("tag", "" + TAG);
@@ -173,7 +173,7 @@ public class LiveLog implements LiveOnLineLogs {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
             }
         } catch (Exception err) {
-            CrashReport.postCatchedException(new LiveException(TAG, err));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, err));
         }
         logHashMap.put("liveeventid", "" + LogConfig.LIVE_DEBUG_MESSAGE);
         logHashMap.put("tag", "" + TAG);

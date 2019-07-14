@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.tencent.bugly.crashreport.BuglyLog;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCall;
@@ -56,7 +56,7 @@ public abstract class LiveBackVideoActivityBase extends XesActivity {
             intent.putExtra("liveintent", getIntent().getExtras());
             startService(intent);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         BuglyLog.i(TAG, "onCreate");
     }

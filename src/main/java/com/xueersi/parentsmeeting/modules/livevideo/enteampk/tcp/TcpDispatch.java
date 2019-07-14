@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
@@ -173,7 +173,7 @@ public class TcpDispatch {
                 int operation = TcpConstants.LOGIN_OPERATION_SEND;
                 groupGameTcp.send(type, operation, bodyStr);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             for (int i = 0; i < onTcpConnects.size(); i++) {
                 onTcpConnects.get(i).onTcpConnect();
@@ -251,7 +251,7 @@ public class TcpDispatch {
                 logs2.putAll(logs);
                 UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, logs2);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 
@@ -304,7 +304,7 @@ public class TcpDispatch {
                         stableLogHashMap.put("exce", "" + e);
                         UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, stableLogHashMap.getData());
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
 
@@ -320,7 +320,7 @@ public class TcpDispatch {
                         stableLogHashMap.put("errorMsg", "" + result.getErrorMsg());
                         UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, stableLogHashMap.getData());
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             });

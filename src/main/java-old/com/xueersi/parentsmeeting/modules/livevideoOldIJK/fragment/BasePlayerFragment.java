@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -532,7 +532,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                         setVolumeListener.onSuccess(true);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                    LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             } else {
                 try {
@@ -540,7 +540,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                         setVolumeListener.onSuccess(false);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                    LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             }
         }

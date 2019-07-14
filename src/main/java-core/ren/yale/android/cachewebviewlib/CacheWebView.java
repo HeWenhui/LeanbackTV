@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.sdk.CookieManager;
 import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebSettings;
@@ -190,7 +190,7 @@ public class CacheWebView extends WebView {
 //            logger.d("getSessionUrl:url=" + url);
 //            return url;
 //        } catch (Exception e) {
-//            CrashReport.postCatchedException(new LiveException(TAG, e));
+//            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
 //        }
         return url;
     }

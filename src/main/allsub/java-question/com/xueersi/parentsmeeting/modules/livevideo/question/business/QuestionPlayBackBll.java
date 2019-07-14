@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
@@ -150,7 +150,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 //                    videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
 //                    questionBll.showBigQuestion(videoQuestionLiveEntity, false);
 //                } catch (Exception e) {
-//                    CrashReport.postCatchedException(e);
+//                    LiveCrashReport.postCatchedException(e);
 //                }
 //                break;
 //            }
@@ -346,7 +346,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         }
                     }, dealy * 1000);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 break;
             }

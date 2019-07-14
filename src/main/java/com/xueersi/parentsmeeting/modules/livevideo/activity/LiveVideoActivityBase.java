@@ -30,7 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.business.AppBll;
@@ -370,7 +370,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                                 put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
                                                 put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
                                         UmsAgentManager.umsAgentDebug(LiveVideoActivityBase.this, LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
-                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                                        LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                         e.printStackTrace();
                                     }
                                 }

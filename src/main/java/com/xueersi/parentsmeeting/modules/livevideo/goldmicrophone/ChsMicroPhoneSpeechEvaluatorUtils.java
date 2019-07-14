@@ -22,7 +22,7 @@
 //import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 //import com.tal.speech.speechrecognizer.TalSpeech;
 //import com.tal.speech.utils.SpeechUtils;
-//import com.tencent.bugly.crashreport.CrashReport;
+//import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 //import com.xueersi.common.business.AppBll;
 //import com.xueersi.common.business.UserBll;
 //import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -1319,7 +1319,7 @@
 //        } catch (IOException e) {
 //            //为了统计错误
 //            logger.e("startEvaluator", e);
-//            CrashReport.postCatchedException(e);
+//            LiveCrashReport.postCatchedException(e);
 //        }
 //    }
 //
@@ -1365,7 +1365,7 @@
 //        } catch (IOException e) {
 //            //为了统计错误
 //            logger.e("startEvaluator", e);
-//            CrashReport.postCatchedException(e);
+//            LiveCrashReport.postCatchedException(e);
 //        }
 //    }
 //

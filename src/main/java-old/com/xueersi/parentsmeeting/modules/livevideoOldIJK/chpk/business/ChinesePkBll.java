@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.EnglishH5Entity;
@@ -191,7 +191,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                     showPkFinallyResult(resultEntity);
                 }catch (Exception e){
                     logger.d("showPkResult",e);
-                    CrashReport.postCatchedException(new LiveException(TAG,e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG,e));
                 }
             }
 
@@ -1325,7 +1325,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 teamId = teamInfoEntity.getTeamInfo().getTeamId();
             } catch (Exception e) {
                 teamId = TeamPkConfig.DEAF_TEAM_ID;
-                CrashReport.postCatchedException(new LiveException(TAG + ":" + method, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG + ":" + method, e));
             }
         } else {
             teamId = roomInitInfo.getStudentLiveInfo().getTeamId();

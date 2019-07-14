@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 import android.content.Context;
 import android.webkit.JavascriptInterface;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
@@ -30,7 +30,7 @@ public class StaticWeb {
             logToFile.addCommon("testId", testId);
             logToFile.addCommon("creattime", "" + creattime);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         this.onMessage = onMessage;
     }
@@ -40,7 +40,7 @@ public class StaticWeb {
         try {
             logToFile.addCommon("loadUrl", loadUrl);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 
@@ -136,13 +136,13 @@ public class StaticWeb {
                             logToFile.d("testCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
                         }
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             }, 500);
         } catch (Exception e) {
             e.printStackTrace();
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 }

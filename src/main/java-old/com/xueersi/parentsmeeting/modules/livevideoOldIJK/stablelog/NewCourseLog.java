@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -54,7 +54,7 @@ public class NewCourseLog {
         } catch (JSONException e) {
             Logger logger = LiveLoggerFactory.getLogger("NewCourseLog");
             logger.e("getCourseWareTests", e);
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         if (newCourseTestIdSec.endsWith(",")) {
             newCourseTestIdSec = newCourseTestIdSec.substring(0, newCourseTestIdSec.length() - 1);
