@@ -66,12 +66,25 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
         BITMAP_HEIGHT_ME = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_ME);
         CIRCEL_HEIGHT = SizeUtils.Dp2Px(context, CIRCEL_HEIGHT);
         CIRCEL_WIDTH = SizeUtils.Dp2Px(context, CIRCEL_WIDTH);
-        backgroundDrawable = mContext.getResources().getDrawable(R.drawable
-                .bg_livevideo_send_flower_screen_bullet_background);
-
     }
 
-//    @Override
+    @Override
+    public void initData() {
+        super.initData();
+        backgroundDrawable = mContext.getResources().getDrawable(R.drawable
+                .bg_livevideo_send_flower_screen_bullet_background);
+        if (flowsDrawLittleTips != null) {
+            flowsDrawLittleTips = new int[]{R.drawable.bg_livevideo_small_english_sendflower_oneflower_img,
+                    R.drawable.bg_livevideo_small_english_sendflower_threeflowers_img,
+                    R.drawable.bg_livevideo_small_english_sendflower_fiveflowers_img};
+            sendFlowerArray = new Drawable[]{
+                    mContext.getResources().getDrawable(flowsDrawLittleTips[0]),
+                    mContext.getResources().getDrawable(flowsDrawLittleTips[1]),
+                    mContext.getResources().getDrawable(flowsDrawLittleTips[2])};
+        }
+    }
+
+    //    @Override
 //    protected void initDanmaku() {
 //        if (flowsTips != null) {
 //            flowsTips = new String[]{"送老师一朵太阳花", "送老师一束太阳花", "送老师一捧太阳花"};
