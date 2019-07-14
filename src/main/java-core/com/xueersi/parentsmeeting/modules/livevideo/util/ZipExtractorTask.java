@@ -36,6 +36,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
     protected int max;
     private boolean cancle = false;
     private ZipProg zipProg;
+    private boolean progressUpdate = true;
 
     public ZipExtractorTask(File in, File out, boolean replaceAll, ZipProg zipProg) {
         mInput = in;
@@ -51,6 +52,10 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
 
     public ZipExtractorTask(String in, String out, boolean replaceAll) {
         this(new File(in), new File(out), replaceAll, null);
+    }
+
+    public void setProgressUpdate(boolean progressUpdate) {
+        this.progressUpdate = progressUpdate;
     }
 
     @Override
@@ -254,7 +259,9 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
 
             super.write(buffer, byteOffset, byteCount);
             mProgress += byteCount;
-            publishProgress(mProgress);
+            if (progressUpdate) {
+                publishProgress(mProgress);
+            }
         }
 
     }

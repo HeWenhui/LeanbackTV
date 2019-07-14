@@ -858,7 +858,7 @@ public class CoursewarePreload {
             File file = new File(folderPath, mFileName);
             boolean rename = tempFile.renameTo(file);
 //            if (!isUnZip.get()) {
-            new ZipExtractorTask(file, mMorecacheout, true, new Progresses()) {
+            ZipExtractorTask task = new ZipExtractorTask(file, mMorecacheout, true, new Progresses()) {
                 @Override
                 protected Exception doInBackground(Void... params) {
 
@@ -891,8 +891,9 @@ public class CoursewarePreload {
                     unZipMap.put("ip", IpAddressUtil.USER_IP);
                     UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
                 }
-            }.executeOnExecutor(executos);
-
+            };
+            task.setProgressUpdate(false);
+            task.executeOnExecutor(executos);
 //                isUnZip.set(true);
 //            }
         }
