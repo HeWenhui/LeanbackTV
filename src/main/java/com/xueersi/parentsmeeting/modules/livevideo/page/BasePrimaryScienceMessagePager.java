@@ -14,6 +14,9 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuPro;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 
 import java.io.InputStream;
@@ -205,12 +208,15 @@ public abstract class BasePrimaryScienceMessagePager extends BaseLiveMessagePage
         danmaku.padding = DANMU_PADDING;
         danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
         danmaku.isLive = false;
-        danmaku.time = dvMessageDanmaku.getCurrentTime() + 1200;
         danmaku.textSize = SizeUtils.Sp2Px(mContext, 14);//25f * (mParser.getDisplayer().getDensity() - 0.6f);
         danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
 //        danmaku.underlineColor = Color.GREEN;
 
-        dvMessageDanmaku.addDanmaku(danmaku);
+//        dvMessageDanmaku.addDanmaku(danmaku);
+        LiveDanmakuPro liveDanmakuPro = ProxUtil.getProvide(mContext, LiveDanmakuPro.class);
+        if (liveDanmakuPro != null) {
+            liveDanmakuPro.addDanmaku(danmaku);
+        }
     }
 
     @Override

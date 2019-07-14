@@ -36,29 +36,7 @@ public class LiveViewActionIml implements LiveViewAction {
     @Override
     public void addView(LiveVideoLevel levelEntity, View child) {
         logger.d("addView2:child=" + child + ",levelEntity=" + levelEntity.getLevel());
-        if (levelEntity == LiveVideoLevel.LEVEL_MES) {
-            bottomContent.addView(child, 0);
-        } else {
-            boolean add = false;
-            for (int i = 0; i < bottomContent.getChildCount(); i++) {
-                View view = bottomContent.getChildAt(i);
-                LiveVideoLevel levelEntity2 = liveVideoLevelHashMap.get(view);
-                if (levelEntity2 != null) {
-                    int index = bottomContent.indexOfChild(view);
-                    int level = levelEntity2.getLevel();
-                    logger.d("addView2:levelEntity2=" + level + ",index=" + index);
-                    if (level >= levelEntity.getLevel()) {
-                        add = true;
-                        bottomContent.addView(child, index);
-                        break;
-                    }
-                }
-            }
-            if (!add) {
-                bottomContent.addView(child);
-            }
-        }
-        liveVideoLevelHashMap.put(child, levelEntity);
+        addView(levelEntity, child, null);
     }
 
     @Override
@@ -74,26 +52,30 @@ public class LiveViewActionIml implements LiveViewAction {
     @Override
     public void addView(LiveVideoLevel levelEntity, View child, ViewGroup.LayoutParams params) {
         logger.d("addView4:child=" + child + ",levelEntity=" + levelEntity.getLevel());
-        if (levelEntity == LiveVideoLevel.LEVEL_MES) {
-            bottomContent.addView(child, 0, params);
-        } else {
-            boolean add = false;
-            for (int i = 0; i < bottomContent.getChildCount(); i++) {
-                View view = bottomContent.getChildAt(i);
-                LiveVideoLevel levelEntity2 = liveVideoLevelHashMap.get(view);
-                if (levelEntity2 != null) {
-                    int index = bottomContent.indexOfChild(view);
-                    int level = levelEntity2.getLevel();
-                    logger.d("addView4:levelEntity2=" + level + ",index=" + index);
-                    if (level >= levelEntity.getLevel()) {
-                        add = true;
+        boolean add = false;
+        for (int i = 0; i < bottomContent.getChildCount(); i++) {
+            View view = bottomContent.getChildAt(i);
+            LiveVideoLevel levelEntity2 = liveVideoLevelHashMap.get(view);
+            if (levelEntity2 != null) {
+                int index = bottomContent.indexOfChild(view);
+                int level = levelEntity2.getLevel();
+                logger.d("addView4:levelEntity2=" + level + ",index=" + index);
+                if (level >= levelEntity.getLevel()) {
+                    add = true;
+                    if (params != null) {
                         bottomContent.addView(child, index, params);
-                        break;
+                    } else {
+                        bottomContent.addView(child, index);
                     }
+                    break;
                 }
             }
-            if (!add) {
+        }
+        if (!add) {
+            if (params != null) {
                 bottomContent.addView(child, params);
+            } else {
+                bottomContent.addView(child);
             }
         }
         liveVideoLevelHashMap.put(child, levelEntity);

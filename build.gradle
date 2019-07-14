@@ -8,6 +8,9 @@ def static getAllSource(Object set) {
     set.res.srcDirs += ['src/main/allsub/res-roll_call']
     set.java.srcDirs += ['src/main/allsub/java-question']
     set.res.srcDirs += ['src/main/allsub/res-question']
+    //弹幕
+    set.java.srcDirs += ['src/main/allsub/java-danmaku']
+    set.res.srcDirs += ['src/main/allsub/res-danmaku']
 }
 
 //com.android.build.gradle.api.AndroidSourceSet set
@@ -124,4 +127,7 @@ dependencies {
 //    implementation "androidx.work:work-runtime:2.01"
     //    implementation project(':library:agora')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.businessinterface)
+
+//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
 }

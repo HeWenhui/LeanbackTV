@@ -1,0 +1,5 @@
+<master.flame.danmaku.danmaku.ui.widget.DanmakuView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/dv_livevideo_message_danmaku"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_toLeftOf="@id/rl_livevideo_info" />

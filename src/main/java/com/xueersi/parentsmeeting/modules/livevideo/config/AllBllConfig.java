@@ -17,6 +17,8 @@ import java.util.ArrayList;
 public class AllBllConfig {
     //"com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
     private static String[] secClassPath = {
+            //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBll",
             //聊天
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             //战队pk，分文理
@@ -67,6 +69,8 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"
     };
     private static String[] engClassPath = {
+            //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBll",
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.RankBll",
@@ -88,6 +92,8 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"};
     private static String[] cnClassPath = {
+            //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBll",
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll",
@@ -115,6 +121,8 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"
     };
     private static String[] lecClassPath = {
+            //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBll",
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll",
