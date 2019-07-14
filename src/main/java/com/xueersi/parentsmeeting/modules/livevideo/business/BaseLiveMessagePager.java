@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.ConstUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
@@ -113,7 +114,7 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
     //去掉弹幕
 //    protected DanmakuView dvMessageDanmaku;
 //    protected DanmakuContext mDanmakuContext;
-    private BaseDanmakuParser mParser;
+//    private BaseDanmakuParser mParser;
     protected ExpressionView mExpressionView;
     protected EditText etMessageContent;
     /** 讨论人数 */
@@ -328,7 +329,7 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
 //                .setCacheStuffer(new BackgroundCacheStuffer())  // 绘制背景使用BackgroundCacheStuffer
 //                .setMaximumLines(maxLinesPair)
 //                .preventOverlapping(overlappingEnablePair);
-        mParser = createParser(mContext.getResources().openRawResource(R.raw.comments));
+//        mParser = createParser(mContext.getResources().openRawResource(R.raw.comments));
 //        dvMessageDanmaku.setCallback(new DrawHandler.Callback() {
 //            @Override
 //            public void updateTimer(DanmakuTimer timer) {
@@ -365,31 +366,31 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
 //        dvMessageDanmaku.enableDanmakuDrawingCache(false);
     }
 
-    private BaseDanmakuParser createParser(InputStream stream) {
-
-        if (stream == null) {
-            return new BaseDanmakuParser() {
-
-                @Override
-                protected Danmakus parse() {
-                    return new Danmakus();
-                }
-            };
-        }
-
-        ILoader loader = DanmakuLoaderFactory.create(DanmakuLoaderFactory.TAG_BILI);
-
-        try {
-            loader.load(stream);
-        } catch (IllegalDataException e) {
-            e.printStackTrace();
-        }
-        BaseDanmakuParser parser = new BiliDanmukuParser();
-        IDataSource<?> dataSource = loader.getDataSource();
-        parser.load(dataSource);
-        return parser;
-
-    }
+//    private BaseDanmakuParser createParser(InputStream stream) {
+//
+//        if (stream == null) {
+//            return new BaseDanmakuParser() {
+//
+//                @Override
+//                protected Danmakus parse() {
+//                    return new Danmakus();
+//                }
+//            };
+//        }
+//
+//        ILoader loader = DanmakuLoaderFactory.create(DanmakuLoaderFactory.TAG_BILI);
+//
+//        try {
+//            loader.load(stream);
+//        } catch (IllegalDataException e) {
+//            e.printStackTrace();
+//        }
+//        BaseDanmakuParser parser = new BiliDanmukuParser();
+//        IDataSource<?> dataSource = loader.getDataSource();
+//        parser.load(dataSource);
+//        return parser;
+//
+//    }
 
 
     public void setIrcState(IRCState ircState) {
@@ -509,9 +510,9 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
         danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
         danmaku.isLive = false;
         if (LiveVideoConfig.isPrimary) {
-            danmaku.textSize = 20f * (mParser.getDisplayer().getDensity() - 0.6f);
+            danmaku.textSize = 20f * (ScreenUtils.getScreenDensity() - 0.6f);
         } else {
-            danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
+            danmaku.textSize = 25f * (ScreenUtils.getScreenDensity() - 0.6f);
         }
 //        danmaku.underlineColor = Color.GREEN;
 
