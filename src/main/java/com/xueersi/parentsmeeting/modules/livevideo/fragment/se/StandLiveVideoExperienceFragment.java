@@ -571,7 +571,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             } else {
                 return null;
             }
-            Constructor<? extends LiveBackBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBackBll.class});
+            Constructor<? extends LiveBackBaseBll> constructor = clazz.getConstructor(Activity.class, StandExperienceLiveBackBll.class);
             LiveBackBaseBll liveBaseBll = constructor.newInstance(activity, liveBackBll);
             logger.d("creatBll:business=" + className);
             return liveBaseBll;

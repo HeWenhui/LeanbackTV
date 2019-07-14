@@ -6,6 +6,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
+/**
+ * Created by linyuqiang on 2019/7/14.
+ * 直播弹幕
+ */
 public class LiveDanmakuBll extends LiveBaseBll {
     private LiveDanmaku liveDanmaku;
 

@@ -1,7 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
-import android.content.Intent;
-
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 
 import java.util.ArrayList;
@@ -16,6 +14,8 @@ public class AllBackBllConfig {
     };
 
     private static String[] standLiveClassPath = {
+            //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBackBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll",
             "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceRedPackageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll",
