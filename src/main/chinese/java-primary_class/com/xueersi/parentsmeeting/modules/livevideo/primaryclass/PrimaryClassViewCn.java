@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -26,10 +27,27 @@ public class PrimaryClassViewCn implements PrimaryClassView {
     private Context context;
     private Logger logger = LiveLoggerFactory.getLogger(this);
     private Bitmap lastDrawBitmap;
+    private int live_primary_right_head_width;
+    private int live_primary_right_head_gap;
+    private int live_primary_right_item_height;
 
     public PrimaryClassViewCn(Context context) {
         this.context = context;
         ProxUtil.getProxUtil().put(context, PrimaryClassView.class, this);
+        Resources resources = context.getResources();
+        live_primary_right_head_width = resources.getInteger(R.integer.live_primary_right_head_width_cn);
+        live_primary_right_head_gap = resources.getInteger(R.integer.live_primary_right_head_gap_cn);
+        live_primary_right_item_height = resources.getInteger(R.integer.live_primary_right_item_height_cn);
+    }
+
+    @Override
+    public int getLive_primary_right_head_gap() {
+        return live_primary_right_head_gap;
+    }
+
+    @Override
+    public int getLive_primary_right_item_height() {
+        return live_primary_right_item_height;
     }
 
     @Override
@@ -111,6 +129,9 @@ public class PrimaryClassViewCn implements PrimaryClassView {
     @Override
     public void decorateItemPagerView(RelativeLayout rl_livevideo_primary_team_content, ImageView iv_livevideo_primary_team_icon, LinearLayout ll_livevideo_primary_team_content, TextView tv_livevideo_primary_team_name_mid, int width, int height) {
         float scale = (float) width / 1334f;
+        float scaleX = (float) width / 2001f;
+        float scaleY = (float) height / 1089f;
+        logger.d("decorateItemPagerView:scale=" + scale + ",scale2=" + scaleX + ",scaleY=" + scaleY);
         int backLeft = (ScreenUtils.getScreenWidth() - width) / 2;
         int backTop = (ScreenUtils.getScreenHeight() - height) / 2;
         {
@@ -137,10 +158,11 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         }
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_primary_team_content.getLayoutParams();
-            int lpwidth = (int) (195 * scale);
-            int lpheight = (int) (630 * scale);
-            int leftMargin = backLeft + (int) (1121 * scale);
-            int topMargin = backTop + (int) (88 * scale);
+            int lpwidth = (int) (live_primary_right_head_width * scaleX);
+            int lpheight = (int) (936 * scaleX);
+            int margin = (int) (live_primary_right_head_gap * scaleX);
+            int leftMargin = backLeft + (int) (1120 * scale);
+            int topMargin = backTop + (int) (131 * scaleX);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                 lp.width = lpwidth;
                 lp.height = lpheight;
@@ -150,8 +172,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
                 for (int i = 0; i < ll_livevideo_primary_team_content.getChildCount(); i++) {
                     View child = ll_livevideo_primary_team_content.getChildAt(i);
                     ViewGroup.MarginLayoutParams childLp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
-                    int childHeight = (int) (148 * scale);
-                    int margin = (int) (11 * scale);
+                    int childHeight = (int) (live_primary_right_item_height * scaleX);
                     if (childLp.height != childHeight || childLp.bottomMargin != margin) {
                         childLp.height = childHeight;
                         childLp.bottomMargin = margin;

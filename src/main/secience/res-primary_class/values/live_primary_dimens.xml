@@ -10,10 +10,17 @@
     <integer name="live_primary_right_team_top">34</integer>
     <!-- 右边框头像居上高度 -->
     <integer name="live_primary_right_head_top">159</integer>
-    <!-- 右边框头像总高度 -->
-    <integer name="live_primary_right_head_height">196</integer>
+    <!-- 右边框头像宽度 -->
+    <integer name="live_primary_right_head_width">295</integer>
     <!-- 右边框头像间距 -->
     <integer name="live_primary_right_head_gap">18</integer>
     <!-- 右边框头像高度 -->
     <integer name="live_primary_right_item_height">223</integer>
+
+    <!-- 右边框头像宽度，语文 -->
+    <integer name="live_primary_right_head_width_cn">295</integer>
+    <!-- 右边框头像间距，语文-->
+    <integer name="live_primary_right_head_gap_cn">13</integer>
+    <!-- 右边框头像高度，语文 -->
+    <integer name="live_primary_right_item_height_cn">225</integer>
 </resources>

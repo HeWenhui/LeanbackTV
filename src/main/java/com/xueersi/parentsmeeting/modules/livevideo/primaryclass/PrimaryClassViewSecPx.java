@@ -32,6 +32,7 @@ public class PrimaryClassViewSecPx implements PrimaryClassView {
     private int live_primary_right_head_top;
     private int live_primary_right_head_height;
     private int live_primary_right_head_gap;
+    private int live_primary_right_item_height;
 
     public PrimaryClassViewSecPx(Context context) {
         this.context = context;
@@ -42,8 +43,19 @@ public class PrimaryClassViewSecPx implements PrimaryClassView {
         live_primary_right_left = resources.getInteger(R.integer.live_primary_right_left);
         live_primary_right_team_top = resources.getInteger(R.integer.live_primary_right_team_top);
         live_primary_right_head_top = resources.getInteger(R.integer.live_primary_right_head_top);
-        live_primary_right_head_height = resources.getInteger(R.integer.live_primary_right_head_height);
+        live_primary_right_head_height = resources.getInteger(R.integer.live_primary_right_head_width);
         live_primary_right_head_gap = resources.getInteger(R.integer.live_primary_right_head_gap);
+        live_primary_right_item_height = resources.getInteger(R.integer.live_primary_right_item_height);
+    }
+
+    @Override
+    public int getLive_primary_right_head_gap() {
+        return live_primary_right_head_gap;
+    }
+
+    @Override
+    public int getLive_primary_right_item_height() {
+        return live_primary_right_item_height;
     }
 
     @Override

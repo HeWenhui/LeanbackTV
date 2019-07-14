@@ -27,19 +27,27 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     private Context context;
     private Logger logger = LiveLoggerFactory.getLogger(this);
     private Bitmap lastDrawBitmap;
-    private int live_primary_right_head_height;
-    /** 右边框头像间距 */
-    public static int live_primary_right_head_gap;
-    /** 右边框头像高度 */
-    public static int live_primary_right_item_height;
+    private int live_primary_right_head_width;
+    private int live_primary_right_head_gap;
+    private int live_primary_right_item_height;
 
     public PrimaryClassViewSec(Context context) {
         this.context = context;
         ProxUtil.getProxUtil().put(context, PrimaryClassView.class, this);
         Resources resources = context.getResources();
-        live_primary_right_head_height = resources.getInteger(R.integer.live_primary_right_head_height);
+        live_primary_right_head_width = resources.getInteger(R.integer.live_primary_right_head_width);
         live_primary_right_head_gap = resources.getInteger(R.integer.live_primary_right_head_gap);
         live_primary_right_item_height = resources.getInteger(R.integer.live_primary_right_item_height);
+    }
+
+    @Override
+    public int getLive_primary_right_head_gap() {
+        return live_primary_right_head_gap;
+    }
+
+    @Override
+    public int getLive_primary_right_item_height() {
+        return live_primary_right_item_height;
     }
 
     @Override
@@ -150,7 +158,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
         }
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_primary_team_content.getLayoutParams();
-            int lpwidth = (int) (live_primary_right_head_height * scale);
+            int lpwidth = (int) (live_primary_right_head_width * scaleX);
             int lpheight = (int) (936 * scaleX);
             int margin = (int) (live_primary_right_head_gap * scaleX);
             int leftMargin = backLeft + (int) (1126 * scale);

@@ -36,7 +36,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTea
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamMyItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassView;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewSec;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.PrimaryClassInter;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
@@ -287,9 +286,9 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     public void updateTeam(TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity) {
         List<TeamMate> result = teamInfoEntity.getResult();
         LayoutInflater mInflater = LayoutInflater.from(mContext);
-        int live_primary_right_head_gap = PrimaryClassViewSec.live_primary_right_head_gap;
+        int live_primary_right_head_gap = primaryClassView.getLive_primary_right_head_gap();
         int margin = (int) (live_primary_right_head_gap * scaleX);
-        int live_primary_right_item_height = PrimaryClassViewSec.live_primary_right_item_height;
+        int live_primary_right_item_height = primaryClassView.getLive_primary_right_item_height();
         for (int mateIndex = 0; mateIndex < result.size(); mateIndex++) {
             TeamMate teamMate = result.get(mateIndex);
             BasePrimaryTeamItem teamMatePrimaryTeamItem = courseGroupItemHashMap.get(teamMate.getId());
@@ -518,9 +517,9 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
         logger.d("addItem:size=" + result.size());
         LayoutInflater mInflater = LayoutInflater.from(mContext);
-        int live_primary_right_head_gap = PrimaryClassViewSec.live_primary_right_head_gap;
+        int live_primary_right_head_gap = primaryClassView.getLive_primary_right_head_gap();
         int margin = (int) (live_primary_right_head_gap * scaleX);
-        int live_primary_right_item_height = PrimaryClassViewSec.live_primary_right_item_height;
+        int live_primary_right_item_height = primaryClassView.getLive_primary_right_item_height();
         for (int i = 0; i < 4; i++) {
             TeamMate teamMember = null;
             BasePrimaryTeamItem basePrimaryTeamItem;

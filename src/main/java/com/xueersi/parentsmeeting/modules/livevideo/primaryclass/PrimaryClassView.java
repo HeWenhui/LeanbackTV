@@ -33,4 +33,8 @@ public interface PrimaryClassView {
     void decorateItemBack(View view);
 
     void decorateItemMyAddEnergy(View view);
+
+    int getLive_primary_right_head_gap();
+
+    int getLive_primary_right_item_height();
 }
