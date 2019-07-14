@@ -30,6 +30,7 @@ public class LiveViewActionIml implements LiveViewAction {
 
     @Override
     public void addView(View child) {
+        logger.d("addView1:child=" + child);
         bottomContent.addView(child);
     }
 
@@ -41,6 +42,7 @@ public class LiveViewActionIml implements LiveViewAction {
 
     @Override
     public void removeView(View child) {
+        logger.d("removeView:child=" + child);
         bottomContent.removeView(child);
     }
 
