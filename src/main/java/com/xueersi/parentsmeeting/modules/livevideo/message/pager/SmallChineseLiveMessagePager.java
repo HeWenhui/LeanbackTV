@@ -204,7 +204,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         lvMessage = mView.findViewById(R.id.lv_livevideo_small_chinese_live_message);
         tvOnlineNum = mView.findViewById(R.id.tzcytv_livevideo_small_chinese_live_message_online_people_num);
 
-        dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_small_chinese_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
 
         rlMessageContent = mView.findViewById(R.id.rl_livevideo_small_chinese_message_content2);

@@ -110,8 +110,9 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
     public static final String MESSAGE_CHINESE = "你的班级已禁止中文发言！";
     /** 聊天名字颜色 */
     protected int[] nameColors;
-    protected DanmakuView dvMessageDanmaku;
-    protected DanmakuContext mDanmakuContext;
+    //去掉弹幕
+//    protected DanmakuView dvMessageDanmaku;
+//    protected DanmakuContext mDanmakuContext;
     private BaseDanmakuParser mParser;
     protected ExpressionView mExpressionView;
     protected EditText etMessageContent;
@@ -314,19 +315,19 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
 
     protected void initDanmaku() {
         // 设置最大显示行数
-        HashMap<Integer, Integer> maxLinesPair = new HashMap<>();
-        maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 5); // 滚动弹幕最大显示5行
+//        HashMap<Integer, Integer> maxLinesPair = new HashMap<>();
+//        maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 5); // 滚动弹幕最大显示5行
         // 设置是否禁止重叠
-        HashMap<Integer, Boolean> overlappingEnablePair = new HashMap<>();
-        overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
-        overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
-        mDanmakuContext = DanmakuContext.create();
-        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDuplicateMergingEnabled(false)
-                .setScrollSpeedFactor(1.2f).setScaleTextSize(1.2f)
-                .setCacheStuffer(new SpannedCacheStuffer(), mCacheStufferAdapter) // 图文混排使用SpannedCacheStuffer
+//        HashMap<Integer, Boolean> overlappingEnablePair = new HashMap<>();
+//        overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
+//        overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
+//        mDanmakuContext = DanmakuContext.create();
+//        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDuplicateMergingEnabled(false)
+//                .setScrollSpeedFactor(1.2f).setScaleTextSize(1.2f)
+//                .setCacheStuffer(new SpannedCacheStuffer(), mCacheStufferAdapter) // 图文混排使用SpannedCacheStuffer
 //                .setCacheStuffer(new BackgroundCacheStuffer())  // 绘制背景使用BackgroundCacheStuffer
-                .setMaximumLines(maxLinesPair)
-                .preventOverlapping(overlappingEnablePair);
+//                .setMaximumLines(maxLinesPair)
+//                .preventOverlapping(overlappingEnablePair);
         mParser = createParser(mContext.getResources().openRawResource(R.raw.comments));
 //        dvMessageDanmaku.setCallback(new DrawHandler.Callback() {
 //            @Override
@@ -420,77 +421,72 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
     public void onGetMyGoldDataEvent(String goldNum) {
     }
 
-    protected BaseCacheStuffer.Proxy mCacheStufferAdapter = new BaseCacheStuffer.Proxy() {
-
-        @Override
-        public void prepareDrawing(final BaseDanmaku danmaku, boolean fromWorkerThread) {
-            if (danmaku.text instanceof Spanned) { // 根据你的条件检查是否需要需要更新弹幕
-                // FIXME 这里只是简单启个线程来加载远程url图片，请使用你自己的异步线程池，最好加上你的缓存池
-                liveThreadPoolExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        Drawable drawable;
-                        if (danmaku.text instanceof TypeSpannableStringBuilder) {
-                            TypeSpannableStringBuilder spannableStringBuilder = (TypeSpannableStringBuilder) danmaku
-                                    .text;
-//                            logger.i( "prepareDrawing:ftype=" + spannableStringBuilder.ftype);
-                            switch (spannableStringBuilder.ftype) {
-                                case FLOWERS_SMALL:
-                                case FLOWERS_MIDDLE:
-                                case FLOWERS_BIG:
-                                    drawable = mContext.getResources().getDrawable
-                                            (flowsDrawLittleTips[spannableStringBuilder.ftype - 2]);
-                                    break;
-                                default:
-                                    drawable = mContext.getResources().getDrawable(R.drawable.ic_app_xueersi_desktop);
-                                    break;
-                            }
-                        } else {
-                            drawable = mContext.getResources().getDrawable(R.drawable.ic_app_xueersi_desktop);
-                        }
-                        if (drawable != null) {
-                            drawable.setBounds(0, 0, 100, 100);
-                            SpannableStringBuilder spannable;
-                            if (danmaku.text instanceof TypeSpannableStringBuilder) {
-                                TypeSpannableStringBuilder typeSpannableStringBuilder = (TypeSpannableStringBuilder)
-                                        danmaku.text;
-                                spannable = createSpannable(typeSpannableStringBuilder.ftype,
-                                        typeSpannableStringBuilder.name, drawable);
-                            } else {
-                                String msg = danmaku.text.toString();
-                                if (msg.length() > 0) {
-                                    msg = msg.substring(0, msg.length() / 2);
-                                }
-                                spannable = createSpannable(1, msg, drawable);
-                            }
-                            danmaku.text = spannable;
-                            if (dvMessageDanmaku != null) {
-                                dvMessageDanmaku.invalidateDanmaku(danmaku, false);
-                            }
-                        }
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void releaseResource(BaseDanmaku danmaku) {
-            // TODO 重要:清理含有ImageSpan的text中的一些占用内存的资源 例如drawable
-        }
-    };
+//    protected BaseCacheStuffer.Proxy mCacheStufferAdapter = new BaseCacheStuffer.Proxy() {
+//
+//        @Override
+//        public void prepareDrawing(final BaseDanmaku danmaku, boolean fromWorkerThread) {
+//            if (danmaku.text instanceof Spanned) { // 根据你的条件检查是否需要需要更新弹幕
+//                // FIXME 这里只是简单启个线程来加载远程url图片，请使用你自己的异步线程池，最好加上你的缓存池
+//                liveThreadPoolExecutor.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Drawable drawable;
+//                        if (danmaku.text instanceof TypeSpannableStringBuilder) {
+//                            TypeSpannableStringBuilder spannableStringBuilder = (TypeSpannableStringBuilder) danmaku
+//                                    .text;
+////                            logger.i( "prepareDrawing:ftype=" + spannableStringBuilder.ftype);
+//                            switch (spannableStringBuilder.ftype) {
+//                                case FLOWERS_SMALL:
+//                                case FLOWERS_MIDDLE:
+//                                case FLOWERS_BIG:
+//                                    drawable = mContext.getResources().getDrawable
+//                                            (flowsDrawLittleTips[spannableStringBuilder.ftype - 2]);
+//                                    break;
+//                                default:
+//                                    drawable = mContext.getResources().getDrawable(R.drawable.ic_app_xueersi_desktop);
+//                                    break;
+//                            }
+//                        } else {
+//                            drawable = mContext.getResources().getDrawable(R.drawable.ic_app_xueersi_desktop);
+//                        }
+//                        if (drawable != null) {
+//                            drawable.setBounds(0, 0, 100, 100);
+//                            SpannableStringBuilder spannable;
+//                            if (danmaku.text instanceof TypeSpannableStringBuilder) {
+//                                TypeSpannableStringBuilder typeSpannableStringBuilder = (TypeSpannableStringBuilder)
+//                                        danmaku.text;
+//                                spannable = createSpannable(typeSpannableStringBuilder.ftype,
+//                                        typeSpannableStringBuilder.name, drawable);
+//                            } else {
+//                                String msg = danmaku.text.toString();
+//                                if (msg.length() > 0) {
+//                                    msg = msg.substring(0, msg.length() / 2);
+//                                }
+//                                spannable = createSpannable(1, msg, drawable);
+//                            }
+//                            danmaku.text = spannable;
+//                            if (dvMessageDanmaku != null) {
+//                                dvMessageDanmaku.invalidateDanmaku(danmaku, false);
+//                            }
+//                        }
+//                    }
+//                });
+//            }
+//        }
+//
+//        @Override
+//        public void releaseResource(BaseDanmaku danmaku) {
+//            // TODO 重要:清理含有ImageSpan的text中的一些占用内存的资源 例如drawable
+//        }
+//    };
 
     public void addDanmaKuFlowers(final int ftype, final String name) {
-        if (mDanmakuContext == null) {
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    addDanmaKuFlowers(ftype, name);
-                }
-            }, 20);
+        LiveDanmakuPro liveDanmakuPro = ProxUtil.getProvide(mContext, LiveDanmakuPro.class);
+        if (liveDanmakuPro == null) {
             return;
         }
-        BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
-        if (danmaku == null || dvMessageDanmaku == null) {
+        BaseDanmaku danmaku = liveDanmakuPro.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
+        if (danmaku == null) {
             return;
         }
         Drawable drawable;
@@ -520,10 +516,7 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
 //        danmaku.underlineColor = Color.GREEN;
 
 //        dvMessageDanmaku.addDanmaku(danmaku);
-        LiveDanmakuPro liveDanmakuPro = ProxUtil.getProvide(mContext, LiveDanmakuPro.class);
-        if(liveDanmakuPro!=null){
-            liveDanmakuPro.addDanmaku(danmaku);
-        }
+        liveDanmakuPro.addDanmaku(danmaku);
     }
 
 //    public void addSmallEnglishDanmaKuFlowers(final int ftype, final String name) {
@@ -777,18 +770,6 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
             pool.shutdown();
         }
         super.onDestroy();
-    }
-
-    @Override
-    public void videoStatus(final String status) {
-        if (dvMessageDanmaku != null) {
-            mView.post(new Runnable() {
-                @Override
-                public void run() {
-                    dvMessageDanmaku.setVisibility("on".endsWith(status) ? View.INVISIBLE : View.VISIBLE);
-                }
-            });
-        }
     }
 
     protected boolean isChinese(String str) {

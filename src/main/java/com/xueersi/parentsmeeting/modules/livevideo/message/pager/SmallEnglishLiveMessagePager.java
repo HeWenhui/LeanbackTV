@@ -319,7 +319,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 //        tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
 //        ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);
 
-        dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_small_english_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
 
         rlMessageContent = mView.findViewById(R.id.rl_livevideo_small_english_message_content2);

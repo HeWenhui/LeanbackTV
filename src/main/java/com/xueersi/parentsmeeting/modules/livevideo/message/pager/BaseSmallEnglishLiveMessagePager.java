@@ -13,6 +13,8 @@ import android.text.style.ImageSpan;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuPro;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 
 import java.io.InputStream;
@@ -39,7 +41,6 @@ import master.flame.danmaku.danmaku.danmaku.parser.android.BiliDanmukuParser;
  * 继承与BaseLiveMessagePager，主要是为了重写献花的弹幕
  */
 public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePager {
-    private BaseDanmakuParser mParser;
     //    private int DANMU_RADIUS = 20;//圆角半径
     public int DANMU_PADDING = 0;
 
@@ -70,133 +71,102 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
 
     }
 
-    @Override
-    protected void initDanmaku() {
-        if (flowsTips != null) {
-            flowsTips = new String[]{"送老师一朵太阳花", "送老师一束太阳花", "送老师一捧太阳花"};
-        }
-
-        if (flowsDrawLittleTips != null) {
-            flowsDrawLittleTips = new int[]{R.drawable.bg_livevideo_small_english_sendflower_oneflower_img,
-                    R.drawable.bg_livevideo_small_english_sendflower_threeflowers_img,
-                    R.drawable.bg_livevideo_small_english_sendflower_fiveflowers_img};
-            sendFlowerArray = new Drawable[]{
-                    mContext.getResources().getDrawable(flowsDrawLittleTips[0]),
-                    mContext.getResources().getDrawable(flowsDrawLittleTips[1]),
-                    mContext.getResources().getDrawable(flowsDrawLittleTips[2])};
-        }
-
-
-        // 设置最大显示行数
-        HashMap<Integer, Integer> maxLinesPair = new HashMap<>();
-        maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 5); // 滚动弹幕最大显示5行
-        // 设置是否禁止重叠
-        HashMap<Integer, Boolean> overlappingEnablePair = new HashMap<>();
-        overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
-        overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
-        mDanmakuContext = DanmakuContext.create();
-        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDuplicateMergingEnabled(false)
-                .setScrollSpeedFactor(1.2f).setScaleTextSize(1.2f)
-                .setCacheStuffer(new BackgroundCacheStuffer(), mCacheStufferAdapter) // 图文混排使用SpannedCacheStuffer
-//                .setCacheStuffer(new BackgroundCacheStuffer())  // 绘制背景使用BackgroundCacheStuffer
-                .setMaximumLines(maxLinesPair)
-                .preventOverlapping(overlappingEnablePair);
-        mParser = createParser(mContext.getResources().openRawResource(R.raw.comments));
-        dvMessageDanmaku.setCallback(new DrawHandler.Callback() {
-            @Override
-            public void updateTimer(DanmakuTimer timer) {
-            }
-
-            @Override
-            public void drawingFinished() {
-
-            }
-
-            @Override
-            public void danmakuShown(BaseDanmaku danmaku) {
-//                    Log.d("DFM", "danmakuShown(): text=" + danmaku.text);
-            }
-
-            @Override
-            public void prepared() {
-                dvMessageDanmaku.start();
-            }
-        });
-        dvMessageDanmaku.setOnDanmakuClickListener(new IDanmakuView.OnDanmakuClickListener() {
-            @Override
-            public void onDanmakuClick(BaseDanmaku latest) {
-                logger.i( "onDanmakuClick text:" + latest.text);
-            }
-
-            @Override
-            public void onDanmakuClick(IDanmakus danmakus) {
-                logger.i( "onDanmakuClick danmakus size:" + danmakus.size());
-            }
-        });
-        dvMessageDanmaku.prepare(new BaseDanmakuParser() {
-            @Override
-            protected Danmakus parse() {
-                return new Danmakus();
-            }
-        }, mDanmakuContext);
-        dvMessageDanmaku.showFPS(false);
-        dvMessageDanmaku.enableDanmakuDrawingCache(false);
-    }
-
-    protected BaseCacheStuffer.Proxy mCacheStufferAdapter = new BaseCacheStuffer.Proxy() {
-
-        @Override
-        public void prepareDrawing(final BaseDanmaku danmaku, boolean fromWorkerThread) {
-        }
-
-        @Override
-        public void releaseResource(BaseDanmaku danmaku) {
-            // TODO 重要:清理含有ImageSpan的text中的一些占用内存的资源 例如drawable
-            if (danmaku.text instanceof SpannableStringBuilder) {
-                danmaku.text = "";
-            }
-        }
-    };
-
-    private BaseDanmakuParser createParser(InputStream stream) {
-
-        if (stream == null) {
-            return new BaseDanmakuParser() {
-
-                @Override
-                protected Danmakus parse() {
-                    return new Danmakus();
-                }
-            };
-        }
-
-        ILoader loader = DanmakuLoaderFactory.create(DanmakuLoaderFactory.TAG_BILI);
-
-        try {
-            loader.load(stream);
-        } catch (IllegalDataException e) {
-            e.printStackTrace();
-        }
-        BaseDanmakuParser parser = new BiliDanmukuParser();
-        IDataSource<?> dataSource = loader.getDataSource();
-        parser.load(dataSource);
-        return parser;
-    }
+//    @Override
+//    protected void initDanmaku() {
+//        if (flowsTips != null) {
+//            flowsTips = new String[]{"送老师一朵太阳花", "送老师一束太阳花", "送老师一捧太阳花"};
+//        }
+//
+//        if (flowsDrawLittleTips != null) {
+//            flowsDrawLittleTips = new int[]{R.drawable.bg_livevideo_small_english_sendflower_oneflower_img,
+//                    R.drawable.bg_livevideo_small_english_sendflower_threeflowers_img,
+//                    R.drawable.bg_livevideo_small_english_sendflower_fiveflowers_img};
+//            sendFlowerArray = new Drawable[]{
+//                    mContext.getResources().getDrawable(flowsDrawLittleTips[0]),
+//                    mContext.getResources().getDrawable(flowsDrawLittleTips[1]),
+//                    mContext.getResources().getDrawable(flowsDrawLittleTips[2])};
+//        }
+//
+//
+//        // 设置最大显示行数
+//        HashMap<Integer, Integer> maxLinesPair = new HashMap<>();
+//        maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 5); // 滚动弹幕最大显示5行
+//        // 设置是否禁止重叠
+//        HashMap<Integer, Boolean> overlappingEnablePair = new HashMap<>();
+//        overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
+//        overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
+//        mDanmakuContext = DanmakuContext.create();
+//        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDuplicateMergingEnabled(false)
+//                .setScrollSpeedFactor(1.2f).setScaleTextSize(1.2f)
+//                .setCacheStuffer(new BackgroundCacheStuffer(), mCacheStufferAdapter) // 图文混排使用SpannedCacheStuffer
+////                .setCacheStuffer(new BackgroundCacheStuffer())  // 绘制背景使用BackgroundCacheStuffer
+//                .setMaximumLines(maxLinesPair)
+//                .preventOverlapping(overlappingEnablePair);
+//        dvMessageDanmaku.setCallback(new DrawHandler.Callback() {
+//            @Override
+//            public void updateTimer(DanmakuTimer timer) {
+//            }
+//
+//            @Override
+//            public void drawingFinished() {
+//
+//            }
+//
+//            @Override
+//            public void danmakuShown(BaseDanmaku danmaku) {
+////                    Log.d("DFM", "danmakuShown(): text=" + danmaku.text);
+//            }
+//
+//            @Override
+//            public void prepared() {
+//                dvMessageDanmaku.start();
+//            }
+//        });
+//        dvMessageDanmaku.setOnDanmakuClickListener(new IDanmakuView.OnDanmakuClickListener() {
+//            @Override
+//            public void onDanmakuClick(BaseDanmaku latest) {
+//                logger.i( "onDanmakuClick text:" + latest.text);
+//            }
+//
+//            @Override
+//            public void onDanmakuClick(IDanmakus danmakus) {
+//                logger.i( "onDanmakuClick danmakus size:" + danmakus.size());
+//            }
+//        });
+//        dvMessageDanmaku.prepare(new BaseDanmakuParser() {
+//            @Override
+//            protected Danmakus parse() {
+//                return new Danmakus();
+//            }
+//        }, mDanmakuContext);
+//        dvMessageDanmaku.showFPS(false);
+//        dvMessageDanmaku.enableDanmakuDrawingCache(false);
+//    }
+//
+//    protected BaseCacheStuffer.Proxy mCacheStufferAdapter = new BaseCacheStuffer.Proxy() {
+//
+//        @Override
+//        public void prepareDrawing(final BaseDanmaku danmaku, boolean fromWorkerThread) {
+//        }
+//
+//        @Override
+//        public void releaseResource(BaseDanmaku danmaku) {
+//            // TODO 重要:清理含有ImageSpan的text中的一些占用内存的资源 例如drawable
+//            if (danmaku.text instanceof SpannableStringBuilder) {
+//                danmaku.text = "";
+//            }
+//        }
+//    };
 
     @Override
     public void addDanmaKuFlowers(final int ftype, final String name) {
-        if (mDanmakuContext == null) {
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    addDanmaKuFlowers(ftype, name);
-                }
-            }, 20);
+        LiveDanmakuPro liveDanmakuPro = ProxUtil.getProvide(mContext, LiveDanmakuPro.class);
+        if (liveDanmakuPro == null) {
             return;
         }
 
-        BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
-        if (danmaku == null || dvMessageDanmaku == null) {
+        BaseDanmaku danmaku = liveDanmakuPro.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
+        if (danmaku == null) {
             return;
         }
 //        int[] smallEnglishFlowers = new int[]{R.drawable.bg_livevideo_small_english_sendflower_oneflower_img, R
@@ -220,12 +190,11 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
         danmaku.padding = DANMU_PADDING;
         danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
         danmaku.isLive = false;
-        danmaku.time = dvMessageDanmaku.getCurrentTime() + 1200;
         danmaku.textSize = SizeUtils.Sp2Px(mContext, 14);//25f * (mParser.getDisplayer().getDensity() - 0.6f);
         danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
 //        danmaku.underlineColor = Color.GREEN;
 
-        dvMessageDanmaku.addDanmaku(danmaku);
+        liveDanmakuPro.addDanmaku(danmaku);
     }
 
     @Override

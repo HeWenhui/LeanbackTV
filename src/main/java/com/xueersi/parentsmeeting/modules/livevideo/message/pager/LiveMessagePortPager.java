@@ -186,7 +186,6 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         mMorecourse = (ListView) mView.findViewById(R.id.morecourse_list);
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
-        dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_message_danmaku);
         etMessageContent = (EditText) mView.findViewById(R.id.et_livevideo_message_content);
         tvMessageDisable = (TextView) mView.findViewById(R.id.tv_livevideo_message_disable);
         tvMessageDisable.setTag(MESSAGE_SEND_DEF);

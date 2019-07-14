@@ -52,7 +52,6 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
     public View initView() {
         mView = View.inflate(mContext, getLayoutId(), null);
         etMessageContent = (EditText) mView.findViewById(R.id.et_livevideo_message_content);
-        dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_message_danmaku);
         return mView;
     }
 

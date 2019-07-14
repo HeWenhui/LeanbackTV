@@ -25,4 +25,10 @@ public class LiveDanmakuBll extends LiveBaseBll {
         super.onLiveInited(getInfo);
         liveDanmaku.onLiveInited(getInfo);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        liveDanmaku.onDestroy();
+    }
 }

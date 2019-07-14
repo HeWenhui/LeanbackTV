@@ -138,15 +138,16 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mHttpManager = mLiveBll.getHttpManager();
 //        starAction = getInstance(LiveAchievementIRCBll.class);
 //        mRoomAction.setQuestionBll(getInstance(QuestionBll.class));
-        VideoChatStatusChange videoChatStatusChange = getInstance(VideoChatStatusChange.class);
-        if (videoChatStatusChange != null) {
-            videoChatStatusChange.addVideoChatStatusChange(new VideoChatStatusChange.ChatStatusChange() {
-                @Override
-                public void onVideoChatStatusChange(String voiceChatStatus) {
-                    mRoomAction.videoStatus(voiceChatStatus);
-                }
-            });
-        }
+//        语音聊天状态，弹幕分离，就不需要了
+//        VideoChatStatusChange videoChatStatusChange = getInstance(VideoChatStatusChange.class);
+//        if (videoChatStatusChange != null) {
+//            videoChatStatusChange.addVideoChatStatusChange(new VideoChatStatusChange.ChatStatusChange() {
+//                @Override
+//                public void onVideoChatStatusChange(String voiceChatStatus) {
+//                    mRoomAction.videoStatus(voiceChatStatus);
+//                }
+//            });
+//        }
         QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
         if (questionShowReg != null) {
             questionShowReg.registQuestionShow(mRoomAction);

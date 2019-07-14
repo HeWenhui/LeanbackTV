@@ -217,7 +217,7 @@
     <item name="lv_livevideo_message" type="id" />
     <item name="tv_livevideo_message_item" type="id" />
     <item name="slhv_livevideo_message_head" type="id" />
-    <item name="dv_livevideo_message_danmaku" type="id" />
+    <item name="dv_livevideo_danmaku" type="id" />
     <item name="rl_livevideo_message_panelcontent" type="id" />
     <item name="rl_livevideo_message_panelroot" type="id" />
     <item name="rl_livevideo_message_expression" type="id" />

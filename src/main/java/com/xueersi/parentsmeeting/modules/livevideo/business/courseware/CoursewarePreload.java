@@ -463,7 +463,7 @@ public class CoursewarePreload {
                     }
 //                DownLoader resourceDownLoader = new DownLoader(mContext, resourceDownLoadInfo);
 //                resourceDownLoader.setDownloadThreadCount(mDownloadThreadCount);
-                    logger.d("courseware url path:  " + ip + coursewareInfo.getResourceUrl() + "   file name:" + resourceName + ".zip");
+//                    logger.d("courseware url path:  " + ip + coursewareInfo.getResourceUrl() + "   file name:" + resourceName + ".zip");
 //                resourceDownLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, resourceName, ips, cdns, coursewareInfo.getResourceUrl(), coursewareInfo.getMd5(), new AtomicInteger()));
                     PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(resourceDownLoadInfo,
                             new ZipDownloadListener(
@@ -802,7 +802,7 @@ public class CoursewarePreload {
         //日志系统
         @Override
         public void onSuccess(String folderPath, String fileName) {
-            logger.d("download zip success path:" + folderPath + " name:" + fileName + " out:" + mMorecacheout.getAbsolutePath() + " in:" + mMorecachein.getAbsolutePath());
+//            logger.d("download zip success path:" + folderPath + " name:" + fileName + " out:" + mMorecacheout.getAbsolutePath() + " in:" + mMorecachein.getAbsolutePath());
 //            if (mMorecachein.getAbsolutePath().equals(debugString)) {
 //                logger.i(debugLog);
 //            }
@@ -1226,7 +1226,7 @@ public class CoursewarePreload {
 //        logger.i(strFile);
         try {
             File f = new File(strFile);
-            logger.i(strFile + "" + f.getName() + " " + f.isFile() + " " + f.exists());
+//            logger.i(strFile + "" + f.getName() + " " + f.isFile() + " " + f.exists());
             if (!f.exists()) {
                 return false;
             }
