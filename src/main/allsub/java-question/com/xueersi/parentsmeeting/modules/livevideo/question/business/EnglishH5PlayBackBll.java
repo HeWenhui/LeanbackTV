@@ -123,7 +123,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
     @Override
     public void initView() {
-        englishH5CoursewareBll.initView(mRootView);
+        englishH5CoursewareBll.initView(mRootView, getLiveViewAction());
     }
 
     @Override

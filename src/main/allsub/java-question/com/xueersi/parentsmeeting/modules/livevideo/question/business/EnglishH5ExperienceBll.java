@@ -59,7 +59,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
 
     @Override
     public void initView() {
-        englishH5CoursewareBll.initView(mRootView);
+        englishH5CoursewareBll.initView(mRootView, getLiveViewAction());
     }
 
     @Override
