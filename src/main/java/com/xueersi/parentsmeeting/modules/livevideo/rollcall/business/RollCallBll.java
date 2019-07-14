@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
@@ -75,6 +76,8 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
      * 同学点名签到
      */
     private ClassmateSignPager classmateSignPager;
+    /** 自动签到关闭 班级签到状态 */
+    private boolean close = false;
     /**
      * 点名
      */
@@ -154,34 +157,35 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
     public void initView(final LiveViewAction liveViewAction) {
         this.liveViewAction = liveViewAction;
-        mVPlayVideoControlHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                int wradio = LiveVideoPoint.getInstance().getRightMargin();
-                //点名
-                RelativeLayout rlClassmateContent = new RelativeLayout(activity);
-                rlClassmateContent.setId(R.id.iv_livevideo_rollcall_content2);
-                classmateSignPager = new ClassmateSignPager(activity);
-                classmateSignPager.setClassSignStop(classSignStop);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                        .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                params.rightMargin = wradio;
-                if (IS_SHOW_CLASSMATE_SIGN) {
-                    classmateSignPager.start();
-                    rlClassmateContent.addView(classmateSignPager.getRootView(), params);
-                }
-                liveViewAction.addView(rlClassmateContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                        .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            }
-        });
+    }
+
+    private void initClassmateSignPager() {
+        if (classmateSignPager != null) {
+            return;
+        }
+        int wradio = LiveVideoPoint.getInstance().getRightMargin();
+        //点名
+        RelativeLayout rlClassmateContent = new RelativeLayout(activity);
+        rlClassmateContent.setId(R.id.iv_livevideo_rollcall_content2);
+        classmateSignPager = new ClassmateSignPager(activity);
+        classmateSignPager.setClassSignStop(classSignStop);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params.rightMargin = wradio;
+        if (IS_SHOW_CLASSMATE_SIGN) {
+            classmateSignPager.start();
+            rlClassmateContent.addView(classmateSignPager.getRootView(), params);
+        }
+        liveViewAction.addView(new LiveVideoLevel(5), rlClassmateContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         if (IS_SHOW_CLASSMATE_SIGN && classmateSignPager != null) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) classmateSignPager.getRootView()
                     .getLayoutParams();
-            int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x3;
+            int rightMargin = liveVideoPoint.getRightMargin();
             if (params.rightMargin != rightMargin) {
                 params.rightMargin = rightMargin;
                 LayoutParamsUtil.setViewLayoutParams(classmateSignPager.getRootView(), params);
@@ -336,6 +340,9 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
+                if (!close && classmateSignPager == null) {
+                    initClassmateSignPager();
+                }
                 if (classmateSignPager != null) {
                     classmateSignPager.addClassmage(classmateEntity);
                 }
@@ -484,7 +491,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LiveCrashReport.postCatchedException(TAG,e);
+            LiveCrashReport.postCatchedException(TAG, e);
         }
         return result;
     }
@@ -577,6 +584,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
             @Override
             public void run() {
                 //自动签到关闭 班级签到状态
+                close = true;
                 if (autoSign && classmateSignPager != null) {
                     classmateSignPager.stop();
                     liveViewAction.removeView(classmateSignPager.getRootView());
