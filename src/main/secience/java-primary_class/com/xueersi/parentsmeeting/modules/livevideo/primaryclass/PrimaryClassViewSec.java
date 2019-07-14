@@ -27,13 +27,19 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     private Context context;
     private Logger logger = LiveLoggerFactory.getLogger(this);
     private Bitmap lastDrawBitmap;
-    private int live_primary_right_head_gap;
+    private int live_primary_right_head_height;
+    /** 右边框头像间距 */
+    public static int live_primary_right_head_gap;
+    /** 右边框头像高度 */
+    public static int live_primary_right_item_height;
 
     public PrimaryClassViewSec(Context context) {
         this.context = context;
         ProxUtil.getProxUtil().put(context, PrimaryClassView.class, this);
         Resources resources = context.getResources();
+        live_primary_right_head_height = resources.getInteger(R.integer.live_primary_right_head_height);
         live_primary_right_head_gap = resources.getInteger(R.integer.live_primary_right_head_gap);
+        live_primary_right_item_height = resources.getInteger(R.integer.live_primary_right_item_height);
     }
 
     @Override
@@ -83,14 +89,14 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     public void decorateRlContent(View rlContent, int width, int height) {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
         float scale = (float) width / 1334f;
-
+        float scaleX = (float) width / 2001f;
         LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
         int leftGap = (videoPoint.screenWidth - width) / 2;
         int topGap = (videoPoint.screenHeight - height) / 2;
         int leftMargin = (int) (14 * scale) + leftGap;
         int bottomMargin = (int) (13 * scale) + topGap;
         int rightMargin = (int) (219 * scale) + leftGap;
-        int topMargin = (int) (101 * scale) + topGap;
+        int topMargin = (int) (161 * scaleX) + topGap;
         if (lp.leftMargin != leftMargin || lp.bottomMargin != bottomMargin || lp.rightMargin != rightMargin || lp.topMargin != topMargin) {
             lp.leftMargin = leftMargin;
             lp.bottomMargin = bottomMargin;
@@ -115,8 +121,9 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     @Override
     public void decorateItemPagerView(RelativeLayout rl_livevideo_primary_team_content, ImageView iv_livevideo_primary_team_icon, LinearLayout ll_livevideo_primary_team_content, TextView tv_livevideo_primary_team_name_mid, int width, int height) {
         float scale = (float) width / 1334f;
-        float scale2 = (float) width / 2001f;
-        logger.d("decorateItemPagerView:scale=" + scale + ",scale2=" + scale2);
+        float scaleX = (float) width / 2001f;
+        float scaleY = (float) height / 1107f;
+        logger.d("decorateItemPagerView:scale=" + scale + ",scale2=" + scaleX + ",scaleY=" + scaleY);
         int backLeft = (ScreenUtils.getScreenWidth() - width) / 2;
         int backTop = (ScreenUtils.getScreenHeight() - height) / 2;
         {
@@ -143,9 +150,9 @@ public class PrimaryClassViewSec implements PrimaryClassView {
         }
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_primary_team_content.getLayoutParams();
-            int lpwidth = (int) (195 * scale);
-            int lpheight = (int) (630 * scale);
-            int margin = (int) (10 * scale);
+            int lpwidth = (int) (live_primary_right_head_height * scale);
+            int lpheight = (int) (936 * scaleX);
+            int margin = (int) (live_primary_right_head_gap * scaleX);
             int leftMargin = backLeft + (int) (1126 * scale);
             int topMargin = backTop + (int) (101 * scale);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
@@ -157,7 +164,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
                 for (int i = 0; i < ll_livevideo_primary_team_content.getChildCount(); i++) {
                     View child = ll_livevideo_primary_team_content.getChildAt(i);
                     ViewGroup.MarginLayoutParams childLp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
-                    int childHeight = (int) (151 * scale);
+                    int childHeight = (int) (live_primary_right_item_height * scaleX);
                     if (childLp.height != childHeight || childLp.bottomMargin != margin) {
                         childLp.height = childHeight;
                         childLp.bottomMargin = margin;

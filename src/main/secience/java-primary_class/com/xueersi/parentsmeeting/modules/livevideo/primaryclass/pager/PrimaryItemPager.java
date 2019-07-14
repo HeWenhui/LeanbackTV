@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTea
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamMyItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassView;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewSec;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.PrimaryClassInter;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
@@ -90,6 +91,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private boolean showTeamMid = false;
     private String stuName;
     private float scale;
+    private float scaleX;
     private PrimaryClassInter primaryClassInter;
     /** 视频默认开 */
     private boolean videoStatus = true;
@@ -141,6 +143,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             @Override
             public void onSizeChange(int width, int height) {
                 scale = (float) width / 1334f;
+                scaleX = (float) width / 2001f;
                 primaryClassView.decorateItemPagerView(rl_livevideo_primary_team_content, ivPrimaryTeamIcon, llPrimaryTeamContent, tvPrimaryTeamNameMid, width, height);
             }
         });
@@ -284,7 +287,9 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     public void updateTeam(TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity) {
         List<TeamMate> result = teamInfoEntity.getResult();
         LayoutInflater mInflater = LayoutInflater.from(mContext);
-        int margin = (int) (10 * scale);
+        int live_primary_right_head_gap = PrimaryClassViewSec.live_primary_right_head_gap;
+        int margin = (int) (live_primary_right_head_gap * scaleX);
+        int live_primary_right_item_height = PrimaryClassViewSec.live_primary_right_item_height;
         for (int mateIndex = 0; mateIndex < result.size(); mateIndex++) {
             TeamMate teamMate = result.get(mateIndex);
             BasePrimaryTeamItem teamMatePrimaryTeamItem = courseGroupItemHashMap.get(teamMate.getId());
@@ -303,7 +308,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         basePrimaryTeamItem.updateViews(teamMate, index, teamMate);
                         basePrimaryTeamItem.bindListener();
                         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) convertView.getLayoutParams();
-                        lp.height = (int) (149 * scale);
+                        lp.height = (int) (live_primary_right_item_height * scaleX);
                         lp.bottomMargin = margin;
                         llPrimaryTeamContent.removeView(child);
                         llPrimaryTeamContent.addView(convertView, index, lp);
@@ -513,7 +518,9 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
         logger.d("addItem:size=" + result.size());
         LayoutInflater mInflater = LayoutInflater.from(mContext);
-        int margin = (int) (10 * scale);
+        int live_primary_right_head_gap = PrimaryClassViewSec.live_primary_right_head_gap;
+        int margin = (int) (live_primary_right_head_gap * scaleX);
+        int live_primary_right_item_height = PrimaryClassViewSec.live_primary_right_item_height;
         for (int i = 0; i < 4; i++) {
             TeamMate teamMember = null;
             BasePrimaryTeamItem basePrimaryTeamItem;
@@ -541,7 +548,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             basePrimaryTeamItem.updateViews(teamMember, i, teamMember);
             basePrimaryTeamItem.bindListener();
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) convertView.getLayoutParams();
-            lp.height = (int) (149 * scale);
+            lp.height = (int) (live_primary_right_item_height * scaleX);
             lp.bottomMargin = margin;
             if (isMe) {
                 llPrimaryTeamContent.addView(convertView, 0, lp);

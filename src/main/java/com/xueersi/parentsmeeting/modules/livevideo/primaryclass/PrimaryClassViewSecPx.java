@@ -125,17 +125,17 @@ public class PrimaryClassViewSecPx implements PrimaryClassView {
     @Override
     public void decorateItemPagerView(RelativeLayout rl_livevideo_primary_team_content, ImageView iv_livevideo_primary_team_icon, LinearLayout ll_livevideo_primary_team_content, TextView tv_livevideo_primary_team_name_mid, int width, int height) {
         float scale = (float) width / 1334f;
-        float scale2 = (float) width / 2001f;
+        float scaleX = (float) width / 2001f;
         float scaleY = (float) height / 1107f;
         int backLeft = (ScreenUtils.getScreenWidth() - width) / 2;
         int backTop = (ScreenUtils.getScreenHeight() - height) / 2;
-        logger.d("decorateItemPagerView:scale=" + scale + ",scale2=" + scale2 + ",scaleY=" + scaleY + ",backLeft=" + backLeft + ",backTop=" + backTop);
+        logger.d("decorateItemPagerView:scale=" + scale + ",scale2=" + scaleX + ",scaleY=" + scaleY + ",backLeft=" + backLeft + ",backTop=" + backTop);
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_primary_team_content.getLayoutParams();
-            int lpwidth = (int) (live_primary_right_width * scale2);
-            int lpheight = (int) (live_primary_right_state_width * scale2);
-            int leftMargin = backLeft + (int) (live_primary_right_left * scale2);
-            int topMargin = backTop + (int) (live_primary_right_team_top * scale2);
+            int lpwidth = (int) (live_primary_right_width * scaleX);
+            int lpheight = (int) (live_primary_right_state_width * scaleX);
+            int leftMargin = backLeft + (int) (live_primary_right_left * scaleX);
+            int topMargin = backTop + (int) (live_primary_right_team_top * scaleX);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                 lp.width = lpwidth;
                 lp.height = lpheight;
@@ -154,12 +154,12 @@ public class PrimaryClassViewSecPx implements PrimaryClassView {
         }
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_primary_team_content.getLayoutParams();
-            int lpwidth = (int) (live_primary_right_width * scale2);
-            int childHeight = (int) (live_primary_right_head_height * scale2);
-            int margin = (int) (live_primary_right_head_gap * scale2);
+            int lpwidth = (int) (live_primary_right_width * scaleX);
+            int childHeight = (int) (live_primary_right_head_height * scaleX);
+            int margin = (int) (live_primary_right_head_gap * scaleX);
             int lpheight = childHeight * 4 + margin * 3;
-            int leftMargin = backLeft + (int) (live_primary_right_left * scale2);
-            int topMargin = backTop + (int) (live_primary_right_head_top * scale2);
+            int leftMargin = backLeft + (int) (live_primary_right_left * scaleX);
+            int topMargin = backTop + (int) (live_primary_right_head_top * scaleX);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                 lp.width = lpwidth;
                 lp.height = lpheight;

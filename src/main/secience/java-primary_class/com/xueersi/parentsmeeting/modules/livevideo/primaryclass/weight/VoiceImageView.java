@@ -27,7 +27,8 @@ public class VoiceImageView extends ImageView {
         bg_live_voicewave_bg1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg_live_voicewave_bg2);
         height = bg_live_voicewave_bg1.getHeight();
         src = new Rect(0, bg_live_voicewave_bg1.getHeight(), bg_live_voicewave_bg1.getWidth(), bg_live_voicewave_bg1.getHeight());
-        itemHeight = height / 6;
+        itemHeight = (int) (height * 2.0f / 13.0f);
+        logger.d("VoiceImageView:uid=" + uid + ",itemHeight=" + itemHeight);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class VoiceImageView extends ImageView {
             c++;
         }
         src.top = c * itemHeight;
-        logger.d("setVoice:uid=" + uid + ",volume=" + volume + ",top=" + src.top + ",height=" + height + ",c=" + c + ",itemHeight=" + itemHeight);
+        logger.d("setVoice:uid=" + uid + ",volume=" + volume + ",top=" + src.top + ",height=" + height + ",c=" + c);
         postInvalidate();
     }
 }
