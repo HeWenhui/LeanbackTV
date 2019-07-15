@@ -104,7 +104,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
         int leftMargin = (int) (14 * scale) + leftGap;
         int bottomMargin = (int) (13 * scale) + topGap;
         int rightMargin = (int) (219 * scale) + leftGap;
-        int topMargin = (int) (161 * scaleX) + topGap;
+        int topMargin = (int) (159 * scaleX) + topGap;
         if (lp.leftMargin != leftMargin || lp.bottomMargin != bottomMargin || lp.rightMargin != rightMargin || lp.topMargin != topMargin) {
             lp.leftMargin = leftMargin;
             lp.bottomMargin = bottomMargin;
