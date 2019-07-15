@@ -524,6 +524,7 @@ public class NewIRCMessage implements IIRCMessage {
             logHashMap.put("roomCode", "" + roomTopic.code);
             logHashMap.put("roomTopic", "" + roomTopic.topic);
             UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+
             if (roomTopic.code == PMDefs.ResultCode.Result_RoomTopicEnd){
                 return;
             }
