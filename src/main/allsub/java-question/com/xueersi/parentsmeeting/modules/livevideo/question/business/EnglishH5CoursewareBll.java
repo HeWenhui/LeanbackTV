@@ -451,7 +451,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      * 强制关闭webview
      **/
     public void froceClose(final String method) {
-        bottomContent.post(new Runnable() {
+        handler.post(new Runnable() {
             @Override
             public void run() {
                 if (h5CoursewarePager != null) {
@@ -476,7 +476,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             isPageOnCloseing = true;
             long timeDelay = h5CoursewarePager.isResultRecived() ? 0L : 6000L;
             //Log.e("EnglishH5CoursewareBll","=======>closePageByTeamPk222:"+timeDelay);
-            bottomContent.postDelayed(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (h5CoursewarePager != null && h5CoursewarePager == curPager) {

@@ -380,8 +380,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         liveViewAction.addView(LiveVideoLevel.LEVEL_QUES, rlQuestionContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         //讲座旋转屏幕，需要带结果页
-        while (!resultViews.isEmpty()) {
-            View view = resultViews.remove(0);
+        for (int i = 0; i < resultViews.size(); i++) {
+            View view = resultViews.get(i);
             ViewGroup group = (ViewGroup) view.getParent();
             if (group != null) {
                 group.removeView(view);
