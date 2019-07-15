@@ -1,12 +1,21 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
 
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
+import com.airbnb.lottie.AssertUtil;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.INTELLIGENT_LOTTIE_PATH;
 
 public class IntelligentRecognitionPermissionPager extends BaseIntelligentRecognitionPager {
 
@@ -70,4 +79,34 @@ public class IntelligentRecognitionPermissionPager extends BaseIntelligentRecogn
             }
         });
     }
+
+    /**
+     * 更新火焰数量图片
+     * @param fireNum
+     * @return
+     */
+    @Override
+    protected Bitmap creatFireBitmap(String fireNum, String lottieId) {
+        Bitmap bitmap;
+        try {
+            bitmap = BitmapFactory.decodeStream(AssertUtil.open(INTELLIGENT_LOTTIE_PATH + "images/" + lottieId));
+            Bitmap creatBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(creatBitmap);
+
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setTextSize(bitmap.getHeight());
+            paint.setColor(0xFFFFE376);
+            Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
+            paint.setTypeface(fontFace);
+            canvas.drawText("+" + fireNum, 0, bitmap.getHeight(), paint);
+            bitmap.recycle();
+            bitmap = creatBitmap;
+            return bitmap;
+        } catch (Exception e) {
+            logger.e("creatFireBitmap", e);
+        }
+        return null;
+    }
+
 }

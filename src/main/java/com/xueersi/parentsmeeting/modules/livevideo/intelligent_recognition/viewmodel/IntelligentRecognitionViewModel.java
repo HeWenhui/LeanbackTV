@@ -26,6 +26,11 @@ public class IntelligentRecognitionViewModel extends ViewModel {
     private MutableLiveData<Boolean> isCancelSpeech = new MutableLiveData<>();
     /** 语音测评分数 */
     private MutableLiveData<SpeechScoreEntity> speechScoreData = new MutableLiveData<>();
+//    private MutableLiveData<Integer> speechScore = new MutableLiveData<>();
+
+//    public MutableLiveData<Integer> getSpeechScore() {
+//        return speechScore;
+//    }
 
     public MutableLiveData<SpeechScoreEntity> getSpeechScoreData() {
         return speechScoreData;

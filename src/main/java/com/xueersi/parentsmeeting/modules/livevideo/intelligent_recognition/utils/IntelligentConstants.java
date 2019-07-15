@@ -1,5 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils;
 
+import android.os.Environment;
+
+import java.io.File;
+
 public interface IntelligentConstants {
 
     int PERFECT = 1;
@@ -31,10 +35,10 @@ public interface IntelligentConstants {
     int END_GOOD_BYE_2 = 13;
     //byebye动作3
     // 3）	学生正在重读时收到指令，直接语音反馈课下多练习哦！下次见。（多套）配合拜拜动作。
-    int END_GOOD_BYE_3 = 13;
+    int END_GOOD_BYE_3 = 14;
     //byebye动作4
     // 4）	一旦收到收题指令，题干板区域toast提示3s倒计时收题。提示文案“3s后收题”。
-    int END_GOOD_BYE_4 = 13;
+    int END_GOOD_BYE_4 = 15;
 
     /** 并未测评 */
     int NOT_SPEECH = 0;
@@ -44,4 +48,10 @@ public interface IntelligentConstants {
     int SPEECH_OVER_JUDGE = 2;
     /** 正在重读 */
     int SPEECH_AGIN = 3;
+
+    String AUDIO_EVALUATE_PARENT_URL = Environment.getExternalStorageDirectory() +
+            File.separator + "parentsmeeting" + File.separator + "livevideo" +
+            File.separator + "audio";
+
+    String INTELLIGENT_LOTTIE_PATH = "intelligent_recognition_study_v2/english/get_score/";
 }

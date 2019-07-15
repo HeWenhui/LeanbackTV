@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.support.constraint.Group;
 import android.support.v4.app.FragmentActivity;
@@ -13,10 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.RxFilter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.SpeechStopEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
@@ -31,12 +36,13 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.INTELLIGENT_LOTTIE_PATH;
 
 /**
  * 英语智能测评Pager
  */
-class BaseIntelligentRecognitionPager extends BasePager implements IIntelligentRecognitionView<IIntelligentRecognitionPresenter> {
+abstract class BaseIntelligentRecognitionPager extends BasePager implements IIntelligentRecognitionView<IIntelligentRecognitionPresenter> {
 
     protected FragmentActivity mActivity;
 
@@ -71,8 +77,6 @@ class BaseIntelligentRecognitionPager extends BasePager implements IIntelligentR
     public BaseIntelligentRecognitionPager(FragmentActivity context) {
         super(context, false);
         this.mActivity = context;
-        initData();
-        initListener();
     }
 
     @Override
@@ -90,6 +94,8 @@ class BaseIntelligentRecognitionPager extends BasePager implements IIntelligentR
         groupEndTip = mView.findViewById(R.id.group_livevideo_intelligent_recognition_end_tip);
         settingViewGroup = mView.findViewById(R.id.layout_livevideo_intelligent_recognition_permission);
         performOpenViewStart();
+        initData();
+        initListener();
         return mView;
     }
 
@@ -223,42 +229,56 @@ class BaseIntelligentRecognitionPager extends BasePager implements IIntelligentR
         });
         viewModel.getSpeechScoreData().observe(mActivity, new Observer<SpeechScoreEntity>() {
             @Override
-            public void onChanged(@Nullable SpeechScoreEntity speechScoreEntity) {
+            public void onChanged(@Nullable final SpeechScoreEntity speechScoreEntity) {
                 if (scoreLottieView != null) {
                     if (scoreLottieView.getVisibility() != View.VISIBLE) {
                         scoreLottieView.setVisibility(View.VISIBLE);
                     }
+                    ImageAssetDelegate delegate = new ImageAssetDelegate() {
+                        @Override
+                        public Bitmap fetchBitmap(LottieImageAsset asset) {
+                            if (asset.getFileName().equals("img_5.png")) {
+                                return creatFireBitmap(speechScoreEntity.getScore(), asset.getFileName());
+                            } else if (asset.getFileName().equals("img_0.png")) {
+                                return creatFireBitmap(speechScoreEntity.getStar(), asset.getFileName());
+                            } else if (asset.getFileName().equals("img_1.png")) {
+                                return creatFireBitmap(speechScoreEntity.getGold(), asset.getFileName());
+                            }
+                            String resPath = INTELLIGENT_LOTTIE_PATH + "images";
+                            String jsonPath = INTELLIGENT_LOTTIE_PATH + "data.json";
+                            LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(resPath, jsonPath);
+                            return bubbleEffectInfo.fetchBitmapFromAssets(
+                                    scoreLottieView,
+                                    asset.getFileName(),
+                                    asset.getId(),
+                                    asset.getWidth(),
+                                    asset.getHeight(),
+                                    mContext);
+                        }
+                    };
+                    scoreLottieView.setImageAssetDelegate(delegate);
+                    scoreLottieView.playAnimation();
                 }
             }
         });
     }
 
-//    private void positivePlayLottieView(LottieAnimationView loView) {
-//        logger.i("positivePlayLottieView");
-//        if (loView != null) {
-//            loView.setSpeed(1.5f);
-//            loView.addAnimatorListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    super.onAnimationEnd(animation);
-//                    if (waveView != null && waveView.getVisibility() != View.VISIBLE) {
-//                        waveView.setVisibility(View.VISIBLE);
-//                    }
-//                }
-//            });
-//            loView.playAnimation();
-//        }
-//
-//    }
-
     /** 反转Wave动画 */
-    private void revertLottie(LottieAnimationView loView) {
+    private void revertLottie(final LottieAnimationView loView) {
         logger.i("revertLottie");
         if (loView != null) {
             loView.setSpeed(-1.5f);
             loView.playAnimation();
+            loView.addAnimatorListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    loView.setVisibility(View.GONE);
+                }
+            });
         }
         if (waveView != null && waveView.getVisibility() != View.GONE) {
+            logger.i("waveView setVisible GONE");
             waveView.setVisibility(View.GONE);
         }
     }
@@ -319,19 +339,14 @@ class BaseIntelligentRecognitionPager extends BasePager implements IIntelligentR
      * "type": "1104"
      * }
      *
-     * @param goldJSON
+     * @param stopEntity
      */
     @Override
     public void receiveStopEvent(final SpeechStopEntity stopEntity) {
 
         Observable.
-                <Boolean>just(XESCODE.ARTS_SEND_QUESTION == stopEntity.getType()).
-                filter(new Predicate<Boolean>() {
-                    @Override
-                    public boolean test(Boolean aBoolean) throws Exception {
-                        return aBoolean;
-                    }
-                }).
+                <Boolean>just(XESCODE.ARTS_STOP_QUESTION == stopEntity.getType()).
+                filter(RxFilter.filterTrue()).
                 subscribeOn(AndroidSchedulers.mainThread()).
                 subscribe(new Consumer<Boolean>() {
                     @Override
@@ -347,4 +362,5 @@ class BaseIntelligentRecognitionPager extends BasePager implements IIntelligentR
         this.mPresenter = mPresenter;
     }
 
+    protected abstract Bitmap creatFireBitmap(String fireNum, String lottieId);
 }

@@ -18,9 +18,14 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.AUDIO_EVALUATE_PARENT_URL;
+
 public class EvaluationAudioPlayerDataManager {
 
-    private Queue<Integer> queue = new LinkedList() {{
+    private Queue<Integer> queue;
+
+    {
+        queue = new LinkedList();
         queue.add(IntelligentConstants.PERFECT);
         queue.add(IntelligentConstants.GOOD);
         queue.add(IntelligentConstants.FEED_BACK_SENTENCE_1_0);
@@ -39,7 +44,8 @@ public class EvaluationAudioPlayerDataManager {
 //        queue.add(IntelligentConstants.GOOD);
 //        queue.add(IntelligentConstants.PERFECT);
 //        queue.add(IntelligentConstants.GOOD);
-    }};
+    }
+
     //    private List<Integer> list = Arrays.
     private static volatile EvaluationAudioPlayerDataManager instance;
 
@@ -111,9 +117,7 @@ public class EvaluationAudioPlayerDataManager {
     }
 
     private void initAudioPath() {
-        String fileurl = Environment.getExternalStorageDirectory() +
-                File.separator + "parentsmeeting" + File.separator + "livevideo" +
-                File.separator + "01_01_Well_done.mp3";
+        String fileurl = AUDIO_EVALUATE_PARENT_URL;
         Observable.
                 just(fileurl).
                 filter(RxFilter.filterString()).

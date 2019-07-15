@@ -4,11 +4,13 @@ import android.support.v4.app.FragmentActivity;
 
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.CommonRxObserver;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.RxFilter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.EvaluationAudioPlayerDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
@@ -113,21 +115,23 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
 
     }
 
-    /** 处理语音评测结果 */
-    @Override
-    protected void handleResult(ResultEntity resultEntity) {
-        if (resultEntity == null) {
-            return;
+    private void testScoreEntity() {
+        if (AppConfig.DEBUG) {
+            SpeechScoreEntity speechScoreEntity = new SpeechScoreEntity();
+            speechScoreEntity.setStar("12");
+            speechScoreEntity.setGold("11");
+            speechScoreEntity.setScore("123");
+            mViewModel.getSpeechScoreData().setValue(speechScoreEntity);
         }
-        getSpeechScore(resultEntity);
+    }
+
+    private void performResultUnity3DAudio(ResultEntity resultEntity) {
         //连贯性
         int contScore = resultEntity.getContScore();
         //准确性
         int pronScore = resultEntity.getPronScore();
         //总得分
         int score = resultEntity.getScore();
-        //通知view做出更改
-        mViewModel.getIsIntelligentSpeechFinish().postValue(true);
         if (getSpeechNum() == 1) {
             if (score == 100) {
                 performPerfact();
@@ -179,6 +183,27 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
         }
     }
 
+    /** 处理语音评测结果 */
+    @Override
+    protected void handleResult(ResultEntity resultEntity) {
+        if (resultEntity == null) {
+            return;
+        }
+        getSpeechScore(resultEntity);
+        //连贯性
+//        int contScore = resultEntity.getContScore();
+        //准确性
+//        int pronScore = resultEntity.getPronScore();
+        //总得分
+//        int score = resultEntity.getScore();
+        //通知view做出更改
+        mViewModel.getIsIntelligentSpeechFinish().postValue(true);
+//        testScoreEntity();
+//        mViewModel.getSpeechScore().postValue(resultEntity.getScore());
+        performResultUnity3DAudio(resultEntity);
+
+    }
+
     private void performCommonList(int status, List<String> list) {
         Unity3DPlayManager.playUnity3D(status);
         playRepeateAudio(status, list);
@@ -195,7 +220,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
 //                    @Override
 //                    public void accept(String s) throws Exception {
 //                        Unity3DPlayManager.playUnity3D(IntelligentConstants.PERFECT);
-//                        if (soundPlayer == null) {
+//                        if (soundPlayer != null) {
 //                            soundPlayer.cancle();
 //                        }
 //                        soundPlayer = new SoundEffectPlayer(s);
@@ -218,7 +243,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
      */
     private void performCommon(final int status) {
         Unity3DPlayManager.playUnity3D(status);
-        if (soundPlayer == null) {
+        if (soundPlayer != null) {
             soundPlayer.cancle();
         }
         soundPlayer = new SoundEffectPlayer(
@@ -268,7 +293,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
     }
 
     private void playRepeateAudio(final int status, List<String> list) {
-        if (soundPlayer == null) {
+        if (soundPlayer != null) {
             soundPlayer.cancle();
         }
         soundPlayer = new SoundEffectPlayer(list);
@@ -440,7 +465,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
 ////                        else {
 ////                        soundPlayer = new SoundEffectPlayer(list);
 ////                        }
-////                        if (soundPlayer == null) {
+////                        if (soundPlayer != null) {
 //                        soundPlayer = new SoundEffectPlayer(
 //                                Arrays.asList(
 //                                        EvaluationAudioPlayerDataManager.getInstance().getJudgeAudioUrl(REPEAT_WORD),

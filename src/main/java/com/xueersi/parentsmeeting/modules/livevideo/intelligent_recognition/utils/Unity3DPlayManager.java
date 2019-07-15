@@ -12,56 +12,57 @@ public class Unity3DPlayManager {
      *
      */
 //    private static final String start_Mouth = "1";
-    private static final Map<Integer, List<String>> mapList = new HashMap() {
-        {
-            mapList.put(IntelligentConstants.PERFECT,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S2));
+    private static final Map<Integer, List<String>> mapList;
 
-            mapList.put(IntelligentConstants.GOOD,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_E, IntelligentUnity3DFaceParam.A_MON_SP));
+    static {
+        mapList = new HashMap();
+        mapList.put(IntelligentConstants.PERFECT,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S2));
 
-            mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_1_0,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_SK));
+        mapList.put(IntelligentConstants.GOOD,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_E, IntelligentUnity3DFaceParam.A_MON_SP));
 
-            mapList.put(IntelligentConstants.FEED_BACK_WORD_1,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_SK,
-                            IntelligentUnity3DBodyParam.A_MON_LH_U));
+        mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_1_0,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_SK));
 
-            mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_1_1,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_BH_C, IntelligentUnity3DFaceParam.A_MON_SK));
+        mapList.put(IntelligentConstants.FEED_BACK_WORD_1,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_SK,
+                        IntelligentUnity3DBodyParam.A_MON_LH_U));
 
-            mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_2_0,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_SK));
+        mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_1_1,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_BH_C, IntelligentUnity3DFaceParam.A_MON_SK));
 
-            mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_2_1,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_BH_C, IntelligentUnity3DFaceParam.A_MON_S1));
+        mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_2_0,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_SK));
 
-            mapList.put(IntelligentConstants.FEED_BACK_WORD_2_0,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S2));
+        mapList.put(IntelligentConstants.FEED_BACK_SENTENCE_2_1,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_BH_C, IntelligentUnity3DFaceParam.A_MON_S1));
 
-            mapList.put(IntelligentConstants.FEED_BACK_WORD_2_1,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_BH_C, IntelligentUnity3DFaceParam.A_MON_S1));
+        mapList.put(IntelligentConstants.FEED_BACK_WORD_2_0,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S2));
 
-            mapList.put(IntelligentConstants.FEED_BACK_WORD_3_0,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S2));
+        mapList.put(IntelligentConstants.FEED_BACK_WORD_2_1,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_BH_C, IntelligentUnity3DFaceParam.A_MON_S1));
 
-            mapList.put(IntelligentConstants.FEED_BACK_WORD_3_1,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S1));
+        mapList.put(IntelligentConstants.FEED_BACK_WORD_3_0,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S2));
 
-            mapList.put(IntelligentConstants.END_GOOD_BYE_1,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
+        mapList.put(IntelligentConstants.FEED_BACK_WORD_3_1,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S1));
 
-            mapList.put(IntelligentConstants.END_GOOD_BYE_2,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
+        mapList.put(IntelligentConstants.END_GOOD_BYE_1,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
 
-            mapList.put(IntelligentConstants.END_GOOD_BYE_3,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
+        mapList.put(IntelligentConstants.END_GOOD_BYE_2,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
 
-            mapList.put(IntelligentConstants.END_GOOD_BYE_4,
-                    Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
-        }
+        mapList.put(IntelligentConstants.END_GOOD_BYE_3,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
 
-    };
+        mapList.put(IntelligentConstants.END_GOOD_BYE_4,
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
+    }
+
 
     public static void playUnity3D(int status) {
         UnityCommandPlay.playBodyActionSingle(mapList.get(status).get(0));
