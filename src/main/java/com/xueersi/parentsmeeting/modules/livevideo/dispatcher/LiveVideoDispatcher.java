@@ -61,12 +61,14 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 String courseId = jsonObject.optString("courseId");
                 String vChapterId = jsonObject.optString("planId");
                 String chapterName = jsonObject.optString("planName");
+                //TODO termId
+                String termId = jsonObject.optString("termId");
                 int type = jsonObject.optInt("type");
                 if (type == TYPE_EXP_LIVE) {
                     VideoSectionEntity sectionEntity = new VideoSectionEntity();
                     sectionEntity.setvSectionName(chapterName);
                     sectionEntity.setvChapterName(chapterName);
-                    dispatcherBll.deductStuGolds(sectionEntity, vChapterId, "");
+                    dispatcherBll.deductStuGolds(sectionEntity, vChapterId, termId);
                     return;
                 } else if (type == TYPE_AUDIT_CLASS_ROOM) {
                     LiveVideoEnter.intentToAuditClassActivity(srcActivity, vStuCourseId, vChapterId);
