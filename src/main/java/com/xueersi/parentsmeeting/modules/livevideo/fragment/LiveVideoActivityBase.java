@@ -105,6 +105,9 @@ public class LiveVideoActivityBase extends XesActivity {
         EventBus.getDefault().unregister(this);
         stopService(new Intent(this, LiveService.class));
 //        System.exit(0);
+        if (FileLogger.runActivity == this) {
+            FileLogger.runActivity = null;
+        }
     }
 
     @Override
