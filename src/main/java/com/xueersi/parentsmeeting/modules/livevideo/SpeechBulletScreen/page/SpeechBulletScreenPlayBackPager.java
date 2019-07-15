@@ -101,6 +101,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager implements Sp
         overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
         overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
         mDanmakuView = new DanmakuView(mContext);
+        mDanmakuView.setId(R.id.dv_livevideo_bullet_screen);
         mDanmakuContext = DanmakuContext.create();
         mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3)
                 .setDuplicateMergingEnabled(false)
