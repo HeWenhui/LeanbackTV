@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.dispatcher;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -12,6 +13,7 @@ import com.xueersi.common.route.module.startParam.ParamKey;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 
 import org.json.JSONObject;
 
@@ -21,7 +23,10 @@ import org.json.JSONObject;
 public class LiveVideoDispatcher extends AbsDispatcher {
 
     /***直播体验课*/
-    public static final int EXP_LIVE = 4;
+    public static final int TYPE_EXP_LIVE = 4;
+
+    //TODO 旁听
+    public static final int TYPE_AUDIT_CLASS_ROOM = 5;
 
     public interface LiveNewStatus {
         int LIVE_UNBEGIN = 1;//待开始
@@ -40,57 +45,65 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             return;
         }
 
-        activity = srcActivity;
-        DispatcherBll dispatcherBll = new DispatcherBll(srcActivity);
-        String paramsJson = bundle.getString(ParamKey.EXTRAKEY_JSONPARAM);
-        if (TextUtils.isEmpty(paramsJson)) {
-            XESToastUtils.showToast(activity, "数据异常");
-            return;
-        }
-
-        try {
-            JSONObject jsonObject = new JSONObject(paramsJson);
-            int status = jsonObject.optInt("status");
-            String vStuCourseId = jsonObject.optString("stuCouId");
-            String courseId = jsonObject.optString("courseId");
-            String vChapterId = jsonObject.optString("planId");
-            String chapterName = jsonObject.optString("planName");
-            int type = jsonObject.optInt("type");
-            if (type == EXP_LIVE) {
-                VideoSectionEntity sectionEntity = new VideoSectionEntity();
-                sectionEntity.setvSectionName(chapterName);
-                sectionEntity.setvChapterName(chapterName);
-                dispatcherBll.deductStuGolds(sectionEntity,vChapterId,"");
+        if (bundle.containsKey(ParamKey.EXTRAKEY_JSONPARAM)) {
+            activity = srcActivity;
+            DispatcherBll dispatcherBll = new DispatcherBll(srcActivity);
+            String paramsJson = bundle.getString(ParamKey.EXTRAKEY_JSONPARAM);
+            if (TextUtils.isEmpty(paramsJson)) {
+                XESToastUtils.showToast(activity, "数据异常");
                 return;
             }
-            switch (status) {
-                case LiveNewStatus.LIVE_UNBEGIN://未开始
-                    break;
-                case LiveNewStatus.LIVE_LIVING://进行中
-                    startLivePlay(vStuCourseId, courseId, vChapterId);
-                    break;
-                case LiveNewStatus.LIVE_WAIT_PLAYBACK://等待回放
-                case LiveNewStatus.LIVE_CAN_PLAYBACK: //未完成
-                case LiveNewStatus.LIVE_CAN_PLAYBACK_PLUS: { //已完成
+
+            try {
+                JSONObject jsonObject = new JSONObject(paramsJson);
+                int status = jsonObject.optInt("status");
+                String vStuCourseId = jsonObject.optString("stuCouId");
+                String courseId = jsonObject.optString("courseId");
+                String vChapterId = jsonObject.optString("planId");
+                String chapterName = jsonObject.optString("planName");
+                int type = jsonObject.optInt("type");
+                if (type == TYPE_EXP_LIVE) {
                     VideoSectionEntity sectionEntity = new VideoSectionEntity();
                     sectionEntity.setvSectionName(chapterName);
                     sectionEntity.setvChapterName(chapterName);
-                    sectionEntity.setvChapterID(vChapterId);
-                    sectionEntity.setvSectionID(vChapterId);
-                    sectionEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LIVE + "-" + sectionEntity
-                            .getvSectionID());
-                    sectionEntity.setvCoursseID(courseId);
-                    sectionEntity.setvStuCourseID(vStuCourseId);
-                    // 扣除金币
-                    dispatcherBll.deductStuGold(sectionEntity, vStuCourseId);
+                    dispatcherBll.deductStuGolds(sectionEntity, vChapterId, "");
+                    return;
+                } else if (type == TYPE_AUDIT_CLASS_ROOM) {
+                    LiveVideoEnter.intentToAuditClassActivity(srcActivity, vStuCourseId, vChapterId);
+                    return;
                 }
-                break;
+                switch (status) {
+                    case LiveNewStatus.LIVE_UNBEGIN://未开始
+                        break;
+                    case LiveNewStatus.LIVE_LIVING://进行中
+                        startLivePlay(vStuCourseId, courseId, vChapterId);
+                        break;
+                    case LiveNewStatus.LIVE_WAIT_PLAYBACK://等待回放
+                    case LiveNewStatus.LIVE_CAN_PLAYBACK: //未完成
+                    case LiveNewStatus.LIVE_CAN_PLAYBACK_PLUS: { //已完成
+                        VideoSectionEntity sectionEntity = new VideoSectionEntity();
+                        sectionEntity.setvSectionName(chapterName);
+                        sectionEntity.setvChapterName(chapterName);
+                        sectionEntity.setvChapterID(vChapterId);
+                        sectionEntity.setvSectionID(vChapterId);
+                        sectionEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LIVE + "-" + sectionEntity
+                                .getvSectionID());
+                        sectionEntity.setvCoursseID(courseId);
+                        sectionEntity.setvStuCourseID(vStuCourseId);
+                        // 扣除金币
+                        dispatcherBll.deductStuGold(sectionEntity, vStuCourseId);
+                    }
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                XESToastUtils.showToast(activity, "数据异常");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            XESToastUtils.showToast(activity, "数据异常");
+        } else {
+            Intent intent = new Intent(srcActivity, LiveVideoLoadActivity.class);
+            intent.putExtras(bundle);
+            srcActivity.startActivityForResult(intent, requestCode);
         }
-
     }
 
     private void startLivePlay(final String vStuCourseID, final String courseId, final String sectionId) {
