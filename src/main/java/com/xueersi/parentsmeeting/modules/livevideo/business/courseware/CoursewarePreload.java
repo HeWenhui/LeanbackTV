@@ -638,7 +638,7 @@ public class CoursewarePreload {
      *
      * @param coursewareInfo
      * @param cdns
-     * @param newIPs
+     * @param ips
      */
     private void downLoadNbResource(CoursewareInfoEntity.NbCoursewareInfo coursewareInfo, List<String> cdns,
                                     List<String> ips) {
@@ -858,40 +858,7 @@ public class CoursewarePreload {
             File file = new File(folderPath, mFileName);
             boolean rename = tempFile.renameTo(file);
 //            if (!isUnZip.get()) {
-            ZipExtractorTask task = new ZipExtractorTask(file, mMorecacheout, true, new Progresses()) {
-                @Override
-                protected Exception doInBackground(Void... params) {
-
-                    StableLogHashMap unZipMap = new StableLogHashMap();
-                    unZipMap.put("logtype", "startUnzip");
-                    unZipMap.put("preloadid", md5);
-                    unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
-                    unZipMap.put("sno", "3");
-                    unZipMap.put("liveid", itemLiveId);
-                    unZipMap.put("resourcetype", resourcetype);
-                    unZipMap.put("ip", IpAddressUtil.USER_IP);
-                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
-                    return super.doInBackground(params);
-
-                }
-
-                @Override
-                protected void onPostExecute(Exception exception) {
-                    super.onPostExecute(exception);
-                    StableLogHashMap unZipMap = new StableLogHashMap();
-                    unZipMap.put("logtype", "endUnzip");
-                    unZipMap.put("preloadid", md5);
-//                    if(exception==null){
-                    unZipMap.put("status", exception == null ? "true" : "false");
-//                    }
-                    unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
-                    unZipMap.put("sno", "4");
-                    unZipMap.put("liveid", itemLiveId);
-                    unZipMap.put("resourcetype", resourcetype);
-                    unZipMap.put("ip", IpAddressUtil.USER_IP);
-                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
-                }
-            };
+            PreZipExtractorTask task = new PreZipExtractorTask(file, mMorecacheout, true, new Progresses(), md5, itemLiveId, resourcetype);
             task.setProgressUpdate(false);
             task.executeOnExecutor(executos);
 //                isUnZip.set(true);
@@ -984,6 +951,54 @@ public class CoursewarePreload {
         @Override
         public void onFinish() {
 //            logger.i("zip download finish");
+        }
+    }
+
+    static class PreZipExtractorTask extends ZipExtractorTask {
+        String md5;
+        File mMorecacheout;
+        String itemLiveId;
+        String resourcetype;
+
+        public PreZipExtractorTask(File in, File out, boolean replaceAll, ZipProg zipProg, String md5, String itemLiveId, String resourcetype) {
+            super(in, out, replaceAll, zipProg);
+            this.md5 = md5;
+            this.mMorecacheout = out;
+            this.itemLiveId = itemLiveId;
+            this.resourcetype = resourcetype;
+        }
+
+        @Override
+        protected Exception doInBackground(Void... params) {
+
+            StableLogHashMap unZipMap = new StableLogHashMap();
+            unZipMap.put("logtype", "startUnzip");
+            unZipMap.put("preloadid", md5);
+            unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
+            unZipMap.put("sno", "3");
+            unZipMap.put("liveid", itemLiveId);
+            unZipMap.put("resourcetype", resourcetype);
+            unZipMap.put("ip", IpAddressUtil.USER_IP);
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
+            return super.doInBackground(params);
+
+        }
+
+        @Override
+        protected void onPostExecute(Exception exception) {
+            super.onPostExecute(exception);
+            StableLogHashMap unZipMap = new StableLogHashMap();
+            unZipMap.put("logtype", "endUnzip");
+            unZipMap.put("preloadid", md5);
+//                    if(exception==null){
+            unZipMap.put("status", exception == null ? "true" : "false");
+//                    }
+            unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
+            unZipMap.put("sno", "4");
+            unZipMap.put("liveid", itemLiveId);
+            unZipMap.put("resourcetype", resourcetype);
+            unZipMap.put("ip", IpAddressUtil.USER_IP);
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
         }
     }
 
