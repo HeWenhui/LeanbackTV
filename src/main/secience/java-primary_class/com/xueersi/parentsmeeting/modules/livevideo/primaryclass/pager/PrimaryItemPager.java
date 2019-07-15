@@ -300,6 +300,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         int index = llPrimaryTeamContent.indexOfChild(child);
                         PrimaryTeamOtherItem otherItem = new PrimaryTeamOtherItem(mContext, teamMate, workerThread, teamMate.getIdInt());
                         otherItem.setOnNameClick(onNameClick);
+                        otherItem.setIndex(index);
                         basePrimaryTeamItem = otherItem;
                         View convertView = mInflater.inflate(basePrimaryTeamItem.getLayoutResId(), llPrimaryTeamContent, false);
                         convertView.setTag(basePrimaryTeamItem);
@@ -536,6 +537,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 } else {
                     PrimaryTeamOtherItem otherItem = new PrimaryTeamOtherItem(mContext, teamMember, workerThread, uid);
                     otherItem.setOnNameClick(onNameClick);
+                    otherItem.setIndex(i);
                     basePrimaryTeamItem = otherItem;
                 }
             } else {

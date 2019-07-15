@@ -231,7 +231,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
 
     /** {@link R.layout#item_primary_class_team_other_video } */
     @Override
-    public void decorateItemOther(View view) {
+    public void decorateItemOther(View view,int index) {
         RelativeLayout rl_livevideo_course_item_video_off = view.findViewById(R.id.rl_livevideo_course_item_video_off);
         rl_livevideo_course_item_video_off.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
         RelativeLayout rl_livevideo_course_item_video_ufo = view.findViewById(R.id.rl_livevideo_course_item_video_ufo);

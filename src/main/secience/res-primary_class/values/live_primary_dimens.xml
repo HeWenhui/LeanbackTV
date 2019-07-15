@@ -13,7 +13,7 @@
     <!-- 右边框头像宽度 -->
     <integer name="live_primary_right_head_width">296</integer>
     <!-- 右边框头像间距 -->
-    <integer name="live_primary_right_head_gap">16</integer>
+    <integer name="live_primary_right_head_gap">15</integer>
     <!-- 右边框头像高度 -->
     <integer name="live_primary_right_item_height">224</integer>
 

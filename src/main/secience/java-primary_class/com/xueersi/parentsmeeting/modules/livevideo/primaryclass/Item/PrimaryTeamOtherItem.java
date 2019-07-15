@@ -23,9 +23,14 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     /** 麦克风故障调用方法 */
     private String noMicMethod = "";
     private int state;
+    private int index = 0;
 
     public PrimaryTeamOtherItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     @Override
@@ -36,7 +41,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     @Override
     public void initViews(View root) {
         super.initViews(root);
-        primaryClassView.decorateItemOther(root);
+        primaryClassView.decorateItemOther(root, index);
     }
 
     @Override

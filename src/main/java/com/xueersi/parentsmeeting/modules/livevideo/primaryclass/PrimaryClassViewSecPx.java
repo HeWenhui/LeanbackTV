@@ -220,7 +220,7 @@ public class PrimaryClassViewSecPx implements PrimaryClassView {
     }
 
     @Override
-    public void decorateItemOther(View view) {
+    public void decorateItemOther(View view, int index) {
 
     }
 

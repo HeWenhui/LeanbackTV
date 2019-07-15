@@ -26,7 +26,7 @@ public interface PrimaryClassView {
 
     void decorateItemMy(View view);
 
-    void decorateItemOther(View view);
+    void decorateItemOther(View view,int index);
 
     void decorateItemEmpty(View view);
 
@@ -37,4 +37,5 @@ public interface PrimaryClassView {
     int getLive_primary_right_head_gap();
 
     int getLive_primary_right_item_height();
+
 }

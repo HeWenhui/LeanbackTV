@@ -213,8 +213,14 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     }
 
     @Override
-    public void decorateItemOther(View view) {
-
+    public void decorateItemOther(View view, int index) {
+        if (index == 3) {
+            View iv_livevideo_primary_team_voice_open = view.findViewById(R.id.iv_livevideo_primary_team_voice_open);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) iv_livevideo_primary_team_voice_open.getLayoutParams();
+            logger.d("initViews:bottomMargin=" + lp.bottomMargin);
+            lp.bottomMargin += 9;
+            LayoutParamsUtil.setViewLayoutParams(iv_livevideo_primary_team_voice_open, lp);
+        }
     }
 
     @Override
