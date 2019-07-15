@@ -50,4 +50,15 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         sendPost("https://app.arts.xueersi.com/v2/playback/getEvent", params, requestCallBack);
     }
+
+    public void deductStuGolds(String liveId, String termId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+//        params.addHeaderParam("Host","laoshi.xueersi.com");
+        params.addBodyParam("liveId", liveId);
+        // 直播 直播辅导
+        params.addBodyParam("termId", termId);
+        sendPost(ShareBusinessConfig.URL_EXPERIENCE_LIVE_INFO, params, requestCallBack);
+//        sendPost("http://10.97.14.61/science/AutoLive/getAutoLiveInfo", params, requestCallBack);
+    }
 }

@@ -20,6 +20,9 @@ import org.json.JSONObject;
  */
 public class LiveVideoDispatcher extends AbsDispatcher {
 
+    /***直播体验课*/
+    public static final int EXP_LIVE = 4;
+
     public interface LiveNewStatus {
         int LIVE_UNBEGIN = 1;//待开始
         int LIVE_LIVING = 2;//进行中
@@ -52,6 +55,14 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             String courseId = jsonObject.optString("courseId");
             String vChapterId = jsonObject.optString("planId");
             String chapterName = jsonObject.optString("planName");
+            int type = jsonObject.optInt("type");
+            if (type == EXP_LIVE) {
+                VideoSectionEntity sectionEntity = new VideoSectionEntity();
+                sectionEntity.setvSectionName(chapterName);
+                sectionEntity.setvChapterName(chapterName);
+                dispatcherBll.deductStuGolds(sectionEntity,vChapterId,"");
+                return;
+            }
             switch (status) {
                 case LiveNewStatus.LIVE_UNBEGIN://未开始
                     break;
