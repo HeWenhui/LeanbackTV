@@ -221,15 +221,20 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager implements Sp
         }
     };
 
+    private int delay = 50;
+
     @Override
     public void addDanmaku(final String name, final String msg, final String headImgUrl, final boolean isGuest) {
+        delay *= 2;
         if (mDanmakuContext == null || mDanmakuView == null || !mDanmakuView.isPrepared()) {
             mWeakHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    addDanmaku(name, msg, headImgUrl, isGuest);
+                    if (isAttach()) {
+                        addDanmaku(name, msg, headImgUrl, isGuest);
+                    }
                 }
-            }, 100);
+            }, delay);
             return;
         }
         //如果长时间没有弹幕，可能会休眠
