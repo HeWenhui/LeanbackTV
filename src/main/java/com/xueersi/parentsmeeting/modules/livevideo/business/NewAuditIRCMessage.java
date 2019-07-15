@@ -399,7 +399,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         public void onRecvRoomMetaData(PMDefs.RoomMetaData roomMetaData) {
             //code 322-聊天室信息 323-聊天室信息返回结束
             logger.i("ircsdk room Meta data code: " + roomMetaData.code);
-            logger.i("ircsdk room Meta data : " + roomMetaData.content.toString());
+            logger.i("ircsdk room Meta data : " + roomMetaData.content);
             if (PMDefs.ResultCode.Result_RoomData == roomMetaData.code) {
                 String channel = roomMetaData.roomId;
                 String topic = "";
@@ -409,10 +409,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                 }
                 if (mIRCCallback != null) {
                     if (roomMetaData.content.containsKey("number")) {
-                        mIRCCallback.onChannelInfo(channel, Integer.parseInt(roomMetaData.content.get("number")), JsonUtil.toJson(topic));
+                        mIRCCallback.onChannelInfo(channel, Integer.parseInt(roomMetaData.content.get("number")), topic);
                     }
                     mLogtf.d("onTopic:channel=" + channel + ",topic=" + topic);
-                    mIRCCallback.onTopic(channel, topic, "", date, false, channel);
                 }
             }
         }
@@ -460,14 +459,16 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             String topic = roomTopic.topic;
             long date = 0;
             mLogtf.d("onTopic:channel=" + channel + ",topic=" + topic);
-            if (mIRCCallback != null) {
-                mIRCCallback.onTopic(channel, topic, "", date, false, channel);
-            }
             StableLogHashMap logHashMap = defaultlog("roomTopic");
             logHashMap.put("roomCode", "" + roomTopic.code);
             logHashMap.put("roomTopic", "" + roomTopic.topic);
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
-
+            if (PMDefs.ResultCode.Result_RoomTopicEnd == roomTopic.code){
+                return;
+            }
+            if (mIRCCallback != null) {
+                mIRCCallback.onTopic(channel, topic, "", date, false, channel);
+            }
         }
 
         /**

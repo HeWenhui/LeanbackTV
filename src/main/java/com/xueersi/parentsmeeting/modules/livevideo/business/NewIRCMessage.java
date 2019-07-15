@@ -439,7 +439,7 @@ public class NewIRCMessage implements IIRCMessage {
         public void onRecvRoomMetaData(PMDefs.RoomMetaData roomMetaData) {
             //code 322-聊天室信息 323-聊天室信息返回结束
             logger.i("ircsdk room Meta data code: " + roomMetaData.code);
-            logger.i("ircsdk room Meta data : " + roomMetaData.content.toString());
+            logger.i("ircsdk room Meta data : " + roomMetaData.content != null?roomMetaData.content:"");
             if (PMDefs.ResultCode.Result_RoomData == roomMetaData.code) {
                 String channel = roomMetaData.roomId;
                 String topic = "";
@@ -449,9 +449,8 @@ public class NewIRCMessage implements IIRCMessage {
                 }
                 if (mIRCCallback != null) {
                     if (roomMetaData.content.containsKey("number")) {
-                        mIRCCallback.onChannelInfo(channel, Integer.parseInt(roomMetaData.content.get("number")), JsonUtil.toJson(roomMetaData.content.get("topic")));
+                        mIRCCallback.onChannelInfo(channel, Integer.parseInt(roomMetaData.content.get("number")), topic);
                     }
-                    onTopic(channel, topic, date);
                 }
             }
 
@@ -520,13 +519,15 @@ public class NewIRCMessage implements IIRCMessage {
             String channel = roomTopic.roomId;
             String topic = roomTopic.topic;
             long date = 0;
-            onTopic(channel, topic, date);
             Map<String, String> logHashMap = defaultlog();
             logHashMap.put("logtype", "roomTopic");
             logHashMap.put("roomCode", "" + roomTopic.code);
             logHashMap.put("roomTopic", "" + roomTopic.topic);
             UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
-
+            if (roomTopic.code == PMDefs.ResultCode.Result_RoomTopicEnd){
+                return;
+            }
+            onTopic(channel, topic, date);
         }
 
         /**
