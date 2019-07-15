@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
@@ -132,14 +133,10 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         tvAimValue.setText("目标" + target);
         tvTips.setText(reult);
 
-        try {
-            double realTimeVal = Double.valueOf(mStuAimResultEntity.getRealTimeVal());
-            double aimVal = Double.valueOf(mStuAimResultEntity.getAimValue());
-            int persents = (int) (realTimeVal / aimVal * 100);
-            setEngTargetPro(persents);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        double realTimeVal = Double.valueOf(mStuAimResultEntity.getRealTimeVal());
+        double aimVal = Double.valueOf(mStuAimResultEntity.getAimValue());
+        int persents = (int) (realTimeVal / aimVal * 100);
+        setBetterMeProgress(persents);
 
         tvCurrentLevel.setText(mStuAimResultEntity.getSegment() + mStuAimResultEntity.getStar() + "星");
         tvLevelUpgraded.setText("还需完成" + mStuAimResultEntity.getAimNumber() + "场目标可升级");
@@ -228,7 +225,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
                     mCountDownTimer.cancel();
                 }
                 mOnpagerClose.onClose(BetterMeCompleteTargetPager.this);
-                ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKEnd();
+                onPKEnd();
             }
         });
         ivLevelIndroduction.setOnClickListener(new View.OnClickListener() {
@@ -260,7 +257,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         @Override
         public void onFinish() {
             mOnpagerClose.onClose(BetterMeCompleteTargetPager.this);
-            ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKEnd();
+            onPKEnd();
         }
     };
 
@@ -288,33 +285,19 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
     /**
      * 设置小目标进度
      */
-    private void setEngTargetPro(int progress) {
+    private void setBetterMeProgress(int progress) {
         logger.i("setEngTargetPro:progress=" + progress);
-        if (pgComeletetar == null) {
-            return;
-        }
         pgComeletetar.setProgress(progress);
-        pgComeletetar.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                pgComeletetar.getViewTreeObserver().removeOnPreDrawListener(this);
-                setTipsLayout();
-                return false;
-            }
-        });
+        setAimTips(progress);
     }
 
     /**
-     * 设置Tips跟小目标进度条对齐
+     * 设置小目标Tips
      */
-    private void setTipsLayout() {
-        ViewGroup rlAim = mView.findViewById(R.id.rl_livevideo_betterme_completetarget_aim);
-        int[] loc = ViewUtil.getLoc(pgComeletetar, rlAim);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tvTips.getLayoutParams();
-        lp.leftMargin = loc[0] - tvTips.getWidth() / 2 + pgComeletetar.getWidth() * pgComeletetar.getProgress() / pgComeletetar.getMax();
-        logger.i("setLayout:left=" + loc[0] + ",top=" + loc[1]);
-        tvTips.setLayoutParams(lp);
-        tvTips.setVisibility(View.VISIBLE);
+    private void setAimTips(int progress) {
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvTips.getLayoutParams();
+        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 127) / 100;
+        tvTips.setLayoutParams(layoutParams);
     }
 
     /**
@@ -340,5 +323,11 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
             e.printStackTrace();
         }
         return starNumber;
+    }
+
+    private void onPKEnd(){
+        if( ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class)!=null){
+            ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKEnd();
+        }
     }
 }

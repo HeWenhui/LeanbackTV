@@ -25,10 +25,6 @@ public interface BetterMeContract {
         void showReceiveTargetPager();
 
         void showCompleteTargetPager(StuAimResultEntity stuAimResultEntity);
-
-        void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity);
-
-        void showTargetBubble();
     }
 
     interface BetterMePresenter extends BasePresenter {

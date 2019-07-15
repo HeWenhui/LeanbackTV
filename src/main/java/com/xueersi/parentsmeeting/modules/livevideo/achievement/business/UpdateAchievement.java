@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 
@@ -19,5 +18,5 @@ public interface UpdateAchievement {
 
     void updateBetterMe();
 
-    void onReceiveBetterMe(BetterMeEntity betterMeEntity);
+    void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isNotice);
 }

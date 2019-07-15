@@ -3,9 +3,9 @@
     android:id="@+id/tv_livevideo_en_betterme_bubble_text"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/pc_livevideo_enteampk_benchangchengjiu_tips_bg_nor"
+    android:background="@drawable/pc_livevideo_enteampk_benchangchengjiu_tips_bg_stand"
     android:gravity="center_horizontal"
     android:includeFontPadding="false"
-    android:textColor="#009CE5">
+    android:textColor="@color/white">
 
 </com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView>

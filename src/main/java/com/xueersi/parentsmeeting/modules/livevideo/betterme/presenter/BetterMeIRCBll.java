@@ -35,11 +35,11 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private StuSegmentEntity mStuSegmentEntity;
     private BetterMeEntity mBetterMeEntity;
     private StuAimResultEntity mStuAimResultEntity;
-    private boolean isArriveLate;
+    private boolean isArriveLate = false;
     /**
      * 小目标接口开关
      */
-    private boolean isUseBetterMe;
+    private boolean isUseBetterMe = false;
     /**
      * 是否展示过本场小目标
      */
@@ -133,14 +133,10 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 mBetterMeView.showIntroductionPager();
                             } else {
                                 mBetterMeView.showReceiveTargetPager();
-                                ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).onReceiveBetterMe
-                                        (mBetterMeEntity);
                             }
-                        } else {
-                            mBetterMeView.showTargetBubble();
-                            ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).onReceiveBetterMe
-                                    (mBetterMeEntity);
                         }
+                        ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).onReceiveBetterMe
+                                (mBetterMeEntity, isNotice);
                     } else {
                         getStuSegment(isNotice);
                     }
@@ -164,7 +160,9 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void onBetterMeFailure(final boolean isNotice) {
-        ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(isNotice);
+        if (ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class) != null) {
+            ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(isNotice);
+        }
     }
 
     /**
@@ -220,14 +218,10 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             mBetterMeView.showIntroductionPager();
                         } else {
                             mBetterMeView.showReceiveTargetPager();
-                            ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).onReceiveBetterMe
-                                    (mBetterMeEntity);
                         }
-                    } else {
-                        mBetterMeView.showTargetBubble();
-                        ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).onReceiveBetterMe
-                                (mBetterMeEntity);
                     }
+                    ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).onReceiveBetterMe(mBetterMeEntity,
+                            isNotice);
                 } else {
                     onSegmentFailure(isNotice);
                 }

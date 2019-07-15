@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveTy
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.lottie.BubbleLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -77,6 +78,7 @@ public class EnAchievePager extends LiveBasePager {
     private TextView tvAchiveAimValue;
     private ProgressBar pgAchiveAim;
     private TextView tvAchiveAimTips;
+    private AimRealTimeValEntity mAimRealTimeValEntity;
 
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -113,7 +115,6 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveAimValue = mView.findViewById(R.id.tv_livevideo_en_achive_aimvalue);
         tvAchiveAimTips = mView.findViewById(R.id.tv_livevideo_en_achive_aimtips);
         pgAchiveAim = mView.findViewById(R.id.pg_livevideo_en_achive_aim);
-
         return mView;
     }
 
@@ -410,7 +411,10 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumStar.setText("" + starCount);
     }
 
-    public void onReceiveBetterMe(BetterMeEntity betterMeEntity) {
+    /**
+     * 收到本场小目标
+     */
+    public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isNotice) {
         //隐藏没有小目标时的默认视图
         if (tvAchiveAimEmpty != null) {
             tvAchiveAimEmpty.setVisibility(View.GONE);
@@ -431,11 +435,14 @@ public class EnAchievePager extends LiveBasePager {
         }
         tvAchiveAimValue.setText("目标" + target);
         tvAchiveAimTips.setText("0%");
-        setEngAimPro(0);
+        setBetterMePro(0);
+        if (!isNotice) {
+            receiveBetterMeBubble(betterMeEntity);
+        }
     }
 
     /**
-     * 小目标更新
+     * 更新本场小目标
      */
     public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
         //隐藏没有小目标时的默认视图
@@ -459,43 +466,125 @@ public class EnAchievePager extends LiveBasePager {
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
             tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
         }
-        tvAchiveAimValue.setText("目标" + aimRealTimeValEntity.getAimValue());
-        tvAchiveAimTips.setText(current);
+        tvAchiveAimValue.setText("目标" + target);
+        if (aimRealTimeValEntity.isDoneAim()) {
+            tvAchiveAimTips.setText("已完成目标");
+        } else {
+            tvAchiveAimTips.setText(current);
+        }
         float realTimeVal = Float.parseFloat(aimRealTimeValEntity.getRealTimeVal());
         float aimVal = Float.parseFloat(aimRealTimeValEntity.getAimValue());
         int progress = (int) (realTimeVal / aimVal * 100);
-        setEngAimPro(progress);
+        setBetterMePro(progress);
+        updateBetterMeBubble(aimRealTimeValEntity);
+    }
+
+    /**
+     * 小目标迟到
+     */
+    public void onBetterMeLate() {
+        if (tvAchiveAimEmpty != null) {
+            tvAchiveAimEmpty.setText("早点来上课才有小目标哦~");
+        }
     }
 
     /**
      * 设置小目标进度
      */
-    private void setEngAimPro(int progress) {
-        logger.i("setEngAimPro:progress=" + progress);
-        if (pgAchiveAim == null) {
-            return;
+    private void setBetterMePro(int progress) {
+        logger.i("setBetterMePro : progress = " + progress);
+        if (progress > 100) {
+            progress = 100;
         }
         pgAchiveAim.setProgress(progress);
-        pgAchiveAim.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                pgAchiveAim.getViewTreeObserver().removeOnPreDrawListener(this);
-                alignProTips();
-                return false;
-            }
-        });
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
+        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 136) / 100;
+        tvAchiveAimTips.setLayoutParams(layoutParams);
     }
 
     /**
-     * 设置Tips指向当前进度
+     * 本场小目标气泡
      */
-    private void alignProTips() {
-        int[] loc = ViewUtil.getLoc(pgAchiveAim, rlAchiveAimContent);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
-        lp.leftMargin = loc[0] - tvAchiveAimTips.getWidth() / 2 + pgAchiveAim.getWidth() * pgAchiveAim.getProgress() / pgAchiveAim.getMax();
-        logger.i("setLayout:left=" + loc[0] + ",top=" + loc[1]);
-        tvAchiveAimTips.setLayoutParams(lp);
-        tvAchiveAimTips.setVisibility(View.VISIBLE);
+    private void receiveBetterMeBubble(BetterMeEntity betterMeEntity) {
+        StringBuilder message = new StringBuilder("本场目标：");
+        String target = betterMeEntity.getAimValue();
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(betterMeEntity.getAimType())) {
+            message.append(BetterMeConfig.CORRECTRATE);
+            target = (int) (Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(betterMeEntity.getAimType())) {
+            message.append(BetterMeConfig.PARTICIPATERATE);
+            target = (int) (Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_TALKTIME.equals(betterMeEntity.getAimType())) {
+            message.append(BetterMeConfig.TALKTIME);
+        }
+        message.append("达到").append(target);
+        showBetterMeBubble(message.toString());
+    }
+
+    /**
+     * 更新小目标气泡
+     */
+    private void updateBetterMeBubble(AimRealTimeValEntity aimRealTimeValEntity) {
+        StringBuilder message = new StringBuilder();
+        String current = aimRealTimeValEntity.getRealTimeVal();
+        String target = aimRealTimeValEntity.getAimValue();
+        boolean increasing;
+        if (mAimRealTimeValEntity != null) {
+            //如果有上次目标值的记录
+            double doubleCurrent = (Double.valueOf(target));
+            double doublePrevious = (Double.valueOf(mAimRealTimeValEntity.getRealTimeVal()));
+            increasing = doubleCurrent > doublePrevious;
+        } else {
+            if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
+                message.append(BetterMeConfig.CORRECTRATE);
+                current = (int) (Double.valueOf(current) * 100) + "%";
+                target = (int) (Double.valueOf(target) * 100) + "%";
+            } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
+                message.append(BetterMeConfig.PARTICIPATERATE);
+                current = (int) (Double.valueOf(current) * 100) + "%";
+                target = (int) (Double.valueOf(target) * 100) + "%";
+            } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
+                message.append(BetterMeConfig.TALKTIME);
+            }
+            message.append("当前").append(current).append(" ").append("目标").append(target);
+            showBetterMeBubble(message.toString());
+        }
+        mAimRealTimeValEntity = aimRealTimeValEntity;
+    }
+
+    /**
+     * 蓝色气泡动效
+     */
+    private void showBetterMeBubble(String msg) {
+        ViewGroup rlLivevideoinfo = ((Activity) mContext).findViewById(R.id.rl_livevideo_info);
+        if (rlLivevideoinfo != null) {
+            ViewGroup viewGroup = (ViewGroup) rlLivevideoinfo.getParent();
+            final LottieEffectInfo bubbleEffectInfo = new BubbleLottieEffectInfo(mContext, msg);
+            final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
+            ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+                @Override
+                public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                    return bubbleEffectInfo.fetchBitmapFromAssets(
+                            lottieAnimationView,
+                            lottieImageAsset.getFileName(),
+                            lottieImageAsset.getId(),
+                            lottieImageAsset.getWidth(),
+                            lottieImageAsset.getHeight(),
+                            mContext);
+                }
+            };
+            lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext), "bubble");
+            lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
+            lottieAnimationView.useHardwareAcceleration(true);
+            lottieAnimationView.playAnimation();
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                    .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp.addRule(RelativeLayout.ALIGN_LEFT, R.id.rl_livevideo_info);
+            lp.addRule(RelativeLayout.ALIGN_RIGHT, R.id.rl_livevideo_info);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lp.bottomMargin = ScreenUtils.getScreenHeight() - rlLivevideoinfo.getTop();
+            viewGroup.addView(lottieAnimationView, lp);
+        }
     }
 
     private void setEngPro(int progress) {

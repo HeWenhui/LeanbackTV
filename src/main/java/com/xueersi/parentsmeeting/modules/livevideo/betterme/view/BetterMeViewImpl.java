@@ -1,28 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.betterme.view;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.airbnb.lottie.ImageAssetDelegate;
-import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.lottie.BubbleLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeCompleteTargetPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeIntroductionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeLevelDisplayPager;
@@ -30,9 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeRecei
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkBetterMeRewardsPager;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
  * 英语小目标 view层
@@ -55,7 +42,6 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
     public static final int PAGER_LEVEL_DISPLAY = 2;
     public static final int PAGER_RECEIVE_TARGET = 3;
     private BasePager currentPager;
-    private AimRealTimeValEntity mAimRealTimeValEntity;
 
     public BetterMeViewImpl(Context context) {
         this.mContext = context;
@@ -152,93 +138,7 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    /**
-     * 更新小目标气泡
-     */
-    @Override
-    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
-        StringBuilder message = new StringBuilder();
-        String current = aimRealTimeValEntity.getRealTimeVal();
-        String target = aimRealTimeValEntity.getAimValue();
-        boolean increasing;
-        if (mAimRealTimeValEntity != null) {
-            //如果有上次目标值的记录
-            double doubleCurrent = (Double.valueOf(target));
-            double doublePrevious = (Double.valueOf(mAimRealTimeValEntity.getRealTimeVal()));
-            increasing = doubleCurrent > doublePrevious;
-        } else {
-            if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
-                message.append(BetterMeConfig.CORRECTRATE);
-                current = (int) (Double.valueOf(current) * 100) + "%";
-                target = (int) (Double.valueOf(target) * 100) + "%";
-            } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
-                message.append(BetterMeConfig.PARTICIPATERATE);
-                current = (int) (Double.valueOf(current) * 100) + "%";
-                target = (int) (Double.valueOf(target) * 100) + "%";
-            } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
-                message.append(BetterMeConfig.TALKTIME);
-            }
-            message.append("当前").append(current).append(" ").append("目标").append(target);
-            showTargetBubble(message.toString());
-        }
-        mAimRealTimeValEntity = aimRealTimeValEntity;
-    }
 
-    /**
-     * 本场小目标气泡
-     */
-    @Override
-    public void showTargetBubble() {
-        BetterMeEntity mBetterMeEntity = mBetterMePresenter.getBetterMeEntity();
-        StringBuilder message = new StringBuilder("本场目标：");
-        String target = mBetterMeEntity.getAimValue();
-        if (BetterMeConfig.TYPE_CORRECTRATE.equals(mBetterMeEntity.getAimType())) {
-            message.append(BetterMeConfig.CORRECTRATE);
-            target = (int) (Double.valueOf(target) * 100) + "%";
-        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(mBetterMeEntity.getAimType())) {
-            message.append(BetterMeConfig.PARTICIPATERATE);
-            target = (int) (Double.valueOf(target) * 100) + "%";
-        } else if (BetterMeConfig.TYPE_TALKTIME.equals(mBetterMeEntity.getAimType())) {
-            message.append(BetterMeConfig.TALKTIME);
-        }
-        message.append("达到").append(target);
-        showTargetBubble(message.toString());
-    }
-
-    /**
-     * 蓝色气泡动效
-     */
-    private void showTargetBubble(String msg) {
-        ViewGroup rlLivevideoinfo = ((Activity) mContext).findViewById(R.id.rl_livevideo_info);
-        if (rlLivevideoinfo != null) {
-            ViewGroup viewGroup = (ViewGroup) rlLivevideoinfo.getParent();
-            final LottieEffectInfo bubbleEffectInfo = new BubbleLottieEffectInfo(mContext, msg);
-            final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
-            ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
-                @Override
-                public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                    return bubbleEffectInfo.fetchBitmapFromAssets(
-                            lottieAnimationView,
-                            lottieImageAsset.getFileName(),
-                            lottieImageAsset.getId(),
-                            lottieImageAsset.getWidth(),
-                            lottieImageAsset.getHeight(),
-                            mContext);
-                }
-            };
-            lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext), "bubble");
-            lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
-            lottieAnimationView.useHardwareAcceleration(true);
-            lottieAnimationView.playAnimation();
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                    .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            lp.addRule(RelativeLayout.ALIGN_LEFT, R.id.rl_livevideo_info);
-            lp.addRule(RelativeLayout.ALIGN_RIGHT, R.id.rl_livevideo_info);
-            lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            lp.bottomMargin = ScreenUtils.getScreenHeight() - rlLivevideoinfo.getTop();
-            viewGroup.addView(lottieAnimationView, lp);
-        }
-    }
 
     @Override
     public void setPresenter(BetterMeContract.BetterMePresenter presenter) {

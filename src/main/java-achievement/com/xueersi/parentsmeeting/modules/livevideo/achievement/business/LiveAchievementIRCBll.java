@@ -19,10 +19,8 @@ import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.presenter.BetterMeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -72,6 +70,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     private int smallEnglish;
     LiveAchievementEngStandBll liveAchievementEngStandBll;
 
+    private boolean isUseBetterMe = false;
+    private boolean isArriveLate = false;
+
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         putInstance(LiveAchievementIRCBll.class, this);
@@ -95,6 +96,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+        this.isUseBetterMe = mGetInfo.getEnglishBetterMe().isUseBetterMe;
+        this.isArriveLate = mGetInfo.getEnglishBetterMe().isArriveLate;
         final long sTime = mGetInfo.getsTime();
         if (1 == getInfo.getIsAllowStar()) {
             initRecognizeDialog();
@@ -161,7 +164,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             });
                         }
                     }, 500);
-                    updateBetterMe();
+                    if (isUseBetterMe && !isArriveLate) {
+                        updateBetterMe();
+                    }
                 }
 
                 @Override
@@ -174,31 +179,31 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
 
                 /**
-                 * 小目标：实时获取学生目标完成度
+                 * 更新小目标
                  */
                 @Override
                 public void updateBetterMe() {
-                    logger.d("updateBetterMe");
+                    logger.d("BetterMe: updateBetterMe");
                     String liveId = mLiveBll.getLiveId();
                     String courseId = mLiveBll.getCourseId();
                     getHttpManager().getStuAimRealTimeVal(liveId, courseId, new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
-                            logger.i("getStuAimRealTimeVal:onPmSuccess():json=" + responseEntity.getJsonObject());
+                            logger.d("BetterMe:getStuAimRealTimeVal:onPmSuccess():json=" + responseEntity
+                                    .getJsonObject());
                             AimRealTimeValEntity aimRealTimeValEntity = getHttpResponseParser().parseAimRealTimeValInfo
                                     (responseEntity);
                             if (aimRealTimeValEntity != null && betterMeInteractAction != null) {
                                 betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity);
-                                ProxUtil.getProxUtil().get(mContext, BetterMeContract.BetterMeView.class)
-                                        .onBetterMeUpdate(aimRealTimeValEntity);
                             }
                         }
                     });
                 }
 
                 @Override
-                public void onReceiveBetterMe(BetterMeEntity betterMeEntity) {
-                    betterMeInteractAction.onReceiveBetterMe(betterMeEntity);
+                public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isNotice) {
+                    logger.d("BetterMe: receiveBetterMe");
+                    betterMeInteractAction.onReceiveBetterMe(betterMeEntity, isNotice);
                 }
             });
             AppInfoEntity appInfoEntity = AppBll.getInstance().getAppInfoEntity();
@@ -351,6 +356,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     liveAchievementEngBll.setLiveAchievementHttp(LiveAchievementIRCBll.this);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
                     LiveAchievementIRCBll.this.betterMeInteractAction = liveAchievementEngBll;
+                    if (isArriveLate) {
+                        betterMeInteractAction.onBetterMeLate();
+                    }
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
@@ -403,6 +411,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
                     liveAchievementEngStandBll.initView(mRootView, mContentView);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngStandBll;
+                    LiveAchievementIRCBll.this.betterMeInteractAction = liveAchievementEngStandBll;
+                    if (isArriveLate) {
+                        betterMeInteractAction.onBetterMeLate();
+                    }
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
@@ -417,6 +429,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     liveAchievementEngBll.initView(mRootView, mContentView);
                     liveAchievementEngBll.setLiveAchievementHttp(LiveAchievementIRCBll.this);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
+                    LiveAchievementIRCBll.this.betterMeInteractAction = liveAchievementEngBll;
                     LiveAchievementIRCBll.this.englishSpeekAction = null;
                 }
             } else {

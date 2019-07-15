@@ -2639,7 +2639,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             AimRealTimeValEntity aimRealTimeValEntity = new AimRealTimeValEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             aimRealTimeValEntity.setDoneAim("1".equals(jsonObject.getString("isDoneAim")));
-            aimRealTimeValEntity.setType(jsonObject.getString("type"));
+            aimRealTimeValEntity.setType(jsonObject.getString("aimType"));
             aimRealTimeValEntity.setRealTimeVal(jsonObject.getString("realTimeVal"));
             aimRealTimeValEntity.setAimValue(jsonObject.getString("aimValue"));
             return  aimRealTimeValEntity;

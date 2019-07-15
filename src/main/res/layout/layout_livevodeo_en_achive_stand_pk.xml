@@ -11,7 +11,8 @@
         android:includeFontPadding="false"
         android:text="@string/livevideo_enpk_notarget"
         android:textColor="#ffffffff"
-        android:textSize="11sp" />
+        android:textSize="11sp"
+        android:visibility="invisible"/>
 
     <RelativeLayout
         android:id="@id/rl_livevideo_en_achive_pk_my"

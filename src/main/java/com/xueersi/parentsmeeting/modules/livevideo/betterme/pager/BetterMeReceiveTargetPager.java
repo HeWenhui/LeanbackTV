@@ -207,7 +207,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
                     mCountDownTimer.cancel();
                 }
                 onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
-                ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(true);
+                onPKStart();
             }
         });
     }
@@ -233,7 +233,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
         @Override
         public void onFinish() {
             onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
-            ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(true);
+            onPKStart();
         }
     };
 
@@ -260,5 +260,11 @@ public class BetterMeReceiveTargetPager extends BasePager {
             e.printStackTrace();
         }
         return stasNumber;
+    }
+
+    private void onPKStart() {
+        if (ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class) != null) {
+            ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(true);
+        }
     }
 }
