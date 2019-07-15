@@ -14,6 +14,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
@@ -91,7 +92,7 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
         //直播
         if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE &&  ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE) && !isTutorVideo) {
             // 英语
-            if (liveBackBll.getIsArts() == 1 && liveBackBll.getPattern() == 2 && llUserHeadImage!=null) {
+            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN && liveBackBll.getPattern() == LiveVideoConfig.LIVE_PATTERN_2 && llUserHeadImage!=null) {
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)llUserHeadImage.getLayoutParams();
                 layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth -  LiveVideoPoint.getInstance().x4 + SizeUtils.Dp2Px(activity,10);
                 layoutParams.topMargin = SizeUtils.Dp2Px(activity,10);
