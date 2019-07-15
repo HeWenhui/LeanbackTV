@@ -22,6 +22,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -145,6 +146,7 @@ public class CoursewarePreload {
                     UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
                 } catch (Exception e) {
                     logger.e(e);
+                    LiveCrashReport.postCatchedException(TAG,e);
                 }
             }
         });
@@ -182,6 +184,7 @@ public class CoursewarePreload {
             Integer.parseInt(fileName);
             return true;
         } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG,e);
             return false;
         }
 
@@ -1247,6 +1250,7 @@ public class CoursewarePreload {
                 return false;
             }
         } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG,e);
             return false;
         }
 
