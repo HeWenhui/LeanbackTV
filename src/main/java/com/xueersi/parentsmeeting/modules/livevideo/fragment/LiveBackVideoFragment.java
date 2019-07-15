@@ -580,7 +580,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         //直播
         if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
             //理科
-            if (liveBackBll.getIsArts() == 0) {
+            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_SEC) {
                 initLiveRemarkBll();
                 liveBackBll.addBusinessBll(new SuperSpeakerBackBll(activity, liveBackBll));//语文半身直播回放走的理科
             } else {
