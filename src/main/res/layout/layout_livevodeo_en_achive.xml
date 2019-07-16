@@ -123,7 +123,7 @@
 
             <RelativeLayout
                 android:id="@+id/rl_livevideo_en_achive_aim_content"
-                android:layout_width="165dp"
+                android:layout_width="143dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rl_livevideo_en_achive_content_num"
                 android:layout_centerHorizontal="true"
@@ -138,7 +138,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="正确率"
                     android:textColor="@color/COLOR_FF449CEE"
-                    android:textSize="9sp" />
+                    android:textSize="9dp" />
 
                 <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:id="@+id/tv_livevideo_en_achive_aimvalue"
@@ -148,7 +148,7 @@
                     android:layout_marginRight="3dp"
                     android:text="目标80%"
                     android:textColor="@color/COLOR_FF449CEE"
-                    android:textSize="9sp" />
+                    android:textSize="9dp" />
 
                 <ProgressBar
                     android:id="@+id/pg_livevideo_en_achive_aim"

@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -247,6 +248,12 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
             } else {
                 startAchievement();
+            }
+            //更新小目标
+            String liveId = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_RECEIVED, "", ShareDataManager
+                    .SHAREDATA_USER);
+            if ((liveId).equals(mGetInfo.getId())) {
+                ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).updateBetterMe();
             }
         } else {
             mLiveBll.removeBusinessBll(this);

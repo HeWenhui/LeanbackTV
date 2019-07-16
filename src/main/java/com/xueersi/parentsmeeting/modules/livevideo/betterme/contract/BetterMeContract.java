@@ -28,8 +28,8 @@ public interface BetterMeContract {
     }
 
     interface BetterMePresenter extends BasePresenter {
-        void getStuSegment(boolean isNotice);
-        void getBetterMe(boolean isNotice);
+        void getStuSegment(int type);
+        void getBetterMe(int type);
         void getStuAimResult();
         BetterMeEntity getBetterMeEntity();
         StuSegmentEntity getStuSegmentEntity();

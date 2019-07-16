@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.betterme.pager;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;

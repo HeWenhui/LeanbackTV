@@ -21,4 +21,6 @@ public class ShareDataConfig {
     /** 直播-战队pk,文理 */
     public static String LIVE_TEAMPK_INFO = "live_teampk_info";
 
+    public static String LIVE_BETTERME_RECEIVED = "live_betterme_received";
+
 }

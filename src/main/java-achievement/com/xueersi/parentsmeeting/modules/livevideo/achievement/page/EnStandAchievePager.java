@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConf
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.lottie.BubbleStandLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.utils.BetterMeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
@@ -214,6 +215,7 @@ public class EnStandAchievePager extends LiveBasePager {
             target = (int) (Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(betterMeEntity.getAimType())) {
             tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
+            target = BetterMeUtil.secondToMinite(target);
         }
         tvAchiveAimValue.setText("目标" + target);
         tvAchiveAimTips.setText("0%");
@@ -249,6 +251,8 @@ public class EnStandAchievePager extends LiveBasePager {
             target = (int) (Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
             tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
+            current = BetterMeUtil.secondToMinite(current);
+            target = BetterMeUtil.secondToMinite(target);
         }
         tvAchiveAimValue.setText("目标" + target);
         if (aimRealTimeValEntity.isDoneAim()) {
@@ -278,6 +282,8 @@ public class EnStandAchievePager extends LiveBasePager {
         logger.i("setBetterMePro : progress = " + progress);
         if (progress > 100) {
             progress = 100;
+            pgAchiveAim.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
+                    .livevideo_enteampk_xiaomubiao_progressbar_finished_img_nor));
         }
         pgAchiveAim.setProgress(progress);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
@@ -299,6 +305,7 @@ public class EnStandAchievePager extends LiveBasePager {
             target = (int) (Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(betterMeEntity.getAimType())) {
             message.append(BetterMeConfig.TALKTIME);
+            target = BetterMeUtil.secondToMinite(target);
         }
         message.append("达到").append(target);
         showBetterMeBubble(message.toString());
@@ -317,21 +324,22 @@ public class EnStandAchievePager extends LiveBasePager {
             double doubleCurrent = (Double.valueOf(target));
             double doublePrevious = (Double.valueOf(mAimRealTimeValEntity.getRealTimeVal()));
             increasing = doubleCurrent > doublePrevious;
-        } else {
-            if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
-                message.append(BetterMeConfig.CORRECTRATE);
-                current = (int) (Double.valueOf(current) * 100) + "%";
-                target = (int) (Double.valueOf(target) * 100) + "%";
-            } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
-                message.append(BetterMeConfig.PARTICIPATERATE);
-                current = (int) (Double.valueOf(current) * 100) + "%";
-                target = (int) (Double.valueOf(target) * 100) + "%";
-            } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
-                message.append(BetterMeConfig.TALKTIME);
-            }
-            message.append("当前").append(current).append(" ").append("目标").append(target);
-            showBetterMeBubble(message.toString());
         }
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
+            message.append(BetterMeConfig.CORRECTRATE);
+            current = (int) (Double.valueOf(current) * 100) + "%";
+            target = (int) (Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
+            message.append(BetterMeConfig.PARTICIPATERATE);
+            current = (int) (Double.valueOf(current) * 100) + "%";
+            target = (int) (Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
+            message.append(BetterMeConfig.TALKTIME);
+            current = BetterMeUtil.secondToMinite(current);
+            target = BetterMeUtil.secondToMinite(target);
+        }
+        message.append("当前").append(current).append(" ").append("目标").append(target);
+        showBetterMeBubble(message.toString());
         mAimRealTimeValEntity = aimRealTimeValEntity;
     }
 

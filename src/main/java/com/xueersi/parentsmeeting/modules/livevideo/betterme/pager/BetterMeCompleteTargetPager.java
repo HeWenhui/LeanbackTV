@@ -7,8 +7,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -21,10 +19,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConf
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.utils.BetterMeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImpl;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
 /**
  * 英语小目标 完成小目标
@@ -128,9 +126,14 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
             target = (int) (Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(mStuAimResultEntity.getAimType())) {
             tvAimType.setText(BetterMeConfig.TALKTIME);
+            reult = BetterMeUtil.secondToMinite(reult);
+            target = BetterMeUtil.secondToMinite(target);
         }
 
         tvAimValue.setText("目标" + target);
+        if ("1".equals(mStuAimResultEntity.getIsDoneAim())) {
+            tvAimValue.setText("已完成目标");
+        }
         tvTips.setText(reult);
 
         double realTimeVal = Double.valueOf(mStuAimResultEntity.getRealTimeVal());
