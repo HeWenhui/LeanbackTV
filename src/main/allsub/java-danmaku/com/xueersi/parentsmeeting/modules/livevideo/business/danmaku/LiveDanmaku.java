@@ -55,6 +55,7 @@ public class LiveDanmaku implements LiveDanmakuPro {
     private Logger logger = LoggerFactory.getLogger("LiveDanmaku");
     protected Handler mainHandler = new Handler(Looper.getMainLooper());
     private DanmakuView dvMessageDanmaku;
+    private View mView;
     private DanmakuContext mDanmakuContext;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     private Activity mContext;
@@ -72,8 +73,18 @@ public class LiveDanmaku implements LiveDanmakuPro {
     }
 
     public void initView(LiveViewAction liveViewAction) {
+        if (mView != null) {
+            ViewGroup group = (ViewGroup) mView.getParent();
+            logger.d("initView:group=" + group);
+            if (group != null) {
+                group.removeView(mView);
+            }
+            liveViewAction.addView(LiveVideoLevel.LEVEL_DANMU, mView);
+            return;
+        }
         View view = liveViewAction.inflateView(R.layout.layout_livevideo_danmuku);
         liveViewAction.addView(LiveVideoLevel.LEVEL_DANMU, view);
+        mView = view;
         dvMessageDanmaku = view.findViewById(R.id.dv_livevideo_danmaku);
         LiveVideoPoint.getInstance().addVideoSizeChangeAndCall(mContext, new LiveVideoPoint.VideoSizeChange() {
             @Override
