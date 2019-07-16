@@ -30,10 +30,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -1395,7 +1395,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                         if (messageAdapter != null) {
                             messageAdapter.notifyDataSetChanged();
                         } else {
-                            UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + mContext + "," + sender + "," + type, e);
+                            UmsAgentManager.umsAgentException(ContextManager.getContext(), TAG + mContext + "," + sender + "," + type, e);
                         }
                         if (!isTouch) {
                             lvMessage.setSelection(lvMessage.getCount() - 1);

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.log.LoggerFactory;
@@ -32,7 +33,7 @@ public class LiveShutdownReceiver extends BroadcastReceiver {
         if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
             LiveCrashReport.postCatchedException(new Exception("" + android.os.Process.myPid()));
             logger.d("onReceive:process=" + BaseApplication.getCurProcessName(context));
-            File alldir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/shutdown");
+            File alldir = LiveCacheFile.geCacheFile(ContextManager.getContext(), "livelog/shutdown");
             if (!alldir.exists()) {
                 alldir.mkdirs();
             }

@@ -2,11 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.JsResult;
@@ -14,16 +11,13 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -74,7 +68,7 @@ public class BaseCoursewareNativePager extends LiveBasePager {
             logHashMap.put("tag", TAG);
             logHashMap.put("url", url);
             logHashMap.put("message", message);
-            UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), LiveVideoConfig.LIVE_WEBVIEW_JS_ALERT, logHashMap.getData());
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LiveVideoConfig.LIVE_WEBVIEW_JS_ALERT, logHashMap.getData());
             return super.onJsAlert(webView, url, message, jsResult);
         }
 
@@ -101,7 +95,7 @@ public class BaseCoursewareNativePager extends LiveBasePager {
             logHashMap.put("tag", TAG);
             logHashMap.put("url", url);
             logHashMap.put("message", message);
-            UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), LiveVideoConfig.LIVE_WEBVIEW_JS_ALERT, logHashMap.getData());
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LiveVideoConfig.LIVE_WEBVIEW_JS_ALERT, logHashMap.getData());
             return true;
         }
 

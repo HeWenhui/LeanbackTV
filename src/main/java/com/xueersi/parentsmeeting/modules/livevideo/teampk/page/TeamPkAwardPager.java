@@ -36,7 +36,6 @@ import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieImageAsset;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.are.ContextManager;
@@ -819,7 +818,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
         }
 
         public void bindData(ClassChestEntity.SubChestEntity data, int postion) {
-            ImageLoader.with(BaseApplication.getContext()).load(data.getAvatarPath())
+            ImageLoader.with(ContextManager.getContext()).load(data.getAvatarPath())
                     .placeHolder(R.drawable.livevideo_list_headportrait_ic_disable)
                     .asBitmap(new SingleConfig.BitmapListener() {
                         @Override
@@ -848,7 +847,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
                 tvPatch.setText("+" + data.getChipNum());
             }
             if (ivChip != null) {
-                ImageLoader.with(BaseApplication.getContext()).load(data.getChipUrl()).into(ivChip);
+                ImageLoader.with(ContextManager.getContext()).load(data.getChipUrl()).into(ivChip);
             }
         }
     }

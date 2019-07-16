@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
@@ -90,7 +90,7 @@ public class TcpDispatch {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
         String s = dateFormat.format(new Date());
         String[] ss = s.split(",");
-        logDir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + ss[0] + "/" + live_id + "-NL");
+        logDir = LiveCacheFile.geCacheFile(ContextManager.getContext(), "livelog/" + ss[0] + "/" + live_id + "-NL");
         if (!logDir.exists()) {
             logDir.mkdirs();
         }
@@ -272,7 +272,7 @@ public class TcpDispatch {
          */
         private void uploadWonderMoment(final InetSocketAddress inetSocketAddress, final Exception e, final File saveFile, final boolean error) {
             logger.d("uploadWonderMoment:saveFile=" + saveFile);
-            XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(BaseApplication.getContext());
+            XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(ContextManager.getContext());
             CloudUploadEntity uploadEntity = new CloudUploadEntity();
             uploadEntity.setFilePath(saveFile.getPath());
             uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
