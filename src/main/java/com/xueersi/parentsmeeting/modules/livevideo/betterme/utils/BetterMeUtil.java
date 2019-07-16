@@ -11,7 +11,11 @@ public class BetterMeUtil {
             int intSecond = Integer.valueOf(second);
             int min = intSecond / 60;
             int sec = intSecond % 60;
-            return min + ":" + sec;
+            String stringSec = "" + sec;
+            if (sec < 10) {
+                stringSec = "0" + sec;
+            }
+            return min + ":" + stringSec;
         } catch (Exception e) {
             return second;
         }

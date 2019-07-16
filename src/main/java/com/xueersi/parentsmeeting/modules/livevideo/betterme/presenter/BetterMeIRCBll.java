@@ -5,9 +5,9 @@ import android.app.Activity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.OtherBllEntrance;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
@@ -20,7 +20,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +45,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      * 是否展示过本场小目标
      */
     private boolean isShowBetterMe = false;
-    private boolean status = false;
+    private boolean teamPKStatus = false;
 
     public BetterMeIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -57,38 +56,47 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
-        if (status) {
+        if (teamPKStatus) {
             return;
         }
-        if (oldMode.equals(LiveTopic.MODE_TRANING) && mode.equals(LiveTopic.MODE_CLASS)) {
-            getBetterMe(XESCODE.MODECHANGE);
-        } else if (oldMode.equals(LiveTopic.MODE_CLASS) && mode.equals(LiveTopic.MODE_TRANING)) {
-            getStuAimResult();
+        if (LiveTopic.MODE_TRANING.equals(oldMode) && LiveTopic.MODE_CLASS.equals(mode)) {
+            getBetterMe(false);
         }
     }
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
+        logger.d("onNotice():data=" + data);
         switch (type) {
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN: {
-                getBetterMe(XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN);
+                getBetterMe(true);
                 break;
             }
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT: {
                 getStuAimResult();
                 break;
             }
+            case XESCODE.ARTS_STOP_QUESTION:
+                onQuestionEnd();
+                break;
+            case XESCODE.ARTS_H5_COURSEWARE:
+                String status = data.optString("status", "off");
+                if ("off".equals(status)) {
+                    onQuestionEnd();
+                }
+                break;
             default:
                 break;
         }
     }
 
-    @Override
-    public int[] getNoticeFilter() {
-        return new int[]{
-                XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN,
-                XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT
-        };
+    private void onQuestionEnd() {
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateBetterMe();
+            }
+        }, 5000);
     }
 
     @Override
@@ -98,10 +106,11 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         this.isUseBetterMe = getInfo.getEnglishBetterMe().isUseBetterMe;
         this.isArriveLate = getInfo.getEnglishBetterMe().isArriveLate;
         logger.d("isUseBetterMe = " + isUseBetterMe + "; isArriveLate = " + isArriveLate);
-        String liveId = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_RECEIVED, "", ShareDataManager
-                .SHAREDATA_USER);
-        if ((liveId).equals(mGetInfo.getId())) {
-            isShowBetterMe = true;
+        //从本地读取本场是否开启了小目标
+        isShowBetterMe = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_OPEN, "", ShareDataManager
+                .SHAREDATA_USER).equals(mGetInfo.getId());
+        if (isShowBetterMe) {
+            updateBetterMe();
         }
     }
 
@@ -112,10 +121,9 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             JSONObject room_2 = jsonObject.getJSONObject("room_2");
             JSONObject teamPKObj = room_2.optJSONObject("teamPK");
             if (teamPKObj != null) {
-                boolean status = teamPKObj.optBoolean("status", false);
-                this.status = status;
-                if (status) {
-                    getBetterMe(0);
+                teamPKStatus = teamPKObj.optBoolean("status", false);
+                if (teamPKStatus) {
+                    getBetterMe(false);
                 }
             }
         } catch (JSONException e) {
@@ -127,7 +135,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      * 获取学生这节课小目标
      */
     @Override
-    synchronized public void getBetterMe(final int type) {
+    synchronized public void getBetterMe(final boolean isNotice) {
         //小目标接口开关
         if (!isUseBetterMe) {
             return;
@@ -140,6 +148,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             return;
         }
         isShowBetterMe = true;
+        storageBetterMe();
         String liveId = mLiveBll.getLiveId();
         String courseId = mLiveBll.getCourseId();
         getHttpManager().getBetterMe(liveId, courseId, new HttpCallBack(true) {
@@ -149,59 +158,45 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 mBetterMeEntity = getHttpResponseParser().parseBetterMeInfo(responseEntity);
                 if (mBetterMeEntity != null) {
                     if (mStuSegmentEntity != null) {
-                        onBetterMeSuccess(type);
+                        onBetterMeSuccess(isNotice);
                     } else {
-                        getStuSegment(type);
+                        getStuSegment(isNotice);
                     }
                 } else {
-                    onBetterMeFailure(type);
+                    OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
                 }
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                onBetterMeFailure(type);
+                OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
             }
 
             @Override
             public void onFailure(String postUrl, Exception e, String msg) {
                 super.onFailure(postUrl, e, msg);
-                onBetterMeFailure(type);
+                OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
             }
         });
     }
 
-    private void onBetterMeSuccess(int type) {
-        boolean isNotice = type == XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN;
-        boolean isModeChange = type == XESCODE.MODECHANGE;
-        if (isNotice || isModeChange) {
+    private void onBetterMeSuccess(boolean isNotice) {
+        mGetInfo.getEnglishBetterMe().aimType = mBetterMeEntity.getAimType();
+        OtherBllEntrance.EnglishAchievent.receiveBetterMe(mContext, mBetterMeEntity, isNotice);
+        if (isNotice) {
             if (mBetterMeEntity.isFirstReceive()) {
                 mBetterMeView.showIntroductionPager();
             } else {
                 mBetterMeView.showReceiveTargetPager();
             }
         }
-        if (ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class) != null) {
-            ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).onReceiveBetterMe
-                    (mBetterMeEntity, isNotice || isModeChange);
-        }
-        mShareDataManager.put(ShareDataConfig.LIVE_BETTERME_RECEIVED, mGetInfo.getId(), ShareDataManager
+    }
+
+    //在本地存储本场是否开启了小目标
+    private void storageBetterMe() {
+        mShareDataManager.put(ShareDataConfig.LIVE_BETTERME_OPEN, mGetInfo.getId(), ShareDataManager
                 .SHAREDATA_USER);
-    }
-
-    private void onBetterMeFailure(int type) {
-        boolean isNotice = type == XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN;
-        if (ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class) != null) {
-            ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(isNotice);
-        }
-    }
-
-    private void onSegmentFailure(int type) {
-        boolean isNotice = type == XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN;
-        if (ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class) != null) {
-            ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(isNotice);
-        }
     }
 
     /**
@@ -219,55 +214,74 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (mStuAimResultEntity != null) {
                     mBetterMeView.showCompleteTargetPager(mStuAimResultEntity);
                 } else {
-                    onResultFailure();
+                    OtherBllEntrance.EnglishTeamPK.endPK(mContext);
                 }
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                onResultFailure();
+                OtherBllEntrance.EnglishTeamPK.endPK(mContext);
             }
 
             @Override
             public void onFailure(String postUrl, Exception e, String msg) {
                 super.onFailure(postUrl, e, msg);
-                onResultFailure();
+                OtherBllEntrance.EnglishTeamPK.endPK(mContext);
             }
         });
-    }
-
-    private void onResultFailure() {
-        ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKEnd();
     }
 
     /**
      * 小目标：获取学生段位信息
      */
     @Override
-    synchronized public void getStuSegment(final int type) {
+    synchronized public void getStuSegment(final boolean isNotice) {
         getHttpManager().getStuSegment(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.i("getStuSegment:onPmSuccess():json=" + responseEntity.getJsonObject());
                 mStuSegmentEntity = getHttpResponseParser().parseStuSegmentInfo(responseEntity);
                 if (mStuSegmentEntity != null) {
-                    onBetterMeSuccess(type);
+                    onBetterMeSuccess(isNotice);
                 } else {
-                    onSegmentFailure(type);
+                    OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
                 }
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                onSegmentFailure(type);
+                OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
             }
 
             @Override
             public void onFailure(String postUrl, Exception e, String msg) {
                 super.onFailure(postUrl, e, msg);
-                onSegmentFailure(type);
+                OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
+            }
+        });
+    }
+
+    /**
+     * 更新小目标
+     */
+    @Override
+    synchronized public void updateBetterMe() {
+        logger.d("updateBetterMe");
+        String liveId = mLiveBll.getLiveId();
+        String courseId = mLiveBll.getCourseId();
+        getHttpManager().getStuAimRealTimeVal(liveId, courseId, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("getStuAimRealTimeVal:onPmSuccess():json=" + responseEntity
+                        .getJsonObject());
+                AimRealTimeValEntity aimRealTimeValEntity = getHttpResponseParser().parseAimRealTimeValInfo
+                        (responseEntity);
+                if (aimRealTimeValEntity != null) {
+                    mGetInfo.getEnglishBetterMe().aimType = aimRealTimeValEntity.getType();
+                    OtherBllEntrance.EnglishAchievent.updateBetterMe(mContext, aimRealTimeValEntity);
+                }
             }
         });
     }
@@ -286,5 +300,15 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public StuSegmentEntity getStuSegmentEntity() {
         return mStuSegmentEntity;
+    }
+
+    @Override
+    public int[] getNoticeFilter() {
+        return new int[]{
+                XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN,
+                XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT,
+                XESCODE.ARTS_STOP_QUESTION,
+                XESCODE.ARTS_H5_COURSEWARE
+        };
     }
 }

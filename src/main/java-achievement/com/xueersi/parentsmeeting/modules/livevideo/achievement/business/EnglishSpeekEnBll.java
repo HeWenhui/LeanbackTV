@@ -10,6 +10,8 @@ import com.tal.speech.language.TalLanguage;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnglishSpeekPager;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.OtherBllEntrance;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -179,7 +181,9 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
                                         .duration),
                                 "" + (totalEn_seg_num + totalOpeningLength.speakingNum), speakingLen,
                                 0, 0);
-                        ProxUtil.getProxUtil().get(activity, UpdateAchievement.class).updateBetterMe();
+                        if (BetterMeConfig.TYPE_TALKTIME.equals(liveGetInfo.getEnglishBetterMe().aimType)) {
+                            OtherBllEntrance.EnglishAchievent.updateBetterMe(activity);
+                        }
                     }
                     lastSecond = totalSecond;
                     lastEnSegNum = totalEn_seg_num;

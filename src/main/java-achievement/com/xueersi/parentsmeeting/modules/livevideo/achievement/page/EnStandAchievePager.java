@@ -254,9 +254,14 @@ public class EnStandAchievePager extends LiveBasePager {
             current = BetterMeUtil.secondToMinite(current);
             target = BetterMeUtil.secondToMinite(target);
         }
-        tvAchiveAimValue.setText("目标" + target);
         if (aimRealTimeValEntity.isDoneAim()) {
             tvAchiveAimValue.setText("已完成目标");
+            pgAchiveAim.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
+                    .livevideo_enteampk_xiaomubiao_progressbar_finished_img_nor));
+        } else {
+            tvAchiveAimValue.setText("目标" + target);
+            pgAchiveAim.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
+                    .livevideo_enteampk_xiaomubiao_progressbar_img_nor));
         }
         tvAchiveAimTips.setText(current);
         float realTimeVal = Float.parseFloat(aimRealTimeValEntity.getRealTimeVal());
@@ -282,8 +287,6 @@ public class EnStandAchievePager extends LiveBasePager {
         logger.i("setBetterMePro : progress = " + progress);
         if (progress > 100) {
             progress = 100;
-            pgAchiveAim.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
-                    .livevideo_enteampk_xiaomubiao_progressbar_finished_img_nor));
         }
         pgAchiveAim.setProgress(progress);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();

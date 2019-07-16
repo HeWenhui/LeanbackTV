@@ -15,14 +15,13 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.OtherBllEntrance;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.utils.BetterMeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImpl;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
  * 英语小目标 完成小目标
@@ -129,10 +128,14 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
             reult = BetterMeUtil.secondToMinite(reult);
             target = BetterMeUtil.secondToMinite(target);
         }
-
-        tvAimValue.setText("目标" + target);
         if ("1".equals(mStuAimResultEntity.getIsDoneAim())) {
             tvAimValue.setText("已完成目标");
+            pgComeletetar.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
+                    .app_livevideo_enteampk_xiaomubiao_progressbar_img_nor1));
+        } else {
+            tvAimValue.setText("目标" + target);
+            pgComeletetar.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
+                    .app_livevideo_enteampk_xiaomubiao_progressbar_img_nor));
         }
         tvTips.setText(reult);
 
@@ -228,7 +231,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
                     mCountDownTimer.cancel();
                 }
                 mOnpagerClose.onClose(BetterMeCompleteTargetPager.this);
-                onPKEnd();
+                OtherBllEntrance.EnglishTeamPK.endPK(mContext);
             }
         });
         ivLevelIndroduction.setOnClickListener(new View.OnClickListener() {
@@ -260,7 +263,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         @Override
         public void onFinish() {
             mOnpagerClose.onClose(BetterMeCompleteTargetPager.this);
-            onPKEnd();
+            OtherBllEntrance.EnglishTeamPK.endPK(mContext);
         }
     };
 
@@ -289,15 +292,13 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
      * 设置小目标进度
      */
     private void setBetterMeProgress(int progress) {
-        logger.i("setEngTargetPro:progress=" + progress);
+        logger.i("setBetterMeProgress : progress = " + progress);
+        if (progress > 100) {
+            progress = 100;
+            pgComeletetar.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
+                    .app_livevideo_enteampk_xiaomubiao_progressbar_img_nor1));
+        }
         pgComeletetar.setProgress(progress);
-        setAimTips(progress);
-    }
-
-    /**
-     * 设置小目标Tips
-     */
-    private void setAimTips(int progress) {
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvTips.getLayoutParams();
         layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 127) / 100;
         tvTips.setLayoutParams(layoutParams);
@@ -326,11 +327,5 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
             e.printStackTrace();
         }
         return starNumber;
-    }
-
-    private void onPKEnd(){
-        if( ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class)!=null){
-            ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKEnd();
-        }
     }
 }

@@ -9,13 +9,13 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.OtherBllEntrance;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.utils.BetterMeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImpl;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
  * 英语小目标 本场小目标
@@ -118,6 +118,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
             target = (int) (Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(mBetterMeEntity.getAimType())) {
             tvReceiveTarType.setText(BetterMeConfig.TALKTIME);
+            target = BetterMeUtil.secondToMinite(target);
         }
         tvReceiveTarValue.setText(target);
 
@@ -206,7 +207,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
                     mCountDownTimer.cancel();
                 }
                 onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
-                onPKStart();
+                OtherBllEntrance.EnglishTeamPK.startPK(mContext, true);
             }
         });
     }
@@ -232,7 +233,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
         @Override
         public void onFinish() {
             onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
-            onPKStart();
+            OtherBllEntrance.EnglishTeamPK.startPK(mContext, true);
         }
     };
 
@@ -259,11 +260,5 @@ public class BetterMeReceiveTargetPager extends BasePager {
             e.printStackTrace();
         }
         return stasNumber;
-    }
-
-    private void onPKStart() {
-        if (ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class) != null) {
-            ProxUtil.getProxUtil().get(mContext, BetterMeTeamPKContract.class).onPKStart(true);
-        }
     }
 }

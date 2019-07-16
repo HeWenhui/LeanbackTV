@@ -1524,6 +1524,7 @@ public class LiveGetInfo {
         public String segmentType;
         public String star;
         public String aimNumber;
+        public String aimType;
     }
 
     /**

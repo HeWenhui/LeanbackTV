@@ -25,7 +25,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -41,7 +40,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessage
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -165,9 +163,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             });
                         }
                     }, 500);
-                    if (isUseBetterMe && !isArriveLate) {
-                        updateBetterMe();
-                    }
+
                 }
 
                 @Override
@@ -184,17 +180,17 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                  */
                 @Override
                 public void updateBetterMe() {
-                    logger.d("BetterMe: updateBetterMe");
+                    logger.d("updateBetterMe");
                     String liveId = mLiveBll.getLiveId();
                     String courseId = mLiveBll.getCourseId();
                     getHttpManager().getStuAimRealTimeVal(liveId, courseId, new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
-                            logger.d("BetterMe:getStuAimRealTimeVal:onPmSuccess():json=" + responseEntity
+                            logger.d("getStuAimRealTimeVal:onPmSuccess():json=" + responseEntity
                                     .getJsonObject());
                             AimRealTimeValEntity aimRealTimeValEntity = getHttpResponseParser().parseAimRealTimeValInfo
                                     (responseEntity);
-                            if (aimRealTimeValEntity != null && betterMeInteractAction != null) {
+                            if (aimRealTimeValEntity != null) {
                                 betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity);
                             }
                         }
@@ -202,8 +198,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
 
                 @Override
+                public void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity) {
+                    logger.d("onUpdateBetterMe");
+                    betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity);
+                }
+
+                @Override
                 public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isNotice) {
-                    logger.d("BetterMe: receiveBetterMe");
+                    logger.d(" receiveBetterMe");
                     betterMeInteractAction.onReceiveBetterMe(betterMeEntity, isNotice);
                 }
             });
@@ -248,12 +250,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
             } else {
                 startAchievement();
-            }
-            //更新小目标
-            String liveId = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_RECEIVED, "", ShareDataManager
-                    .SHAREDATA_USER);
-            if ((liveId).equals(mGetInfo.getId())) {
-                ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class).updateBetterMe();
             }
         } else {
             mLiveBll.removeBusinessBll(this);
