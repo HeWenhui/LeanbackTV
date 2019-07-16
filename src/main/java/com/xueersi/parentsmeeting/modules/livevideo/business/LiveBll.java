@@ -13,6 +13,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -267,7 +268,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState {
                 mIRCMessage.sendMessage(jsonObject.toString());
             } catch (Exception e) {
                 // logger.e( "understand", e);
-                UmsAgentManager.umsAgentException(BaseApplication.getContext(), "livevideo_livebll_sendMessage", e);
+                UmsAgentManager.umsAgentException(ContextManager.getContext(), "livevideo_livebll_sendMessage", e);
                 mLogtf.e("sendMessage", e);
             }
             return true;

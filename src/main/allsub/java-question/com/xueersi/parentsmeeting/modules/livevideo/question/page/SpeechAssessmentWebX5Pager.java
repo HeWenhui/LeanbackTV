@@ -318,7 +318,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         @Override
         public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
             VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext,
-                    mBaseApplication, false, VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE);
+                    ContextManager.getApplication(), false, VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE);
             verifyCancelAlertDialog.initInfo(message);
             verifyCancelAlertDialog.showDialog();
             result.confirm();
@@ -328,7 +328,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         @Override
         public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
             VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext,
-                    mBaseApplication, false, VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                    ContextManager.getApplication(), false, VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
             verifyCancelAlertDialog.initInfo(message);
             verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                 @Override

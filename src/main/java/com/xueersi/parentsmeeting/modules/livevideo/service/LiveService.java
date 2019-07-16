@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -111,7 +112,7 @@ public class LiveService extends Service {
         super.onCreate();
         logger.d("onCreate");
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
-        alldir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/cache");
+        alldir = LiveCacheFile.geCacheFile(ContextManager.getContext(), "livelog/cache");
         if (!alldir.exists()) {
             alldir.mkdirs();
         }

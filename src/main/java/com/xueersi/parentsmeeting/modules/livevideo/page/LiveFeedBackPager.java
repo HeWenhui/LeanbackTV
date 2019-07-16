@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
 
 import com.xueersi.common.base.BaseApplication;
@@ -227,10 +228,10 @@ public class LiveFeedBackPager extends LiveBasePager {
 
         tvMainName.setText(mGetInfo.getMainTeacherInfo().getTeacherName());
         if (TextUtils.isEmpty(mGetInfo.getMainTeacherInfo().getTeacherImg())) {
-            ImageLoader.with(BaseApplication.getContext()).asCircle().load(R.drawable.bg_main_default_head_image)
+            ImageLoader.with(ContextManager.getContext()).asCircle().load(R.drawable.bg_main_default_head_image)
                     .placeHolder(R.drawable.bg_main_default_head_image).into(ivMainHeader);
         } else {
-            ImageLoader.with(BaseApplication.getContext()).asCircle().load(mGetInfo.getMainTeacherInfo()
+            ImageLoader.with(ContextManager.getContext()).asCircle().load(mGetInfo.getMainTeacherInfo()
                     .getTeacherImg())
                     .placeHolder(R.drawable.bg_main_default_head_image).into(ivMainHeader);
         }
@@ -239,10 +240,10 @@ public class LiveFeedBackPager extends LiveBasePager {
             rlTutorContent.setVisibility(View.VISIBLE);
             tvTutorName.setText(mGetInfo.getTeacherName());
             if (TextUtils.isEmpty(mGetInfo.getTeacherIMG())) {
-                ImageLoader.with(BaseApplication.getContext()).asCircle().load(R.drawable.bg_main_default_head_image)
+                ImageLoader.with(ContextManager.getContext()).asCircle().load(R.drawable.bg_main_default_head_image)
                         .placeHolder(R.drawable.bg_main_default_head_image).into(ivTutorHeader);
             } else {
-                ImageLoader.with(BaseApplication.getContext()).asCircle().load(mGetInfo.getTeacherIMG())
+                ImageLoader.with(ContextManager.getContext()).asCircle().load(mGetInfo.getTeacherIMG())
                         .placeHolder(R.drawable.bg_main_default_head_image).into(ivTutorHeader);
             }
 

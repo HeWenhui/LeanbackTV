@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -177,7 +178,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("getLikeList => onPmFailure: error = " + error + ", msg=" + msg);
-                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
                 vcDialog.setVerifyBtnListener(new View.OnClickListener() {
@@ -192,7 +193,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("getLikeList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
                 //  showToast("" + responseEntity.getErrorMsg());
-                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
                 vcDialog.setVerifyBtnListener(new View.OnClickListener() {

@@ -19,6 +19,7 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -80,8 +81,7 @@ public class BaseCoursewareNativePager extends LiveBasePager {
         @Override
         public boolean onJsConfirm(WebView view, String url, String message,
                                    final JsResult result) {
-            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, (BaseApplication)
-                    BaseApplication.getContext(), false,
+            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                     VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
             cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                 @Override

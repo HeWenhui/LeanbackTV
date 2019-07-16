@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 
 /**
@@ -11,7 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 public class StandLiveMethod {
     public static LiveSoundPool.SoundPlayTask onClickVoice(LiveSoundPool soundPool) {
         if (StandLiveConfig.voicePath == null) {
-            StandLiveConfig.createVoice(BaseApplication.getContext());
+            StandLiveConfig.createVoice(ContextManager.getContext());
         }
         String path = StandLiveConfig.voicePath.VOICE_CLICK_BUTTON;
         LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);

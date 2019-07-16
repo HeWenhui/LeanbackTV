@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -225,7 +226,7 @@ public class QuestionFillInBlankLivePager extends BaseLiveQuestionPager {
         public void onClick(View v) {
             final QuesReslutEntity quesReslutEntity = chkReslut();
             if (quesReslutEntity.isHaveEmpty()) {
-                VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, (BaseApplication) BaseApplication.getContext(), false,
+                VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 cancelDialog.setVerifyBtnListener(new OnClickListener() {
                     @Override

@@ -30,6 +30,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -1748,7 +1749,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.NowMobileEvent event) {
         if (mIsShowMobileAlert) {
-            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(this, mBaseApplication, false,
+            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(this, ContextManager.getApplication(), false,
                     VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
             cancelDialog.setCancelBtnListener(new View.OnClickListener() {
                 @Override

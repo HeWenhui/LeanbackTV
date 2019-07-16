@@ -21,6 +21,7 @@ import com.xueersi.common.http.BaseHttp;
 import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -246,7 +247,7 @@ public class LiveStandFrameAnim {
                 logHashMap.put("version", "" + StandLiveConfig.version);
                 logHashMap.put("downloadsize", "" + downloadSize);
 //                Loger.d(activity, eventId, logHashMap.getData(), true);
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, logHashMap.getData());
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), eventId, logHashMap.getData());
                 onProgress(pbLiveStandUpdate.getLeft(), rlLiveStandUpdateProg, ivLiveStandUpdateProgLight, 50);
                 LiveZip liveZip = new LiveZip(view, callBack, saveFile, saveFileTemp);
                 zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, liveZip);
