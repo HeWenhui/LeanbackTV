@@ -146,7 +146,7 @@ public class CoursewarePreload {
                     UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
                 } catch (Exception e) {
                     logger.e(e);
-                    LiveCrashReport.postCatchedException(TAG,e);
+                    LiveCrashReport.postCatchedException(TAG, e);
                 }
             }
         });
@@ -184,7 +184,7 @@ public class CoursewarePreload {
             Integer.parseInt(fileName);
             return true;
         } catch (Exception e) {
-            LiveCrashReport.postCatchedException(TAG,e);
+            LiveCrashReport.postCatchedException(TAG, e);
             return false;
         }
 
@@ -212,24 +212,24 @@ public class CoursewarePreload {
             if (0 == mSubject) {//理科
                 logger.i("donwload science");
                 subjectNum.getAndIncrement();
-                mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack(false, "science"));
+                mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack(false, "science", liveId));
             } else if (1 == mSubject) {//英语
                 logger.i("download english");
                 subjectNum.getAndIncrement();
-                mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack(false, "english"));
+                mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack(false, "english", liveId));
             } else if (2 == mSubject) {//语文
                 logger.i("download chs");
                 subjectNum.getAndIncrement();
-                mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack(false, "chs"));
+                mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack(false, "chs", liveId));
             }
         } else {//下载当天所有课件资源
             logger.i("donwload all subjects");
             subjectNum.getAndIncrement();
-            mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack(false, "science"));
+            mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack(false, "science", ""));
             subjectNum.getAndIncrement();
-            mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack(false, "english"));
+            mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack(false, "english", ""));
             subjectNum.getAndIncrement();
-            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs"));
+            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs", ""));
         }
     }
 
@@ -237,15 +237,31 @@ public class CoursewarePreload {
     public class CoursewareHttpCallBack extends HttpCallBack {
 
         private String arts;
+        private String liveId;
 
-        public CoursewareHttpCallBack(boolean isShow, String arts) {
+        public CoursewareHttpCallBack(boolean isShow, String arts, String liveId) {
             super(isShow);
             this.arts = arts;
+            this.liveId = liveId;
         }
+
 
         @Override
         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
             CoursewareInfoEntity coursewareInfoEntity = liveHttpResponseParser.parseCoursewareInfo(responseEntity);
+            try {
+                StableLogHashMap hashMap = new StableLogHashMap();
+//            hashMap.put("eventid", LogConfig.PRE_LOAD_START);
+                hashMap.put("logtype", "onPmSuccess");
+                hashMap.put("size", "" + coursewareInfoEntity.getCoursewaresList().size());
+                hashMap.put("arts", "" + arts);
+                hashMap.put("liveId", "" + liveId);
+                hashMap.put("ip", IpAddressUtil.USER_IP);
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID,
+                        LogConfig.PRE_LOAD_START, hashMap.getData());
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
             logger.i(responseEntity.getJsonObject().toString());
             courseWareInfos.add(coursewareInfoEntity);
             logger.i(arts + " pmSuccess");
@@ -1250,7 +1266,7 @@ public class CoursewarePreload {
                 return false;
             }
         } catch (Exception e) {
-            LiveCrashReport.postCatchedException(TAG,e);
+            LiveCrashReport.postCatchedException(TAG, e);
             return false;
         }
 
