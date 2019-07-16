@@ -117,12 +117,12 @@ public class WordDictationBll implements WordDictationAction {
         View view;
         @Override
         public void onReceive(Context context, Intent intent) {
-            final RecognizeFlow recognizeFlow = intent.getParcelableExtra("data");
+            final RecognizeFlow recognizeFlow = (RecognizeFlow) intent.getSerializableExtra("data");
             logger.d("onReceive:recognizeFlow=" + recognizeFlow);
             LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            if (!liveGetInfo.getSmallEnglish()){
+            if (liveGetInfo.getSmallEnglish()){
                 view = LayoutInflater.from(activity).inflate(R.layout.layout_word_dictation_complete, null);
                 view.setPadding(view.getLeft(), (int) (50 * ScreenUtils.getScreenDensity()), liveVideoPoint.getRightMargin(), view.getBottom());
             }else {
@@ -134,10 +134,19 @@ public class WordDictationBll implements WordDictationAction {
             view.findViewById(R.id.bt_livevideo_worddictation_result).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("data", recognizeFlow);
-                    bundle.putString("what","Result");
-                    XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
+                    if (liveGetInfo.getSmallEnglish()){
+                        logger.d("result stuanswer"+ recognizeFlow);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("data", recognizeFlow);
+                        bundle.putString("what","Result");
+                        XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
+                    } else {
+                        logger.d("middle result stuanswer"+ recognizeFlow);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("data", recognizeFlow);
+                        bundle.putString("what","MiddleResult");
+                        XueErSiRouter.startModule(activity, "/dictation/MiddleResult", bundle);
+                    }
                 }
             });
             view.findViewById(R.id.bt_livevideo_worddictation_close).setOnClickListener(new View.OnClickListener() {
