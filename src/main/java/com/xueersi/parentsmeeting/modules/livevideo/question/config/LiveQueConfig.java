@@ -61,6 +61,8 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_CLEANING_UP = "23";
     /** 直播- 热气球 */
     public static final String EN_COURSE_TYPE_HOT_AIR_BALLON = "24";
+    /**直播-语音开宝箱**/
+    public static final String EN_COURSE_TYPE_VOICE_TREASURE_BOX = "25";
     /** 直播- what's missing */
     public static final String EN_COURSE_TYPE_WHAT_IS_MISSING = "26";
     /** 直播-小组互动语音炮弹 */
@@ -171,7 +173,9 @@ public class LiveQueConfig {
     }
 
     public static boolean isGroupGame(String type) {
-        if (EN_COURSE_TYPE_VOICE_CANNON.equals(type) || EN_COURSE_TYPE_CLEANING_UP.equals(type) || EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type) || EN_COURSE_TYPE_WHAT_IS_MISSING.equals(type)) {
+        if (EN_COURSE_TYPE_VOICE_CANNON.equals(type) || EN_COURSE_TYPE_CLEANING_UP.equals(type)
+                || EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type) || EN_COURSE_TYPE_WHAT_IS_MISSING.equals(type)
+                ||EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(type)) {
             return true;
         }
         return false;
