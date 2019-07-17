@@ -16,11 +16,10 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.top3.IntelligentRecognitionTop3Bll;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.top3.IntelligentRecognitionTop3View;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.top3.IntelligentRecognitionTop3View;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionPermissionPager;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view.IntelligentRecognitionPermissionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view.IntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
 
 public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
@@ -95,22 +94,8 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
 
     private GoldTeamStatus goldTeamStatus;
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
     private void addObserver() {
-        mViewModel.getIsFinish().observe(mActivity, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
-                if (aBoolean) {
-                    IntelligentRecognitionTop3Bll top3Bll = new IntelligentRecognitionTop3Bll(mActivity);
-                    top3Bll.getTop3Data();
-                }
-            }
-        });
+
         mViewModel.getIsTop3Show().observe(mActivity, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {

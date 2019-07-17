@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view;
 
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -71,7 +71,7 @@ public class IntelligentRecognitionPermissionPager extends BaseIntelligentRecogn
 
                             @Override
                             public void onGuarantee(String permission, int position) {
-
+                                settingViewGroup.setVisibility(View.GONE);
                             }
                         },
                         PermissionConfig.PERMISSION_CODE_AUDIO);

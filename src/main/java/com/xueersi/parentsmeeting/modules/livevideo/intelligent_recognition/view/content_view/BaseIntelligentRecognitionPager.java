@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -21,10 +21,10 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.RxFilter;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.SpeechStopEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechStopEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionView;
@@ -77,6 +77,7 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
     public BaseIntelligentRecognitionPager(FragmentActivity context) {
         super(context, false);
         this.mActivity = context;
+        initView();
     }
 
     @Override

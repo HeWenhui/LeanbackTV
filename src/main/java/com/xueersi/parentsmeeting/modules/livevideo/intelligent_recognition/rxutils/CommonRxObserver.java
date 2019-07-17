@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;

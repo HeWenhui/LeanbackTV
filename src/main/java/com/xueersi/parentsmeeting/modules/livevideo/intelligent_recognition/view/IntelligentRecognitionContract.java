@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
 
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.SpeechStopEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechStopEntity;
 
 public interface IntelligentRecognitionContract {
     String FILTER_ACTION = "com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition_sign";

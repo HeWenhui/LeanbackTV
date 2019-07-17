@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view;
 
 import android.support.v4.app.FragmentActivity;
 
@@ -7,8 +7,8 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.CommonRxObserver;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.RxFilter;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.CommonRxObserver;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.IntelligentRecognitionHttpResponseParser;
@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.util
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.SoundEffectPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.Unity3DPlayManager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view.BaseIntelligentRecognitionPresenter;
 
 import org.json.JSONException;
 import org.json.JSONObject;

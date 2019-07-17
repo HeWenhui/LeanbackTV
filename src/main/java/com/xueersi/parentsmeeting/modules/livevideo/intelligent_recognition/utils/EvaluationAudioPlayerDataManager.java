@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.uti
 
 import android.os.Environment;
 
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.RxFilter;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
 
 import java.io.File;
 import java.util.ArrayList;

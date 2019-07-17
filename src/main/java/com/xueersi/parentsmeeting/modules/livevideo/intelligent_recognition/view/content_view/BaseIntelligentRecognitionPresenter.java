@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.IntentFilter;
@@ -19,12 +19,13 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.RxFilter;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.SpeechStopEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechStopEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.IntelligentRecognitionHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.BaseIntelligentRecognitionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionView;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
@@ -44,11 +45,13 @@ import io.reactivex.functions.Consumer;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
 
-public abstract class BaseIntelligentRecognitionPresenter extends BaseIntelligentRecognitionBll implements IIntelligentRecognitionPresenter<IIntelligentRecognitionView>, IntelligentLifecycleObserver {
+public abstract class BaseIntelligentRecognitionPresenter extends
+        BaseIntelligentRecognitionBll<IntelligentRecognitionViewModel>
+        implements IIntelligentRecognitionPresenter<IIntelligentRecognitionView>, IntelligentLifecycleObserver {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    protected FragmentActivity mActivity;
+//    protected FragmentActivity mActivity;
 
     IntelligentRecognitionBroadcast broadcast;
 
@@ -56,7 +59,7 @@ public abstract class BaseIntelligentRecognitionPresenter extends BaseIntelligen
 
 //    protected MediaPlayer mediaPlayer;
 
-    protected IntelligentRecognitionViewModel mViewModel;
+//    protected IntelligentRecognitionViewModel mViewModel;
 
     private IIntelligentRecognitionView baseView;
 
@@ -75,7 +78,7 @@ public abstract class BaseIntelligentRecognitionPresenter extends BaseIntelligen
     private long speechStartTime;
 
     public BaseIntelligentRecognitionPresenter(FragmentActivity context) {
-        super(context);
+        super(context, IntelligentRecognitionViewModel.class);
         this.mActivity = context;
         this.mViewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
         this.mRecord = mViewModel.getRecordData();
@@ -84,7 +87,7 @@ public abstract class BaseIntelligentRecognitionPresenter extends BaseIntelligen
     }
 
     //返回当前是第几个speechNum
-    int getSpeechNum() {
+    protected int getSpeechNum() {
         return speechNum;
     }
 
@@ -99,12 +102,12 @@ public abstract class BaseIntelligentRecognitionPresenter extends BaseIntelligen
         mActivity.registerReceiver(broadcast, intentFilter);
     }
 
-    protected IntelligentRecognitionHttpResponseParser getIntelligentRecognitionHttpResponseParser() {
-        if (intelligentRecognitionHttpResponseParser == null) {
-            intelligentRecognitionHttpResponseParser = new IntelligentRecognitionHttpResponseParser();
-        }
-        return intelligentRecognitionHttpResponseParser;
-    }
+//    protected IntelligentRecognitionHttpResponseParser getIntelligentRecognitionHttpResponseParser() {
+//        if (intelligentRecognitionHttpResponseParser == null) {
+//            intelligentRecognitionHttpResponseParser = new IntelligentRecognitionHttpResponseParser();
+//        }
+//        return intelligentRecognitionHttpResponseParser;
+//    }
 
 //    protected IntelligentRecognitionHttpManager getHttpManager() {
 //        if (httpManager == null) {

@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.top3;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.top3;
 
 import android.support.v4.app.FragmentActivity;
 

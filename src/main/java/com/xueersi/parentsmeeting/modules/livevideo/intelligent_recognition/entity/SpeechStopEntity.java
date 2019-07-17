@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity;
 
 public class SpeechStopEntity {
     private int type;
