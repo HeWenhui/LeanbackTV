@@ -2601,8 +2601,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             return  stuSegmentEntity;
         } catch (Exception e) {
             e.printStackTrace();
-            MobAgent.httpResponseParserError(TAG, "parseStuSegmentInfo", e.getMessage());
-            CrashReport.postCatchedException(e);
         }
         return null;
     }
@@ -2623,8 +2621,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             return  betterMeEntity;
         } catch (Exception e) {
             e.printStackTrace();
-            MobAgent.httpResponseParserError(TAG, "parseBetterMeInfo", e.getMessage());
-            CrashReport.postCatchedException(e);
         }
         return null;
     }
@@ -2646,8 +2642,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             return  aimRealTimeValEntity;
         } catch (Exception e) {
             e.printStackTrace();
-            MobAgent.httpResponseParserError(TAG, "parseAimRealTimeValInfo", e.getMessage());
-            CrashReport.postCatchedException(e);
         }
         return null;
     }
@@ -2673,8 +2667,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             return  stuAimResultEntity;
         } catch (Exception e) {
             e.printStackTrace();
-            MobAgent.httpResponseParserError(TAG, "parseStuAimResultInfo", e.getMessage());
-            CrashReport.postCatchedException(e);
         }
         return null;
     }
