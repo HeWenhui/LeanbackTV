@@ -85,7 +85,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 planId = jsonObject.optString("planId");
                 chapterName = jsonObject.optString("planName");
                 termId = jsonObject.optString("termId");
-                type = jsonObject.optInt("type");
                 type = jsonObject.optInt("variety");
                 if (type == TYPE_LIVE) {
                     startLive();
@@ -190,6 +189,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             AppBll.getInstance(activity);
             startLivePlayActivity(liveId);
         } else {
+            //TODO
             //TODO
             String playBackUrl = "";
             //TODO
