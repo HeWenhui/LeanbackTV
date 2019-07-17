@@ -741,7 +741,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
 //                            @Override
 //                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                EvenDriveEntity evenDriveEntity = getIntelligentRecognitionHttpResponseParser().parseEvenEntity(responseEntity);
 //                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
 //                            }
 //                        });
@@ -794,7 +794,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
 //                            @Override
 //                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                EvenDriveEntity evenDriveEntity = getIntelligentRecognitionHttpResponseParser().parseEvenEntity(responseEntity);
 //                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
 //                            }
 //                        });
@@ -838,7 +838,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                            mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
 //                                @Override
 //                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                                    EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                    EvenDriveEntity evenDriveEntity = getIntelligentRecognitionHttpResponseParser().parseEvenEntity(responseEntity);
 //                                    mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
 //                                }
 //                            });
@@ -921,7 +921,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
 //                            @Override
 //                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                EvenDriveEntity evenDriveEntity = getIntelligentRecognitionHttpResponseParser().parseEvenEntity(responseEntity);
 //                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
 //                            }
 //                        });
@@ -960,7 +960,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
 //                            @Override
 //                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                EvenDriveEntity evenDriveEntity = getIntelligentRecognitionHttpResponseParser().parseEvenEntity(responseEntity);
 //                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
 //                            }
 //                        });

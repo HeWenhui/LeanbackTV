@@ -11,7 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.Comm
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.RxFilter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.IntelligentRecognitionHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.EvaluationAudioPlayerDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.SoundEffectPlayer;
@@ -106,7 +106,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                 new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        HttpResponseParser parser = new HttpResponseParser();
+                        IntelligentRecognitionHttpResponseParser parser = new IntelligentRecognitionHttpResponseParser();
                         mViewModel.getSpeechScoreData().
                                 setValue(parser.parseSpeechScore(responseEntity));
                     }

@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.vie
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
@@ -16,7 +17,7 @@ public class IntelligentRecognitionViewModel extends ViewModel {
     private MutableLiveData<Boolean> isSpeechReady = new MutableLiveData<>();
     /** 音量 */
     private MutableLiveData<Integer> volume = new MutableLiveData<>();
-    /** 当前Activity是否结束 */
+    /** 是否收到收题指令 */
     private MutableLiveData<Boolean> isFinish = new MutableLiveData<>();
     /** 语音测评完成，显示结果 */
     private MutableLiveData<Boolean> isIntelligentSpeechFinish = new MutableLiveData<>();
@@ -26,7 +27,20 @@ public class IntelligentRecognitionViewModel extends ViewModel {
     private MutableLiveData<Boolean> isCancelSpeech = new MutableLiveData<>();
     /** 语音测评分数 */
     private MutableLiveData<SpeechScoreEntity> speechScoreData = new MutableLiveData<>();
-//    private MutableLiveData<Integer> speechScore = new MutableLiveData<>();
+    /** 获取Top3的Data成功 */
+    private MutableLiveData<GoldTeamStatus> isTop3DataSuccess = new MutableLiveData<>();
+    /** top3是否显示 */
+    private MutableLiveData<Boolean> isTop3Show = new MutableLiveData<>();
+
+    public MutableLiveData<Boolean> getIsTop3Show() {
+        return isTop3Show;
+    }
+
+    public MutableLiveData<GoldTeamStatus> getIsTop3DataSuccess() {
+        return isTop3DataSuccess;
+    }
+
+    //    private MutableLiveData<Integer> speechScore = new MutableLiveData<>();
 
 //    public MutableLiveData<Integer> getSpeechScore() {
 //        return speechScore;

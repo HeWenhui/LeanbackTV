@@ -23,8 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.RxFi
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.SpeechStopEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.HttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.IntelligentRecognitionHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionView;
@@ -45,7 +44,7 @@ import io.reactivex.functions.Consumer;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
 
-public abstract class BaseIntelligentRecognitionPresenter implements IIntelligentRecognitionPresenter<IIntelligentRecognitionView>, IntelligentLifecycleObserver {
+public abstract class BaseIntelligentRecognitionPresenter extends BaseIntelligentRecognitionBll implements IIntelligentRecognitionPresenter<IIntelligentRecognitionView>, IntelligentLifecycleObserver {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
@@ -63,8 +62,8 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
 
     protected IntelligentRecognitionRecord mRecord;
 
-    private HttpManager httpManager;
-    private HttpResponseParser httpResponseParser;
+    //    private IntelligentRecognitionHttpManager httpManager;
+    private IntelligentRecognitionHttpResponseParser intelligentRecognitionHttpResponseParser;
     //    private AtomicBoolean isSpeechStart = new AtomicBoolean(false);
     //第几次语音测评
     private int speechNum = 0;
@@ -76,11 +75,12 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
     private long speechStartTime;
 
     public BaseIntelligentRecognitionPresenter(FragmentActivity context) {
+        super(context);
         this.mActivity = context;
         this.mViewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
         this.mRecord = mViewModel.getRecordData();
-//        httpManager = new HttpManager();
-//        httpResponseParser = new HttpResponseParser();
+//        httpManager = new IntelligentRecognitionHttpManager();
+//        intelligentRecognitionHttpResponseParser = new IntelligentRecognitionHttpResponseParser();
     }
 
     //返回当前是第几个speechNum
@@ -99,19 +99,19 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
         mActivity.registerReceiver(broadcast, intentFilter);
     }
 
-    protected HttpResponseParser getHttpResponseParser() {
-        if (httpResponseParser == null) {
-            httpResponseParser = new HttpResponseParser();
+    protected IntelligentRecognitionHttpResponseParser getIntelligentRecognitionHttpResponseParser() {
+        if (intelligentRecognitionHttpResponseParser == null) {
+            intelligentRecognitionHttpResponseParser = new IntelligentRecognitionHttpResponseParser();
         }
-        return httpResponseParser;
+        return intelligentRecognitionHttpResponseParser;
     }
 
-    protected HttpManager getHttpManager() {
-        if (httpManager == null) {
-            httpManager = new HttpManager();
-        }
-        return httpManager;
-    }
+//    protected IntelligentRecognitionHttpManager getHttpManager() {
+//        if (httpManager == null) {
+//            httpManager = new IntelligentRecognitionHttpManager(m);
+//        }
+//        return httpManager;
+//    }
 
     /** 注册消息接受者 */
     @Override
@@ -260,8 +260,8 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
      * }
      */
     private void getRemoteEntity() {
-//        final HttpManager httpManager = new HttpManager(mActivity);
-        HttpManager.getIEResult(
+//        final IntelligentRecognitionHttpManager httpManager = new IntelligentRecognitionHttpManager(mActivity);
+        getHttpManager().getIEResult(
                 mActivity,
                 mRecord.getLiveId(),
                 mRecord.getMaterialId(),
@@ -270,8 +270,8 @@ public abstract class BaseIntelligentRecognitionPresenter implements IIntelligen
                 new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        HttpResponseParser httpResponseParser = new HttpResponseParser();
-                        IEResult ieResult = httpResponseParser.parseIEResponse(responseEntity);
+                        IntelligentRecognitionHttpResponseParser intelligentRecognitionHttpResponseParser = new IntelligentRecognitionHttpResponseParser();
+                        IEResult ieResult = intelligentRecognitionHttpResponseParser.parseIEResponse(responseEntity);
                         if (ieResult != null) {
                             ViewModelProviders.
                                     of(mActivity).

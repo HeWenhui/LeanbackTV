@@ -120,4 +120,8 @@
         app:lottie_fileName="intelligent_recognition_study_v2/english/ready_go/data.json"
         app:lottie_imageAssetsFolder="intelligent_recognition_study_v2/english/ready_go/images" />
 
+    <FrameLayout
+        android:id="@+id/framelayout_english_intelligent_recognition_top3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </android.support.constraint.ConstraintLayout>

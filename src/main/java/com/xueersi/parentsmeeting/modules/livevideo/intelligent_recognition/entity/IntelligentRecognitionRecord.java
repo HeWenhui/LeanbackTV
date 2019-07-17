@@ -30,6 +30,26 @@ public class IntelligentRecognitionRecord implements Parcelable {
     private String useClient;
     //端的版本号
     private String useClientVer;
+    //    班级id
+    private String classId;
+    //    小组id
+    private String teamId;
+
+    public String getClassId() {
+        return classId;
+    }
+
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
+
+    public String getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(String teamId) {
+        this.teamId = teamId;
+    }
 
     public String getLiveId() {
         return liveId;
@@ -119,6 +139,9 @@ public class IntelligentRecognitionRecord implements Parcelable {
         this.useClientVer = useClientVer;
     }
 
+    public IntelligentRecognitionRecord() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -137,9 +160,8 @@ public class IntelligentRecognitionRecord implements Parcelable {
         dest.writeString(this.answerTime);
         dest.writeString(this.useClient);
         dest.writeString(this.useClientVer);
-    }
-
-    public IntelligentRecognitionRecord() {
+        dest.writeString(this.classId);
+        dest.writeString(this.teamId);
     }
 
     protected IntelligentRecognitionRecord(Parcel in) {
@@ -154,9 +176,11 @@ public class IntelligentRecognitionRecord implements Parcelable {
         this.answerTime = in.readString();
         this.useClient = in.readString();
         this.useClientVer = in.readString();
+        this.classId = in.readString();
+        this.teamId = in.readString();
     }
 
-    public static final Parcelable.Creator<IntelligentRecognitionRecord> CREATOR = new Parcelable.Creator<IntelligentRecognitionRecord>() {
+    public static final Creator<IntelligentRecognitionRecord> CREATOR = new Creator<IntelligentRecognitionRecord>() {
         @Override
         public IntelligentRecognitionRecord createFromParcel(Parcel source) {
             return new IntelligentRecognitionRecord(source);

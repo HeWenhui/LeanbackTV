@@ -13,7 +13,11 @@ import android.view.ViewGroup;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.top3.IntelligentRecognitionTop3Bll;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.top3.IntelligentRecognitionTop3View;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionPresenter;
@@ -22,8 +26,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view
 public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private FragmentActivity mActivity;
-
-//    private IntelligentRecognitionPresenter mPresenter;
 
     private IntelligentRecognitionRecord mRecord;
 
@@ -54,11 +56,10 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        IntelligentRecognitionPermissionPager pager = new IntelligentRecognitionPermissionPager(mActivity);
-        pager.initView(inflater, container, false);
-        IntelligentRecognitionPresenter mPresenter = new IntelligentRecognitionPresenter(mActivity);
 
-        associatePV(pager, mPresenter);
+        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_livevideo_english_inteliigent_recognition, container, false);
+
+        viewGroup.addView(addContentView());
 //        IntelligentRecognitionViewModel viewModel = ViewModelProviders.of(this).get(IntelligentRecognitionViewModel.class);
 
 //        viewModel.getIeResultData().observe(this, new Observer<IEResult>() {
@@ -68,8 +69,31 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
 //            }
 //        });
         logger.i("pagerView");
+        return viewGroup;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        addObserver();
+    }
+
+    private View addContentView() {
+
+        IntelligentRecognitionPermissionPager pager = new IntelligentRecognitionPermissionPager(mActivity);
+//        pager.initView(inflater, container, false);
+        IntelligentRecognitionPresenter mPresenter = new IntelligentRecognitionPresenter(mActivity);
+
+        associatePV(pager, mPresenter);
+
         return pager.getRootView();
     }
+
+    private boolean isTop3DataSuccess = false;
+
+    private boolean isTop3TimeUp = false;
+
+    private GoldTeamStatus goldTeamStatus;
 
     @Override
     public void onResume() {
@@ -77,28 +101,49 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
 
     }
 
-    private void observeViewModel() {
-        mViewModel.getIsFinish().observe(this, new Observer<Boolean>() {
+    private void addObserver() {
+        mViewModel.getIsFinish().observe(mActivity, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
                 if (aBoolean) {
-                    mActivity.finish();
+                    IntelligentRecognitionTop3Bll top3Bll = new IntelligentRecognitionTop3Bll(mActivity);
+                    top3Bll.getTop3Data();
                 }
+            }
+        });
+        mViewModel.getIsTop3Show().observe(mActivity, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                isTop3TimeUp = aBoolean;
+                performShowTop3();
+            }
+        });
+
+        mViewModel.getIsTop3DataSuccess().observe(mActivity, new Observer<GoldTeamStatus>() {
+            @Override
+            public void onChanged(@Nullable GoldTeamStatus goldTeamStatus) {
+
+                IntelligentRecognitionFragment.this.goldTeamStatus = goldTeamStatus;
+                isTop3DataSuccess = true;
+                performShowTop3();
             }
         });
     }
 
-//    private <T extends BaseView> void craeteClass(Class<T> v, Class p) {
-//        try {
-//            v.newInstance();
-//            p.newInstance();
-//        } catch (java.lang.InstantiationException e) {
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private void performShowTop3() {
+        if (isTop3DataSuccess && isTop3TimeUp) {
+            if (getView() == null) {
+                return;
+            }
 
+            ViewGroup viewGroup = (ViewGroup) getView();
+            IntelligentRecognitionTop3View top3View = new IntelligentRecognitionTop3View(mActivity, goldTeamStatus);
+
+            ViewGroup.LayoutParams layoutParams = new ViewGroup.
+                    LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            viewGroup.addView(top3View.getRootView(), layoutParams);
+        }
+    }
 
     @Override
     protected <P extends IntelligentRecognitionContract.BasePresenter> void addObserver(P p) {
@@ -106,10 +151,4 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
             getLifecycle().addObserver((IntelligentLifecycleObserver) p);
         }
     }
-
-//    void addObserver() {
-//        if (p instanceof IntelligentLifecycleObserver) {
-//            getLifecycle().addObserver((IntelligentLifecycleObserver) p);
-//        }
-//    }
 }

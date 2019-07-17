@@ -81,11 +81,18 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
 
     @Override
     public View initView() {
-        return null;
+        mView = View.inflate(mActivity, R.layout.page_livevideo_english_intelligent_recognition, null);
+        afterInitView(mView);
+        return mView;
     }
 
     public View initView(LayoutInflater inflater, ViewGroup containter, boolean attachToRoot) {
         mView = inflater.inflate(R.layout.page_livevideo_english_intelligent_recognition, containter, attachToRoot);
+        afterInitView(mView);
+        return mView;
+    }
+
+    private void afterInitView(View mView) {
         waveView = mView.findViewById(R.id.wv_livevideo_intelligent_recognition_energy_bar);
         waveLottie = mView.findViewById(R.id.lottie_view_livevideo_intelligent_recognition_waveview_open_start);
         tvContent = mView.findViewById(R.id.tv_livevideo_intelligent_recognition_textview);
@@ -96,7 +103,6 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
         performOpenViewStart();
         initData();
         initListener();
-        return mView;
     }
 
     protected void performOpenViewStart() {
@@ -221,7 +227,8 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
                 }).delay(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
-                        mActivity.finish();
+//                        mActivity.finish();
+                        viewModel.getIsTop3Show().postValue(true);
                     }
                 });
 

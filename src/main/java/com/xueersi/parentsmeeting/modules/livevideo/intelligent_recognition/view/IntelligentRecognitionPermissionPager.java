@@ -82,6 +82,7 @@ public class IntelligentRecognitionPermissionPager extends BaseIntelligentRecogn
 
     /**
      * 更新火焰数量图片
+     *
      * @param fireNum
      * @return
      */
@@ -109,4 +110,7 @@ public class IntelligentRecognitionPermissionPager extends BaseIntelligentRecogn
         return null;
     }
 
+    private void addPager() {
+
+    }
 }
