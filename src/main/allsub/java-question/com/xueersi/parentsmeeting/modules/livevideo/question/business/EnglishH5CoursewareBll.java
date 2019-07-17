@@ -1124,9 +1124,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, final BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, final OnAnswerReslut answerReslut) {
-            if (LiveVideoConfig.isNewArts) {
+            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+            if (videoQuestionLiveEntity1.isNewArtsH5Courseware()) {
                 logger.d("onPutQuestionResultNewArts0");
-                final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+
                 JSONArray answers = new JSONArray();
                 JSONObject answerdetail = new JSONObject();
                 JSONArray blanks = new JSONArray();
@@ -1225,7 +1226,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 });
 
             } else {
-                final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+              //  final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
                 JSONObject answerObj = new JSONObject();
                 JSONArray answerAnswer = new JSONArray();
                 try {

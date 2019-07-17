@@ -96,7 +96,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         this.questionSwitch = questionSwitch;
         this.type = type;
         this.assess_ref = assess_ref;
-        isNewArts = LiveVideoConfig.isNewArts;
+        isNewArts = mDetail.isNewArtsH5Courseware();
         if (isNewArts) {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(mDetail.getVoiceType()) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(mDetail.getVoiceType())) {
                 try {

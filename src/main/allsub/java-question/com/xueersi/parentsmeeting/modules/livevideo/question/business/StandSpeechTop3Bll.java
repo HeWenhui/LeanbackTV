@@ -61,7 +61,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
             public void run() {
                 //原生语音评测
                 if (speechAssessmentPager instanceof StandSpeechAssAutoPager) {
-                    questionIRCBll.getSpeechEvalAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
+                    questionIRCBll.getSpeechEvalAnswerTeamRank(((StandSpeechAssAutoPager) speechAssessmentPager).isNewArt(),num, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             entity = (GoldTeamStatus) objData[0];
@@ -84,7 +84,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                     });
                     /** 语音评测 roleplay */
                 } else if (speechAssessmentPager instanceof SpeechAssessmentWebX5Pager || speechAssessmentPager instanceof RolePlayStandMachinePager) {
-                    questionIRCBll.getRolePlayAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
+                    questionIRCBll.getRolePlayAnswerTeamRank(speechAssessmentPager.isNewArt(),num, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             entity = (GoldTeamStatus) objData[0];

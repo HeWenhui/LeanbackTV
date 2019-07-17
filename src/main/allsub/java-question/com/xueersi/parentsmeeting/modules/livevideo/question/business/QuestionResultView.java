@@ -165,7 +165,7 @@ public class QuestionResultView {
             answer.setRightAnswers(userAnswer);
         }
         // 如果是文科平台
-        if (LiveVideoConfig.isNewArts) {
+        if (entity.isNewArt()) {
             if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE2) {
                 resultEntity.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
                 answer.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);

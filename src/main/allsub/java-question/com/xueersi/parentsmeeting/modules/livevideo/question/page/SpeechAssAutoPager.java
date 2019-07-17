@@ -247,6 +247,11 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     @Override
+    public boolean isNewArt() {
+        return isNewArts;
+    }
+
+    @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livebackvideo_speecheval_auto_question, null);
         ivSpeectevalTimeEmoji = (ImageView) view.findViewById(R.id.iv_livevideo_speecteval_time_emoji);
@@ -512,7 +517,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    speechEvalAction.speechIsAnswered(id, new AbstractBusinessDataCallBack() {
+                    speechEvalAction.speechIsAnswered(isNewArts,id, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             boolean answer = (boolean) objData[0];

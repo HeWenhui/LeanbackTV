@@ -86,6 +86,7 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
     public abstract void jsExamSubmit();
 
     public abstract void stopPlayer();
+    public abstract boolean isNewArt();
 
     public void setIse(SpeechUtils mIse) {
         this.mIse = mIse;

@@ -226,6 +226,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         umsAgentDebugPv(eventId, mData);
     }
 
+    public boolean isNewArt() {
+        return isNewArts;
+    }
     /** 语音答题回放 */
     public StandSpeechAssAutoPager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String liveid,
                                    String testId,
@@ -381,7 +384,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
                 @Override
                 public void run() {
-                    liveStandSpeechEvalAction.getSpeechEvalAnswerTeamStatus(id, new AbstractBusinessDataCallBack() {
+                    liveStandSpeechEvalAction.getSpeechEvalAnswerTeamStatus(isNewArts,id, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             GoldTeamStatus entity = (GoldTeamStatus) objData[0];
@@ -665,7 +668,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    speechEvalAction.speechIsAnswered(id, new AbstractBusinessDataCallBack() {
+                    speechEvalAction.speechIsAnswered(isNewArts,id, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             boolean answer = (boolean) objData[0];

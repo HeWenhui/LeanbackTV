@@ -132,7 +132,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
      * @param callBack
      */
     @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
+    public void sendSpeechEvalResult2(boolean isNewArt,String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
         String liveid = mVideoEntity.getLiveId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
 //        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer,

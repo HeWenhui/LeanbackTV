@@ -174,7 +174,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         final int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
-                LiveVideoConfig.isNewArts = false;
+            //    LiveVideoConfig.isNewArts = false;
                 BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
                     mediaPlayerControl.pause();
@@ -212,7 +212,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             break;
             case LocalCourseConfig.CATEGORY_TUTOR_EVENT_35:
             case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE: {
-                LiveVideoConfig.isNewArts = false;
+                //LiveVideoConfig.isNewArts = false;
                 BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {
                     mediaPlayerControl.pause();
@@ -277,7 +277,9 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             }
             break;
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
-                LiveVideoConfig.isNewArts = true;
+                //LiveVideoConfig.isNewArts = true;
+                mCurrentQuestionEntity.setNewArtsCourseware(true);
+               // mCurrentQuestionEntity.setNewArtsCourseware(true);
                 Log.e("Duncan", "mqtt+文科新课件平台");
                 BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
@@ -603,7 +605,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                     VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer(responseEntity,
                             true);
                     entity.setVoice(true);
-                    if (LiveVideoConfig.isNewArts) {
+                    if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
                         entity.setResultType(isRights ? 2 : 0);
                     }
                     if (StringUtils.isSpace(entity.getTestId())) {
@@ -631,7 +633,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 }
             };
 //            if (!liveBackBll.getExperience()) {
-            getCourseHttpManager().sumitCourseWareH5(
+            getCourseHttpManager().sumitCourseWareH5(videoQuestionLiveEntity.isNewArtsH5Courseware(),
                     enstuId,
                     videoQuestionLiveEntity.srcType,
                     videoQuestionLiveEntity.id,

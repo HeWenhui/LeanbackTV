@@ -252,6 +252,14 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
 
     }
 
+    @Override
+    public boolean isNewArt() {
+        if (videoQuestionLiveEntity != null) {
+            return videoQuestionLiveEntity.isNewArtsH5Courseware();
+        }
+        return false;
+    }
+
     /**
      * 区分英语，语文测评，显示中英文的roleplay标题和布局
      */

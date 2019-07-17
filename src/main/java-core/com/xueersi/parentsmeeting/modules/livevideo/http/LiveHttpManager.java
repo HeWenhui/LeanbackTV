@@ -525,8 +525,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     }
 
 
-    public void getTestAnswerTeamStatus(String testId, HttpCallBack requestCallBack) {
-        if (LiveVideoConfig.isNewArts) {
+    public void getTestAnswerTeamStatus(boolean isNewArt,String testId, HttpCallBack requestCallBack) {
+        if (isNewArt) {
             HttpRequestParams params = new HttpRequestParams();
             String url = liveVideoSAConfigInner.URL_LIVE_NEWSTAND_ANSWER;
             setDefaultParameter(params);
@@ -542,8 +542,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
 
     }
 
-    public void getSpeechEvalAnswerTeamStatus(String testId, HttpCallBack requestCallBack) {
-        if (LiveVideoConfig.isNewArts) {
+    public void getSpeechEvalAnswerTeamStatus(boolean isNewArt,String testId, HttpCallBack requestCallBack) {
+        if (isNewArt) {
             HttpRequestParams params = new HttpRequestParams();
             String url = liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM_STATUS;
             setDefaultParameter(params);
@@ -625,8 +625,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     /**
      * 提交语文AI主观题答案
      *
-     * @param params
-     * @param requestCallBack
+     * @param data
+     * @param callBack
      */
     public void submitChineseAISubjectiveAnswer(String url, String data, final HttpCallBack callBack) {
 
@@ -765,8 +765,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     }
 
     /** 语音评测排行榜  兼容全身直播新课件平台改版的Top3 */
-    public void getSpeechEvalAnswerTeamRank(String id, HttpCallBack requestCallBack) {
-        if (LiveVideoConfig.isNewArts) {
+    public void getSpeechEvalAnswerTeamRank(boolean isNewArt,String id, HttpCallBack requestCallBack) {
+        if (isNewArt) {
             HttpRequestParams params = new HttpRequestParams();
             params.addBodyParam("testId", id);
             setDefaultParameter(params);
@@ -1320,8 +1320,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     }
 
     /** roleplay组内排行榜 兼容全身直播新课件的改版Top3 */
-    public void getRolePlayAnswerTeamRank(String testId, HttpCallBack callBack) {
-        if (LiveVideoConfig.isNewArts) {
+    public void getRolePlayAnswerTeamRank(boolean isNewArt,String testId, HttpCallBack callBack) {
+        if (isNewArt) {
             HttpRequestParams params = new HttpRequestParams();
             params.addBodyParam("testId", testId);
             setDefaultParameter(params);
@@ -1781,11 +1781,11 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * 文科提交对老师评价
      *
      * @param liveId
-     * @param stuCouId
-     * @param teacherEvaluLevel
-     * @param teacherEvaluOption
-     * @param tutorEvaluLevel
-     * @param tutorEvaluOption
+     * @param courseId
+     * @param teacherId
+     * @param teacherScore
+     * @param teacherOption
+     * @param counselorId
      * @param requestCallBack
      */
     public void saveArtsEvaluationTeacher(String liveId, String courseId, String teacherId, String teacherScore, String

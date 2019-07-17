@@ -78,6 +78,7 @@ public class LiveBackVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 isSuccess = answerResultEntity.getIsRight() == 2;
             }
         }
+        entity.setNewArt(videoQuestionLiveEntity.isNewArtsH5Courseware());
         if (!smallEnglish) {
             if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
                 if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {

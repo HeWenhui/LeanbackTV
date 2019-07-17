@@ -1830,8 +1830,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
 
     @Override
-    public void speechIsAnswered(String num, AbstractBusinessDataCallBack callBack) {
-        questionHttp.speechEval42IsAnswered(mVSectionID, num, callBack);
+    public void speechIsAnswered(boolean isNewArt,String num, AbstractBusinessDataCallBack callBack) {
+        questionHttp.speechEval42IsAnswered(isNewArt,mVSectionID, num, callBack);
     }
 
     private void setHaveExam(boolean haveExam) {
@@ -2268,7 +2268,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     @Override
     public void sendSpeechEvalResult2(String id, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuAnswer,
                                       String isSubmit, AbstractBusinessDataCallBack callBack) {
-        questionHttp.sendSpeechEvalResult2(id, stuAnswer, isSubmit, callBack);
+        questionHttp.sendSpeechEvalResult2(videoQuestionLiveEntity.isNewArtsH5Courseware(),id, stuAnswer, isSubmit, callBack);
     }
 
     public void onPause() {

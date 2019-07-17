@@ -172,7 +172,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         logger.i("showQuestion:vCategory=" + vCategory);
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
-                LiveVideoConfig.isNewArts = false;
+               // LiveVideoConfig.isNewArts = false;
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
                 videoQuestionLiveEntity.type = questionEntity.getvQuestionType();
@@ -212,7 +212,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
-                LiveVideoConfig.isNewArts = false;
+              //  LiveVideoConfig.isNewArts = false;
                 VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
                         .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
@@ -242,7 +242,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             break;
             case LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE: {
                 logger.i("showQuestion :" + vCategory + ":" + questionEntity.getvQuestionType() + ":" + questionEntity.getType() + ":" + questionEntity.toString());
-                LiveVideoConfig.isNewArts = true;
+                //LiveVideoConfig.isNewArts = true;
+                questionEntity.setNewArtsCourseware(true);
                 VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
                         .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
@@ -430,7 +431,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
         };
 //        if (!videoQuestionLiveEntity1.type.equals("8")) {
-        getCourseHttpManager().saveTestRecord(
+        getCourseHttpManager().saveTestRecord(videoQuestionLiveEntity1.isNewArtsH5Courseware(),
                 enstuId,
                 videoQuestionLiveEntity1.srcType,
                 videoQuestionLiveEntity1.id,
@@ -480,7 +481,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
      * @param callBack
      */
     @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
+    public void sendSpeechEvalResult2(boolean isNewArt,String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
         String liveid = mVideoEntity.getLiveId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         HttpCallBack httpCallBack = new HttpCallBack(false) {
@@ -513,7 +514,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 //        if (!liveBackBll.getExperience()) {
 //            getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
 //                    httpCallBack);
-        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, httpCallBack, isSubmit);
+        getCourseHttpManager().sendSpeechEvalResult2(isNewArt,enstuId, liveid, id, stuAnswer, httpCallBack, isSubmit);
 //    } else
 
 //    {
@@ -541,7 +542,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void speechEval42IsAnswered(String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
+    public void speechEval42IsAnswered(boolean isNewArt,String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         getCourseHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
             @Override

@@ -175,7 +175,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         this.assess_ref = assess_ref;
         this.headUrl = headUrl;
         this.userName = StandLiveTextView.getShortName(userName);
-        if (LiveVideoConfig.isNewArts) {
+        if (isNewArts) {
             try {
                 answer = assess_ref.getJSONArray("answer").getString(0);
             } catch (JSONException e) {
@@ -1056,7 +1056,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
     private void onCommit(VideoResultEntity entity, double speechDuration) {
         boolean isRight;
-        if (LiveVideoConfig.isNewArts) {
+        if (isNewArts) {
             if (entity.getResultType() == 2) {
                 isRight = true;
             } else {
