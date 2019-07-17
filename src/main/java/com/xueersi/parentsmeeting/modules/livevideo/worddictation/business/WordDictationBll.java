@@ -147,6 +147,7 @@ public class WordDictationBll implements WordDictationAction {
                         bundle.putString("what","MiddleResult");
                         XueErSiRouter.startModule(activity, "/dictation/MiddleResult", bundle);
                     }
+                    bottomContent.removeView(view);
                 }
             });
             view.findViewById(R.id.bt_livevideo_worddictation_close).setOnClickListener(new View.OnClickListener() {
