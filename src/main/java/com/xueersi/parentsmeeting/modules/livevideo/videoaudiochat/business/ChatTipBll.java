@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
@@ -23,9 +23,11 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.MyEngineEventHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -43,8 +45,8 @@ public class ChatTipBll {
     String TAG = getClass().getSimpleName();
     protected Logger logger = LiveLoggerFactory.getLogger(TAG);
     Activity activity;
-    private RelativeLayout bottomContent;
-    Handler handler = new Handler(Looper.getMainLooper());
+    private LiveViewAction liveViewAction;
+    private Handler handler = new Handler(Looper.getMainLooper());
     private LiveAndBackDebug liveAndBackDebug;
     private String linkMicNonce = "";
     private VideoAudioChatHttp videoChatHttp;
@@ -69,6 +71,8 @@ public class ChatTipBll {
      */
     private ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
     private ViewGroup vgRaisehand;
+    //添加声网
+    private RelativeLayout rl_livevideo_agora_content;
     private boolean destory = false;
     private TextView tv_livevideo_chat_people;
     private TextView tv_livevideo_chat_people_hind;
@@ -124,8 +128,8 @@ public class ChatTipBll {
         stuPutUpHandsNum = getInfo.getStuPutUpHandsNum();
     }
 
-    public void setRootView(RelativeLayout bottomContent) {
-        this.bottomContent = bottomContent;
+    public void setRootView(LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
 //        videoChatPager = new VideoChatPager(activity);
 //        bottomContent.addView(videoChatPager.getRootView());
     }
@@ -195,7 +199,8 @@ public class ChatTipBll {
             return;
         }
         handler.postDelayed(waitRun, 1000);
-        vgRaisehand = (ViewGroup) LayoutInflater.from(activity).inflate(R.layout.layout_live_video_chat, bottomContent, false);
+        vgRaisehand = (ViewGroup) liveViewAction.inflateView(R.layout.layout_live_video_chat);
+        rl_livevideo_agora_content = (RelativeLayout) liveViewAction.inflateView(R.layout.layout_livevideo_video_chat);
         rl_livevideo_content_left = vgRaisehand.findViewById(R.id.rl_livevideo_chat_content_left);
         ll_livevideo_chat_people = vgRaisehand.findViewById(R.id.ll_livevideo_chat_people);
         rl_livevideo_chat_raisehand_on = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand_on);
@@ -206,7 +211,8 @@ public class ChatTipBll {
         logToFile.d("initView:x2=" + LiveVideoPoint.getInstance().x2 + ",method=" + method + ",destory=" + destory);
         final int bottom = LiveVideoPoint.getInstance().screenHeight - LiveVideoPoint.getInstance().y4 + 200;
         vgRaisehand.setPadding(vgRaisehand.getLeft(), bottom, vgRaisehand.getRight(), bottom);
-        bottomContent.addView(vgRaisehand, lpRaisehand);
+        liveViewAction.addView(new LiveVideoLevel(3), rl_livevideo_agora_content);
+        liveViewAction.addView(new LiveVideoLevel(4), vgRaisehand, lpRaisehand);
         rl_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand);
         bt_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.bt_livevideo_chat_raisehand);
         tv_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.tv_livevideo_chat_raisehand);
@@ -445,7 +451,7 @@ public class ChatTipBll {
                             stuPutUpHandsNum = Integer.parseInt(jsonObject + "");
                             getInfo.setStuPutUpHandsNum(stuPutUpHandsNum);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new Exception("" + jsonObject, e));
+                            LiveCrashReport.postCatchedException(new Exception("" + jsonObject, e));
                         }
                         VideoAudioChatLog.raiseHandToPhpSno5(liveAndBackDebug, linkmicid, micType == 0 ? "audio" : "video", linkMicNonce, true, "0", SystemClock.elapsedRealtime() - before);
                     }
@@ -531,7 +537,7 @@ public class ChatTipBll {
             return;
         }
         initView("startRecord");
-        AgoraChatPager agoraChatPager = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp, msgFrom, micType, linkmicid);
+        AgoraChatPager agoraChatPager = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp, msgFrom, micType, linkmicid, ll_livevideo_chat_people, liveViewAction);
         agoraChatPager.setTestWorkerThread(testWorkerThread);
         videoChatInter = agoraChatPager;
         if (contain) {
@@ -592,9 +598,13 @@ public class ChatTipBll {
             @Override
             public void run() {
                 if (vgRaisehand != null) {
-                    bottomContent.removeView(vgRaisehand);
+                    liveViewAction.removeView(vgRaisehand);
                     vgRaisehand = null;
                     destory = true;
+                }
+                if (rl_livevideo_agora_content != null) {
+                    liveViewAction.removeView(rl_livevideo_agora_content);
+                    rl_livevideo_agora_content = null;
                 }
                 if (videoChatInter != null) {
                     if (videoChatInter instanceof AgoraChatPager) {

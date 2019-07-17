@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -338,7 +338,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case OPEN_FILE:
-                    // 打开新的视频时长统计初始化
+                    // 打c开新的视频时长统计初始化
                     // 准备开始播放指定视频
                     synchronized (mOpenLock) {
                         if (!mOpened.get() && vPlayer != null) {
@@ -532,7 +532,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                         setVolumeListener.onSuccess(true);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                    LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             } else {
                 try {
@@ -540,7 +540,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                         setVolumeListener.onSuccess(false);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                    LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             }
         }

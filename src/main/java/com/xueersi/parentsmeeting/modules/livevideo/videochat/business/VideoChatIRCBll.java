@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.business;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
@@ -29,6 +30,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/7/11.
  */
 public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, NoticeAction, TopicAction, VideoChatHttp {
+    static{
+        Log.d("VideoChatIRCBll","VideoChatIRCBll:static");
+    }
     private VideoChatBll videoChatAction;
     private LivePlayAction livePlayAction;
     /** 接麦已经连接老师 */
@@ -77,7 +81,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
         boolean allowLinkMic = getInfo.isAllowLinkMic();
         if (allowLinkMic) {
             VideoChatBll videoChatBll = new VideoChatBll(activity, this);
-            videoChatBll.initView(mRootView);
+            videoChatBll.initView(getLiveViewAction());
             videoChatBll.setControllerBottom(baseLiveMediaControllerBottom);
             videoChatBll.setLiveAndBackDebug(contextLiveAndBackDebug);
             videoChatBll.setVideoChatHttp(this);
@@ -108,8 +112,8 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (videoChatAction != null) {
             videoChatAction.onDestroy();
         }

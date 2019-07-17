@@ -3,10 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 import android.content.Context;
 import android.util.Log;
 
-import com.tencent.bugly.crashreport.CrashReport;
-import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.common.config.AppConfig;
-import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -72,7 +70,7 @@ public class LiveLog implements LiveOnLineLogs {
         times = LIVE_TIME++;
         String s = dateFormat.format(new Date());
         String[] ss = s.split(",");
-        File logDir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + ss[0] + "/" + mLiveId + "-" + getPrefix);
+        File logDir = LiveCacheFile.geCacheFile(ContextManager.getContext(), "livelog/" + ss[0] + "/" + mLiveId + "-" + getPrefix);
         if (!logDir.exists()) {
             logDir.mkdirs();
         }
@@ -118,7 +116,7 @@ public class LiveLog implements LiveOnLineLogs {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
             }
         } catch (Exception err) {
-            CrashReport.postCatchedException(new LiveException(TAG, err));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, err));
         }
         logHashMap.put("liveeventid", "" + LogConfig.LIVE_DEBUG_MESSAGE);
         logHashMap.put("tag", "" + TAG);
@@ -173,7 +171,7 @@ public class LiveLog implements LiveOnLineLogs {
                 logHashMap.getData().putAll(stableLogHashMap.getData());
             }
         } catch (Exception err) {
-            CrashReport.postCatchedException(new LiveException(TAG, err));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, err));
         }
         logHashMap.put("liveeventid", "" + LogConfig.LIVE_DEBUG_MESSAGE);
         logHashMap.put("tag", "" + TAG);

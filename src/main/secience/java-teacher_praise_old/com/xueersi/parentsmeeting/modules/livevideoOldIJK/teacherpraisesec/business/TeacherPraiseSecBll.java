@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -193,7 +193,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 break;
             default:
@@ -202,9 +202,9 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
-        teacherPraiseBll.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
+        teacherPraiseBll.onDestroy();
     }
 
     @Override

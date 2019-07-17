@@ -54,7 +54,7 @@ public class LecAdvertPopBll {
         liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
     }
 
-    void onDestory() {
+    void onDestroy() {
         EventBus.getDefault().unregister(this);
     }
 

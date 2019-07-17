@@ -34,7 +34,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by：WangDe on 2018/11/27 16:12
  */
 public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.IShowEvaluateAction, com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.IButtonOnClick {
-    RelativeLayout bottomContent;
     private BaseEvaluateTeacherPaper evaluateTeacherPager;
     private RelativeLayout rlLiveMessageContent;
     private LiveHttpManager mHttpManager;
@@ -98,11 +97,6 @@ public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.paren
             }
         }
         super.onLiveInited(getInfo);
-    }
-
-    @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        this.bottomContent = bottomContent;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract;
 
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 
 public interface PraiseListView {
 
-    void initView(RelativeLayout relativeLayout);
+    void initView(LiveViewAction liveViewAction);
 
     void setPresenter(PraiseListPresenter presenter);
 

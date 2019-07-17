@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -29,7 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.business.AppBll;
@@ -339,7 +340,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                 if (videoView != null) {
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
-                                vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, 0, vPlayerServiceListener, mIsHWCodec);
+                                boolean isPlayerCreated = vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, 0, vPlayerServiceListener, mIsHWCodec);
                                 if (isChangeLine) {
                                     try {
                                         vPlayer.changeLine(changeLinePos, protocol);
@@ -363,9 +364,13 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                         map.put("userName", userName).
                                                 put("userId", userId).
                                                 put("videoPath", videoPath).
-                                                put("protocol", String.valueOf(protocol));
-                                        UmsAgentManager.umsAgentDebug(LiveVideoActivityBase.this, LiveLogUtils.DISPATCH_REQEUSTING, map.getData());
-                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                                                put("protocol", String.valueOf(protocol)).
+                                                put("isPlayerCreated", String.valueOf(isPlayerCreated)).
+                                                put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
+                                                put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
+                                                put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
+                                        UmsAgentManager.umsAgentDebug(LiveVideoActivityBase.this, LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
+                                        LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                         e.printStackTrace();
                                     }
                                 }
@@ -491,12 +496,30 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     public final static int PLAY_TUTORIAL = 2;
 
     /**
+     * 切换到下一条线路(回放和体验课专用,目前只支持mp4)
+     */
+    protected void changeNextLine() {
+        this.nowPos++;
+        //当前线路小于总线路数
+        if (this.nowPos < totalRouteNum) {
+            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        } else {
+            if (totalRouteNum != 0) {
+                this.nowPos = 0;
+                changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            } else {
+                playPSVideo(videoPath, protocol);
+            }
+        }
+    }
+
+    /**
      * PSIJK切换线路使用
      *
      * @param pos
      * @param protocol
      */
-    public void changePlayLive(int pos, int protocol) {
+    protected void changePlayLive(int pos, int protocol) {
         isChangeLine = true;
         this.changeLinePos = pos;
         this.protocol = protocol;
@@ -596,7 +619,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         }
         mClick = false;
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(this);
-        BaseApplication baseApplication = (BaseApplication) getApplication();
+        BaseApplication baseApplication = BaseApplication.getInstance();
         baseApplication.addActivty(this);
         //showDialog(savedInstanceState);
         video = "ijk";
@@ -1281,20 +1304,20 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     // endregion
 
+    /** 当前处于第几条线路 */
+    private int nowPos = 0;
+    /** 一共有几条线路 */
+    private int totalRouteNum = 0;
     // region 播放器核心服务监听
-
     /** 播放器核心服务监听 */
     protected VPlayerListener vPlayerServiceListener = new VPlayerListener() {
 
         @Override
         public void getPSServerList(int cur, int total, boolean modeChange) {
+            nowPos = cur;
+            totalRouteNum = total;
 
         }
-
-//        @Override
-//        public void getPServerListFail() {
-//
-//        }
 
         /** 硬解码失败 */
         @Override

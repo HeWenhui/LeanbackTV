@@ -8,6 +8,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodyLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMediaCtrlTop;
@@ -76,7 +78,7 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
             @Override
             public void run() {
                 mHalfBodyMediaControllerBottom.onModeChange(mode, mGetInfo);
-                mMediaTopCtr.onModeChange(mode,mGetInfo);
+                mMediaTopCtr.onModeChange(mode, mGetInfo);
             }
         });
         showSceneTransAnim(mode, isPresent);
@@ -110,22 +112,5 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
         if (mTransAnim != null) {
             mTransAnim.release();
         }
-    }
-
-    @Override
-    protected void initView() {
-        //super.initView();
-        bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
-        bottomContent.setVisibility(View.VISIBLE);
-        rlMessageBottom = mContentView.findViewById(R.id.rl_course_message_bottom);
-        mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
-        RelativeLayout mediaContainer = mContentView.findViewById(R.id.rl_live_halfbody_mediacontroll_container);
-        createMediaControlerTop();
-        mediaContainer.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                .MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        createMediaControllerBottom();
-        mediaContainer.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 }

@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -37,7 +38,7 @@ public class MicTipDialog extends BaseAlertDialog {
     int count;
 
     public MicTipDialog(Context context) {
-        super(context, (Application) BaseApplication.getContext(), false);
+        super(context, (Application) ContextManager.getApplication(), false);
     }
 
     @Override

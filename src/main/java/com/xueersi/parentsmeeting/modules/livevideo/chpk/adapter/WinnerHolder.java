@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -42,7 +42,7 @@ public class WinnerHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(ClassChestEntity.SubChestEntity data, int postion) {
-        ImageLoader.with(BaseApplication.getContext()).load(data.getAvatarPath())
+        ImageLoader.with(ContextManager.getContext()).load(data.getAvatarPath())
                 .placeHolder(R.drawable.livevideo_list_headportrait_ic_disable)
                 .asBitmap(new SingleConfig.BitmapListener() {
                     @Override
@@ -71,7 +71,7 @@ public class WinnerHolder extends RecyclerView.ViewHolder {
             tvPatch.setText("+" + data.getChipNum());
         }
         if (ivChip != null) {
-            ImageLoader.with(BaseApplication.getContext()).load(data.getChipUrl()).into(ivChip);
+            ImageLoader.with(ContextManager.getContext()).load(data.getChipUrl()).into(ivChip);
         }
     }
 

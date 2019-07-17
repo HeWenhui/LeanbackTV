@@ -1,41 +1,76 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
+import android.app.Activity;
 import android.content.Intent;
 
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BusinessCreat;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 public class AllBllConfig {
     //"com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
     private static String[] secClassPath = {
+            //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBll",
+            //聊天
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
+            //战队pk，分文理
             "com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkCreat",
+            //签到
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
+            //排行榜
             "com.xueersi.parentsmeeting.modules.livevideo.business.RankBll",
+            //互动题
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll",
+            //课件
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll",
+            //集体发言
             "com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechCollectiveIRCBll",
+            //老师点赞
             "com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business.TeacherPraiseSecBll",
+            //投票
             "com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll",
+            //智能私信
             "com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll",
+            //领奖台
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll",
+            //学习报告
             "com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportIRCBll",
+            //红包
             "com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll",
+            //nb实验
             "com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll",
+            //疑问标记点
             "com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll",
+            //懂了吗
             "com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll",
+            //语音弹幕
             "com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenIRCBll",
+            //表扬榜
             "com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter.PraiseListIRCBll",
+            //初高中理科点赞互动
             "com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseInteractionBll",
+            //精彩瞬间
             "com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportBll",
+            //辅导老师表扬榜
             "com.xueersi.parentsmeeting.modules.livevideo.practice.PraiseTutorBll",
+            //接麦，初中小学
             "com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoChatCreat",
+            //直播反馈
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
+            //教师反馈
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"
     };
     private static String[] engClassPath = {
+            //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBll",
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.RankBll",
@@ -58,6 +93,8 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll",
             "com.xueersi.parentsmeeting.modules.livevideo.betterme.presenter.BetterMeIRCBll",};
     private static String[] cnClassPath = {
+            //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBll",
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll",
@@ -85,6 +122,8 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"
     };
     private static String[] lecClassPath = {
+            //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBll",
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll",
@@ -127,4 +166,5 @@ public class AllBllConfig {
         }
         return arrayList;
     }
+
 }

@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business;
 
 import android.app.Activity;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -159,7 +159,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                 mLiveBll.sendMessage(jsonObject);
             } catch (Exception e) {
                 logger.e("sendSpeechMsg:", e);
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -284,7 +284,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -349,7 +349,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 break;
             }
@@ -386,10 +386,10 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (speechCollectiveBll != null) {
-            speechCollectiveBll.stop("onDestory");
+            speechCollectiveBll.stop("onDestroy");
             speechCollectiveBll = null;
         }
     }

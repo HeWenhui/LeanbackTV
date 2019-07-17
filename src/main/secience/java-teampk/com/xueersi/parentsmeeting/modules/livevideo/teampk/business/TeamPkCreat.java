@@ -22,4 +22,9 @@ public class TeamPkCreat implements BusinessCreat {
             return TeamPkBll.class;
         }
     }
+
+    @Override
+    public Class[] reloadClass() {
+        return new Class[]{TeamPkBll.class, ChinesePkBll.class};
+    }
 }

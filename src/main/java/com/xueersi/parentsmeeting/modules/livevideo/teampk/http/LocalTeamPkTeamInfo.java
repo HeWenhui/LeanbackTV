@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.http;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
@@ -28,7 +28,7 @@ public class LocalTeamPkTeamInfo {
         } catch (Exception e) {
             e.printStackTrace();
             mShareDataManager.put(ShareDataConfig.LIVE_TEAMPK_INFO, "{}", ShareDataManager.SHAREDATA_USER);
-            CrashReport.postCatchedException(new LiveException("LocalTeamPkTeamInfo", e));
+            LiveCrashReport.postCatchedException(new LiveException("LocalTeamPkTeamInfo", e));
         }
         return null;
     }
@@ -44,7 +44,7 @@ public class LocalTeamPkTeamInfo {
             jsonObject.put("data", data);
             mShareDataManager.put(ShareDataConfig.LIVE_TEAMPK_INFO, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 }

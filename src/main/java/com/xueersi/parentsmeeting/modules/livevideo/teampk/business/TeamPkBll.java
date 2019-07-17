@@ -3,12 +3,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.teampk.business;
 import android.app.Activity;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
@@ -84,7 +85,9 @@ import okhttp3.Call;
  * 战队PK 相关业务处理
  */
 public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
-
+    static{
+        Log.d("TeamPkBll","TeamPkBll:static");
+    }
     public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
     /**
      * 开宝箱类型 班级宝箱列表
@@ -189,7 +192,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     }
 
 
-//    public LiveHttpManager getmHttpManager() {
+    //    public LiveHttpManager getmHttpManager() {
 //        return mHttpManager;
 //    }
     public String getLiveId() {
@@ -208,10 +211,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     private void attachToRootView() {
         initData();
         rlTeamPkContent = new RelativeLayout(mActivity);
+        rlTeamPkContent.setId(R.id.rl_livevideo_content_teampk);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         addView(rlTeamPkContent, params);
         rlTopLayerContent = new RelativeLayout(mActivity);
+        rlTopLayerContent.setId(R.id.rl_livevideo_content_teampk_top);
         addView(rlTopLayerContent, params);
 
         showPkStateLayout();
@@ -1103,9 +1108,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
-        logger.e("======>onDestory");
+    public void onDestroy() {
+        super.onDestroy();
+        logger.e("======>onDestroy");
         if (mFocusPager != null) {
             mFocusPager.onDestroy();
             mFocusPager = null;
@@ -1957,7 +1962,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 teamId = teamInfoEntity.getTeamInfo().getTeamId();
             } catch (Exception e) {
                 teamId = TeamPkConfig.DEAF_TEAM_ID;
-                CrashReport.postCatchedException(new LiveException(TAG + ":" + method, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG + ":" + method, e));
             }
         } else {
             teamId = roomInitInfo.getStudentLiveInfo().getTeamId();

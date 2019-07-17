@@ -5,6 +5,7 @@ import android.webkit.MimeTypeMap;
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
@@ -155,7 +156,7 @@ class ResourseInputStream extends InputStream {
             logHashMap.put("readtimes2", "" + readTimes);
             logHashMap.put("length1", "" + oldLength);
             logHashMap.put("length2", "" + mCurrenReadLength);
-            UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ResourseInputStream_streamClose", logHashMap.getData());
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), "ResourseInputStream_streamClose", logHashMap.getData());
             logger.d("streamClose:url=" + mUrl + ",readCount=" + oldReadCount + ",readTimes=" + readTimes + ",length=" + oldLength + "," + mCurrenReadLength);
 //            mInnerInputStream.close();
 //            return;

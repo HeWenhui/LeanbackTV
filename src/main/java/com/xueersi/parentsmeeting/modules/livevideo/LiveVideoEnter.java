@@ -10,7 +10,9 @@ import android.widget.Toast;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.toast.XesToast;
 import com.xueersi.common.util.LoadFileCallBack;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AIExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
@@ -18,7 +20,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActi
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceThreeScreenActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -613,27 +614,27 @@ public class LiveVideoEnter {
      */
     public static void intentToLectureLivePlayBackVideo(final Activity context, final Bundle bundle, final String where) {
 
-
-        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
-            @Override
-            public void start() {
-
-            }
-
-            @Override
-            public void success() {
-                LectureLivePlayBackVideoActivity.intentTo(context, bundle, where);
-            }
-
-            @Override
-            public void progress(float progress, int type) {
-
-            }
-
-            @Override
-            public void fail(int errorCode, String errorMsg) {
-
-            }
-        });
+        XESToastUtils.showToast(context,"已暂停服务");
+//        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
+//            @Override
+//            public void start() {
+//
+//            }
+//
+//            @Override
+//            public void success() {
+//                LectureLivePlayBackVideoActivity.intentTo(context, bundle, where);
+//            }
+//
+//            @Override
+//            public void progress(float progress, int type) {
+//
+//            }
+//
+//            @Override
+//            public void fail(int errorCode, String errorMsg) {
+//
+//            }
+//        });
     }
 }

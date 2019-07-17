@@ -901,7 +901,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         if (liveGetPlayServer != null) {
             liveGetPlayServer.onDestroy();
         }
-        liveVideoReportBll.onDestory();
+        liveVideoReportBll.onDestroy();
         mPlayStatistics.clear();
     }
 

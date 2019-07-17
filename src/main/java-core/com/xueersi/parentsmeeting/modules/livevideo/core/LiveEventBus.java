@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -26,7 +26,7 @@ public class LiveEventBus {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEventMainThread(SubscriberExceptionEvent event) {
         logger.d("onEventMainThread:SubscriberExceptionEvent=" + event.causingEvent + ",Subscriber=" + event.causingSubscriber, event.throwable);
-        CrashReport.postCatchedException(new Exception(event.causingEvent + "&&" + event.causingSubscriber, event.throwable));
+        LiveCrashReport.postCatchedException(new Exception(event.causingEvent + "&&" + event.causingSubscriber, event.throwable));
     }
 
     public static EventBus getDefault(Context context) {

@@ -53,7 +53,6 @@ import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.PermissionCallback;
@@ -67,6 +66,7 @@ import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -319,7 +319,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 //        tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
 //        ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);
 
-        dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_small_english_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
 
         rlMessageContent = mView.findViewById(R.id.rl_livevideo_small_english_message_content2);
@@ -1919,7 +1918,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         if (messageAdapter != null) {
                             messageAdapter.notifyDataSetChanged();
                         } else {
-                            UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + mContext + "," +
+                            UmsAgentManager.umsAgentException(ContextManager.getContext(), TAG + mContext + "," +
                                     sender + "," + type, e);
                         }
                         if (!isTouch) {

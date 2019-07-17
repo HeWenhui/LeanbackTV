@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.util;
 
 import android.animation.TypeEvaluator;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 
 /**
@@ -27,7 +27,7 @@ public class LineEvaluator implements TypeEvaluator<LineEvaluator.PointAndFloat>
             x = (int) (startX + (endValue.point.getX() - startX) * t);
             y = (int) (startY + (endValue.point.getY() - startY) * t);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         PointAndFloat pointAndFloat = new PointAndFloat();
         pointAndFloat.fraction = t;

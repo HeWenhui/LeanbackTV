@@ -2,12 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.chpk.business;
 
 import android.app.Activity;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.EnglishH5Entity;
@@ -68,7 +69,9 @@ import okhttp3.Call;
  * 战队PK 相关业务处理
  */
 public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicAction {
-
+    static{
+        Log.d("ChinesePkBll","ChinesePkBll:static");
+    }
 
     public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
     /**
@@ -156,6 +159,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     private void attachToRootView() {
         initData();
         rlTeamPkContent = new RelativeLayout(mActivity);
+        rlTeamPkContent.setId(R.id.rl_livevideo_content_teampk);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         addView(rlTeamPkContent, params);
@@ -183,14 +187,24 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         HttpCallBack callback = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                StudentPkResultEntity resultEntity = mHttpResponseParser.parseStuPkResult(responseEntity);
-                ChinesePkBll.this.isWin = resultEntity.getMyTeamResultInfo().getEnergy() >= resultEntity.getCompetitorResultInfo().getEnergy();
-                showPkFinallyResult(resultEntity);
+                try {
+                    StudentPkResultEntity resultEntity = mHttpResponseParser.parseStuPkResult(responseEntity);
+                    ChinesePkBll.this.isWin = resultEntity.getMyTeamResultInfo().getEnergy() >= resultEntity.getCompetitorResultInfo().getEnergy();
+                    showPkFinallyResult(resultEntity);
+                }catch (Exception e){
+                    logger.d("showPkResult",e);
+                    LiveCrashReport.postCatchedException(new LiveException(TAG,e));
+                }
             }
 
             @Override
-            public void onFailure(Call call, IOException e) {
-                super.onFailure(call, e);
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
             }
         };
 
@@ -228,8 +242,8 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
 
             @Override
-            public void onFailure(Call call, IOException e) {
-                super.onFailure(call, e);
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
             }
 
             @Override
@@ -378,7 +392,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      * @param isWin
      */
     public void showAwardGetScene(int type, final Object data, final boolean isWin) {
-        logger.e("======>showAwardGetScene called");
+        mLogtf.d("showAwardGetScene:type=" + type + "" + mFocusPager);
         //   if (mFocusPager == null || !(mFocusPager instanceof PkOpenAwardPager)) {
         if (mFocusPager == null || !(mFocusPager instanceof PkOpenAwardPager)) {
             logger.e("======>showAwardGetScene called 11111");
@@ -598,6 +612,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     }
 
     private void addPager(final BasePager aqAwardPager) {
+        mLogtf.d("addPager:aqAwardPager=" + aqAwardPager.getClass().getSimpleName());
         rlTeamPkContent.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         int rightMargin = getRightMargin();
@@ -678,9 +693,9 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
-        logger.e("======>onDestory");
+    public void onDestroy() {
+        super.onDestroy();
+        logger.e("======>onDestroy");
         if (mFocusPager != null) {
             mFocusPager.onDestroy();
             mFocusPager = null;
@@ -1312,7 +1327,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 teamId = teamInfoEntity.getTeamInfo().getTeamId();
             } catch (Exception e) {
                 teamId = TeamPkConfig.DEAF_TEAM_ID;
-                CrashReport.postCatchedException(new LiveException(TAG + ":" + method, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG + ":" + method, e));
             }
         } else {
             teamId = roomInitInfo.getStudentLiveInfo().getTeamId();

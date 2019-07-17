@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -15,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConf
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
@@ -39,9 +38,7 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
     String eventId = LiveVideoConfig.LIVE_ENGLISH_SPEEK;
     private EnglishSpeekHttp liveBll;
     private LiveAndBackDebug liveAndBackDebug;
-    RelativeLayout bottomContent;
-    Handler handler = new Handler(Looper.getMainLooper());
-
+    private LiveViewAction liveViewAction;
     LiveGetInfo.TotalOpeningLength totalOpeningLength;
 
     boolean dbStart = false;
@@ -71,9 +68,9 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
         setTotalOpeningLength(liveGetInfo.getTotalOpeningLength());
     }
 
-    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest, RelativeLayout mContentView) {
+    public boolean initView(LiveViewAction liveViewAction, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest) {
         this.mode = mode;
-        this.bottomContent = bottomContent;
+        this.liveViewAction = liveViewAction;
         logger.d("initView:mode=" + mode + ",Request=" + audioRequest.get());
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             if (!audioRequest.get()) {
@@ -281,23 +278,23 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
         logger.d("praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
             EnglishSpeekLog.sendPraise(liveAndBackDebug, "" + answer, "" + sendDbDuration);
-            bottomContent.post(new Runnable() {
+            handler.post(new Runnable() {
                 @Override
                 public void run() {
                     if (englishSpeekPager == null) {
                         englishSpeekPager = new EnglishSpeekPager(activity);
                     } else {
                         //移出之前的弹窗
-                        if (englishSpeekPager.getRootView().getParent() == bottomContent) {
-                            bottomContent.removeView(englishSpeekPager.getRootView());
+                        if (englishSpeekPager.getRootView().getParent() != null) {
+                            liveViewAction.removeView(englishSpeekPager.getRootView());
                         }
                     }
-                    bottomContent.removeCallbacks(removeViewRunnable);
+                    handler.removeCallbacks(removeViewRunnable);
                     View view = englishSpeekPager.getRootView();
                     englishSpeekPager.updateStatus(EnglishSpeekPager.PRAISE);
                     RelativeLayout.LayoutParams lp = englishSpeekPager.getLayoutParams();
-                    bottomContent.addView(view, lp);
-                    bottomContent.postDelayed(removeViewRunnable, 1000);
+                    liveViewAction.addView(view, lp);
+                    handler.postDelayed(removeViewRunnable, 1000);
                 }
             });
         }
@@ -306,8 +303,8 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
     private Runnable removeViewRunnable = new Runnable() {
         @Override
         public void run() {
-            if (englishSpeekPager != null && englishSpeekPager.getRootView().getParent() == bottomContent) {
-                bottomContent.removeView(englishSpeekPager.getRootView());
+            if (englishSpeekPager != null && englishSpeekPager.getRootView().getParent() != null) {
+                liveViewAction.removeView(englishSpeekPager.getRootView());
             }
         }
     };
@@ -317,7 +314,7 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
         logger.d("remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration <= answer) {
             EnglishSpeekLog.sendRemind(liveAndBackDebug, "" + answer, "" + sendDbDuration);
-            bottomContent.post(new Runnable() {
+            handler.post(new Runnable() {
 
                 @Override
                 public void run() {
@@ -325,16 +322,16 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
                         englishSpeekPager = new EnglishSpeekPager(activity);
                     } else {
                         //移出之前的弹窗
-                        if (englishSpeekPager.getRootView().getParent() == bottomContent) {
-                            bottomContent.removeView(englishSpeekPager.getRootView());
+                        if (englishSpeekPager.getRootView().getParent() != null) {
+                            liveViewAction.removeView(englishSpeekPager.getRootView());
                         }
                     }
-                    bottomContent.removeCallbacks(removeViewRunnable);
+                    handler.removeCallbacks(removeViewRunnable);
                     View view = englishSpeekPager.getRootView();
                     englishSpeekPager.updateStatus(EnglishSpeekPager.REMIND);
                     RelativeLayout.LayoutParams lp = englishSpeekPager.getLayoutParams();
-                    bottomContent.addView(view, lp);
-                    bottomContent.postDelayed(removeViewRunnable, 1000);
+                    liveViewAction.addView(view, lp);
+                    handler.postDelayed(removeViewRunnable, 1000);
                 }
             });
         }

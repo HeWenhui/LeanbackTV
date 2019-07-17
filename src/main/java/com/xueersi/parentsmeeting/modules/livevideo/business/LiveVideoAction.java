@@ -124,11 +124,11 @@ public class LiveVideoAction implements VideoAction {
         isExperience = activity.getIntent().getBooleanExtra("isExperience", false);
         isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
         if (pattern == 1 && !isExperience) {
-//            layoutSwitchFlow = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
-//            tvSwitchFlowRetry = mContentView.findViewById(R.id.fzcy_livevideo_switch_flow_retry_text);
-//            setVideoLayout();
-//            btnRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
-//            switchFlowViewChangeBtn();
+            layoutSwitchFlow = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
+            tvSwitchFlowRetry = mContentView.findViewById(R.id.fzcy_livevideo_switch_flow_retry_text);
+            setVideoLayout();
+            btnRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
+            switchFlowViewChangeBtn();
         }
     }
 
@@ -152,7 +152,7 @@ public class LiveVideoAction implements VideoAction {
 //        layoutParams.width = liveVideoPoint.x3 - liveVideoPoint.x2;
         layoutParams.rightMargin = liveVideoPoint.getRightMargin();
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        layoutSwitchFlow.setLayoutParams(layoutParams);
+        LayoutParamsUtil.setViewLayoutParams(layoutSwitchFlow, layoutParams);
     }
 
     public void onPlaySuccess() {
@@ -383,9 +383,9 @@ public class LiveVideoAction implements VideoAction {
                             int netWorkState = NetWorkHelper.getNetWorkState(activity);
                             if (netWorkState == NetWorkHelper.NO_NETWORK) {
                                 playErrorCode = PlayErrorCode.PLAY_NO_WIFI;
-                                ViewUtil.setText(tvLoadingHint,PlayErrorCode.PLAY_NO_WIFI.getTip());
+                                ViewUtil.setText(tvLoadingHint, PlayErrorCode.PLAY_NO_WIFI.getTip());
                             } else {
-                                ViewUtil.setText(tvLoadingHint,"视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "]");
+                                ViewUtil.setText(tvLoadingHint, "视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "]");
                             }
 
                             LiveTopic.RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
@@ -398,7 +398,7 @@ public class LiveVideoAction implements VideoAction {
                         }
                         case MediaErrorInfo.PSDispatchFailed: {
                             logger.i("调度失败");
-                            ViewUtil.setText(tvLoadingHint,"视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "],正在重试...");
+                            ViewUtil.setText(tvLoadingHint, "视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "],正在重试...");
                             break;
                         }
                         case MediaErrorInfo.PSChannelNotExist: {
@@ -408,7 +408,7 @@ public class LiveVideoAction implements VideoAction {
                             break;
                         }
                         case MediaErrorInfo.PSServer403: {
-                            ViewUtil.setText(tvLoadingHint,"鉴权失败" + MediaErrorInfo.PSServer403 + "，正在重试...");
+                            ViewUtil.setText(tvLoadingHint, "鉴权失败" + MediaErrorInfo.PSServer403 + "，正在重试...");
                             break;
                         }
                         default: {
@@ -752,7 +752,7 @@ public class LiveVideoAction implements VideoAction {
         mHandler.postDelayed(r, delayMillis);
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         dwTeacherNotpresen = null;
     }
 

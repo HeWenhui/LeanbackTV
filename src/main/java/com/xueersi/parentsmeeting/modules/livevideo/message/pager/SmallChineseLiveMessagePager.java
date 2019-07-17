@@ -30,10 +30,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -204,7 +204,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         lvMessage = mView.findViewById(R.id.lv_livevideo_small_chinese_live_message);
         tvOnlineNum = mView.findViewById(R.id.tzcytv_livevideo_small_chinese_live_message_online_people_num);
 
-        dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_small_chinese_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
 
         rlMessageContent = mView.findViewById(R.id.rl_livevideo_small_chinese_message_content2);
@@ -696,7 +695,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
             if (cbMessageClock != null) {
-                int rightMargin = liveVideoPoint.getRightMargin();
+                int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
                 params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
                 if (params.rightMargin != rightMargin) {
                     params.rightMargin = rightMargin;
@@ -1396,7 +1395,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                         if (messageAdapter != null) {
                             messageAdapter.notifyDataSetChanged();
                         } else {
-                            UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + mContext + "," + sender + "," + type, e);
+                            UmsAgentManager.umsAgentException(ContextManager.getContext(), TAG + mContext + "," + sender + "," + type, e);
                         }
                         if (!isTouch) {
                             lvMessage.setSelection(lvMessage.getCount() - 1);

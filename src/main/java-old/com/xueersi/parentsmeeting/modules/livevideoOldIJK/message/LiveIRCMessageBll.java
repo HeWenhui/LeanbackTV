@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
@@ -1185,7 +1185,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         try {
                             onSendMsgs.get(i).onSendMsg(msg);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(e);
+                            LiveCrashReport.postCatchedException(e);
                         }
                     }
                 } catch (Exception e) {
@@ -1360,8 +1360,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         mRoomAction.onDestroy();
         onSendMsgs.clear();
         EventBus.getDefault().unregister(this);

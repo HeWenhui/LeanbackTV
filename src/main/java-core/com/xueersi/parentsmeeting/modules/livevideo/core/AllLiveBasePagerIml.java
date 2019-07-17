@@ -42,7 +42,7 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
         return false;
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         ArrayList<LiveBasePager> tempLiveBasePagers = new ArrayList<>(liveBasePagers);
         for (LiveBasePager basePager : tempLiveBasePagers) {
             basePager.onDestroy();

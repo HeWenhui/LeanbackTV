@@ -44,40 +44,6 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
-
-//        Observable.
-//                just(AppConfig.DEBUG).
-//                delay(2, TimeUnit.SECONDS).
-//                observeOn(AndroidSchedulers.mainThread()).
-//                subscribe(new Consumer<Boolean>() {
-//                    @Override
-//                    public void accept(Boolean aBoolean) throws Exception {
-//                        if (aBoolean) {
-//                            logger.i("accept");
-//                            mGetInfo.setId(String.valueOf(454400));
-//                            courseWareId = String.valueOf(1);
-//                            srcType = String.valueOf(40);
-//                            performShowRecordCamera(10, 65);
-//                        }
-//                    }
-//                });
-//        if (AppConfig.DEBUG) {
-//                bottomContent.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-////                        mGetInfo.setId(String.valueOf(454400));
-//                        courseWareId = String.valueOf(1);
-//                        srcType = String.valueOf(40);
-//                        performShowRecordCamera(10, 65);
-//                    }
-//                }, 3000);
-//            }
-//        }
-    }
-
-    @Override
     public void onNotice(String sourceNick, String target, final JSONObject data, int type) {
         switch (type) {
             case XESCODE.SUPER_SPEAKER_TAKE_CAMERA: {

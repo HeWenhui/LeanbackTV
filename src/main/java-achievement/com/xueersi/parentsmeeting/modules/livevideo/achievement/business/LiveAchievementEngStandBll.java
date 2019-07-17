@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnStandAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -31,7 +32,7 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
     protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
     private LiveGetInfo mLiveGetInfo;
     private Activity activity;
-    private RelativeLayout bottomContent;
+    private LiveViewAction liveViewAction;
     private EnStandAchievePager enAchievePager;
 
     public LiveAchievementEngStandBll(Activity activity, int liveType, LiveGetInfo mLiveGetInfo, boolean mIsLand) {
@@ -39,9 +40,9 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
         this.mLiveGetInfo = mLiveGetInfo;
     }
 
-    public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
-        this.bottomContent = bottomContent;
-        RelativeLayout relativeLayout = bottomContent.findViewById(R.id.rl_livevideo_english_content);
+    public void initView(LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
+        RelativeLayout relativeLayout = liveViewAction.findViewById(R.id.rl_livevideo_english_content);
         relativeLayout.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams layoutParams = relativeLayout.getLayoutParams();
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -50,14 +51,15 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
         enAchievePager = new EnStandAchievePager(activity, relativeLayout, mLiveGetInfo);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) enAchievePager.getRootView().getLayoutParams();
         LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
-        lp.leftMargin = videoPoint.screenWidth - videoPoint.x4+SizeUtils.Dp2Px(activity,10);
-       // lp.topMargin = SizeUtils.Dp2Px(activity,6);
+        lp.leftMargin = videoPoint.screenWidth - videoPoint.x4 + SizeUtils.Dp2Px(activity, 10);
+        // lp.topMargin = SizeUtils.Dp2Px(activity,6);
         logger.d("initView:rightMargin=" + lp.rightMargin);
 //        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         relativeLayout.addView(enAchievePager.getRootView(), lp);
     }
-    public void setAchievementLayout(ArtsExtLiveInfo extLiveInfo){
-        if(enAchievePager!=null){
+
+    public void setAchievementLayout(ArtsExtLiveInfo extLiveInfo) {
+        if (enAchievePager != null) {
             enAchievePager.setRlAchieveContent(extLiveInfo);
         }
     }

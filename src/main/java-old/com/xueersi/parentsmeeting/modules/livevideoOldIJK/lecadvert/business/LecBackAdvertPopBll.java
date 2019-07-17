@@ -309,7 +309,7 @@ public class LecBackAdvertPopBll {
         }
     }
 
-    void onDestory() {
+    void onDestroy() {
         activity.unregisterReceiver(receiver);
         EventBus.getDefault().unregister(this);
     }

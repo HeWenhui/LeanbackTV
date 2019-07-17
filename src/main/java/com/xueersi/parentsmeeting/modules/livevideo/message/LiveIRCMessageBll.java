@@ -1,27 +1,19 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.log.Loger;
-import com.xueersi.lib.log.LoggerFactory;
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -54,7 +46,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageCo
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
-import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
@@ -69,7 +60,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 //import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 
@@ -147,15 +137,16 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mHttpManager = mLiveBll.getHttpManager();
 //        starAction = getInstance(LiveAchievementIRCBll.class);
 //        mRoomAction.setQuestionBll(getInstance(QuestionBll.class));
-        VideoChatStatusChange videoChatStatusChange = getInstance(VideoChatStatusChange.class);
-        if (videoChatStatusChange != null) {
-            videoChatStatusChange.addVideoChatStatusChange(new VideoChatStatusChange.ChatStatusChange() {
-                @Override
-                public void onVideoChatStatusChange(String voiceChatStatus) {
-                    mRoomAction.videoStatus(voiceChatStatus);
-                }
-            });
-        }
+//        语音聊天状态，弹幕分离，就不需要了
+//        VideoChatStatusChange videoChatStatusChange = getInstance(VideoChatStatusChange.class);
+//        if (videoChatStatusChange != null) {
+//            videoChatStatusChange.addVideoChatStatusChange(new VideoChatStatusChange.ChatStatusChange() {
+//                @Override
+//                public void onVideoChatStatusChange(String voiceChatStatus) {
+//                    mRoomAction.videoStatus(voiceChatStatus);
+//                }
+//            });
+//        }
         QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
         if (questionShowReg != null) {
             questionShowReg.registQuestionShow(mRoomAction);
@@ -201,12 +192,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.setLiveGetInfo(getInfo);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (getInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
-                mRoomAction.initViewLiveStand(mRootView);
+                mRoomAction.initViewLiveStand(getLiveViewAction());
             } else if ((getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY || getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS)
                     && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
-                mRoomAction.initHalfBodyLive(mRootView);
+                mRoomAction.initHalfBodyLive(getLiveViewAction());
             } else {
-                mRoomAction.initViewLive(mRootView);
+                mRoomAction.initViewLive(getLiveViewAction());
             }
         }
         //中学连对激励系统，教师广播发送学报消息
@@ -247,9 +238,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         view.setVisibility(View.INVISIBLE);
                     }
                     if (LiveTopic.MODE_CLASS.equals(mode)) {
-                        mRoomAction.initViewLiveStand(mRootView);
+                        mRoomAction.initViewLiveStand(getLiveViewAction());
                     } else {
-                        mRoomAction.initViewLive(mRootView);
+                        mRoomAction.initViewLive(getLiveViewAction());
                     }
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
@@ -270,9 +261,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             }
 
                             if (LiveTopic.MODE_CLASS.equals(mode)) {
-                                mRoomAction.initHalfBodyLive(mRootView);
+                                mRoomAction.initHalfBodyLive(getLiveViewAction());
                             } else {
-                                mRoomAction.initViewLive(mRootView);
+                                mRoomAction.initViewLive(getLiveViewAction());
                             }
 
                             if (view != null) {
@@ -1088,8 +1079,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        mRoomAction.initView(bottomContent, mIsLand.get());
+    public void initView() {
+        mRoomAction.initView(getLiveViewAction(), mIsLand.get());
     }
 
     //发送聊天消息所需要的IRCState
@@ -1178,12 +1169,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         try {
                             onSendMsgs.get(i).onSendMsg(msg);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                     }
                 } catch (Exception e) {
                     // logger.e( "understand", e);
-                    UmsAgentManager.umsAgentException(BaseApplication.getContext(), "livevideo_livebll_sendMessage", e);
+                    UmsAgentManager.umsAgentException(ContextManager.getContext(), "livevideo_livebll_sendMessage", e);
                     mLogtf.e("sendMessage", e);
                 }
             }
@@ -1330,8 +1321,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         mRoomAction.onDestroy();
         onSendMsgs.clear();
         EventBus.getDefault().unregister(this);

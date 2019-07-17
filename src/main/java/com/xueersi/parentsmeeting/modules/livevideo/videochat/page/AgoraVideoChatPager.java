@@ -12,6 +12,7 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AGEventHandler;
@@ -19,7 +20,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -36,7 +39,7 @@ import io.agora.rtc.video.VideoCanvas;
 /**
  * Created by linyuqiang on 2017/5/8.
  */
-public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
+public class AgoraVideoChatPager extends LiveBasePager implements VideoChatInter {
     private String TAG = "AgoraVideoChatPager";
     private LiveAndBackDebug liveBll;
     private LiveGetInfo getInfo;
@@ -49,10 +52,13 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
     private String eventId = LiveVideoConfig.LIVE_LINK_MIRCO;
     private String room;
     private VideoChatEvent videoChatEvent;
+    private LiveViewAction liveViewAction;
 
-    public AgoraVideoChatPager(Activity activity, LiveAndBackDebug liveBll, LiveGetInfo getInfo, VideoChatEvent videoChatEvent) {
+    public AgoraVideoChatPager(Activity activity, LiveAndBackDebug liveBll, LiveGetInfo getInfo, VideoChatEvent videoChatEvent, LiveViewAction liveViewAction) {
+        super(activity, false);
         this.activity = activity;
         this.videoChatEvent = videoChatEvent;
+        this.liveViewAction = liveViewAction;
         this.startRemote = videoChatEvent.getStartRemote();
         this.liveBll = liveBll;
         this.getInfo = getInfo;
@@ -65,24 +71,18 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
 
     @Override
     public View initView() {
-        mView = new View(activity);
-        mView.setVisibility(View.GONE);
+        mView = liveViewAction.inflateView(R.layout.layout_livevideo_video_chat);
         return mView;
     }
 
     @Override
     public void initData() {
-        View view = activity.findViewById(R.id.rl_course_video_live_agora_content);
-        final View contentView = activity.findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
-        int windowWidth = screenWidth;
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        int windowWidth = liveVideoPoint.screenWidth;
         int windowHeight = ScreenUtils.getScreenHeight();
         float windowRatio = windowWidth / (float) windowHeight;
         float videoRatio = LiveVideoConfig.VIDEO_RATIO;
-        ViewGroup.LayoutParams lp = view.getLayoutParams();
+        ViewGroup.LayoutParams lp = mView.getLayoutParams();
         int paramsWidth, paramsHeight;
         paramsWidth = windowRatio < videoRatio ? windowWidth : (int) (videoRatio * windowHeight);
         paramsHeight = windowRatio > videoRatio ? windowHeight : (int) (windowWidth / videoRatio);
@@ -90,7 +90,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
             lp.width = paramsWidth;
             lp.height = paramsHeight;
 //            view.setLayoutParams(lp);
-            LayoutParamsUtil.setViewLayoutParams(view, lp);
+            LayoutParamsUtil.setViewLayoutParams(mView, lp);
         }
     }
 
@@ -102,7 +102,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
                 startRemote.set(true);
                 videoChatEvent.stopPlay();
                 doRenderRemoteUi(uid);
-                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
+                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
                 if (studyReportAction != null) {
                     studyReportAction.onFirstRemoteVideoDecoded(uid);
                 }
@@ -121,7 +121,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
 
         @Override
         public void onUserJoined(int uid, int elapsed) {
-            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
+            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
             if (studyReportAction != null) {
                 studyReportAction.onUserJoined(uid, elapsed);
             }
@@ -130,7 +130,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         @Override
         public void onUserOffline(int uid, int reason) {
             mLogtf.d("onUserOffline:uid=" + uid + ",reason=" + reason);
-            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
+            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
             if (studyReportAction != null) {
                 studyReportAction.onUserOffline(uid, reason);
             }
@@ -152,13 +152,13 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
     };
 
     private void doRenderRemoteUi(final int uid) {
-        activity.runOnUiThread(new Runnable() {
+        mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (activity.isFinishing() || mWorkerThread == null) {
                     return;
                 }
-                ViewGroup group = (ViewGroup) activity.findViewById(R.id.rl_course_video_live_agora_content);
+                ViewGroup group = liveViewAction.findViewById(R.id.rl_livevideo_agora_content);
                 group.removeAllViews();
                 SurfaceView surfaceV = RtcEngine.CreateRendererView(activity);
                 surfaceV.setZOrderOnTop(true);
@@ -175,7 +175,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
     public void startRecord(String method, final String room, final String nonce, boolean video) {
         int stuid = Integer.parseInt(getInfo.getStuId());
         this.room = room;
-        mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid, false);
+        mWorkerThread = new WorkerThread(mContext.getApplicationContext(), stuid, false);
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
         mWorkerThread.start();
         mWorkerThread.waitForReady();
@@ -214,7 +214,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
             startRemote.set(false);
             videoChatEvent.rePlay(false);
         }
-        ViewGroup group = activity.findViewById(R.id.rl_course_video_live_agora_content);
+        ViewGroup group = liveViewAction.findViewById(R.id.rl_livevideo_agora_content);
         if (group != null) {
             group.removeAllViews();
         }

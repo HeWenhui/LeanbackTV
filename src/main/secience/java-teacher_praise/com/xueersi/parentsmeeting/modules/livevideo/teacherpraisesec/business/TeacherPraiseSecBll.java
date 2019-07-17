@@ -1,11 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business;
 
 import android.app.Activity;
-import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -20,7 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechEnergyPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechEnergyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechPraisePager;
 
@@ -52,31 +50,6 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
         super.onLiveInited(getInfo);
         this.getInfo = getInfo;
         teacherPraiseBll.onLiveInited(getInfo);
-    }
-
-    @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
-//        if (com.xueersi.common.config.AppConfig.DEBUG) {
-//            Button button = new Button(mContext);
-//            button.setText("测试");
-//            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//            mRootView.addView(button, lp);
-//            button.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    voiceId = "" + java.util.UUID.randomUUID();
-//                    showTeacherPraise();
-//                }
-//            });
-//            button.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    addEnergy = false;
-//                }
-//            }, 222);
-//        }
     }
 
     /**
@@ -193,7 +166,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 break;
             default:
@@ -202,9 +175,9 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
-        teacherPraiseBll.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
+        teacherPraiseBll.onDestroy();
     }
 
     @Override

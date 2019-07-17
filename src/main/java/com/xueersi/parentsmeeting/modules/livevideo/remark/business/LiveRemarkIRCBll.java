@@ -128,7 +128,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                     if (liveTextureView == null) {
                         ViewStub viewStub = (ViewStub) activity.findViewById(R.id.vs_course_video_video_texture);
                         if (viewStub == null) {
-                            viewStub = mContentView.findViewById(R.id.vs_course_video_video_texture);
+                            viewStub = findViewById(R.id.vs_course_video_video_texture);
                         }
                         if (viewStub == null) {
                             liveTextureView = activity.findViewById(R.id.ltv_course_video_video_texture);

@@ -6,6 +6,7 @@ import android.view.View;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -59,7 +60,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        mPraiseListView.initView(rlMessageBottom);
+        mPraiseListView.initView(getLiveViewAction());
     }
 
     @Override
@@ -178,7 +179,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 if (mPraiseListView == null) {
                     mPraiseListView = new PraiseListBll(activity);
                     mPraiseListView.setPresenter(PraiseListIRCBll.this);
-                    mPraiseListView.initView(rlMessageBottom);
+                    mPraiseListView.initView(getLiveViewAction());
                 }
                 if (mPraiseListView != null) {
                     if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT) {
@@ -215,7 +216,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("getExcellentList => onPmFailure: error = " + error + ", msg=" + msg);
-                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
                 vcDialog.showDialog();
@@ -259,7 +260,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("getMiniMarketList => onPmFailure: error = " + error + ", msg=" + msg);
-                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
                 vcDialog.setVerifyBtnListener(new View.OnClickListener() {
@@ -301,7 +302,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("getLikeList => onPmFailure: error = " + error + ", msg=" + msg);
-                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
                 vcDialog.setVerifyBtnListener(new View.OnClickListener() {

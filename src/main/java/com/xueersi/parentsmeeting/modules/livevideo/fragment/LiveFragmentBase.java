@@ -669,9 +669,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             userOnline.stop();
         }
         if (mLiveBll != null) {
-            mLiveBll.onDestory();
+            mLiveBll.onDestroy();
         }
-        liveVideoAction.onDestory();
+        liveVideoAction.onDestroy();
         liveVideoAction = null;
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();

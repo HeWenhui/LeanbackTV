@@ -2,17 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business;
 
 import android.app.Activity;
 import android.view.ViewTreeObserver;
-import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -35,9 +31,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, TopicAction {
     PrimaryClassHttp primaryClassHttp;
@@ -102,7 +96,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                         }
                     } catch (Exception e) {
                         mLogtf.e("getMyTeamInfo", e);
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                     teamPkTeamInfoEntity = (TeamPkTeamInfoEntity) objData[0];
                     if (objData.length > 1) {
@@ -150,7 +144,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                 }
             } catch (Exception e) {
                 logger.e("onTeamPkTeamInfoEvent:event=" + e);
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             teamPkTeamInfoEntity = teamPkTeamInfoEntity2;
             saveTeamPkTeamInfo(event.getResponseEntity());
@@ -218,8 +212,8 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (primaryItemView != null) {
             primaryItemView.onDestroy();
         }
@@ -227,10 +221,9 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
+    public void initView() {
         PrimaryClassInterIml primaryClassInterIml = new PrimaryClassInterIml();
-        PrimaryItemPager primaryItemPager = new PrimaryItemPager(activity, mContentView, mLiveBll.getMode());
+        PrimaryItemPager primaryItemPager = new PrimaryItemPager(activity, getLiveViewAction(), mLiveBll.getMode());
         primaryItemPager.setPrimaryClassInter(primaryClassInterIml);
         primaryItemView = primaryItemPager;
     }

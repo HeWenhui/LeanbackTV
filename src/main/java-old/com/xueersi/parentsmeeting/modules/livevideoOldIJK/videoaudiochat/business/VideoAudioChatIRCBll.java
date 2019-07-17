@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.videoaudiochat.busine
 
 import android.app.Activity;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -113,8 +113,8 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (videoChatAction != null) {
             videoChatAction.onDestroy();
         }
@@ -218,7 +218,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                 }
             } catch (Exception e) {
                 logger.e("onTopic", e);
-                CrashReport.postCatchedException(e);
+                LiveCrashReport.postCatchedException(e);
             }
         }
     }

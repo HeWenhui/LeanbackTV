@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 
@@ -33,7 +34,6 @@ public class LiveHalfBodyAchievementBll implements StarInteractAction {
     LiveAchievementHttp liveBll;
 
     LiveAndBackDebug liveAndBackDebug;
-    private RelativeLayout bottomContent;
 
     /**
      * 金币数量
@@ -90,8 +90,7 @@ public class LiveHalfBodyAchievementBll implements StarInteractAction {
         this.liveAndBackDebug = liveAndBackDebug;
     }
 
-    public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
-        this.bottomContent = bottomContent;
+    public void initView(LiveViewAction liveViewAction) {
         tvGoldCount = activity.findViewById(R.id.tv_teampk_pkstate_coin_num);
         tvGoldCount.setText(String.valueOf(goldCount));
     }
