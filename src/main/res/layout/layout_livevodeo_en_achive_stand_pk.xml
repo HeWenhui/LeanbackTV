@@ -2,25 +2,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@id/tv_livevideo_en_achive_pk_target"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="21dp"
-        android:includeFontPadding="false"
-        android:text="@string/livevideo_enpk_notarget"
-        android:textColor="#ffffffff"
-        android:textSize="11sp"
-        android:visibility="invisible"/>
 
     <RelativeLayout
         android:id="@id/rl_livevideo_en_achive_pk_my"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_livevideo_en_achive_pk_target"
         android:layout_alignLeft="@id/pg_livevideo_en_achive_pk"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="54dp"
         android:gravity="center_vertical">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
@@ -59,9 +47,8 @@
         android:id="@id/rl_livevideo_en_achive_pk_other"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_livevideo_en_achive_pk_target"
         android:layout_alignRight="@id/pg_livevideo_en_achive_pk"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="54dp"
         android:gravity="center_vertical">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView

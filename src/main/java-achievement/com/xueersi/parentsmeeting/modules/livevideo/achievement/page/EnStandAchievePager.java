@@ -260,7 +260,7 @@ public class EnStandAchievePager extends LiveBasePager {
                     .livevideo_enteampk_xiaomubiao_progressbar_finished_img_nor));
         } else {
             tvAchiveAimValue.setText("目标" + target);
-            pgAchiveAim.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
+            pgAchiveAim.setIndeterminateDrawable(mContext.getResources().getDrawable(R.drawable
                     .livevideo_enteampk_xiaomubiao_progressbar_img_nor));
         }
         tvAchiveAimTips.setText(current);

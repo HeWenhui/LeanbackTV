@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rl_livevideo_en_achive_stand_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="17dp"
+                    android:layout_marginTop="21dp"
                     android:text="@string/livevideo_enpk_notarget"
                     android:textColor="@color/white"
                     android:textSize="11sp" />

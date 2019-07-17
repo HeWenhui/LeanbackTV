@@ -134,7 +134,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
                     .app_livevideo_enteampk_xiaomubiao_progressbar_img_nor1));
         } else {
             tvAimValue.setText("目标" + target);
-            pgComeletetar.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
+            pgComeletetar.setIndeterminateDrawable(mContext.getResources().getDrawable(R.drawable
                     .app_livevideo_enteampk_xiaomubiao_progressbar_img_nor));
         }
         tvTips.setText(reult);
