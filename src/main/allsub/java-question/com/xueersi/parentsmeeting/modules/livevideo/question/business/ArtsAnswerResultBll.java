@@ -26,6 +26,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.alibaba.fastjson.JSON;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.util.FontCache;
@@ -790,7 +791,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             case XESCODE.ARTS_PARISE_ANSWER_RIGHT:
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("Arts_Praise_Answer_right:").append(data.toString());
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" + "loadLibrary", stringBuilder.toString());
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), "ArtsAnswerResultBll" + "loadLibrary", stringBuilder.toString());
                 String praiseType = data.optString("praiseType");
                 if ("0".equals(praiseType)) {
                     JSONArray ids = data.optJSONArray("id");
@@ -935,18 +936,18 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 onAnswerResult(event, event.getDataStr(), resultFromVoice);
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_:").append(event.getDataStr());
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll", stringBuilder.toString());
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), "ArtsAnswerResultBll", stringBuilder.toString());
 
             } else if (ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()) {
                 onRolePlayAnswerResult(event.getDataStr(), event.getSpeechResultEntity());
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_rolePlay:").append(event.getDataStr());
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" + "_ArtsAnswerResult_rolePlay", stringBuilder.toString());
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), "ArtsAnswerResultBll" + "_ArtsAnswerResult_rolePlay", stringBuilder.toString());
             } else if (ArtsAnswerResultEvent.TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK == event.getType()) {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_native_upload_voice_selecet_blank:").append(event.getTestId())
                         .append("_isRight:").append(event.getIsRight());
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" +
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), "ArtsAnswerResultBll" +
                         "_ArtsAnswerResult_native_upload_voice_selecet_blank", stringBuilder.toString());
                 AnswerResultEntity resultEntity = new AnswerResultEntity();
                 resultEntity.setIsRight(event.getIsRight());

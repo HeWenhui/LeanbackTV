@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
@@ -122,7 +123,7 @@ public class IRCTalkConf {
                 break;
             }
         }
-        netWorkType = NetWorkHelper.getNetWorkState(BaseApplication.getContext());
+        netWorkType = NetWorkHelper.getNetWorkState(ContextManager.getContext());
         if (baseHost == null) {
             baseHost = "chatgslb.xescdn.com";
         }
@@ -217,7 +218,7 @@ public class IRCTalkConf {
                     stableLogHashMap.put("errmsg", msg);
                     stableLogHashMap.put("ip", getHostIP());
                     stableLogHashMap.put("netWorkType", "" + netWorkType);
-                    UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), eventId, stableLogHashMap.getData());
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
@@ -258,7 +259,7 @@ public class IRCTalkConf {
                     stableLogHashMap.put("gslburl", url);
                     stableLogHashMap.put("errmsg", responseEntity.getErrorMsg());
                     stableLogHashMap.put("ip", getHostIP());
-                    UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), eventId, stableLogHashMap.getData());
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }

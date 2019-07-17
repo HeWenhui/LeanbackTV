@@ -18,6 +18,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -269,7 +270,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     boolean hasGotoRecogniz = false;
 
     private void initRecognizeDialog() {
-        recognizeDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+        recognizeDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                 VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
         recognizeDialog.initInfo("为了让开口数据更为准确，请进行声纹认证");
         recognizeDialog.setVerifyBtnListener(new View.OnClickListener() {

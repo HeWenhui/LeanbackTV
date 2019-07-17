@@ -20,6 +20,7 @@ import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -1601,8 +1602,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 //
 //        }
 
-        VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, (BaseApplication)
-                BaseApplication.getContext(), false,
+        VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, ContextManager.getApplication(), false,
                 VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
         cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
             @Override
@@ -1903,7 +1903,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             mErrorVoiceQue.add(videoQuestionLiveEntity.id);
             showQuestion(videoQuestionLiveEntity);
         }
-        removeQuestionViews();
         BaseVoiceAnswerPager voiceAnswerPager2 =
                 baseVoiceAnswerCreat.create(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity
                         .type, rlQuestionContent, mIse);
@@ -1933,13 +1932,20 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
+    private void removeQuestionPager() {
+        if (baseQuestionPager != null && baseQuestionPager.getRootView() != null) {
+            rlQuestionContent.removeView(baseQuestionPager.getRootView());
+            baseQuestionPager = null;
+        }
+    }
+
     /**
      * 填空题
      */
     private void showFillBlankQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         long before = System.currentTimeMillis();
+        removeQuestionPager();
         baseQuestionPager = liveQuestionCreat.showFillBlankQuestion(videoQuestionLiveEntity);
-        removeQuestionViews();
         RelativeLayout.LayoutParams params;
         if (isLand) {
             params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -1960,8 +1966,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     private void showSelectQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         long before = System.currentTimeMillis();
+        removeQuestionPager();
         baseQuestionPager = liveQuestionCreat.showSelectQuestion(videoQuestionLiveEntity);
-        removeQuestionViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         if (isLand) {
@@ -1978,8 +1984,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     private void showMulitSelectQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         long before = System.currentTimeMillis();
+        removeQuestionPager();
         baseQuestionPager = liveQuestionCreat.showMulitSelectQuestion(videoQuestionLiveEntity);
-        removeQuestionViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         if (isLand) {
@@ -1995,8 +2001,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 文科主观题
      */
     private void showSubjectiveQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        removeQuestionPager();
         baseQuestionPager = liveQuestionCreat.showSubjectiveQuestion(videoQuestionLiveEntity);
-        removeQuestionViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlQuestionContent.addView(baseQuestionPager.getRootView(), params);
@@ -2085,7 +2091,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
                 @Override
                 public void run() {
-                    removeQuestionViews();
+                    removeQuestionPager();
                 }
             }, 1000);
         } else {
@@ -2093,7 +2099,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
                 @Override
                 public void run() {
-                    removeQuestionViews();
+                    removeQuestionPager();
                 }
             });
         }
@@ -2223,32 +2229,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         initQuestionAnswerReslut(popupWindow_view);
         return popupWindow_view;
-    }
-
-    /**
-     * 移除除了战况以外的view
-     */
-    private void removeQuestionViews() {
-//        int oldChildCount = rlQuestionContent.getChildCount();
-//        for (int i = rlQuestionContent.getChildCount() - 1; i >= 0; i--) {
-//            View v = rlQuestionContent.getChildAt(i);
-//            if (v.getId() != R.id.rl_livevideo_fight_root) {
-//                if (examQuestionPager != null && v == examQuestionPager.getRootView()) {
-//
-//                } else if (speechAssessmentPager != null && v == speechAssessmentPager.getRootView()) {
-//
-//                } else if (questionWebPager != null && v == questionWebPager.getRootView()) {
-//
-//                } else if (subjectResultPager != null && v == subjectResultPager.getRootView()) {
-//
-//                } else if (voiceAnswerPager != null && v == voiceAnswerPager.getRootView()) {
-//
-//                } else {
-//                    rlQuestionContent.removeView(v);
-//                }
-//            }
-//        }
-//        mLogtf.d("removeQuestionViews:ChildCount=" + rlQuestionContent.getChildCount() + "," + oldChildCount);
     }
 
     public void postIfNotFinish(Runnable r) {

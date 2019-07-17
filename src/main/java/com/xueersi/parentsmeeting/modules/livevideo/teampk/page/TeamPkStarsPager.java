@@ -1,13 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -28,19 +23,16 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkPraiseLayout;
@@ -205,7 +197,7 @@ public class TeamPkStarsPager extends TeamPkBasePager {
             tvName.setText(data.getName());
             tvEnergy.setText("+" + data.getEnergy());
             tvTeamName.setText(data.getTeamName());
-            ImageLoader.with(BaseApplication.getContext()).load(data.getAvatarPath())
+            ImageLoader.with(ContextManager.getContext()).load(data.getAvatarPath())
                     .asBitmap(new SingleConfig.BitmapListener() {
                         @Override
                         public void onSuccess(Drawable drawable) {

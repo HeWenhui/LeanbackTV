@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 
+import android.app.Application;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +19,7 @@ public class RedPacketAlertDialog extends BaseAlertDialog {
     private Button btnRedPacket;
     private View mView;
 
-    public RedPacketAlertDialog(Context context, BaseApplication application, boolean isSystem) {
+    public RedPacketAlertDialog(Context context, Application application, boolean isSystem) {
         super(context, application, isSystem);
     }
 

@@ -25,6 +25,7 @@ import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -193,7 +194,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
     public class MyWebChromeClient extends WebChromeClient {
         @Override
         public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE);
+            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false, VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE);
             verifyCancelAlertDialog.initInfo(message);
             verifyCancelAlertDialog.showDialog();
             result.confirm();

@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.VoteAdapter;
@@ -473,8 +474,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                     btnVoteItem.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                            voteWaitDialog = new VoteWaitDialog(context, baseApplication, false);
+                            voteWaitDialog = new VoteWaitDialog(context, ContextManager.getApplication(), false);
                             voteWaitDialog.showDialog();
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {

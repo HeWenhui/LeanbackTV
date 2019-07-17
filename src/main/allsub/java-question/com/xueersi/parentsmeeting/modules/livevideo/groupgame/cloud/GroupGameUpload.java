@@ -2,9 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.groupgame.cloud;
 
 import android.content.Context;
 
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
-import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -14,7 +13,6 @@ import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
@@ -43,7 +41,7 @@ public class GroupGameUpload {
         if (saveFile.length() == 0) {
             return;
         }
-        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(BaseApplication.getContext());
+        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(ContextManager.getContext());
         CloudUploadEntity uploadEntity = new CloudUploadEntity();
         uploadEntity.setFilePath(saveFile.getPath());
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
@@ -100,7 +98,7 @@ public class GroupGameUpload {
         if (saveFile.length() == 0) {
             return;
         }
-        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(BaseApplication.getContext());
+        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(ContextManager.getContext());
         CloudUploadEntity uploadEntity = new CloudUploadEntity();
         uploadEntity.setFilePath(saveFile.getPath());
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);

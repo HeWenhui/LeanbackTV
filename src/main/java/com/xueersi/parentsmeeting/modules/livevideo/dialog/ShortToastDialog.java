@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.ui.dialog.BaseAlertDialog;
 
@@ -19,7 +20,7 @@ import com.xueersi.ui.dialog.BaseAlertDialog;
 public class ShortToastDialog extends BaseAlertDialog {
     public TextView tips;
     public ShortToastDialog(Context context) {
-        super(context, (Application) BaseApplication.getContext(), false);
+        super(context, ContextManager.getApplication(), false);
     }
     @Override
     protected View initDialogLayout(int i) {

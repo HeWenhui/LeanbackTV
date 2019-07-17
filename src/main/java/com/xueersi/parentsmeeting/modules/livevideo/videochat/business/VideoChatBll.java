@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.business;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.airbnb.lottie.L;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.umeng.analytics.MobclickAgent;
@@ -397,7 +399,7 @@ public class VideoChatBll implements VideoChatAction {
                                 logger.e("chatHandAdd:onPmFailure:responseEntity=" + msg);
                             }
                         });
-                        BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
+                        Application baseApplication = ContextManager.getApplication();
                         if (!isSmallEnglish) {
 //                            raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
 //                            raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
@@ -835,9 +837,7 @@ public class VideoChatBll implements VideoChatAction {
 //                                            }
 
                                             if (LiveVideoConfig.isSmallChinese && raiseHandDialog == null) {
-                                                BaseApplication baseApplication = (BaseApplication) BaseApplication
-                                                        .getContext();
-                                                raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                                                raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
                                                 raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                                                 raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                                                 raiseHandDialog.showDialog();
@@ -858,8 +858,7 @@ public class VideoChatBll implements VideoChatAction {
                                                     }, 3000);
                                                 }
                                             } else if (LiveVideoConfig.isPrimary && psraiseHandDialog == null) {
-                                                BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                                                psraiseHandDialog = new PsRaiseHandDialog(activity, baseApplication);
+                                                psraiseHandDialog = new PsRaiseHandDialog(activity, ContextManager.getApplication());
                                                 psraiseHandDialog.setSuccess();
                                                 isSuccess = true;
                                                 psraiseHandDialog.showDialog();
@@ -874,9 +873,7 @@ public class VideoChatBll implements VideoChatAction {
                                                     }
                                                 }, 3000);
                                             } else if (raiseHandDialog == null) {
-                                                BaseApplication baseApplication = (BaseApplication) BaseApplication
-                                                        .getContext();
-                                                raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                                                raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
                                                 raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                                                 raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                                                 raiseHandDialog.showDialog();
@@ -1133,24 +1130,21 @@ public class VideoChatBll implements VideoChatAction {
                     if (LiveVideoConfig.isSmallChinese && raiseHandDialog == null && "on".equals(status) && "off".equals(onMic)) {
                         headsetPrompt = true;
                         raisehand = true;
-                        BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                        raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                        raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
                         raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                         raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                         raiseHandDialog.showDialog();
                     } else if (LiveVideoConfig.isPrimary && psraiseHandDialog == null && "on".equals(status) && "off".equals(onMic)) {
                         headsetPrompt = true;
                         raisehand = true;
-                        BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                        psraiseHandDialog = new PsRaiseHandDialog(activity, baseApplication);
+                        psraiseHandDialog = new PsRaiseHandDialog(activity, ContextManager.getApplication());
                         psraiseHandDialog.setRaiseHandGiveup(raisepsHandGiveup);
                         psraiseHandDialog.setDefault(raiseHandCount);
                         psraiseHandDialog.showDialog();
                     } else if (raiseHandDialog == null && "on".equals(status) && "off".equals(onMic)) {
                         headsetPrompt = true;
                         raisehand = true;
-                        BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                        raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                        raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
                         raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                         raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                         raiseHandDialog.showDialog();
@@ -1215,8 +1209,7 @@ public class VideoChatBll implements VideoChatAction {
                     if (LiveVideoConfig.isSmallChinese) {
                         if (raiseHandDialog == null) {
                             mLogtf.d("requestAccept:raiseHandDialog=null");
-                            BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                            raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                            raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
                             raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                             raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                             raiseHandDialog.showDialog();
@@ -1240,8 +1233,7 @@ public class VideoChatBll implements VideoChatAction {
                         }
                         if (psraiseHandDialog == null) {
                             mLogtf.d("requestAccept:raiseHandDialog=null");
-                            BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                            psraiseHandDialog = new PsRaiseHandDialog(activity, baseApplication);
+                            psraiseHandDialog = new PsRaiseHandDialog(activity, ContextManager.getApplication());
                             psraiseHandDialog.setRaiseHandsCount(raiseHandCount);
                             psraiseHandDialog.showDialog();
                         }
@@ -1262,8 +1254,7 @@ public class VideoChatBll implements VideoChatAction {
                     } else {
                         if (raiseHandDialog == null) {
                             mLogtf.d("requestAccept:raiseHandDialog=null");
-                            BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-                            raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                            raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
                             raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                             raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                             raiseHandDialog.showDialog();
@@ -1444,9 +1435,8 @@ public class VideoChatBll implements VideoChatAction {
                     logger.d("startMicro:raisehand=" + raisehand);
                     if (raisehand) {
                         if (!isSmallEnglish) {
-                            BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
                             if (LiveVideoConfig.isSmallChinese) {
-                                raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                                raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
                                 raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                                 raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                                 raiseHandDialog.showDialog();
@@ -1455,7 +1445,7 @@ public class VideoChatBll implements VideoChatAction {
 //                                psraiseHandDialog.setRaiseHandsCount(raiseHandCount);
 //                                psraiseHandDialog.showDialog();
                             } else {
-                                raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
+                                raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
                                 raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                                 raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                                 raiseHandDialog.showDialog();

@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -715,7 +716,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
 
             } catch (Exception e) {
-                UmsAgentManager.umsAgentException(BaseApplication.getContext(), "ExperienceLiveVideoActivity " +
+                UmsAgentManager.umsAgentException(ContextManager.getContext(), "ExperienceLiveVideoActivity " +
                         "sendMessage", e);
             }
         }
@@ -848,7 +849,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
     }
 
     private void loadData() {
-        BaseApplication baseApplication = (BaseApplication) getApplication();
 //        mRedPacketDialog = new RedPacketAlertDialog(this, baseApplication, false);
         lectureLivePlayBackBll = new LectureLivePlayBackBll(AIExperienceLiveVideoActivity.this, "");
         liveBackBll.setStuCourId(mVideoEntity.getStuCourseId());
@@ -1666,7 +1666,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 setmDisplayName(mSectionName);
             }
         }
-        AppBll.getInstance(mBaseApplication);
+        AppBll.getInstance(ContextManager.getApplication());
     }
 
     @Override

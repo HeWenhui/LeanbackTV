@@ -619,7 +619,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         }
         mClick = false;
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(this);
-        BaseApplication baseApplication = (BaseApplication) getApplication();
+        BaseApplication baseApplication = BaseApplication.getInstance();
         baseApplication.addActivty(this);
         //showDialog(savedInstanceState);
         video = "ijk";

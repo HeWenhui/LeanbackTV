@@ -756,7 +756,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             headUrl = UserBll.getInstance().getMyUserInfoEntity()
                     .getHeadImg();
 
-            ImageLoader.with(BaseApplication.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig
+            ImageLoader.with(ContextManager.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig
                     .BitmapListener() {
                 @Override
                 public void onSuccess(Drawable drawable) {

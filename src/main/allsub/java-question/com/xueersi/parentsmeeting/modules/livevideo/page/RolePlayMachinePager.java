@@ -1081,7 +1081,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
         civMatchHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
         civMatchHead.setBorderColor(Color.WHITE);
-        ImageLoader.with(BaseApplication.getContext()).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
+        ImageLoader.with(ContextManager.getContext()).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
                 .into(civMatchHead);
 
         rlMatchPager.setVisibility(View.VISIBLE);
