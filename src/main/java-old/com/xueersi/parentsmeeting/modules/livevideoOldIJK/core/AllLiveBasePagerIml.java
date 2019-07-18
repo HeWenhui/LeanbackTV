@@ -14,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import java.util.ArrayList;
 
 /**
- * Created by lyqai on 2018/7/30.
+ * Created by linyuqiang on 2018/7/30.
  */
 
 public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
@@ -42,7 +42,7 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
         return false;
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         ArrayList<LiveBasePager> tempLiveBasePagers = new ArrayList<>(liveBasePagers);
         for (LiveBasePager basePager : tempLiveBasePagers) {
             basePager.onDestroy();

@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -22,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.http.PrimaryCla
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemPager;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemView;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.event.TeamPkTeamInfoEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.LocalTeamPkTeamInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
@@ -39,7 +41,8 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     PrimaryClassHttp primaryClassHttp;
     PrimaryItemView primaryItemView;
     TeamPkTeamInfoEntity teamPkTeamInfoEntity;
-    String classId;
+    private String classId;
+    private String liveId;
 
     public PrimaryClassIrcBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -48,11 +51,13 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     @Override
     public void onLiveInited(final LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+        liveId = getInfo.getId();
         classId = getInfo.getStudentLiveInfo().getClassId();
         permissionCheck();
 //        getMyTeamInfo();
         LiveEventBus.getDefault(mContext).register(this);
         primaryItemView.onLiveInited(getInfo);
+        getTeamPkTeamInfo();
     }
 
     private void permissionCheck() {
@@ -77,8 +82,11 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
         });
     }
 
+    private int tryTimes = 0;
+
     private void getMyTeamInfo() {
         getPrimaryClassHttp().getMyTeamInfo(classId, mGetInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new AbstractBusinessDataCallBack() {
+
             @Override
             public void onDataSucess(Object... objData) {
                 if (teamPkTeamInfoEntity != null) {
@@ -86,20 +94,43 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                     try {
                         List<TeamMate> result1 = teamPkTeamInfoEntity.getTeamInfo().getResult();
                         List<TeamMate> result2 = teamPkTeamInfoEntity2.getTeamInfo().getResult();
+                        mLogtf.d("getMyTeamInfo:size1=" + result1.size() + ",size2=" + result2.size());
                         if (result1.size() != result2.size()) {
                             primaryItemView.updateTeam(teamPkTeamInfoEntity2.getTeamInfo());
                         }
                     } catch (Exception e) {
-                        logger.e("onTeamPkTeamInfoEvent:event=" + e);
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        mLogtf.e("getMyTeamInfo", e);
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                     teamPkTeamInfoEntity = (TeamPkTeamInfoEntity) objData[0];
+                    if (objData.length > 1) {
+                        saveTeamPkTeamInfo((ResponseEntity) objData[1]);
+                    }
                     return;
                 }
                 teamPkTeamInfoEntity = (TeamPkTeamInfoEntity) objData[0];
+                if (objData.length > 1) {
+                    saveTeamPkTeamInfo((ResponseEntity) objData[1]);
+                }
                 if (primaryItemView != null) {
                     primaryItemView.onTeam(mGetInfo.getStuId(), teamPkTeamInfoEntity.getTeamInfo());
                 }
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                super.onDataFail(errStatus, failMsg);
+                mLogtf.d("getMyTeamInfo:errStatus=" + errStatus + ",failMsg=" + failMsg + ",tryTimes=" + tryTimes);
+                if (tryTimes > 3) {
+                    return;
+                }
+                tryTimes++;
+                postDelayedIfNotFinish(new Runnable() {
+                    @Override
+                    public void run() {
+                        getMyTeamInfo();
+                    }
+                }, tryTimes * 1000);
             }
         });
     }
@@ -117,15 +148,28 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                 }
             } catch (Exception e) {
                 logger.e("onTeamPkTeamInfoEvent:event=" + e);
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             teamPkTeamInfoEntity = teamPkTeamInfoEntity2;
+            saveTeamPkTeamInfo(event.getResponseEntity());
             return;
         }
         teamPkTeamInfoEntity = event.getTeamInfoEntity();
+        saveTeamPkTeamInfo(event.getResponseEntity());
         if (primaryItemView != null) {
             primaryItemView.onTeam(mGetInfo.getStuId(), teamPkTeamInfoEntity.getTeamInfo());
         }
+    }
+
+    private void getTeamPkTeamInfo() {
+        ResponseEntity responseEntity = LocalTeamPkTeamInfo.getTeamPkTeamInfo(mShareDataManager, liveId);
+        if (responseEntity != null) {
+            getPrimaryClassHttp().setOldTeamPkTeamInfo(responseEntity);
+        }
+    }
+
+    private void saveTeamPkTeamInfo(ResponseEntity responseEntity) {
+        LocalTeamPkTeamInfo.saveTeamPkTeamInfo(mShareDataManager, responseEntity, liveId);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -172,8 +216,8 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (primaryItemView != null) {
             primaryItemView.onDestroy();
         }

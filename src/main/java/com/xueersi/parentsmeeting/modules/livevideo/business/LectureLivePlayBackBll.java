@@ -21,7 +21,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoCourseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
@@ -34,7 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -135,7 +133,7 @@ public class LectureLivePlayBackBll extends BaseBll {
         }
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        mCourseHttpManager.saveTestRecord(myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
+        mCourseHttpManager.saveTestRecord(questionEntity.isNewArtsH5Courseware(),myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
                 liveId, livePlayType, voice, isRight, new HttpCallBack(dataLoadEntity) {
 
                     @Override
@@ -168,7 +166,7 @@ public class LectureLivePlayBackBll extends BaseBll {
                                      double voiceTime, boolean isRight, final AbstractBusinessDataCallBack callBack) {
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        mCourseHttpManager.sumitCourseWareH5(myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
+        mCourseHttpManager.sumitCourseWareH5(questionEntity.isNewArtsH5Courseware(),myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
                 liveId, isSubmit, type, voiceTime, isRight, new HttpCallBack(dataLoadEntity) {
 
                     @Override
@@ -195,45 +193,45 @@ public class LectureLivePlayBackBll extends BaseBll {
                 });
     }
 
-    /**
-     * 上传视频互动题答案
-     *
-     * @param dataLoadEntity
-     * @param sectionId
-     */
-    public void saveQuestionResult(final DataLoadEntity dataLoadEntity, final String srcType, final String sectionId,
-                                   final String result,
-                                   final String testDay, final String liveId, final int livePlayType) {
-        // 从网络更新数据库数据
-        if (!NetWorkHelper.isNetworkAvailable(mContext)) {
-            postDataLoadEvent(dataLoadEntity.webDataError());
-            EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
-            return;
-        }
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        // 网络加载数据
-        mCourseHttpManager.saveTestRecord(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
-                liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        VideoResultEntity entity = mCourseHttpResponseParser
-                                .parseQuestionAnswer(responseEntity, false);
-                        isEmpty(entity, dataLoadEntity);
-                        EventBus.getDefault().post(new PlaybackVideoEvent.OnAnswerReslut(entity));
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        XESToastUtils.showToast(mContext, msg);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
-                    }
-                });
-    }
+//    /**
+//     * 上传视频互动题答案
+//     *
+//     * @param dataLoadEntity
+//     * @param sectionId
+//     */
+//    public void saveQuestionResult(final DataLoadEntity dataLoadEntity, final String srcType, final String sectionId,
+//                                   final String result,
+//                                   final String testDay, final String liveId, final int livePlayType) {
+//        // 从网络更新数据库数据
+//        if (!NetWorkHelper.isNetworkAvailable(mContext)) {
+//            postDataLoadEvent(dataLoadEntity.webDataError());
+//            EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
+//            return;
+//        }
+//        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        // 网络加载数据
+//        mCourseHttpManager.saveTestRecord(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
+//                liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {
+//
+//                    @Override
+//                    public void onPmSuccess(ResponseEntity responseEntity) {
+//                        VideoResultEntity entity = mCourseHttpResponseParser
+//                                .parseQuestionAnswer(responseEntity, false);
+//                        isEmpty(entity, dataLoadEntity);
+//                        EventBus.getDefault().post(new PlaybackVideoEvent.OnAnswerReslut(entity));
+//                    }
+//
+//                    @Override
+//                    public void onPmFailure(Throwable error, String msg) {
+//                        XESToastUtils.showToast(mContext, msg);
+//                    }
+//
+//                    @Override
+//                    public void onPmError(ResponseEntity responseEntity) {
+//                        XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+//                    }
+//                });
+   // }
 
     /**
      * 直播课直播回放得到金币
@@ -461,67 +459,67 @@ public class LectureLivePlayBackBll extends BaseBll {
                 });
     }
 
-    /**
-     * 请求并保存当前的聊天，并回调
-     *
-     * @param dir                保存的文件
-     * @param channel            房间名
-     * @param start              其实时间
-     * @param getLiveLectureMsgs 回调接口
-     */
-    public void getLiveLectureMsgs(final File dir, String channel, final String start, final
-    ArrayList<VideoQuestionEntity> timeEntities, final LectureLivePlayBackVideoActivity.GetLiveLectureMsgs
-                                           getLiveLectureMsgs) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        logger.i( "getLiveLectureMsgs:start=" + start);
-        File file = new File(dir, start);
-        LiveMessageGroupEntity liveMessageGroupEntity = getLiveLectureMsgsFromFile(file);
-        if (liveMessageGroupEntity != null && liveMessageGroupEntity.count > 0) {
-            ArrayList<LivePlayBackMessageEntity> liveMessageEntities = liveMessageGroupEntity.liveMessageEntities;
-            logger.i( "getLiveLectureMsgs:count=" + liveMessageGroupEntity.count + ",liveMessageEntities=" +
-                    liveMessageEntities.size());
-            getLiveLectureMsgs.getLiveLectureMsgs(liveMessageGroupEntity);
-            return;
-        }
-        mCourseHttpManager.getLiveLectureMsgs(myUserInfoEntity.getEnstuId(), channel, 50, start, 1, new
-                HttpCallBack(false) {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        JSONArray array = (JSONArray) responseEntity.getJsonObject();
-                        LiveMessageGroupEntity liveMessageGroupEntity = mCourseHttpResponseParser.liveMessagesParser(array);
-                        ArrayList<LivePlayBackMessageEntity> liveMessageEntities = liveMessageGroupEntity.liveMessageEntities;
-                        if (liveMessageGroupEntity.count > 0) {
-                            saveMsgToFile(dir, start, array, timeEntities);
-                        }
-                        File[] files = dir.listFiles();
-                        if (files != null) {
-                            for (int i = 0; i < files.length; i++) {
-                                File file = files[i];
-                                long time = Long.parseLong(file.getName());
-                                if (Long.parseLong(start) < time && time <= liveMessageGroupEntity.lastid) {
-                                    boolean delete = file.delete();
-                                    logger.i( "getLiveLectureMsgs:onPmSuccess:delete=" + delete);
-                                }
-                            }
-                        }
-                        logger.i( "getLiveLectureMsgs:onPmSuccess:liveMessageGroupEntity=" + liveMessageEntities.size()
-                                + "," + liveMessageGroupEntity.otherMessageEntities.size());
-                        getLiveLectureMsgs.getLiveLectureMsgs(liveMessageGroupEntity);
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        logger.i( "getLiveLectureMsgs:onPmFailure:msg=" + msg);
-                        getLiveLectureMsgs.onPmFailure();
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        logger.i( "getLiveLectureMsgs:onPmError:ErrorMsg=" + responseEntity.getErrorMsg());
-                    }
-                });
-    }
+//    /**
+//     * 请求并保存当前的聊天，并回调
+//     *
+//     * @param dir                保存的文件
+//     * @param channel            房间名
+//     * @param start              其实时间
+//     * @param getLiveLectureMsgs 回调接口
+//     */
+//    public void getLiveLectureMsgs(final File dir, String channel, final String start, final
+//    ArrayList<VideoQuestionEntity> timeEntities, final LectureLivePlayBackVideoActivity.GetLiveLectureMsgs
+//                                           getLiveLectureMsgs) {
+//        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        logger.i( "getLiveLectureMsgs:start=" + start);
+//        File file = new File(dir, start);
+//        LiveMessageGroupEntity liveMessageGroupEntity = getLiveLectureMsgsFromFile(file);
+//        if (liveMessageGroupEntity != null && liveMessageGroupEntity.count > 0) {
+//            ArrayList<LivePlayBackMessageEntity> liveMessageEntities = liveMessageGroupEntity.liveMessageEntities;
+//            logger.i( "getLiveLectureMsgs:count=" + liveMessageGroupEntity.count + ",liveMessageEntities=" +
+//                    liveMessageEntities.size());
+//            getLiveLectureMsgs.getLiveLectureMsgs(liveMessageGroupEntity);
+//            return;
+//        }
+//        mCourseHttpManager.getLiveLectureMsgs(myUserInfoEntity.getEnstuId(), channel, 50, start, 1, new
+//                HttpCallBack(false) {
+//
+//                    @Override
+//                    public void onPmSuccess(ResponseEntity responseEntity) {
+//                        JSONArray array = (JSONArray) responseEntity.getJsonObject();
+//                        LiveMessageGroupEntity liveMessageGroupEntity = mCourseHttpResponseParser.liveMessagesParser(array);
+//                        ArrayList<LivePlayBackMessageEntity> liveMessageEntities = liveMessageGroupEntity.liveMessageEntities;
+//                        if (liveMessageGroupEntity.count > 0) {
+//                            saveMsgToFile(dir, start, array, timeEntities);
+//                        }
+//                        File[] files = dir.listFiles();
+//                        if (files != null) {
+//                            for (int i = 0; i < files.length; i++) {
+//                                File file = files[i];
+//                                long time = Long.parseLong(file.getName());
+//                                if (Long.parseLong(start) < time && time <= liveMessageGroupEntity.lastid) {
+//                                    boolean delete = file.delete();
+//                                    logger.i( "getLiveLectureMsgs:onPmSuccess:delete=" + delete);
+//                                }
+//                            }
+//                        }
+//                        logger.i( "getLiveLectureMsgs:onPmSuccess:liveMessageGroupEntity=" + liveMessageEntities.size()
+//                                + "," + liveMessageGroupEntity.otherMessageEntities.size());
+//                        getLiveLectureMsgs.getLiveLectureMsgs(liveMessageGroupEntity);
+//                    }
+//
+//                    @Override
+//                    public void onPmFailure(Throwable error, String msg) {
+//                        logger.i( "getLiveLectureMsgs:onPmFailure:msg=" + msg);
+//                        getLiveLectureMsgs.onPmFailure();
+//                    }
+//
+//                    @Override
+//                    public void onPmError(ResponseEntity responseEntity) {
+//                        logger.i( "getLiveLectureMsgs:onPmError:ErrorMsg=" + responseEntity.getErrorMsg());
+//                    }
+//                });
+//    }
 
     /**
      * 保存消息到文件，过滤中断的
@@ -591,76 +589,6 @@ public class LectureLivePlayBackBll extends BaseBll {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 onSpeechEval.onPmError(responseEntity);
-            }
-        });
-    }
-
-    public void sendSpeechEvalResult(String liveid, String id, String stuAnswer, String times, int entranceTime,
-                                     final OnSpeechEval onSpeechEval) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mCourseHttpManager.sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new
-                HttpCallBack(false) {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        logger.i( "sendSpeechEvalResult:onPmSuccess=" + responseEntity.getJsonObject());
-                        onSpeechEval.onSpeechEval(null);
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        logger.i( "sendSpeechEvalResult:onPmFailure=" + msg);
-                        onSpeechEval.onPmFailure(error, msg);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        logger.i( "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
-                        onSpeechEval.onPmError(responseEntity);
-                    }
-                });
-    }
-
-    public void speechEval42IsAnswered(final String liveId, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mCourseHttpManager.speechEval42IsAnswered(enstuId, liveId, num, new
-                HttpCallBack(false) {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                        boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
-                        isAnswered.isAnswer(isAnswer);
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        logger.i( "sendSpeechEvalResult:onPmFailure=" + msg);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        logger.i( "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
-                    }
-                });
-    }
-
-    public void getAdOnLL(String liveId, final LecAdvertEntity lecAdvertEntity, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mCourseHttpManager.getAdOnLL(enstuId, liveId, lecAdvertEntity.course_id, new HttpCallBack() {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                int isLearn = jsonObject.optInt("isLearn", 0);
-                lecAdvertEntity.isLearn = isLearn;
-                if (isLearn == 0) {
-                    lecAdvertEntity.limit = jsonObject.optString("limit");
-                    lecAdvertEntity.signUpUrl = jsonObject.optString("signUpUrl");
-                    lecAdvertEntity.saleName = jsonObject.optString("saleName");
-                    lecAdvertEntity.courseId = jsonObject.optString("courseId");
-                    lecAdvertEntity.classId = jsonObject.optString("classId");
-                }
-                callBack.onDataSucess();
             }
         });
     }

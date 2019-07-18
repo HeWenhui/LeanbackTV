@@ -3,10 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 
 /**
- * Created by lyqai on 2018/7/17.
+ * Created by linyuqiang on 2018/7/17.
  */
 
-public interface RegMediaPlayerControl {
+public interface RegMediaPlayerControl extends LiveProvide{
     void addMediaPlayerControl(LiveMediaController.MediaPlayerControl mediaPlayerControl);
 
     void removeMediaPlayerControl(LiveMediaController.MediaPlayerControl mediaPlayerControl);

@@ -4,7 +4,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 
 /**
- * Created by lyqai on 2018/7/18.
+ * Created by linyuqiang on 2018/7/18.
  */
 
 public interface LecAdvertHttp {

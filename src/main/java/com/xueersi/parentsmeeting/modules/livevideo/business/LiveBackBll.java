@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.common.config.AppConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -190,12 +191,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                                 hashMap.put("size", oldSize + "-" + size);
                                 UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
                             } catch (Exception e) {
-                                CrashReport.postCatchedException(e);
+                                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                             }
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             } else {
                 appID = UmsConstants.LIVE_APP_ID_BACK;
@@ -225,12 +226,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                                 hashMap.put("size", oldSize + "-" + size);
                                 UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
                             } catch (Exception e) {
-                                CrashReport.postCatchedException(e);
+                                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                             }
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         }
@@ -262,7 +263,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 hashMap.put("liveid", "" + mVideoEntity.getLiveId());
                 UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -369,6 +370,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             String getInfoStr = mVideoEntity.getGetInfoStr();
             if (getInfoStr != null) {
                 JSONObject liveInfo = new JSONObject(getInfoStr);
+                //isHFNewProject 是1 代表去壳
+                liveGetInfo.setNewCourse("1".equals(liveInfo.optString("isHFNewProject")));
+//                if (AppConfig.DEBUG) {
+//                    liveGetInfo.setNewCourse(true);
+//                }
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
                 liveGetInfo.setPrimaryChinese("2".equals(liveInfo.optString("useSkin")));
                 liveGetInfo.setsTime(liveInfo.optLong("stime"));
@@ -725,12 +731,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 hashMap.put("category", "" + mQuestionEntity.getvCategory());
                 UmsAgentManager.umsAgentDebug(activity, LogConfig.LIVE_BACK_CATEGORY_UNKNOW, hashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
 
-    public interface ShowQuestion {
+    public interface ShowQuestion extends LiveProvide {
         void onShow(boolean isShow, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
         void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity);
@@ -911,15 +917,15 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         }
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
-            businessBll.onDestory();
+            businessBll.onDestroy();
         }
-        allLiveBasePagerIml.onDestory();
+        allLiveBasePagerIml.onDestroy();
         businessShareParamMap.clear();
         liveBackBaseBlls.clear();
         if (liveUidRx != null) {
-            liveUidRx.onDestory();
+            liveUidRx.onDestroy();
         }
     }
 

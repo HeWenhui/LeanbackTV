@@ -3,14 +3,16 @@ package com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -21,20 +23,21 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import java.util.ArrayList;
 
 /**
- * Created by lyqai on 2018/1/15.
+ * 讲座广告
+ * Created by linyuqiang on 2018/1/15.
  */
-
 public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
-    String TAG = "LecAdvertBll";
+    private String TAG = "LecAdvertBll";
     protected Logger logger = LoggerFactory.getLogger(TAG);
-    String eventid = LiveVideoConfig.LEC_ADS;
-    Context context;
-    RelativeLayout bottomContent;
-    LecAdvertPager lecAdvertager;
-    ArrayList<LecAdvertEntity> entities = new ArrayList<>();
-    LecAdvertHttp lecAdvertHttp;
-    LiveAndBackDebug liveAndBackDebug;
-    String liveid;
+    private String eventid = LiveVideoConfig.LEC_ADS;
+    private Context context;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private LiveViewAction liveViewAction;
+    private LecAdvertPager lecAdvertager;
+    private ArrayList<LecAdvertEntity> entities = new ArrayList<>();
+    private LecAdvertHttp lecAdvertHttp;
+    private LiveAndBackDebug liveAndBackDebug;
+    private String liveid;
 
     public LecAdvertBll(Activity context) {
         this.context = context;
@@ -49,8 +52,8 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
         this.liveid = liveid;
     }
 
-    public void initView(RelativeLayout bottomContent, boolean isLand) {
-        this.bottomContent = bottomContent;
+    public void initView(LiveViewAction liveViewAction, boolean isLand) {
+        this.liveViewAction = liveViewAction;
         if (lecAdvertager != null) {
             ViewGroup group = (ViewGroup) lecAdvertager.getRootView().getParent();
             if (group != null) {
@@ -58,12 +61,12 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
             }
             if (!isLand) {
                 ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                bottomContent.addView(lecAdvertager.getRootView(), lp);
+                liveViewAction.addView(lecAdvertager.getRootView(), lp);
             } else {
                 int step = lecAdvertager.getStep();
                 if (step == 1) {
                     ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    bottomContent.addView(lecAdvertager.getRootView(), lp);
+                    liveViewAction.addView(lecAdvertager.getRootView(), lp);
                 }
             }
         }
@@ -76,7 +79,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
         logHashMap.addSno("3").addStable("2");
         logHashMap.addNonce("" + lecAdvertEntity.nonce);
         liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
-        bottomContent.post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (lecAdvertager != null) {
@@ -117,7 +120,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
                         }
                         lecAdvertager = new LecAdvertPager(context, lecAdvertEntity, LecAdvertBll.this, liveid);
                         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                        bottomContent.addView(lecAdvertager.getRootView(), lp);
+                        liveViewAction.addView(lecAdvertager.getRootView(), lp);
                         lecAdvertager.initStep1();
                         LecAdvertLog.sno4(lecAdvertEntity, liveAndBackDebug);
                         // 添加成功弹出广告的日志
@@ -147,7 +150,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
     @Override
     public void close(boolean land) {
         if (lecAdvertager != null) {
-            bottomContent.removeView(lecAdvertager.getRootView());
+            liveViewAction.removeView(lecAdvertager.getRootView());
             lecAdvertager = null;
             if (context instanceof ActivityChangeLand && entities.isEmpty()) {
                 ActivityChangeLand activityChangeLand = (ActivityChangeLand) context;

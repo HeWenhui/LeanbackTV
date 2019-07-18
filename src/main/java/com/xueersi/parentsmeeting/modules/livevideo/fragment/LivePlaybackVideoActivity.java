@@ -5,10 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandLiveVideoExperienceFragment;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import java.util.HashMap;
  * 新直播回放
  */
 public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
-
+    private static String TAG = "LivePlaybackVideoActivityLog";
     /**
      * 用来判断是否是站立直播体验课
      */
@@ -86,7 +87,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             context.startActivityForResult(intent, requestCode);
         } catch (Exception e) {
             e.printStackTrace();
-            CrashReport.postCatchedException(e);
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         try {
             VideoLivePlayBackEntity serializable = (VideoLivePlayBackEntity) bundle.getSerializable("videoliveplayback");
@@ -105,7 +106,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
                 hashMap.put("liveid", "" + serializable.getLiveId());
                 UmsAgentManager.umsAgentDebug(context, "LivePlaybackVideoActivityIntentTo", hashMap);
             } else {
-                CrashReport.postCatchedException(new Exception("" + bundle));
+                LiveCrashReport.postCatchedException(new Exception("" + bundle));
                 HashMap<String, String> hashMap = new HashMap();
                 hashMap.put("logtype", "videoliveplayback");
                 hashMap.put("where", "" + where);
@@ -115,7 +116,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
                 UmsAgentManager.umsAgentDebug(context, "LivePlaybackVideoActivityIntentTo", hashMap);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 }

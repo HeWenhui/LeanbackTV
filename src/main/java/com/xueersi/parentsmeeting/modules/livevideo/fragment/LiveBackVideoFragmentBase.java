@@ -204,7 +204,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
         mIsLand.set(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
-        BaseApplication baseApplication = (BaseApplication) activity.getApplication();
+        BaseApplication baseApplication = BaseApplication.getInstance();
         baseApplication.addActivty(activity);
         //showDialog(savedInstanceState);
         video = "ijk";

@@ -16,6 +16,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -39,7 +40,8 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     private Handler handler = new Handler(Looper.getMainLooper());
     /** 得到本组信息重试 */
     private int getSelfTeamInfoTimes = 1;
-    private RelativeLayout rootView;
+    private LiveViewAction liveViewAction;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     private TeamPkRankPager teamPkRankPager;
     private boolean teamEnd = false;
     private TeamPkRankResultPager teamPkRankResultPager;
@@ -71,8 +73,8 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         this.enTeamPkHttp = enTeamPkHttp;
     }
 
-    public void setRootView(RelativeLayout rootView) {
-        this.rootView = rootView;
+    public void setRootView(LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
     }
 
     @Override
@@ -133,7 +135,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                 @Override
                 public void run() {
                     if (teamPkLeadPager != null) {
-                        rootView.removeView(teamPkLeadPager.getRootView());
+                        liveViewAction.removeView(teamPkLeadPager.getRootView());
                         teamPkLeadPager = null;
                     }
                 }
@@ -200,7 +202,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         }
         mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TOP, string + "" + getInfo.getId() + ",", ShareDataManager.SHAREDATA_USER);
         hasAddTop = true;
-        final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_join, rootView, false);
+        final View view = liveViewAction.inflateView(R.layout.layout_livevideo_en_team_join);
         TextView tv_livevideo_en_teampk_top_name = view.findViewById(R.id.tv_livevideo_en_teampk_top_name);
         ImageView iv_livevideo_en_teampk_top_img = view.findViewById(R.id.iv_livevideo_en_teampk_top_img);
         if (pkTeamEntity != null) {
@@ -213,11 +215,11 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 //            }
             return;
         }
-        rootView.addView(view);
-        rootView.postDelayed(new Runnable() {
+        liveViewAction.addView(view);
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                rootView.removeView(view);
+                liveViewAction.removeView(view);
             }
         }, 2000);
     }
@@ -241,16 +243,16 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                         teamPkRankPager.setOnTeamSelect(new TeamPkRankPager.OnTeamSelect() {
                             @Override
                             public void onTeamSelect(PkTeamEntity pkTeamEntity) {
-                                rootView.removeView(teamPkRankPager.getRootView());
+                                liveViewAction.removeView(teamPkRankPager.getRootView());
                                 teamPkRankResultPager = new TeamPkRankResultPager(mContext, pkTeamEntity);
                                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                                 layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
-                                rootView.addView(teamPkRankResultPager.getRootView(), layoutParams);
+                                liveViewAction.addView(teamPkRankResultPager.getRootView(), layoutParams);
                                 teamPkRankResultPager.setOnStartClick(new TeamPkRankResultPager.OnStartClick() {
                                     @Override
                                     public void onClick() {
                                         if (teamPkRankResultPager != null) {
-                                            rootView.removeView(teamPkRankResultPager.getRootView());
+                                            liveViewAction.removeView(teamPkRankResultPager.getRootView());
                                             teamPkRankResultPager = null;
                                         }
                                     }
@@ -259,7 +261,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                         });
                         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                         layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
-                        rootView.addView(teamPkRankPager.getRootView(), layoutParams);
+                        liveViewAction.addView(teamPkRankPager.getRootView(), layoutParams);
                         enTeamPkHttp.getEnglishPkGroup(new AbstractBusinessDataCallBack() {
                             AbstractBusinessDataCallBack callBack = this;
 
@@ -340,7 +342,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                         }
                         teamEnd = true;
                         if (teamPkRankPager != null) {
-                            rootView.removeView(teamPkRankPager.getRootView());
+                            liveViewAction.removeView(teamPkRankPager.getRootView());
                         }
                     }
                 }, 10000);
@@ -355,7 +357,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             teamEnd = true;
             if (teamPkRankPager != null) {
-                rootView.removeView(teamPkRankPager.getRootView());
+                liveViewAction.removeView(teamPkRankPager.getRootView());
             }
             if (pkTeamEntity == null) {
                 handler.postDelayed(new Runnable() {
@@ -460,7 +462,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                     teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity, testId, type, pattern, new TeamPkLeadPager.OnClose() {
                         @Override
                         public void close(BasePager basePager) {
-                            rootView.removeView(basePager.getRootView());
+                            liveViewAction.removeView(basePager.getRootView());
                         }
                     });
                     teamPkLeadPager.setOnStudyClick(new TeamPkLeadPager.OnStudyClick() {
@@ -476,7 +478,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                     if (pattern != LiveVideoConfig.LIVE_PATTERN_2) {
                         layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
                     }
-                    rootView.addView(teamPkLeadPager.getRootView(), layoutParams);
+                    liveViewAction.addView(teamPkLeadPager.getRootView(), layoutParams);
                     teamPkLeadPager.getRootView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                         @Override
                         public void onViewAttachedToWindow(View view) {

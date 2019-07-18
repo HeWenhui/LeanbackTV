@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -19,12 +18,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
@@ -34,7 +31,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,7 +38,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -68,7 +63,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     private ArrayList<PlayServerEntity.PlayserverEntity> failFlvPlayserverEntity = new ArrayList<>();
     private BasePlayerFragment videoFragment;
     private Activity activity;
-    private LiveBll2 mLiveBll;
+    private TeacherIsPresent teacherIsPresent;
     private LiveHttpManager mHttpManager;
     private LiveHttpResponseParser mHttpResponseParser;
     /** 上次播放统计开始时间 */
@@ -103,9 +98,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
     private int mLiveType;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
-    public LiveVideoBll(Activity activity, LiveBll2 liveBll, int liveType) {
+    public LiveVideoBll(Activity activity, TeacherIsPresent teacherIsPresent, int liveType) {
         this.activity = activity;
-        this.mLiveBll = liveBll;
+        this.teacherIsPresent = teacherIsPresent;
         this.mLiveType = liveType;
         mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
@@ -168,11 +163,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
             @Override
             public boolean isPresent() {
-                return mLiveBll.isPresent();
+                return teacherIsPresent.isPresent();
             }
         }, mLiveType, getInfo, liveTopic);
-        liveGetPlayServer.setHttpManager(mHttpManager);
-        liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
         liveGetPlayServer.setVideoAction(mVideoAction);
         liveGetPlayServer(liveTopic.getMode(), false);
     }
@@ -285,6 +278,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     /**
      * PSIJK 自动切换线路
+     * 缓冲超时{@link #mBufferTimeOutRun}
      * <p>
      * 起播超时{@link #mOpenTimeOutRun}
      * <p>
@@ -420,7 +414,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 vPlayerListener.onOpenSuccess();
             }
             mHandler.removeCallbacks(mPlayDuration);
-            mLogtf.d("onOpenSuccess:playTime=" + playTime);
+            mLogtf.d("onOpenSuccess:url=" + vPlayer.getUri() + ",playTime=" + playTime);
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
             mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
@@ -428,7 +422,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void onOpenStart() {
-            mLogtf.d("onOpenStart");
+            mLogtf.d("onOpenStart:url=" + vPlayer.getUri());
             openStartTime = System.currentTimeMillis();
             openSuccess = false;
             mHandler.removeCallbacks(mOpenTimeOutRun);
@@ -452,7 +446,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onOpenFailed(arg1, arg2);
             }
-            mLogtf.d("onOpenFailed:arg2=" + arg2);
+            mLogtf.d("onOpenFailed:url=" + vPlayer.getUri() + ",arg2=" + arg2);
+            if (lastPlayserverEntity != null) {
+                 reportPlayStarTime = System.currentTimeMillis();
+            }
         }
 
         @Override
@@ -504,7 +501,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
             Map<String, String> map = new HashMap<>();
             map.put("param", "openTimeOut");
-            UmsAgentManager.umsAgentDebug(activity, LiveLogUtils.PLAY_VIDEO_FAIL, map);
+            map.put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_VIDEO_FAIL);
+            UmsAgentManager.umsAgentDebug(activity, LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map);
             if (MediaPlayer.getIsNewIJK()) {
                 changeNextLine();
             } else {
@@ -607,13 +605,14 @@ public class LiveVideoBll implements VPlayerListenerReg {
             liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    if (!mLiveBll.isPresent() && mVideoAction != null) {
+                    if (!teacherIsPresent.isPresent() && mVideoAction != null) {
                         mVideoAction.onTeacherNotPresent(true);
                     }
                 }
             });
             switch (arg2) {
                 case MediaErrorInfo.PSPlayerError: {
+                    mVideoAction.onPlayError(MediaErrorInfo.PSPlayerError,PlayErrorCode.PLAY_SERVER_CODE_101);
                     //播放器错误
                     autoChangeNextLine();
                     break;

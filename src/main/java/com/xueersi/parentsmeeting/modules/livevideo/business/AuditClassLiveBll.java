@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -21,7 +20,6 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.SimpleVPlayerListener;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
@@ -30,14 +28,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 
@@ -558,16 +554,16 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             return;
         }*/
 
-        if (mGetInfo.getPattern() == 2) {
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
             ResponseEntity responseEntity = new ResponseEntity();
             responseEntity.setErrorMsg("家长旁听暂不支持全身直播，程序员哥哥正在夜以继日的开发哦!");
             onLiveError(responseEntity);
             return;
         }
-        if (mGetInfo.getIsArts() == 1) {
+        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
-        } else if (mGetInfo.getIsArts() == 2) {
+        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
             appID = UmsConstants.LIVE_CN_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
@@ -619,8 +615,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      */
     private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo){
         return liveGetInfo != null && liveGetInfo.getPattern()
-                == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
-                && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
+                == LiveVideoConfig.LIVE_TYPE_HALFBODY
+                && liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH;
     }
 
 
@@ -676,7 +672,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public synchronized void getHalfBodyLiveStudentLiveInfo() {
 
-        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE,
+        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH,
                 new HttpCallBack(false){
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -729,8 +725,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                 super.liveGetPlayServer(mode, modechange);
             }
         };
-        liveGetPlayServer.setHttpManager(mHttpManager);
-        liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
         liveGetPlayServer.setVideoAction(mVideoAction);
         liveGetPlayServer(mLiveTopic.getMode(), false);
     }
@@ -1046,63 +1040,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     public String getNickname() {
         return mIRCMessage.getNickname();
-    }
-
-
-    public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
-        String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mHttpManager.getSpeechEval(enstuId, liveid, id, new HttpCallBack() {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                SpeechEvalEntity speechEvalEntity = mHttpResponseParser.parseSpeechEval(responseEntity);
-                if (speechEvalEntity != null) {
-                    onSpeechEval.onSpeechEval(speechEvalEntity);
-                } else {
-                    responseEntity = new ResponseEntity();
-                    responseEntity.setStatus(false);
-                    responseEntity.setErrorMsg("出了点意外，请稍后试试");
-                    responseEntity.setJsonError(true);
-                    onSpeechEval.onPmError(responseEntity);
-                }
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        });
-    }
-
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval onSpeechEval) {
-        String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mHttpManager.sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack(false) {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult:onPmSuccess=" + responseEntity.getJsonObject());
-                onSpeechEval.onSpeechEval(null);
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                mLogtf.i("sendSpeechEvalResult:onPmFailure=" + msg);
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
-                onSpeechEval.onPmError(responseEntity);
-            }
-        });
     }
 
     static HashMap<String, String> channelAndRoomid = new HashMap();

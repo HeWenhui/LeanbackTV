@@ -318,20 +318,22 @@ public class LiveVideoBll implements VPlayerListenerReg {
                         @Override
                         public void onDataSucess(Object... objData) {
                             if (finalEntity != lastPlayserverEntity) {
+                                mLogtf.d("onDataSucess:finalEntity=" + finalEntity);
                                 return;
                             }
                             String provide = (String) objData[0];
                             String url;
                             if ("wangsu".equals(provide)) {
                                 url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
-                                videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
+                                playNewVideo(Uri.parse(url), mGetInfo.getName(), "onDataSucess:wangsu");
                             } else if ("ali".equals(provide)) {
                                 url = (String) objData[1];
                                 StringBuilder stringBuilder = new StringBuilder(url);
                                 addBody("Sucess", stringBuilder);
                                 url = stringBuilder + "&username=" + mGetInfo.getUname();
-                                videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
+                                playNewVideo(Uri.parse(url), mGetInfo.getName(), "onDataSucess:ali");
                             } else {
+                                mLogtf.d("onDataSucess:provide=" + provide);
                                 return;
                             }
                             StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
@@ -343,12 +345,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
                         @Override
                         public void onDataFail(int errStatus, String failMsg) {
                             if (finalEntity != lastPlayserverEntity) {
+                                mLogtf.d("onDataSucess:finalEntity=" + finalEntity);
                                 return;
                             }
                             String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
                             StringBuilder stringBuilder = new StringBuilder(url);
                             addBody("Fail", stringBuilder);
-                            videoFragment.playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+                            playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName(), "onDataFail");
                         }
                     });
                     return;
@@ -360,7 +363,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         msg += addBody("rePlay", stringBuilder);
         msg += ",url=" + stringBuilder;
         mLogtf.d(msg);
-        videoFragment.playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+        playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName(), "rePlay");
     }
 
     /** 直接指定为只去播放 */
@@ -368,8 +371,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
         String url = constructUrl(pos);
         logger.i("加载的url = " + url);
         if (url != null) {
-            videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
+            playNewVideo(Uri.parse(url), mGetInfo.getName(), "playNewVideo:pos=" + pos);
         }
+    }
+
+    private void playNewVideo(Uri uri, String displayName, String method) {
+        mLogtf.d("playNewVideo:uri=" + uri + ",method=" + method);
+        videoFragment.playNewVideo(uri, displayName);
     }
 
     /** 构造url */
@@ -406,13 +414,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
                         String url;
                         if ("wangsu".equals(provide)) {
                             url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
-                            videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
+                            playNewVideo(Uri.parse(url), mGetInfo.getName(), "constructUrl:onDataSucess:wangsu");
                         } else if ("ali".equals(provide)) {
                             url = (String) objData[1];
                             StringBuilder stringBuilder = new StringBuilder(url);
                             addBody("Sucess", stringBuilder);
                             url = stringBuilder + "&username=" + mGetInfo.getUname();
-                            videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
+                            playNewVideo(Uri.parse(url), mGetInfo.getName(), "constructUrl:onDataSucess:ali");
                         } else {
                             return;
                         }
@@ -430,7 +438,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                         String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
                         StringBuilder stringBuilder = new StringBuilder(url);
                         addBody("Fail", stringBuilder);
-                        videoFragment.playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+                        playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName(), "constructUrl:onDataFail");
                     }
                 });
                 return "";
@@ -544,7 +552,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 vPlayerListener.onOpenSuccess();
             }
             mHandler.removeCallbacks(mPlayDuration);
-            mLogtf.d("onOpenSuccess:playTime=" + playTime);
+            mLogtf.d("onOpenSuccess:url=" + vPlayer.getUri() + ",playTime=" + playTime);
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
             mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
@@ -552,7 +560,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void onOpenStart() {
-            mLogtf.d("onOpenStart");
+            mLogtf.d("onOpenStart:url=" + vPlayer.getUri());
             openStartTime = System.currentTimeMillis();
             openSuccess = false;
             mHandler.removeCallbacks(mOpenTimeOutRun);
@@ -576,7 +584,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onOpenFailed(arg1, arg2);
             }
-            mLogtf.d("onOpenFailed:arg2=" + arg2);
+            mLogtf.d("onOpenFailed:url=" + vPlayer.getUri() + ",arg2=" + arg2);
             if (lastPlayserverEntity != null) {
                 liveVideoReportBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "fail reconnect");
                 reportPlayStarTime = System.currentTimeMillis();
@@ -893,7 +901,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         if (liveGetPlayServer != null) {
             liveGetPlayServer.onDestroy();
         }
-        liveVideoReportBll.onDestory();
+        liveVideoReportBll.onDestroy();
         mPlayStatistics.clear();
     }
 

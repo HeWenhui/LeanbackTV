@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.util;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.LoggerFactory;
@@ -133,7 +133,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                             logHashMap.put("length2", "" + destination.length());
                             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(e);
+                            LiveCrashReport.postCatchedException(e);
                         }
                     }
                 } catch (Exception e) {
@@ -150,7 +150,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                         logHashMap.put("length2", "" + destination.length());
                         UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
                     } catch (Exception e2) {
-                        CrashReport.postCatchedException(e2);
+                        LiveCrashReport.postCatchedException(e2);
                     }
                     destinationTemp.delete();
                     destination.delete();
@@ -191,7 +191,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
             logHashMap.put("exception", "" + Log.getStackTraceString(exception));
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_ERROR, logHashMap.getData());
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            LiveCrashReport.postCatchedException(e);
         }
         return exception;
     }

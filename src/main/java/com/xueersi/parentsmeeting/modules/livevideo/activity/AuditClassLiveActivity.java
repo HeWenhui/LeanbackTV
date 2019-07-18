@@ -30,6 +30,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -54,7 +55,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AuditVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodyAuditClassBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -760,7 +760,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         }
     };
 
-    private void changeNextLine() {
+    protected void changeNextLine() {
         this.nowPos++;
         if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
             //初始化
@@ -1012,7 +1012,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * @return
      */
     private boolean isHalfBodyLive() {
-        return mGetInfo != null && mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY;
+        return mGetInfo != null && mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY;
     }
 
     /***
@@ -1749,7 +1749,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.NowMobileEvent event) {
         if (mIsShowMobileAlert) {
-            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(this, mBaseApplication, false,
+            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(this, ContextManager.getApplication(), false,
                     VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
             cancelDialog.setCancelBtnListener(new View.OnClickListener() {
                 @Override

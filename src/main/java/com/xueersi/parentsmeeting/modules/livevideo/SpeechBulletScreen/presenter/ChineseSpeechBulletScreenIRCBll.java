@@ -74,7 +74,7 @@ public class ChineseSpeechBulletScreenIRCBll extends LiveBaseBll implements Topi
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         if (speechBulletView != null) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     speechBulletView.closeSpeechBullet(false);
@@ -97,7 +97,7 @@ public class ChineseSpeechBulletScreenIRCBll extends LiveBaseBll implements Topi
                         (LiveTopic.MODE_CLASS.equals(mGetInfo.getMode()) && "t".equals(from) || LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) && "f".equals(from))) {
                     if ("true".equals(open)) {
                         if (speechBulletView != null) {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     speechBulletView.showSpeechBullet(mRootView);
@@ -106,7 +106,7 @@ public class ChineseSpeechBulletScreenIRCBll extends LiveBaseBll implements Topi
                         }
                     } else if ("false".equals(open)) {
                         if (speechBulletView != null) {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     speechBulletView.closeSpeechBullet(true);
@@ -198,7 +198,7 @@ public class ChineseSpeechBulletScreenIRCBll extends LiveBaseBll implements Topi
             final String headImgUrl = jsonObject.optString("headImg");
             final String msg = jsonObject.optString("msg");
             if (speechBulletView != null) {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         speechBulletView.receiveDanmakuMsg(name, msg, headImgUrl, true, mRootView);

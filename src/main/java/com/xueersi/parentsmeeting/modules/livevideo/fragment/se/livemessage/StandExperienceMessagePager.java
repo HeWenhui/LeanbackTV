@@ -79,8 +79,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessSysItem;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
@@ -233,7 +234,6 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
-        dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
         rlMessageContent = mView.findViewById(R.id.rl_livevideo_message_content2);
         etMessageContent = (EditText) mView.findViewById(R.id.et_livevideo_message_content);
@@ -689,7 +689,7 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                LiveIRCMessageBll.requestGoldTotal(mContext);
+                UserGoldTotal.requestGoldTotal(mContext);
             }
         });
         btMessageFlowers.setTag("0");
@@ -1091,9 +1091,9 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = getInfo.getMainTeacherInfo().getTeacherName();
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = getInfo.getTeacherName();
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
@@ -1113,7 +1113,7 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
                         addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"), jsonObject.getString("path"));
+                                .getString("msg"), jsonObject.optString("path",""));
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
@@ -1778,44 +1778,6 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
                 initBtMesOpenAnimation(true);
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
-
-    }
-
-    LiveAndBackDebug mLiveBll;
-
-    @Override
-    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugSys(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugInter(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-
-    }
-
-    @Override
-    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
 
     }
 

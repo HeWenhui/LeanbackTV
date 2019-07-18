@@ -52,6 +52,7 @@ public class LiveVideoConfig {
     /** 得到语音评测试题 */
     public final static String URL_LIVE_GET_SPEECHEVAL = LiveVideoConfig.HTTP_HOST + "/StudyCenter/getSpeechEvalInfo";
     /** 发送语音评测答案 */
+    @Deprecated
     public final static String URL_LIVE_SEND_SPEECHEVAL = LiveVideoConfig.HTTP_HOST + "/StudyCenter/submitSpeechEval";
     /** 直播辅导发送语音评测答案 */
     @Deprecated
@@ -95,10 +96,14 @@ public class LiveVideoConfig {
      * 直播课的直播
      */
     public final static int LIVE_TYPE_LIVE = 3;
-    /**
-     * 直播课的全身直播
-     */
+    /** 直播课的普通直播  */
+    public final static int LIVE_PATTERN_COMMON = 1;
+    /** 直播课的全身直播 */
     public final static int LIVE_PATTERN_2 = 2;
+    /**半身直播直播类型*/
+    public static final int LIVE_TYPE_HALFBODY = 6;
+    /**半身直播直播类型-小组*/
+    public static final int LIVE_TYPE_HALFBODY_CLASS = 9;
     /** 视频类型为站立直播体验课 */
     public static final int LIVE_TYPE_STAND_EXPERIENCE = 10000;
     /**
@@ -346,8 +351,10 @@ public class LiveVideoConfig {
     /** 讲座直播广告Id */
     public static String LECTUREADID;
 
+    @Deprecated
     public static Boolean isNewEnglishH5 = false;
     /** 一题多发发题和收题的标志 */
+    @Deprecated
     public static Boolean isSend = false;
     public static String newEnglishH5 = "NewEnglishH5";
     /** 强制收题的标志 */
@@ -433,8 +440,8 @@ public class LiveVideoConfig {
 //    public static String URL_CHECK_DEVICE = "https://www.easy-mock.com/mock/5b57f6919ddd1140ec2eb47b/xueersi.wx
 // .android.app" + "/Users/checkDevice";
 
-    /** 文科新课件平台的标识 */
-    public static Boolean isNewArts = false;
+//    /** 文科新课件平台的标识 */
+//    public static Boolean isNewArts = false;
     /** 全身直播的标识*/
     public static Boolean isStandLive = false;
     /** H5语音答题新增字段*/
@@ -547,5 +554,8 @@ public class LiveVideoConfig {
     /** 课后评价教师文案获取 */
     public static String URL_LIVE_COURSE_GETEVALUATE =  AppConfig.HTTP_HOST + "/science/LiveCourse/getEvaluateContentNew";
 
-
+    public final static String LIVE_PLAY_BACK_TUTOR_FLAGE = "_t";
+    /** 语文H5默认新地址 */
+    public final static String URL_DEFAULT_CHS_H5 = "https://live.chs.xueersi.com/Live/coursewareH5/";
+    public final static String SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE = "sp_en_english_stand_summercours_ewaresize";
 }

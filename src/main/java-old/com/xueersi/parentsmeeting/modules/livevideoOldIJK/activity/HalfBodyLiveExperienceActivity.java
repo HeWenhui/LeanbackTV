@@ -290,7 +290,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
      */
     private ImageView ivTeacherNotpresent;
     RelativeLayout bottomContent;
-    RelativeLayout praiselistContent;
     /**
      * 缓冲提示
      */
@@ -781,8 +780,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlLiveMessageContent, params);
 
-        praiselistContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_praiselist_content);
-        praiselistContent.setVisibility(View.VISIBLE);
         ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
         updateLoadingImage();
         tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
@@ -1231,7 +1228,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_EXIT);
         ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_EXIT, logHashMap.getData());
         AppBll.getInstance().unRegisterAppEvent(this);
-        liveBackBll.onDestory();
+        liveBackBll.onDestroy();
         mLiveMessagePager = null;
         if (mIRCMessage != null) {
             mIRCMessage.setCallback(null);

@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.business;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
 
 public interface EnglishSpeekMode {

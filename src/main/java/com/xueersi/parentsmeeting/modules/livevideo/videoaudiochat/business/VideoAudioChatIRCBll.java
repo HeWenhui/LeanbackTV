@@ -1,8 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business;
 
 import android.app.Activity;
+import android.util.Log;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -12,6 +13,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -21,7 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
@@ -35,11 +38,14 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/11.
+ * Created by linyuqiang on 2018/7/11.
  */
 public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent, NoticeAction, TopicAction, VideoAudioChatHttp, MessageAction {
+    static{
+        Log.d("VideoAudioChatIRCBll","VideoAudioChatIRCBll:static");
+    }
     private VideoAudioChatBll videoChatAction;
-    private LiveFragmentBase liveFragmentBase;
+    private LivePlayAction livePlayAction;
     /** 接麦已经连接老师 */
     private AtomicBoolean startRemote = new AtomicBoolean(false);
     public static final String DEFULT_VOICE_CHAT_STATE = "off";
@@ -65,11 +71,20 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         });
     }
 
-    public void setLiveFragmentBase(LiveFragmentBase liveFragmentBase) {
-        this.liveFragmentBase = liveFragmentBase;
+    @Override
+    public void onCreate(HashMap<String, Object> data) {
+        super.onCreate(data);
+        LivePlayAction livePlayAction = getInstance(LivePlayAction.class);
+        setLivePlayAction(livePlayAction);
+        BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = getInstance(BaseLiveMediaControllerBottom.class);
+        setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
 
-    public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
+    private void setLivePlayAction(LivePlayAction livePlayAction) {
+        this.livePlayAction = livePlayAction;
+    }
+
+    private void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         this.baseLiveMediaControllerBottom = baseLiveMediaControllerBottom;
     }
 
@@ -79,18 +94,14 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         boolean allowLinkMic = (1 == getInfo.getAllowLinkMicNew());
         if (allowLinkMic) {
             VideoAudioChatBll videoChatBll = new VideoAudioChatBll(activity, this);
-            if (rlMessageBottom != null) {
-                videoChatBll.initView(rlMessageBottom);
-            } else {
-                videoChatBll.initView(mRootView);
-            }
+            videoChatBll.initView(getLiveViewAction());
             videoChatBll.setControllerBottom(baseLiveMediaControllerBottom);
             videoChatBll.setLiveAndBackDebug(contextLiveAndBackDebug);
             videoChatBll.setVideoChatHttp(this);
             videoChatBll.onLiveInit(getInfo);
             videoChatAction = videoChatBll;
 
-            if(baseLiveMediaControllerBottom instanceof LiveUIStateReg){
+            if (baseLiveMediaControllerBottom instanceof LiveUIStateReg) {
                 LiveUIStateReg halfBodyMediaControllerBottom = (LiveUIStateReg)
                         baseLiveMediaControllerBottom;
                 halfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
@@ -114,8 +125,8 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (videoChatAction != null) {
             videoChatAction.onDestroy();
         }
@@ -124,12 +135,12 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
 
     @Override
     public void setVolume(float left, float right) {
-        liveFragmentBase.setVolume(left, right);
+        livePlayAction.setVolume(left, right);
     }
 
     @Override
     public void showLongMediaController() {
-        liveFragmentBase.showLongMediaController();
+        livePlayAction.showLongMediaController();
     }
 
     @Override
@@ -139,15 +150,15 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
 
     @Override
     public void stopPlay() {
-        liveFragmentBase.stopPlayer();
+        livePlayAction.stopPlayer();
     }
 
     @Override
     public void rePlay(boolean b) {
         if (!MediaPlayer.getIsNewIJK()) {
-            liveFragmentBase.rePlay(b);
+            livePlayAction.rePlay(b);
         } else {
-            liveFragmentBase.changeNowLine();
+            livePlayAction.changeNowLine();
         }
     }
 
@@ -223,7 +234,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                 }
             } catch (Exception e) {
                 logger.e("onTopic", e);
-                CrashReport.postCatchedException(e);
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -348,9 +359,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
 
             jsonObject.put("nonce", nonce);
             if ("t".equals(from)) {
-                mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
+                sendNoticeToMain(jsonObject);
             } else {
-                mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
+                sendNoticeToCoun(jsonObject);
             }
         } catch (Exception e) {
             // logger.e( "understand", e);
@@ -366,9 +377,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             jsonObject.put("id", mGetInfo.getStuId());
             jsonObject.put("status", "off");
             if ("t".equals(from)) {
-                mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
+                sendNoticeToMain(jsonObject);
             } else {
-                mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
+                sendNoticeToCoun(jsonObject);
             }
         } catch (Exception e) {
             // logger.e( "understand", e);
@@ -385,9 +396,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             jsonObject.put("id", mGetInfo.getStuId());
             jsonObject.put("likes", "" + likes);
             if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
-                mLiveBll.sendMessage(mLiveBll.getMainTeacherStr(), jsonObject);
+                sendMessageMain(jsonObject);
             } else {
-                mLiveBll.sendMessage(mLiveBll.getCounTeacherStr(), jsonObject);
+                sendMessageCoun(jsonObject);
             }
 //            mLiveBll.sendMessage(jsonObject);
         } catch (Exception e) {
@@ -406,9 +417,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
 
             jsonObject.put("quality", quality);
             if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
-                mLiveBll.sendMessage(mLiveBll.getMainTeacherStr(), jsonObject);
+                sendMessageMain(jsonObject);
             } else {
-                mLiveBll.sendMessage(mLiveBll.getCounTeacherStr(), jsonObject);
+                sendMessageCoun(jsonObject);
             }
 //            mLiveBll.sendMessage(jsonObject);
         } catch (Exception e) {
@@ -445,7 +456,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
 
     @Override
     public void chatHandAdd(HttpCallBack call) {
-        if (mGetInfo.getIsArts() == 0) {
+        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
             getHttpManager().addStuPutUpHandsNum(mGetInfo.getStuId(), call);
         }
     }

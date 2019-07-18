@@ -4,13 +4,14 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.event.ClassEndEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
-public class ClassEndReg {
+public class ClassEndReg implements LiveProvide {
     private LogToFile logToFile;
     public LiveGetInfo liveGetInfo;
     private Context context;

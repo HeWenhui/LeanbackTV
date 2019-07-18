@@ -18,7 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LecAdvertPager;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/1/15.
+ * Created by linyuqiang on 2018/1/15.
  */
 
 public class LecBackAdvertBll {
@@ -103,7 +103,7 @@ public class LecBackAdvertBll {
         });
     }
 
-    void onDestory() {
+    void onDestroy() {
 
     }
 }

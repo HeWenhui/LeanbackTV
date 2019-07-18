@@ -29,7 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import java.util.ArrayList;
 
 /**
- * Created by lyqai on 2017/11/16.
+ * Created by linyuqiang on 2017/11/16.
  */
 
 public class StartProgress extends RelativeLayout {

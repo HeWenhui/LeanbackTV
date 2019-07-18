@@ -30,7 +30,7 @@ import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.tal.speech.utils.SpeechUtils;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -632,7 +632,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(new Error(content + "-" + nbest, e));
+            LiveCrashReport.postCatchedException(new Error(content + "-" + nbest, e));
         }
         mLogtf.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + "," +
                 "haveAnswer=" + haveAnswer + ",nbest=" + nbest);
@@ -645,7 +645,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 try {
                     answers1.put("entranceTimeLog", entranceTime + "," + System.currentTimeMillis());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 long entranceTime2 = System.currentTimeMillis() - entranceTime;
                 answers1.put("entranceTime", (int) (entranceTime2 / 1000));

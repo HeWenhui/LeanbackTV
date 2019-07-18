@@ -20,19 +20,22 @@ public class VoiceImageView extends ImageView {
     int height;
     Rect src;
     int uid;
+    int itemHeight;
 
     public VoiceImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         bg_live_voicewave_bg1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg_live_voicewave_bg2);
         height = bg_live_voicewave_bg1.getHeight();
         src = new Rect(0, bg_live_voicewave_bg1.getHeight(), bg_live_voicewave_bg1.getWidth(), bg_live_voicewave_bg1.getHeight());
+        itemHeight = (int) (height * 2.0f / 13.0f);
+        logger.d("VoiceImageView:uid=" + uid + ",itemHeight=" + itemHeight);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.save();
-        canvas.translate((getWidth() - bg_live_voicewave_bg1.getWidth()) / 2, 0);
+        canvas.translate(((float) getWidth() - (float) bg_live_voicewave_bg1.getWidth()) / 2, 0);
         canvas.drawBitmap(bg_live_voicewave_bg1, src, src, null);
         canvas.restore();
     }
@@ -47,8 +50,14 @@ public class VoiceImageView extends ImageView {
     }
 
     public void setVoice(int volume) {
-        src.top = bg_live_voicewave_bg1.getHeight() - (int) ((float) volume * height / 255.0f);
-        logger.d("setVoice:uid=" + uid + ",volume=" + volume + ",top=" + src.top + ",height=" + height);
+//        volume = 255;
+        int top = bg_live_voicewave_bg1.getHeight() - (int) ((float) volume * height / 255.0f);
+        int c = top / itemHeight;
+        if (top % itemHeight != 0) {
+            c++;
+        }
+        src.top = c * itemHeight;
+        logger.d("setVoice:uid=" + uid + ",volume=" + volume + ",top=" + src.top + ",height=" + height + ",c=" + c);
         postInvalidate();
     }
 }

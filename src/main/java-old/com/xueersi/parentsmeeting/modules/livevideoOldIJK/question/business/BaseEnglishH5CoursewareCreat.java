@@ -6,7 +6,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseEnglishH5CoursewarePager;
 
 /**
- * Created by lyqai on 2018/7/26.
+ * Created by linyuqiang on 2018/7/26.
  */
 
 public interface BaseEnglishH5CoursewareCreat {

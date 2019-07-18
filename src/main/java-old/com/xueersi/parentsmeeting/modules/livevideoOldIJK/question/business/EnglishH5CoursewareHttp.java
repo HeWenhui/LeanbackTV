@@ -4,7 +4,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 /**
- * Created by lyqai on 2018/7/6.
+ * Created by linyuqiang on 2018/7/6.
  */
 
 public interface EnglishH5CoursewareHttp {

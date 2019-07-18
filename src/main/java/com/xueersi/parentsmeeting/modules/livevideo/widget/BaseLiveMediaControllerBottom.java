@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerBottomInter
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -194,8 +195,6 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     }
 
 
-
-
     /** 切换播放和暂停的样式 */
     @Override
     public void updatePausePlay(boolean isPlaying) {
@@ -226,14 +225,14 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         }
     }
 
-    public interface RegMediaChildViewClick {
+    public interface RegMediaChildViewClick extends LiveProvide {
         void regMediaViewClick(MediaChildViewClick mediaChildViewClick);
 
         void remMediaViewClick(MediaChildViewClick mediaChildViewClick);
     }
 
     public interface MediaChildViewClick {
-       public void onMediaViewClick(View child);
+        public void onMediaViewClick(View child);
     }
 
     public LiveMediaController getController() {

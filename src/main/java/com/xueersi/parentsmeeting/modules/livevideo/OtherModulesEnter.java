@@ -9,7 +9,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActiv
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassRoomActivity;
 
 /**
- * Created by lyqai on 2017/10/9.
+ * Created by linyuqiang on 2017/10/9.
  */
 
 public class OtherModulesEnter {

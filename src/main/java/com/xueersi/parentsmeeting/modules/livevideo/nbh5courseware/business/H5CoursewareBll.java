@@ -16,6 +16,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -307,8 +308,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
     public void onBack(LiveBasePager liveBasePager) {
         //页面本身不消费 系统返回键点击时间
         if (h5CoursewarePager != null && !h5CoursewarePager.onBack()) {
-            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, (BaseApplication)
-                    BaseApplication.getContext(), false,
+            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, ContextManager.getApplication(), false,
                     VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
             cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                 @Override
@@ -322,7 +322,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
         }
     }
 
-    public void onDestory(){
+    public void onDestroy(){
 
     }
 

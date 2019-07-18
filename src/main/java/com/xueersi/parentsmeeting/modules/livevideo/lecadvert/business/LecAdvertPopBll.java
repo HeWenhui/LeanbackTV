@@ -32,7 +32,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/31.
+ * Created by linyuqiang on 2018/7/31.
  */
 
 public class LecAdvertPopBll {
@@ -54,7 +54,7 @@ public class LecAdvertPopBll {
         liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
     }
 
-    void onDestory() {
+    void onDestroy() {
         EventBus.getDefault().unregister(this);
     }
 

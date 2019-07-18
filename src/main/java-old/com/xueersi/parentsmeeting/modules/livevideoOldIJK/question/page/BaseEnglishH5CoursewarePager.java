@@ -11,7 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.Engl
 /**
  * h5课件基础接口
  *
- * @author lyqai
+ * @author linyuqiang
  * @date 2018/5/22
  */
 public interface BaseEnglishH5CoursewarePager {

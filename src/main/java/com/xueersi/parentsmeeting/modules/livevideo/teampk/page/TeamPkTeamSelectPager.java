@@ -32,11 +32,10 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
@@ -172,7 +171,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager {
     @Override
     public View initView() {
         final View view;
-        if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+        if (liveGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
             view = View.inflate(mContext, R.layout.page_livevideo_teampk_teamselect_primary, null);
         } else {
             view = View.inflate(mContext, R.layout.page_livevideo_teampk_teamselect, null);
@@ -569,7 +568,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager {
     }
 
     private void startAutoEnterNextStep() {
-        if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+        if (liveGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
 
         } else {
             tvTimeCountDown.setTimeDuration(10);
@@ -608,7 +607,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager {
                 rlTeamIntroduceRoot.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                        if (liveGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
                             RelativeLayout rlRul = rlTeamIntroduceRoot.findViewById(R.id.rl_teampk_rule);
                             rlRul.setVisibility(View.VISIBLE);
                             ImageView ivReadyBtn = rlRul.findViewById(R.id.iv_teampk_btn_ok);
@@ -761,7 +760,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager {
         public void onAnimationEnd(Animator animation) {
             switch (mAnimType) {
                 case ANIMTYPE_START:
-                    if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                    if (liveGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
                         showMarquee();
                     } else {
                         showTimeCutdown();

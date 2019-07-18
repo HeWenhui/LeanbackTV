@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.view.View;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
@@ -18,6 +18,7 @@ import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.widget.DataLoadManager;
@@ -59,6 +60,9 @@ public class LiveAssetsLoadUtil {
         if (!XesPermission.checkPermissionNoAlert(ContextManager.getApplication(), PermissionConfig
                 .PERMISSION_CODE_STORAGE)) {
             XESToastUtils.showToast(context, "请检查存储权限");
+            if (context instanceof LiveVideoTransferActivity) {
+                context.finish();
+            }
             return;
         }
 
@@ -86,7 +90,7 @@ public class LiveAssetsLoadUtil {
                         DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 try {
                     HashMap<String, String> map = new HashMap<>();
@@ -94,7 +98,7 @@ public class LiveAssetsLoadUtil {
                     map.put("downtime", "" + (System.currentTimeMillis() - starttime));
                     UmsAgentManager.umsAgentDebug(context, TAG, map);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 callback.success();
             }
@@ -132,11 +136,14 @@ public class LiveAssetsLoadUtil {
                     map.put("times", "" + times);
                     UmsAgentManager.umsAgentDebug(context, TAG, map);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 mDataLoadEntity.webDataSuccess();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
 
+                if (context instanceof LiveVideoTransferActivity) {
+                    context.finish();
+                }
                 callback.fail(errorCode, errorMsg);
             }
         });
@@ -182,7 +189,7 @@ public class LiveAssetsLoadUtil {
                         map.put("times", "" + failModule.get("livevdieo"));
                         UmsAgentManager.umsAgentDebug(context, TAG, map);
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             });
@@ -196,7 +203,7 @@ public class LiveAssetsLoadUtil {
                         map.put("times", "" + failModule.get("livevdieo"));
                         UmsAgentManager.umsAgentDebug(context, TAG, map);
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             });

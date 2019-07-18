@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 
 /**
- * Created by lyqai on 2017/8/2.
+ * Created by linyuqiang on 2017/8/2.
  */
 
 public class LiveVideoView extends VideoView {

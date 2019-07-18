@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -69,5 +71,24 @@ public class VideoConfigEntity {
             e.printStackTrace();
         }
         return jsonObject;
+    }
+
+    /** 添加播放异常的信息 */
+    public JSONObject addPlayException() {
+        try {
+            return toJSONObject().put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return toJSONObject();
+    }
+
+    public JSONObject addJSON(String key, String value) {
+        try {
+            return toJSONObject().put(key, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return toJSONObject();
     }
 }

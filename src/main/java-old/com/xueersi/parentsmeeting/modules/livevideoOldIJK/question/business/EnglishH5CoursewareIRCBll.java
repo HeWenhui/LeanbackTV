@@ -5,7 +5,7 @@ import android.util.Log;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.utils.SpeechUtils;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -59,7 +59,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
 
 public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
@@ -363,7 +363,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                             ShareDataManager.SHAREDATA_USER);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                                 }
                             } else {
                                 LiveVideoConfig.isSend = false;
@@ -591,7 +591,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         ShareDataManager.SHAREDATA_USER);
             } catch (JSONException e) {
                 e.printStackTrace();
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             Loger.e("TeamPkBll", "======>888888" + "LiveVideoConfig.isSend:" + LiveVideoConfig.isSend + ":" +
                     mTeamPKBll);
@@ -1067,8 +1067,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (englishH5CoursewareBll != null) {
             englishH5CoursewareBll.destroy();
         }

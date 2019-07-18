@@ -8,22 +8,20 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveFeedBackPager;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.HashMap;
 
 public class FeedbackTeacherBll extends LiveBaseBll {
-    RelativeLayout bottomContent;
-    LiveVideoFragment liveFragment;
+    LivePlayAction livePlayAction;
     FeedBackEntity mFeedBackEntity;
     LiveFeedBackPager pager = null;
     EvaluateResponseParser mParser;
@@ -36,21 +34,22 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     }
 
     @Override
+    public void onCreate(HashMap<String, Object> data) {
+        super.onCreate(data);
+        livePlayAction = getInstance(LivePlayAction.class);
+    }
+
+    @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         if (getInfo != null && getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
             mParser =new EvaluateResponseParser();
 
-            showFeedBack(bottomContent);
+            showFeedBack();
         }
     }
 
-    @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        this.bottomContent = bottomContent;
-    }
-
-    private void showFeedBack(final RelativeLayout bottomContent) {
+    private void showFeedBack() {
         getHttpManager().getFeedBack(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), "0", new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -60,7 +59,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
                     return;
                 }
                 mGetInfo.setShowHightFeedback(true);
-                pager = new LiveFeedBackPager(mContext, mLiveId, mFeedBackEntity, mGetInfo, bottomContent, mLiveBll
+                pager = new LiveFeedBackPager(mContext, mLiveId, mFeedBackEntity, mGetInfo, mLiveBll
                         .getHttpManager());
                 pager.setOnPagerClose(onPagerClose);
                 pager.setFeedbackSelectInterface(feedBackTeacherInterface);
@@ -74,7 +73,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     LiveBasePager.OnPagerClose onPagerClose = new LiveBasePager.OnPagerClose() {
         @Override
         public void onClose(LiveBasePager basePager) {
-            bottomContent.removeView(basePager.getRootView());
+            removeView(basePager.getRootView());
         }
     };
 
@@ -89,10 +88,6 @@ public class FeedbackTeacherBll extends LiveBaseBll {
         }
     }
 
-    public void setLiveFragment(LiveVideoFragment liveFragment) {
-        this.liveFragment = liveFragment;
-    }
-
     public boolean showFeedbackPager() {
 //        if (pager != null && mFeedBackEntity != null) {
 
@@ -101,11 +96,11 @@ public class FeedbackTeacherBll extends LiveBaseBll {
             logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mFeedBackEntity
                     .getEvaluateTime());
 
-            liveFragment.stopPlayer();
+            livePlayAction.stopPlayer();
             mLiveBll.onIRCmessageDestory();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            bottomContent.addView(pager.getRootView(), params);
+            addView(pager.getRootView(), params);
             return true;
         } else {
             return false;

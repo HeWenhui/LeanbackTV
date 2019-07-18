@@ -12,19 +12,19 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.TeamPKHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 public class PrimaryClassHttp {
-    String TAG = "PrimaryClassHttp";
-    Logger logger = LiveLoggerFactory.getLogger(TAG);
-    LiveHttpManager liveHttpManager;
-    PrimaryClassResponseParser primaryClassResponseParser;
-    LiveHttpResponseParser liveHttpResponseParser;
+    private String TAG = "PrimaryClassHttp";
+    private Logger logger = LiveLoggerFactory.getLogger(TAG);
+    private LiveHttpManager liveHttpManager;
+    private TeamPKHttpResponseParser teamPKHttpResponseParser;
+    private boolean fromLocal = false;
 
     public PrimaryClassHttp(Context context, LiveHttpManager liveHttpManager) {
         this.liveHttpManager = liveHttpManager;
-        primaryClassResponseParser = new PrimaryClassResponseParser();
-        liveHttpResponseParser = new LiveHttpResponseParser(context);
+        teamPKHttpResponseParser = new TeamPKHttpResponseParser(context);
     }
 
     public void setLiveHttpManager(LiveHttpManager liveHttpManager) {
@@ -57,6 +57,14 @@ public class PrimaryClassHttp {
         });
     }
 
+    public void setOldTeamPkTeamInfo(ResponseEntity responseEntity) {
+        TeamPkTeamInfoEntity teamInfoEntity = teamPKHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+        if (teamInfoEntity != null && teamInfoEntity.getTeamInfo() != null) {
+            fromLocal = true;
+            teamInfoEntity.getTeamInfo().setFromLocal(true);
+        }
+    }
+
     public void getMyTeamInfo(String classId, String stuId, String psuser, final AbstractBusinessDataCallBack callBack) {
         final HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", "" + classId);
@@ -67,9 +75,10 @@ public class PrimaryClassHttp {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getMyTeamInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
-                TeamPkTeamInfoEntity teamInfoEntity = liveHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                TeamPkTeamInfoEntity teamInfoEntity = teamPKHttpResponseParser.parseTeamInfoPrimary(responseEntity);
                 if (teamInfoEntity != null) {
-                    callBack.onDataSucess(teamInfoEntity);
+                    teamInfoEntity.getTeamInfo().setFromLocal(fromLocal);
+                    callBack.onDataSucess(teamInfoEntity, responseEntity);
                 } else {
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");
                 }

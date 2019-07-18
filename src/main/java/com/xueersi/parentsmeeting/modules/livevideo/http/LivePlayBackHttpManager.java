@@ -56,10 +56,10 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param isRight
      * @param requestCallBack
      */
-    public void saveTestRecord(String enStuId, String srcType, String testId, String testResult, String testDay,
+    public void saveTestRecord(boolean isNewArt,String enStuId, String srcType, String testId, String testResult, String testDay,
                                String classId,
                                int livePlayType, boolean voice, boolean isRight, HttpCallBack requestCallBack) {
-        if (LiveVideoConfig.isNewArts) {
+        if (isNewArt) {
             HttpRequestParams params = new HttpRequestParams();
             String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER;
             params.addBodyParam("liveId", classId);
@@ -124,10 +124,10 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param isRight
      * @param requestCallBack
      */
-    public void sumitCourseWareH5(String enStuId, String srcType, String testId, String testResult, String testDay,
+    public void sumitCourseWareH5(boolean isNewArt,String enStuId, String srcType, String testId, String testResult, String testDay,
                                   String classId, String type, String isSubmit,
                                   double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
-        if (LiveVideoConfig.isNewArts) {
+        if (isNewArt) {
             if ("16".equals(type) || "15".equals(type)) {
                 HttpRequestParams params = new HttpRequestParams();
                 String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSH5_ANSWER;
@@ -257,25 +257,10 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_LIVE_GET_SPEECHEVAL, params, requestCallBack);
     }
 
-    //语音评测答案提交
-    public void sendSpeechEvalResult(String enstuId, String liveId, String id, String stuAnswer, String times, int
-            entranceTime, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        setDefaultParameter(params);
-//        params.addBodyParam("enstuId", enstuId);
-        params.addBodyParam("liveId", liveId);
-        params.addBodyParam("testId", id);
-        params.addBodyParam("stuAnswer", "" + stuAnswer);
-        params.addBodyParam("times", "" + times);
-        params.addBodyParam("entranceTime", "" + entranceTime);
-        params.addBodyParam("type", "2");
-        sendPost(LiveVideoConfig.URL_LIVE_SEND_SPEECHEVAL, params, requestCallBack);
-    }
-
     //语音评测2期答案提交
-    public void sendSpeechEvalResult2(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
+    public void sendSpeechEvalResult2(boolean isNewArt,String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
             requestCallBack, String isSubmit) {
-        if (LiveVideoConfig.isNewArts) {
+        if (isNewArt) {
             HttpRequestParams params = new HttpRequestParams();
             params.addBodyParam("liveId", liveId);
             params.addBodyParam("testId", id);

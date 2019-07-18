@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePagerState;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 
 public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
@@ -114,7 +114,6 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     public void doRenderRemoteUi(SurfaceView surfaceV) {
         super.doRenderRemoteUi(surfaceV);
         haveVideo = true;
-//        rl_livevideo_course_item_video_nocamera.setVisibility(View.GONE);
         rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
     }
 
@@ -198,7 +197,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
         super.onOtherDis(type, enable, mState);
         mLogtf.d("onOtherDis:type=" + type + ",enable=" + enable + ",noMic=" + noMic + ",state=" + mState);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
-            //不屏蔽自己的视频
+            //不屏蔽自己的视频界面，但是屏蔽推流
 //            handler.post(new Runnable() {
 //                @Override
 //                public void run() {
@@ -216,7 +215,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
 //                public void run() {
 //                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
 //                    if (mRtcEngine != null) {
-//                        mRtcEngine.enableLocalVideo(enable);
+//                        mRtcEngine.muteLocalVideo(!enable);
 //                    }
 //                }
 //            });
@@ -240,7 +239,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (mState == LiveBasePagerState.RESUMED) {
+                        if (mState == LiveActivityState.RESUMED) {
                             RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
                             if (mRtcEngine != null) {
                                 mRtcEngine.muteLocalAudio(!enable);

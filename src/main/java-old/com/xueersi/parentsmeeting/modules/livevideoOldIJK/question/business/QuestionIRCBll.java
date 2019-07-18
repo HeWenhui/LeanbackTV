@@ -1390,8 +1390,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (mQuestionAction != null) {
             mQuestionAction.onDestroy();
         }

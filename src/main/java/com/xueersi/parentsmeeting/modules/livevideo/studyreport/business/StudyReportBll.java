@@ -9,7 +9,7 @@ import android.os.Looper;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -23,7 +23,9 @@ import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -205,7 +207,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         } catch (Exception e) {
             e.printStackTrace();
             mLogtf.e("getViewBitmap", e);
-            CrashReport.postCatchedException(e);
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return resultBitmap;
     }
@@ -242,7 +244,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     }
                 } catch (Exception e) {
                     mLogtf.e("cutImage", e);
-                    CrashReport.postCatchedException(e);
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });
@@ -308,9 +310,9 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                                         videoBitmap.recycle();
                                         logger.d("onGetBitmap:create=" + createBitmap.getWidth() + ",old=" + oldBitmap.getWidth() + ",height=" + oldBitmap.getHeight() + ",left=" + left + ",top=" + top);
                                     } catch (Exception e) {
-                                        CrashReport.postCatchedException(e);
+                                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                                         uploadWonderMoment(type, saveFile.getPath());
-                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                                        LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
                             }
@@ -321,7 +323,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     }
                 } catch (Exception e) {
                     mLogtf.e("cutImageAndVideo", e);
-                    CrashReport.postCatchedException(e);
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         };
@@ -445,7 +447,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
 //                    }
 //                } catch (Exception e) {
 //                    mLogtf.e("cutImage", e);
-//                    CrashReport.postCatchedException(e);
+//                    LiveCrashReport.postCatchedException(e);
 //                }
 //            }
 //        };
@@ -491,9 +493,9 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             logger.i("StudyReportBll" + 10);
             logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
             if (mGetInfo != null) {
-                if (mGetInfo.getPattern() == 6) {
+                if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
                     //半身直播语文 isArts 为 0 ，useSkin为2
-                    if (mGetInfo.getUseSkin() == 2) {
+                    if (mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                         if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE) {
@@ -503,8 +505,8 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                         getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new UploadImageUrl(type, false));
                         logger.i(" pattern:" + mGetInfo.getPattern() + " arts:" + mGetInfo.getIsArts() + " 不在这个范围内");
                     }
-                } else if (mGetInfo.getPattern() == 1) {
-                    if (mGetInfo.getIsArts() == 2) {
+                } else if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_COMMON) {
+                    if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
                         if (type == LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_AGORA
                                 || type == LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE
@@ -594,7 +596,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         uploadEntity.setFilePath(path);
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
 
-        uploadEntity.setCloudPath(mGetInfo.getIsArts() == 2 ? CloudDir.LIVE_ARTS_MOMENT : CloudDir.LIVE_SCIENCE_MOMENT);
+        uploadEntity.setCloudPath(mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? CloudDir.LIVE_ARTS_MOMENT : CloudDir.LIVE_SCIENCE_MOMENT);
 
 //            uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
 

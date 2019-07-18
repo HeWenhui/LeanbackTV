@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by lyqai on 2018/7/10.
+ * Created by linyuqiang on 2018/7/10.
  * 直播的10个点
  */
 public class LiveVideoPoint {
@@ -131,6 +131,7 @@ public class LiveVideoPoint {
         return new int[]{newWidth, newHeight};
     }
 
+    /** 添加布局变化 */
     public void addVideoSizeChange(Context context, VideoSizeChange videoSizeChange) {
         ArrayList<VideoSizeChange> videoSizeChanges = contextArrayListHashMap.get(context);
         if (videoSizeChanges == null) {
@@ -138,6 +139,12 @@ public class LiveVideoPoint {
             contextArrayListHashMap.put(context, videoSizeChanges);
         }
         videoSizeChanges.add(videoSizeChange);
+    }
+
+    /** 添加布局变化,并立即回调 */
+    public void addVideoSizeChangeAndCall(Context context, VideoSizeChange videoSizeChange) {
+        addVideoSizeChange(context, videoSizeChange);
+        videoSizeChange.videoSizeChange(this);
     }
 
     public void clear(Context context) {

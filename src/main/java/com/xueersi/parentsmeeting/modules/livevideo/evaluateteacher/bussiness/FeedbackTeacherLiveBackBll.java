@@ -94,7 +94,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
                         }
                         liveGetInfo.setShowHightFeedback(true);
                         pager = new LiveFeedBackPager(mContext, liveGetInfo.getId(), mFeedBackEntity, liveGetInfo,
-                                bottomContent, mHttpManager);
+                                mHttpManager);
                         pager.setCourseId(mVideoEntity.getCourseId());
                         pager.setOnPagerClose(onPagerClose);
                         pager.setFeedbackSelectInterface(feedBackTeacherInterface);

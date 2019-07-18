@@ -501,8 +501,8 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (mIRCMessage != null) {
             mIRCMessage.setCallback(null);
             mIRCMessage.destory();

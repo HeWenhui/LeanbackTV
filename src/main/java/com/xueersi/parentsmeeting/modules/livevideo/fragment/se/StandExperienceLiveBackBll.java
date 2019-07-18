@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.StandExperienceRecommondBll;
@@ -33,7 +34,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     @Override
     public void scanQuestion(long position) {
         super.scanQuestion(position);
-        if (getExperience() && getPattern() == 2) {//全身直播体验课扫描开关聊天区，三分屏不走这里，有自己的逻辑
+        if (getExperience() && getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {//全身直播体验课扫描开关聊天区，三分屏不走这里，有自己的逻辑
             scanMessage(position);
         }
     }
@@ -139,7 +140,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (getExperience() && getPattern() == 2) {//全身直播准备开关聊天区的queue
+        if (getExperience() && getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {//全身直播准备开关聊天区的queue
             initLiveMessageQueue();
         }
     }

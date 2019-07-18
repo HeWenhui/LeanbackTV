@@ -15,11 +15,12 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
-import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.TextureVideoViewOutlineProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.VoiceImageView;
+import com.xueersi.parentsmeeting.modules.livevideo.util.TextureVideoViewOutlineProvider;
 
 public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
+    protected View root;
     protected RelativeLayout rlCourseItemVideo;
     protected RelativeLayout rlCourseItemVideoHead;
     protected TextView tv_livevideo_primary_team_people_name;
@@ -48,6 +49,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
 
     @Override
     public void initViews(View root) {
+        this.root = root;
         rlCourseItemVideo = root.findViewById(R.id.rl_livevideo_course_item_video);
         tv_livevideo_primary_team_people_name = root.findViewById(R.id.tv_livevideo_primary_team_people_name);
         rlCourseItemVideoHead = root.findViewById(R.id.rl_livevideo_course_item_video_head);
@@ -59,6 +61,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
         iv_livevideo_course_item_video_ufo = root.findViewById(R.id.iv_livevideo_course_item_video_ufo);
         rl_livevideo_course_item_video_off = root.findViewById(R.id.rl_livevideo_course_item_video_off);
         voiceImageView.setUid(uid);
+        primaryClassView.decorateItemPeople(root);
     }
 
     @Override

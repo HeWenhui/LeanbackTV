@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@id/rl_livevideo_primary_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -19,23 +19,23 @@
     <RelativeLayout
         android:id="@id/rl_livevideo_primary_team_content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center">
 
         <ImageView
             android:id="@id/iv_livevideo_primary_team_icon"
             android:layout_width="25dp"
             android:layout_height="23dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_primary_team_name"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
             android:layout_toRightOf="@id/iv_livevideo_primary_team_icon"
-            android:gravity="center"
             android:includeFontPadding="false"
             android:singleLine="true"
             android:textColor="#ffee7d05"
@@ -51,21 +51,23 @@
         android:layout_alignTop="@id/rl_livevideo_primary_team_content"
         android:layout_alignRight="@id/rl_livevideo_primary_team_content"
         android:layout_alignBottom="@id/rl_livevideo_primary_team_content"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
         android:src="@drawable/bg_live_ke_energy_zhunbei_icon_normal"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_primary_team_name_mid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:gravity="center"
+        android:paddingLeft="3dp"
         android:text="欢迎进入“冰原白狐队”"
         android:textColor="#ffc33c00"
         android:textSize="14sp"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <include
         layout="@layout/item_primary_class_team_inter"
         android:visibility="invisible" />
-</RelativeLayout>
+</com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryRelativeLayout>

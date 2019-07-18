@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -37,7 +37,7 @@ public    class TeamStarHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(TeamEnergyAndContributionStarEntity.ContributionStar data) {
-        ImageLoader.with(BaseApplication.getContext()).load(data.getAvaterPath()).asBitmap(new SingleConfig.BitmapListener
+        ImageLoader.with(ContextManager.getContext()).load(data.getAvaterPath()).asBitmap(new SingleConfig.BitmapListener
                 () {
             @Override
             public void onSuccess(Drawable drawable) {
