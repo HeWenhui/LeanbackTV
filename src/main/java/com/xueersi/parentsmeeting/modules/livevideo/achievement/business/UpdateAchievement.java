@@ -19,7 +19,7 @@ public interface UpdateAchievement {
 
     void updateBetterMe();
 
-    void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity);
+    void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity,boolean isShowBubble);
 
     void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isNotice);
 }

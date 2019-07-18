@@ -10,7 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnti
  * created  at 2018/12/18
  */
 public interface BetterMeInteractAction {
-    void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity);
+    void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity,boolean isShowBubble);
     void onReceiveBetterMe(BetterMeEntity betterMeEntity,boolean isNotce);
     void onBetterMeLate();
 }

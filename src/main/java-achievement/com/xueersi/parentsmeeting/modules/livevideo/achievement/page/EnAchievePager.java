@@ -448,7 +448,7 @@ public class EnAchievePager extends LiveBasePager {
     /**
      * 更新本场小目标
      */
-    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity, boolean isShowBubble) {
         //隐藏没有小目标时的默认视图
         if (tvAchiveAimEmpty != null) {
             tvAchiveAimEmpty.setVisibility(View.GONE);
@@ -486,7 +486,9 @@ public class EnAchievePager extends LiveBasePager {
         float aimVal = Float.parseFloat(aimRealTimeValEntity.getAimValue());
         int progress = (int) (realTimeVal / aimVal * 100);
         setBetterMePro(progress);
-        updateBetterMeBubble(aimRealTimeValEntity);
+        if (isShowBubble) {
+            updateBetterMeBubble(aimRealTimeValEntity);
+        }
     }
 
     /**
@@ -536,6 +538,9 @@ public class EnAchievePager extends LiveBasePager {
      * 更新小目标气泡
      */
     private void updateBetterMeBubble(AimRealTimeValEntity aimRealTimeValEntity) {
+        if (cbAchiveTitle.isChecked()) {
+            return;
+        }
         StringBuilder message = new StringBuilder();
         String current = aimRealTimeValEntity.getRealTimeVal();
         String target = aimRealTimeValEntity.getAimValue();
@@ -568,9 +573,6 @@ public class EnAchievePager extends LiveBasePager {
      * 蓝色气泡动效
      */
     private void showBetterMeBubble(String msg) {
-        if (cbAchiveTitle.isChecked()) {
-            return;
-        }
         ViewGroup rlLivevideoinfo = ((Activity) mContext).findViewById(R.id.rl_livevideo_info);
         if (rlLivevideoinfo != null) {
             ViewGroup viewGroup = (ViewGroup) rlLivevideoinfo.getParent();

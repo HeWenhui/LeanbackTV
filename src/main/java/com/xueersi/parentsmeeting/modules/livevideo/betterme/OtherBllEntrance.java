@@ -44,10 +44,10 @@ public class OtherBllEntrance {
                 updateAchievement.updateBetterMe();
             }
         }
-        public static void updateBetterMe(Context context, AimRealTimeValEntity aimRealTimeValEntity) {
+        public static void updateBetterMe(Context context, AimRealTimeValEntity aimRealTimeValEntity,boolean isShowBubble) {
             UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(context, UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.onUpdateBetterMe(aimRealTimeValEntity);
+                updateAchievement.onUpdateBetterMe(aimRealTimeValEntity,isShowBubble);
             }
         }
 

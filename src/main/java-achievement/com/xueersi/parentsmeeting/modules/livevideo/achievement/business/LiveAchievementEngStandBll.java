@@ -108,9 +108,9 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
     }
 
     @Override
-    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity, boolean isShowBubble) {
         if (enAchievePager != null) {
-            enAchievePager.onBetterMeUpdate(aimRealTimeValEntity);
+            enAchievePager.onBetterMeUpdate(aimRealTimeValEntity, isShowBubble);
         }
     }
 

@@ -37,6 +37,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private StuSegmentEntity mStuSegmentEntity;
     private BetterMeEntity mBetterMeEntity;
     private StuAimResultEntity mStuAimResultEntity;
+    private AimRealTimeValEntity mAimRealTimeValEntity;
     private boolean isArriveLate = false;
     /**
      * 小目标接口开关
@@ -57,13 +58,14 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
-        logger.d("onModeChange(): oldMode = " + oldMode + " mode" + mode);
+        logger.d("onModeChange(): oldMode = " + oldMode + " mode = " + mode);
         if (teamPKStatus) {
             return;
         }
-        if (!LiveTopic.MODE_CLASS.equals(oldMode) && LiveTopic.MODE_CLASS.equals(mode)) {
+        if (LiveTopic.MODE_CLASS.equals(mode)) {
             getBetterMe(false);
         }
+        updateBetterMe(false);
     }
 
     @Override
@@ -98,7 +100,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    updateBetterMe();
+                    updateBetterMe(true);
                 }
             }, 5000);
         }
@@ -114,7 +116,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         //从本地读取本场是否开启了小目标
         isShowBetterMe = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_OPEN, "", ShareDataManager
                 .SHAREDATA_USER).equals(mGetInfo.getId());
-        updateBetterMe();
+        updateBetterMe(false);
     }
 
     @Override
@@ -272,7 +274,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      * 更新小目标
      */
     @Override
-    synchronized public void updateBetterMe() {
+    synchronized public void updateBetterMe(final boolean isShowBubble) {
         logger.d("updateBetterMe");
         if (!isShowBetterMe) {
             return;
@@ -287,8 +289,9 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 AimRealTimeValEntity aimRealTimeValEntity = getHttpResponseParser().parseAimRealTimeValInfo
                         (responseEntity);
                 if (aimRealTimeValEntity != null) {
+                    mAimRealTimeValEntity = aimRealTimeValEntity;
                     mGetInfo.getEnglishBetterMe().aimType = aimRealTimeValEntity.getType();
-                    OtherBllEntrance.EnglishAchievent.updateBetterMe(mContext, aimRealTimeValEntity);
+                    OtherBllEntrance.EnglishAchievent.updateBetterMe(mContext, aimRealTimeValEntity, isShowBubble);
                 }
             }
         });

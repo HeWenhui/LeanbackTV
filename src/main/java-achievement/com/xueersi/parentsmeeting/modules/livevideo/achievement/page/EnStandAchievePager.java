@@ -226,7 +226,7 @@ public class EnStandAchievePager extends LiveBasePager {
     /**
      * 更新本场小目标
      */
-    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity,boolean isShowBubble) {
         //隐藏没有小目标时的默认视图
         if (tvAchiveAimEmpty != null) {
             tvAchiveAimEmpty.setVisibility(View.GONE);
@@ -266,7 +266,9 @@ public class EnStandAchievePager extends LiveBasePager {
         float aimVal = Float.parseFloat(aimRealTimeValEntity.getAimValue());
         int progress = (int) (realTimeVal / aimVal * 100);
         setBetterMePro(progress);
-        updateBetterMeBubble(aimRealTimeValEntity);
+        if(isShowBubble){
+            updateBetterMeBubble(aimRealTimeValEntity);
+        }
     }
 
     /**
@@ -316,6 +318,9 @@ public class EnStandAchievePager extends LiveBasePager {
      * 更新小目标气泡
      */
     private void updateBetterMeBubble(AimRealTimeValEntity aimRealTimeValEntity) {
+        if (cbAchiveTitle.isChecked()) {
+            return;
+        }
         StringBuilder message = new StringBuilder();
         String current = aimRealTimeValEntity.getRealTimeVal();
         String target = aimRealTimeValEntity.getAimValue();
@@ -340,7 +345,6 @@ public class EnStandAchievePager extends LiveBasePager {
             target = BetterMeUtil.secondToMinite(target);
         }
         message.append("当前").append(current).append(" ").append("目标").append(target);
-        showBetterMeBubble(message.toString());
         mAimRealTimeValEntity = aimRealTimeValEntity;
     }
 
@@ -348,9 +352,6 @@ public class EnStandAchievePager extends LiveBasePager {
      * 蓝色气泡动效
      */
     private void showBetterMeBubble(String msg) {
-        if (cbAchiveTitle.isChecked()) {
-            return;
-        }
         final LottieEffectInfo bubbleEffectInfo = new BubbleStandLottieEffectInfo(mContext, msg);
         final LottieAnimationView lottieAnimationView = mView.findViewById(R.id.lav_livevideo_en_stand_achive_bubble);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {

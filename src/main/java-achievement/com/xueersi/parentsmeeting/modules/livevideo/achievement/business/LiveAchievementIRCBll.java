@@ -194,16 +194,16 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             AimRealTimeValEntity aimRealTimeValEntity = getHttpResponseParser().parseAimRealTimeValInfo
                                     (responseEntity);
                             if (aimRealTimeValEntity != null) {
-                                betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity);
+                                betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity,true);
                             }
                         }
                     });
                 }
 
                 @Override
-                public void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity) {
+                public void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity,boolean isShowBubble) {
                     logger.d("onUpdateBetterMe");
-                    betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity);
+                    betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity,isShowBubble);
                 }
 
                 @Override
