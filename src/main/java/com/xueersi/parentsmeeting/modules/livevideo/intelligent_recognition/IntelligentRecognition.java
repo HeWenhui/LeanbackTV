@@ -9,7 +9,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
@@ -28,6 +30,21 @@ public class IntelligentRecognition extends LiveBaseBll implements NoticeAction 
 //                handle1103();
                 if (pType == 28) {
                     Bundle bundle = new Bundle();
+                    IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
+                    intelligentRecognitionRecord.setAnswerTime(data.optString("time"));
+                    intelligentRecognitionRecord.setStuId(mGetInfo.getStuId());
+                    intelligentRecognitionRecord.setStuCouId(mGetInfo.getStuCouId());
+                    intelligentRecognitionRecord.setLiveId(mGetInfo.getId());
+                    JSONArray jsonArray = data.optJSONArray("id");
+                    if (jsonArray != null && jsonArray.length() > 0) {
+                        intelligentRecognitionRecord.setMaterialId(jsonArray.optString(0));
+                    }
+                    intelligentRecognitionRecord.setIsPlayBack("1");
+                    if (mGetInfo.getStudentLiveInfo() != null) {
+                        intelligentRecognitionRecord.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
+                        intelligentRecognitionRecord.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
+                    }
+                    bundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
                     XueErSiRouter.startModule(activity, "/english/intelligent_recognition", bundle);
                 }
                 break;

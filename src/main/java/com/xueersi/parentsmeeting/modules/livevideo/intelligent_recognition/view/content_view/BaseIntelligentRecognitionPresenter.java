@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.IntentFilter;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.Constants;
@@ -19,11 +20,11 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechStopEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechStopEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.IntelligentRecognitionHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.BaseIntelligentRecognitionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
@@ -169,10 +170,16 @@ public abstract class BaseIntelligentRecognitionPresenter extends
         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         mParam.setMultRef(false);
         mParam.setPcm(true);
-        String aiRecogStr = mViewModel.getRecordData().getAnswers();
-//        if (TextUtils.isEmpty(aiRecogStr) && AppConfig.DEBUG) {
-        aiRecogStr = "you are right";
-//        }
+        if (mViewModel.getIeResultData().getValue() == null) {
+            logger.i("viewModel IEResult is null");
+            return;
+        }
+        String aiRecogStr = mViewModel.getIeResultData().getValue().getContent();
+//        if(aiRecogStr)
+        if (TextUtils.isEmpty(aiRecogStr) && AppConfig.DEBUG) {
+            return;
+//        aiRecogStr = "you are right";
+        }
         mParam.setStrEvaluator(aiRecogStr);
         logger.i("strRecog:" + aiRecogStr);
 
@@ -239,7 +246,7 @@ public abstract class BaseIntelligentRecognitionPresenter extends
     @Override
     public void onCreate() {
         createSpeech();
-//        getRemoteEntity();
+        getRemoteEntity();
     }
 
     /**

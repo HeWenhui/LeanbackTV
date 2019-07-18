@@ -66,9 +66,9 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
     //结束前的提示结束提示
     private Group groupEndTip;
     /** speech是否初始化成功 */
-    private boolean isSpeechReady = true;
+    private boolean isSpeechReady = false;
     /** 是否拿到后台接口返回的数据 */
-    private boolean isResultGet = true;
+    private boolean isResultGet = false;
     /** waveViews是否初始化成功 */
     private boolean waveViewinit = false;
 
@@ -172,9 +172,9 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
                 isSpeechReady = aBoolean;
-//                        if (isSpeechReady && isResultGet) {
+
                 performStartWaveLottie();
-//                        }
+
             }
         });
         viewModel.getVolume().observe(mActivity, new Observer<Integer>() {
@@ -202,7 +202,7 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
         viewModel.getIsSpeechJudgeFinish().observe(mActivity, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer integer) {
-                if (integer == IntelligentConstants.PERFECT) {
+                if (integer != IntelligentConstants.PERFECT) {
                     performStartWaveLottie();
                 }
             }
@@ -292,7 +292,7 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
     }
 
     /**
-     * 显示WaveView和lottieView
+     * 语音测评和测评接口请求成功后才显示WaveView和lottieView
      */
     protected void performStartWaveLottie() {
         if (isSpeechReady && isResultGet) {
