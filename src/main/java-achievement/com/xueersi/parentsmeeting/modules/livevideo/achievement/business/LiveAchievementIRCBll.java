@@ -22,6 +22,7 @@ import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.OtherBllEntrance;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
@@ -43,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessage
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -72,9 +74,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     private int smallEnglish;
     LiveAchievementEngStandBll liveAchievementEngStandBll;
 
-    private boolean isUseBetterMe = false;
-    private boolean isArriveLate = false;
-
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         putInstance(LiveAchievementIRCBll.class, this);
@@ -98,8 +97,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        this.isUseBetterMe = mGetInfo.getEnglishBetterMe().isUseBetterMe;
-        this.isArriveLate = mGetInfo.getEnglishBetterMe().isArriveLate;
         final long sTime = mGetInfo.getsTime();
         if (1 == getInfo.getIsAllowStar()) {
             initRecognizeDialog();
@@ -178,28 +175,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     }
                 }
 
-                /**
-                 * 更新小目标
-                 */
-                @Override
-                public void updateBetterMe() {
-                    logger.d("updateBetterMe");
-                    String liveId = mLiveBll.getLiveId();
-                    String courseId = mLiveBll.getCourseId();
-                    getHttpManager().getStuAimRealTimeVal(liveId, courseId, new HttpCallBack(false) {
-                        @Override
-                        public void onPmSuccess(ResponseEntity responseEntity) {
-                            logger.d("getStuAimRealTimeVal:onPmSuccess():json=" + responseEntity
-                                    .getJsonObject());
-                            AimRealTimeValEntity aimRealTimeValEntity = getHttpResponseParser().parseAimRealTimeValInfo
-                                    (responseEntity);
-                            if (aimRealTimeValEntity != null) {
-                                betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity,true);
-                            }
-                        }
-                    });
-                }
-
                 @Override
                 public void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity,boolean isShowBubble) {
                     logger.d("onUpdateBetterMe");
@@ -208,7 +183,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
                 @Override
                 public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isNotice) {
-                    logger.d(" receiveBetterMe");
+                    logger.d(" onReceiveBetterMe");
                     betterMeInteractAction.onReceiveBetterMe(betterMeEntity, isNotice);
                 }
             });
@@ -362,9 +337,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     liveAchievementEngBll.setLiveAchievementHttp(LiveAchievementIRCBll.this);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
                     LiveAchievementIRCBll.this.betterMeInteractAction = liveAchievementEngBll;
-                    if (isArriveLate) {
-                        betterMeInteractAction.onBetterMeLate();
-                    }
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
@@ -418,9 +390,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     liveAchievementEngStandBll.initView(getLiveViewAction());
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngStandBll;
                     LiveAchievementIRCBll.this.betterMeInteractAction = liveAchievementEngStandBll;
-                    if (isArriveLate) {
-                        betterMeInteractAction.onBetterMeLate();
-                    }
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
@@ -650,7 +619,11 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         //更新小目标开口时长
                         if (BetterMeConfig.TYPE_TALKTIME.equals(mGetInfo.getEnglishBetterMe().aimType)) {
-                            OtherBllEntrance.EnglishAchievent.updateBetterMe(activity);
+                            BetterMeContract.BetterMePresenter betterMePresenter = ProxUtil.getProxUtil().get
+                                    (mContext, BetterMeContract.BetterMePresenter.class);
+                            if (betterMePresenter != null) {
+                                betterMePresenter.updateBetterMe(true);
+                            }
                         }
                         logger.d("setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
                         if (starAction != null) {

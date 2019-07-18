@@ -38,12 +38,6 @@ public class OtherBllEntrance {
     }
 
     public static class EnglishAchievent {
-        public static void updateBetterMe(Context context) {
-            UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(context, UpdateAchievement.class);
-            if (updateAchievement != null) {
-                updateAchievement.updateBetterMe();
-            }
-        }
         public static void updateBetterMe(Context context, AimRealTimeValEntity aimRealTimeValEntity,boolean isShowBubble) {
             UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(context, UpdateAchievement.class);
             if (updateAchievement != null) {

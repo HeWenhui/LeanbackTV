@@ -53,6 +53,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super(context, liveBll);
         mBetterMeView = new BetterMeViewImpl(mContext);
         mBetterMeView.setPresenter(this);
+        putInstance(BetterMeContract.BetterMePresenter.class,this);
     }
 
     @Override
@@ -276,6 +277,14 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     synchronized public void updateBetterMe(final boolean isShowBubble) {
         logger.d("updateBetterMe");
+        //接口开关
+        if (!isUseBetterMe) {
+            return;
+        }
+        //迟到
+        if (isArriveLate) {
+            return;
+        }
         if (!isShowBetterMe) {
             return;
         }

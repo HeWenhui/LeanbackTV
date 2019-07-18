@@ -17,8 +17,6 @@ public interface UpdateAchievement {
 
     void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity);
 
-    void updateBetterMe();
-
     void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity,boolean isShowBubble);
 
     void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isNotice);

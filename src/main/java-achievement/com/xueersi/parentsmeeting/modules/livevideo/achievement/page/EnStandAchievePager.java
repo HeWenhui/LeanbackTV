@@ -185,8 +185,9 @@ public class EnStandAchievePager extends LiveBasePager {
 //                }
             }
         });
-
-
+        if (mLiveGetInfo.getEnglishBetterMe().isArriveLate) {
+            onBetterMeLate();
+        }
     }
 
     /**

@@ -149,6 +149,9 @@ public class EnAchievePager extends LiveBasePager {
 //            lp.topMargin = (int) (73 * ScreenUtils.getScreenDensity());
 //            view.setLayoutParams(lp);
 //        }
+        if (mLiveGetInfo.getEnglishBetterMe().isArriveLate) {
+            onBetterMeLate();
+        }
     }
 
     public void onEnglishPk() {
