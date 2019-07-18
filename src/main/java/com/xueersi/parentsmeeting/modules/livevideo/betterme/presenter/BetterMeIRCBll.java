@@ -6,6 +6,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.OtherBllEntrance;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
@@ -59,14 +60,14 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (teamPKStatus) {
             return;
         }
-        if (LiveTopic.MODE_TRANING.equals(oldMode) && LiveTopic.MODE_CLASS.equals(mode)) {
+        if (!LiveTopic.MODE_CLASS.equals(oldMode) && LiveTopic.MODE_CLASS.equals(mode)) {
             getBetterMe(false);
         }
     }
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        logger.d("onNotice():data=" + data);
+        logger.d("onNotice(): data = " + data);
         switch (type) {
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN: {
                 getBetterMe(true);
@@ -91,12 +92,15 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void onQuestionEnd() {
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateBetterMe();
-            }
-        }, 5000);
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(mGetInfo.getEnglishBetterMe().aimType) || BetterMeConfig
+                .TYPE_PARTICIPATERATE.equals(mGetInfo.getEnglishBetterMe().aimType)) {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    updateBetterMe();
+                }
+            }, 5000);
+        }
     }
 
     @Override
@@ -109,14 +113,12 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         //从本地读取本场是否开启了小目标
         isShowBetterMe = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_OPEN, "", ShareDataManager
                 .SHAREDATA_USER).equals(mGetInfo.getId());
-        if (isShowBetterMe) {
-            updateBetterMe();
-        }
+        updateBetterMe();
     }
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        logger.d("onTopic():jsonObject=" + jsonObject);
+        logger.d("onTopic(): jsonObject = " + jsonObject);
         try {
             JSONObject room_2 = jsonObject.getJSONObject("room_2");
             JSONObject teamPKObj = room_2.optJSONObject("teamPK");
@@ -126,6 +128,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     getBetterMe(false);
                 }
             }
+            logger.d("teamPK: status = " + teamPKStatus);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -269,6 +272,9 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     synchronized public void updateBetterMe() {
         logger.d("updateBetterMe");
+        if (!isShowBetterMe) {
+            return;
+        }
         String liveId = mLiveBll.getLiveId();
         String courseId = mLiveBll.getCourseId();
         getHttpManager().getStuAimRealTimeVal(liveId, courseId, new HttpCallBack(false) {

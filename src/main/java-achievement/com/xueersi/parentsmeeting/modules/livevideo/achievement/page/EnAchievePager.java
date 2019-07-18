@@ -424,6 +424,7 @@ public class EnAchievePager extends LiveBasePager {
         if (rlAchiveAimContent != null) {
             rlAchiveAimContent.setVisibility(View.VISIBLE);
         }
+        String current = "0%";
         String target = betterMeEntity.getAimValue();
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(betterMeEntity.getAimType())) {
             tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
@@ -434,9 +435,10 @@ public class EnAchievePager extends LiveBasePager {
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(betterMeEntity.getAimType())) {
             tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
             target = BetterMeUtil.secondToMinite(target);
+            current = "0:00";
         }
         tvAchiveAimValue.setText("目标" + target);
-        tvAchiveAimTips.setText("0%");
+        tvAchiveAimTips.setText(current);
         setBetterMePro(0);
         if (!isNotice) {
             receiveBetterMeBubble(betterMeEntity);
@@ -566,6 +568,9 @@ public class EnAchievePager extends LiveBasePager {
      * 蓝色气泡动效
      */
     private void showBetterMeBubble(String msg) {
+        if (cbAchiveTitle.isChecked()) {
+            return;
+        }
         ViewGroup rlLivevideoinfo = ((Activity) mContext).findViewById(R.id.rl_livevideo_info);
         if (rlLivevideoinfo != null) {
             ViewGroup viewGroup = (ViewGroup) rlLivevideoinfo.getParent();

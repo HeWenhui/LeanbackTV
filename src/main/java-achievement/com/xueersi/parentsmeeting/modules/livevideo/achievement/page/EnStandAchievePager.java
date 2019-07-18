@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -50,8 +48,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.ui.widget.CircleImageView;
 
 import net.grandcentrix.tray.core.ItemNotFoundException;
-
-import java.util.Random;
 
 public class EnStandAchievePager extends LiveBasePager {
     private RelativeLayout parent;
@@ -206,6 +202,7 @@ public class EnStandAchievePager extends LiveBasePager {
             rlAchiveAimContent.setVisibility(View.VISIBLE);
         }
         tvAchiveAimTips.setVisibility(View.VISIBLE);
+        String current = "0%";
         String target = betterMeEntity.getAimValue();
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(betterMeEntity.getAimType())) {
             tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
@@ -216,9 +213,10 @@ public class EnStandAchievePager extends LiveBasePager {
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(betterMeEntity.getAimType())) {
             tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
             target = BetterMeUtil.secondToMinite(target);
+            current = "0:00";
         }
         tvAchiveAimValue.setText("目标" + target);
-        tvAchiveAimTips.setText("0%");
+        tvAchiveAimTips.setText(current);
         setBetterMePro(0);
         if (!isNotice) {
             receiveBetterMeBubble(betterMeEntity);
@@ -350,7 +348,9 @@ public class EnStandAchievePager extends LiveBasePager {
      * 蓝色气泡动效
      */
     private void showBetterMeBubble(String msg) {
-
+        if (cbAchiveTitle.isChecked()) {
+            return;
+        }
         final LottieEffectInfo bubbleEffectInfo = new BubbleStandLottieEffectInfo(mContext, msg);
         final LottieAnimationView lottieAnimationView = mView.findViewById(R.id.lav_livevideo_en_stand_achive_bubble);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {

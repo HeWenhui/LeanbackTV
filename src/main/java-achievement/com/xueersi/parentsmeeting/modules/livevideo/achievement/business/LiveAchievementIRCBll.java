@@ -20,6 +20,8 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.OtherBllEntrance;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
@@ -646,6 +648,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        //更新小目标开口时长
+                        if (BetterMeConfig.TYPE_TALKTIME.equals(mGetInfo.getEnglishBetterMe().aimType)) {
+                            OtherBllEntrance.EnglishAchievent.updateBetterMe(activity);
+                        }
                         logger.d("setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
                         if (starAction != null) {
                             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
