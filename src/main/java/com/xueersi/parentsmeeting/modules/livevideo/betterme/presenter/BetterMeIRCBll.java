@@ -57,6 +57,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
+        logger.d("onModeChange(): oldMode = " + oldMode + " mode" + mode);
         if (teamPKStatus) {
             return;
         }
@@ -119,6 +120,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         logger.d("onTopic(): jsonObject = " + jsonObject);
+        logger.d("mode = " + liveTopic.getMode());
         try {
             JSONObject room_2 = jsonObject.getJSONObject("room_2");
             JSONObject teamPKObj = room_2.optJSONObject("teamPK");

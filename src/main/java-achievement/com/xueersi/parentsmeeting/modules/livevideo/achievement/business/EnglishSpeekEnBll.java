@@ -178,9 +178,6 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
                                         .duration),
                                 "" + (totalEn_seg_num + totalOpeningLength.speakingNum), speakingLen,
                                 0, 0);
-                        if (BetterMeConfig.TYPE_TALKTIME.equals(liveGetInfo.getEnglishBetterMe().aimType)) {
-                            OtherBllEntrance.EnglishAchievent.updateBetterMe(activity);
-                        }
                     }
                     lastSecond = totalSecond;
                     lastEnSegNum = totalEn_seg_num;
