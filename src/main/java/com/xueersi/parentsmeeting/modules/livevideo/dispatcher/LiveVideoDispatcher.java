@@ -40,6 +40,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     public static final int TYPE_AUDIT = 5;
     //TODO 心法
     public static final int TYPE_HEART = 6;
+    //TODO 试卷讲评
+    public static final int TYPE_EXAM = 7;
 
     private String vStuCourseId;
     private String courseId;
@@ -98,6 +100,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                     startLecture();
                 } else if (type == TYPE_HEART) {
                     startHeart();
+                } else if (type == TYPE_EXAM) {
+                    startExam();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -254,5 +258,19 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
     private void startRecord() {
 
+    }
+
+    private void startExam() {
+        VideoSectionEntity sectionEntity = new VideoSectionEntity();
+        sectionEntity.setvSectionName(chapterName);
+        sectionEntity.setvChapterName(chapterName);
+        sectionEntity.setvChapterID(planId);
+        sectionEntity.setvSectionID(planId);
+        sectionEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LIVE + "-" + sectionEntity
+                .getvSectionID());
+        sectionEntity.setvCoursseID(courseId);
+        sectionEntity.setvStuCourseID(vStuCourseId);
+        // 扣除金币
+        dispatcherBll.deductStuGold(sectionEntity, vStuCourseId);
     }
 }
