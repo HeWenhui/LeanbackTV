@@ -370,9 +370,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private class VoiceCannonTurnRun implements Runnable {
         int pagerNum;
-        int time;
+        double time;
 
-        public VoiceCannonTurnRun(int pagerNum, int time) {
+        public VoiceCannonTurnRun(int pagerNum, double time) {
             this.pagerNum = pagerNum;
             this.time = time;
             logger.d("VoiceCannonTurnRun:pagerNum=" + pagerNum + ",time=" + time + ",all=" + allAnswerList.size());
@@ -405,6 +405,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     mLogtf.d("VoiceCannonTurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex + ",allId=" + allId);
                     allAnswerList.clear();
                     createSpeechContent("VoiceCannonTurnRun:end", true);
+
+                    //最后一页也要翻页显示课件失败动画
+                    jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+                    jsonData.put("score", -1);
+                    jsonData.put("turnToPageNum", currentAnswerIndex);
+                    postMessage(jsonData);
                 } else {
                     //大于1页的时候再翻页
                     if (currentAnswerIndex - pagerNum == 1) {
@@ -432,6 +438,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         VoiceCannonTurnRun turnRun;
         boolean isLoaded = false;
 
+        // 课件开场 动画时间
+        private double coursewareStartAnimationTime = 0;
+        // 课件结束 动画时间
+        private double coursewareEndAnimationTime = 0;
+
         @Override
         public void postMessage(String where, final JSONObject message, String origin) {
             try {
@@ -457,25 +468,39 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             GroupGameLog.sno3(liveAndBackDebug, detailInfo.id, 1);
             GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, "0", 1);
             final GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
+
+            //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1.5秒再开始倒计时和收音
+            if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = test.getAnswerList().size() + 1;
+                coursewareEndAnimationTime = GroupGameConfig.WHATIS_MISSING_COURSEWARE_END_ANMITION_TIME;
+            } else if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = 3;
+                coursewareEndAnimationTime = GroupGameConfig.VOICE_CANNON_END_ANMITION_TIME;
+            } else if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = 0;
+                coursewareEndAnimationTime = GroupGameConfig.HOT_AIR_BALLAN_END_ANMITION_TIME;
+            }
+
             try {
                 mLogtf.d("onLoadComplete:totaltime=" + test.getTotalTime());
                 //时间没结束,才倒计时
                 if (test.getTotalTime() > 0) {
-                    int time = test.getAnswerList().get(currentAnswerIndex).getSingleTime() + 1;
+                    double time = test.getAnswerList().get(currentAnswerIndex).getSingleTime() +
+                            coursewareEndAnimationTime;
                     if (currentAnswerIndex == 0 && LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo
                             .type)) {
-                        //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1秒再开始倒计时和收音
+                        //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1.5秒再开始倒计时和收音
                         time += test.getAnswerList().size();
                     }
                     if (turnRun == null) {
                         turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
-                        mainHandler.postDelayed(turnRun, time * 1000);
+                        mainHandler.postDelayed(turnRun, (int) (time * 1000));
                     } else {
                         mLogtf.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "," + currentAnswerIndex);
                         if (turnRun.pagerNum < currentAnswerIndex) {
                             mainHandler.removeCallbacks(turnRun);
                             turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
-                            mainHandler.postDelayed(turnRun, time * 1000);
+                            mainHandler.postDelayed(turnRun, (int) (time * 1000));
                         }
                     }
                 }
@@ -539,16 +564,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     if (currentAnswerIndex >= testEntity.getAnswerList().size()) {
                         return;
                     }
-                    int time = testEntity.getAnswerList().get(currentAnswerIndex).getSingleTime() + 1;
+                    double time = testEntity.getAnswerList().get(currentAnswerIndex).getSingleTime() +
+                            coursewareEndAnimationTime;
                     if (turnRun == null) {
                         turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
-                        mainHandler.postDelayed(turnRun, time * 1000);
+                        mainHandler.postDelayed(turnRun, (int) (time * 1000));
                     } else {
                         mLogtf.d("onCoursewareDoing:pagerNum=" + turnRun.pagerNum + "," + currentAnswerIndex);
                         if (turnRun.pagerNum < currentAnswerIndex) {
                             mainHandler.removeCallbacks(turnRun);
                             turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
-                            mainHandler.postDelayed(turnRun, time * 1000);
+                            mainHandler.postDelayed(turnRun, (int) (time * 1000));
                         }
                     }
                 } catch (Exception e) {
@@ -634,16 +660,16 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                         //恢复数据，翻页
-                        int time = answersEntity.getSingleTime() + 1;
+                        double time = answersEntity.getSingleTime() + coursewareEndAnimationTime;
                         if (turnRun == null) {
                             turnRun = new VoiceCannonTurnRun(pageNum, time);
-                            mainHandler.postDelayed(turnRun, time * 1000);
+                            mainHandler.postDelayed(turnRun, (int) (time * 1000));
                         } else {
                             mLogtf.d("coursewareDoingLoad:pageNum=" + turnRun.pagerNum + ",pageNum=" + pageNum);
                             if (turnRun.pagerNum < pageNum) {
                                 mainHandler.removeCallbacks(turnRun);
                                 turnRun = new VoiceCannonTurnRun(pageNum, time);
-                                mainHandler.postDelayed(turnRun, time * 1000);
+                                mainHandler.postDelayed(turnRun, (int) (time * 1000));
                             }
                         }
                     } catch (Exception e) {
@@ -2193,13 +2219,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             }
             XESToastUtils.showToast(mContext, "游戏结束");
             mLogtf.d("createSpeechContent:method=" + method + ",delay=" + delay);
+            int delayTime = 1000;
+            if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(gameType)) {
+                delayTime = (int) (GroupGameConfig.WHATIS_MISSING_COURSEWARE_END_ANMITION_TIME * 1000);
+            }
             if (delay) {
                 mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         submit();
                     }
-                }, 1200);
+                }, delayTime);
             } else {
                 submit();
             }

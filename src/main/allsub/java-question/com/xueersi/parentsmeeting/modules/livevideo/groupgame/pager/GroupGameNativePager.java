@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.action.SingleModeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.cloud.GroupGameUpload;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.config.GroupGameConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
@@ -923,6 +924,24 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      * 热气球,炮弹交互
      */
     class HotAirBallonAction implements SingleModeAction {
+        // 课件开场 动画时间
+        private double coursewareStartAnimationTime = 0;
+        // 课件结束 动画时间
+        private double coursewareEndAnimationTime = 0;
+
+        HotAirBallonAction() {
+            //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1.5秒再开始倒计时和收音
+            if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = mAnswersList.size() + 1;
+                coursewareEndAnimationTime = GroupGameConfig.WHATIS_MISSING_COURSEWARE_END_ANMITION_TIME;
+            } else if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = 3;
+                coursewareEndAnimationTime = GroupGameConfig.VOICE_CANNON_END_ANMITION_TIME;
+            } else if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = 0;
+                coursewareEndAnimationTime = GroupGameConfig.HOT_AIR_BALLAN_END_ANMITION_TIME;
+            }
+        }
 
         @Override
         public void startTimer() {
@@ -938,28 +957,19 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     public void run() {
                         submitData(false);
                     }
-                }, 1000);
+                }, (int) (coursewareEndAnimationTime) * 1000);
+
             } else {
-                double startSpeechRecognizeTime = 1;
-                double turnPagetime = mAnswersList.get(pageNum).getSingleTime() + 1;
+                double startSpeechRecognizeTime;
+                double turnPagetime;
                 content = new StringBuilder(mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get
                         (pageNum).getText());
                 if (pageNum == 0) {
-                    if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
-                        //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1秒再开始倒计时和收音
-                        startSpeechRecognizeTime += mAnswersList.size();
-                        turnPagetime += mAnswersList.size();
-                    } else if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
-                        //语音炮弹开场动画3s
-                        startSpeechRecognizeTime = 3;
-                    } else if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type)) {
-                        startSpeechRecognizeTime = 0;
-                    }
+                    startSpeechRecognizeTime = coursewareStartAnimationTime;
+                    turnPagetime = mAnswersList.get(pageNum).getSingleTime() + coursewareStartAnimationTime;
                 } else {
-                    if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
-                        startSpeechRecognizeTime += 0.5;
-                        turnPagetime += 0.5;
-                    }
+                    startSpeechRecognizeTime = coursewareEndAnimationTime;
+                    turnPagetime = mAnswersList.get(pageNum).getSingleTime() + coursewareEndAnimationTime;
                 }
                 mainHandler.postDelayed(startSpeechRecognizeRunnable, (int)(startSpeechRecognizeTime * 1000));
                 mainHandler.postDelayed(turnPageRunnable, (int)(turnPagetime * 1000));

@@ -9,4 +9,11 @@ public class GroupGameConfig {
     public static int CANNON_MAX_ENERGY = 50;
     /** what's missing最大能量 */
     public static int WHATIS_MISSING_MAX_ENERGY = 30;
+
+    /** what's missing 课件结束 动画时间 */
+    public static double WHATIS_MISSING_COURSEWARE_END_ANMITION_TIME = 1.5;
+    /** 热气球 课件结束 动画时间 */
+    public static double HOT_AIR_BALLAN_END_ANMITION_TIME = 1;
+    /** 语音炮弹 课件结束 动画时间 */
+    public static double VOICE_CANNON_END_ANMITION_TIME = 1;
 }
