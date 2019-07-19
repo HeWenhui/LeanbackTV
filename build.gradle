@@ -56,6 +56,8 @@ def static getEngSource(Object set) {
     set.java.srcDirs += ['src/main/java-achievement']
     set.res.srcDirs += ['src/main/english/res-achievement']
     set.assets.srcDirs += ['src/main/english/assets']
+    set.java.srcDirs += ['src/main/english/java-stand']
+    set.res.srcDirs += ['src/main/english/res-stand']
 }
 
 android {
