@@ -89,12 +89,13 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 onQuestionEnd();
                 break;
             case XESCODE.MODECHANGE:{
-                //为兼容批调场次，需自己监听切流
-                if (teamPKStatus) {
-                    return;
+                if (mAimRealTimeValEntity != null) {
+                    OtherBllEntrance.EnglishAchievent.updateBetterMe(mContext, mAimRealTimeValEntity, false);
+                } else {
+                    updateBetterMe(false);
                 }
-                updateBetterMe(false);
-                if (LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
+                //为兼容批调场次，需自己监听切流
+                if (!teamPKStatus && LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
                     getBetterMe(false);
                 }
             }
