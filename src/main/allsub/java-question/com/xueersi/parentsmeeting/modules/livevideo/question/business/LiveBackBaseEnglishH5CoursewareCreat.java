@@ -230,7 +230,9 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                         BaseEnglishH5CoursewarePager h5CoursewarePager = null;
                         String type = videoQuestionH5Entity.type;
                         if (LiveQueConfig.isGroupGame(type)) {
-                            h5CoursewarePager = createGame(context, videoQuestionH5Entity, onH5ResultClose);
+                            GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, true, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+                            groupGameMultNativePager.setLivePagerBack(livePagerBack);
+                            return groupGameMultNativePager;
 
                         } else {
                             CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
@@ -276,16 +278,17 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                     }
                     String educationstage = liveGetInfo.getEducationStage();
                     videoQuestionH5Entity.setEducationstage(educationstage);
-                }
-                else if (isArts == LiveVideoSAConfig.ART_EN) {
+                } else if (isArts == LiveVideoSAConfig.ART_EN) {
                     String type = videoQuestionH5Entity.type;
                     if (LiveQueConfig.isGroupGame(type)) {
-                        BaseEnglishH5CoursewarePager h5CoursewarePager = createGame(context, videoQuestionH5Entity, onH5ResultClose);
-                        return h5CoursewarePager;
+                        GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, true, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+                        groupGameMultNativePager.setLivePagerBack(livePagerBack);
+                        return groupGameMultNativePager;
+
                     }
                 }
-                }
             }
+        }
             EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                     videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
                     , isArts, false);
@@ -293,70 +296,4 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
             return h5CoursewarePager;
         }
 
-    /**
-     * 小组互动
-     *
-     * @param context
-     * @param videoQuestionH5Entity
-     * @param onH5ResultClose
-     * @return
-     */
-    private BaseEnglishH5CoursewarePager createGame(Context context, VideoQuestionLiveEntity videoQuestionH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose) {
-        String type = videoQuestionH5Entity.type;
-        EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
-        if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type)) {
-            GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
-            groupGameMultNativePager.setLivePagerBack(livePagerBack);
-            return groupGameMultNativePager;
-        }
-        BaseEnglishH5CoursewarePager h5CoursewarePager;
-        GetStuActiveTeam getStuActiveTeam = ProxUtil.getProxUtil().get(context, GetStuActiveTeam.class);
-        //还没有战队
-        if (getStuActiveTeam == null) {
-            GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
-            groupGameMultNativePager.setLivePagerBack(livePagerBack);
-            h5CoursewarePager = groupGameMultNativePager;
-        } else {
-            InteractiveTeam interactiveTeam = getStuActiveTeam.getStuActiveTeam(false, null);
-            //还没有小组,或者没有tcp
-//            if (interactiveTeam == null || interactiveTeam.getEntities().size() < 2) {
-//                if (interactiveTeam == null) {
-//                    GroupGameEmptyPager groupGameEmptyPager = new GroupGameEmptyPager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
-//                    groupGameEmptyPager.setLivePagerBack(livePagerBack);
-//                    h5CoursewarePager = groupGameEmptyPager;
-////                    GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
-////                    groupGameMultNativePager.setLivePagerBack(livePagerBack);
-////                    h5CoursewarePager = groupGameMultNativePager;
-//                } else {
-//                    GroupGameEmptyPager groupGameEmptyPager = new GroupGameEmptyPager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
-//                    groupGameEmptyPager.setLivePagerBack(livePagerBack);
-//                    h5CoursewarePager = groupGameEmptyPager;
-////                    GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
-////                    groupGameMultNativePager.setLivePagerBack(livePagerBack);
-////                    h5CoursewarePager = groupGameMultNativePager;
-//                }
-//            } else {
-//                GroupGameEmptyPager groupGameEmptyPager = new GroupGameEmptyPager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
-//                groupGameEmptyPager.setLivePagerBack(livePagerBack);
-//                h5CoursewarePager = groupGameEmptyPager;
-////                GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
-////                groupGameMultNativePager.setLivePagerBack(livePagerBack);
-////                h5CoursewarePager = groupGameMultNativePager;
-//            }
-            if (!isFirst && (interactiveTeam == null || interactiveTeam.getEntities().size() < 2)) {
-                GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
-                groupGameMultNativePager.setLivePagerBack(livePagerBack);
-                h5CoursewarePager = groupGameMultNativePager;
-            } else {
-                GroupGameEmptyPager groupGameEmptyPager = new GroupGameEmptyPager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose, isFirst);
-                groupGameEmptyPager.setLivePagerBack(livePagerBack);
-                h5CoursewarePager = groupGameEmptyPager;
-                isFirst = false;
-//                GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
-//                groupGameMultNativePager.setLivePagerBack(livePagerBack);
-//                h5CoursewarePager = groupGameMultNativePager;
-            }
-        }
-        return h5CoursewarePager;
-    }
     }
