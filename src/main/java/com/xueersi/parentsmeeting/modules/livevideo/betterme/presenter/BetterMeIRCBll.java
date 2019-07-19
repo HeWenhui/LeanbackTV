@@ -89,14 +89,14 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 onQuestionEnd();
                 break;
             case XESCODE.MODECHANGE:{
+                //为兼容批调场次，需自己监听切流
+                if (!teamPKStatus && LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
+                    getBetterMe(false);
+                }
                 if (mAimRealTimeValEntity != null) {
                     OtherBllEntrance.EnglishAchievent.updateBetterMe(mContext, mAimRealTimeValEntity, false);
                 } else {
                     updateBetterMe(false);
-                }
-                //为兼容批调场次，需自己监听切流
-                if (!teamPKStatus && LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
-                    getBetterMe(false);
                 }
             }
             default:
@@ -119,13 +119,16 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+        //从本地读取本场是否开启了小目标
+        isShowBetterMe = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_OPEN, "", ShareDataManager
+                .SHAREDATA_USER).equals(mGetInfo.getId());
         mBetterMeView.setRootView(mRootView);
         this.isUseBetterMe = getInfo.getEnglishBetterMe().isUseBetterMe;
         this.isArriveLate = getInfo.getEnglishBetterMe().isArriveLate;
         logger.d("isUseBetterMe = " + isUseBetterMe + "; isArriveLate = " + isArriveLate);
-        //从本地读取本场是否开启了小目标
-        isShowBetterMe = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_OPEN, "", ShareDataManager
-                .SHAREDATA_USER).equals(mGetInfo.getId());
+        if (!teamPKStatus && LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
+            getBetterMe(false);
+        }
         updateBetterMe(false);
     }
 
@@ -155,10 +158,12 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     synchronized public void getBetterMe(final boolean isNotice) {
         //小目标接口开关
         if (!isUseBetterMe) {
+            OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
             return;
         }
         //迟到
         if (isArriveLate) {
+            OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
             return;
         }
         if (isShowBetterMe) {
@@ -168,7 +173,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         storageBetterMe();
         String liveId = mLiveBll.getLiveId();
         String courseId = mLiveBll.getCourseId();
-        getHttpManager().getBetterMe(liveId, courseId, new HttpCallBack(true) {
+        getHttpManager().getBetterMe(liveId, courseId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.i("getBetterMe:onPmSuccess():json=" + responseEntity.getJsonObject());
@@ -186,14 +191,16 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
+                logger.i("getBetterMe:onPmFailure():error=" + msg);
                 super.onPmFailure(error, msg);
                 OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
             }
 
             @Override
-            public void onFailure(String postUrl, Exception e, String msg) {
-                super.onFailure(postUrl, e, msg);
-                OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.i("getBetterMe:onPmError():error=" + responseEntity.getErrorMsg());
+                super.onPmError(responseEntity);
+                OtherBllEntrance.EnglishTeamPK.startPK(mContext,isNotice);
             }
         });
     }
@@ -221,12 +228,22 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      */
     @Override
     synchronized public void getStuAimResult() {
+        //小目标接口开关
+        if (!isUseBetterMe) {
+            OtherBllEntrance.EnglishTeamPK.endPK(mContext);
+            return;
+        }
+        //迟到
+        if (isArriveLate) {
+            OtherBllEntrance.EnglishTeamPK.endPK(mContext);
+            return;
+        }
         String liveId = mLiveBll.getLiveId();
         String courseId = mLiveBll.getCourseId();
         getHttpManager().getStuAimResult(liveId, courseId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
-                logger.i("getBetterMe:onPmSuccess():json=" + responseEntity.getJsonObject());
+                logger.i("getStuAimResult:onPmSuccess():json=" + responseEntity.getJsonObject());
                 mStuAimResultEntity = getHttpResponseParser().parseStuAimResultInfo(responseEntity);
                 if (mStuAimResultEntity != null) {
                     mBetterMeView.showCompleteTargetPager(mStuAimResultEntity);
@@ -237,13 +254,15 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
+                logger.i("getStuAimResult:onPmFailure():error=" + msg);
                 super.onPmFailure(error, msg);
                 OtherBllEntrance.EnglishTeamPK.endPK(mContext);
             }
 
             @Override
-            public void onFailure(String postUrl, Exception e, String msg) {
-                super.onFailure(postUrl, e, msg);
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.i("getStuAimResult:onPmError():error=" + responseEntity.getErrorMsg());
+                super.onPmError(responseEntity);
                 OtherBllEntrance.EnglishTeamPK.endPK(mContext);
             }
         });
@@ -268,13 +287,15 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
+                logger.i("getStuSegment:onPmFailure():error=" + msg);
                 super.onPmFailure(error, msg);
                 OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
             }
 
             @Override
-            public void onFailure(String postUrl, Exception e, String msg) {
-                super.onFailure(postUrl, e, msg);
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.i("getStuSegment:onPmError():error=" + responseEntity.getErrorMsg());
+                super.onPmError(responseEntity);
                 OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
             }
         });
