@@ -51,11 +51,11 @@
     </style>
 
     <style name="ProgressBar_live_en_achive" parent="@android:style/Widget.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/layerlst_livevideo_enpk_achive_prog</item>
+        <item name="android:progressDrawable">@drawable/layerlst_livevideo_achieve_betterme_prog</item>
     </style>
 
     <style name="ProgressBar_live_en_betterme_stand" parent="@android:style/Widget.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/layerlst_livevideo_enpk_betterme_stand_prog</item>
+        <item name="android:progressDrawable">@drawable/layerlst_livevideo_achieve_betterme_stand_prog</item>
     </style>
 
     <style name="ProgressBar_live_en_pk" parent="@android:style/Widget.ProgressBar.Horizontal">

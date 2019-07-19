@@ -60,13 +60,6 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
         logger.d("onModeChange(): oldMode = " + oldMode + " mode = " + mode);
-        if (teamPKStatus) {
-            return;
-        }
-        if (LiveTopic.MODE_CLASS.equals(mode)) {
-            getBetterMe(false);
-        }
-        updateBetterMe(false);
     }
 
     @Override
@@ -90,6 +83,21 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     onQuestionEnd();
                 }
                 break;
+            case XESCODE.STOPQUESTION:
+                //自传互动题
+            case XESCODE.EXAM_STOP:
+                onQuestionEnd();
+                break;
+            case XESCODE.MODECHANGE:{
+                //为兼容批调场次，需自己监听切流
+                if (teamPKStatus) {
+                    return;
+                }
+                updateBetterMe(false);
+                if (LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
+                    getBetterMe(false);
+                }
+            }
             default:
                 break;
         }
@@ -328,7 +336,10 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN,
                 XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT,
                 XESCODE.ARTS_STOP_QUESTION,
-                XESCODE.ARTS_H5_COURSEWARE
+                XESCODE.ARTS_H5_COURSEWARE,
+                XESCODE.STOPQUESTION,
+                XESCODE.EXAM_STOP,
+                XESCODE.MODECHANGE
         };
     }
 }
