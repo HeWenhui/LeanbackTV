@@ -138,7 +138,7 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                         understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
                                 (listener);
                         understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
-                    }  else {
+                    } else {
                         understandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
                                 rlQuestionContent,
                                 false);
@@ -191,6 +191,10 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                     //在中间位置显示
                 }
                 mVPlayVideoControlHandler.removeCallbacks(closeRedPackage);
+                ViewGroup group = (ViewGroup) understandView.getParent();
+                if (group != null) {
+                    group.removeView(understandView);
+                }
                 rlQuestionContent.addView(understandView, params);
                 if (LiveVideoConfig.isPrimary) {
 //                    rlQuestionContent.postDelayed(closeRedPackage, 100000);//十秒之后关闭
