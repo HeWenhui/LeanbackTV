@@ -18,33 +18,64 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveTransferHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveTransferHttpResponseParser;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * 课程中心到直播页面的中转页面
  */
 public class LiveVideoTransferActivity extends BaseActivity {
+    private static final String TAG = "LiveVideoTransferActivity";
 
     private LiveTransferHttpManager mCourseHttpManager;
     private LiveTransferHttpResponseParser mCourseHttpResponseParser;
+    private JSONObject sectionEntityJson;
 
     // 跳转来源
     private String from;
+
+    private String vCoursseID;
+    private String vChapterID;
+    private String vSectionName;
+    private String vTradeId;
+    private String vSectionID;
+    private String vStuCourseID;
+    private String VisitTimeKey;
+
+    protected LogToFile mLogtf;
+
+    DataLoadEntity dataLoadEntity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         init();
         Intent intent = getIntent();
-        VideoSectionEntity sectionEntity = (VideoSectionEntity) intent.getSerializableExtra("sectionEntity");
+        String sectionEntity =  intent.getStringExtra("sectionEntity");
         String stuCouId = intent.getStringExtra("stuCouId");
         from = intent.getStringExtra("where");
-        deductStuGold(sectionEntity,stuCouId);
+        try {
+             sectionEntityJson = new JSONObject(sectionEntity);
+             vCoursseID = sectionEntityJson.optString("vCoursseID");
+             vChapterID = sectionEntityJson.optString("vChapterID");
+             vSectionName = sectionEntityJson.optString("vSectionName");
+             vTradeId = sectionEntityJson.optString("vTradeId");
+             vSectionID = sectionEntityJson.optString("vSectionID");
+             vStuCourseID = sectionEntityJson.optString("vStuCourseID");
+             VisitTimeKey = sectionEntityJson.optString("VisitTimeKey");
+        } catch (JSONException e) {
+            Loger.e(TAG,e.getMessage());
+        }
+        mLogtf = new LogToFile(this, TAG);
+        mLogtf.d("sectionEntity="+sectionEntity+"  stuCouId="+stuCouId+"  from="+from);
+        deductStuGold(stuCouId);
 
     }
 
@@ -52,7 +83,9 @@ public class LiveVideoTransferActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        postDataLoadEvent(dataLoadEntity.webDataSuccess());
         EventBus.getDefault().unregister(this);
+
     }
 
     private void init() {
@@ -63,25 +96,24 @@ public class LiveVideoTransferActivity extends BaseActivity {
     /**
      * 观看视频扣除金币
      *
-     * @param sectionEntity
      * @param stuCouId
      */
-    public void deductStuGold(final VideoSectionEntity sectionEntity, final String stuCouId) {
-        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
+    public void deductStuGold( final String stuCouId) {
+        dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        mCourseHttpManager.deductStuGold(myUserInfoEntity.getEnstuId(), stuCouId, sectionEntity.getvCoursseID(),
-                sectionEntity.getvSectionID(), 0, new HttpCallBack(dataLoadEntity) {
+        mCourseHttpManager.deductStuGold(myUserInfoEntity.getEnstuId(),stuCouId, vCoursseID,
+                vSectionID, 0, new HttpCallBack(dataLoadEntity) {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         VideoResultEntity entity = mCourseHttpResponseParser
-                                .deductStuGoldParser(sectionEntity.getvSectionID(), stuCouId, responseEntity);
+                                .deductStuGoldParser(vSectionID, stuCouId, responseEntity);
                         if (entity != null && entity.getIsArts() == 1) {
-                            artscoursewarenewpoint(sectionEntity, stuCouId, entity);
+                            artscoursewarenewpoint(stuCouId, entity);
                         } else {
-                            intentToPlayBack(sectionEntity, entity);
+                            intentToPlayBack(entity);
                         }
                     }
 
@@ -98,45 +130,46 @@ public class LiveVideoTransferActivity extends BaseActivity {
                     }
                 });
     }
-    public void artscoursewarenewpoint(final VideoSectionEntity sectionEntity, final String stuCouId, final
+
+    public void artscoursewarenewpoint(final String stuCouId, final
     VideoResultEntity entitys) {
-        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
+        //   DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        mCourseHttpManager.artscoursewarenewpoint(sectionEntity.getvSectionID(), new HttpCallBack(dataLoadEntity) {
+        mCourseHttpManager.artscoursewarenewpoint(vSectionID, new HttpCallBack(dataLoadEntity) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
-                Loger.e("Duncan", "responseEntity:" + responseEntity);
+                Loger.e(TAG, "responseEntity:" + responseEntity);
                 VideoResultEntity entity = mCourseHttpResponseParser
-                        .parseNewArtsEvent(stuCouId, sectionEntity.getvSectionID(), entitys, responseEntity);
+                        .parseNewArtsEvent(stuCouId, vSectionID, entitys, responseEntity);
 
-                intentToPlayBack(sectionEntity, entity);
+                intentToPlayBack(entity);
 
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                Loger.e("Duncan", "onPmFailureresponseEntity:" + msg);
+                Loger.e(TAG, "onPmFailureresponseEntity:" + msg);
                 finish();
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                Loger.e("Duncan", "onPmErrorresponseEntity:" + responseEntity.getErrorMsg());
+                Loger.e(TAG, "onPmErrorresponseEntity:" + responseEntity.getErrorMsg());
                 finish();
             }
         });
     }
 
-    public void intentToPlayBack(VideoSectionEntity sectionEntit, VideoResultEntity result) {
-        VideoSectionEntity sectionEntity = result.getMapVideoSectionEntity().get(sectionEntit.getvSectionID());
+    public void intentToPlayBack( VideoResultEntity result) {
+        VideoSectionEntity sectionEntity = result.getMapVideoSectionEntity().get(vSectionID);
         // 播放数据设定
-        VideoLivePlayBackEntity videoEntity = videoLivePlayBackFromVideoSection(sectionEntit, result,
-                sectionEntit.getvSectionID());
-        VideoLivePlayBackEntity tutorEntity = videoLivePlayBackFromVideoSection(sectionEntit, result,
-                sectionEntit.getvSectionID() + LiveVideoConfig.LIVE_PLAY_BACK_TUTOR_FLAGE);
+        VideoLivePlayBackEntity videoEntity = videoLivePlayBackFromVideoSection(result,
+                vSectionID);
+        VideoLivePlayBackEntity tutorEntity = videoLivePlayBackFromVideoSection(result,
+                vSectionID + LiveVideoConfig.LIVE_PLAY_BACK_TUTOR_FLAGE);
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
@@ -174,8 +207,7 @@ public class LiveVideoTransferActivity extends BaseActivity {
        // OtherModuleEnter.intentTo((Activity) mContext, bundle, CourseDetailActivity.class.getSimpleName());
     }
 
-    public VideoLivePlayBackEntity videoLivePlayBackFromVideoSection(VideoSectionEntity
-                                                                             section, VideoResultEntity
+    public VideoLivePlayBackEntity videoLivePlayBackFromVideoSection(VideoResultEntity
                                                                              result, String sectionId) {
         VideoSectionEntity sectionEntity = result.getMapVideoSectionEntity().get(sectionId);
         if (sectionEntity == null) {
@@ -185,14 +217,14 @@ public class LiveVideoTransferActivity extends BaseActivity {
         // 播放数据设定
         VideoLivePlayBackEntity videoEntity = new VideoLivePlayBackEntity();
         videoEntity.setLstPoint(result.getLstPoint());
-        videoEntity.setCourseId(section.getvCoursseID());
-        videoEntity.setChapterId(section.getvChapterID());
+        videoEntity.setCourseId(vCoursseID);
+        videoEntity.setChapterId(vChapterID);
         videoEntity.setvLivePlayBackType(LocalCourseConfig.LIVE_PLAY_LIVE);
-        videoEntity.setPlayVideoName(section.getvSectionName());
-        videoEntity.setVideoCacheKey(section.getvTradeId());
-        videoEntity.setLiveId(section.getvSectionID());
-        videoEntity.setStuCourseId(section.getvStuCourseID());
-        videoEntity.setVisitTimeKey(section.getVisitTimeKey());
+        videoEntity.setPlayVideoName(vSectionName);
+        videoEntity.setVideoCacheKey(vTradeId);
+        videoEntity.setLiveId(vSectionID);
+        videoEntity.setStuCourseId(vStuCourseID);
+        videoEntity.setVisitTimeKey(VisitTimeKey);
         videoEntity.setvCourseSendPlayVideoTime(getSendPlayVideoTimeStatic(LocalCourseConfig.SENDPLAYVIDEOTIME));
         // 互动题数据
         videoEntity.setPlayVideoId(sectionEntity.getvSectionID());
