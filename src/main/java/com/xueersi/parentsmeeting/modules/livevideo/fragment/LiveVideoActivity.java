@@ -16,7 +16,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.halfbody.HalfBodyLiveVideoFragement;
 
 /**
  * 直播
@@ -74,7 +73,13 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
             }
         } else if (pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
             //半身直播
-            return new HalfBodyLiveVideoFragement();
+            try {
+                String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.halfbody.HalfBodyLiveVideoFragement";
+                LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
         } else if (pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
             //半身直播
             try {

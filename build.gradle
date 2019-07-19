@@ -15,6 +15,9 @@ def static getAllSource(Object set) {
     set.res.srcDirs += ['src/main/allsub/res-video_chat']
     //排行榜
     set.java.srcDirs += ['src/main/allsub/java-rank']
+    //半身
+    set.java.srcDirs += ['src/main/allsub/java-half_body']
+    set.res.srcDirs += ['src/main/allsub/res-half_body']
 }
 
 //com.android.build.gradle.api.AndroidSourceSet set
@@ -56,6 +59,7 @@ def static getEngSource(Object set) {
     set.java.srcDirs += ['src/main/java-achievement']
     set.res.srcDirs += ['src/main/english/res-achievement']
     set.assets.srcDirs += ['src/main/english/assets']
+    //全身
     set.java.srcDirs += ['src/main/english/java-stand']
     set.res.srcDirs += ['src/main/english/res-stand']
 }
