@@ -15,9 +15,6 @@ def static getAllSource(Object set) {
     set.res.srcDirs += ['src/main/allsub/res-video_chat']
     //排行榜
     set.java.srcDirs += ['src/main/allsub/java-rank']
-    //半身
-    set.java.srcDirs += ['src/main/allsub/java-half_body']
-    set.res.srcDirs += ['src/main/allsub/res-half_body']
 }
 
 //com.android.build.gradle.api.AndroidSourceSet set
@@ -40,6 +37,9 @@ def static getSecSource(Object set) {
     //小班体验
     set.java.srcDirs += ['src/main/chinese/java-primary_class']
     set.res.srcDirs += ['src/main/chinese/res-primary_class']
+    //半身
+    set.java.srcDirs += ['src/main/allsub/java-half_body']
+    set.res.srcDirs += ['src/main/allsub/res-half_body']
 }
 
 def static getCnSource(Object set) {
@@ -49,6 +49,9 @@ def static getCnSource(Object set) {
     set.res.srcDirs += ['src/main/secience/res-primary_class']
     set.java.srcDirs += ['src/main/chinese/java-primary_class']
     set.res.srcDirs += ['src/main/chinese/res-primary_class']
+    //半身
+    set.java.srcDirs += ['src/main/allsub/java-half_body']
+    set.res.srcDirs += ['src/main/allsub/res-half_body']
 }
 
 def static getEngSource(Object set) {
