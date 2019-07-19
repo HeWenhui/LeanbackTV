@@ -13,7 +13,7 @@ public interface LiveStandSpeechEvalAction extends SpeechEvalAction {
      * @param testId
      * @param callBack
      */
-    void getSpeechEvalAnswerTeamStatus(String testId, AbstractBusinessDataCallBack callBack);
+    void getSpeechEvalAnswerTeamStatus(boolean isNewArt,String testId, AbstractBusinessDataCallBack callBack);
 
     long getRequestTime();
 }

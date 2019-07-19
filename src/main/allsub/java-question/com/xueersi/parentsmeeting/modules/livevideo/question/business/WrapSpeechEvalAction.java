@@ -55,8 +55,8 @@ public class WrapSpeechEvalAction implements SpeechEvalAction {
     }
 
     @Override
-    public void speechIsAnswered(String num, AbstractBusinessDataCallBack callBack) {
-        speechEvalAction.speechIsAnswered(num, callBack);
+    public void speechIsAnswered(boolean isNewArt,String num, AbstractBusinessDataCallBack callBack) {
+        speechEvalAction.speechIsAnswered(isNewArt,num, callBack);
     }
 
 }

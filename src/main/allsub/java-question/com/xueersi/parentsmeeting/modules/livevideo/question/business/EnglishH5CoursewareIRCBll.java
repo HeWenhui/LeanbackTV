@@ -200,7 +200,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                 String status = coursewareH5.optString("status", "off");
                 if ("on".equals(status)) {
-                    LiveVideoConfig.isNewArts = true;
+                   // LiveVideoConfig.isNewArts = true;
                     videoQuestionLiveEntity.noticeType = XESCODE.ARTS_SEND_QUESTION;
                     videoQuestionLiveEntity.setNewArtsCourseware(true);
                     JSONArray idObject = coursewareH5.optJSONArray("id");
@@ -221,7 +221,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 if (jsonObject.has("coursewareOnlineTech")) {
                     JSONObject onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
                     if (!"{}".equals(onlineTechObj.toString())) {
-                        LiveVideoConfig.isNewArts = true;
+                        //LiveVideoConfig.isNewArts = true;
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         H5OnlineTechEntity h5OnlineTechEntity = new H5OnlineTechEntity();
                         h5OnlineTechEntity.setStatus(onlineTechObj.optString("status"));
@@ -262,8 +262,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
                     Loger.e("Duncan", "======>EnglishH5CoursewareIRCBll:" + "H5语音答题");
                 }
+                Loger.e(Tag, "=======>onTopic:" + "isNewArts: "+videoQuestionLiveEntity.isNewArtsH5Courseware());
             } else {
-                LiveVideoConfig.isNewArts = false;
+               // LiveVideoConfig.isNewArts = false;
+                Loger.e(Tag, "=======>onTopic:" + "isNewArts: false");
                 if ((englishH5CoursewareBll != null && jsonObject.has("H5_Courseware"))
                         || LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())) {
                     VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
@@ -277,7 +279,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     String id = "";
                     String courseware_type = "";
                     if ("on".equals(status)) {
-                        englishH5Entity.setNewEnglishH5(false);
+                        //englishH5Entity.setNewEnglishH5(false);
                         id = h5_Experiment.getString("id");
                         courseware_type = h5_Experiment.getString("courseware_type");
                         String pre = mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
@@ -305,7 +307,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
                         }
                     } else {
-                        englishH5Entity.setNewEnglishH5(false);
+                       // englishH5Entity.setNewEnglishH5(false);
                         if (englishH5CoursewareBll != null) {
                             JSONObject object = jsonObject.optJSONObject("platformTest");
                             // 辅导态不接收主讲消息
@@ -366,7 +368,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         } catch (Exception e) {
             Loger.e("Duncan", "======>EnglishH5CoursewareIRCBlle:" + e.toString());
         }
-        Loger.e(Tag, "=======>onTopic:" + "isNewArts:" + LiveVideoConfig.isNewArts);
     }
 
     /**
@@ -649,7 +650,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         @Override
         public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final
         AbstractBusinessDataCallBack callBack) {
-            getHttpManager().getTestAnswerTeamStatus(videoQuestionLiveEntity.id, new HttpCallBack(false) {
+            getHttpManager().getTestAnswerTeamStatus(videoQuestionLiveEntity.isNewArtsH5Courseware(),videoQuestionLiveEntity.id, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     GoldTeamStatus entity = getHttpResponseParser().testAnswerTeamStatus(responseEntity, mGetInfo
@@ -702,7 +703,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     userMode = "0";
                 }
             }
-            if (LiveVideoConfig.isNewArts) {
+            if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
                 Log.d("Duncan", "onPutQuestionResultNewArts3");
                 if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(videoQuestionLiveEntity.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(videoQuestionLiveEntity.voiceType)) {
                     getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.voiceType,

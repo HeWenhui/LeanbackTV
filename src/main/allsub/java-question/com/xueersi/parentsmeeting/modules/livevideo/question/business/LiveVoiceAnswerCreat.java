@@ -88,7 +88,8 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         CreateAnswerReslutEntity createAnswerReslutEntity = new CreateAnswerReslutEntity();
         boolean isSuccess = false;
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-        if (LiveVideoConfig.isNewArts) {
+        if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
+            entity.setNewArt(true);
             boolean smallEnglish = false;
             if (answerRightResultVoice instanceof NewArtsAnswerRightResultVoice) {
                 NewArtsAnswerRightResultVoice artsAnswerRightResultVoice = (NewArtsAnswerRightResultVoice) answerRightResultVoice;
@@ -121,6 +122,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 }
             }
         } else {
+            entity.setNewArt(false);
             if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
                 if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
                     answerRightResultVoice.initSelectAnswerRightResultVoice(entity);

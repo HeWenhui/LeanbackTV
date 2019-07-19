@@ -133,7 +133,7 @@ public class LectureLivePlayBackBll extends BaseBll {
         }
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        mCourseHttpManager.saveTestRecord(myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
+        mCourseHttpManager.saveTestRecord(questionEntity.isNewArtsH5Courseware(),myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
                 liveId, livePlayType, voice, isRight, new HttpCallBack(dataLoadEntity) {
 
                     @Override
@@ -166,7 +166,7 @@ public class LectureLivePlayBackBll extends BaseBll {
                                      double voiceTime, boolean isRight, final AbstractBusinessDataCallBack callBack) {
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        mCourseHttpManager.sumitCourseWareH5(myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
+        mCourseHttpManager.sumitCourseWareH5(questionEntity.isNewArtsH5Courseware(),myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
                 liveId, isSubmit, type, voiceTime, isRight, new HttpCallBack(dataLoadEntity) {
 
                     @Override
@@ -193,45 +193,45 @@ public class LectureLivePlayBackBll extends BaseBll {
                 });
     }
 
-    /**
-     * 上传视频互动题答案
-     *
-     * @param dataLoadEntity
-     * @param sectionId
-     */
-    public void saveQuestionResult(final DataLoadEntity dataLoadEntity, final String srcType, final String sectionId,
-                                   final String result,
-                                   final String testDay, final String liveId, final int livePlayType) {
-        // 从网络更新数据库数据
-        if (!NetWorkHelper.isNetworkAvailable(mContext)) {
-            postDataLoadEvent(dataLoadEntity.webDataError());
-            EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
-            return;
-        }
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        // 网络加载数据
-        mCourseHttpManager.saveTestRecord(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
-                liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        VideoResultEntity entity = mCourseHttpResponseParser
-                                .parseQuestionAnswer(responseEntity, false);
-                        isEmpty(entity, dataLoadEntity);
-                        EventBus.getDefault().post(new PlaybackVideoEvent.OnAnswerReslut(entity));
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        XESToastUtils.showToast(mContext, msg);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
-                    }
-                });
-    }
+//    /**
+//     * 上传视频互动题答案
+//     *
+//     * @param dataLoadEntity
+//     * @param sectionId
+//     */
+//    public void saveQuestionResult(final DataLoadEntity dataLoadEntity, final String srcType, final String sectionId,
+//                                   final String result,
+//                                   final String testDay, final String liveId, final int livePlayType) {
+//        // 从网络更新数据库数据
+//        if (!NetWorkHelper.isNetworkAvailable(mContext)) {
+//            postDataLoadEvent(dataLoadEntity.webDataError());
+//            EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
+//            return;
+//        }
+//        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        // 网络加载数据
+//        mCourseHttpManager.saveTestRecord(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
+//                liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {
+//
+//                    @Override
+//                    public void onPmSuccess(ResponseEntity responseEntity) {
+//                        VideoResultEntity entity = mCourseHttpResponseParser
+//                                .parseQuestionAnswer(responseEntity, false);
+//                        isEmpty(entity, dataLoadEntity);
+//                        EventBus.getDefault().post(new PlaybackVideoEvent.OnAnswerReslut(entity));
+//                    }
+//
+//                    @Override
+//                    public void onPmFailure(Throwable error, String msg) {
+//                        XESToastUtils.showToast(mContext, msg);
+//                    }
+//
+//                    @Override
+//                    public void onPmError(ResponseEntity responseEntity) {
+//                        XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+//                    }
+//                });
+   // }
 
     /**
      * 直播课直播回放得到金币

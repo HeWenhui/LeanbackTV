@@ -9,9 +9,12 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameEmptyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
@@ -20,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.ChineseAiSubje
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeakChineseCoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
  * Created by linyuqiang on 2018/7/26.
@@ -30,6 +34,8 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
     LivePagerBack livePagerBack;
     private LiveGetInfo liveGetInfo;
     private int isArts;
+
+    private boolean isFirst = true;
 
     public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
         this.liveGetInfo = liveGetInfo;
@@ -223,8 +229,12 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                         long before = System.currentTimeMillis();
                         BaseEnglishH5CoursewarePager h5CoursewarePager = null;
                         String type = videoQuestionH5Entity.type;
-                        if (!LiveQueConfig.isGroupGame(type)) {
+                        if (LiveQueConfig.isGroupGame(type)) {
+                            GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, true, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+                            groupGameMultNativePager.setLivePagerBack(livePagerBack);
+                            return groupGameMultNativePager;
 
+                        } else {
                             CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                     videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", isArts, false);
                             coursewareNativePager.setLivePagerBack(livePagerBack);
@@ -268,22 +278,22 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                     }
                     String educationstage = liveGetInfo.getEducationStage();
                     videoQuestionH5Entity.setEducationstage(educationstage);
-                }
-//                else if (isArts == LiveVideoSAConfig.ART_EN) {
-//                    String type = videoQuestionH5Entity.type;
-//                    if (LiveQueConfig.isGroupGame(type)) {
-//                        BaseEnglishH5CoursewarePager h5CoursewarePager = createGame(context, videoQuestionH5Entity, onH5ResultClose);
-//                        return h5CoursewarePager;
-//                    }
-//                }
+                } else if (isArts == LiveVideoSAConfig.ART_EN) {
+                    String type = videoQuestionH5Entity.type;
+                    if (LiveQueConfig.isGroupGame(type)) {
+                        GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, true, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+                        groupGameMultNativePager.setLivePagerBack(livePagerBack);
+                        return groupGameMultNativePager;
+
+                    }
                 }
             }
+        }
             EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                     videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
                     , isArts, false);
             h5CoursewarePager.setLivePagerBack(livePagerBack);
             return h5CoursewarePager;
         }
-
 
     }

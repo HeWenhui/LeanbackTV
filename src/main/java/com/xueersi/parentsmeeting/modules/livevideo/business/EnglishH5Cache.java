@@ -390,6 +390,12 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         logger.d("onDownloadFailed(mUrls):url=" + url);
 //                        XESToastUtils.showToast(context, "下载文科资源包失败");
                     }
+
+                    @Override
+                    protected void onDownloadFailed(Exception e) {
+                        logger.d("onDownloadFailed " + e.getMessage());
+                        super.onDownloadFailed(e);
+                    }
                 });
             } else {
                 logger.d("fileIsExists(mtexts):fileName=" + url);
@@ -471,6 +477,11 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                             protected void onDownloadFailed() {
                                 logger.d("onDownloadFailed(mtexts zip):fileName=" + fileName);
 //                            XESToastUtils.showToast(context, "下载字体包失败");
+                            }
+                            @Override
+                            protected void onDownloadFailed(Exception e) {
+                                logger.d("onDownloadFailed " + e);
+                                super.onDownloadFailed(e);
                             }
                         });
                     } else {

@@ -36,6 +36,6 @@ public interface SpeechEvalAction {
 
     void onSpeechSuccess(String num);
 
-    void speechIsAnswered(String num, AbstractBusinessDataCallBack callBack);
+    void speechIsAnswered(boolean isNewArt,String num, AbstractBusinessDataCallBack callBack);
 
 }
