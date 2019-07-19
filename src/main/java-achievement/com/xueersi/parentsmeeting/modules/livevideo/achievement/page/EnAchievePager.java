@@ -481,6 +481,7 @@ public class EnAchievePager extends LiveBasePager {
                     .app_livevideo_enteampk_xiaomubiao_progressbar_img_nor1));
 
         } else {
+            tvAchiveAimValue.setText("目标" + target);
             pgAchiveAim.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
                     .layerlst_livevideo_achieve_betterme_prog));
         }
