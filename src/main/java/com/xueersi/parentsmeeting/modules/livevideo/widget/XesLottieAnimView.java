@@ -96,7 +96,6 @@ public class XesLottieAnimView extends LottieAnimationView {
     }
 
     private void init() {
-
         this.addLottieOnCompositionLoadedListener(new LottieOnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(LottieComposition composition) {
@@ -109,7 +108,7 @@ public class XesLottieAnimView extends LottieAnimationView {
     /**
      * 绘制点击热区
      */
-    private void drawHotArea(Canvas canvas) {
+    private void drawClickArea(Canvas canvas) {
         initPaintInneed();
         if (mTargetClickRect != null) {
             canvas.drawRect(mTargetClickRect, mPaint);
@@ -174,28 +173,9 @@ public class XesLottieAnimView extends LottieAnimationView {
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if(debug){
-            drawHotArea(canvas);
-            drawCenterPt(canvas);
+            drawClickArea(canvas);
         }
         calculateClickRect(canvas);
-    }
-
-    /**
-     * 绘制目标图片中心点坐标
-     * @param canvas
-     */
-    private void drawCenterPt(Canvas canvas) {
-      if(mTextPaint == null){
-          mTextPaint = new Paint();
-          mTextPaint.setAntiAlias(true);
-          mTextPaint.setColor(Color.WHITE);
-          mTextPaint.setTextSize(28f);
-      }
-
-      if(targetImgCenterPoint != null){
-          String textStr = "("+targetImgCenterPoint.x/Utils.dpScale()+","+targetImgCenterPoint.y/Utils.dpScale()+")";
-          canvas.drawText(textStr,600,120,mTextPaint);
-      }
     }
 
     /**
@@ -259,12 +239,6 @@ public class XesLottieAnimView extends LottieAnimationView {
                 }
             }
         }
-    }
-
-
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
     }
 
 
@@ -386,34 +360,34 @@ public class XesLottieAnimView extends LottieAnimationView {
                     targetImgDesinHeight = imgMap.get(mTargetImgName).getHeight();
                     generateTargetImgStateRes(targetImgDesinWidth,targetImgDesinWidth);
                 }
-
                 Rect bounds = this.getComposition().getBounds();
                 //json 文件中的 画布尺寸
                 mWantedWidth = (int) (bounds.width() / Utils.dpScale());
                 mWantedHeight = (int) ((bounds.height()) / Utils.dpScale());
-               /* Log.e("ckTrac","====>mWantedWidth:"+ mWantedWidth
-                        +":mWantedHeight="+ mWantedHeight +":"+Utils.dpScale());*/
             }
         }
     }
 
 
-
+    /**
+     * 读取 设置的点击态图片资源，并缩放为 目标图片尺寸
+     * @param imgWidth :目标图片宽
+     * @param imgHeight :目标图片高
+     */
     private void generateTargetImgStateRes(int imgWidth, int imgHeight) {
-
         if(imgWidth > 0 && imgHeight > 0){
             if(mTargetImgClickResId != 0){
+                BitmapFactory.Options options = new BitmapFactory.Options();
                 targetBitmapPres = BitmapFactory.decodeResource(getResources(),mTargetImgClickResId);
             }
-
             if(mTargetImgNorResId != 0){
                 targetBitmapNor = BitmapFactory.decodeResource(getResources(), mTargetImgNorResId);
             }
 
+            //缩放到目标图片尺寸
             if(targetBitmapPres != null){
                 targetBitmapPres = Bitmap.createScaledBitmap(targetBitmapPres,imgWidth,imgHeight,true);
             }
-
             if(targetBitmapNor != null){
                 targetBitmapNor = Bitmap.createScaledBitmap(targetBitmapNor,imgWidth,imgHeight,true);
             }
@@ -435,8 +409,8 @@ public class XesLottieAnimView extends LottieAnimationView {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
+                    updateTargeImgArea(STATE_NOR);
                     if (postionInTargetImgArea(event)) {
-                        updateTargeImgArea(STATE_NOR);
                         if (mImgClickListener != null) {
                             mImgClickListener.onImgClick();
                         }
@@ -455,7 +429,6 @@ public class XesLottieAnimView extends LottieAnimationView {
         } else {
             return super.onTouchEvent(event);
         }
-
     }
 
     /**
