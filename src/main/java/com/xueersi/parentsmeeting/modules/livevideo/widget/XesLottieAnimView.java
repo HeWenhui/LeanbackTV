@@ -10,10 +10,13 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.animation.Animation;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
@@ -33,8 +36,8 @@ import java.util.Map;
 
 /**
  * lottieAnim 封装 支持区域点击
- *  （注：发现某些 动画元素 真实显示位置信息 同 json中解析获取到的不一直(因为动效有父级的原因)
- *  ，导致点击热区计算误差，需和动效老师沟通能进行交互的元素 不能有父级（位置信息参考 画布左上角））
+ * （注：发现某些 动画元素 真实显示位置信息 同 json中解析获取到的不一直(因为动效有父级的原因)
+ * ，导致点击热区计算误差，需和动效老师沟通能进行交互的元素 不能有父级（位置信息参考 画布左上角））
  *
  * @author chekun
  * created  at 2019/7/19 14:03
@@ -75,7 +78,9 @@ public class XesLottieAnimView extends LottieAnimationView {
     private int mTargetImgNorResId;
     private int mTargetImgClickResId;
 
-    /**动画脚本是否加载完毕**/
+    /**
+     * 动画脚本是否加载完毕
+     **/
     private boolean lottieCompostionLoaded;
 
     public XesLottieAnimView(Context context) {
@@ -88,9 +93,9 @@ public class XesLottieAnimView extends LottieAnimationView {
 
     public XesLottieAnimView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.XesLottieAnimView,defStyleAttr,0);
-        mTargetImgNorResId = array.getResourceId(R.styleable.XesLottieAnimView_nor_img_res,0);
-        mTargetImgClickResId = array.getResourceId(R.styleable.XesLottieAnimView_click_img_res,0);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.XesLottieAnimView, defStyleAttr, 0);
+        mTargetImgNorResId = array.getResourceId(R.styleable.XesLottieAnimView_nor_img_res, 0);
+        mTargetImgClickResId = array.getResourceId(R.styleable.XesLottieAnimView_click_img_res, 0);
         array.recycle();
         init();
     }
@@ -100,9 +105,66 @@ public class XesLottieAnimView extends LottieAnimationView {
             @Override
             public void onCompositionLoaded(LottieComposition composition) {
                 lottieCompostionLoaded = true;
+                //Log.e("ckTrac", "=====>onCompositionLoaded");
+                resetInfo();
                 initTragetImgClickInfo();
             }
         });
+    }
+
+    @Override
+    public void setAnimation(int rawRes) {
+        super.setAnimation(rawRes);
+        lottieCompostionLoaded = false;
+    }
+
+    @Override
+    public void setAnimation(String assetName) {
+        super.setAnimation(assetName);
+        lottieCompostionLoaded = false;
+    }
+
+    @Override
+    public void setAnimation(JsonReader reader, @Nullable String cacheKey) {
+        super.setAnimation(reader, cacheKey);
+        lottieCompostionLoaded = false;
+
+    }
+
+    @Override
+    public void setAnimationFromJson(String jsonString, @Nullable String cacheKey) {
+        super.setAnimationFromJson(jsonString, cacheKey);
+        lottieCompostionLoaded = false;
+
+    }
+
+    @Override
+    public void setAnimationFromUrl(String url) {
+        super.setAnimationFromUrl(url);
+        lottieCompostionLoaded = false;
+
+    }
+
+    @Override
+    public void setAnimationFromJson(String jsonString) {
+        super.setAnimationFromJson(jsonString);
+        lottieCompostionLoaded = false;
+    }
+
+    private void resetInfo() {
+        mTargetImgState = STATE_NOR;
+        areaClickInfoInited = false;
+        if (targetBitmapNor != null) {
+            targetBitmapNor.recycle();
+            targetBitmapNor = null;
+        }
+
+        if (targetBitmapPres != null) {
+            targetBitmapPres.recycle();
+            targetBitmapPres = null;
+        }
+        targetImgDesinWidth = 0;
+        targetImgDesinHeight = 0;
     }
 
     /**
@@ -126,6 +188,7 @@ public class XesLottieAnimView extends LottieAnimationView {
 
     /**
      * 是否开启调试模式
+     *
      * @param debug
      */
     public void setDebug(boolean debug) {
@@ -153,26 +216,24 @@ public class XesLottieAnimView extends LottieAnimationView {
                 imgName = imgName;
             }
             //设置新目标图片时 需重新 初始化位置信息
-            if(!imgName.equals(mTargetImgName)){
-                areaClickInfoInited = false;
+            if (!imgName.equals(mTargetImgName)) {
                 mTargetImgName = imgName;
-                targetImgDesinWidth = 0;
-                targetImgDesinHeight =0;
-                if(lottieCompostionLoaded){
+                if (lottieCompostionLoaded) {
+                    resetInfo();
                     initTragetImgClickInfo();
                 }
                 //刷新
                 invalidate();
             }
         }
-           mImgClickListener = listener;
+        mImgClickListener = listener;
     }
 
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        if(debug){
+        if (debug) {
             drawClickArea(canvas);
         }
         calculateClickRect(canvas);
@@ -228,11 +289,11 @@ public class XesLottieAnimView extends LottieAnimationView {
                     float imgWidht = targetImgDesinWidth;
                     float imgHeight = targetImgDesinHeight;
 
-                    imgWidht =  imgWidht  * realScale;
+                    imgWidht = imgWidht * realScale;
                     imgHeight = imgHeight * realScale;
 
                     mTargetClickRect.left = centerX - imgWidht / 2.0f;
-                    mTargetClickRect.top  =  centerY- imgHeight/2.0f;
+                    mTargetClickRect.top = centerY - imgHeight / 2.0f;
                     mTargetClickRect.right = mTargetClickRect.left + imgWidht;
                     mTargetClickRect.bottom = mTargetClickRect.top + imgHeight;
                     //Log.e("ckTrac","=====>clickArea:"+mTargetClickRect);
@@ -247,7 +308,7 @@ public class XesLottieAnimView extends LottieAnimationView {
         super.onSizeChanged(w, h, oldw, oldh);
         if (w != oldw || h != oldh) {
             areaClickInfoInited = false;
-           // Log.e("ckTrac", "====>onSizeChanged");
+            // Log.e("ckTrac", "====>onSizeChanged");
         }
     }
 
@@ -258,11 +319,27 @@ public class XesLottieAnimView extends LottieAnimationView {
         if (!TextUtils.isEmpty(mTargetImgName) && mImgClickListener != null) {
             // step 1 获取目标图片尺寸信息
             getDesinSizeInfo();
+            // 生成点击态图片资源
+            generateTargetImgStateRes(targetImgDesinWidth, targetImgDesinHeight);
             // step 2 找到目标图片对应的layer 信息
             Layer targetLayer = findTargetLayer();
             // step 3  读取layer中的 动画结束Position(中心位置)
             targetImgCenterPoint = findTargetImgEndPoint(targetLayer);
             //Log.e("ckTrac","=====>initTragetImgClickInfo:targetImgCenterPoint="+targetImgCenterPoint);
+        }
+    }
+
+    /**
+     * 设置目标图片点击态资源
+     *
+     * @param norResId  非点击态资源图片id
+     * @param presResId 点击态资源图片id
+     */
+    public void setTargeImgRes(int norResId, int presResId) {
+           mTargetImgClickResId = presResId;
+           mTargetImgNorResId = norResId;
+        if (targetImgDesinWidth != 0 && targetImgDesinHeight != 0) {
+            generateTargetImgStateRes(targetImgDesinWidth, targetImgDesinHeight);
         }
     }
 
@@ -358,7 +435,6 @@ public class XesLottieAnimView extends LottieAnimationView {
                 if (imgMap != null && imgMap.size() > 0) {
                     targetImgDesinWidth = imgMap.get(mTargetImgName).getWidth();
                     targetImgDesinHeight = imgMap.get(mTargetImgName).getHeight();
-                    generateTargetImgStateRes(targetImgDesinWidth,targetImgDesinWidth);
                 }
                 Rect bounds = this.getComposition().getBounds();
                 //json 文件中的 画布尺寸
@@ -371,25 +447,26 @@ public class XesLottieAnimView extends LottieAnimationView {
 
     /**
      * 读取 设置的点击态图片资源，并缩放为 目标图片尺寸
-     * @param imgWidth :目标图片宽
+     *
+     * @param imgWidth  :目标图片宽
      * @param imgHeight :目标图片高
      */
     private void generateTargetImgStateRes(int imgWidth, int imgHeight) {
-        if(imgWidth > 0 && imgHeight > 0){
-            if(mTargetImgClickResId != 0){
+        if (imgWidth > 0 && imgHeight > 0) {
+            if (mTargetImgClickResId != 0) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
-                targetBitmapPres = BitmapFactory.decodeResource(getResources(),mTargetImgClickResId);
+                targetBitmapPres = BitmapFactory.decodeResource(getResources(), mTargetImgClickResId);
             }
-            if(mTargetImgNorResId != 0){
+            if (mTargetImgNorResId != 0) {
                 targetBitmapNor = BitmapFactory.decodeResource(getResources(), mTargetImgNorResId);
             }
 
             //缩放到目标图片尺寸
-            if(targetBitmapPres != null){
-                targetBitmapPres = Bitmap.createScaledBitmap(targetBitmapPres,imgWidth,imgHeight,true);
+            if (targetBitmapPres != null) {
+                targetBitmapPres = Bitmap.createScaledBitmap(targetBitmapPres, imgWidth, imgHeight, true);
             }
-            if(targetBitmapNor != null){
-                targetBitmapNor = Bitmap.createScaledBitmap(targetBitmapNor,imgWidth,imgHeight,true);
+            if (targetBitmapNor != null) {
+                targetBitmapNor = Bitmap.createScaledBitmap(targetBitmapNor, imgWidth, imgHeight, true);
             }
         }
     }
@@ -433,6 +510,7 @@ public class XesLottieAnimView extends LottieAnimationView {
 
     /**
      * 更新目标区域点击态的绘制
+     *
      * @param statePress
      */
     private void updateTargeImgArea(int state) {
@@ -460,12 +538,12 @@ public class XesLottieAnimView extends LottieAnimationView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if(targetBitmapNor != null){
+        if (targetBitmapNor != null) {
             targetBitmapNor.recycle();
             targetBitmapNor = null;
         }
 
-        if(targetBitmapPres != null){
+        if (targetBitmapPres != null) {
             targetBitmapPres.recycle();
             targetBitmapPres = null;
         }
