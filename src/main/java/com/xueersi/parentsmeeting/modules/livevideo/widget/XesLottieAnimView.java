@@ -61,7 +61,7 @@ public class XesLottieAnimView extends LottieAnimationView {
      **/
     private int mWantedWidth;
     private int mWantedHeight;
-
+    /**是否开启调试模式(绘制点击热区)**/
     private boolean debug;
     /**
      * 目标图片区域状态
