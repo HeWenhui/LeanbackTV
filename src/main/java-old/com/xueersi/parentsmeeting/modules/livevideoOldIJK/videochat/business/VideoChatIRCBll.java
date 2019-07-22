@@ -95,8 +95,8 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (videoChatAction != null) {
             videoChatAction.onDestroy();
         }

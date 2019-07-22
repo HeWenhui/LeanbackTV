@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -69,7 +70,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
             return new HalfBodyLiveVideoFragement();
         } else if (pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
             //半身直播
-            return new PrimaryClassVideoFragment();
+            return (LiveVideoFragmentBase) Fragment.instantiate(this,"com.xueersi.parentsmeeting.modules.livevideo.fragment.PrimaryClassVideoFragment");
         } else {
             return new LiveVideoFragment();
         }

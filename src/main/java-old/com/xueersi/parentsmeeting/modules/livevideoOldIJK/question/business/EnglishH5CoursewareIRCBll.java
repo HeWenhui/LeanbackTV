@@ -1067,8 +1067,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (englishH5CoursewareBll != null) {
             englishH5CoursewareBll.destroy();
         }

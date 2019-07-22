@@ -21,7 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageStandBll;
 import com.xueersi.ui.dataload.DataLoadEntity;

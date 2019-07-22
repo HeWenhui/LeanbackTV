@@ -47,7 +47,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -98,16 +97,14 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     private BaseLiveMediaControllerBottom lectureMediaControllerBottom;
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     private ImageView ivExpressionCancle;
-    private QuestionBll questionBll;
     /** 横屏的时候，也添加竖屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
 
-    public LiveMessageLandPager(Context context, QuestionBll questionBll, BaseLiveMediaControllerBottom
+    public LiveMessageLandPager(Context context, BaseLiveMediaControllerBottom
             lectureMediaControllerBottom,
                                 ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
         this.lectureMediaControllerBottom = lectureMediaControllerBottom;
-        this.questionBll = questionBll;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         nameColors[2] = Color.WHITE;
@@ -232,7 +229,6 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                     onTitleShow(true);
                 }
                 keyboardShowing = isShowing;
-                questionBll.onKeyboardShowing(isShowing);
                 if (keyboardShowing) {
                     btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
                 }

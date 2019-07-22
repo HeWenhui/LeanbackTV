@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.TextView;
 
 public class ViewUtil {
 
@@ -31,5 +32,11 @@ public class ViewUtil {
         loc[0] = left;
         loc[1] = top;
         return loc;
+    }
+
+    public static void setText(TextView textView, String text) {
+        if (!("" + text).equals("" + textView.getText())) {
+            textView.setText(text);
+        }
     }
 }

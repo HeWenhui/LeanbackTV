@@ -23,8 +23,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.Evalua
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.PrimaryChineseEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.PrimaryScienceEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.SmallEnglishEvaluateTeacherPager;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -37,12 +39,17 @@ public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.paren
     private RelativeLayout rlLiveMessageContent;
     private LiveHttpManager mHttpManager;
     private int reSubmitCount = 0;
-    LiveVideoFragment liveFragment;
+    LivePlayAction livePlayAction;
     EvaluateResponseParser mParser;
 
     public EvaluateTeacherBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+    }
 
+    @Override
+    public void onCreate(HashMap<String, Object> data) {
+        super.onCreate(data);
+        livePlayAction = getInstance(LivePlayAction.class);
     }
 
     @Override
@@ -106,7 +113,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.paren
         if ((mGetInfo.getEvaluateTeacherEntity() != null && System.currentTimeMillis() / 1000 > mGetInfo.getEvaluateTeacherEntity().getEvaluateTime())) {
             logger.i("showEvaluateTeacher");
             logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mGetInfo.getEvaluateTeacherEntity().getEvaluateTime());
-            liveFragment.stopPlayer();
+            livePlayAction.stopPlayer();
             mLiveBll.onIRCmessageDestory();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -150,10 +157,6 @@ public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.paren
     @Override
     public void close() {
         quitLive();
-    }
-
-    public void setLiveFragment(LiveVideoFragment liveFragment) {
-        this.liveFragment = liveFragment;
     }
 
     private void quitLive() {

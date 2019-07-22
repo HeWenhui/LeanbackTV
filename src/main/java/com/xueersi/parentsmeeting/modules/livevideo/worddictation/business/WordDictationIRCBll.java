@@ -145,10 +145,10 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (wordDictationAction != null) {
-            wordDictationAction.onDestory();
+            wordDictationAction.onDestroy();
         }
     }
 }

@@ -198,7 +198,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
         mRootView.post(new Runnable() {
             @Override
             public void run() {
-                onDestory();
+                onDestroy();
             }
         });
     }
@@ -326,7 +326,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         if (artsPraisePager != null) {
             artsPraisePager.onDestroy();
         }

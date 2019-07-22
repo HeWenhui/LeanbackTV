@@ -67,7 +67,7 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
     @Override
     public void initView() {
         super.initView();
-        rollCallBll.initView(mRootView);
+//        rollCallBll.initView(mRootView);
     }
 
     @Override

@@ -5,13 +5,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 
-import com.xueersi.common.http.CommonRequestCallBack;
-import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -21,17 +18,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
-import org.xutils.xutils.ex.HttpException;
-
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 /**
  * Created by linyuqiang on 2018/6/23.
@@ -53,13 +42,9 @@ public class LiveGetPlayServer {
     private LiveGetInfo mGetInfo;
     private PlayServerEntity mServer;
     private Callback.Cancelable mGetPlayServerCancle;
-    VideoAction mVideoAction;
-    LiveHttpManager mHttpManager;
-    LiveHttpResponseParser mHttpResponseParser;
+    private VideoAction mVideoAction;
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
-
-    private LiveVideoBll mLivevideoBll;
+    private LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     /** 是否使用PS的播放器 */
 //    private int isPSPlayer = 1;
@@ -69,19 +54,10 @@ public class LiveGetPlayServer {
         this.mLiveType = mLiveType;
         this.mGetInfo = mGetInfo;
         this.mLiveTopic = liveTopic;
-        this.mLivevideoBll = mLivevideoBll;
         mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         logger.d("LiveGetPlayServer:netWorkType=" + netWorkType);
-    }
-
-    public void setHttpManager(LiveHttpManager httpManager) {
-        this.mHttpManager = httpManager;
-    }
-
-    public void setHttpResponseParser(LiveHttpResponseParser httpResponseParser) {
-        this.mHttpResponseParser = httpResponseParser;
     }
 
     public void setVideoAction(VideoAction mVideoAction) {
@@ -98,8 +74,6 @@ public class LiveGetPlayServer {
     public void liveGetPlayServer(boolean modechange) {
         liveGetPlayServer(mLiveTopic.getMode(), modechange);
     }
-
-    private long lastGetPlayServer;
 
     /**
      * 1. {@link LiveBll2#onGetInfoSuccess(LiveGetInfo)}
@@ -158,22 +132,11 @@ public class LiveGetPlayServer {
             mGetPlayServerCancle.cancel();
             mGetPlayServerCancle = null;
         }
-        final URLDNS urldns = new URLDNS();
-        if (!MediaPlayer.getIsNewIJK()) {
-             
-        } else {
-            if (mVideoAction instanceof LiveFragmentBase) {
-                ((LiveFragmentBase) mVideoAction).psRePlay(modechange);
-            }
-            if (mVideoAction instanceof AuditClassLiveActivity) {
-                ((AuditClassLiveActivity) mVideoAction).rePlay(modechange);
-            }
-//            if (mVideoAction instanceof LectureLiveVideoFragment) {
-//                ((LectureLiveVideoFragment) mVideoAction).psRePlay(modechange);
-//            }
-//            if(mVideoAction instanceof )
-//            mVideoAction.onLiveStart(null, mLiveTopic, modechange);
-//            mLivevideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+        if (mVideoAction instanceof LiveFragmentBase) {
+            ((LiveFragmentBase) mVideoAction).psRePlay(modechange);
+        }
+        if (mVideoAction instanceof AuditClassLiveActivity) {
+            ((AuditClassLiveActivity) mVideoAction).rePlay(modechange);
         }
     }
 

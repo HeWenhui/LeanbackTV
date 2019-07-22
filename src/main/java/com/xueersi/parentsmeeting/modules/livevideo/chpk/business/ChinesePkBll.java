@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.chpk.business;
 
 import android.app.Activity;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -68,7 +69,9 @@ import okhttp3.Call;
  * 战队PK 相关业务处理
  */
 public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicAction {
-
+    static{
+        Log.d("ChinesePkBll","ChinesePkBll:static");
+    }
 
     public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
     /**
@@ -156,6 +159,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     private void attachToRootView() {
         initData();
         rlTeamPkContent = new RelativeLayout(mActivity);
+        rlTeamPkContent.setId(R.id.rl_livevideo_content_teampk);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         addView(rlTeamPkContent, params);
@@ -678,9 +682,9 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
-        logger.e("======>onDestory");
+    public void onDestroy() {
+        super.onDestroy();
+        logger.e("======>onDestroy");
         if (mFocusPager != null) {
             mFocusPager.onDestroy();
             mFocusPager = null;

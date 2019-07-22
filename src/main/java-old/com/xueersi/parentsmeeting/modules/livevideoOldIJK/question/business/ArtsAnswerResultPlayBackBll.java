@@ -52,10 +52,10 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if(mAnswerResultBll != null){
-            mAnswerResultBll.onDestory();
+            mAnswerResultBll.onDestroy();
         }
         EventBus.getDefault().unregister(this);
     }

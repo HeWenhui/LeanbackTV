@@ -117,9 +117,9 @@ public class LiveBackBaseBll extends BaseBll {
     }
 
     /**
-     * activity onDestory
+     * activity onDestroy
      */
-    public void onDestory() {
+    public void onDestroy() {
 
     }
 

@@ -205,8 +205,8 @@ public class StandExperienceRecommondBll extends StandExperienceEventBaseBll {
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         logger.i("移出EventBus");
         EventBus.getDefault().unregister(this);
         removeView();

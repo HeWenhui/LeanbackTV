@@ -38,10 +38,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowBll;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowRoutePager;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
@@ -166,6 +164,19 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Override
     protected void onBusinessCreate() {
         super.onBusinessCreate();
+        bottomContent.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+            @Override
+            public void onChildViewAdded(View parent, View child) {
+                if (child.getId() == View.NO_ID) {
+                    logger.d("onChildViewAdded:child=" + child);
+                }
+            }
+
+            @Override
+            public void onChildViewRemoved(View parent, View child) {
+
+            }
+        });
         List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.initViewF(rlMessageBottom, bottomContent, mIsLand, mContentView);
@@ -203,89 +214,57 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      * @param activity
      */
     protected void addBusiness(Activity activity) {
+        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerTop.class, baseLiveMediaControllerTop);
+        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
+        ProxUtil.getProxUtil().put(activity, LivePlayAction.class, this);
         //是文科
         ArrayList<BllConfigEntity> bllConfigEntities;
-        LiveIRCMessageBll liveIRCMessageBll;
-        if (isArts == 1) {
+        if (isArts == LiveVideoSAConfig.ART_EN) {
             bllConfigEntities = AllBllConfig.getLiveBusinessArts();
-            liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
-            liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
-            mLiveBll.addBusinessBll(liveIRCMessageBll);
-            VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-            videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            videoChatIRCBll.setLiveFragmentBase(this);
-            mLiveBll.addBusinessBll(videoChatIRCBll);
-        } else if (isArts == 2) {
+        } else if (isArts == LiveVideoSAConfig.ART_CH) {
             bllConfigEntities = AllBllConfig.getLiveBusinessCn();
-            liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
-            liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
-            mLiveBll.addBusinessBll(liveIRCMessageBll);
-            VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-            videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            videoChatIRCBll.setLiveFragmentBase(this);
-            mLiveBll.addBusinessBll(videoChatIRCBll);
         } else {
             bllConfigEntities = AllBllConfig.getLiveBusinessScience(activity.getIntent());
-            liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
-            liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
-            mLiveBll.addBusinessBll(liveIRCMessageBll);
-
-            int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
-            if (allowLinkMicNew == 1) {
-                VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
-                videoAudioChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-                videoAudioChatIRCBll.setLiveFragmentBase(this);
-                mLiveBll.addBusinessBll(videoAudioChatIRCBll);
-            } else {
-                VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-                videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-                videoChatIRCBll.setLiveFragmentBase(this);
-                mLiveBll.addBusinessBll(videoChatIRCBll);
-            }
         }
-        EvaluateTeacherBll evaluateTeacherBll = new EvaluateTeacherBll(activity, mLiveBll);
-        evaluateTeacherBll.setLiveFragment(this);
-        mLiveBll.addBusinessBll(evaluateTeacherBll);
         if ((pattern == LiveVideoConfig.LIVE_PATTERN_COMMON)) {
             addSwitchFlowBll();
             initSwitchFlowListener();
         }
-        mLiveBll.setTeacherAction(liveIRCMessageBll);
         for (int i = 0; i < bllConfigEntities.size(); i++) {
-            String className = "";
-            try {
-                BllConfigEntity bllConfigEntity = bllConfigEntities.get(i);
-                className = bllConfigEntity.className;
-                Class<?> c = Class.forName(className);
-                Class<? extends LiveBaseBll> clazz;
-                if (BusinessCreat.class.isAssignableFrom(c)) {
-                    Class<? extends BusinessCreat> creatClazz = (Class<? extends BusinessCreat>) c;
-                    BusinessCreat businessCreat = creatClazz.newInstance();
-                    clazz = businessCreat.getClassName(activity.getIntent());
-                    if (clazz == null) {
-                        continue;
-                    }
-                } else if (LiveBaseBll.class.isAssignableFrom(c)) {
-                    clazz = (Class<? extends LiveBaseBll>) c;
-                } else {
-                    continue;
-                }
-                Constructor<? extends LiveBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBll2.class});
-                LiveBaseBll liveBaseBll = constructor.newInstance(activity, mLiveBll);
+            LiveBaseBll liveBaseBll = creatBll(bllConfigEntities.get(i));
+            if (liveBaseBll != null) {
                 mLiveBll.addBusinessBll(liveBaseBll);
-                logger.d("addBusiness:business=" + className);
-            } catch (Exception e) {
-                logger.d("addBusiness:business=" + className, e);
-                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
-        FeedbackTeacherBll feedbackTeacherBll = new FeedbackTeacherBll(activity, mLiveBll);
-        feedbackTeacherBll.setLiveFragment(this);
+    }
 
-        mLiveBll.addBusinessBll(feedbackTeacherBll);
+    protected LiveBaseBll creatBll(BllConfigEntity bllConfigEntity) {
+        String className = "";
+        try {
+            className = bllConfigEntity.className;
+            Class<?> c = Class.forName(className);
+            Class<? extends LiveBaseBll> clazz;
+            if (BusinessCreat.class.isAssignableFrom(c)) {
+                Class<? extends BusinessCreat> creatClazz = (Class<? extends BusinessCreat>) c;
+                BusinessCreat businessCreat = creatClazz.newInstance();
+                clazz = businessCreat.getClassName(activity.getIntent());
+                if (clazz == null) {
+                    return null;
+                }
+            } else if (LiveBaseBll.class.isAssignableFrom(c)) {
+                clazz = (Class<? extends LiveBaseBll>) c;
+            } else {
+                return null;
+            }
+            Constructor<? extends LiveBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBll2.class});
+            LiveBaseBll liveBaseBll = constructor.newInstance(activity, mLiveBll);
+            logger.d("creatBll:business=" + className);
+            return liveBaseBll;
+        } catch (Exception e) {
+            logger.d("creatBll:business=" + className, e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        return null;
     }
 
     /** 加载切流的Bll */

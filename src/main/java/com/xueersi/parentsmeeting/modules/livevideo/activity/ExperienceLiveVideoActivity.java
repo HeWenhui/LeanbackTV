@@ -29,6 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
@@ -57,6 +58,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
@@ -69,6 +71,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -86,10 +91,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -104,6 +105,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,7 +119,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom
         .MediaChildViewClick {
-    QuestionBll questionBll;
     LiveBackBll liveBackBll;
     private RelativeLayout rlLiveMessageContent;
     LiveMessageBll liveMessageBll;
@@ -733,7 +734,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private void initAllBll() {
 
         liveBackBll = new LiveBackBll(this, mVideoEntity);
-        questionBll = new QuestionBll(this, mVideoEntity.getStuCourseId());
         mLiveBll = new LiveBll(this, mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), EXP_LIVE_TYPE, 0);
 
         mLiveBll.setSendMsgListener(new MsgSendListener());
@@ -799,7 +799,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlLiveMessageContent, params);
         long before = System.currentTimeMillis();
-        mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom,
+        mLiveMessagePager = new LiveMessagePager(this, ums, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
         logger.d("initViewLive:time1=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
@@ -918,10 +918,14 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     }
 
     private void addBusiness(Activity activity) {
-        liveBackBll.addBusinessBll(new QuestionExperienceBll(activity, liveBackBll));
+        ArrayList<BllConfigEntity> bllConfigEntities = AllExperienceConfig.getExperienceBusiness();
+        for (int i = 0; i < bllConfigEntities.size(); i++) {
+            LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntities.get(i));
+            if (liveBaseBll != null) {
+                liveBackBll.addBusinessBll(liveBaseBll);
+            }
+        }
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
-        liveBackBll.addBusinessBll(new EnglishH5ExperienceBll(activity, liveBackBll));
-        liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));
         experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity, liveBackBll, false);
         experienceQuitFeedbackBll.setLiveVideo(this);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
@@ -929,6 +933,35 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         liveBackBll.addBusinessBll(experienceGuideBll);
         mPlayStatus = experienceGuideBll;
         liveBackBll.onCreate();
+    }
+
+    protected LiveBackBaseBll creatBll(BllConfigEntity bllConfigEntity) {
+        String className = "";
+        try {
+            className = bllConfigEntity.className;
+            Class<?> c = Class.forName(className);
+            Class<? extends LiveBackBaseBll> clazz;
+            if (BackBusinessCreat.class.isAssignableFrom(c)) {
+                Class<? extends BackBusinessCreat> creatClazz = (Class<? extends BackBusinessCreat>) c;
+                BackBusinessCreat businessCreat = creatClazz.newInstance();
+                clazz = businessCreat.getClassName(getIntent());
+                if (clazz == null) {
+                    return null;
+                }
+            } else if (LiveBackBaseBll.class.isAssignableFrom(c)) {
+                clazz = (Class<? extends LiveBackBaseBll>) c;
+            } else {
+                return null;
+            }
+            Constructor<? extends LiveBackBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBackBll.class});
+            LiveBackBaseBll liveBaseBll = constructor.newInstance(this, liveBackBll);
+            logger.d("creatBll:business=" + className);
+            return liveBaseBll;
+        } catch (Exception e) {
+            logger.d("creatBll:business=" + className, e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        return null;
     }
 
     public interface GetExperienceLiveMsgs {
@@ -1403,7 +1436,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_EXIT);
         ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_EXIT, logHashMap.getData());
         AppBll.getInstance().unRegisterAppEvent(this);
-        liveBackBll.onDestory();
+        liveBackBll.onDestroy();
         mLiveMessagePager = null;
         if (mIRCMessage != null) {
             mIRCMessage.setCallback(null);

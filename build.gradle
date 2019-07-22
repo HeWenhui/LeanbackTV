@@ -2,11 +2,53 @@ apply plugin: 'com.android.library'
 apply from: rootDir.absolutePath + '/buildscript/module_extra_config.gradle'
 apply from: rootDir.absolutePath + '/buildscript/module_upload_config.gradle'
 
+def static getAllSource(Object set) {
+    set.java.srcDirs += ['src/main/english/java-en_tcp']
+    set.java.srcDirs += ['src/main/allsub/java-roll_call']
+    set.res.srcDirs += ['src/main/allsub/res-roll_call']
+    set.java.srcDirs += ['src/main/allsub/java-question']
+    set.res.srcDirs += ['src/main/allsub/res-question']
+}
+
 //com.android.build.gradle.api.AndroidSourceSet set
-def getSecSource(Object set) {
+def static getSecSource(Object set) {
     print("getSecSource:set=" + set.getClass() + "--");
     set.java.srcDirs += ['src/main/secience/java-teampk']
-    set.java.srcDirs += ['src/main/secience/java-roll_call']
+    //集体发言
+    set.java.srcDirs += ['src/main/secience/java-collective_speech']
+    // java.srcDirs += ['src/main/secience/java-collective_speech_old']
+    set.res.srcDirs += ['src/main/secience/res-collective_speech']
+    //老师点赞
+    set.java.srcDirs += ['src/main/secience/java-teacher_praise']
+//  set.java.srcDirs += ['src/main/secience/java-teacher_praise_old']
+    set.res.srcDirs += ['src/main/secience/res-teacher_praise']
+    set.assets.srcDirs += ['src/main/secience/assets']
+    //小班体验
+//    set.java.srcDirs += ['src/main/secience/java-primary_class_old']
+    set.java.srcDirs += ['src/main/secience/java-primary_class']
+    set.res.srcDirs += ['src/main/secience/res-primary_class']
+    //小班体验
+    set.java.srcDirs += ['src/main/chinese/java-primary_class']
+    set.res.srcDirs += ['src/main/chinese/res-primary_class']
+}
+
+def static getCnSource(Object set) {
+    print("getCnSource:set=" + set.getClass() + "--");
+    //小班体验
+    set.java.srcDirs += ['src/main/secience/java-primary_class']
+    set.res.srcDirs += ['src/main/secience/res-primary_class']
+    set.java.srcDirs += ['src/main/chinese/java-primary_class']
+    set.res.srcDirs += ['src/main/chinese/res-primary_class']
+}
+
+def static getEngSource(Object set) {
+//    java.srcDirs += ['src/main/english/java-en_teampk_old']
+//    java.srcDirs += ['src/main/java-achievement_old']
+    set.java.srcDirs += ['src/main/java-en_teampk']
+    set.res.srcDirs += ['src/main/res-en_teampk']
+    set.java.srcDirs += ['src/main/java-achievement']
+    set.res.srcDirs += ['src/main/english/res-achievement']
+    set.assets.srcDirs += ['src/main/english/assets']
 }
 
 android {
@@ -18,34 +60,12 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
-            java.srcDirs += ['src/main/java-en_teampk']
-//            java.srcDirs += ['src/main/english/java-en_teampk_old']
-            res.srcDirs += ['src/main/res-en_teampk']
-            java.srcDirs += ['src/main/java-achievement']
-//            java.srcDirs += ['src/main/java-achievement_old']
-            res.srcDirs += ['src/main/res-achievement']
-            java.srcDirs += ['src/main/english/java-en_tcp']
-            assets.srcDirs += ['src/main/english/assets']
             java.srcDirs += ['src/main/java-core']
-            //集体发言
-            java.srcDirs += ['src/main/secience/java-collective_speech']
-//            java.srcDirs += ['src/main/secience/java-collective_speech_old']
-            res.srcDirs += ['src/main/secience/res-collective_speech']
-            //老师点赞
-            java.srcDirs += ['src/main/secience/java-teacher_praise']
-//            java.srcDirs += ['src/main/secience/java-teacher_praise_old']
-            res.srcDirs += ['src/main/secience/res-teacher_praise']
-            assets.srcDirs += ['src/main/secience/assets']
-            assets.srcDirs += ['src/main/live_assets']
-            //小班体验
-            java.srcDirs += ['src/main/chinese/java-primary_class']
-            java.srcDirs += ['src/main/secience/java-primary_class']
-//            java.srcDirs += ['src/main/secience/java-primary_class_old']
-            res.srcDirs += ['src/main/secience/res-primary_class']
-            res.srcDirs += ['src/main/chinese/res-primary_class']
-            //旧sdk
-//            java.srcDirs += ['src/main/java-old']
+//            assets.srcDirs += ['src/main/live_assets']
+            getAllSource(this.android.sourceSets.main);
             getSecSource(this.android.sourceSets.main);
+            getCnSource(this.android.sourceSets.main);
+            getEngSource(this.android.sourceSets.main);
         }
     }
     compileSdkVersion 26

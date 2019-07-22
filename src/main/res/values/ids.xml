@@ -268,6 +268,8 @@
     <item name="tv_livevideo_praise_sign" type="id" />
     <!--直播-互动题根布局-->
     <item name="rl_livevideo_content_question" type="id" />
+    <item name="rl_livevideo_content_result_question" type="id" />
+    <item name="rl_livevideo_content_result_courseware" type="id" />
     <!--直播-红包根布局-->
     <item name="rl_livevideo_content_readpackage" type="id" />
     <item name="rl_livevideo_redpackage_bg" type="id" />

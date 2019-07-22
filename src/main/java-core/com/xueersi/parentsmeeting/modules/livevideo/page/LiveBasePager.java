@@ -13,6 +13,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -33,10 +34,11 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected Handler mainHandler = new Handler(Looper.getMainLooper());
     /** pager创建时间 */
     protected long creattime;
-    protected int mState = LiveBasePagerState.INITIALIZING;
+    protected int mState = LiveActivityState.INITIALIZING;
 
     public LiveBasePager(Context context) {
-        super(context);
+        super(context, false);
+        mView = initView();
     }
 
     public BaseVideoQuestionEntity getBaseVideoQuestionEntity() {
@@ -54,7 +56,10 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
      * @param isNewView 是否初始化布局
      */
     public LiveBasePager(Context context, boolean isNewView) {
-        super(context, isNewView);
+        super(context, false);
+        if (isNewView) {
+            mView = initView();
+        }
     }
 
     /***
@@ -109,31 +114,31 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     @Override
     public void onStart() {
         super.onStart();
-        mState = LiveBasePagerState.STARTED;
+        mState = LiveActivityState.STARTED;
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mState = LiveBasePagerState.STOPPED;
+        mState = LiveActivityState.STOPPED;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mState = LiveBasePagerState.RESUMED;
+        mState = LiveActivityState.RESUMED;
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mState = LiveBasePagerState.STARTED;
+        mState = LiveActivityState.STARTED;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mState = LiveBasePagerState.INITIALIZING;
+        mState = LiveActivityState.INITIALIZING;
         if (mContext != null) {
             AllLiveBasePagerInter allLiveBasePagerInter = ProxUtil.getProxUtil().get(mContext, AllLiveBasePagerInter.class);
             if (allLiveBasePagerInter != null) {

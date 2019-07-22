@@ -13,17 +13,19 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FeedbackTeacherBll extends LiveBaseBll {
     RelativeLayout bottomContent;
-    LiveVideoFragment liveFragment;
+    LivePlayAction livePlayAction;
     FeedBackEntity mFeedBackEntity;
     LiveFeedBackPager pager = null;
     EvaluateResponseParser mParser;
@@ -33,6 +35,12 @@ public class FeedbackTeacherBll extends LiveBaseBll {
 
     public FeedbackTeacherBll(Activity context, String liveId, int liveType) {
         super(context, liveId, liveType);
+    }
+
+    @Override
+    public void onCreate(HashMap<String, Object> data) {
+        super.onCreate(data);
+        livePlayAction = getInstance(LivePlayAction.class);
     }
 
     @Override
@@ -89,10 +97,6 @@ public class FeedbackTeacherBll extends LiveBaseBll {
         }
     }
 
-    public void setLiveFragment(LiveVideoFragment liveFragment) {
-        this.liveFragment = liveFragment;
-    }
-
     public boolean showFeedbackPager() {
 //        if (pager != null && mFeedBackEntity != null) {
 
@@ -101,7 +105,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
             logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mFeedBackEntity
                     .getEvaluateTime());
 
-            liveFragment.stopPlayer();
+            livePlayAction.stopPlayer();
             mLiveBll.onIRCmessageDestory();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

@@ -10,6 +10,7 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -73,7 +74,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     private int goldNum;
 
 
-
     //统计埋点
     private Map<String, String> userLogMap = new HashMap<String, String>();
 
@@ -94,6 +94,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     public void attachToRootView() {
         rlPraiseContentView = new RelativeLayout(mContext);
+        rlPraiseContentView.setId(R.id.iv_livevideo_praise_interact_content1);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         params.leftMargin = LiveVideoPoint.getInstance().x2;
@@ -136,7 +137,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
             removeCallbacks(delayRemoveRunalbe);
             isOpen = true;
-            praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, contextLiveAndBackDebug,mGetInfo);
+            praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, contextLiveAndBackDebug, mGetInfo);
             rlPraiseContentView.removeAllViews();
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
@@ -301,7 +302,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         if (praiseInteractionPager != null) {
             praiseInteractionPager.onDestroy();
         }

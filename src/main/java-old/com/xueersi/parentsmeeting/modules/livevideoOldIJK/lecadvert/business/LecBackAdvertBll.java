@@ -103,7 +103,7 @@ public class LecBackAdvertBll {
         });
     }
 
-    void onDestory() {
+    void onDestroy() {
 
     }
 }

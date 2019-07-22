@@ -71,7 +71,7 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
     public void onDestroy() {
         super.onDestroy();
         if (liveStandFrameAnim != null) {
-            liveStandFrameAnim.onDestory();
+            liveStandFrameAnim.onDestroy();
         }
     }
 

@@ -165,8 +165,8 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (speechCollectiveBll != null) {
             speechCollectiveBll.stop();
         }

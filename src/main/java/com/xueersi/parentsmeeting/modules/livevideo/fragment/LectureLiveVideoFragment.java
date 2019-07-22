@@ -184,14 +184,9 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
     }
 
     protected void addBusiness(Activity activity) {
-        liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
-        liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-        liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
-        mLiveBll.addBusinessBll(liveIRCMessageBll);
-        mLiveBll.setTeacherAction(liveIRCMessageBll);
-
+        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerTop.class, baseLiveMediaControllerTop);
+        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
         ArrayList<BllConfigEntity> bllConfigEntities = AllBllConfig.getLiveBusinessLec();
-
         for (int i = 0; i < bllConfigEntities.size(); i++) {
             String className = "";
             try {

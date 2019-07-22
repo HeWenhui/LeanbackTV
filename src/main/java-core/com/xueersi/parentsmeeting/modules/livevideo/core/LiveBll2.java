@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -44,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
+import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 
 import org.json.JSONObject;
 
@@ -60,7 +62,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  * created  at 2018/6/20 10:32
  */
-public class LiveBll2 extends BaseBll {
+public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /**
      * 需处理 topic 业务集合
@@ -120,7 +122,7 @@ public class LiveBll2 extends BaseBll {
      */
 //    private boolean isNewIRC = false;
     LiveAndBackDebugIml liveAndBackDebugIml;
-
+    private int mState = LiveActivityState.INITIALIZING;
     /**
      * 直播的
      *
@@ -333,6 +335,7 @@ public class LiveBll2 extends BaseBll {
     }
 
     public void onCreate() {
+        mState = LiveActivityState.CREATED;
         liveUidRx = new LiveUidRx(mContext, true);
         liveUidRx.onCreate();
         //activity创建
@@ -1019,6 +1022,7 @@ public class LiveBll2 extends BaseBll {
      * activity onPasuse
      */
     public void onPause() {
+        mState = LiveActivityState.STARTED;
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onPause();
         }
@@ -1049,8 +1053,19 @@ public class LiveBll2 extends BaseBll {
      * activity onResume
      */
     public void onResume() {
+        mState = LiveActivityState.RESUMED;
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onResume();
+        }
+    }
+
+    /**
+     * activity onStart
+     */
+    public void onStart() {
+        mState = LiveActivityState.STARTED;
+        for (LiveBaseBll businessBll : businessBlls) {
+            businessBll.onStart();
         }
     }
 
@@ -1058,6 +1073,7 @@ public class LiveBll2 extends BaseBll {
      * activity onStop
      */
     public void onStop() {
+        mState = LiveActivityState.STOPPED;
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onStop();
         }
@@ -1071,11 +1087,12 @@ public class LiveBll2 extends BaseBll {
     /**
      * activity  onDestroy
      */
-    public void onDestory() {
+    public void onDestroy() {
+        mState = LiveActivityState.INITIALIZING;
         for (LiveBaseBll businessBll : businessBlls) {
-            businessBll.onDestory();
+            businessBll.onDestroy();
         }
-        allLiveBasePagerIml.onDestory();
+        allLiveBasePagerIml.onDestroy();
         businessShareParamMap.clear();
         businessBlls.clear();
         mNoticeActionMap.clear();
@@ -1086,7 +1103,7 @@ public class LiveBll2 extends BaseBll {
             mIRCMessage.destory();
         }
         if (liveUidRx != null) {
-            liveUidRx.onDestory();
+            liveUidRx.onDestroy();
         }
     }
 

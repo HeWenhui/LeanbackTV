@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.MidToast;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
@@ -277,7 +278,7 @@ public class ChatTipBll {
             RelativeLayout relativeLayout = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand2);
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) relativeLayout.getLayoutParams();
             lp.leftMargin = (int) (15 * ScreenUtils.getScreenDensity());
-            relativeLayout.setLayoutParams(lp);
+            LayoutParamsUtil.setViewLayoutParams(relativeLayout, lp);
         }
     }
 

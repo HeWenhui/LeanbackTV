@@ -35,7 +35,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveM
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallChineseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -44,7 +43,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
@@ -52,7 +50,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  * Created by linyuqiang on 2016/9/23.
  * 聊天消息，一些进入房间状态的消息
  */
-public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg,LiveMessageSend,
+public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg, LiveMessageSend,
         KeyboardUtil.OnKeyboardShowingListener {
     private String TAG = "LiveMessageBll";
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -69,7 +67,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
     private Activity activity;
     private Handler mHandler = new Handler();
-    public QuestionBll questionBll;
     private RelativeLayout rlLiveMessageContent;
     private IRCState mLiveBll;
     private boolean openchat;
@@ -109,11 +106,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         ProxUtil.getProxUtil().put(activity, LiveMessageSend.class, this);
         ProxUtil.getProxUtil().put(activity, KeyBordAction.class, this);
         ProxUtil.getProxUtil().put(activity, KeyboardShowingReg.class, this);
-    }
-
-    public void setQuestionBll(QuestionBll questionBll) {
-        this.questionBll = questionBll;
-        questionBll.registQuestionShow(this);
     }
 
     public void setLiveBll(IRCState mLiveBll) {
@@ -250,11 +242,11 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         BaseLiveMessagePager liveMessagePager = null;
 
         //根据不同的直播类型创建不同皮肤
-        if(getInfo != null && getInfo.isPreschool()){
+        if (getInfo != null && getInfo.isPreschool()) {
             // 幼教
             liveMessagePager = new PreSchoolLiveMainMsgPager(activity, this,
-                    null, baseLiveMediaControllerBottom,baseLiveMediaControllerTop,liveMessageLandEntities, null);
-        }else{
+                    null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop, liveMessageLandEntities, null);
+        } else {
             if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                 // 语文
                 if (getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
@@ -347,16 +339,16 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                         , liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = chineseLiveMessagePager;
 
-            }else if(getInfo != null && getInfo.isPreschool()){
-                 PreSchoolLiveTrainMsgPager liveMessagePager = new PreSchoolLiveTrainMsgPager(activity, this, null,
-                    baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-                    mLiveMessagePager = liveMessagePager;
-          } else if (LiveVideoConfig.isPrimary) {
+            } else if (getInfo != null && getInfo.isPreschool()) {
+                PreSchoolLiveTrainMsgPager liveMessagePager = new PreSchoolLiveTrainMsgPager(activity, this, null,
+                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                mLiveMessagePager = liveMessagePager;
+            } else if (LiveVideoConfig.isPrimary) {
                 LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
             } else {
-                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
+                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
             }
@@ -395,6 +387,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
     public void initView(RelativeLayout bottomContent, boolean isLand) {
         rlLiveMessageContent = new RelativeLayout(activity);
+        rlLiveMessageContent.setId(R.id.iv_livevideo_message_content1);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         int pattern = activity.getIntent().getIntExtra("pattern", 0);
@@ -425,12 +418,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            }
             if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                 LiveMessagePager liveMessagePager =
-                        new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                        new LiveMessagePager(activity, null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = liveMessagePager;
             } else {
                 long before = System.currentTimeMillis();
                 if (!isSmallEnglish && !LiveVideoConfig.isSmallChinese) {
-                    LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
+                    LiveMessagePager liveMessagePager = new LiveMessagePager(activity, null,
                             baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                     mLiveMessagePager = liveMessagePager;
                 } else if (LiveVideoConfig.isSmallChinese) {

@@ -1,9 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -17,11 +14,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.log.Loger;
-import com.xueersi.lib.log.LoggerFactory;
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -120,6 +113,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
     public LiveIRCMessageBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+        liveBll.setTeacherAction(this);
         this.mLiveType = liveBll.getLiveType();
         mLogtf = new LogToFile(context, TAG);
         mRoomAction = new LiveMessageBll(context, mLiveType);
@@ -171,14 +165,18 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 mRoomAction.onTitleShow(show);
             }
         });
+        mRoomAction.setLiveBll(new LiveIRCState());
+        BaseLiveMediaControllerTop controllerTop = getInstance(BaseLiveMediaControllerTop.class);
+        setLiveMediaControllerTop(controllerTop);
+        BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = getInstance(BaseLiveMediaControllerBottom.class);
+        setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
 
-    public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
-        mRoomAction.setLiveBll(new LiveIRCState());
+    private void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         mRoomAction.setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
 
-    public void setLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
+    private void setLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
         mRoomAction.setBaseLiveMediaControllerTop(controllerTop);
     }
 
@@ -1325,8 +1323,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         mRoomAction.onDestroy();
         onSendMsgs.clear();
         EventBus.getDefault().unregister(this);

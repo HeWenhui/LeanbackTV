@@ -249,7 +249,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 });
     }
 
-    private LiveUIStateListener onViewChange = new LiveUIStateListener(){
+    private LiveUIStateListener onViewChange = new LiveUIStateListener() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             setLiveMediaController(mMediaController, baseLiveMediaControllerBottom);
@@ -359,6 +359,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
         tempView = new View(activity);
+        tempView.setId(R.id.iv_livevideo_rank_temp);
         bottomContent.addView(tempView);
     }
 

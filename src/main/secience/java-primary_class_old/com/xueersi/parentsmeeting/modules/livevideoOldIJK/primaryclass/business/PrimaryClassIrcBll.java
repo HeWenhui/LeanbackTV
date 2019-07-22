@@ -216,8 +216,8 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (primaryItemView != null) {
             primaryItemView.onDestroy();
         }

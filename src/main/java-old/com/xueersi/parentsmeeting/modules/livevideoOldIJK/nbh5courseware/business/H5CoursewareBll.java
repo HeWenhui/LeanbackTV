@@ -313,7 +313,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
         }
     }
 
-    public void onDestory(){
+    public void onDestroy(){
 
     }
 

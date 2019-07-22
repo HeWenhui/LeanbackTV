@@ -281,7 +281,7 @@ public class LiveVideoReportBll {
         });
     }
 
-    public void onDestory() {
+    public void onDestroy() {
 
     }
 

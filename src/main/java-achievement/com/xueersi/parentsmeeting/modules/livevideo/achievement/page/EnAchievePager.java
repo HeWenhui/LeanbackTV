@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
 public class EnAchievePager extends LiveBasePager {
@@ -221,14 +222,14 @@ public class EnAchievePager extends LiveBasePager {
                     if (view != null) {
                         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
                         lp.topMargin = (int) (73 * ScreenUtils.getScreenDensity());
-                        view.setLayoutParams(lp);
+                        LayoutParamsUtil.setViewLayoutParams(view, lp);
                     }
                     rlAchiveBack.setBackgroundResource(R.drawable.app_livevideo_enteampk_benchangchengjiu_bg1_img_nor);
                 } else {
                     if (view != null) {
                         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
                         lp.topMargin = 0;
-                        view.setLayoutParams(lp);
+                        LayoutParamsUtil.setViewLayoutParams(view, lp);
                     }
                     rlAchiveBack.setBackgroundResource(R.drawable.app_livevideo_enteampk_benchangchengjiu_bg_img_nor);
                 }

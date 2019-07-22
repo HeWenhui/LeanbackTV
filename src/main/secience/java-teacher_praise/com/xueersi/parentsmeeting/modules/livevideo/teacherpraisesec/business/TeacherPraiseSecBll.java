@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business;
 
 import android.app.Activity;
-import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -20,7 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechEnergyPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechEnergyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechPraisePager;
 
@@ -202,9 +200,9 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
-        teacherPraiseBll.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
+        teacherPraiseBll.onDestroy();
     }
 
     @Override

@@ -107,7 +107,7 @@ public class WordDictationBll implements WordDictationAction {
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         if (wordReceiver != null) {
             activity.unregisterReceiver(wordReceiver);
         }

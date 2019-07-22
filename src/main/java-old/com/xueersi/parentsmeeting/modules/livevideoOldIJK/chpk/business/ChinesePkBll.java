@@ -680,9 +680,9 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
-        logger.e("======>onDestory");
+    public void onDestroy() {
+        super.onDestroy();
+        logger.e("======>onDestroy");
         if (mFocusPager != null) {
             mFocusPager.onDestroy();
             mFocusPager = null;

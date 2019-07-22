@@ -605,7 +605,7 @@ public class LiveVideoAction implements VideoAction {
         mHandler.postDelayed(r, delayMillis);
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         dwTeacherNotpresen = null;
     }
 }
