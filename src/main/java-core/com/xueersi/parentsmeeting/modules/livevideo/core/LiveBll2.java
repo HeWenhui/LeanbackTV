@@ -49,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -719,8 +720,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 return;
             }
             lastTopicstr = topicstr;
+            JSONTokener jsonTokener = null;
             try {
-                JSONObject jsonObject = new JSONObject(topicstr);
+                jsonTokener = new JSONTokener(topicstr);
+                JSONObject jsonObject = new JSONObject(jsonTokener);
                 LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
                 boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
                 ////直播相关//////
@@ -772,7 +775,15 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 }
                 mLiveTopic.copy(liveTopic);
             } catch (Exception e) {
-                mLogtf.e("onTopic", e);
+                try {
+                    if (jsonTokener != null) {
+                        mLogtf.e("onTopic:token=" + jsonTokener, e);
+                    } else {
+                        mLogtf.e("onTopic", e);
+                    }
+                } catch (Exception e2) {
+                    mLogtf.e("onTopic", e);
+                }
             }
         }
 
