@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 
 public class LiveAppUserInfo {
     private static LiveAppUserInfo mInstance;
@@ -44,5 +45,42 @@ public class LiveAppUserInfo {
 
     public String getHeadImg() {
         return UserBll.getInstance().getMyUserInfoEntity().getHeadImg();
+    }
+
+    public String getPsimId() {
+        return UserBll.getInstance().getMyUserInfoEntity().getPsimId();
+    }
+
+    public String getPsimPwd() {
+        return UserBll.getInstance().getMyUserInfoEntity().getPsimPwd();
+    }
+
+    public String getPsAppId() {
+        return UserBll.getInstance().getMyUserInfoEntity().getPsAppId();
+    }
+
+    public String getPsAppClientKey() {
+        return UserBll.getInstance().getMyUserInfoEntity().getPsAppClientKey();
+    }
+
+    public String getAreaCode() {
+        return UserBll.getInstance().getMyUserInfoEntity().getAreaCode();
+    }
+
+    /**
+     * 全身直播名字
+     *
+     * @return
+     */
+    public String getStandShowName() {
+        String showName = "";
+        if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getEnglishName())) {
+            showName = LiveAppUserInfo.getInstance().getEnglishName();
+        } else if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())) {
+            showName = LiveAppUserInfo.getInstance().getRealName();
+        } else if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getNickName())) {
+            showName = LiveAppUserInfo.getInstance().getNickName();
+        }
+        return showName;
     }
 }

@@ -11,8 +11,6 @@ import android.util.Log;
 import com.tal.speech.speechrecognigen.ISpeechRecognitnCall;
 import com.tal.speech.speechrecognigen.ISpeechRecognitnGen;
 import com.tal.speech.speechrecognizer.PCMFormat;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.util.LoadSoCallBack;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.logger.Logger;

@@ -5,9 +5,7 @@ import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
@@ -20,6 +18,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
@@ -50,18 +50,9 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
         if (redPackageAction == null) {
-            if (pattern == 2) {
-                String showName = "";
-                String headUrl = "";
-                MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
-                if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
-                    showName = mMyInfo.getEnglishName();
-                } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
-                    showName = mMyInfo.getRealName();
-                } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
-                    showName = mMyInfo.getNickName();
-                }
-                headUrl = mMyInfo.getHeadImg();
+            if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+                String showName = LiveAppUserInfo.getInstance().getStandShowName();
+                String headUrl = LiveAppUserInfo.getInstance().getHeadImg();
                 RedPackageStandBll redPackageStandBll;
                 redPackageStandBll = new RedPackageStandBll(activity, false, liveBackBll);
                 redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
@@ -87,7 +78,7 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
                         // 网络加载数据
-                        getCourseHttpManager().getLivePlayRedPacket( "" + operateId, liveId,
+                        getCourseHttpManager().getLivePlayRedPacket("" + operateId, liveId,
                                 new HttpCallBack(false) {
 
                                     @Override

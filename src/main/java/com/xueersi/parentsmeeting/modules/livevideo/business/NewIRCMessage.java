@@ -10,7 +10,6 @@ import com.tal100.chatsdk.IPeerChatListener;
 import com.tal100.chatsdk.IRoomChatListener;
 import com.tal100.chatsdk.PMDefs;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -160,11 +159,10 @@ public class NewIRCMessage implements IIRCMessage {
                 mNickname = target;
                 liveInfo.nickname = target;
                 mChatClient.setLiveInfo(liveInfo);
-                final MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
+                        int logincode = mChatClient.login(LiveAppUserInfo.getInstance().getPsimId(), LiveAppUserInfo.getInstance().getPsimPwd());
                         logger.i("ircsdk t-relogin, logincode" + logincode);
                         Map<String, String> logHashMap = defaultlog();
                         logHashMap.put("logtype", "t-relogin");
@@ -759,27 +757,26 @@ public class NewIRCMessage implements IIRCMessage {
         if (!workSpaceDir.exists()) {
             workSpaceDir.mkdirs();
         }
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mChatClient = ChatClient.getInstance();
         mChatClient.addListener(mClientListener);
         mChatClient.getRoomManager().addListener(mRoomListener);
         mChatClient.getPeerManager().addListener(mPeerListener);
-        String appid = myUserInfoEntity.getPsAppId();
+        String appid = LiveAppUserInfo.getInstance().getPsAppId();
         //irc sdk初始化  code: 0 成功 ，1 参数错误 ， 19 已初始化
-        int initcode = mChatClient.init(mContext.getApplicationContext(), myUserInfoEntity.getPsAppId(), myUserInfoEntity.getPsAppClientKey(), workSpaceDir.getAbsolutePath());
+        int initcode = mChatClient.init(mContext.getApplicationContext(), appid, LiveAppUserInfo.getInstance().getPsAppClientKey(), workSpaceDir.getAbsolutePath());
         logger.i("irc sdk initcode: " + initcode);
-        logger.i("psAppId:" + myUserInfoEntity.getPsAppId() + " PsAppClientKey:" + myUserInfoEntity.getPsAppClientKey() + " workspace:" + workSpaceDir.getAbsolutePath());
+        logger.i("psAppId:" + appid + " PsAppClientKey:" + LiveAppUserInfo.getInstance().getPsAppClientKey() + " workspace:" + workSpaceDir.getAbsolutePath());
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = mNickname;
-        if (myUserInfoEntity.getRealName() != null) {
-            liveInfo.realname = myUserInfoEntity.getRealName();
+        if (LiveAppUserInfo.getInstance().getRealName() != null) {
+            liveInfo.realname = LiveAppUserInfo.getInstance().getRealName();
         } else {
             liveInfo.realname = mNickname;
         }
         liveInfo.liveId = mLiveInfo.getId();
         if (mLiveInfo.getNickname() != null) {
-            liveInfo.username = myUserInfoEntity.getNickName();
+            liveInfo.username = LiveAppUserInfo.getInstance().getNickName();
         } else {
             liveInfo.username = mNickname;
         }
@@ -789,14 +786,14 @@ public class NewIRCMessage implements IIRCMessage {
             liveInfo.classId = "";
         }
         liveInfo.businessId = "1";
-        if (myUserInfoEntity.getAreaCode() != null) {
-            liveInfo.location = myUserInfoEntity.getAreaCode();
+        if (LiveAppUserInfo.getInstance().getAreaCode() != null) {
+            liveInfo.location = LiveAppUserInfo.getInstance().getAreaCode();
         } else {
             liveInfo.location = "";
         }
         int infocode = mChatClient.setLiveInfo(liveInfo);
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
-        int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
+        int logincode = mChatClient.login(LiveAppUserInfo.getInstance().getPsimId(), LiveAppUserInfo.getInstance().getPsimPwd());
 
         Map<String, String> logHashMap = defaultlog();
         logHashMap.put("logtype", "init");
@@ -804,10 +801,10 @@ public class NewIRCMessage implements IIRCMessage {
         logHashMap.put("initSDKState", PMDefs.ResultCode.Result_Success == initcode ? "success" : "fail");
         logHashMap.put("logincode", "" + logincode);
         logHashMap.put("initLoginState", PMDefs.ResultCode.Result_Success == logincode ? "success" : "fail");
-        logHashMap.put("PsAppId", myUserInfoEntity.getPsAppId());
-        logHashMap.put("PsAppClientKey", myUserInfoEntity.getPsAppClientKey());
-        logHashMap.put("PsImId", myUserInfoEntity.getPsimId());
-        logHashMap.put("PsImPwd", myUserInfoEntity.getPsimPwd());
+        logHashMap.put("PsAppId", appid);
+        logHashMap.put("PsAppClientKey", LiveAppUserInfo.getInstance().getPsAppClientKey());
+        logHashMap.put("PsImId", LiveAppUserInfo.getInstance().getPsimId());
+        logHashMap.put("PsImPwd", LiveAppUserInfo.getInstance().getPsimPwd());
         logHashMap.put("infocode", "" + infocode);
         logHashMap.put("realname", liveInfo.realname);
         logHashMap.put("nickname", liveInfo.nickname);
