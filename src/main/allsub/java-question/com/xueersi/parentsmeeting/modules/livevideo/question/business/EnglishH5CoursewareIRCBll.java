@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.H5OnlineTechEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -693,8 +694,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
             final Boolean isRights = isRight;
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            mLogtf.d("liveSubmitTestH5Answer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
+            mLogtf.d("liveSubmitTestH5Answer:type=" + videoQuestionLiveEntity.srcType + ",testId=" +
                     videoQuestionLiveEntity.id + ",liveId=" + mLiveId + ",testAnswer="
                     + testAnswer);
             String userMode = "1";
@@ -804,7 +804,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
 
             } else {
-                getHttpManager().liveSubmitTestH5Answer(enstuId, videoQuestionLiveEntity.srcType,
+                getHttpManager().liveSubmitTestH5Answer(videoQuestionLiveEntity.srcType,
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
                         isRight, new
                                 HttpCallBack() {

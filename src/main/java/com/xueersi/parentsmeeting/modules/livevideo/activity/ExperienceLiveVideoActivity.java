@@ -131,19 +131,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
      * 横屏聊天信息
      */
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
-    private ScanRunnable scanRunnable;
     private Handler scanHandler;
     private List<ExPerienceLiveMessage.LiveExMsg> mMsgs;
     private LiveMessagePager mLiveMessagePager;
     private Long timer = 0L;
     private static final Object mIjkLock = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
-
-
-    /**
-     * 是否展示历史聊天信息
-     */
-    private boolean HISTROY_MSG_DISPLAY = false;
 
     /**
      * 视频宽度
@@ -228,35 +221,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
 
-    // 定时获取聊天记录的任务
-    class ScanRunnable implements Runnable {
-        HandlerThread handlerThread = new HandlerThread("ScanRunnable");
-
-        ScanRunnable() {
-            logger.i("ScanRunnable");
-            handlerThread.start();
-            scanHandler = new Handler(handlerThread.getLooper());
-        }
-
-        void exit() {
-            handlerThread.quit();
-        }
-
-        @Override
-        public void run() {
-            if (isFinishing()) {
-                return;
-            }
-            initOldMessage(mVideoEntity.getLiveId(), mVideoEntity.getCourseId(), timer + Long.parseLong(mVideoEntity
-                    .getVisitTimeKey()));
-//            initOldMessage(mVideoEntity.getLiveId(),mVideoEntity.getCourseId(),timer + 2970L);
-            timer = timer + 10;
-            logger.i("timer:" + timer);
-            scanHandler.postDelayed(this, 10000);
-
-
-        }
-    }
 
     /**
      * 播放时长，5分钟统计
@@ -977,21 +941,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         void onPmFailure();
     }
 
-    private void initOldMessage(String liveId, String classId, Long start) {
-        lectureLivePlayBackBll.getExperienceMsgs(liveId, classId, start, new GetExperienceLiveMsgs() {
-            @Override
-            public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
-                mMessage = liveMessageGroupEntity;
-                sendMessage();
-            }
-
-            @Override
-            public void onPmFailure() {
-
-            }
-        });
-    }
-
     private void sendMessage() {
 
         if (mMessage != null && mMessage.getMsg() != null && mMessage.getMsg().size() > 0) {
@@ -1255,9 +1204,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // 扫描互动题
         scanQuestion(currentPosition);
         logger.i("currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
-        if (HISTROY_MSG_DISPLAY) {
-            displayHistoryMsg();
-        }
     }
 
     public void scanQuestion(long position) {
@@ -1271,27 +1217,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             for (int i = 0; i < roomChatEvent.size(); i++) {
                 // 处理聊天事件 开闭事件
                 handleChatEvent(TimeUtils.gennerSecond(position), roomChatEvent.get(i));
-            }
-        }
-    }
-
-    /**
-     * 展示历史聊天信息
-     */
-    private void displayHistoryMsg() {
-        // 获取聊天记录
-        if (scanRunnable == null) {
-            scanRunnable = new ScanRunnable();
-            scanHandler.post(scanRunnable);
-        }
-        //发送聊天记录
-        if (send && mMsgs.size() > 0) {
-            for (int i = 0; i < mMsgs.size(); i++) {
-                if (currentMsg / 1000 == mMsgs.get(i).getReleative_time()) {
-                    mLiveMessagePager.addMessage(mMsgs.get(i).getText().getName(), LiveMessageEntity.MESSAGE_TIP,
-                            mMsgs.get(i).getText().getMsg(), "");
-                    mMsgs.remove(i);
-                }
             }
         }
     }
@@ -1392,9 +1317,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                 getDataCallBack);
         EventBus.getDefault().post(new BrowserEvent.ExperienceLiveEndEvent(1));
-        if (scanRunnable != null) {
-            scanRunnable.exit();
-        }
         if (experienceQuitFeedbackBll != null) {
             experienceQuitFeedbackBll.playComplete();
         }
@@ -1432,9 +1354,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     public void onDestroy() {
         super.onDestroy();
         isPlay = false;
-        if (scanRunnable != null) {
-            scanRunnable.exit();
-        }
 
         // 03.22 统计用户离开体验播放器的时间
         StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayExit");

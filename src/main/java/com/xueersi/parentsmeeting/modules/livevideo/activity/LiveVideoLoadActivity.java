@@ -200,7 +200,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
         final LiveHttpManager httpManager = new LiveHttpManager(this);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-            httpManager.liveLectureGetInfo("", vSectionID, new HttpCallBack(mDataLoadEntity) {
+            httpManager.liveLectureGetInfo(vSectionID, new HttpCallBack(mDataLoadEntity) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);
@@ -236,7 +236,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             httpManager.addBodyParam("stuCouId", vStuCourseID);
             httpManager.addBodyParam("liveId", vSectionID);
             httpManager.addBodyParam("from", "" + from);
-            httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(mDataLoadEntity) {
+            httpManager.liveGetInfo(courseId, vSectionID, 0, new HttpCallBack(mDataLoadEntity) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);

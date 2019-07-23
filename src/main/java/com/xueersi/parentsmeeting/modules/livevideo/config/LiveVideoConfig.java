@@ -146,6 +146,8 @@ public class LiveVideoConfig {
     /** 提交互动题答案 */
     public final static String URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION = LiveVideoConfig.HTTP_HOST +
             "/LiveLecture/submitTestAnswerForPlayBack";
+    /** 过期20190723 */
+    @Deprecated
     public final static String URL_PUBLIC_LIVE_COURSE_GET_MESSAGE = LiveVideoConfig.HTTP_HOST +
             "/IrcMessage/getLiveLectureMsgs";
     /** 得到广告信息 */
@@ -300,6 +302,7 @@ public class LiveVideoConfig {
     /** 获取体验直播课红包 */
     public static String URL_AUTO_LIVE_RECEIVE_GOLD = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/receiveGold";
     /** 获取体验课聊天记录 */
+    /** 过期20190723 */
     public static String URL_AUTO_LIVE_MSGS = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/getLiveCourseMsgs";
     /** 提交体验课交互记录 */
     public static String URL_AUTO_LIVE_RECORD_INTERACT = AppConfig.HTTP_HOST_TEAMPK +

@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIn
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -420,7 +421,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     String userName = "", userId = null;
                                     try {
                                         userName = AppBll.getInstance().getAppInfoEntity().getChildName();
-                                        userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        userId = LiveAppUserInfo.getInstance().getStuId();
                                         if (TextUtils.isEmpty(userName)) {
                                             userName = "";
                                         }

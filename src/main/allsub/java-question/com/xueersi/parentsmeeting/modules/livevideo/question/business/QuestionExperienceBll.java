@@ -170,10 +170,8 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
         getCourseHttpManager().saveTestRecords(
-                enstuId,
                 videoQuestionLiveEntity1.srcType,
                 videoQuestionLiveEntity1.id,
                 testAnswer,
@@ -239,7 +237,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
     }
 
     @Override
-    public void sendSpeechEvalResult2(boolean isNewArt,String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
+    public void sendSpeechEvalResult2(boolean isNewArt, String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
         String liveid = mVideoEntity.getLiveId();
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         String termId = mVideoEntity.getChapterId();
@@ -272,9 +270,8 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
     }
 
     @Override
-    public void speechEval42IsAnswered(boolean isNewArt,String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getCourseHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
+    public void speechEval42IsAnswered(boolean isNewArt, String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
+        getCourseHttpManager().speechEval42IsAnswered(mVSectionID, num, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(final ResponseEntity responseEntity) {
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();

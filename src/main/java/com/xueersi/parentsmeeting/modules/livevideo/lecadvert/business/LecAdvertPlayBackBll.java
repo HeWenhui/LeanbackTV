@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
@@ -103,8 +104,7 @@ public class LecAdvertPlayBackBll extends LiveBackBaseBll implements LecBackAdve
 
     @Override
     public void getAdOnLL(String liveId, final LecAdvertEntity lecAdvertEntity, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getCourseHttpManager().getAdOnLL(enstuId, liveId, lecAdvertEntity.course_id, new HttpCallBack() {
+        getCourseHttpManager().getAdOnLL(liveId, lecAdvertEntity.course_id, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();

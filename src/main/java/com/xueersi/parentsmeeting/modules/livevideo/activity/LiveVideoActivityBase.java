@@ -61,6 +61,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -350,7 +351,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                     isChangeLine = false;
                                 } else {
                                     String userName = AppBll.getInstance().getAppInfoEntity().getChildName();
-                                    String userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                    String userId = LiveAppUserInfo.getInstance().getStuId();
                                     try {
                                         if (vPlayer.getPlayer() instanceof PSIJK) {
                                             vPlayer.getPlayer().setUserInfo(userName, userId);

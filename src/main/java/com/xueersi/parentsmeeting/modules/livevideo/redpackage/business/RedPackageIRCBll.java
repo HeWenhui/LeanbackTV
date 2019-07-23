@@ -51,10 +51,10 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
 
     @Override
     public void initView() {
-        if(LiveVideoConfig.isPrimary && redPackageAction instanceof PScienceRedPackageBll){
+        if (LiveVideoConfig.isPrimary && redPackageAction instanceof PScienceRedPackageBll) {
             PScienceRedPackageBll redPackageBll = (PScienceRedPackageBll) redPackageAction;
             redPackageBll.initView(mRootView);
-        }else if(redPackageAction instanceof RedPackageBll) {
+        } else if (redPackageAction instanceof RedPackageBll) {
             RedPackageBll redPackageBll = (RedPackageBll) redPackageAction;
             redPackageBll.initView(mRootView);
         }
@@ -96,7 +96,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             redPackageAction = redPackageStandBll;
         } else {
             //
-            if(LiveVideoConfig.isPrimary && !LiveVideoConfig.isSmallChinese){
+            if (LiveVideoConfig.isPrimary && !LiveVideoConfig.isSmallChinese) {
                 PScienceRedPackageBll redPackageBll = new PScienceRedPackageBll(activity, mGetInfo, true);
                 redPackageBll.setVSectionID(mLiveId);
                 redPackageBll.initView(mRootView);
@@ -107,7 +107,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
                     }
                 });
                 redPackageAction = redPackageBll;
-            }else{
+            } else {
                 RedPackageBll redPackageBll = new RedPackageBll(activity, mGetInfo, true);
                 redPackageBll.setVSectionID(mLiveId);
                 redPackageBll.initView(mRootView);
@@ -123,9 +123,8 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     }
 
     public void sendReceiveGold(final int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("sendReceiveGold:enstuId=" + enstuId + ",operateId=" + operateId + ",liveId=" + liveId);
-        getHttpManager().sendReceiveGold(mLiveType, enstuId, operateId, liveId, new HttpCallBack() {
+        mLogtf.d("sendReceiveGold:operateId=" + operateId + ",liveId=" + liveId);
+        getHttpManager().sendReceiveGold(mLiveType, operateId, liveId, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

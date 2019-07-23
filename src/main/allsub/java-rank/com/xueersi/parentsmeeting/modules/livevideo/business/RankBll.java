@@ -170,11 +170,6 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                         XESToastUtils.showToast(activity, "请稍等");
                         return;
                     }
-                    String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-                    String classId = "";
-                    if (mGetInfo.getStudentLiveInfo() != null) {
-                        classId = mGetInfo.getStudentLiveInfo().getClassId();
-                    }
                     getAllRanking(new AbstractBusinessDataCallBack() {
 
                         @Override
@@ -304,12 +299,11 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     }
 
     private void getOldRankingData(final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
-        getRankHttp().getAllRanking(enstuId, mGetInfo.getId(), classId, new HttpCallBack(false) {
+        getRankHttp().getAllRanking(mGetInfo.getId(), classId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 AllRankEntity allRankEntity = getHttpResponseParser().parseAllRank(responseEntity);

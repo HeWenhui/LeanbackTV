@@ -599,8 +599,6 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
             final Boolean isRights = isRight;
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            String userMode = "1";
             HttpCallBack httpCallBack = new HttpCallBack() {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
@@ -636,7 +634,6 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             };
 //            if (!liveBackBll.getExperience()) {
             getCourseHttpManager().sumitCourseWareH5(videoQuestionLiveEntity.isNewArtsH5Courseware(),
-                    enstuId,
                     videoQuestionLiveEntity.srcType,
                     videoQuestionLiveEntity.id,
                     testAnswer,

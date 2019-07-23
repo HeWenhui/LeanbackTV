@@ -17,10 +17,8 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.AppInfoEntity;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -29,6 +27,7 @@ import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
@@ -119,8 +118,6 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
 //        wvSubjectWeb.loadUrl("file:///android_asset/testjs.html");
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        AppInfoEntity mAppInfoEntity = AppBll.getInstance().getAppInfoEntity();
         String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
         if (isArts == 0) {
             EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_SCIENCE, EXAM_URL, ShareDataManager.SHAREDATA_USER);
@@ -139,7 +136,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
             }
         }
         examUrl = EXAM_URL + "?liveId=" + liveid
-                + "&testPlan=" + num + "&isPlayBack=1&stuId=" + userInfoEntity.getStuId() + "&stuName=" + mAppInfoEntity.getLoginUserName();
+                + "&testPlan=" + num + "&isPlayBack=1&stuId=" + LiveAppUserInfo.getInstance().getStuId() + "&stuName=" + LiveAppUserInfo.getInstance().getLoginUserName();
         examUrl += "&isArts=" + isArts + "&stuCouId=" + stuCouId;
         wvSubjectWeb.loadUrl(examUrl);
     }

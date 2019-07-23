@@ -424,12 +424,11 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
         if (classSignEntity.getStatus() != 1) {
             stopRollCall();
         } else {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String classId = "";
             if (mGetInfo.getStudentLiveInfo() != null) {
                 classId = mGetInfo.getStudentLiveInfo().getClassId();
             }
-            rollCallHttp.userSign(enstuId, mGetInfo.getId(), classId, mGetInfo.getTeacherId()
+            rollCallHttp.userSign(mGetInfo.getId(), classId, mGetInfo.getTeacherId()
                     , new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

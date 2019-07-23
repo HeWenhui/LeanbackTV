@@ -326,12 +326,11 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
      */
     @Override
     public synchronized void getLikeProbability() {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
-        getHttpManager().getLikeProbability(classId, enstuId, new HttpCallBack(false) {
+        getHttpManager().getLikeProbability(classId, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

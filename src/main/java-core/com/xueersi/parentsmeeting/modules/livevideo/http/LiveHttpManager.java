@@ -96,15 +96,13 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     /**
      * 播放器数据初始化
      *
-     * @param enstuId         用户加密ID
      * @param courseId        课程ID
      * @param liveId          直播ID
      * @param isAudit         是不是旁听 isAudit
      * @param requestCallBack
      */
-    public void liveGetInfo(String enstuId, String courseId, String liveId, int isAudit, HttpCallBack requestCallBack) {
+    public void liveGetInfo(String courseId, String liveId, int isAudit, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("courseId", courseId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("isAudit", "" + isAudit);
@@ -115,13 +113,11 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     /**
      * 直播辅导播放器数据初始化
      *
-     * @param enstuId         用户加密ID
      * @param liveId          直播ID
      * @param requestCallBack
      */
-    public void liveTutorialGetInfo(String enstuId, String liveId, HttpCallBack requestCallBack) {
+    public void liveTutorialGetInfo(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("classId", liveId);
         sendPost(LiveVideoConfig.URL_LIVE_TUTORIAL_GET_INFO, params, requestCallBack);
     }
@@ -129,14 +125,12 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     /**
      * 公开直播播放器数据初始化
      *
-     * @param enstuId         用户加密ID
      * @param liveId          直播ID
      * @param requestCallBack
      */
-    public void liveLectureGetInfo(String enstuId, String liveId, HttpCallBack requestCallBack) {
+    public void liveLectureGetInfo(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         requestCallBack.url = LiveVideoConfig.URL_LIVE_LECTURE_GET_INFO;
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         sendPost(LiveVideoConfig.URL_LIVE_LECTURE_GET_INFO, params, requestCallBack);
     }
@@ -336,7 +330,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param hbTime          观看时长
      * @param requestCallBack
      */
-    public void liveUserOnline(int type, String enstuId, String liveId, String teacherId, String currentDutyId, int
+    public void liveUserOnline(int type, String liveId, String teacherId, String currentDutyId, int
             hbTime, HttpCallBack requestCallBack) {
         String url;
         HttpRequestParams params = new HttpRequestParams();
@@ -365,12 +359,11 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * 领取金币
      *
      * @param type            视频类型
-     * @param enstuId         用户加密ID
      * @param operateId       金币ID
      * @param liveid          直播ID
      * @param requestCallBack
      */
-    public void sendReceiveGold(int type, String enstuId, int operateId, String liveid,
+    public void sendReceiveGold(int type, int operateId, String liveid,
                                 HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url;
@@ -457,14 +450,13 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * 提交测试题
      *
      * @param type            视频类型
-     * @param enstuId         用户加密ID
      * @param testId          测试题ID
      * @param liveId          直播ID
      * @param testAnswer      测试题答案
      * @param isRight
      * @param requestCallBack
      */
-    public void liveSubmitTestAnswer(int type, String enstuId, String srcType, String testId, String liveId, String
+    public void liveSubmitTestAnswer(int type, String srcType, String testId, String liveId, String
             testAnswer, String userMode, boolean isVoice,
                                      boolean isRight, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -525,7 +517,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     }
 
 
-    public void getTestAnswerTeamStatus(boolean isNewArt,String testId, HttpCallBack requestCallBack) {
+    public void getTestAnswerTeamStatus(boolean isNewArt, String testId, HttpCallBack requestCallBack) {
         if (isNewArt) {
             HttpRequestParams params = new HttpRequestParams();
             String url = liveVideoSAConfigInner.URL_LIVE_NEWSTAND_ANSWER;
@@ -542,7 +534,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
 
     }
 
-    public void getSpeechEvalAnswerTeamStatus(boolean isNewArt,String testId, HttpCallBack requestCallBack) {
+    public void getSpeechEvalAnswerTeamStatus(boolean isNewArt, String testId, HttpCallBack requestCallBack) {
         if (isNewArt) {
             HttpRequestParams params = new HttpRequestParams();
             String url = liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM_STATUS;
@@ -560,7 +552,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
 
     }
 
-    public void liveSubmitTestH5Answer(String enstuId, String srcType, String testId, String liveId, String
+    public void liveSubmitTestH5Answer(String srcType, String testId, String liveId, String
             testAnswer, String type, String userMode, String isSubmit,
                                        double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -648,12 +640,11 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     /**
      * 获取学习报告
      *
-     * @param enstuId         用户加密ID
      * @param liveId          直播ID
      * @param livetype
      * @param requestCallBack
      */
-    public void getLearnReport(String enstuId, String liveId, int livetype, HttpCallBack
+    public void getLearnReport(String liveId, int livetype, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
@@ -671,12 +662,11 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     /**
      * 提交教师评价
      *
-     * @param enstuId
      * @param liveId
      * @param score           RatingBar的星数。
      * @param requestCallBack
      */
-    public void sendTeacherEvaluate(String enstuId, String liveId, String classId, int[] score,
+    public void sendTeacherEvaluate(String liveId, String classId, int[] score,
                                     HttpCallBack
                                             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -690,10 +680,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         sendPost(liveVideoSAConfigInner.URL_LIVE_SUBMIT_STU_EVALUATE, params, requestCallBack);
     }
 
-    public void userSign(String enstuId, String liveId, String classId, String teacherId, HttpCallBack
+    public void userSign(String liveId, String classId, String teacherId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teacherId", teacherId);
@@ -701,7 +690,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         sendPost(liveVideoSAConfigInner.URL_LIVE_USER_SIGN, params, requestCallBack);
     }
 
-    public void praiseTeacher(int type, String enstuId, String liveId, String teacherId, String ftype, String
+    public void praiseTeacher(int type, String liveId, String teacherId, String ftype, String
             educationStage, HttpCallBack
                                       requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -723,35 +712,32 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         if (!StringUtils.isEmpty(educationStage)) {
             params.addBodyParam("educationStage", educationStage);
         }
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("type", ftype);
         sendPost(url, params, requestCallBack);
     }
 
-    public void getSpeechEval(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
+    public void getSpeechEval(String liveId, String id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
         setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_LIVE_GET_SPEECHEVAL, params, requestCallBack);
     }
 
-    public void sendSpeechEvalResult2(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
+    public void sendSpeechEvalResult2(String liveId, String id, String stuAnswer, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
         params.addBodyParam("isRejected", "");
         params.addBodyParam("answers", "" + stuAnswer);
         params.addBodyParam("type", "1");
         setDefaultParameter(params);
-        logger.i("sendSpeechEvalResult2:enstuId=" + enstuId + ",liveId=" + liveId);
+        logger.i("sendSpeechEvalResult2:liveId=" + liveId);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
     }
 
-    public void sendSpeechEvalResultNewArts(String enstuId, String liveId, String id, String stuAnswer, String isSubmit, HttpCallBack requestCallBack) {
+    public void sendSpeechEvalResultNewArts(String liveId, String id, String stuAnswer, String isSubmit, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
@@ -760,12 +746,12 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("answers", "" + stuAnswer);
         params.addBodyParam("type", "1");
         setDefaultParameter(params);
-        Loger.i(TAG, "sendSpeechEvalResult2:enstuId=" + enstuId + ",liveId=" + liveId);
+        Loger.i(TAG, "sendSpeechEvalResult2:liveId=" + liveId);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
     }
 
     /** 语音评测排行榜  兼容全身直播新课件平台改版的Top3 */
-    public void getSpeechEvalAnswerTeamRank(boolean isNewArt,String id, HttpCallBack requestCallBack) {
+    public void getSpeechEvalAnswerTeamRank(boolean isNewArt, String id, HttpCallBack requestCallBack) {
         if (isNewArt) {
             HttpRequestParams params = new HttpRequestParams();
             params.addBodyParam("testId", id);
@@ -782,24 +768,24 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
 
     }
 
-    public void speechEval42IsAnswered(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
+    public void speechEval42IsAnswered(String liveId, String id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
 //        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
         params.addBodyParam("type", "1");
         setDefaultParameter(params);
-        logger.i("speechEval42IsAnswered:enstuId=" + enstuId + ",liveId=" + liveId);
+        logger.i("speechEval42IsAnswered:liveId=" + liveId);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42_ANSWER, params, requestCallBack);
     }
 
     /** 文科新课件平台语音评测是否已答过 */
-    public void speechNewArtEvaluateIsAnswered(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
+    public void speechNewArtEvaluateIsAnswered(String liveId, String id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
         setDefaultParameter(params);
-        Loger.i(TAG, "speechNewArtEvaluateIsAnswered:enstuId=" + enstuId + ",liveId=" + liveId);
+        Loger.i(TAG, "speechNewArtEvaluateIsAnswered:liveId=" + liveId);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVALUATENEWARTS_ANSWER, params, requestCallBack);
     }
 
@@ -832,7 +818,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
-    public void getStudentLiveInfo(String enstuId, String liveId, HttpCallBack
+    public void getStudentLiveInfo(String liveId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
 //        params.addBodyParam("enstuId", enstuId);
@@ -861,7 +847,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     }
 
 
-    public void setStuStarCount(int type, String enstuId, String liveId, String starId, HttpCallBack
+    public void setStuStarCount(int type, String liveId, String starId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url;
@@ -884,17 +870,16 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         sendPost(url, params, requestCallBack);
     }
 
-    public void getStuGoldCount(String enstuId, String liveId, HttpCallBack
+    public void getStuGoldCount(String liveId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         setDefaultParameter(params);
         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_STUDY_GOLD_COUNT;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
-    public void setTotalOpeningLength(String enstuId, String courseId, String liveId, String classId, String
+    public void setTotalOpeningLength(String courseId, String liveId, String classId, String
             duration, String speakingNum, String speakingLen, HttpCallBack
                                               requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -910,20 +895,18 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
-    public void setNotOpeningNum(String enstuId, String liveId, HttpCallBack
+    public void setNotOpeningNum(String liveId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         setDefaultParameter(params);
         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_NOT_OPEN;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
-    public void getQuestion(String enstuId, String liveId, String questionId, HttpCallBack
+    public void getQuestion(String liveId, String questionId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("id", questionId);
         setDefaultParameter(params);
@@ -1183,11 +1166,10 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param enstuId         学生Id加密串
      * @param requestCallBack
      */
-    public void getLikeProbability(String classId, String enstuId, HttpCallBack
+    public void getLikeProbability(String classId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
-        params.addBodyParam("enstuId", enstuId);
         setDefaultParameter(params);
         if (requestCallBack != null) {
             requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_LIKE_PROBABILITY;
@@ -1320,7 +1302,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     }
 
     /** roleplay组内排行榜 兼容全身直播新课件的改版Top3 */
-    public void getRolePlayAnswerTeamRank(boolean isNewArt,String testId, HttpCallBack callBack) {
+    public void getRolePlayAnswerTeamRank(boolean isNewArt, String testId, HttpCallBack callBack) {
         if (isNewArt) {
             HttpRequestParams params = new HttpRequestParams();
             params.addBodyParam("testId", testId);

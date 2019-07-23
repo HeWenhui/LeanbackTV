@@ -11,14 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbLoginEntity;
@@ -112,9 +111,8 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
 
 
     private void nBLogin() {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        final String userid = userInfoEntity.getStuId();
-        String nickName = userInfoEntity.getNickName();
+        final String userid = LiveAppUserInfo.getInstance().getStuId();
+        String nickName = LiveAppUserInfo.getInstance().getNickName();
         mNbHttpManager.nbLogin(mLiveId,userid,nickName, NbCourseWareConfig.USER_TYPE_STU, new HttpCallBack(){
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

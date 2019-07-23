@@ -43,9 +43,8 @@ public class RankHttp {
         liveHttpAction.sendPostDefault(liveHttpAction.getLiveVideoSAConfigInner().URL_ARTS_TEAM_CLASS_RANK, params, requestCallBack);
     }
 
-    public void getAllRanking(String enstuId, String liveId, String classId, HttpCallBack requestCallBack) {
+    public void getAllRanking(String liveId, String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         liveHttpAction.sendPostDefault(liveHttpAction.getLiveVideoSAConfigInner().URL_LIVE_GET_TEAM_RANK, params, requestCallBack);
     }

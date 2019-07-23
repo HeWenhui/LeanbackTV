@@ -134,7 +134,6 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
     @Override
     public void sendSpeechEvalResult2(boolean isNewArt,String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
         String liveid = mVideoEntity.getLiveId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
 //        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer,
         HttpCallBack httpCallBack = new HttpCallBack(false) {
             @Override
@@ -171,7 +170,6 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         HttpCallBack httpCallBack = new HttpCallBack(loadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -236,7 +234,6 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
 //                    httpCallBack);
 //        } else {
         getCourseHttpManager().saveTestRecords(
-                UserBll.getInstance().getMyUserInfoEntity().getEnstuId(),
                 videoQuestionLiveEntity1.srcType,
                 videoQuestionLiveEntity1.id,
                 testAnswer,

@@ -9,7 +9,7 @@ import org.json.JSONObject;
  */
 
 public interface RollCallHttp {
-    public void userSign(String enstuId, String liveId, String classId, String teacherId, HttpCallBack
+    void userSign(String liveId, String classId, String teacherId, HttpCallBack
             requestCallBack);
 
     void sendRollCallNotice(JSONObject jsonObject, String o);

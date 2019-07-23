@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveUidRx;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -323,8 +324,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         mGetInfo = liveGetInfo;
         liveGetInfo.setId(mVideoEntity.getLiveId());
         liveGetInfo.setUname(AppBll.getInstance().getAppInfoEntity().getChildName());
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        liveGetInfo.setStuId(userInfoEntity.getStuId());
+        liveGetInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
         liveGetInfo.setStuCouId(stuCourId);
         if (liveVideoSAConfig != null) {
             liveGetInfo.setSubjectiveTestAnswerResult(
@@ -343,17 +343,17 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setTeacherId(mVideoEntity.getTutorTeacherId());
         liveGetInfo.setTeacherName(mVideoEntity.getTutorTeacherName());
         liveGetInfo.setTeacherIMG(mVideoEntity.getTutorTeacherImg());
-        MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
-        if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
-            liveGetInfo.setEn_name(mMyInfo.getEnglishName());
-        } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
-            liveGetInfo.setStuName(mMyInfo.getRealName());
-        } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
-            liveGetInfo.setNickname(mMyInfo.getNickName());
+
+        if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getEnglishName())) {
+            liveGetInfo.setEn_name(LiveAppUserInfo.getInstance().getEnglishName());
+        } else if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())) {
+            liveGetInfo.setStuName(LiveAppUserInfo.getInstance().getRealName());
+        } else if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getNickName())) {
+            liveGetInfo.setNickname(LiveAppUserInfo.getInstance().getNickName());
         }
         //解析性别
-        liveGetInfo.setStuSex(mMyInfo.getSex() + "");
-        liveGetInfo.setHeadImgPath(mMyInfo.getHeadImg());
+        liveGetInfo.setStuSex(LiveAppUserInfo.getInstance().getSex() + "");
+        liveGetInfo.setHeadImgPath(LiveAppUserInfo.getInstance().getHeadImg());
 
         LiveGetInfo.StudentLiveInfoEntity studentLiveInfoEntity = new LiveGetInfo.StudentLiveInfoEntity();
         studentLiveInfoEntity.setClassId(mVideoEntity.getClassId());

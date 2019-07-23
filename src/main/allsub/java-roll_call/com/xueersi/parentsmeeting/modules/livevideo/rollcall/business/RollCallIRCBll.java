@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.rollcall.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -18,7 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2018/7/10.
@@ -129,9 +127,9 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
     }
 
     @Override
-    public void userSign(String enstuId, String liveId, String classId, String teacherId, HttpCallBack
+    public void userSign(String liveId, String classId, String teacherId, HttpCallBack
             requestCallBack) {
-        getHttpManager().userSign(enstuId, liveId, classId, teacherId, requestCallBack);
+        getHttpManager().userSign(liveId, classId, teacherId, requestCallBack);
     }
 
     @Override

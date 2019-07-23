@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveTransferHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveTransferHttpResponseParser;
 import com.xueersi.ui.dataload.DataLoadEntity;
@@ -52,29 +53,30 @@ public class LiveVideoTransferActivity extends BaseActivity {
     protected LogToFile mLogtf;
 
     DataLoadEntity dataLoadEntity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         init();
         Intent intent = getIntent();
-        String sectionEntity =  intent.getStringExtra("sectionEntity");
+        String sectionEntity = intent.getStringExtra("sectionEntity");
         String stuCouId = intent.getStringExtra("stuCouId");
         from = intent.getStringExtra("where");
         try {
-             sectionEntityJson = new JSONObject(sectionEntity);
-             vCoursseID = sectionEntityJson.optString("vCoursseID");
-             vChapterID = sectionEntityJson.optString("vChapterID");
-             vSectionName = sectionEntityJson.optString("vSectionName");
-             vTradeId = sectionEntityJson.optString("vTradeId");
-             vSectionID = sectionEntityJson.optString("vSectionID");
-             vStuCourseID = sectionEntityJson.optString("vStuCourseID");
-             VisitTimeKey = sectionEntityJson.optString("VisitTimeKey");
+            sectionEntityJson = new JSONObject(sectionEntity);
+            vCoursseID = sectionEntityJson.optString("vCoursseID");
+            vChapterID = sectionEntityJson.optString("vChapterID");
+            vSectionName = sectionEntityJson.optString("vSectionName");
+            vTradeId = sectionEntityJson.optString("vTradeId");
+            vSectionID = sectionEntityJson.optString("vSectionID");
+            vStuCourseID = sectionEntityJson.optString("vStuCourseID");
+            VisitTimeKey = sectionEntityJson.optString("VisitTimeKey");
         } catch (JSONException e) {
-            Loger.e(TAG,e.getMessage());
+            Loger.e(TAG, e.getMessage());
         }
         mLogtf = new LogToFile(this, TAG);
-        mLogtf.d("sectionEntity="+sectionEntity+"  stuCouId="+stuCouId+"  from="+from);
+        mLogtf.d("sectionEntity=" + sectionEntity + "  stuCouId=" + stuCouId + "  from=" + from);
         deductStuGold(stuCouId);
 
     }
@@ -98,12 +100,11 @@ public class LiveVideoTransferActivity extends BaseActivity {
      *
      * @param stuCouId
      */
-    public void deductStuGold( final String stuCouId) {
+    public void deductStuGold(final String stuCouId) {
         dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        mCourseHttpManager.deductStuGold(myUserInfoEntity.getEnstuId(),stuCouId, vCoursseID,
+        mCourseHttpManager.deductStuGold(stuCouId, vCoursseID,
                 vSectionID, 0, new HttpCallBack(dataLoadEntity) {
 
                     @Override
@@ -163,7 +164,7 @@ public class LiveVideoTransferActivity extends BaseActivity {
         });
     }
 
-    public void intentToPlayBack( VideoResultEntity result) {
+    public void intentToPlayBack(VideoResultEntity result) {
         VideoSectionEntity sectionEntity = result.getMapVideoSectionEntity().get(vSectionID);
         // 播放数据设定
         VideoLivePlayBackEntity videoEntity = videoLivePlayBackFromVideoSection(result,
@@ -202,9 +203,9 @@ public class LiveVideoTransferActivity extends BaseActivity {
             ShareDataManager.getInstance().put(ShareBusinessConfig.SP_SPEECH_URL, sectionEntity.getSpeechEvalUrl(),
                     ShareDataManager.SHAREDATA_USER);
         }
-        LiveVideoEnter.intentTo(this,bundle,from);
-       // finish();
-       // OtherModuleEnter.intentTo((Activity) mContext, bundle, CourseDetailActivity.class.getSimpleName());
+        LiveVideoEnter.intentTo(this, bundle, from);
+        // finish();
+        // OtherModuleEnter.intentTo((Activity) mContext, bundle, CourseDetailActivity.class.getSimpleName());
     }
 
     public VideoLivePlayBackEntity videoLivePlayBackFromVideoSection(VideoResultEntity
@@ -258,6 +259,7 @@ public class LiveVideoTransferActivity extends BaseActivity {
         videoEntity.setTutorTeacherImg(sectionEntity.getTutorTeacherImg());
         return videoEntity;
     }
+
     /**
      * 获取观看视频统计间隔时间
      *

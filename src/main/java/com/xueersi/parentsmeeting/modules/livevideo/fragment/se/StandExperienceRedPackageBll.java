@@ -89,9 +89,8 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
 
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
-                        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                         // 网络加载数据
-                        getCourseHttpManager().getLivePlayRedPackets(myUserInfoEntity.getEnstuId(), String.valueOf(operateId), mVideoEntity.getChapterId(), liveId,//);
+                        getCourseHttpManager().getLivePlayRedPackets(String.valueOf(operateId), mVideoEntity.getChapterId(), liveId,//);
 
 //                        getCourseHttpManager().getLivePlayRedPacket(myUserInfoEntity.getEnstuId(), "" + operateId, liveId,
                                 new HttpCallBack(false) {
@@ -167,9 +166,8 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
     }
 
     public void getRedPacket(final DataLoadEntity dataLoadEntity, final String liveId, final String operateId, final AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        getCourseHttpManager().getRedPacket(myUserInfoEntity.getEnstuId(), operateId, liveId,
+        getCourseHttpManager().getRedPacket(operateId, liveId,
                 new HttpCallBack(dataLoadEntity) {
 
                     @Override
@@ -193,9 +191,8 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
     }
 
     public void getLivePlayRedPackets(final DataLoadEntity dataLoadEntity, final String liveId, final String operateId, final AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        getCourseHttpManager().getLivePlayRedPackets(myUserInfoEntity.getEnstuId(), operateId, mVideoEntity.getChapterId(), liveId,
+        getCourseHttpManager().getLivePlayRedPackets(operateId, mVideoEntity.getChapterId(), liveId,
                 new HttpCallBack(dataLoadEntity) {
 
                     @Override

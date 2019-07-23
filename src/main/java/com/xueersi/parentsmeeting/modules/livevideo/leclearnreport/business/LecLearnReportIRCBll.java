@@ -86,10 +86,9 @@ public class LecLearnReportIRCBll extends LiveBaseBll implements NoticeAction, L
 
     @Override
     public void getLecLearnReport(final long delayTime, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getLecLearnReport:enstuId=" + enstuId + ",liveType=" + mLiveType + ",liveId=" + mLiveId + "," +
+        mLogtf.d("getLecLearnReport:liveType=" + mLiveType + ",liveId=" + mLiveId + "," +
                 "delayTime=" + delayTime);
-        getHttpManager().getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
+        getHttpManager().getLearnReport(mLiveId, mLiveType, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

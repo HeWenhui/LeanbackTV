@@ -109,7 +109,6 @@ public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
                                            String testAnswer, String courseware_type, String isSubmit, double
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String userMode = "1";
             HttpCallBack httpCallBack = new HttpCallBack() {
                 @Override

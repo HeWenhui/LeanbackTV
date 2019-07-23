@@ -17,17 +17,14 @@ public class LiveTransferHttpManager  extends BaseHttpBusiness {
     /**
      * 扣除金币
      *
-     * @param enStuId
      * @param requestCallBack
      */
-    public void deductStuGold(String enStuId, String stuCouId, String courseId, String liveId, int isGetPlanInfo,
+    public void deductStuGold(String stuCouId, String courseId, String liveId, int isGetPlanInfo,
                               HttpCallBack
                                       requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("courseId", courseId);
         params.addBodyParam("liveId", liveId);
-        // 直播 直播辅导
-        params.addBodyParam("enstuId", enStuId);
         params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("isGetPlanInfo", "" + isGetPlanInfo);
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());

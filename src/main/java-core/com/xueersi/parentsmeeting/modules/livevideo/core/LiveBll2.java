@@ -353,8 +353,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
     // 初始化相关
     public void getInfo(LiveGetInfo getInfo) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getInfo:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        mLogtf.d("getInfo:liveId=" + mLiveId);
         if (getInfo == null) {
             HttpCallBack callBack = new HttpCallBack(false) {
 
@@ -392,13 +391,13 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             };
             // 直播
             if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-                mHttpManager.liveGetInfo(enstuId, mCourseId, mLiveId, 0, callBack);
+                mHttpManager.liveGetInfo(mCourseId, mLiveId, 0, callBack);
             }
             // 录播
             else if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
-                mHttpManager.liveTutorialGetInfo(enstuId, mLiveId, callBack);
+                mHttpManager.liveTutorialGetInfo(mLiveId, callBack);
             } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-                mHttpManager.liveLectureGetInfo(enstuId, mLiveId, callBack);
+                mHttpManager.liveLectureGetInfo(mLiveId, callBack);
             }
         } else {
             onGetInfoSuccess(getInfo);
