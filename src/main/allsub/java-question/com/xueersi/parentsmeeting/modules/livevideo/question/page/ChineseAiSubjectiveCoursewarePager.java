@@ -164,7 +164,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      * 新课件是否是预加载
      */
     private boolean ispreload;
-    private LiveAndBackDebug liveAndBackDebug;
+    private ContextLiveAndBackDebug liveAndBackDebug;
     /**
      * 显示下方控制布局
      */
@@ -259,6 +259,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             this.educationstage = detailInfo.getEducationstage();
         }
         liveAndBackDebug = new ContextLiveAndBackDebug(context);
+        liveAndBackDebug.addCommonData("isplayback", isPlayBack ? "1" : "0");
         mView = initView();
         entranceTime = System.currentTimeMillis() / 1000;
         initData();
