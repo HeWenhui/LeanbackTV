@@ -48,10 +48,21 @@ public interface IntelligentConstants {
     int SPEECH_OVER_JUDGE = 2;
     /** 正在重读 */
     int SPEECH_AGIN = 3;
-
+    /** 本地语音文件存放位置 */
     String AUDIO_EVALUATE_PARENT_URL = Environment.getExternalStorageDirectory() +
             File.separator + "parentsmeeting" + File.separator + "livevideo" +
             File.separator + "audio";
-
+    /** lottie动画存放位置 */
     String INTELLIGENT_LOTTIE_PATH = "intelligent_recognition_study_v2/english/get_score/";
+    /** unity3D模型存放位置 */
+    String[] intelligent_recognition_unity3D = new String[]{
+            Environment.getExternalStorageDirectory() +
+                    File.separator + "parentsmeeting" + File.separator + "livevideo" +
+                    File.separator + "unity3d"};
+
+    String AUDIO_EVALUATE_FILE_NAME = "audio_evaluate";
+
+    String UNITY3D_EVALUATE = "unity_3d";
+
+    String CACHE_FILE = "intelligent_recognition/unity3D";
 }

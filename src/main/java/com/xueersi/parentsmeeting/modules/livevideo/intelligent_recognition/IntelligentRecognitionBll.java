@@ -17,8 +17,9 @@ import org.json.JSONObject;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.intelligent_recognition_sign;
 
-public class IntelligentRecognition extends LiveBaseBll implements NoticeAction {
-    public IntelligentRecognition(Activity context, LiveBll2 liveBll) {
+public class IntelligentRecognitionBll extends LiveBaseBll implements NoticeAction {
+
+    public IntelligentRecognitionBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
 
@@ -27,7 +28,6 @@ public class IntelligentRecognition extends LiveBaseBll implements NoticeAction 
         int pType = data.optInt("ptype");
         switch (type) {
             case XESCODE.ARTS_SEND_QUESTION: {
-//                handle1103();
                 if (pType == 28) {
                     Bundle bundle = new Bundle();
                     IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
@@ -50,7 +50,6 @@ public class IntelligentRecognition extends LiveBaseBll implements NoticeAction 
                 break;
             }
             case XESCODE.ARTS_STOP_QUESTION: {
-//                handle1104();
                 if (pType == 28) {
                     Intent intent = new Intent(FILTER_ACTION);
                     intent.putExtra(intelligent_recognition_sign, data.toString());
@@ -60,14 +59,6 @@ public class IntelligentRecognition extends LiveBaseBll implements NoticeAction 
             }
         }
     }
-
-//    private void handle1103() {
-
-//    }
-
-//    private void handle1104() {
-
-//    }
 
     @Override
     public int[] getNoticeFilter() {

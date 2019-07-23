@@ -526,7 +526,65 @@ public class CoursewarePreload {
                     documentNum.getAndIncrement();
                 }
             }
+            if (coursewareInfo.getIntelligentEntity() != null) {
+                downLoadIntelligentResourse(coursewareInfo, mMorecachein, mMorecacheout, isIP, ip, cdn, ips, cdns, itemLiveId);
+            }
         }
+    }
+
+    private void downLoadIntelligentResourse(
+            CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo,
+            File cacheIn, File cacheOut,
+            boolean isIP, String ip, String cdn, List<String> ips, List<String> cdns, String itemLiveId) {
+//            下载英语智能测评的资源
+        {
+            File mMorecachein = new File(cacheIn, coursewareInfo.getSourceId());
+            File mMorecacheout = new File(cacheOut, coursewareInfo.getSourceId());
+            final String resourceName = MD5.md5(coursewareInfo.getIntelligentEntity().getResource()) + ".zip";
+
+            File resourceSave = new File(mMorecachein, resourceName);
+            boolean equals = false;
+            if (fileIsExists(resourceSave.getAbsolutePath())) {
+                String filemd5 = FileUtils.getFileMD5ToString(resourceSave);
+                equals = coursewareInfo.getResourceMd5().equalsIgnoreCase(filemd5);
+            }
+            if (!fileIsExists(resourceSave.getAbsolutePath()) || (fileIsExists(resourceSave.getAbsolutePath()) && !equals)) {
+                DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(
+                        ip + coursewareInfo.getResourceUrl(),
+                        mMorecachein.getAbsolutePath(),
+                        resourceName + ".temp",
+                        coursewareInfo.getResourceMd5());
+
+                if (isIP) {
+                    resourceDownLoadInfo.setHost(cdn);
+                }
+//                DownLoader resourceDownLoader = new DownLoader(mContext, resourceDownLoadInfo);
+//                resourceDownLoader.setDownloadThreadCount(mDownloadThreadCount);
+                logger.d("courseware url path:  " + ip + coursewareInfo.getResourceUrl() + "   file name:" + resourceName + ".zip");
+//                resourceDownLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, resourceName, ips, cdns, coursewareInfo.getResourceUrl(), coursewareInfo.getMd5(), new AtomicInteger()));
+                PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(resourceDownLoadInfo,
+                        new ZipDownloadListener(
+                                mMorecachein,
+                                mMorecacheout,
+                                resourceName,
+                                ips,
+                                cdns,
+                                coursewareInfo.getResourceUrl(),
+                                coursewareInfo.getResourceMd5(),
+                                new AtomicInteger(0),
+                                itemLiveId,
+                                "1"),
+                        itemLiveId);
+
+                if (!isPrecise.get()) {
+                    PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
+                } else {
+                    PreLoadDownLoaderManager.addUrgentInfo(infoListener);
+                }
+                documentNum.getAndIncrement();
+            }
+        }
+
     }
 
     /**

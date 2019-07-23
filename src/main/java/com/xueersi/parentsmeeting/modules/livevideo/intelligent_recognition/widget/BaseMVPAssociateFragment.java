@@ -1,8 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentLifecycleObserver;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.BasePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.BaseView;

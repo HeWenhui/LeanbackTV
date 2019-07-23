@@ -107,4 +107,8 @@ public class IntelligentRecognitionHttpResponseParser {
         }
         return entity;
     }
+
+    public void parseSubmitIntellectVoiceCorrect(ResponseEntity responseEntity) {
+
+    }
 }

@@ -61,6 +61,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll;
@@ -573,6 +574,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new IntelligentRecognitionBackBll(activity, liveBackBll));
         //直播
         if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
             //理科

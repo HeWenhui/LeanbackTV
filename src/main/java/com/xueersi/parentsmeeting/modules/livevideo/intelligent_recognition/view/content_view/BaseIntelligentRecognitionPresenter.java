@@ -27,10 +27,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.BaseIntelligentRecognitionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentLifecycleObserver;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionView;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget.IntelligentLifecycleObserver;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget.IntelligentRecognitionBroadcast;
 
 import org.json.JSONException;
@@ -77,6 +77,8 @@ public abstract class BaseIntelligentRecognitionPresenter extends
     private AtomicBoolean isSpeechReady = new AtomicBoolean(false);
     /** 语音测评开始时间 */
     private long speechStartTime;
+    /** 纠音开口时长 */
+    private long speechRepeatTime;
 
     public BaseIntelligentRecognitionPresenter(FragmentActivity context) {
         super(context, IntelligentRecognitionViewModel.class);
@@ -153,9 +155,9 @@ public abstract class BaseIntelligentRecognitionPresenter extends
     protected void startRecordSound() {
         speechNum++;
 //        String videoSavePath = mActivity.getDir("chinese_parterner", Context.MODE_PRIVATE).getPath() + File.separator + "sound.mp3";
-        String videoSavePath = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo";
+        String audioSavePath = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo";
         final SpeechParamEntity mParam = new SpeechParamEntity();
-        File file = new File(videoSavePath, "sound.mp3");
+        File file = new File(audioSavePath, "sound.mp3");
         logger.i(file.getPath() + " " + file.exists());
         if (!file.exists()) {
             logger.i(" file null or file not exists");

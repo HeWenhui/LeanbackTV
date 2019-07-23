@@ -88,4 +88,39 @@ public class IntelligentRecognitionHttpManager {
         httpRequestParams.addBodyParam("teamId", teamId);
         liveHttpManager.sendPost(LiveVideoConfig.URL_INTELLIGENT_RECOGNITION_TOP3, httpRequestParams, httpCallBack);
     }
+
+    /**
+     * 智能语音反馈纠音及重读提交接口
+     *
+     * @param stuId
+     * @param materialId
+     * @param isPlayBack
+     * @param liveId
+     * @param stuCouId
+     * @param correctCase
+     * @param rereadCase
+     * @param httpCallBack
+     */
+    public void getSubmitIntellectVoiceCorrect(Context context,
+                                               String stuId,
+                                               String materialId,
+                                               String isPlayBack,
+                                               String liveId,
+                                               String stuCouId,
+                                               String correctCase,
+                                               String rereadCase,
+                                               HttpCallBack httpCallBack) {
+        if (liveHttpManager == null) {
+            liveHttpManager = new LiveHttpManager(context);
+        }
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.addBodyParam("stuId", stuId);
+        httpRequestParams.addBodyParam("materialId", materialId);
+        httpRequestParams.addBodyParam("isPlayBack", isPlayBack);
+        httpRequestParams.addBodyParam("liveId", liveId);
+        httpRequestParams.addBodyParam("stuCouId", stuCouId);
+        httpRequestParams.addBodyParam("correctCase", correctCase);
+        httpRequestParams.addBodyParam("rereadCase", rereadCase);
+        liveHttpManager.sendPost(LiveVideoConfig.URL_SUBMIT_INTELLECT_VOICE_CORRECT, httpRequestParams, httpCallBack);
+    }
 }

@@ -7,17 +7,19 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.CommonRxObserver;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.IntelligentRecognitionHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.CommonRxObserver;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.ContentAudioManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.EvaluationAudioPlayerDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.SoundEffectPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.Unity3DPlayManager;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view.BaseIntelligentRecognitionPresenter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,6 +70,53 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
 
     /** 获取语音测频的得分 */
     private void getSpeechScore(ResultEntity resultEntity) {
+        IntelligentRecognitionRecord record = mViewModel.getRecordData();
+        if (getSpeechNum() <= 1) {
+            getHttpManager().getIntelligentSpeechSumbmitResult(
+                    mActivity.getApplicationContext(),
+                    record.getStuId(),
+                    record.getMaterialId(),
+                    record.getIsPlayBack(),
+                    getFirstJsonString(resultEntity),
+                    record.getLiveId(),
+                    record.getStuCouId(),
+                    record.getAnswerTime(),
+                    new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            IntelligentRecognitionHttpResponseParser parser = new IntelligentRecognitionHttpResponseParser();
+                            mViewModel.getSpeechScoreData().
+                                    setValue(parser.parseSpeechScore(responseEntity));
+                        }
+                    }
+            );
+        } else {
+            getHttpManager().getSubmitIntellectVoiceCorrect(
+                    mActivity.getApplicationContext(),
+                    record.getStuId(),
+                    record.getMaterialId(),
+                    record.getIsPlayBack(),
+                    record.getLiveId(),
+                    record.getStuCouId(),
+                    getRepeatWordJsonString(resultEntity),
+                    getRepeatSentenceJsonString(resultEntity),
+                    new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            logger.i("success");
+                        }
+                    });
+        }
+
+    }
+
+    /**
+     * 得到第一次阅读的JSONString
+     *
+     * @return
+     */
+    private String getFirstJsonString(ResultEntity resultEntity) {
+
         JSONObject jsonObject = new JSONObject();
         try {
             JSONObject itemJSON = new JSONObject();
@@ -94,26 +143,43 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        IntelligentRecognitionRecord record = mViewModel.getRecordData();
-        getHttpManager().getIntelligentSpeechSumbmitResult(
-                mActivity.getApplicationContext(),
-                record.getStuId(),
-                record.getMaterialId(),
-                "0",
-                jsonObject.toString(),
-                record.getLiveId(),
-                record.getStuCouId(),
-                "",
-                new HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        IntelligentRecognitionHttpResponseParser parser = new IntelligentRecognitionHttpResponseParser();
-                        mViewModel.getSpeechScoreData().
-                                setValue(parser.parseSpeechScore(responseEntity));
-                    }
-                }
-        );
+        return jsonObject.toString();
+    }
 
+    private String getRepeatWordJsonString(ResultEntity resultEntity) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+
+
+            if (speechType == SpeechType.SENTENCE) {
+
+            } else {
+                JSONArray jsonArray = new JSONArray();
+                JSONObject itemJson = new JSONObject();
+                itemJson.put("correctWord", speechWord);
+                itemJson.put("correctOpeningTime", getSpeechNum() + "");
+                itemJson.put("correctTimes", "");
+                itemJson.put("correctScores", "");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.e(e);
+        }
+        return jsonObject.toString();
+    }
+
+    private String getRepeatSentenceJsonString(ResultEntity resultEntity) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            if (speechType == SpeechType.SENTENCE) {
+                jsonObject.put("rereadScore", resultEntity.getScore());
+                jsonObject.put("rereadOpeningTime", "");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.e(e);
+        }
+        return jsonObject.toString();
     }
 
     private void testScoreEntity() {
@@ -165,7 +231,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                     performCommonList(IntelligentConstants.FEED_BACK_WORD_2_1,
                             Arrays.asList(
                                     speechWord,
-                                    EvaluationAudioPlayerDataManager.getInstance().getJudgeAudioUrl(IntelligentConstants.FEED_BACK_WORD_2_1)
+                                    EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(IntelligentConstants.FEED_BACK_WORD_2_1)
                             )
                     );
                 }
@@ -177,7 +243,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                 performCommonList(IntelligentConstants.FEED_BACK_WORD_3_1,
                         Arrays.asList(
                                 speechWord,
-                                EvaluationAudioPlayerDataManager.getInstance().getJudgeAudioUrl(IntelligentConstants.FEED_BACK_WORD_2_1)
+                                EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(IntelligentConstants.FEED_BACK_WORD_3_1)
                         )
                 );
             }
@@ -208,6 +274,50 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
     private void performCommonList(int status, List<String> list) {
         Unity3DPlayManager.playUnity3D(status);
         playRepeateAudio(status, list);
+    }
+
+    /**
+     * 使用rxjava 的zip操作符播放音频
+     *
+     * @param status
+     */
+    private void performRxZipList(final int status) {
+        ContentAudioManager contentAudioManager = new ContentAudioManager(mActivity, mRecord.getLiveId(), mRecord.getMaterialId());
+        Observable.
+                zip(Observable.
+                                just(EvaluationAudioPlayerDataManager.getInstance(mActivity).
+                                        getJudgeAudioUrl(status)),
+                        contentAudioManager.getAudioContentObserb(speechWord),
+                        new BiFunction<String, String, List<String>>() {
+                            @Override
+                            public List<String> apply(String s, String s2) throws Exception {
+                                return Arrays.asList(s, s2);
+                            }
+                        }).
+                subscribe(new Consumer<List<String>>() {
+                    @Override
+                    public void accept(List<String> list) throws Exception {
+                        playRepeateAudio(status, list);
+                    }
+                });
+    }
+
+    private void performRxMergeWithList(final int status) {
+        ContentAudioManager contentAudioManager = new ContentAudioManager(mActivity, mRecord.getLiveId(), mRecord.getMaterialId());
+        contentAudioManager.
+                getAudioContentObserb(speechWord).
+                mergeWith(Observable.
+                        just(EvaluationAudioPlayerDataManager.
+                                getInstance(mActivity).
+                                getJudgeAudioUrl(status))).
+                subscribeOn(Schedulers.io()).
+                subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+
+                    }
+                });
+        MediaPlayer mediaPlayer = new MediaPlayer();
     }
 
     /** 得到满分点赞 */
@@ -243,12 +353,13 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
      * @param status
      */
     private void performCommon(final int status) {
+
         Unity3DPlayManager.playUnity3D(status);
         if (soundPlayer != null) {
             soundPlayer.cancle();
         }
         soundPlayer = new SoundEffectPlayer(
-                EvaluationAudioPlayerDataManager.getInstance().getJudgeAudioUrl(status));
+                EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(status));
         soundPlayer.setPlayListener(new SoundEffectPlayer.SoundPlayListener() {
             @Override
             public void onSoundFinish() {
@@ -287,7 +398,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                     public void onNext(String s) {
                         playRepeateAudio(status, Arrays.asList(
                                 s,
-                                EvaluationAudioPlayerDataManager.getInstance().getJudgeAudioUrl(status)));
+                                EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(status)));
                         disposable.dispose();
                     }
                 });
@@ -359,7 +470,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                         audioPlayNum.set(1);
                         SoundEffectPlayer soundEffectPlayer = new SoundEffectPlayer(
                                 Arrays.asList(
-                                        EvaluationAudioPlayerDataManager.getInstance().getJudgeAudioUrl(status),
+                                        EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(status),
                                         s
                                 ));
                         soundEffectPlayer.setPlayListener(new SoundEffectPlayer.SoundPlayListener() {
@@ -389,7 +500,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
         if (audioHashMap == null)
             return;
         Observable.zip(
-                Observable.just(EvaluationAudioPlayerDataManager.getInstance().
+                Observable.just(EvaluationAudioPlayerDataManager.getInstance(mActivity).
                         getJudgeAudioUrl(status)).
                         filter(RxFilter.<String>filterNull()),
                 Observable.

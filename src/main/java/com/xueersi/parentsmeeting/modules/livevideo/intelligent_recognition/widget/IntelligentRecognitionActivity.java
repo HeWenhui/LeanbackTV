@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.widget;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -19,6 +20,7 @@ import com.xueersi.lib.unity3d.UnityCommandPlay;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.Unity3DPlayManager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
 
 import java.util.concurrent.TimeUnit;
 
@@ -115,12 +117,16 @@ public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
     private void addFragment() {
         IntelligentRecognitionRecord intelligentRecognitionRecord =
                 getIntent().getParcelableExtra("intelligentRecognitionRecord");
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
+
+        IntelligentRecognitionViewModel mViewModel = ViewModelProviders.of(this).get(IntelligentRecognitionViewModel.class);
+        mViewModel.setRecordData(intelligentRecognitionRecord);
+
         getSupportFragmentManager().
                 beginTransaction().
                 add(R.id.fragment_container,
-                        IntelligentRecognitionFragment.newInstance(bundle),
+                        IntelligentRecognitionFragment.newInstance(),
                         "f1")
                 .commit();
     }

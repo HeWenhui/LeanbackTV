@@ -48,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.Ev
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldMicroPhoneBll;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll;
@@ -325,7 +326,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseTutorBll(activity, mLiveBll));
-
+            mLiveBll.addBusinessBll(new IntelligentRecognitionBll(activity, mLiveBll));
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
             if (allowLinkMicNew == 1) {
                 VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
@@ -367,7 +368,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 CrashReport.postCatchedException(e);
             }
         }
-        FeedbackTeacherBll feedbackTeacherBll = new FeedbackTeacherBll(activity,mLiveBll);
+        FeedbackTeacherBll feedbackTeacherBll = new FeedbackTeacherBll(activity, mLiveBll);
         feedbackTeacherBll.setLiveFragment(this);
 
         mLiveBll.addBusinessBll(feedbackTeacherBll);

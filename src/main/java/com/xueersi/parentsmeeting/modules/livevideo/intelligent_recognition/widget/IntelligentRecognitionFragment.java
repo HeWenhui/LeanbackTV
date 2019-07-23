@@ -15,18 +15,18 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.top3.IntelligentRecognitionTop3View;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentLifecycleObserver;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view.IntelligentRecognitionPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view.IntelligentRecognitionPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.top3.IntelligentRecognitionTop3View;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
 
 public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private FragmentActivity mActivity;
 
-    private IntelligentRecognitionRecord mRecord;
+//    private IntelligentRecognitionRecord mRecord;
 
     private IntelligentRecognitionViewModel mViewModel;
 
@@ -36,15 +36,19 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
         return fragment;
     }
 
+    public static Fragment newInstance() {
+        Fragment fragment = new IntelligentRecognitionFragment();
+        return fragment;
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         logger.i("onAttach");
         mActivity = (FragmentActivity) context;
-        mRecord = getArguments().getParcelable("intelligentRecognitionRecord");
+//        mRecord = getArguments().getParcelable("intelligentRecognitionRecord");
         mViewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
-        mViewModel.setRecordData(mRecord);
+//        mViewModel.setRecordData(mRecord);
     }
 
     @Override
@@ -114,7 +118,7 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
             }
         });
     }
-
+    /** 添加Top3的页面 */
     private void performShowTop3() {
         if (isTop3DataSuccess && isTop3TimeUp) {
             if (getView() == null) {

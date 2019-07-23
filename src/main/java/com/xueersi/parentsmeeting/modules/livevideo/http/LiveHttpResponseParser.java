@@ -2299,6 +2299,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                            coursewareInfo.setMd5(coursewareJson.optString("md5"));
                                 coursewareInfo.setResourceMd5(coursewareJson.optString("resourceMd5"));
                                 coursewareInfo.setTemplateMd5(coursewareJson.optString("templateMd5"));
+
+                                if (coursewareJson.has("resource")) {
+                                    CoursewareInfoEntity.CourseWareIntelligentEntity intelligentEntity = new CoursewareInfoEntity.CourseWareIntelligentEntity();
+                                    intelligentEntity.setResource("resource");
+                                    coursewareInfo.setIntelligentEntity(intelligentEntity);
+                                }
                                 coursewareInfos.add(coursewareInfo);
                             }
                             liveCourseware.setCoursewareInfos(coursewareInfos);

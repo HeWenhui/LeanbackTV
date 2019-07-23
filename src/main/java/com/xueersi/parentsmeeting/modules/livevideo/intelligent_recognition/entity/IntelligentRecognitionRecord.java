@@ -19,11 +19,11 @@ public class IntelligentRecognitionRecord implements Parcelable {
     //直播0， 回放1
     private String isPlayBack;
     //第一次作答详细数据
-    private String answers;
+//    private String answers;
     //纠音详情
-    private String correctCase;
+//    private String correctCase;
     //重读详情
-    private String rereadCase;
+//    private String rereadCase;
     //题目时长
     private String answerTime;
     //使用的端
@@ -91,29 +91,29 @@ public class IntelligentRecognitionRecord implements Parcelable {
         this.isPlayBack = isPlayBack;
     }
 
-    public String getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(String answers) {
-        this.answers = answers;
-    }
-
-    public String getCorrectCase() {
-        return correctCase;
-    }
-
-    public void setCorrectCase(String correctCase) {
-        this.correctCase = correctCase;
-    }
-
-    public String getRereadCase() {
-        return rereadCase;
-    }
-
-    public void setRereadCase(String rereadCase) {
-        this.rereadCase = rereadCase;
-    }
+//    public String getAnswers() {
+//        return answers;
+//    }
+//
+//    public void setAnswers(String answers) {
+//        this.answers = answers;
+//    }
+//
+//    public String getCorrectCase() {
+//        return correctCase;
+//    }
+//
+//    public void setCorrectCase(String correctCase) {
+//        this.correctCase = correctCase;
+//    }
+//
+//    public String getRereadCase() {
+//        return rereadCase;
+//    }
+//
+//    public void setRereadCase(String rereadCase) {
+//        this.rereadCase = rereadCase;
+//    }
 
     public String getAnswerTime() {
         return answerTime;
@@ -154,9 +154,9 @@ public class IntelligentRecognitionRecord implements Parcelable {
         dest.writeString(this.stuId);
         dest.writeString(this.stuCouId);
         dest.writeString(this.isPlayBack);
-        dest.writeString(this.answers);
-        dest.writeString(this.correctCase);
-        dest.writeString(this.rereadCase);
+//        dest.writeString(this.answers);
+//        dest.writeString(this.correctCase);
+//        dest.writeString(this.rereadCase);
         dest.writeString(this.answerTime);
         dest.writeString(this.useClient);
         dest.writeString(this.useClientVer);
@@ -170,9 +170,9 @@ public class IntelligentRecognitionRecord implements Parcelable {
         this.stuId = in.readString();
         this.stuCouId = in.readString();
         this.isPlayBack = in.readString();
-        this.answers = in.readString();
-        this.correctCase = in.readString();
-        this.rereadCase = in.readString();
+//        this.answers = in.readString();
+//        this.correctCase = in.readString();
+//        this.rereadCase = in.readString();
         this.answerTime = in.readString();
         this.useClient = in.readString();
         this.useClientVer = in.readString();

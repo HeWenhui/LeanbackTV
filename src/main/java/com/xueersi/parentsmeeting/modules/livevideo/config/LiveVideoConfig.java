@@ -543,9 +543,11 @@ public class LiveVideoConfig {
     public static final String ART_TRIPLE_WONDERFUL_MOMENT = "https://live.chs.xueersi.com/ExamReport/uploadWonderfulMoment";
 
     /** 课后评价教师文案获取 */
-    public static String URL_LIVE_COURSE_GETEVALUATE = AppConfig.HTTP_HOST + "/science/LiveCourse/getEvaluateContentNew";
-
-    public static String URL_INTELLIGENT_SPEECH_SUBMIT = "https://app.arts.xueersi.com/v2/intellectVoiceFeedback/submitIntellectVoice";
-
-    public static String URL_INTELLIGENT_RECOGNITION_TOP3 = "https://app.arts.xuersi.com/v2/standLiveStatus/getSpeechEvalAnswerTeamRank";
+    public static final String URL_LIVE_COURSE_GETEVALUATE = AppConfig.HTTP_HOST + "/science/LiveCourse/getEvaluateContentNew";
+    /**  */
+    public static final String URL_INTELLIGENT_SPEECH_SUBMIT = "https://app.arts.xueersi.com/v2/intellectVoiceFeedback/submitIntellectVoice";
+    /**  */
+    public static final String URL_INTELLIGENT_RECOGNITION_TOP3 = "https://app.arts.xuersi.com/v2/standLiveStatus/getSpeechEvalAnswerTeamRank";
+    /** 智能语音反馈纠音及重读提交接口 wiki:https://app.arts.xueersi.com/v2/intellectVoiceFeedback/submitIntellectVoiceCorrect  */
+    public static final String URL_SUBMIT_INTELLECT_VOICE_CORRECT = "https://app.arts.xueersi.com/v2/intellectVoiceFeedback/submitIntellectVoiceCorrect";
 }

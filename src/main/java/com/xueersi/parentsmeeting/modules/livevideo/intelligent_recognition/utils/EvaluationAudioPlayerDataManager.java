@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils;
 
+import android.content.Context;
 import android.os.Environment;
 
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
@@ -18,7 +19,8 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.AUDIO_EVALUATE_PARENT_URL;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.AUDIO_EVALUATE_FILE_NAME;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.CACHE_FILE;
 
 public class EvaluationAudioPlayerDataManager {
 
@@ -48,15 +50,17 @@ public class EvaluationAudioPlayerDataManager {
 
     //    private List<Integer> list = Arrays.
     private static volatile EvaluationAudioPlayerDataManager instance;
+    private Context context;
 
-    private EvaluationAudioPlayerDataManager() {
+    private EvaluationAudioPlayerDataManager(Context context) {
+        this.context = context;
     }
 
-    public static EvaluationAudioPlayerDataManager getInstance() {
+    public static EvaluationAudioPlayerDataManager getInstance(Context context) {
         if (instance == null) {
             synchronized (EvaluationAudioPlayerDataManager.class) {
                 if (instance == null) {
-                    instance = new EvaluationAudioPlayerDataManager();
+                    instance = new EvaluationAudioPlayerDataManager(context);
                     instance.init();
                 }
             }
@@ -117,16 +121,9 @@ public class EvaluationAudioPlayerDataManager {
     }
 
     private void initAudioPath() {
-        String fileurl = AUDIO_EVALUATE_PARENT_URL;
+        AudioRespository audioRespository = new AudioRespository(context, CACHE_FILE);
         Observable.
-                just(fileurl).
-                filter(RxFilter.filterString()).
-                map(new Function<String, File>() {
-                    @Override
-                    public File apply(String s) throws Exception {
-                        return new File(s);
-                    }
-                }).
+                just(audioRespository.getAudioEvaluateFile(AUDIO_EVALUATE_FILE_NAME)).
                 filter(RxFilter.filterFile()).
                 subscribeOn(Schedulers.io())
                 .flatMap(new Function<File, ObservableSource<File>>() {
