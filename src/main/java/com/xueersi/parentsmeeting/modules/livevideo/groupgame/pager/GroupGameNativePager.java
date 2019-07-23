@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -553,7 +552,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         mParam.setRecogType(SpeechConfig.SPEECH_GROUP_GAME_EVALUATOR_OFFLINE);
         mParam.setLang(com.tal.speech.speechrecognizer.Constants.ASSESS_PARAM_LANGUAGE_EN);
         mParam.setStrEvaluator(content.toString());
-        Log.e("ckTrac","=====>GameNativePager_voice_start:"+content.toString());
         mParam.setLocalSavePath(saveVideoFile.getPath());
         mParam.setMultRef(false);
         mParam.setLearning_stage(learningStage);
