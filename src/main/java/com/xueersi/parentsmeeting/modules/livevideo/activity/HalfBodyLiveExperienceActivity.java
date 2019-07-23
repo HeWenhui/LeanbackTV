@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SimpleLiveBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -237,7 +238,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     /**
      * 体验课相关日志的埋点
      */
-    LiveAndBackDebug ums = new LiveAndBackDebug() {
+    LiveAndBackDebug ums = new SimpleLiveBackDebug() {
         @Override
         public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
             UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
@@ -742,7 +743,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
     private void initHalfBodyLiveMsgPager(RelativeLayout bottomContent) {
 
-        HalfBodyExpLiveMsgPager msgPager = new HalfBodyExpLiveMsgPager(this, ums,
+        HalfBodyExpLiveMsgPager msgPager = new HalfBodyExpLiveMsgPager(this,
                 liveMediaControllerBottom,
                 liveMessageLandEntities, null);
 

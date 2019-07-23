@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SimpleLiveBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -273,7 +274,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
     };
 
-    private class ExperkDebug implements LiveAndBackDebug {
+    private class ExperkDebug extends SimpleLiveBackDebug {
         ExperkDebug() {
             ProxUtil.getProxUtil().put(ExperienceLiveVideoActivity.this, LiveAndBackDebug.class, this);
         }

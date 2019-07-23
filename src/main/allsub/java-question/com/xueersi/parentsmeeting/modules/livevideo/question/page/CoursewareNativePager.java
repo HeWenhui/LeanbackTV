@@ -139,7 +139,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private StaticWeb staticWeb;
     /** 新课件是否是预加载 */
     private boolean ispreload;
-    private LiveAndBackDebug liveAndBackDebug;
+    private ContextLiveAndBackDebug liveAndBackDebug;
     /** 显示下方控制布局 */
     private boolean showControl = false;
     /** 在网页中嵌入js，只嵌入一次 */
@@ -203,6 +203,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             this.educationstage = detailInfo.getEducationstage();
         }
         liveAndBackDebug = new ContextLiveAndBackDebug(context);
+        liveAndBackDebug.addCommonData("isplayback", isPlayBack ? "1" : "0");
         mView = initView();
 //        initWebView();
 //        setErrorTip("H5课件加载失败，请重试");

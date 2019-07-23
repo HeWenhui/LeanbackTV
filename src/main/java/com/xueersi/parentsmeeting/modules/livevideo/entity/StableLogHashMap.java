@@ -25,6 +25,11 @@ public class StableLogHashMap {
         return this;
     }
 
+    public StableLogHashMap putAnal(String key, String value) {
+        analysis.put(key, value);
+        return this;
+    }
+
     /**
      * 收到上一步，期望是不是成功
      *
@@ -126,5 +131,10 @@ public class StableLogHashMap {
 
     public Map<String, String> getAnalysis() {
         return analysis;
+    }
+
+    public void putAll(StableLogHashMap stableLogHashMap) {
+        mData.putAll(stableLogHashMap.getData());
+        analysis.putAll(stableLogHashMap.getAnalysis());
     }
 }
