@@ -70,7 +70,7 @@ public class NewCourseLog {
      * 英语： [testid+testd]
      */
     public static void sno1back(LiveAndBackDebug liveAndBackDebug, String testid, int noticecode, boolean isTutor) {
-        StableLogHashMap logHashMap = new StableLogHashMap("live_platformtest");
+        StableLogHashMap logHashMap = new StableLogHashMap("publishPlatformtest");
         logHashMap.put("testid", testid);
         logHashMap.put("noticecode", "" + noticecode);
         logHashMap.put("sno", "1");
