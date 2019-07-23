@@ -203,6 +203,8 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     private void onBetterMeSuccess(boolean isNotice) {
         mGetInfo.getEnglishBetterMe().aimType = mBetterMeEntity.getAimType();
+        mGetInfo.getEnglishBetterMe().aimValue = mBetterMeEntity.getAimValue();
+        mGetInfo.getEnglishBetterMe().realTimeVal = "0";
         BetterExit.EnglishAchievent.receiveBetterMe(mContext, mBetterMeEntity, isNotice);
         if (isNotice) {
             if (mBetterMeEntity.isFirstReceive()) {
@@ -328,8 +330,8 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mAimRealTimeValEntity = aimRealTimeValEntity;
                     mGetInfo.getEnglishBetterMe().isDoneAim =  mAimRealTimeValEntity.isDoneAim();
                     mGetInfo.getEnglishBetterMe().aimType = mAimRealTimeValEntity.getType();
-                    mGetInfo.getEnglishBetterMe().realTimeVal = mAimRealTimeValEntity.getRealTimeVal();
                     mGetInfo.getEnglishBetterMe().aimValue = mAimRealTimeValEntity.getAimValue();
+                    mGetInfo.getEnglishBetterMe().realTimeVal = mAimRealTimeValEntity.getRealTimeVal();
                     BetterExit.EnglishAchievent.updateBetterMe(mContext, aimRealTimeValEntity, isShowBubble);
                 }
             }

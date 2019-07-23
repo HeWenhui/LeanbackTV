@@ -153,7 +153,8 @@ public class EnAchievePager extends LiveBasePager {
         if (englishBetterMe.isUseBetterMe && englishBetterMe.isArriveLate) {
             onBetterMeLate();
         }
-        if (englishBetterMe.aimType != null && englishBetterMe.realTimeVal != null && englishBetterMe.aimValue !=
+        if (englishBetterMe.isUseBetterMe && !englishBetterMe.isArriveLate && englishBetterMe.aimType != null &&
+                englishBetterMe.realTimeVal != null && englishBetterMe.aimValue !=
                 null) {
             AimRealTimeValEntity aimRealTimeValEntity = new AimRealTimeValEntity();
             aimRealTimeValEntity.setType(englishBetterMe.aimType);

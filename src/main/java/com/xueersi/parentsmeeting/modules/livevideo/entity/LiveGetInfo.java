@@ -1514,12 +1514,12 @@ public class LiveGetInfo {
         public String segmentType;
         public String star;
         public String aimNumber;
-
         public String segmentCount;
+
         public boolean isDoneAim;
         public String aimType;
-        public String realTimeVal;
         public String aimValue;
+        public String realTimeVal;
     }
 
     /**
