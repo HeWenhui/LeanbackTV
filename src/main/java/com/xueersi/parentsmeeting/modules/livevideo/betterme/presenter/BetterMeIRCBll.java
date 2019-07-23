@@ -5,7 +5,7 @@ import android.app.Activity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.OtherBllEntrance;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.BetterExit;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
@@ -94,7 +94,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     getBetterMe(false);
                 }
                 if (mAimRealTimeValEntity != null) {
-                    OtherBllEntrance.EnglishAchievent.updateBetterMe(mContext, mAimRealTimeValEntity, false);
+                    BetterExit.EnglishAchievent.updateBetterMe(mContext, mAimRealTimeValEntity, false);
                 } else {
                     updateBetterMe(false);
                 }
@@ -145,7 +145,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     getBetterMe(false);
                 }
             }
-            logger.d("onTopic(): teamPK: status = " + teamPKStatus);
+            logger.d("onTopic(): teamPK -> status = " + teamPKStatus);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -158,12 +158,12 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     synchronized public void getBetterMe(final boolean isNotice) {
         //小目标接口开关
         if (!isUseBetterMe) {
-            OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
+            BetterExit.EnglishTeamPK.startPK(mContext, isNotice);
             return;
         }
         //迟到
         if (isArriveLate) {
-            OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
+            BetterExit.EnglishTeamPK.startPK(mContext, isNotice);
             return;
         }
         if (isShowBetterMe) {
@@ -185,7 +185,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         getStuSegment(isNotice);
                     }
                 } else {
-                    OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
+                    BetterExit.EnglishTeamPK.startPK(mContext, isNotice);
                 }
             }
 
@@ -193,21 +193,21 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             public void onPmFailure(Throwable error, String msg) {
                 logger.i("getBetterMe:onPmFailure():error=" + msg);
                 super.onPmFailure(error, msg);
-                OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
+                BetterExit.EnglishTeamPK.startPK(mContext, isNotice);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 logger.i("getBetterMe:onPmError():error=" + responseEntity.getErrorMsg());
                 super.onPmError(responseEntity);
-                OtherBllEntrance.EnglishTeamPK.startPK(mContext,isNotice);
+                BetterExit.EnglishTeamPK.startPK(mContext,isNotice);
             }
         });
     }
 
     private void onBetterMeSuccess(boolean isNotice) {
         mGetInfo.getEnglishBetterMe().aimType = mBetterMeEntity.getAimType();
-        OtherBllEntrance.EnglishAchievent.receiveBetterMe(mContext, mBetterMeEntity, isNotice);
+        BetterExit.EnglishAchievent.receiveBetterMe(mContext, mBetterMeEntity, isNotice);
         if (isNotice) {
             if (mBetterMeEntity.isFirstReceive()) {
                 mBetterMeView.showIntroductionPager();
@@ -230,12 +230,12 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     synchronized public void getStuAimResult() {
         //小目标接口开关
         if (!isUseBetterMe) {
-            OtherBllEntrance.EnglishTeamPK.endPK(mContext);
+            BetterExit.EnglishTeamPK.endPK(mContext);
             return;
         }
         //迟到
         if (isArriveLate) {
-            OtherBllEntrance.EnglishTeamPK.endPK(mContext);
+            BetterExit.EnglishTeamPK.endPK(mContext);
             return;
         }
         String liveId = mLiveBll.getLiveId();
@@ -248,7 +248,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (mStuAimResultEntity != null) {
                     mBetterMeView.showCompleteTargetPager(mStuAimResultEntity);
                 } else {
-                    OtherBllEntrance.EnglishTeamPK.endPK(mContext);
+                    BetterExit.EnglishTeamPK.endPK(mContext);
                 }
             }
 
@@ -256,14 +256,14 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             public void onPmFailure(Throwable error, String msg) {
                 logger.i("getStuAimResult:onPmFailure():error=" + msg);
                 super.onPmFailure(error, msg);
-                OtherBllEntrance.EnglishTeamPK.endPK(mContext);
+                BetterExit.EnglishTeamPK.endPK(mContext);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 logger.i("getStuAimResult:onPmError():error=" + responseEntity.getErrorMsg());
                 super.onPmError(responseEntity);
-                OtherBllEntrance.EnglishTeamPK.endPK(mContext);
+                BetterExit.EnglishTeamPK.endPK(mContext);
             }
         });
     }
@@ -282,7 +282,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mGetInfo.getEnglishBetterMe().segmentCount = mStuSegmentEntity.getSumCount();
                     onBetterMeSuccess(isNotice);
                 } else {
-                    OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
+                    BetterExit.EnglishTeamPK.startPK(mContext, isNotice);
                 }
             }
 
@@ -290,14 +290,14 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             public void onPmFailure(Throwable error, String msg) {
                 logger.i("getStuSegment:onPmFailure():error=" + msg);
                 super.onPmFailure(error, msg);
-                OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
+                BetterExit.EnglishTeamPK.startPK(mContext, isNotice);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 logger.i("getStuSegment:onPmError():error=" + responseEntity.getErrorMsg());
                 super.onPmError(responseEntity);
-                OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
+                BetterExit.EnglishTeamPK.startPK(mContext, isNotice);
             }
         });
     }
@@ -331,7 +331,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (aimRealTimeValEntity != null) {
                     mAimRealTimeValEntity = aimRealTimeValEntity;
                     mGetInfo.getEnglishBetterMe().aimType = aimRealTimeValEntity.getType();
-                    OtherBllEntrance.EnglishAchievent.updateBetterMe(mContext, aimRealTimeValEntity, isShowBubble);
+                    BetterExit.EnglishAchievent.updateBetterMe(mContext, aimRealTimeValEntity, isShowBubble);
                 }
             }
         });

@@ -303,10 +303,10 @@ public class EnStandAchievePager extends LiveBasePager {
         String target = betterMeEntity.getAimValue();
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(betterMeEntity.getAimType())) {
             message.append(BetterMeConfig.CORRECTRATE);
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(betterMeEntity.getAimType())) {
             message.append(BetterMeConfig.PARTICIPATERATE);
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(betterMeEntity.getAimType())) {
             message.append(BetterMeConfig.TALKTIME);
             target = BetterMeUtil.secondToMinite(target);
@@ -334,12 +334,12 @@ public class EnStandAchievePager extends LiveBasePager {
         }
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
             message.append(BetterMeConfig.CORRECTRATE);
-            current = (int) (Double.valueOf(current) * 100) + "%";
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            current = Math.round(Double.valueOf(current) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
             message.append(BetterMeConfig.PARTICIPATERATE);
-            current = (int) (Double.valueOf(current) * 100) + "%";
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            current = Math.round(Double.valueOf(current) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
             message.append(BetterMeConfig.TALKTIME);
             current = BetterMeUtil.secondToMinite(current);

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.OtherBllEntrance;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.BetterExit;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
@@ -117,12 +117,12 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         //目标类型
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(mStuAimResultEntity.getAimType())) {
             tvAimType.setText(BetterMeConfig.CORRECTRATE);
-            reult = (int) (Double.valueOf(reult) * 100) + "%";
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            reult = Math.round(Double.valueOf(reult) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(mStuAimResultEntity.getAimType())) {
             tvAimType.setText(BetterMeConfig.PARTICIPATERATE);
-            reult = (int) (Double.valueOf(reult) * 100) + "%";
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            reult = Math.round(Double.valueOf(reult) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(mStuAimResultEntity.getAimType())) {
             tvAimType.setText(BetterMeConfig.TALKTIME);
             reult = BetterMeUtil.secondToMinite(reult);
@@ -231,7 +231,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
                     mCountDownTimer.cancel();
                 }
                 mOnpagerClose.onClose(BetterMeCompleteTargetPager.this);
-                OtherBllEntrance.EnglishTeamPK.endPK(mContext);
+                BetterExit.EnglishTeamPK.endPK(mContext);
             }
         });
         ivLevelIndroduction.setOnClickListener(new View.OnClickListener() {
@@ -263,7 +263,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         @Override
         public void onFinish() {
             mOnpagerClose.onClose(BetterMeCompleteTargetPager.this);
-            OtherBllEntrance.EnglishTeamPK.endPK(mContext);
+            BetterExit.EnglishTeamPK.endPK(mContext);
         }
     };
 
