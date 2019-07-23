@@ -256,7 +256,6 @@ public class NewIRCMessage implements IIRCMessage {
                     PMDefs.NetStatus.PMNetStatus_Unavailable == netStatusResp.netStatus ||
                     PMDefs.NetStatus.PMNetStatus_ServerFailed == netStatusResp.netStatus ||
                     PMDefs.NetStatus.PMNetStatus_DisConnected == netStatusResp.netStatus) {
-                lastTopicJson = "{}";
                 mDisconnectCount++;
                 mLogtf.d(SysLogLable.connectIRCDidFailed, "onDisconnect:count=" + mDisconnectCount + ",isQuitting=" + false + ",netstatus=" + netStatusResp.netStatus);
                 if (mIRCCallback != null) {
@@ -562,12 +561,23 @@ public class NewIRCMessage implements IIRCMessage {
             logHashMap.put("roomCode", "" + roomTopic.code);
             logHashMap.put("roomTopic", "" + roomTopic.topic);
             UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
-            try {
-                lastTopicJson = topic;
-                mLogtf.d(SysLogLable.receivedMessageOfTopic, "onTopic:channel=" + channel + ",topicIndex=" + topicIndex + ",topic=" + topic);
-            } catch (Exception e) {
-                LiveCrashReport.postCatchedException(TAG, e);
+            if (topicIndex == 0) {
+                try {
+                    mLogtf.d(SysLogLable.receivedMessageOfTopic, "onTopic:channel=" + channel + ",topicIndex=" + topicIndex + ",topic=" + topic);
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(TAG, e);
+                }
+            } else {
+                try {
+                    long before = System.currentTimeMillis();
+                    JSONObject diffJson = LiveJsonUtil.getDiffJson(new JSONObject(topic), new JSONObject(lastTopicJson));
+                    mLogtf.d(SysLogLable.receivedMessageOfTopic, "onTopic:channel=" + channel + ",topicIndex=" + topicIndex + ",time=" + (System.currentTimeMillis() - before) + ",difftopic=" + diffJson);
+                } catch (Exception e) {
+                    mLogtf.d(SysLogLable.receivedMessageOfTopic, "onTopic:channel=" + channel + ",topicIndex=" + topicIndex + ",topic=" + topic);
+                    LiveCrashReport.postCatchedException(TAG, e);
+                }
             }
+            lastTopicJson = topic;
             topicIndex++;
         }
 
