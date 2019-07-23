@@ -134,10 +134,6 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
     /** 聊天线程池 */
     protected ThreadPoolExecutor pool;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
-    //小英的献花
-    public final static int SMALL_ENGLISH = 1;
-    //其他部分的献花
-    public final static int OTHER_FLOWER = 2;
 
     public BaseLiveMessagePager(Context context, boolean isNewView) {
         super(context, isNewView);

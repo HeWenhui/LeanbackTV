@@ -100,7 +100,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     /** 聊天常用语 */
     private Button btMsgCommon;
     private RelativeLayout rlLivevideoCommonWord;
-    ListView lvCommonWord;
+    private ListView lvCommonWord;
     /** 献花，默认关闭 */
     private Button btMessageFlowers;
     /** 聊天，默认打开 */
@@ -133,16 +133,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private BaseLiveMediaControllerBottom liveMediaControllerBottom;
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     private ImageView ivExpressionCancle;
-    private Activity liveVideoActivity;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
-    private String liveId;
-    private String termId;
-    private View mFloatView;
-    private PopupWindow mPopupWindow;
     private long mOldTime = 0;//记录点击赠送按钮那一刻的时间
-    private CommonAdapter mCommonWordAdapter;
-    private User[] users = {};
     /** 是否统计用户发送消息 */
     private boolean debugMsg = false;
 
@@ -151,7 +144,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                                     liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity>
                                     otherLiveMessageEntities) {
         super(context);
-        liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
@@ -589,7 +581,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         words.add("2");
         words.add("1");
 
-        mCommonWordAdapter = new CommonAdapter<String>(words) {
+        CommonAdapter mCommonWordAdapter = new CommonAdapter<String>(words) {
             @Override
             public AdapterItemInterface<String> getItemView(Object type) {
                 return new CommonWordItem(mContext, this);
@@ -1287,11 +1279,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String
             recipientNick, String reason) {
 
-    }
-
-    public void setLiveTermId(String liveId, String termId) {
-        this.liveId = liveId;
-        this.termId = termId;
     }
 
     /** 被禁言 */

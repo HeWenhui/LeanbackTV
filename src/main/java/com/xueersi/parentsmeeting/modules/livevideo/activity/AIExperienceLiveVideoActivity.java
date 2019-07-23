@@ -846,9 +846,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.setIsRegister(true);
 
-        // 03.22 设置统计日志的公共参数
-        mLiveMessagePager.setLiveTermId(mVideoEntity.getLiveId(), mVideoEntity.getChapterId());
-
         // 隐藏锁屏按钮
         mLiveMessagePager.hideclock();
         rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
