@@ -8,7 +8,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.utils;
 public class BetterMeUtil {
     public static String secondToMinite(String second) {
         try {
-            int intSecond = Integer.valueOf(second);
+            double doubleSecond = Double.valueOf(second);
+            int intSecond = (int) (Math.round(doubleSecond));
             int min = intSecond / 60;
             int sec = intSecond % 60;
             String stringSec = "" + sec;
