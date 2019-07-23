@@ -64,13 +64,13 @@ public class NewCourseLog {
     }
 
     /**
-     * sno2 学生端接收发题指令
+     * sno1 回放发题
      * testid 理科+ 语文：
      * <p>
      * 英语： [testid+testd]
      */
     public static void sno1back(LiveAndBackDebug liveAndBackDebug, String testid, int noticecode, boolean isTutor) {
-        StableLogHashMap logHashMap = new StableLogHashMap("receiveH5Plat");
+        StableLogHashMap logHashMap = new StableLogHashMap("live_platformtest");
         logHashMap.put("testid", testid);
         logHashMap.put("noticecode", "" + noticecode);
         logHashMap.put("sno", "1");
