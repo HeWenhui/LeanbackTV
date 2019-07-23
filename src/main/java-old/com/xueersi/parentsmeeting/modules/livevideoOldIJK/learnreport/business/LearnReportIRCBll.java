@@ -71,7 +71,7 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
      */
     private synchronized void getLearnReport(final int from, final long delayTime) {
         XesMobAgent.liveLearnReport("request:" + from);
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        final String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveType=" + mLiveType + ",liveId=" + mLiveId + "," +
                 "delayTime=" + delayTime);
         getHttpManager().getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
@@ -151,7 +151,7 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
      * 提交教师评价
      */
     public synchronized void sendTeacherEvaluate(int[] score, final HttpCallBack requestCallBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mLogtf.d("sendTeacherEvaluate:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {

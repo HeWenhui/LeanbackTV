@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.redpackage.business;
 import android.app.Activity;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;

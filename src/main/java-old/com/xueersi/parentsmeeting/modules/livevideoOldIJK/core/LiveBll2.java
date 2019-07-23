@@ -353,7 +353,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
     // 初始化相关
     public void getInfo(LiveGetInfo getInfo) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mLogtf.d("getInfo:enstuId=" + enstuId + ",liveId=" + mLiveId);
         if (getInfo == null) {
             HttpCallBack callBack = new HttpCallBack(false) {

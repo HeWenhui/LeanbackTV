@@ -204,7 +204,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      */
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
@@ -227,7 +227,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 
     @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
@@ -245,7 +245,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 
     @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());

@@ -508,17 +508,17 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         getInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
         getInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
 
-        String stuName = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName())
-                ? UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance()
+        String stuName = TextUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())
+                ? LiveAppUserInfo.getInstance().getNickName() : UserBll.getInstance()
                 .getMyUserInfoEntity().getRealName();
         getInfo.setStuName(stuName);
-        getInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
-        getInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
+        getInfo.setNickname(LiveAppUserInfo.getInstance().getNickName());
+        getInfo.setHeadImgPath(LiveAppUserInfo.getInstance().getHeadImg());
         logger.i("====>getRoomInitData:"
-                + UserBll.getInstance().getMyUserInfoEntity().getRealName() + ":"
-                + UserBll.getInstance().getMyUserInfoEntity().getNickName() + ":" +
-                UserBll.getInstance().getMyUserInfoEntity().getChatName() + ":" +
-                UserBll.getInstance().getMyUserInfoEntity().getHeadImg()
+                + LiveAppUserInfo.getInstance().getRealName() + ":"
+                + LiveAppUserInfo.getInstance().getNickName() + ":" +
+                LiveAppUserInfo.getInstance().getChatName() + ":" +
+                LiveAppUserInfo.getInstance().getHeadImg()
 
         );
         return getInfo;

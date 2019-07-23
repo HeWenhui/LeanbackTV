@@ -12,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.RadioGroup;
 
 import com.xueersi.common.base.BasePager;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;

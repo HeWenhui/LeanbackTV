@@ -83,4 +83,16 @@ public class LiveAppUserInfo {
         }
         return showName;
     }
+
+    public String getSessionId() {
+        return UserBll.getInstance().getMyUserInfoEntity().getSessionId();
+    }
+
+    public String getChatName() {
+        return UserBll.getInstance().getMyUserInfoEntity().getChatName();
+    }
+
+    public String getGradeCode() {
+        return UserBll.getInstance().getMyUserInfoEntity().getGradeCode();
+    }
 }

@@ -8,7 +8,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
@@ -443,7 +442,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 httpCallBack);
 //        } else {
 //            getCourseHttpManager().saveTestRecords(
-//                    UserBll.getInstance().getMyUserInfoEntity().getEnstuId(),
+//                    LiveAppUserInfo.getInstance().getEnstuId(),
 //                    videoQuestionLiveEntity1.srcType,
 //                    videoQuestionLiveEntity1.id,
 //                    testAnswer,

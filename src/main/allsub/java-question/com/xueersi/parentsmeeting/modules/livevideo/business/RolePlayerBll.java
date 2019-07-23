@@ -10,7 +10,6 @@ import android.widget.RelativeLayout;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.PermissionItem;

@@ -22,8 +22,6 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -787,7 +785,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 dataJson.put("userid", LiveAppUserInfo.getInstance().getStuId());
                 dataJson.put("hasAnswer", isforce);
                 dataJson.put("liveId", liveId);
-                dataJson.put("gradeType", Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode()));
+                dataJson.put("gradeType", Integer.parseInt(LiveAppUserInfo.getInstance().getGradeCode()));
                 dataJson.put("deviceid", 8);
                 dataJson.put("totalScore", 0);
                 if (test.getMaxScore() != null && !test.getMaxScore().isEmpty()) {

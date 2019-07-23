@@ -839,7 +839,7 @@
 //            speech.setParameter(EvaluatorConstant.EXTRA_PID, "1300307");
 //            speech.setParameter(EvaluatorConstant.EXTRA_MULT_REF, "0");
 //            speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localPath);
-//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId
+//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId
 //                    ());
 //            speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, "b");
 //            startEvaluator(speech, listener, null);
@@ -862,7 +862,7 @@
 //            speech.setParameter(EvaluatorConstant.EXTRA_PID, "1300307");
 //            speech.setParameter(EvaluatorConstant.EXTRA_MULT_REF, "0");
 //            speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localPath);
-//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId
+//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId
 //                    ());
 //            speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, "b");
 //            startEvaluator(speech, listener, null, isChsMicrophone);
@@ -883,7 +883,7 @@
 //            speech.setParameter(EvaluatorConstant.EXTRA_PID, "1103813");
 //            speech.setParameter(EvaluatorConstant.EXTRA_MULT_REF, "0");
 //            speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localPath);
-//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId
+//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId
 //                    ());
 //            speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, "b");
 //            startEvaluator(speech, listener, null);
@@ -905,7 +905,7 @@
 //            speech.setParameter(EvaluatorConstant.EXTRA_POST_PROCESS, "0");
 //            speech.setParameter(EvaluatorConstant.EXTRA_MULT_REF, "0");
 //            speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localPath);
-//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId
+//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId
 //                    ());
 //            speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, "b");
 //            startEvaluator(speech, listener, null);

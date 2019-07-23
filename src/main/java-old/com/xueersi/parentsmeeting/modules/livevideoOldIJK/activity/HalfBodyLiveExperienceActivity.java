@@ -460,12 +460,12 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         getInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
         getInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
 
-        String stuName = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName())
-                ? UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance()
+        String stuName = TextUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())
+                ? LiveAppUserInfo.getInstance().getNickName() : UserBll.getInstance()
                 .getMyUserInfoEntity().getRealName();
         getInfo.setStuName(stuName);
-        getInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
-        getInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
+        getInfo.setNickname(LiveAppUserInfo.getInstance().getNickName());
+        getInfo.setHeadImgPath(LiveAppUserInfo.getInstance().getHeadImg());
         getInfo.setIsArts(isArts);
         return getInfo;
     }

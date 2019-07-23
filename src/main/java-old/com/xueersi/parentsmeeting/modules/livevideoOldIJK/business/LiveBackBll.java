@@ -323,7 +323,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         mGetInfo = liveGetInfo;
         liveGetInfo.setId(mVideoEntity.getLiveId());
         liveGetInfo.setUname(AppBll.getInstance().getAppInfoEntity().getChildName());
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         liveGetInfo.setStuId(userInfoEntity.getStuId());
         liveGetInfo.setStuCouId(stuCourId);
         if (liveVideoSAConfig != null) {
@@ -343,7 +343,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setTeacherId(mVideoEntity.getTutorTeacherId());
         liveGetInfo.setTeacherName(mVideoEntity.getTutorTeacherName());
         liveGetInfo.setTeacherIMG(mVideoEntity.getTutorTeacherImg());
-        MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity mMyInfo = LiveAppUserInfo.getInstance();
         if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
             liveGetInfo.setEn_name(mMyInfo.getEnglishName());
         } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
@@ -760,7 +760,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
@@ -777,7 +777,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
@@ -794,7 +794,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());

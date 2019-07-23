@@ -54,7 +54,7 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
             if (pattern == 2) {
                 String showName = "";
                 String headUrl = "";
-                MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+                MyUserInfoEntity mMyInfo = LiveAppUserInfo.getInstance();
                 if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
                     showName = mMyInfo.getEnglishName();
                 } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
@@ -87,7 +87,7 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
 
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
-                        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
                         // 网络加载数据
                         getCourseHttpManager().getLivePlayRedPacket(myUserInfoEntity.getEnstuId(), "" + operateId, liveId,
                                 new HttpCallBack(false) {
@@ -164,7 +164,7 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
     }
 
     public void getRedPacket(final DataLoadEntity dataLoadEntity, final String liveId, final String operateId, final AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         // 网络加载数据
         getCourseHttpManager().getRedPacket(myUserInfoEntity.getEnstuId(), operateId, liveId,
                 new HttpCallBack(dataLoadEntity) {
@@ -190,7 +190,7 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
     }
 
     public void getLivePlayRedPacket(final DataLoadEntity dataLoadEntity, final String liveId, final String operateId, final AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         // 网络加载数据
         getCourseHttpManager().getLivePlayRedPacket(myUserInfoEntity.getEnstuId(), operateId, liveId,
                 new HttpCallBack(dataLoadEntity) {

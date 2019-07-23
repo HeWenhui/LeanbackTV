@@ -9,7 +9,6 @@ import com.tal100.chatsdk.IChatClientListener;
 import com.tal100.chatsdk.IPeerChatListener;
 import com.tal100.chatsdk.IRoomChatListener;
 import com.tal100.chatsdk.PMDefs;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.log.LoggerFactory;
@@ -682,9 +681,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                 jsonObject.put("status", "on");
                 jsonObject.put("nonce", nonce);
                 String target = "s_" + mNickname;
-                sendMessage(target, UserBll.getInstance().getMyUserInfoEntity().getPsimId(), jsonObject.toString());
+                sendMessage(target, LiveAppUserInfo.getInstance().getPsimId(), jsonObject.toString());
                 target = "ws_" + mNickname;
-                sendMessage(target, UserBll.getInstance().getMyUserInfoEntity().getPsimId(), jsonObject.toString());
+                sendMessage(target, LiveAppUserInfo.getInstance().getPsimId(), jsonObject.toString());
                 //旁听日志
                 StableLogHashMap logHashMap = new StableLogHashMap("sendListenCmd");
                 logHashMap.put("status", "on");

@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter;
 import android.app.Activity;
 import android.view.View;
 
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.are.ContextManager;

@@ -108,7 +108,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
 
 
     private void nBLogin() {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         final String userid = userInfoEntity.getStuId();
         String nickName = userInfoEntity.getNickName();
         mNbHttpManager.nbLogin(mLiveId,userid,nickName, NbCourseWareConfig.USER_TYPE_STU, new HttpCallBack(){

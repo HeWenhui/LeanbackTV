@@ -215,7 +215,7 @@ public class RolePlayResultPager extends LiveBasePager {
             if (mContext instanceof Activity) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     if (!((Activity) mContext).isDestroyed()) {
-                        ImageLoader.with(mContext).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
+                        ImageLoader.with(mContext).load(LiveAppUserInfo.getInstance().getHeadImg())
                                 .into(civResultHeadImg);
                     }
                 }

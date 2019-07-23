@@ -174,7 +174,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
         getCourseHttpManager().saveTestRecords(
                 enstuId,
@@ -247,7 +247,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
     public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
         {
             String liveid = mVideoEntity.getLiveId();
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
             getCourseHttpManager().getExpeSpeechEval(enstuId, liveid, id, mVideoEntity.getSpeechEvalUrl(), new
                     HttpCallBack() {
 
@@ -343,7 +343,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
     @Override
     public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered
             isAnswered) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         getCourseHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(final ResponseEntity responseEntity) {

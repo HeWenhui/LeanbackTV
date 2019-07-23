@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -12,6 +11,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 
 import org.json.JSONArray;
 
@@ -103,7 +103,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
             }
             params.addBodyParam("useVoice", voice ? "1" : "0");
             params.addBodyParam("isRight", isRight ? "1" : "0");
-            params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+            params.addBodyParam("sessid", LiveAppUserInfo.getInstance().getSessionId());
             sendPost(liveUrl, params, requestCallBack);
         }
     }
@@ -194,7 +194,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 //        params.addBodyParam("enstuId", enStuId);
         params.addBodyParam("operateId", operateId);
         params.addBodyParam("classId", classId);
-        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+        params.addBodyParam("sessid", LiveAppUserInfo.getInstance().getSessionId());
         sendPost(LiveVideoConfig.URL_STUDY_GET_RED_PACKET, params, requestCallBack);
     }
 
@@ -210,7 +210,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         params.addBodyParam("operateId", operateId);
         params.addBodyParam("liveId", liveId);
-        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+        params.addBodyParam("sessid", LiveAppUserInfo.getInstance().getSessionId());
         sendPost(liveVideoSAConfigInner.URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLD, params, requestCallBack);
     }
 
@@ -371,7 +371,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 //        }
 //        params.addBodyParam("useVoice", voice ? "1" : "0");
 //        params.addBodyParam("isRight", isRight ? "1" : "0");
-//        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+//        params.addBodyParam("sessid", LiveAppUserInfo.getInstance().getSessionId());
 //        sendPost(url, params, requestCallBack);
 //    }
 
@@ -497,7 +497,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("hbTime", "" + hbTime);
         params.addBodyParam("systemName", "android");
         params.addBodyParam("fromType", "4");
-        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+        params.addBodyParam("sessid", LiveAppUserInfo.getInstance().getSessionId());
         sendPost(liveVideoSAConfigInner.URL_LIVE_VISITTIME, params, httpCallBack);
     }
 

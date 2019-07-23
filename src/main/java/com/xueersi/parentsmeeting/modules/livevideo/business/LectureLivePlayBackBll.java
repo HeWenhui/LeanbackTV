@@ -203,7 +203,7 @@ public class LectureLivePlayBackBll extends BaseBll {
 //            EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
 //            return;
 //        }
-//        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
 //        // 网络加载数据
 //        mCourseHttpManager.saveTestRecord(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
 //                liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {
@@ -396,7 +396,7 @@ public class LectureLivePlayBackBll extends BaseBll {
 //    public void getLiveLectureMsgs(final File dir, String channel, final String start, final
 //    ArrayList<VideoQuestionEntity> timeEntities, final LectureLivePlayBackVideoActivity.GetLiveLectureMsgs
 //                                           getLiveLectureMsgs) {
-//        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
 //        logger.i( "getLiveLectureMsgs:start=" + start);
 //        File file = new File(dir, start);
 //        LiveMessageGroupEntity liveMessageGroupEntity = getLiveLectureMsgsFromFile(file);
@@ -571,7 +571,7 @@ public class LectureLivePlayBackBll extends BaseBll {
 //            EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
 //            return;
 //        }
-//        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
 //        // 网络加载数据
 //        mCourseHttpManager.saveTestRecords(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
 //                liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {

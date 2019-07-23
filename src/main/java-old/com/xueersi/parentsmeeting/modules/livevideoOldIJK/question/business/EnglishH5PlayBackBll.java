@@ -541,7 +541,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
             final Boolean isRights = isRight;
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
             String userMode = "1";
             HttpCallBack httpCallBack = new HttpCallBack() {
                 @Override

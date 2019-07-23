@@ -3,10 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 
 import com.xueersi.common.base.BaseHttpBusiness;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 
 public class LiveTransferHttpManager  extends BaseHttpBusiness {
 
@@ -27,7 +27,7 @@ public class LiveTransferHttpManager  extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("isGetPlanInfo", "" + isGetPlanInfo);
-        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+        params.addBodyParam("sessid", LiveAppUserInfo.getInstance().getSessionId());
         sendPost(ShareBusinessConfig.URL_STUDY_GET_LIVE_COURSE_TEST_INFO_FOR_PLAYBACK, params, requestCallBack);
     }
     /**

@@ -32,8 +32,6 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechUtils;
-import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -473,7 +471,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
         civMatchHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
         civMatchHead.setBorderColor(Color.WHITE);
-        ImageLoader.with(ContextManager.getContext()).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
+        ImageLoader.with(ContextManager.getContext()).load(LiveAppUserInfo.getInstance().getHeadImg())
                 .into(civMatchHead);
 
         rlMatchPager.setVisibility(View.VISIBLE);
@@ -995,7 +993,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
 //            if (mContext instanceof Activity) {
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
 //                    if (!((Activity) mContext).isDestroyed()) {
-//                        ImageLoader.with(mContext).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
+//                        ImageLoader.with(mContext).load(LiveAppUserInfo.getInstance().getHeadImg())
 //                                .into(civResultHeadImg);
 //                    }
 //                }

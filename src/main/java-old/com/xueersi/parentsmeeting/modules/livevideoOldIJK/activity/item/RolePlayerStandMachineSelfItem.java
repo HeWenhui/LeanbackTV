@@ -249,7 +249,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
         mPosition = position;
         String imgUrl = entity.getRolePlayer().getHeadImg();
         if(TextUtils.isEmpty(imgUrl)){
-            imgUrl = UserBll.getInstance().getMyUserInfoEntity().getHeadImg();
+            imgUrl = LiveAppUserInfo.getInstance().getHeadImg();
         }
         updateUserHeadImage(civUserHead, imgUrl);
         civUserHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 0));

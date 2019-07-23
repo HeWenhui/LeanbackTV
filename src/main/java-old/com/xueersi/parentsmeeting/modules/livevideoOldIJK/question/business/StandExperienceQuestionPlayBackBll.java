@@ -131,7 +131,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
     public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
             onSpeechEval) {
         String liveid = mVideoEntity.getLiveId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         HttpCallBack httpCallBack = new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -166,7 +166,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
     @Override
     public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
         String liveid = mVideoEntity.getLiveId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         HttpCallBack httpCallBack = new HttpCallBack() {
 
             @Override
@@ -211,7 +211,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
     @Override
     public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
         String liveid = mVideoEntity.getLiveId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
 //        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer,
         HttpCallBack httpCallBack = new HttpCallBack(false) {
             @Override
@@ -249,7 +249,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         HttpCallBack httpCallBack = new HttpCallBack(loadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -314,7 +314,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
 //                    httpCallBack);
 //        } else {
         getCourseHttpManager().saveTestRecords(
-                UserBll.getInstance().getMyUserInfoEntity().getEnstuId(),
+                LiveAppUserInfo.getInstance().getEnstuId(),
                 videoQuestionLiveEntity1.srcType,
                 videoQuestionLiveEntity1.id,
                 testAnswer,

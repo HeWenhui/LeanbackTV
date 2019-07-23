@@ -36,7 +36,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
@@ -512,17 +511,16 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         getInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
         getInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
 
-        String stuName = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName())
-                ? UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance()
-                .getMyUserInfoEntity().getRealName();
+        String stuName = TextUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())
+                ? LiveAppUserInfo.getInstance().getNickName() : LiveAppUserInfo.getInstance().getRealName();
         getInfo.setStuName(stuName);
-        getInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
-        getInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
+        getInfo.setNickname(LiveAppUserInfo.getInstance().getNickName());
+        getInfo.setHeadImgPath(LiveAppUserInfo.getInstance().getHeadImg());
         logger.i("====>getRoomInitData:"
-                + UserBll.getInstance().getMyUserInfoEntity().getRealName() + ":"
-                + UserBll.getInstance().getMyUserInfoEntity().getNickName() + ":" +
-                UserBll.getInstance().getMyUserInfoEntity().getChatName() + ":" +
-                UserBll.getInstance().getMyUserInfoEntity().getHeadImg()
+                + LiveAppUserInfo.getInstance().getRealName() + ":"
+                + LiveAppUserInfo.getInstance().getNickName() + ":" +
+                LiveAppUserInfo.getInstance().getChatName() + ":" +
+                LiveAppUserInfo.getInstance().getHeadImg()
 
         );
         return getInfo;

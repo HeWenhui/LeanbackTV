@@ -103,7 +103,7 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
 
     private void submitNovicGuide() {
         livePlayBackHttpManager = new LivePlayBackHttpManager(mContext);
-        livePlayBackHttpManager.sumbitExperienceNoviceGuide(UserBll.getInstance().getMyUserInfoEntity()
+        livePlayBackHttpManager.sumbitExperienceNoviceGuide(LiveAppUserInfo.getInstance()
                 .getStuId(), mVideoEntity.getChapterId(), mVideoEntity.getSubjectId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

@@ -883,7 +883,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
             getHttpManager().getQuestion(enstuId, mGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), new
                     HttpCallBack() {
                         @Override
@@ -911,7 +911,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         @Override
         public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity,
                                          String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
             mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                     videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
                     + testAnswer);
@@ -1023,7 +1023,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         @Override
         public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
             String liveid = mGetInfo.getId();
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
             getHttpManager().getSpeechEval(enstuId, liveid, id, new HttpCallBack() {
 
                 @Override
@@ -1055,7 +1055,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         @Override
         public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval onSpeechEval) {
             String liveid = mGetInfo.getId();
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
             getHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack(false) {
 
                 @Override
@@ -1081,7 +1081,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         @Override
         public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
             String liveid = mGetInfo.getId();
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
             if (LiveVideoConfig.isNewArts) {
                 getHttpManager().sendSpeechEvalResultNewArts(enstuId, liveid, id, stuAnswer, isSubmit, new HttpCallBack(false) {
 
@@ -1177,7 +1177,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
             if (LiveVideoConfig.isNewArts) {
                 getHttpManager().speechNewArtEvaluateIsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
                     @Override

@@ -98,7 +98,7 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
                 layoutParams.topMargin = SizeUtils.Dp2Px(activity,10);
                 llUserHeadImage.setLayoutParams(layoutParams);
                 llUserHeadImage.setVisibility(View.VISIBLE);
-                ImageLoader.with(activity).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civUserHeadImage);
+                ImageLoader.with(activity).load(LiveAppUserInfo.getInstance().getHeadImg()).into(civUserHeadImage);
 
             }
         } else if( llUserHeadImage!=null){

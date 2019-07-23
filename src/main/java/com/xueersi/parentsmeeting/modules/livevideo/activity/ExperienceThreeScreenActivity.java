@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.event.AppEvent;
@@ -999,12 +998,11 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         mGetInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
         mGetInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
 
-        String stuName = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName())
-                ? UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance()
-                .getMyUserInfoEntity().getRealName();
+        String stuName = TextUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())
+                ? LiveAppUserInfo.getInstance().getNickName() : LiveAppUserInfo.getInstance().getRealName();
         mGetInfo.setStuName(stuName);
-        mGetInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
-        mGetInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
+        mGetInfo.setNickname(LiveAppUserInfo.getInstance().getNickName());
+        mGetInfo.setHeadImgPath(LiveAppUserInfo.getInstance().getHeadImg());
 
         mGetInfo.getStudentLiveInfo().setSignStatus(expLiveInfo.getIsSignIn());
     }

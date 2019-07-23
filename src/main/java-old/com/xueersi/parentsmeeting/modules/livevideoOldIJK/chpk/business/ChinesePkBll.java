@@ -322,7 +322,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         };
         if (primary) {
             getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
-                    roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), callBack);
+                    roomInitInfo.getStuId(), LiveAppUserInfo.getInstance().getPsimId(), callBack);
         } else {
             mHttpManager.getCHTeamInfo(isHalfBodyLiveRoom(), roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo().getTeamId(), roomInitInfo.getUseSkin(), callBack);
         }
@@ -736,7 +736,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             //获得旧的数据
             final TeamPkTeamInfoEntity saveTeamInfoEntity = getTeamPkTeamInfo();
             getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
-                    roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
+                    roomInitInfo.getStuId(), LiveAppUserInfo.getInstance().getPsimId(), new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             TeamPkTeamInfoEntity teamInfoEntityres = parseTeamInfoPrimary(responseEntity);
@@ -1237,7 +1237,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 //        TeamPkLog.clickFastEnter(mLiveBll);
         if (primaryClass) {
             getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
-                    roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
+                    roomInitInfo.getStuId(), LiveAppUserInfo.getInstance().getPsimId(), new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             TeamPkTeamInfoEntity teamInfoEntityres = parseTeamInfoPrimary(responseEntity);
