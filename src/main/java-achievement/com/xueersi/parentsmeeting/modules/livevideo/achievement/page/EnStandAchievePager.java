@@ -185,8 +185,18 @@ public class EnStandAchievePager extends LiveBasePager {
 //                }
             }
         });
-        if (mLiveGetInfo.getEnglishBetterMe().isArriveLate) {
+        LiveGetInfo.EnglishBetterMe englishBetterMe = mLiveGetInfo.getEnglishBetterMe();
+        if (englishBetterMe.isUseBetterMe && englishBetterMe.isArriveLate) {
             onBetterMeLate();
+        }
+        if (englishBetterMe.aimType != null && englishBetterMe.realTimeVal != null && englishBetterMe.aimValue !=
+                null) {
+            AimRealTimeValEntity aimRealTimeValEntity = new AimRealTimeValEntity();
+            aimRealTimeValEntity.setType(englishBetterMe.aimType);
+            aimRealTimeValEntity.setRealTimeVal(englishBetterMe.realTimeVal);
+            aimRealTimeValEntity.setAimValue(englishBetterMe.aimValue);
+            aimRealTimeValEntity.setDoneAim(englishBetterMe.isDoneAim);
+            onBetterMeUpdate(aimRealTimeValEntity, false);
         }
     }
 
@@ -270,6 +280,7 @@ public class EnStandAchievePager extends LiveBasePager {
         if(isShowBubble){
             updateBetterMeBubble(aimRealTimeValEntity);
         }
+        mAimRealTimeValEntity = aimRealTimeValEntity;
     }
 
     /**
@@ -347,7 +358,6 @@ public class EnStandAchievePager extends LiveBasePager {
         }
         message.append("当前").append(current).append(" ").append("目标").append(target);
         showBetterMeBubble(message.toString());
-        mAimRealTimeValEntity = aimRealTimeValEntity;
     }
 
     /**

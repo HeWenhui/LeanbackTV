@@ -89,14 +89,9 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 onQuestionEnd();
                 break;
             case XESCODE.MODECHANGE:{
-                //为兼容批调场次，需自己监听切流
+                //如果辅导老师没有发小目标，主讲老师切流
                 if (!teamPKStatus && LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
                     getBetterMe(false);
-                }
-                if (mAimRealTimeValEntity != null) {
-                    BetterExit.EnglishAchievent.updateBetterMe(mContext, mAimRealTimeValEntity, false);
-                } else {
-                    updateBetterMe(false);
                 }
             }
             default:
@@ -120,12 +115,13 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         //从本地读取本场是否开启了小目标
-        isShowBetterMe = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_OPEN, "", ShareDataManager
-                .SHAREDATA_USER).equals(mGetInfo.getId());
         mBetterMeView.setRootView(mRootView);
         this.isUseBetterMe = getInfo.getEnglishBetterMe().isUseBetterMe;
         this.isArriveLate = getInfo.getEnglishBetterMe().isArriveLate;
         logger.d("isUseBetterMe = " + isUseBetterMe + "; isArriveLate = " + isArriveLate);
+        isShowBetterMe = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_OPEN, "", ShareDataManager
+                .SHAREDATA_USER).equals(mGetInfo.getId());
+        //如果辅导老师没有发小目标，并且进入直播间是主讲态
         if (!teamPKStatus && LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
             getBetterMe(false);
         }
@@ -145,7 +141,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     getBetterMe(false);
                 }
             }
-            logger.d("onTopic(): teamPK -> status = " + teamPKStatus);
+            logger.d("onTopic(): teamPK:status = " + teamPKStatus);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -201,7 +197,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logger.i("getBetterMe:onPmError():error=" + responseEntity.getErrorMsg());
                 super.onPmError(responseEntity);
                 BetterExit.EnglishTeamPK.startPK(mContext,isNotice);
-            }
+        }
         });
     }
 
@@ -330,7 +326,10 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         (responseEntity);
                 if (aimRealTimeValEntity != null) {
                     mAimRealTimeValEntity = aimRealTimeValEntity;
-                    mGetInfo.getEnglishBetterMe().aimType = aimRealTimeValEntity.getType();
+                    mGetInfo.getEnglishBetterMe().isDoneAim =  mAimRealTimeValEntity.isDoneAim();
+                    mGetInfo.getEnglishBetterMe().aimType = mAimRealTimeValEntity.getType();
+                    mGetInfo.getEnglishBetterMe().realTimeVal = mAimRealTimeValEntity.getRealTimeVal();
+                    mGetInfo.getEnglishBetterMe().aimValue = mAimRealTimeValEntity.getAimValue();
                     BetterExit.EnglishAchievent.updateBetterMe(mContext, aimRealTimeValEntity, isShowBubble);
                 }
             }
