@@ -59,7 +59,9 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
     private String testPaperUrl;
     private String stuCouId;
 
-    public SubjectResultX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, BaseQuestionWebInter.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
+    public SubjectResultX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
+                                BaseQuestionWebInter.StopWebQuestion questionBll, String testPaperUrl, String stuId,
+                                String liveid, String testId, String stuCouId) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.questionBll = questionBll;
@@ -117,10 +119,10 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
         ((AnimationDrawable) ivLoading.getBackground()).start();
 //        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName;
-        if(LiveVideoConfig.isNewArts){
-            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId + "&tal_token=" + UserBll.getInstance().getTalToken();
+        if (LiveVideoConfig.isNewArts) {
+            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId;
 //            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId;
-            Log.e("Duncan","examUrl:" + examUrl);
+            Log.e("Duncan", "examUrl:" + examUrl);
         } else {
             examUrl = testPaperUrl + "/" + liveid + "?testId=" + testId
                     + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;
@@ -133,17 +135,17 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
         liveHttpManager.sendGetNoBusiness(examUrl, params, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                logger.d("onFailure",e);
+                logger.d("onFailure", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String r = response.body().string();
-                logger.d("onResponse:r="+r);
+                logger.d("onResponse:r=" + r);
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        wvSubjectWeb.loadDataWithBaseURL("",r,"text/html", "UTF-8", "");
+                        wvSubjectWeb.loadDataWithBaseURL("", r, "text/html", "UTF-8", "");
                     }
                 });
             }
@@ -173,7 +175,8 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
     public class MyWebChromeClient extends WebChromeClient {
 //        @Override
 //        public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-//            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, MESSAGE_VERIFY_TYPE);
+//            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext,
+//            mBaseApplication, false, MESSAGE_VERIFY_TYPE);
 //            verifyCancelAlertDialog.initInfo(message);
 //            verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
 //                @Override
@@ -245,7 +248,8 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             this.failingUrl = failingUrl;
-            UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
+            UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_WEBVIEW_ERROR,
+                    TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
                     "&&," + description);
             mLogtf.i("onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
 //            super.onReceivedError(view, errorCode, description, failingUrl);

@@ -583,7 +583,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("answers", testAnswer);
         params.addBodyParam("isPlayBack", "1");
         params.addBodyParam("isForce", isSubmit);
-        params.addBodyParam("tal_token", UserBll.getInstance().getTalToken());
         sendPost(url, params, requestCallBack);
     }
 

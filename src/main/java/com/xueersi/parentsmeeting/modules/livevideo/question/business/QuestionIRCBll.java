@@ -843,8 +843,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         sb.append(url).append("?liveId=").append(mLiveId)
                 .append("&testId=").append(id).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
-                .getStuId())
-                .append("&tal_token=").append(UserBll.getInstance().getTalToken());
+                .getStuId());
         return sb.toString();
     }
 
