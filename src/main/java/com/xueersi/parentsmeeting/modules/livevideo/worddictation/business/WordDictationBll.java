@@ -13,6 +13,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.XueErSiRouter;
@@ -25,6 +26,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.worddictation.entity.WordStatisticInfo;
 import com.xueersi.parentsmeeting.share.business.dctx.DictationConfig;
 import com.xueersi.parentsmeeting.share.business.dctx.DictationQuery;
@@ -72,7 +74,7 @@ public class WordDictationBll implements WordDictationAction {
                 XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
             }else {
                 // 没有作答记录，直接进入引导页
-                RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers);
+                RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers, UserBll.getInstance().getMyUserInfoEntity().getStuId());
                 bundle.putSerializable("data", recognizeFlow);
                 bundle.putString("what","Launch");
                 XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
@@ -86,7 +88,7 @@ public class WordDictationBll implements WordDictationAction {
                 XueErSiRouter.startModule(activity, "/dictation/MiddleResult", bundle);
             }else {
                 // 没有作答记录，直接进入引导页
-                RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers);
+                RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers, UserBll.getInstance().getMyUserInfoEntity().getStuId());
                 bundle.putSerializable("data", recognizeFlow);
                 bundle.putString("what","MiddleLaunch");
                 XueErSiRouter.startModule(activity, "/dictation/MiddleLaunch", bundle);
