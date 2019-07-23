@@ -477,11 +477,13 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 if (LiveQueConfig.isGroupGame(detailInfo.type)) {
                     getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, liveGetInfo.getStuId(), detailInfo.type, callBack);
                 } else {
-                    EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
-                    String classId = liveGetInfo.getStudentLiveInfo().getClassId();
-                    String[] res = getSrcType(englishH5Entity);
-                    getCourseWareHttpManager().getCourseWareTests(detailInfo, liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                            englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce, "0", callBack);
+                    getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
+
+//                    EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+//                    String classId = liveGetInfo.getStudentLiveInfo().getClassId();
+//                    String[] res = getSrcType(englishH5Entity);
+//                    getCourseWareHttpManager().getCourseWareTests(detailInfo, liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+//                            englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce, "0", callBack);
                 }
             }
 //            else if (LiveVideoSAConfig.ART_SEC == liveBackBll.getIsArts()){
