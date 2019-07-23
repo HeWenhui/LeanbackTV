@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
@@ -445,7 +446,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     if (englishH5Entity.getLiveType() == LiveVideoConfig.ExperiencLiveType.HALF_BODY) {
                         mLoadUrls = englishH5Entity.getUrl();
                     } else {
-                        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                        String stuId = LiveAppUserInfo.getInstance().getStuId();
                         // 一题多发的课件预加载(直播回放)
                         String packageId = "";
                         String packageSource = "";

@@ -988,7 +988,7 @@
 //        speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, strEvaluator);
 //        speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localSavePath);
 //        speech.setParameter(EvaluatorConstant.EXTRA_HEAD_COMPRESS, compress);
-//        speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId());
+//        speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId());
 //        speech.setParameter(EvaluatorConstant.EXTRA_LEARN_STAGE, "");
 //        startEvaluator(speech, listener, strEvaluator);
 //    }
@@ -1068,7 +1068,7 @@
 //        speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, strEvaluator);
 //        speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localSavePath);
 //        speech.setParameter(EvaluatorConstant.EXTRA_HEAD_COMPRESS, compress);
-//        speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId());
+//        speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId());
 //        speech.setParameter(EvaluatorConstant.EXTRA_LEARN_STAGE, "");
 //        startEvaluator(speech, listener, strEvaluator);
 //    }

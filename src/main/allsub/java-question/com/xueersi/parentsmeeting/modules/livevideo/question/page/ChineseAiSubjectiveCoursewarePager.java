@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
@@ -783,7 +784,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     rightAnswerContent.put(emptyJson);
                 }
                 dataJson.put("testid", test.getId());
-                dataJson.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                dataJson.put("userid", LiveAppUserInfo.getInstance().getStuId());
                 dataJson.put("hasAnswer", isforce);
                 dataJson.put("liveId", liveId);
                 dataJson.put("gradeType", Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode()));

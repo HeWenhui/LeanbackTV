@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.pager.ExperienceGuidePager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
@@ -103,8 +104,7 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
 
     private void submitNovicGuide() {
         livePlayBackHttpManager = new LivePlayBackHttpManager(mContext);
-        livePlayBackHttpManager.sumbitExperienceNoviceGuide(UserBll.getInstance().getMyUserInfoEntity()
-                .getStuId(), mVideoEntity.getChapterId(), mVideoEntity.getSubjectId(), new HttpCallBack(false) {
+        livePlayBackHttpManager.sumbitExperienceNoviceGuide(LiveAppUserInfo.getInstance().getStuId(), mVideoEntity.getChapterId(), mVideoEntity.getSubjectId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.i("submitNovicGuide");

@@ -16,6 +16,7 @@ import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.util.LoadSoCallBack;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 
@@ -106,7 +107,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
                         logger.d("init:result=" + result + ",isStart=" + isStart);
                         if (result) {
                             byte[] pcmdata = new byte[10];
-                            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                            String stuId = LiveAppUserInfo.getInstance().getStuId();
                             int enrollIvector = speakerRecognitionerInterface.
                                     enrollIvector(pcmdata, pcmdata.length, index++, stuId, false);
                             logger.d("init:stuId=" + stuId + ",enrollIvector=" + enrollIvector);
@@ -192,8 +193,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
                     Log.d(TAG, "start:destory=" + destory + ",isStart=" + isStart);
                     return;
                 }
-                MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-                String stuId = userInfoEntity.getStuId();
+                String stuId = LiveAppUserInfo.getInstance().getStuId();
                 if (mAudioRecord == null) {
                     try {
                         initAudioRecorder();

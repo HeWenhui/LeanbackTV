@@ -12,6 +12,7 @@ import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import java.io.File;
@@ -50,7 +51,7 @@ public class ChsSpeakLog {
      */
     public static  void uploadLOG(Context mContext,final LiveAndBackDebug liveAndBackDebug,String testid, String assessContent, String liveId, File saveVideoFile) {
         final StableLogHashMap mData = new StableLogHashMap("uploadCloud");
-        mData.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        mData.put("userid", LiveAppUserInfo.getInstance().getStuId());
         mData.put("liveid", liveId);
         mData.put("testid", testid);
         mData.put("assessContent", assessContent);

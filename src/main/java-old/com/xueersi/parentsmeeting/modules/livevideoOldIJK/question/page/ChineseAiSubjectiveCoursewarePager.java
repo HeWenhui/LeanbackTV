@@ -789,7 +789,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     rightAnswerContent.put(emptyJson);
                 }
                 dataJson.put("testid", test.getId());
-                dataJson.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                dataJson.put("userid", LiveAppUserInfo.getInstance().getStuId());
                 dataJson.put("hasAnswer", isforce);
                 dataJson.put("liveId", liveId);
                 dataJson.put("gradeType", Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode()));

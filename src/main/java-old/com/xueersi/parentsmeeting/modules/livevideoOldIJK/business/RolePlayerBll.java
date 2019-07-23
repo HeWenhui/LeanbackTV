@@ -376,7 +376,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }
 
         mWebSocket = new WebSocketConn();
-        webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), AppBll
+        webSocketUrl = String.format(webSocketUrl, LiveAppUserInfo.getInstance().getStuId(), AppBll
                 .getInstance().getUserToken(), mLiveId, AppBll.getInstance().getUserRfh());
         //webSocketUrl = String.format(webSocketUrl, "1237", "1111111", "1234");
         logger.i( "websocket:" + webSocketUrl);

@@ -438,7 +438,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     if (englishH5Entity.getLiveType() == LiveVideoConfig.ExperiencLiveType.HALF_BODY) {
                         mLoadUrls = englishH5Entity.getUrl();
                     } else {
-                        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                        String stuId = LiveAppUserInfo.getInstance().getStuId();
                         // 一题多发的课件预加载(直播回放)
                         String packageId = "";
                         String packageSource = "";

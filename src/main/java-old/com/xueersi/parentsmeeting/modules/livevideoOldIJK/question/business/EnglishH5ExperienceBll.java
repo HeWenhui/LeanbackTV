@@ -167,7 +167,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                                            String testAnswer, String courseware_type, String isSubmit, double
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
-            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+            String stuId = LiveAppUserInfo.getInstance().getStuId();
             String userMode = "1";
             String isArts = String.valueOf(liveBackBll.getIsArts());
             getCourseHttpManager().submitExperienceCourseWareH5(

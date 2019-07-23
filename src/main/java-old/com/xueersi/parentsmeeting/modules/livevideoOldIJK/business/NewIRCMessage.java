@@ -660,7 +660,7 @@ public class NewIRCMessage implements IIRCMessage {
                 logHashMap.put("PsAppClientKey", myUserInfoEntity.getPsAppClientKey());
                 logHashMap.put("workspace", workSpaceDir.getAbsolutePath());
                 logHashMap.put("time", "" + System.currentTimeMillis());
-                logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                logHashMap.put("userid", LiveAppUserInfo.getInstance().getStuId());
                 logHashMap.put("where", "NewIRCMessage");
                 logHashMap.put("liveId", mLiveInfo.getId());
                 liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());

@@ -3,12 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.AnswerEntity;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.entity.ReleaseedInfos;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
@@ -20,6 +18,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -53,7 +52,6 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
     public VideoResultEntity deductStuGoldParser(String id, String stuCouId, ResponseEntity responseEntity) {
         VideoResultEntity entity = new VideoResultEntity();
         try {
-            MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
             Map<String, VideoSectionEntity> mapSection = new HashMap<String, VideoSectionEntity>();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
 //            MediaPlayer.isPSIJK = "1".equals(jsonObject.optString("isNewSDK")) &&
@@ -109,14 +107,14 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
                     section.setSpeechEvalUrl(sectionJson.optString("speechEvalUrl"));
                     speechEvalUrl = sectionJson.optString("speechEvalUrl");
                     List<VideoQuestionEntity> questionLst = parseEvent(sectionJson, isArts, stuCouId,
-                            sectionId, myUserInfoEntity.getStuId(), entity);
+                            sectionId, LiveAppUserInfo.getInstance().getStuId(), entity);
                     section.setLstVideoQuestionEntity(questionLst);
                     mapSection.put(sectionJson.optString("id"), section);
 
 
                     //解析辅导老师信息
                     VideoSectionEntity tutorEntity = parseTutorSetionEntity(entity, id, jsonObject, url, isArts,
-                            stuCouId, myUserInfoEntity.getStuId()
+                            stuCouId, LiveAppUserInfo.getInstance().getStuId()
                             , mapSection, liveInfo,sectionJson);
                     if (tutorEntity != null) {
                         tutorEntity.setvStuCourseID(sectionJson.optString("courseId"));

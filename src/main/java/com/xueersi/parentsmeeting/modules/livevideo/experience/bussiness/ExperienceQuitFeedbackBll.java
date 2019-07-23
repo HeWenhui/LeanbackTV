@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.pager.ExperienceQuitFeedbackPager;
@@ -165,8 +166,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
             }
         }
         content = content.substring(0, content.length() - 1);
-        livePlayBackHttpManager.sendExperienceQuitFeedback(UserBll.getInstance().getMyUserInfoEntity()
-                .getStuId(), mVideoEntity.getChapterId(), content, new HttpCallBack(false) {
+        livePlayBackHttpManager.sendExperienceQuitFeedback(LiveAppUserInfo.getInstance().getStuId(), mVideoEntity.getChapterId(), content, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.i("success" + responseEntity.toString());

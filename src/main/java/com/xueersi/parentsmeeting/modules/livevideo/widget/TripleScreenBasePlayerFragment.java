@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import java.io.IOException;
@@ -191,7 +192,7 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                     String userId = null;
                                     try {
                                         userName = AppBll.getInstance().getAppInfoEntity().getChildName();
-                                        userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        userId = LiveAppUserInfo.getInstance().getStuId();
                                         if (TextUtils.isEmpty(userName)) {
                                             userName = "";
                                         }

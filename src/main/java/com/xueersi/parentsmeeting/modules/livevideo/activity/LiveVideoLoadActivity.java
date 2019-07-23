@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -212,7 +213,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         finish();
                         return;
                     }
-                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    String stuId = LiveAppUserInfo.getInstance().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                     finish();
@@ -255,7 +256,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         return;
                     }*/
 
-                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    String stuId = LiveAppUserInfo.getInstance().getStuId();
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
 //                    mGetInfo.setPattern(1);
                     bundle.putString("mode", mGetInfo.getMode());

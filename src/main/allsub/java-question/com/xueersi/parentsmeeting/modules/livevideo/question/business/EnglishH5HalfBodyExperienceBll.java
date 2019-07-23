@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
@@ -164,7 +165,7 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
             return "";
         }
         StringBuilder stringBuilder = new StringBuilder();
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        String stuId = LiveAppUserInfo.getInstance().getStuId();
         String classTestId = "";
         String packageId = "";
         String packageSource = "";
@@ -227,7 +228,7 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
                                            String testAnswer, String courseware_type, String isSubmit, double
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
-            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+            String stuId = LiveAppUserInfo.getInstance().getStuId();
             String userMode = "1";
             String isArts = String.valueOf(liveBackBll.getIsArts());
             getCourseHttpManager().submitExperienceCourseWareH5(

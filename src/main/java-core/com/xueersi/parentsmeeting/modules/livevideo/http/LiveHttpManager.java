@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
@@ -1186,7 +1187,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      */
     public void saveLiveMark(String liveId, String type, String time, String url, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        String stuId = LiveAppUserInfo.getInstance().getStuId();
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("curTime", time);
         params.addBodyParam("imageUrl", url);
@@ -1207,7 +1208,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      */
     public void getMarkPoints(String liveId, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("stuId", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        params.addBodyParam("stuId", LiveAppUserInfo.getInstance().getStuId());
         params.addBodyParam("liveId", liveId);
 //        params.addBodyParam("stuId","15657");
 //        params.addBodyParam("liveId","107070");
@@ -1224,7 +1225,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      */
     public void deleteMarkPoints(String livdId, long time, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("stuId", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        params.addBodyParam("stuId", LiveAppUserInfo.getInstance().getStuId());
         setDefaultParameter(params);
 //        params.addBodyParam("stuId","15657");
 //        params.addBodyParam("liveId","107070");
@@ -1254,7 +1255,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("srcType", srcType);
         params.addBodyParam("type", "" + type);
         params.addBodyParam("isForce", "" + isForce);
-        params.addBodyParam("stuId", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        params.addBodyParam("stuId", LiveAppUserInfo.getInstance().getStuId());
         setDefaultParameter(params);
         Loger.i(LiveAutoNoticeBll.class.getSimpleName(), JSON.toJSON(params).toString());
         if (callBack != null) {
@@ -1269,7 +1270,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     public void autoNoticeStatisc(String classId, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
-        params.addBodyParam("stuId", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        params.addBodyParam("stuId", LiveAppUserInfo.getInstance().getStuId());
         params.addBodyParam("type", "11");
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_STATISTICS_AUTO_NOTICE, params, callBack);

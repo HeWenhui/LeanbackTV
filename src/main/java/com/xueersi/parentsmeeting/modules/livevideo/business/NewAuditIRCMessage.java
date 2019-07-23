@@ -16,6 +16,7 @@ import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -642,7 +643,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("liveId",liveInfo.liveId);
         logHashMap.put("workspace", workSpaceDir.getAbsolutePath());
         logHashMap.put("time", "" + System.currentTimeMillis());
-        logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        logHashMap.put("userid", LiveAppUserInfo.getInstance().getStuId());
         logHashMap.put("where", "NewIRCMessage");
         logHashMap.put("liveId", mLiveInfo.getId());
         liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
@@ -817,7 +818,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logMap.put("sid",mSid.toString());
         logMap.put("nickname", mNickname);
         logMap.put("time", "" + System.currentTimeMillis());
-        logMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        logMap.put("userid", LiveAppUserInfo.getInstance().getStuId());
         logMap.put("liveId", mLiveInfo.getId());
         return logMap;
     }

@@ -10,6 +10,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
@@ -117,7 +118,7 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll im
         logger.i(option);
         livePlayBackHttpManager.sendStandExperienceUnderStand(
                 mVideoEntity.getSubmitUnderStandUrl(),
-                UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+                LiveAppUserInfo.getInstance().getStuId(),
                 mVideoEntity.getGradId(),
                 mVideoEntity.getLiveId(),
                 mVideoEntity.getSubjectId(),

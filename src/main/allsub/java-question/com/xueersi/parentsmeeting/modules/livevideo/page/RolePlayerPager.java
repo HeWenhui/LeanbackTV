@@ -48,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -294,7 +295,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        String stuId = LiveAppUserInfo.getInstance().getStuId();
         if (StringUtils.isEmpty(stuId)) {
             stuId = liveGetInfo.getStuId();
         }
@@ -869,7 +870,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
             return;
         }
         mWorkerThread.joinChannel(null, mEntity.getLiveId() + "_" + mEntity.getTestId() + "_" + mEntity.getTeamId(),
-                Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId()), new WorkerThread
+                Integer.parseInt(LiveAppUserInfo.getInstance().getStuId()), new WorkerThread
                         .OnJoinChannel() {
                     @Override
                     public void onJoinChannel(int joinChannel) {

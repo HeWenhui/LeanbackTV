@@ -237,7 +237,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                            .getInstance();
 //                    boolean result = speakerRecognitionerInterface.init();
 //                    if (result) {
-//                        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+//                        String stuId = LiveAppUserInfo.getInstance().getStuId();
 //                        if (StringUtils.isEmpty(stuId)) {
 //                            mLogtf.d("onResume:stuId=" + stuId);
 //                            startAchievement();

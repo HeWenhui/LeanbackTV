@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerContro
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
@@ -168,7 +169,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                                            String testAnswer, String courseware_type, String isSubmit, double
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
-            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+            String stuId = LiveAppUserInfo.getInstance().getStuId();
             String userMode = "1";
             String isArts = String.valueOf(liveBackBll.getIsArts());
             getCourseHttpManager().submitExperienceCourseWareH5(

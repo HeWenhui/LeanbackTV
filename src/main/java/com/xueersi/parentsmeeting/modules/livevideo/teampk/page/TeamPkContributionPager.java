@@ -21,6 +21,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkContribStarLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
@@ -311,8 +312,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
                 info.getEnergyIconInfo().setShow(true);
                 //绑定 旋转背景信息
                 //学生自己是贡献之星
-                info.getAnimBgInfo().setShow(starInfo.getStuId().equals(UserBll.getInstance().getMyUserInfoEntity()
-                        .getStuId()));
+                info.getAnimBgInfo().setShow(starInfo.getStuId().equals(LiveAppUserInfo.getInstance().getStuId()));
             }
         }
         AnimInfo info;

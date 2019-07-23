@@ -26,6 +26,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -376,7 +377,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }
 
         mWebSocket = new WebSocketConn();
-        webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), AppBll
+        webSocketUrl = String.format(webSocketUrl, LiveAppUserInfo.getInstance().getStuId(), AppBll
                 .getInstance().getUserToken(), mLiveId, AppBll.getInstance().getUserRfh());
         //webSocketUrl = String.format(webSocketUrl, "1237", "1111111", "1234");
         logger.i( "websocket:" + webSocketUrl);

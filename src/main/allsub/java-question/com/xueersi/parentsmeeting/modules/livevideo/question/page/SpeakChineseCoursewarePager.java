@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
@@ -764,7 +765,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 }
                 /* 语音保存位置 */
                 saveVideoFile = new File(dir, "speakChinese" + System.currentTimeMillis()
-                        +"U"+ UserBll.getInstance().getMyUserInfoEntity().getStuId() +"P"+liveId+ ".mp3");
+                        +"U"+ LiveAppUserInfo.getInstance().getStuId() +"P"+liveId+ ".mp3");
                 SpeechParamEntity mParam = new SpeechParamEntity();
                 mParam.setRecogType(SpeechConfig.SPEECH_CHINESE_EVALUATOR_OFFLINE_ONLINE);
                 mParam.setLang(Constants.ASSESS_PARAM_LANGUAGE_CH);
@@ -1404,7 +1405,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      */
     private void uploadLOG(String assessContent) {
         final Map<String, String> mData = new HashMap<>();
-        mData.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        mData.put("userid", LiveAppUserInfo.getInstance().getStuId());
         mData.put("liveid", liveId);
         mData.put("assessContent", assessContent);
         uploadCloud(saveVideoFile.getPath(), new AbstractBusinessDataCallBack() {

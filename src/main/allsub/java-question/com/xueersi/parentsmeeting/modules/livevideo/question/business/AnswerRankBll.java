@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -178,7 +179,7 @@ public class AnswerRankBll {
             @Override
             public void run() {
                 for (int i = mLst.size(); i < lst.size(); i++) {
-                    if (lst.get(i).getId().equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())) {
+                    if (lst.get(i).getId().equals(LiveAppUserInfo.getInstance().getStuId())) {
                         umsAgentUpWallBll(curType);
                     }
                     mLst.add(lst.get(i));
@@ -263,7 +264,7 @@ public class AnswerRankBll {
                     ivCrown.setVisibility(View.GONE);
                     break;
             }
-            if (entity.getId().equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())) {
+            if (entity.getId().equals(LiveAppUserInfo.getInstance().getStuId())) {
                 ivHead.setImageResource(R.drawable.livevideo_ic_hands_me);
                 tvName.setTextColor(Color.parseColor("#ffedce"));
             } else {
@@ -388,7 +389,7 @@ public class AnswerRankBll {
         tv.setGravity(Gravity.CENTER);
         tv.setEllipsize(TextUtils.TruncateAt.END);
         tv.setPadding(SizeUtils.Dp2Px(mContext, 5), SizeUtils.Dp2Px(mContext, 1), SizeUtils.Dp2Px(mContext, 5), SizeUtils.Dp2Px(mContext, 1));
-        if (entity.getId().equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())) {
+        if (entity.getId().equals(LiveAppUserInfo.getInstance().getStuId())) {
             tv.setBackgroundResource(R.drawable.shape_corners_10dp_7f8cd1);
         } else {
             tv.setBackgroundResource(R.drawable.shape_corners_10dp_b0c7de);

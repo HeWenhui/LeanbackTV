@@ -157,7 +157,7 @@
 //                };
 //                if (mSendHttp != null) {
 //                    mSendHttp.sendHttp(
-//                            UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+//                            LiveAppUserInfo.getInstance().getStuId(),
 //                            mVideoEntity.getLiveId(),
 //                            mVideoEntity.getSubjectId(),
 //                            mVideoEntity.getGradId(),

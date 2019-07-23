@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -1861,7 +1862,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             for (int i = 0; i < mTeamMates.size(); i++) {
                 //除去自己
                 stuId = mTeamMates.get(i).getId();
-                if (stuId != null && !stuId.equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())) {
+                if (stuId != null && !stuId.equals(LiveAppUserInfo.getInstance().getStuId())) {
                     for (int j = 0; j < onLineChatIds.size(); j++) {
                         if (onLineChatIds.get(j).contains(stuId)) {
                             onLineTeamMate = new TeamMate();

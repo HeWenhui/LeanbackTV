@@ -283,7 +283,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
     public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
             onSpeechEval) {
         String liveid = mVideoEntity.getLiveId();
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        String stuId = LiveAppUserInfo.getInstance().getStuId();
         String termId = mVideoEntity.getChapterId();
         String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
         getCourseHttpManager().sendExpSpeechEvalResult(mVideoEntity.getSpeechEvalSubmitUrl(), liveid, id, termId,
@@ -310,7 +310,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
     @Override
     public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
         String liveid = mVideoEntity.getLiveId();
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        String stuId = LiveAppUserInfo.getInstance().getStuId();
         String termId = mVideoEntity.getChapterId();
         String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
         getCourseHttpManager().sendExpSpeechEvalResult(mVideoEntity
