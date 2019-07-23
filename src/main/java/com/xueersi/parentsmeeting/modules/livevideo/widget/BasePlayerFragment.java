@@ -360,9 +360,16 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return false;
     }
 
+    protected boolean handleMessage(Message msg) {
+        return false;
+    }
+
     Handler.Callback callback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            if (BasePlayerFragment.this.handleMessage(msg)) {
+                return true;
+            }
             switch (msg.what) {
                 case OPEN_FILE:
                     // 打开新的视频时长统计初始化
