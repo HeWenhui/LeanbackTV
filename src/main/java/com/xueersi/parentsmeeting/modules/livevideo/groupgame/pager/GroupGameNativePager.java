@@ -215,6 +215,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      */
     private boolean isVolumeResume = true;
     private LiveAndBackDebug liveAndBackDebug;
+    private View waveContainerView;
 
     public GroupGameNativePager(Context context, boolean isPlayBack, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity
             detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
@@ -260,6 +261,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         tvOops = view.findViewById(R.id.tv_livevideo_groupgame_single_oops);
         tvVoiceTip = view.findViewById(R.id.tv_livevideo_groupgame_single_voice_tip);
         mWaveView = view.findViewById(R.id.wv_livevideo_groupgame_single_wave);
+        waveContainerView = view.findViewById(R.id.iv_livevideo_groupgame_single_wave);
         return view;
     }
 
@@ -314,12 +316,26 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         rlGroupGameSingle.setVisibility(View.VISIBLE);
         tvFireSum.setText("0");
 
+        //语音宝箱 课件加载成功后 延时一秒展示 收音球（封面动画展示1.2s）
+        if(LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(detailInfo.type)){
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    waveContainerView.setVisibility(View.VISIBLE);
+                }
+            },1200);
+        }else{
+            //非语音宝箱直接显示 收音球布局
+            waveContainerView.setVisibility(View.VISIBLE);
+        }
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mWaveView.initialize();
             }
         }, 50);
+
         singleModeAction.startTimer();
         videoSizeChange(LiveVideoPoint.getInstance());
     }
