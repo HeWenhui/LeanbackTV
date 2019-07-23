@@ -575,8 +575,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void onVolumeUpdate(int volume) {
                 if (volume > 10) {
                     if (!isComeOnRunablePosted) {
-                        long timeDelya = LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(detailInfo.type)?2000:3000;
-                        handler.postDelayed(onCoursewareComeOnRunable, timeDelya);
+                        long timeDelay = LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(detailInfo.type)?2000:3000;
+                        handler.postDelayed(onCoursewareComeOnRunable, timeDelay);
                         isComeOnRunablePosted = true;
                     }
                 }
