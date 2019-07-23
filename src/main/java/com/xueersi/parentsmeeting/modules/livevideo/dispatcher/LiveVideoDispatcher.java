@@ -50,6 +50,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     private String termId;
     private int type;
     private int status;
+    private int rstatus;
     private int variety;
     private DispatcherBll dispatcherBll;
 
@@ -82,6 +83,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             try {
                 JSONObject jsonObject = new JSONObject(paramsJson);
                 status = jsonObject.optInt("status");
+                rstatus = jsonObject.optInt("rstatus");
                 vStuCourseId = jsonObject.optString("stuCouId");
                 courseId = jsonObject.optString("courseId");
                 planId = jsonObject.optString("planId");
@@ -126,7 +128,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     }
 
     private void startLive() {
-        switch (status) {
+        switch (rstatus) {
             case LiveNewStatus.LIVE_UNBEGIN://未开始
                 break;
             case LiveNewStatus.LIVE_LIVING://进行中
