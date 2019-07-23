@@ -375,7 +375,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                     mLogtf.d("reportStuInfo:nick_name=" + nick_name + ",mode=" + mGetInfo.getMode());
                     LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
-                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStandLiveName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, new HttpCallBack(false) {
+                    LiveGetInfo.EnglishBetterMe englishBetterMe = mGetInfo.getEnglishBetterMe();
+                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStandLiveName(), mGetInfo
+                            .getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name,
+                            unique_id, englishBetterMe.segmentType, englishBetterMe.segment, englishBetterMe.star,
+                            englishBetterMe.segmentCount, new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
                             logger.d("reportStuInfo:onPmSuccess" + responseEntity.getJsonObject());

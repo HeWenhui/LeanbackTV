@@ -1943,7 +1943,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param mode
      * @param requestCallBack
      */
-    public void reportStuInfo(String mode, String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, HttpCallBack requestCallBack) {
+    public void reportStuInfo(String mode, String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, String segment_type, String segment, String star, String segment_count, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("mode", "" + mode);
         params.addBodyParam("stu_id", "" + stu_id);
@@ -1953,6 +1953,10 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("stu_lose_flag", stu_lose_flag);
         params.addBodyParam("nick_name", nick_name);
         params.addBodyParam("unique_id", unique_id);
+        params.addBodyParam("segment_type", segment_type);
+        params.addBodyParam("segment", segment);
+        params.addBodyParam("star", star);
+        params.addBodyParam("segment_count", segment_count);
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STUINFO + "?unique_id=" + unique_id, params, requestCallBack);
     }

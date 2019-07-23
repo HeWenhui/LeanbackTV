@@ -20,7 +20,6 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.OtherBllEntrance;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;

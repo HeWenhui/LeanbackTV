@@ -135,7 +135,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         logger.d("onTopic(): jsonObject = " + jsonObject);
-        logger.d("mode = " + liveTopic.getMode());
+        logger.d("onTopic(): mode = " + liveTopic.getMode());
         try {
             JSONObject room_2 = jsonObject.getJSONObject("room_2");
             JSONObject teamPKObj = room_2.optJSONObject("teamPK");
@@ -145,7 +145,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     getBetterMe(false);
                 }
             }
-            logger.d("teamPK: status = " + teamPKStatus);
+            logger.d("onTopic(): teamPK: status = " + teamPKStatus);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -279,6 +279,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logger.i("getStuSegment:onPmSuccess():json=" + responseEntity.getJsonObject());
                 mStuSegmentEntity = getHttpResponseParser().parseStuSegmentInfo(responseEntity);
                 if (mStuSegmentEntity != null) {
+                    mGetInfo.getEnglishBetterMe().segmentCount = mStuSegmentEntity.getSumCount();
                     onBetterMeSuccess(isNotice);
                 } else {
                     OtherBllEntrance.EnglishTeamPK.startPK(mContext, isNotice);
