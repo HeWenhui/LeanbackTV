@@ -273,8 +273,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
     };
 
-    // 体验课相关日志的埋点
-    LiveAndBackDebug ums = new LiveAndBackDebug() {
+    private class ExperkDebug implements LiveAndBackDebug {
+        ExperkDebug() {
+            ProxUtil.getProxUtil().put(ExperienceLiveVideoActivity.this, LiveAndBackDebug.class, this);
+        }
+
         @Override
         public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
             UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
@@ -314,7 +317,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
 
         }
-    };
+    }
+
+    // 体验课相关日志的埋点
+    LiveAndBackDebug ums = new ExperkDebug();
 
     private String TAG = "ExpericenceLiveVideoActivityLog";
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
@@ -801,8 +807,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlLiveMessageContent, 0, params);
         long before = System.currentTimeMillis();
-        mLiveMessagePager = new LiveMessagePager(this, ums, liveMediaControllerBottom,
+        mLiveMessagePager = new LiveMessagePager(this, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
+        mLiveMessagePager.setDebugMsg(true);
         logger.d("initViewLive:time1=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
@@ -1451,7 +1458,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 }
             }.start();
         }
-//        System.exit(0);
+        ProxUtil.getProxUtil().clear(this);
     }
 
 

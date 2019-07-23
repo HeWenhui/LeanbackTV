@@ -136,7 +136,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private Activity liveVideoActivity;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
-    LiveAndBackDebug liveAndBackDebug;
     private String liveId;
     private String termId;
     private View mFloatView;
@@ -144,15 +143,16 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private long mOldTime = 0;//记录点击赠送按钮那一刻的时间
     private CommonAdapter mCommonWordAdapter;
     private User[] users = {};
+    /** 是否统计用户发送消息 */
+    private boolean debugMsg = false;
 
     public LiveMessagePager(Context context,
-                            LiveAndBackDebug ums, BaseLiveMediaControllerBottom
+                            BaseLiveMediaControllerBottom
                                     liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity>
                                     otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
-        this.liveAndBackDebug = ums;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
@@ -183,6 +183,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             }
         });
         setVideoLayout(LiveVideoPoint.getInstance());
+    }
+
+    public void setDebugMsg(boolean debugMsg) {
+        this.debugMsg = debugMsg;
     }
 
     /** 当前连对数 */
@@ -1817,11 +1821,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             }
         });
         // 03.22 体验课播放器统计用户的发送信息
-        if (liveAndBackDebug != null && type == LiveMessageEntity.MESSAGE_MINE) {
+        if (debugMsg && type == LiveMessageEntity.MESSAGE_MINE) {
             StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayUserMsg");
             logHashMap.put("LiveFreePlayUserMsg", text);
             logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
-            liveAndBackDebug.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
+            umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
         }
         Loger.e("Duncan", "sender:" + sender);
     }

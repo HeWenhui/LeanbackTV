@@ -34,7 +34,6 @@ import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -273,8 +272,11 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         }
     };
 
-    // 体验课相关日志的埋点
-    LiveAndBackDebug ums = new LiveAndBackDebug() {
+    private class ExperkDebug implements LiveAndBackDebug {
+        ExperkDebug() {
+            ProxUtil.getProxUtil().put(AIExperienceLiveVideoActivity.this, LiveAndBackDebug.class, this);
+        }
+
         @Override
         public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
             UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
@@ -314,7 +316,10 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
 
         }
-    };
+    }
+
+    // 体验课相关日志的埋点
+    LiveAndBackDebug ums = new ExperkDebug();
 
     private String TAG = "ExpericenceLiveVideoActivityLog";
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
@@ -800,8 +805,9 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlLiveMessageContent, 0, params);
         long before = System.currentTimeMillis();
-        mLiveMessagePager = new LiveMessagePager(this, ums, liveMediaControllerBottom,
+        mLiveMessagePager = new LiveMessagePager(this, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
+        mLiveMessagePager.setDebugMsg(true);
         logger.d("initViewLive:time1=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
@@ -1702,6 +1708,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         // 03.08待删除，方便测试临时添加的变量
 //        LocalCourseConfig.tempkey = "";
         LiveVideoConfig.aiQuestionIndex = -1;
+        ProxUtil.getProxUtil().clear(this);
     }
 
 

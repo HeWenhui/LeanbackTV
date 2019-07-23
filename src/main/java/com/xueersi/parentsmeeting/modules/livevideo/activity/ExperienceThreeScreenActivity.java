@@ -81,6 +81,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePag
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.ExperienceIrcState;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.ExpRollCallBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -210,8 +211,12 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
     };
 
-    // 体验课相关日志的埋点
-    private final LiveAndBackDebug ums = new SimpleLiveBackDebug() {
+    private class ExperkDebug extends SimpleLiveBackDebug {
+
+        ExperkDebug() {
+            ProxUtil.getProxUtil().put(ExperienceThreeScreenActivity.this, LiveAndBackDebug.class, this);
+        }
+
         @Override
         public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
             UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
@@ -235,7 +240,10 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             }
             UmsAgentManager.umsAgentOtherBusiness(ExperienceThreeScreenActivity.this, appID, UmsConstants.uploadBehavior, mData);
         }
-    };
+    }
+
+    // 体验课相关日志的埋点
+    private final LiveAndBackDebug ums = new ExperkDebug();
 
     // IRC 回调处理
     private final IRCCallback mIRCcallback = new IRCCallback() {
@@ -1132,7 +1140,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         mExpIrcState = new ExperienceIrcState(mGetInfo, mGetInfo.getLiveTopic(), mIRCMessage, playBackEntity, mHttpManager);
 
-        mLiveMessagePager = new LiveMessagePager(this, ums, liveMediaControllerBottom, liveMessageLandEntities, null);
+        mLiveMessagePager = new LiveMessagePager(this, liveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager.setGetInfo(mGetInfo);
 
 
@@ -1753,4 +1761,9 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         return expLiveInfo.getExpLiveQueryInterval() * 1000;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ProxUtil.getProxUtil().clear(this);
+    }
 }

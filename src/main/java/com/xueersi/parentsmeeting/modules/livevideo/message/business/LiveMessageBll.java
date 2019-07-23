@@ -344,7 +344,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
             } else {
-                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, null,
+                LiveMessagePager liveMessagePager = new LiveMessagePager(activity,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
             }
@@ -409,12 +409,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            }
             if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                 LiveMessagePager liveMessagePager =
-                        new LiveMessagePager(activity, null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                        new LiveMessagePager(activity,  baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = liveMessagePager;
             } else {
                 long before = System.currentTimeMillis();
                 if (!isSmallEnglish && !LiveVideoConfig.isSmallChinese) {
-                    LiveMessagePager liveMessagePager = new LiveMessagePager(activity, null,
+                    LiveMessagePager liveMessagePager = new LiveMessagePager(activity,
                             baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                     mLiveMessagePager = liveMessagePager;
                 } else if (LiveVideoConfig.isSmallChinese) {
