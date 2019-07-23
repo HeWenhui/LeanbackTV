@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackHalfBodyMedianController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackStandMediaController;
 
 /**
  * 半身直播  直播回放

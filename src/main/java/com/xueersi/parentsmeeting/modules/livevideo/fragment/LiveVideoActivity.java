@@ -15,7 +15,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.halfbody.HalfBodyLiveVideoFragement;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 
 /**
  * 直播
@@ -64,16 +64,33 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     protected LiveVideoFragmentBase getFragment() {
         int pattern = getIntent().getIntExtra("pattern", 0);
         if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
-            return new StandLiveVideoFragment();
+            try {
+                String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.StandLiveVideoFragment";
+                LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
         } else if (pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
             //半身直播
-            return new HalfBodyLiveVideoFragement();
+            try {
+                String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.halfbody.HalfBodyLiveVideoFragement";
+                LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
         } else if (pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
             //半身直播
-            return (LiveVideoFragmentBase) Fragment.instantiate(this,"com.xueersi.parentsmeeting.modules.livevideo.fragment.PrimaryClassVideoFragment");
-        } else {
-            return new LiveVideoFragment();
+            try {
+                String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.PrimaryClassVideoFragment";
+                LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
         }
+        return new LiveVideoFragment();
     }
 
     @Override

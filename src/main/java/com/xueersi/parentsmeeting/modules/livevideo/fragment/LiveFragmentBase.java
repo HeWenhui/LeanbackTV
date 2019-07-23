@@ -139,7 +139,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         return mContentView;
     }
 
-    //遍历所有布局。
+    //遍历所有布局，找到错误的
     private void testLayout() {
         mContentView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
