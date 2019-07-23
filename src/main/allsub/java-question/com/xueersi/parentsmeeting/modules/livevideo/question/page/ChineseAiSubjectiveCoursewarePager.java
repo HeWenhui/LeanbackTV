@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
@@ -232,7 +232,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     private LiveHttpManager mLiveHttpManager;
     private boolean isFirstAI = true;
 
-    public ChineseAiSubjectiveCoursewarePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
+    public ChineseAiSubjectiveCoursewarePager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity,
                                               boolean isPlayBack, String liveId, String id,
                                               EnglishH5Entity englishH5Entity,
                                               final String courseware_type, String nonce,
@@ -298,12 +298,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
 //                    }
 //                    EventBus.getDefault().post(event);
 //                }
-
-                if (englishH5Entity.getNewEnglishH5()) {
-                    LiveVideoConfig.isNewEnglishH5 = true;
-                } else {
-                    LiveVideoConfig.isNewEnglishH5 = false;
-                }
                 preLoad.onStop();
             }
         });
@@ -334,7 +328,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 if (("" + consoleMessage.message()).contains("sendToCourseware")) {
-                    CrashReport.postCatchedException(new Exception());
+                    LiveCrashReport.postCatchedException(new Exception());
                 }
                 return super.onConsoleMessage(consoleMessage);
             }
@@ -428,7 +422,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     startQueTime = todayLiveObj.optLong("start-" + queskey);
                 }
             } catch (JSONException e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("getTodayQues", e);
             }
         }
@@ -463,7 +457,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             todayObj.put(liveId, todayLiveObj);
             return jsonObject;
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("getTodayLive", e);
         }
         return null;
@@ -488,7 +482,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("saveThisQues", e);
         }
     }
@@ -511,7 +505,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             mLogtf.e("saveThisQues", e);
         }
     }
@@ -542,7 +536,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     }
                     saveThisQues(currentIndex, data);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 logger.d("onAnswer:answer:getAnswerType=" + getAnswerType + ",index=" + currentIndex);
                 if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_SUBMIT || getAnswerType == LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT) {
@@ -723,7 +717,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 jsonData.put("data", resultData);
                 StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
             } catch (JSONException e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submitData", e);
             }
 //            XESToastUtils.showToast(mContext, "时间到,停止作答!");
@@ -804,7 +798,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 dataJson.put("userAnswerContent", userAnswerContent);
                 data.put(test.getId(), dataJson);
             } catch (JSONException e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submit", e);
             }
         }

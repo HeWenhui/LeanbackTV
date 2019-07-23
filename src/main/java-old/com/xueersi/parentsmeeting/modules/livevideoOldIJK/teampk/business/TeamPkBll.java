@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
@@ -1958,7 +1958,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 teamId = teamInfoEntity.getTeamInfo().getTeamId();
             } catch (Exception e) {
                 teamId = TeamPkConfig.DEAF_TEAM_ID;
-                CrashReport.postCatchedException(new LiveException(TAG + ":" + method, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG + ":" + method, e));
             }
         } else {
             teamId = roomInitInfo.getStudentLiveInfo().getTeamId();

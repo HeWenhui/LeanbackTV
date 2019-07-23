@@ -121,6 +121,8 @@ public class StandExperienceVideoBll {
     public void changePlayLine() {
         if (routTotal != 0) {
             liveBackPlayVideoFragment.changePlayLive((curRoute++) % routTotal, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        }else{
+            playNewVideo();
         }
     }
 

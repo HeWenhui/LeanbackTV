@@ -351,8 +351,10 @@ public class LiveVideoConfig {
     /** 讲座直播广告Id */
     public static String LECTUREADID;
 
+    @Deprecated
     public static Boolean isNewEnglishH5 = false;
     /** 一题多发发题和收题的标志 */
+    @Deprecated
     public static Boolean isSend = false;
     public static String newEnglishH5 = "NewEnglishH5";
     /** 强制收题的标志 */
@@ -438,8 +440,8 @@ public class LiveVideoConfig {
 //    public static String URL_CHECK_DEVICE = "https://www.easy-mock.com/mock/5b57f6919ddd1140ec2eb47b/xueersi.wx
 // .android.app" + "/Users/checkDevice";
 
-    /** 文科新课件平台的标识 */
-    public static Boolean isNewArts = false;
+//    /** 文科新课件平台的标识 */
+//    public static Boolean isNewArts = false;
     /** 全身直播的标识*/
     public static Boolean isStandLive = false;
     /** H5语音答题新增字段*/

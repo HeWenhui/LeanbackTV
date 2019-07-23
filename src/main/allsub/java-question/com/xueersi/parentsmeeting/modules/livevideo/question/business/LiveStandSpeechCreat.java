@@ -107,10 +107,10 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void getSpeechEvalAnswerTeamStatus(String testId, AbstractBusinessDataCallBack callBack) {
+        public void getSpeechEvalAnswerTeamStatus(boolean isNewArt,String testId, AbstractBusinessDataCallBack callBack) {
             String requestTime = questionIRCBll.getRequestTime();
             if (!"-1".equals(requestTime)) {
-                questionIRCBll.getSpeechEvalAnswerTeamStatus(testId, callBack);
+                questionIRCBll.getSpeechEvalAnswerTeamStatus(isNewArt,testId, callBack);
             }
         }
 
@@ -139,8 +139,8 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void speechIsAnswered(String num, AbstractBusinessDataCallBack callBack) {
-            action.speechIsAnswered(num, callBack);
+        public void speechIsAnswered(boolean isNewArt,String num, AbstractBusinessDataCallBack callBack) {
+            action.speechIsAnswered(isNewArt,num, callBack);
         }
 
     }

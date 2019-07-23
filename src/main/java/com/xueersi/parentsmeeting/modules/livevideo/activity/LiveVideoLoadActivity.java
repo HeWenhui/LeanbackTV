@@ -24,6 +24,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
@@ -32,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -53,6 +55,7 @@ import java.util.List;
  * 直播中间的loading
  */
 public class LiveVideoLoadActivity extends BaseActivity {
+    String TAG = "LiveVideoLoadActivity";
     public static HashMap<String, LiveGetInfo> getInfos = new HashMap();
     /** Activity创建次数 */
     public static int CREATE_TIMES = 0;
@@ -92,14 +95,16 @@ public class LiveVideoLoadActivity extends BaseActivity {
         CREATE_TIMES++;
 
         mDataLoadEntity = new DataLoadEntity(this);
-        if(LiveVideoConfig.assetsDownloadTag){
+        if (LiveVideoConfig.assetsDownloadTag) {
             loadAssertsResource();
-        }else{
+        } else {
             mDataLoadEntity.beginLoading();
             DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
             initData();
         }
     }
+
+    private boolean initData = false;
 
     /**
      * 加载assert 文件
@@ -120,6 +125,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
             @Override
             public void success() {
+                if (initData) {
+                    logger.e("loadAssertsResource:success", new Exception());
+                    LiveCrashReport.postCatchedException(TAG, new Exception());
+                    return;
+                }
+                initData = true;
                 initData();
                 //XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
             }
@@ -152,6 +163,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+        if (FileLogger.runActivity == this) {
+            FileLogger.runActivity = null;
+        }
     }
 
     private void performDownLoadPreLoad(LiveHttpManager mHttpManager, LiveGetInfo getInfo) {
@@ -413,12 +427,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         .SP_APP_DEVICE_NOTICE, false,
                 ShareDataManager.SHAREDATA_USER)) {
 
-            Intent intent= new Intent(context, DeviceDetectionActivity.class);
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
             context.startActivity(intent);
             return;
         }
 
-        Intent intent= new Intent(context, LiveVideoLoadActivity.class);
+        Intent intent = new Intent(context, LiveVideoLoadActivity.class);
         intent.putExtras(bundle);
         context.startActivityForResult(intent, requestCode);
         context.overridePendingTransition(0, 0);

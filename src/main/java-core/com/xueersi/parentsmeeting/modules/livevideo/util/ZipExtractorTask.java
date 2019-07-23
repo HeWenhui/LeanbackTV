@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.LoggerFactory;
@@ -36,6 +36,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
     protected int max;
     private boolean cancle = false;
     private ZipProg zipProg;
+    private boolean progressUpdate = true;
 
     public ZipExtractorTask(File in, File out, boolean replaceAll, ZipProg zipProg) {
         mInput = in;
@@ -51,6 +52,10 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
 
     public ZipExtractorTask(String in, String out, boolean replaceAll) {
         this(new File(in), new File(out), replaceAll, null);
+    }
+
+    public void setProgressUpdate(boolean progressUpdate) {
+        this.progressUpdate = progressUpdate;
     }
 
     @Override
@@ -134,7 +139,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                             logHashMap.put("length2", "" + destination.length());
                             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                     }
                 } catch (Exception e) {
@@ -151,7 +156,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                         logHashMap.put("length2", "" + destination.length());
                         UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
                     } catch (Exception e2) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e2));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e2));
                     }
                     destinationTemp.delete();
                     destination.delete();
@@ -192,7 +197,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
             logHashMap.put("exception", "" + Log.getStackTraceString(exception));
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_ERROR, logHashMap.getData());
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return exception;
     }
@@ -254,7 +259,9 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
 
             super.write(buffer, byteOffset, byteCount);
             mProgress += byteCount;
-            publishProgress(mProgress);
+            if (progressUpdate) {
+                publishProgress(mProgress);
+            }
         }
 
     }

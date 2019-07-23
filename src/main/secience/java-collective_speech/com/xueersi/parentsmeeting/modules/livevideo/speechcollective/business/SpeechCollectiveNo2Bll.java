@@ -11,7 +11,7 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
@@ -147,7 +147,7 @@ public class SpeechCollectiveNo2Bll {
             mLogtf.addCommon("from", from);
             mLogtf.d("start:voiceId=" + voiceId + ",from=" + from + ",method=" + method);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         try {
             String string = ShareDataManager.getInstance().getString(ShareDataConfig.SP_SPEECH_COLLECTION, "{}", ShareDataManager.SHAREDATA_USER);
@@ -164,7 +164,7 @@ public class SpeechCollectiveNo2Bll {
             }
         } catch (Exception e) {
             ShareDataManager.getInstance().put(ShareDataConfig.SP_SPEECH_COLLECTION, "{}", ShareDataManager.SHAREDATA_USER);
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         addSysTip(true);
         if (teacherPraiseEventReg != null) {
@@ -259,7 +259,7 @@ public class SpeechCollectiveNo2Bll {
                     jsonObject.put("voiceId", voiceId);
                     ShareDataManager.getInstance().put(ShareDataConfig.SP_SPEECH_COLLECTION, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });
@@ -389,7 +389,7 @@ public class SpeechCollectiveNo2Bll {
             jsonObject.put("voiceId", voiceId);
             ShareDataManager.getInstance().put(ShareDataConfig.SP_SPEECH_COLLECTION, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         stop("onTeacherLevel");
     }

@@ -585,12 +585,16 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = "p_" + mNickname;
-        liveInfo.realname = myUserInfoEntity.getRealName();
+        if (myUserInfoEntity.getRealName() != null){
+            liveInfo.realname = myUserInfoEntity.getRealName();
+        }else {
+            liveInfo.realname = mNickname;
+        }
         liveInfo.liveId = liveId;
         if (myUserInfoEntity.getNickName() != null) {
             liveInfo.username = myUserInfoEntity.getNickName();
         } else {
-            liveInfo.username = "";
+            liveInfo.username = "p_" + mNickname;
         }
         if (classId != null) {
             liveInfo.classId = classId;
@@ -603,7 +607,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         } else {
             liveInfo.location = "";
         }
-        mChatClient.setLiveInfo(liveInfo);
+        int infocode = mChatClient.setLiveInfo(liveInfo);
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
         String psimId = myUserInfoEntity.getPsimId() == null ? "":myUserInfoEntity.getPsimId();
         String psimKey = myUserInfoEntity.getPsimPwd() == null ? "":myUserInfoEntity.getPsimPwd();
@@ -619,6 +623,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("PsAppClientKey", appkey);
         logHashMap.put("PsImId", psimId);
         logHashMap.put("PsImPwd", psimKey);
+        logHashMap.put("infocode",""+infocode);
+        logHashMap.put("realname",liveInfo.realname);
+        logHashMap.put("nickname",liveInfo.nickname);
+        logHashMap.put("username",liveInfo.username);
+        logHashMap.put("classId",liveInfo.classId);
+        logHashMap.put("businessId",liveInfo.businessId);
+        logHashMap.put("location",liveInfo.location);
+        logHashMap.put("liveId",liveInfo.liveId);
         logHashMap.put("workspace", workSpaceDir.getAbsolutePath());
         logHashMap.put("time", "" + System.currentTimeMillis());
         logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());

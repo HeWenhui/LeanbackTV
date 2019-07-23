@@ -22,6 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.entity.AnswerEntity;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -288,7 +289,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
         public void onClick(View v) {
             final QuesReslutEntity quesReslutEntity = chkReslut();
             if (quesReslutEntity.isHaveEmpty()) {
-                VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, (BaseApplication) BaseApplication.getContext(), false,
+                VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 cancelDialog.setVerifyBtnListener(new OnClickListener() {
                     @Override
@@ -314,7 +315,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
             mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    rlQuestionResContent.removeView(resultPager.getRootView());
+                    liveViewAction.removeView(resultPager.getRootView());
                     onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
                 }
             }, LiveQueConfig.BIG_TEST_CLOSE);
@@ -397,12 +398,12 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
     private void showResult(BigResultEntity bigResultEntity, int isForce) {
         mView.setVisibility(View.GONE);
         onSubmit.onSubmit(this);
-        resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
-        rlQuestionResContent.addView(resultPager.getRootView());
+        resultPager = new BigResultPager(mContext, liveViewAction, bigResultEntity);
+        liveViewAction.addView(resultPager.getRootView());
         resultPager.setOnPagerClose(new OnPagerClose() {
             @Override
             public void onClose(LiveBasePager basePager) {
-                rlQuestionResContent.removeView(basePager.getRootView());
+                liveViewAction.removeView(basePager.getRootView());
                 onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
             }
         });
@@ -412,7 +413,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                 @Override
                 public void run() {
                     if (resultPager.isAttach()) {
-                        rlQuestionResContent.removeView(resultPager.getRootView());
+                        liveViewAction.removeView(resultPager.getRootView());
                         onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
                     }
                 }

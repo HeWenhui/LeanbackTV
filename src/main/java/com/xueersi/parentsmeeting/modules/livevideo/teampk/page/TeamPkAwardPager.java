@@ -36,9 +36,9 @@ import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieImageAsset;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
@@ -685,7 +685,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
 
                     // 显示 碎片图片
                     ImageView ivPatch = llAipatnerAwardRoot.findViewById(R.id.iv_teampk_aipatner_chip);
-                    ImageLoader.with(BaseApplication.getContext()).load(studentChestEntity.getChipUrl()).into(ivPatch);
+                    ImageLoader.with(ContextManager.getContext()).load(studentChestEntity.getChipUrl()).into(ivPatch);
 
                     tvPatch.setVisibility(View.VISIBLE);
                     TextView tvRemind = llAipatnerAwardRoot.findViewById(R.id.tv_teampk_aipartner_award_remind);
@@ -742,7 +742,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
 
             // 显示 碎片图片
             ImageView ivPatch = llAipatnerAwardRoot.findViewById(R.id.iv_teampk_aipatner_chip);
-            ImageLoader.with(BaseApplication.getContext()).load(studentChestEntity.getChipUrl()).into(ivPatch);
+            ImageLoader.with(ContextManager.getContext()).load(studentChestEntity.getChipUrl()).into(ivPatch);
 
             tvPatch.setVisibility(View.VISIBLE);
             TextView tvRemind = llAipatnerAwardRoot.findViewById(R.id.tv_teampk_aipartner_award_remind);
@@ -818,7 +818,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
         }
 
         public void bindData(ClassChestEntity.SubChestEntity data, int postion) {
-            ImageLoader.with(BaseApplication.getContext()).load(data.getAvatarPath())
+            ImageLoader.with(ContextManager.getContext()).load(data.getAvatarPath())
                     .placeHolder(R.drawable.livevideo_list_headportrait_ic_disable)
                     .asBitmap(new SingleConfig.BitmapListener() {
                         @Override
@@ -847,7 +847,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
                 tvPatch.setText("+" + data.getChipNum());
             }
             if (ivChip != null) {
-                ImageLoader.with(BaseApplication.getContext()).load(data.getChipUrl()).into(ivChip);
+                ImageLoader.with(ContextManager.getContext()).load(data.getChipUrl()).into(ivChip);
             }
         }
     }

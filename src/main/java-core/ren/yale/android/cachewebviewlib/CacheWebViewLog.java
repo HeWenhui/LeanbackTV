@@ -3,6 +3,7 @@ package ren.yale.android.cachewebviewlib;
 import android.util.Log;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -31,7 +32,7 @@ class CacheWebViewLog {
 
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
-        alldir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "CacheWebView/log");
+        alldir = LiveCacheFile.geCacheFile(ContextManager.getContext(), "CacheWebView/log");
         if (!alldir.exists()) {
             alldir.mkdirs();
         }

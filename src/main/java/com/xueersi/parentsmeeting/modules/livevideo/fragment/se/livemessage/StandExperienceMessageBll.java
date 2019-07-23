@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -267,7 +267,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                                      String message) {
             logger.i("=====>onPrivateMessage:isSelf=" + isSelf);
             if (isSelf && "T".equals(message)) {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         XESToastUtils.showToast(activity, "您的帐号已在其他设备登录，请重新进入直播间");
@@ -393,7 +393,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                     sendMessage = true;
                 } catch (Exception e) {
                     // logger.e( "understand", e);
-                    UmsAgentManager.umsAgentException(BaseApplication.getContext(), "livevideo_livebll_sendMessage", e);
+                    UmsAgentManager.umsAgentException(ContextManager.getContext(), "livevideo_livebll_sendMessage", e);
                     logToFile.e(TAG + ":sendMessage", e);
                 }
             }

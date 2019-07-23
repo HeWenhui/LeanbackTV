@@ -118,7 +118,6 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
         lvMessage.setTag(R.id.cb_livevideo_message_clock, 0);
         lvMessage.setTag(0);
-        dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
         rlMessageContent = mView.findViewById(R.id.rl_livevideo_message_content2);
         etMessageContent = (EditText) mView.findViewById(R.id.et_livevideo_message_content);

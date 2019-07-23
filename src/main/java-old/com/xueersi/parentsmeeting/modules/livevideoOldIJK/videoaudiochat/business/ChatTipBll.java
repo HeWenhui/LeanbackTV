@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
@@ -444,7 +444,7 @@ public class ChatTipBll {
                             stuPutUpHandsNum = Integer.parseInt(jsonObject + "");
                             getInfo.setStuPutUpHandsNum(stuPutUpHandsNum);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new Exception("" + jsonObject, e));
+                            LiveCrashReport.postCatchedException(new Exception("" + jsonObject, e));
                         }
                         VideoAudioChatLog.raiseHandToPhpSno5(liveAndBackDebug, linkmicid, micType == 0 ? "audio" : "video", linkMicNonce, true, "0", SystemClock.elapsedRealtime() - before);
                     }

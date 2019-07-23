@@ -39,7 +39,8 @@ import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.tal.speech.utils.SpeechUtils;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.ResponseEntity;
@@ -226,6 +227,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         umsAgentDebugPv(eventId, mData);
     }
 
+    public boolean isNewArt() {
+        return isNewArts;
+    }
     /** 语音答题回放 */
     public StandSpeechAssAutoPager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String liveid,
                                    String testId,
@@ -328,7 +332,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        ImageLoader.with(BaseApplication.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig
+        ImageLoader.with(ContextManager.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig
                 .BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
@@ -381,7 +385,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
                 @Override
                 public void run() {
-                    liveStandSpeechEvalAction.getSpeechEvalAnswerTeamStatus(id, new AbstractBusinessDataCallBack() {
+                    liveStandSpeechEvalAction.getSpeechEvalAnswerTeamStatus(isNewArts,id, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             GoldTeamStatus entity = (GoldTeamStatus) objData[0];
@@ -665,7 +669,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    speechEvalAction.speechIsAnswered(id, new AbstractBusinessDataCallBack() {
+                    speechEvalAction.speechIsAnswered(isNewArts,id, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             boolean answer = (boolean) objData[0];
@@ -761,7 +765,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 try {
                     answers1.put("entranceTimeLog", entranceTime + "," + System.currentTimeMillis());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 long entranceTime2 = System.currentTimeMillis() - entranceTime;
                 answers1.put("entranceTime", (int) resultEntity.getSpeechDuration());

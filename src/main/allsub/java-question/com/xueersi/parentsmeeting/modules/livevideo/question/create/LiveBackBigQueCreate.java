@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSecHttp;
@@ -27,11 +28,11 @@ public class LiveBackBigQueCreate implements BigQueCreate {
     }
 
     @Override
-    public BaseLiveBigQuestionPager create(final VideoQuestionLiveEntity videoQuestionLiveEntity, RelativeLayout rlQuestionResContent, final LiveBasePager.OnPagerClose onPagerClose, OnSubmit onSubmit) {
+    public BaseLiveBigQuestionPager create(final VideoQuestionLiveEntity videoQuestionLiveEntity, LiveViewAction liveViewAction, final LiveBasePager.OnPagerClose onPagerClose, OnSubmit onSubmit) {
         if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_SELE || videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_MUL_SELE) {
             BigQuestionSelectLivePager bigQuestionSelectLivePager = new BigQuestionSelectLivePager(activity, videoQuestionLiveEntity);
             bigQuestionSelectLivePager.setQuestionSecHttp(questionSecHttp);
-            bigQuestionSelectLivePager.setRlQuestionResContent(rlQuestionResContent);
+            bigQuestionSelectLivePager.setRlQuestionResContent(liveViewAction);
             bigQuestionSelectLivePager.setOnSubmit(onSubmit);
             bigQuestionSelectLivePager.setPlayback(true);
             bigQuestionSelectLivePager.setOnPagerClose(new LiveBasePager.WrapOnPagerClose(onPagerClose) {
@@ -49,7 +50,7 @@ public class LiveBackBigQueCreate implements BigQueCreate {
         } else if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_FILL) {
             BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, videoQuestionLiveEntity, true);
             bigQuestionFillInBlankLivePager.setQuestionSecHttp(questionSecHttp);
-            bigQuestionFillInBlankLivePager.setRlQuestionResContent(rlQuestionResContent);
+            bigQuestionFillInBlankLivePager.setRlQuestionResContent(liveViewAction);
             bigQuestionFillInBlankLivePager.setOnSubmit(onSubmit);
             bigQuestionFillInBlankLivePager.setOnPagerClose(new LiveBasePager.WrapOnPagerClose(onPagerClose) {
                 @Override

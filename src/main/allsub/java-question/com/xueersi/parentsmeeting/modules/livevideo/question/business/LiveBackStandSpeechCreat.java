@@ -124,7 +124,7 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void getSpeechEvalAnswerTeamStatus(String testId, AbstractBusinessDataCallBack callBack) {
+        public void getSpeechEvalAnswerTeamStatus(boolean isNewArt,String testId, AbstractBusinessDataCallBack callBack) {
 
         }
 
@@ -150,8 +150,8 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void speechIsAnswered(String num, AbstractBusinessDataCallBack callBack) {
-            action.speechIsAnswered(num, callBack);
+        public void speechIsAnswered(boolean isNewArt,String num, AbstractBusinessDataCallBack callBack) {
+            action.speechIsAnswered(isNewArt,num, callBack);
         }
 
     }

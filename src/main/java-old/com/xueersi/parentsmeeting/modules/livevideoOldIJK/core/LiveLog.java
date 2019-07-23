@@ -3,7 +3,7 @@
 //import android.content.Context;
 //import android.util.Log;
 //
-//import com.tencent.bugly.crashreport.CrashReport;
+//import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 //import com.xueersi.common.base.BaseApplication;
 //import com.xueersi.common.config.AppConfig;
 //import com.xueersi.common.logerhelper.LogerTag;
@@ -110,7 +110,7 @@
 //                logHashMap.getData().putAll(stableLogHashMap.getData());
 //            }
 //        } catch (Exception err) {
-//            CrashReport.postCatchedException(new LiveException(TAG, err));
+//            LiveCrashReport.postCatchedException(new LiveException(TAG, err));
 //        }
 //        logHashMap.put("tag", "" + TAG);
 //        logHashMap.put("enterTime", "" + enterTime);
@@ -149,7 +149,7 @@
 //                logHashMap.getData().putAll(stableLogHashMap.getData());
 //            }
 //        } catch (Exception err) {
-//            CrashReport.postCatchedException(new LiveException(TAG, err));
+//            LiveCrashReport.postCatchedException(new LiveException(TAG, err));
 //        }
 //        logHashMap.put("tag", "" + TAG);
 //        logHashMap.put("enterTime", "" + enterTime);

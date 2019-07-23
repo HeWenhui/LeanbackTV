@@ -91,7 +91,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     }
 
     @Override
-    public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
+    public BaseVoiceAnswerPager create(Context activity, VideoQuestionLiveEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
                                        RelativeLayout rlQuestionContent, SpeechUtils mIse) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         VoiceAnswerStandLog.sno2(this.liveAndBackDebug, videoQuestionLiveEntity);
@@ -118,9 +118,11 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         CreateAnswerReslutEntity createAnswerReslutEntity = new CreateAnswerReslutEntity();
         boolean isSuccess = false;
         final String type;
+        boolean isNewArt =false;
         if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
             final VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
             type = videoQuestionLiveEntity.type;
+            isNewArt = videoQuestionLiveEntity.isNewArtsH5Courseware();
         } else {
             VideoQuestionEntity questionEntity = (VideoQuestionEntity) baseVideoQuestionEntity;
             if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory()) {
@@ -128,8 +130,9 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             } else {
                 type = questionEntity.getvQuestionType();
             }
+            isNewArt =questionEntity.isNewArtsH5Courseware();
         }
-        if ((LiveVideoConfig.isNewArts && entity.getResultType() == 2) || (!LiveVideoConfig.isNewArts && (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4))) {
+        if ((isNewArt&& entity.getResultType() == 2) || (!isNewArt&& (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4))) {
             String path;
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                questionBll.initSelectAnswerRightResultVoice(entity);
@@ -140,10 +143,12 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             }
             final RelativeLayout rlResult = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
             createAnswerReslutEntity.resultView = rlResult;
+            entity.setNewArt(isNewArt);
             LottieComposition.Factory.fromAssetFileName(context, path, new OnCompositionLoadedListener() {
                 @Override
                 public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
                     if (lottieComposition == null) {
+
                         if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
                             questionBll.initSelectAnswerRightResultVoice(entity);
                         } else {
@@ -207,7 +212,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 updateAchievement.getStuGoldCount("onAnswerReslut", UpdateAchievement.GET_TYPE_QUE);
             }
             // 回答错误提示
-        } else if ((LiveVideoConfig.isNewArts && entity.getResultType() == 0) || (!LiveVideoConfig.isNewArts && entity.getResultType() == QUE_RES_TYPE2)) {
+        } else if ((isNewArt && entity.getResultType() == 0) || (!isNewArt && entity.getResultType() == QUE_RES_TYPE2)) {
             String path;
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                questionBll.initSelectAnswerWrongResultVoice(entity);

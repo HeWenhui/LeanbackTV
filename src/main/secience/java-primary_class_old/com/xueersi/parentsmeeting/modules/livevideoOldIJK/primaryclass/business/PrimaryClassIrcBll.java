@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.ResponseEntity;
@@ -100,7 +100,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                         }
                     } catch (Exception e) {
                         mLogtf.e("getMyTeamInfo", e);
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                     teamPkTeamInfoEntity = (TeamPkTeamInfoEntity) objData[0];
                     if (objData.length > 1) {
@@ -148,7 +148,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                 }
             } catch (Exception e) {
                 logger.e("onTeamPkTeamInfoEvent:event=" + e);
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             teamPkTeamInfoEntity = teamPkTeamInfoEntity2;
             saveTeamPkTeamInfo(event.getResponseEntity());

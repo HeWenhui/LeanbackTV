@@ -329,6 +329,14 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
     }
 
+    @Override
+    public boolean isNewArt() {
+        if (videoQuestionLiveEntity != null) {
+            return videoQuestionLiveEntity.isNewArtsH5Courseware();
+        }
+        return false;
+    }
+
     /**
      * 区分英语，语文测评，显示中英文的roleplay标题和布局
      */
@@ -1073,7 +1081,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
         civMatchHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
         civMatchHead.setBorderColor(Color.WHITE);
-        ImageLoader.with(BaseApplication.getContext()).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
+        ImageLoader.with(ContextManager.getContext()).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
                 .into(civMatchHead);
 
         rlMatchPager.setVisibility(View.VISIBLE);

@@ -252,6 +252,14 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
 
     }
 
+    @Override
+    public boolean isNewArt() {
+        if (videoQuestionLiveEntity != null) {
+            return videoQuestionLiveEntity.isNewArtsH5Courseware();
+        }
+        return false;
+    }
+
     /**
      * 区分英语，语文测评，显示中英文的roleplay标题和布局
      */
@@ -748,7 +756,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             headUrl = UserBll.getInstance().getMyUserInfoEntity()
                     .getHeadImg();
 
-            ImageLoader.with(BaseApplication.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig
+            ImageLoader.with(ContextManager.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig
                     .BitmapListener() {
                 @Override
                 public void onSuccess(Drawable drawable) {

@@ -27,7 +27,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
@@ -65,6 +66,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -285,7 +288,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
      */
     private ImageView ivTeacherNotpresent;
     RelativeLayout bottomContent;
-    RelativeLayout praiselistContent;
     /**
      * 缓冲提示
      */
@@ -294,6 +296,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
      * 互动题的布局
      */
     private RelativeLayout rlQuestionContent;
+    private LiveViewAction liveViewAction;
     /**
      * 初始进入播放器时的预加载界面
      */
@@ -422,6 +425,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
         // 加载横屏时互动题的列表布局
         rlQuestionContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_contents);
+        liveViewAction = new LiveViewActionIml(this, null, rlQuestionContent);
         initAllBll();
         loadData();
         return true;
@@ -661,7 +665,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
 
             } catch (Exception e) {
-                UmsAgentManager.umsAgentException(BaseApplication.getContext(), "ExperienceLiveVideoActivity " +
+                UmsAgentManager.umsAgentException(ContextManager.getContext(), "ExperienceLiveVideoActivity " +
                         "sendMessage", e);
             }
         }
@@ -720,8 +724,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlLiveMessageContent, params);
 
-        praiselistContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_praiselist_content);
-        praiselistContent.setVisibility(View.VISIBLE);
         ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
         updateLoadingImage();
         tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
@@ -760,7 +762,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
 
     private void loadData() {
-        BaseApplication baseApplication = (BaseApplication) getApplication();
+        BaseApplication baseApplication = BaseApplication.getInstance();
 //        mRedPacketDialog = new RedPacketAlertDialog(this, baseApplication, false);
         lectureLivePlayBackBll = new LectureLivePlayBackBll(HalfBodyLiveExperienceActivity.this, "");
         liveBackBll.setStuCourId(mVideoEntity.getStuCourseId());
@@ -785,7 +787,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         addBusiness(this);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(null, rlQuestionContent, new AtomicBoolean(mIsLand));
+            businessBll.initViewF(liveViewAction, null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
         ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
         if (!MediaPlayer.getIsNewIJK()) {
@@ -862,7 +864,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
             return liveBaseBll;
         } catch (Exception e) {
             logger.d("creatBll:business=" + className, e);
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return null;
     }
@@ -1206,11 +1208,12 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 } else {
                     videoPath = url;
                 }
-                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                changeNextLine();
+//                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
                 setmDisplayName(mSectionName);
             }
         }
-        AppBll.getInstance(mBaseApplication);
+        AppBll.getInstance(ContextManager.getApplication());
     }
 
     @Override
@@ -1332,7 +1335,8 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 } else {
                     videoPath = url;
                 }
-                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                changeNextLine();
+//                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
                 setmDisplayName(mSectionName);
             }
         } else {

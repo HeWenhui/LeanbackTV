@@ -34,7 +34,7 @@
     <item name="tv_livevideo_starinteract_gold_count" type="id" />
     <item name="tv_livevideo_starinteract_gold_hind" type="id" />
     <item name="rl_course_video_question_bottom" type="id" />
-    <item name="rl_course_message_bottom" type="id" />
+    <item name="rl_course_video_live_question_contents" type="id" />
     <!--说英语-->
     <item name="rl_livevideo_english_speak_content" type="id" />
     <item name="rl_livevideo_english_speak_error" type="id" />
@@ -217,7 +217,7 @@
     <item name="lv_livevideo_message" type="id" />
     <item name="tv_livevideo_message_item" type="id" />
     <item name="slhv_livevideo_message_head" type="id" />
-    <item name="dv_livevideo_message_danmaku" type="id" />
+    <item name="dv_livevideo_danmaku" type="id" />
     <item name="rl_livevideo_message_panelcontent" type="id" />
     <item name="rl_livevideo_message_panelroot" type="id" />
     <item name="rl_livevideo_message_expression" type="id" />
@@ -964,8 +964,8 @@
     <item name="tv_live_halfbody_msg" type="id" />
     <item name="tv_live_halfbody_sys_msg" type="id" />
 
-    <item name="rl_live_halfbody_livemsg_container" type="id" />
-    <item name="rl_live_halfbody_mediacontroll_container" type="id" />
+    <!--<item name="rl_live_halfbody_livemsg_container" type="id" />-->
+    <!--<item name="rl_live_halfbody_mediacontroll_container" type="id" />-->
 
 
     <item name="iv_live_halfbody_teacher_state" type="id" />

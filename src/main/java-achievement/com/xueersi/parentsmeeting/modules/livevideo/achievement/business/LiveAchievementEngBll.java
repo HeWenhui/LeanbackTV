@@ -11,6 +11,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -30,7 +31,6 @@ public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAc
     protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
     private LiveGetInfo mLiveGetInfo;
     private Activity activity;
-    private RelativeLayout bottomContent;
     private EnAchievePager enAchievePager;
     private LiveAndBackDebug liveAndBackDebug;
     private LiveAchievementHttp liveAchievementHttp;
@@ -44,9 +44,8 @@ public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAc
         liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
     }
 
-    public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
-        this.bottomContent = bottomContent;
-        RelativeLayout relativeLayout = bottomContent.findViewById(R.id.rl_livevideo_star_content);
+    public void initView(LiveViewAction liveViewAction) {
+        RelativeLayout relativeLayout = liveViewAction.findViewById(R.id.rl_livevideo_star_content);
         relativeLayout.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams layoutParams = relativeLayout.getLayoutParams();
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;

@@ -230,7 +230,6 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, getLayoutId(), null);
-        dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
         rlMessageContent = mView.findViewById(R.id.rl_livevideo_message_content2);
         etMessageContent = (EditText) mView.findViewById(R.id.et_livevideo_message_content);
@@ -573,7 +572,6 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
     public void setGetInfo(LiveGetInfo getInfo) {
         super.setGetInfo(getInfo);
         if (getInfo != null) {
-            String educationStage = getInfo.getEducationStage();
             liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {

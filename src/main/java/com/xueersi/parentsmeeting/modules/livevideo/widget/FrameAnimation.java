@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.airbnb.lottie.AssertUtil;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
@@ -653,7 +653,7 @@ public class FrameAnimation {
                 stableLogHashMap.put("path", "" + path);
                 UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             FrameAnimation btframeAnimation1 = new FrameAnimation(iv, files, duration, isRepeat);
             btframeAnimation1.path = path;
@@ -668,7 +668,7 @@ public class FrameAnimation {
             stableLogHashMap.put("path", "" + path);
             UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return btframeAnimation1;
     }

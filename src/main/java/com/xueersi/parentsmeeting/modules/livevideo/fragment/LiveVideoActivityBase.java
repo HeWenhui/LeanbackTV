@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.tencent.bugly.crashreport.BuglyLog;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
@@ -54,7 +54,7 @@ public class LiveVideoActivityBase extends XesActivity {
             intent.putExtra("liveintent", getIntent().getExtras());
             startService(intent);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         BuglyLog.i(TAG, "onCreate");
 //        FloatWindowManager.addView(this,new Button(this),2);
@@ -105,6 +105,9 @@ public class LiveVideoActivityBase extends XesActivity {
         EventBus.getDefault().unregister(this);
         stopService(new Intent(this, LiveService.class));
 //        System.exit(0);
+        if (FileLogger.runActivity == this) {
+            FileLogger.runActivity = null;
+        }
     }
 
     @Override

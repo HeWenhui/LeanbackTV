@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.understand.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -65,10 +64,10 @@ public class UnderstandIRCBll extends LiveBaseBll implements NoticeAction {
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+    public void initView() {
         if (understandAction != null) {
             UnderstandBll understandBll = (UnderstandBll) understandAction;
-            understandBll.initView(bottomContent, mIsLand.get());
+            understandBll.initView(mRootView, mIsLand.get());
         }
     }
 

@@ -8,6 +8,13 @@ def static getAllSource(Object set) {
     set.res.srcDirs += ['src/main/allsub/res-roll_call']
     set.java.srcDirs += ['src/main/allsub/java-question']
     set.res.srcDirs += ['src/main/allsub/res-question']
+    //弹幕
+    set.java.srcDirs += ['src/main/allsub/java-danmaku']
+    set.res.srcDirs += ['src/main/allsub/res-danmaku']
+    //接麦
+    set.res.srcDirs += ['src/main/allsub/res-video_chat']
+    //排行榜
+    set.java.srcDirs += ['src/main/allsub/java-rank']
 }
 
 //com.android.build.gradle.api.AndroidSourceSet set
@@ -30,6 +37,9 @@ def static getSecSource(Object set) {
     //小班体验
     set.java.srcDirs += ['src/main/chinese/java-primary_class']
     set.res.srcDirs += ['src/main/chinese/res-primary_class']
+    //半身
+    set.java.srcDirs += ['src/main/allsub/java-half_body']
+    set.res.srcDirs += ['src/main/allsub/res-half_body']
 }
 
 def static getCnSource(Object set) {
@@ -39,6 +49,9 @@ def static getCnSource(Object set) {
     set.res.srcDirs += ['src/main/secience/res-primary_class']
     set.java.srcDirs += ['src/main/chinese/java-primary_class']
     set.res.srcDirs += ['src/main/chinese/res-primary_class']
+    //半身
+    set.java.srcDirs += ['src/main/allsub/java-half_body']
+    set.res.srcDirs += ['src/main/allsub/res-half_body']
 }
 
 def static getEngSource(Object set) {
@@ -49,6 +62,9 @@ def static getEngSource(Object set) {
     set.java.srcDirs += ['src/main/java-achievement']
     set.res.srcDirs += ['src/main/english/res-achievement']
     set.assets.srcDirs += ['src/main/english/assets']
+    //全身
+    set.java.srcDirs += ['src/main/english/java-stand']
+    set.res.srcDirs += ['src/main/english/res-stand']
 }
 
 android {
@@ -79,7 +95,7 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.glide
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.speechrecognizer)
-    implementation(rootProject.ext.xeslibraries.ldnetdiagnoservice) { changing = true }
+//    implementation(rootProject.ext.xeslibraries.ldnetdiagnoservice) { changing = true }
     //uicomponent
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.uicomponent)
     //framework
@@ -124,4 +140,7 @@ dependencies {
 //    implementation "androidx.work:work-runtime:2.01"
     //    implementation project(':library:agora')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.businessinterface)
+
+//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
 }

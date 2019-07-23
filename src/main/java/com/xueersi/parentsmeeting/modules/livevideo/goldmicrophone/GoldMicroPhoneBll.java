@@ -114,9 +114,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                     public void run() {
                         logger.i("cancel onLine,take offLine");
                         mSpeechEvaluatorUtils.cancel();
-                        if (mRootView != null) {
-                            mRootView.postDelayed(ru, 500);
-                        }
+                        postDelayed(ru, 500);
                     }
                 });
 
@@ -153,9 +151,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                     boolean isHasAudioPermission = isHasAudioPermission();
                     sendIsGoldMicroPhone(isHasAudioPermission, false, sign);
                     showGoldSettingView(isHasAudioPermission);
-                    if (mRootView != null) {
-                        mRootView.postDelayed(onLineToOffLineRunnable, 20000);
-                    }
+                    postDelayed(onLineToOffLineRunnable, 20000);
                 } else {
                     if (isOnline.get() && !isStop.get()) {
                         logger.i("Content:" + ansStr + recognizeStr);
@@ -704,9 +700,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     }
 
     private void stopRecord() {
-        if (mRootView != null) {
-            mRootView.removeCallbacks(onLineToOffLineRunnable);
-        }
+        removeCallbacks(onLineToOffLineRunnable);
         if (mAudioRecord != null && isRecord.get()) {
             mAudioRecord.release();
             isRecord.set(false);

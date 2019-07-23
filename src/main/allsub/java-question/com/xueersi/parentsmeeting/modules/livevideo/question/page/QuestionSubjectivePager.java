@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.QuesReslutEntity;
@@ -147,7 +148,7 @@ public class QuestionSubjectivePager extends BaseLiveQuestionPager {
         public void onClick(View v) {
             final QuesReslutEntity quesReslutEntity = chkReslut();
             if (quesReslutEntity.isHaveEmpty()) {
-                VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, (BaseApplication) BaseApplication.getContext(), false,
+                VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 cancelDialog.setVerifyBtnListener(new OnClickListener() {
                     @Override

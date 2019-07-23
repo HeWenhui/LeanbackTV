@@ -23,9 +23,14 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     /** 麦克风故障调用方法 */
     private String noMicMethod = "";
     private int state;
+    private int index = 0;
 
     public PrimaryTeamOtherItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     @Override
@@ -36,7 +41,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     @Override
     public void initViews(View root) {
         super.initViews(root);
-        primaryClassView.decorateItemOther(root);
+        primaryClassView.decorateItemOther(root, index);
     }
 
     @Override
@@ -64,7 +69,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
 //                });
 //            }
 //        });
-        tv_livevideo_primary_team_people_name.setOnClickListener(new View.OnClickListener() {
+        root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onNameClick.onNameClick(entity, tv_livevideo_primary_team_people_name);
@@ -159,10 +164,36 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
 
     @Override
     public void doRenderRemoteUi(SurfaceView surfaceV) {
-        super.doRenderRemoteUi(surfaceV);
-        rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
-        cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+        mLogtf.d("doRenderRemoteUi:videoStatus=" + videoStatus);
+        if (videoStatus) {
+            super.doRenderRemoteUi(surfaceV);
+            rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
+            cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+        } else {
+            cloudWorkerThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+                    if (mRtcEngine != null) {
+                        mRtcEngine.muteRemoteVideo(uid, true);
+                    }
+                }
+            });
+        }
         haveVideo = true;
+    }
+
+    /** 收到音量 */
+    private boolean baveVolume = false;
+
+    @Override
+    public void reportAudioVolumeOfSpeaker(int volume) {
+        super.reportAudioVolumeOfSpeaker(volume);
+        if (!baveVolume) {
+            baveVolume = true;
+            mLogtf.d("reportAudioVolumeOfSpeaker:uid=" + uid + ",volume=" + volume + ",haveAudio=" + haveAudio);
+            remotefirstAudioRecvWithUid(uid);
+        }
     }
 
     @Override
@@ -181,7 +212,10 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     if (!haveAudio && audioStatus) {
                         handler.removeCallbacks(noMicRun);
                         noMicMethod = "didOfflineOfUid";
-                        handler.postDelayed(noMicRun, noMicDelayed);
+                        if (!postNoMicRun) {
+                            postNoMicRun = true;
+                            handler.postDelayed(noMicRun, noMicDelayed);
+                        }
                     }
                 } else {
                     haveAudio = false;
@@ -210,6 +244,8 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         }, 2000);
     }
 
+    /** 麦克风故障延迟 */
+    private boolean postNoMicRun = false;
     /** 麦克风故障延迟两秒 */
     private long noMicDelayed = 2000;
     /** 麦克风故障 */
@@ -340,7 +376,10 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 if (enable && join && !haveAudio) {
                     handler.removeCallbacks(noMicRun);
                     noMicMethod = "onOtherDis";
-                    handler.postDelayed(noMicRun, noMicDelayed);
+                    if (!postNoMicRun) {
+                        postNoMicRun = true;
+                        handler.postDelayed(noMicRun, noMicDelayed);
+                    }
                 }
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
@@ -357,7 +396,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     public void run() {
                         RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
                         if (mRtcEngine != null) {
-                            mRtcEngine.enableRemoteAudio(uid, false);
+                            mRtcEngine.enableRemoteAudio(uid, true);
                         }
                     }
                 });

@@ -44,6 +44,7 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -134,7 +135,43 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         mContentView = (RelativeLayout) super.onCreateView(inflater, container, savedInstanceState);
         initView();
+//        testLayout();
         return mContentView;
+    }
+
+    //遍历所有布局，找到错误的
+    private void testLayout() {
+        mContentView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View view) {
+                RelativeLayout relativeLayout = new RelativeLayout(activity);
+                mContentView.addView(relativeLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                Class clazz = R.layout.class;
+                Field[] fields = clazz.getDeclaredFields();
+                for (int i = 0; i < fields.length; i++) {
+                    Field filed = fields[i];
+                    String name = filed.getName();
+                    try {
+                        int layout = (int) filed.get(null);
+                        boolean attachtoroot = true;
+                        if ("abc_search_view".equals(name)) {
+                            attachtoroot = false;
+                        }
+                        View inflateView = LayoutInflater.from(activity).inflate(layout, relativeLayout, attachtoroot);
+                        logger.d("testLayout:i=" + i + ",name=" + name + ",view=" + inflateView);
+                    } catch (Exception e) {
+                        logger.e("testLayout:i=" + i + ",name=" + name, e);
+                    }
+                }
+                logger.d("testLayout:count=" + relativeLayout.getChildCount());
+                relativeLayout.removeAllViews();
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+
+            }
+        });
     }
 
     @Override

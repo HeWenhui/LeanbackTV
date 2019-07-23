@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -31,7 +31,7 @@ public class UserOnlineLog {
             logHashMap.put("inittime", "" + LiveVideoConfig.LIVE_HB_TIME);
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 
@@ -44,7 +44,7 @@ public class UserOnlineLog {
             logHashMap.put("errmsg", "" + errmsg);
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 
@@ -60,7 +60,7 @@ public class UserOnlineLog {
             logHashMap.put("livetimes", "" + LiveLog.LIVE_TIME);
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 

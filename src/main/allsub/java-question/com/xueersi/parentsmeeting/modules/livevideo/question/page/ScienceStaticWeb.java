@@ -8,6 +8,7 @@ import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
@@ -60,7 +61,7 @@ public class ScienceStaticWeb {
                     if (basePager.getRootView() != null && basePager.getRootView().getParent() == null) {
                         return;
                     }
-                    XESToastUtils.showToast(BaseApplication.getContext(), "获取试题失败，请刷新");
+                    XESToastUtils.showToast(ContextManager.getContext(), "获取试题失败，请刷新");
                 }
             }
         });
@@ -92,7 +93,7 @@ public class ScienceStaticWeb {
                     if (basePager.getRootView() != null && basePager.getRootView().getParent() == null) {
                         return;
                     }
-                    XESToastUtils.showToast(BaseApplication.getContext(), "提交失败，请重试");
+                    XESToastUtils.showToast(ContextManager.getContext(), "提交失败，请重试");
                 }
             }
         });
@@ -124,7 +125,7 @@ public class ScienceStaticWeb {
                     if (basePager.getRootView() != null && basePager.getRootView().getParent() == null) {
                         return;
                     }
-                    XESToastUtils.showToast(BaseApplication.getContext(), "获取试题结果失败，请刷新");
+                    XESToastUtils.showToast(ContextManager.getContext(), "获取试题结果失败，请刷新");
                 }
             }
         });

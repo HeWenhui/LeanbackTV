@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 
 /**
@@ -12,7 +13,7 @@ public interface SpeechEndAction {
 
     void examSubmitAll(BaseSpeechAssessmentPager speechAssessmentPager, String num);
 
-    void initView(RelativeLayout bottomContent);
+    void initView(LiveViewAction liveViewAction);
 
     void onStopSpeech(BaseSpeechAssessmentPager speechAssessmentPager, String num, OnTop3End top3End);
 

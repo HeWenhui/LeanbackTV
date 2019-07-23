@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -48,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -123,6 +125,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 //    private boolean isNewIRC = false;
     LiveAndBackDebugIml liveAndBackDebugIml;
     private int mState = LiveActivityState.INITIALIZING;
+
     /**
      * 直播的
      *
@@ -236,6 +239,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
     public LiveHttpManager getHttpManager() {
+        return mHttpManager;
+    }
+
+    public LiveHttpAction getLiveHttpAction() {
         return mHttpManager;
     }
 
@@ -434,7 +441,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         try {
             enterTime = enterTime();
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         if (mGetInfo.getStat() == 1) {
             if (mVideoAction != null) {
@@ -453,7 +460,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 businessBll.onLiveInited(getInfo);
                 logger.d("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
             }
         }
@@ -525,7 +532,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         try {
                             businessBll.onArtsExtLiveInited(mGetInfo);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                     }
                     mLogtf.d("onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
@@ -677,7 +684,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         try {
                             noticeAction.onNotice(sourceNick, target, object, mtype);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                     }
                 } else {
@@ -692,13 +699,13 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                             hashMap.put("type", "" + mtype);
                             UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                     }
                 }
             } catch (Exception e) {
                 logger.e("onNotice", e);
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 
@@ -713,8 +720,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 return;
             }
             lastTopicstr = topicstr;
+            JSONTokener jsonTokener = null;
             try {
-                JSONObject jsonObject = new JSONObject(topicstr);
+                jsonTokener = new JSONTokener(topicstr);
+                JSONObject jsonObject = new JSONObject(jsonTokener);
                 LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
                 boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
                 ////直播相关//////
@@ -759,14 +768,22 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         try {
                             mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
 
                     }
                 }
                 mLiveTopic.copy(liveTopic);
             } catch (Exception e) {
-                mLogtf.e("onTopic", e);
+                try {
+                    if (jsonTokener != null) {
+                        mLogtf.e("onTopic:token=" + jsonTokener, e);
+                    } else {
+                        mLogtf.e("onTopic", e);
+                    }
+                } catch (Exception e2) {
+                    mLogtf.e("onTopic", e);
+                }
             }
         }
 
@@ -827,41 +844,26 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      */
     private long enterTime() {
         String liveTime = mGetInfo.getLiveTime();
-        if ("".endsWith(liveTime)) {
-            return 0;
-        }
         {
             // 开始时间
-            String startTime = liveTime.split(" ")[0];
-            String[] times = startTime.split(":");
-            String startTimeHour = times[0];
-            String startTimeMinute = times[1];
-            String msg = "enterTime:startTime=" + startTime + ",Hour=" + startTimeHour + ",Minute=" + startTimeMinute;
+            String msg = "enterTime:liveTime=" + liveTime;
             Calendar calendar = Calendar.getInstance();
             long milliseconds1 = calendar.getTimeInMillis();
-            calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(startTimeHour));
-            calendar.set(Calendar.MINUTE, Integer.parseInt(startTimeMinute));
+            calendar.setTimeInMillis(mGetInfo.getsTime() * 1000);
             long milliseconds2 = calendar.getTimeInMillis();
-            msg += ",time=" + (milliseconds1 - milliseconds2) + "," + ((milliseconds1 - milliseconds2) / 60000);
+            msg += ",starttime=" + (milliseconds1 - milliseconds2) + "," + ((milliseconds1 - milliseconds2) / 60000);
             mLogtf.d(msg);
-            XesMobAgent.enterLiveRoom(0, (milliseconds1 - milliseconds2) / 60000);
         }
         long milliseconds1, milliseconds2;
         {
             // 开始时间
-            String endTime = liveTime.split(" ")[1];
-            String[] times = endTime.split(":");
-            String endTimeHour = times[0];
-            String endTimeMinute = times[1];
-            String msg = "enterTime:endTime=" + endTime + ",Hour=" + endTimeHour + ",Minute=" + endTimeMinute;
+            String msg = "enterTime:liveTime=" + liveTime;
             Calendar calendar = Calendar.getInstance();
             milliseconds1 = calendar.getTimeInMillis();
-            calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(endTimeHour));
-            calendar.set(Calendar.MINUTE, Integer.parseInt(endTimeMinute));
+            calendar.setTimeInMillis(mGetInfo.geteTime() * 1000);
             milliseconds2 = calendar.getTimeInMillis();
-            msg += ",time=" + (milliseconds1 - milliseconds2) + "," + ((milliseconds1 - milliseconds2) / 60000);
+            msg += ",endtime=" + (milliseconds1 - milliseconds2) + "," + ((milliseconds1 - milliseconds2) / 60000);
             mLogtf.d(msg);
-            XesMobAgent.enterLiveRoom(1, (milliseconds1 - milliseconds2) / 60000);
         }
         return (milliseconds1 - milliseconds2) / 60000;
     }

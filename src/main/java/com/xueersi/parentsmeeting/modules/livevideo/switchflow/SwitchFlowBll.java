@@ -281,7 +281,7 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
     }
 
     @MainThread
-    private void initView() {
+    public void initView() {
         mPager = new SwitchFlowRoutePager(mContext, false);
         mPager.init();
     }

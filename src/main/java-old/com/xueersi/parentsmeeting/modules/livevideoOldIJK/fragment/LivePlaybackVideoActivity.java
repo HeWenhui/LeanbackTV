@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
@@ -86,7 +86,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             context.startActivityForResult(intent, requestCode);
         } catch (Exception e) {
             e.printStackTrace();
-            CrashReport.postCatchedException(e);
+            LiveCrashReport.postCatchedException(e);
         }
         try {
             VideoLivePlayBackEntity serializable = (VideoLivePlayBackEntity) bundle.getSerializable("videoliveplayback");
@@ -105,7 +105,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
                 hashMap.put("liveid", "" + serializable.getLiveId());
                 UmsAgentManager.umsAgentDebug(context, "LivePlaybackVideoActivityIntentTo", hashMap);
             } else {
-                CrashReport.postCatchedException(new Exception("" + bundle));
+                LiveCrashReport.postCatchedException(new Exception("" + bundle));
                 HashMap<String, String> hashMap = new HashMap();
                 hashMap.put("logtype", "videoliveplayback");
                 hashMap.put("where", "" + where);
@@ -115,7 +115,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
                 UmsAgentManager.umsAgentDebug(context, "LivePlaybackVideoActivityIntentTo", hashMap);
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            LiveCrashReport.postCatchedException(e);
         }
     }
 }

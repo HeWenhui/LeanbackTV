@@ -47,14 +47,13 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     }
 
     @Override
-    public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
+    public BaseVoiceAnswerPager create(Context activity, VideoQuestionLiveEntity videoQuestionLiveEntity, JSONObject assess_ref, String type,
                                        RelativeLayout rlQuestionContent, SpeechUtils mIse) {
-        VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         if (questionSwitch instanceof WrapQuestionSwitch) {
             WrapQuestionSwitch wrapQuestionSwitch = (WrapQuestionSwitch) questionSwitch;
             wrapQuestionSwitch.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         }
-        VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch);
+        VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch);
         voiceAnswerPager2.setIse(mIse);
         voiceAnswerPager2.setLivePagerBack(livePagerBack);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -69,7 +68,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             params.rightMargin = wradio;
         }
         rlQuestionContent.addView(voiceAnswerPager2.getRootView(), params);
-        String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
+        String sourcetype = questionSwitch.getsourcetype(videoQuestionLiveEntity);
         VoiceAnswerLog.sno2(voiceAnswerPager2, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce, sourcetype);
         return voiceAnswerPager2;
     }
@@ -89,7 +88,8 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         CreateAnswerReslutEntity createAnswerReslutEntity = new CreateAnswerReslutEntity();
         boolean isSuccess = false;
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-        if (LiveVideoConfig.isNewArts) {
+        if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
+            entity.setNewArt(true);
             boolean smallEnglish = false;
             if (answerRightResultVoice instanceof NewArtsAnswerRightResultVoice) {
                 NewArtsAnswerRightResultVoice artsAnswerRightResultVoice = (NewArtsAnswerRightResultVoice) answerRightResultVoice;
@@ -122,6 +122,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 }
             }
         } else {
+            entity.setNewArt(false);
             if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
                 if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
                     answerRightResultVoice.initSelectAnswerRightResultVoice(entity);

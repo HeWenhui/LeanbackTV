@@ -18,7 +18,7 @@ import android.os.HandlerThread;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
@@ -1004,7 +1004,7 @@ public abstract class PircBot implements ReplyConstants {
                 stableLogHashMap.put("line", line);
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), LogConfig.LIVE_IRC_ONMESSAGE, stableLogHashMap.getData());
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         } else if (command.equals("PRIVMSG")) {
             // This is a private message to us.

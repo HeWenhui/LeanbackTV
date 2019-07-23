@@ -141,7 +141,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         this.isExperience = experience;
     }
 
-    public SpeechAssessmentWebX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String
+    public SpeechAssessmentWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String
             liveid, String testId, String stuId, boolean isLive,
                                       String nonce,
                                       SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE,
@@ -206,7 +206,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
         //       wvSubjectWeb.loadUrl("http://172.88.1.180:8084/");
-        if (LiveVideoConfig.isNewArts) {
+        if (baseVideoQuestionEntity.isNewArtsH5Courseware()) {
             VideoQuestionLiveEntity getInfo = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
             mUrl = getInfo.getUrl();
             if (isStandingLive) {
@@ -318,7 +318,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         @Override
         public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
             VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext,
-                    mBaseApplication, false, VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE);
+                    ContextManager.getApplication(), false, VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE);
             verifyCancelAlertDialog.initInfo(message);
             verifyCancelAlertDialog.showDialog();
             result.confirm();
@@ -328,7 +328,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         @Override
         public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
             VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext,
-                    mBaseApplication, false, VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                    ContextManager.getApplication(), false, VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
             verifyCancelAlertDialog.initInfo(message);
             verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                 @Override
@@ -1209,6 +1209,14 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean isNewArt() {
+        if (baseVideoQuestionEntity != null) {
+            return baseVideoQuestionEntity.isNewArtsH5Courseware();
+        }
+        return false;
     }
 
     /**

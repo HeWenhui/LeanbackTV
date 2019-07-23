@@ -30,10 +30,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -69,11 +69,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
-import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
@@ -271,8 +272,11 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         }
     };
 
-    // 体验课相关日志的埋点
-    LiveAndBackDebug ums = new LiveAndBackDebug() {
+    private class ExperkDebug implements LiveAndBackDebug {
+        ExperkDebug() {
+            ProxUtil.getProxUtil().put(AIExperienceLiveVideoActivity.this, LiveAndBackDebug.class, this);
+        }
+
         @Override
         public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
             UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
@@ -312,7 +316,10 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
 
         }
-    };
+    }
+
+    // 体验课相关日志的埋点
+    LiveAndBackDebug ums = new ExperkDebug();
 
     private String TAG = "ExpericenceLiveVideoActivityLog";
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
@@ -323,7 +330,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
      */
     private ImageView ivTeacherNotpresent;
     RelativeLayout bottomContent;
-    RelativeLayout praiselistContent;
     /**
      * 缓冲提示
      */
@@ -332,6 +338,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
      * 互动题的布局
      */
     private RelativeLayout rlQuestionContent;
+    private LiveViewAction liveViewAction;
     /**
      * 初始进入播放器时的预加载界面
      */
@@ -465,6 +472,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 //        if (mIsLand) {
         // 加载横屏时互动题的列表布局
         rlQuestionContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_contents);
+        liveViewAction = new LiveViewActionIml(this, null, rlQuestionContent);
 //        } else {
 //            if (rlQuestionContent != null) {
 //                rlQuestionContent.removeAllViews();
@@ -713,7 +721,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
 
             } catch (Exception e) {
-                UmsAgentManager.umsAgentException(BaseApplication.getContext(), "ExperienceLiveVideoActivity " +
+                UmsAgentManager.umsAgentException(ContextManager.getContext(), "ExperienceLiveVideoActivity " +
                         "sendMessage", e);
             }
         }
@@ -759,8 +767,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
 
-        praiselistContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_praiselist_content);
-        praiselistContent.setVisibility(View.VISIBLE);
         ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
         updateLoadingImage();
         tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
@@ -797,10 +803,11 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         rlLiveMessageContent = new RelativeLayout(this);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlLiveMessageContent, params);
+        bottomContent.addView(rlLiveMessageContent, 0, params);
         long before = System.currentTimeMillis();
-        mLiveMessagePager = new LiveMessagePager(this, ums, liveMediaControllerBottom,
+        mLiveMessagePager = new LiveMessagePager(this, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
+        mLiveMessagePager.setDebugMsg(true);
         logger.d("initViewLive:time1=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
@@ -839,16 +846,12 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.setIsRegister(true);
 
-        // 03.22 设置统计日志的公共参数
-        mLiveMessagePager.setLiveTermId(mVideoEntity.getLiveId(), mVideoEntity.getChapterId());
-
         // 隐藏锁屏按钮
         mLiveMessagePager.hideclock();
         rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
     }
 
     private void loadData() {
-        BaseApplication baseApplication = (BaseApplication) getApplication();
 //        mRedPacketDialog = new RedPacketAlertDialog(this, baseApplication, false);
         lectureLivePlayBackBll = new LectureLivePlayBackBll(AIExperienceLiveVideoActivity.this, "");
         liveBackBll.setStuCourId(mVideoEntity.getStuCourseId());
@@ -881,7 +884,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         addBusiness(this);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(null, rlQuestionContent, new AtomicBoolean(mIsLand));
+            businessBll.initViewF(liveViewAction, null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
 //        ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
@@ -956,7 +959,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             return liveBaseBll;
         } catch (Exception e) {
             logger.d("creatBll:business=" + className, e);
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return null;
     }
@@ -1661,11 +1664,12 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 } else {
                     videoPath = url;
                 }
-                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                changeNextLine();
+//                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
                 setmDisplayName(mSectionName);
             }
         }
-        AppBll.getInstance(mBaseApplication);
+        AppBll.getInstance(ContextManager.getApplication());
     }
 
     @Override
@@ -1701,6 +1705,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         // 03.08待删除，方便测试临时添加的变量
 //        LocalCourseConfig.tempkey = "";
         LiveVideoConfig.aiQuestionIndex = -1;
+        ProxUtil.getProxUtil().clear(this);
     }
 
 
@@ -1796,7 +1801,8 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 } else {
                     videoPath = url;
                 }
-                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                changeNextLine();
+//                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
                 setmDisplayName(mSectionName);
             }
         } else {

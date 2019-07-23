@@ -25,6 +25,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
@@ -57,7 +58,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
     private String testPaperUrl;
     private String stuCouId;
 
-    public SubjectResultX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
+    public SubjectResultX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.stuId = stuId;
@@ -114,7 +115,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
         ((AnimationDrawable) ivLoading.getBackground()).start();
 //        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName;
-        if(LiveVideoConfig.isNewArts){
+        if(baseVideoQuestionEntity.isNewArtsH5Courseware()){
             examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId + "&token=" + AppBll.getInstance().getUserToken();
 //            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId;
             Log.e("Duncan","examUrl:" + examUrl);

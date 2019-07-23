@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LruCache;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
@@ -646,7 +646,7 @@ public class WebViewCache {
                             map.putAll(header);
                         }
                     }catch (Exception e){
-                        CrashReport.postCatchedException(new LiveException(TAG,e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG,e));
                     }
                     webResourceResponse.setResponseHeaders(map);
                 }

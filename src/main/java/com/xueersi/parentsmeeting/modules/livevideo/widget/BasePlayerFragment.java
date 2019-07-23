@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
@@ -19,7 +21,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -45,10 +47,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIn
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 //import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
@@ -387,20 +392,31 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     logger.i("setDisplay  ");
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
-                                vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                boolean isPlayerCreated = vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
                                 setVideoConfig();
                                 if (isChangeLine) {
                                     try {
                                         vPlayer.changeLine(changeLinePos, protocol);
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        Map<String, String> map = new HashMap<>();
+                                        map.put("changeLinePos", changeLinePos + "");
+                                        map.put("protocol", protocol + "");
+                                        map.put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
+                                        map.put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.CHANGE_LINE_EXCEPTION);
+                                        if (getActivity() != null) {
+                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map);
+                                        }
                                     }
                                     isChangeLine = false;
                                 } else {
-                                    String userName, userId;
+                                    String userName = "", userId = null;
                                     try {
                                         userName = AppBll.getInstance().getAppInfoEntity().getChildName();
                                         userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        if (TextUtils.isEmpty(userName)) {
+                                            userName = "";
+                                        }
                                         if (videoConfigEntity != null) {
                                             videoConfigEntity.setUserId(userId);
                                             videoConfigEntity.setUserName(userName);
@@ -415,13 +431,38 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         }
                                     } catch (IOException e) {
                                         vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
+                                        StableLogHashMap map = new StableLogHashMap();
+                                        map.put("userName", userName).
+                                                put("userId", userId + "").
+                                                put("streamId", streamId).
+                                                put("protocol", String.valueOf(protocol)).
+                                                put("isPlayerCreated", String.valueOf(isPlayerCreated)).
+                                                put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
+                                                put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
+                                                put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
+                                        if (getActivity() != null) {
+                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
+                                        }
                                         e.printStackTrace();
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                         if (videoConfigEntity != null) {
-                                            recordFailData(videoConfigEntity.toJSONObject().toString());
+                                            recordFailData(videoConfigEntity.addPlayException().toString());
+                                        } else {
+                                            StableLogHashMap map = new StableLogHashMap();
+                                            map.put("userName", userName).
+                                                    put("userId", userId).
+                                                    put("streamId", streamId).
+                                                    put("protocol", String.valueOf(protocol)).
+                                                    put("isPlayerCreated", String.valueOf(isPlayerCreated)).
+                                                    put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
+                                                    put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
+                                                    put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
+                                            if (getActivity() != null) {
+                                                UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
+                                            }
                                         }
-                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                                        LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
                             }
@@ -534,7 +575,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     /** 记录播放失败日志日志 */
     protected void recordFailData(String jsonString) {
         if (getActivity() != null) {
-            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.PLAY_EXCEPTION, jsonString);
+            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, jsonString);
         }
     }
 
@@ -798,7 +839,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                         setVolumeListener.onSuccess(true);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                    LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             } else {
                 try {
@@ -806,7 +847,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                         setVolumeListener.onSuccess(false);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                    LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             }
         }

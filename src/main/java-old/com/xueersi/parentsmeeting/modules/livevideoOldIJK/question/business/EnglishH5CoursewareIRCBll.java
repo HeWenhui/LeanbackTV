@@ -5,7 +5,7 @@ import android.util.Log;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.utils.SpeechUtils;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -363,7 +363,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                             ShareDataManager.SHAREDATA_USER);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                                 }
                             } else {
                                 LiveVideoConfig.isSend = false;
@@ -591,7 +591,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         ShareDataManager.SHAREDATA_USER);
             } catch (JSONException e) {
                 e.printStackTrace();
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             Loger.e("TeamPkBll", "======>888888" + "LiveVideoConfig.isSend:" + LiveVideoConfig.isSend + ":" +
                     mTeamPKBll);

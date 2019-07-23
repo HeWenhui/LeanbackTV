@@ -19,7 +19,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -51,6 +51,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback.SuperSpeakerBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
@@ -101,6 +103,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     private RelativeLayout rlQuestionContentBottom;
     /** 互动题的布局 */
     private RelativeLayout rlQuestionContent;
+    private LiveViewAction liveViewAction;
     /** 更多课程广告的布局 */
     private RelativeLayout rlAdvanceContent;
     /** 初始进入播放器时的预加载界面 */
@@ -158,6 +161,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     LinearLayout llUserHeadImage;
     /** 全身直播 头像 */
     CircleImageView civUserHeadImage;
+    boolean isTutorVideo = false;
+    boolean isNetWorkEnable = false;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -190,13 +195,15 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
         if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_TUTOR) {
             mVideoEntity = mVideoTutorEntity;
+            isTutorVideo = true;
 
         } else {
             mVideoEntity = mVideoMainEntity;
+            isTutorVideo = false;
         }
 
         if (mVideoEntity == null) {
-            CrashReport.postCatchedException(new Exception("" + activity.getIntent().getExtras()));
+            LiveCrashReport.postCatchedException(new Exception("" + activity.getIntent().getExtras()));
         }
         // 请求相应数据
         initData();
@@ -414,7 +421,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
         llUserHeadImage = mContentView.findViewById(R.id.ll_livevideo_en_stand_achive_user_head_imge);
         civUserHeadImage = mContentView.findViewById(R.id.iv_livevideo_en_stand_achive_user_head_imge);
-
+        liveViewAction = new LiveViewActionIml(activity, mContentView, rlQuestionContent);
     }
 
     /** 竖屏时填充视频列表布局 */
@@ -488,7 +495,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 @Override
                 public boolean onPreDraw() {
                     activity.getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
-                    if (AppBll.getInstance(activity).isNetWorkAlert()) {
+                    if (AppBll.getInstance(activity).isNetWorkAlert() || isNetWorkEnable) {
                         // 互动题播放地址
                         AppBll.getInstance(activity.getApplication());
                         playNewVideo();
@@ -516,7 +523,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         long before = System.currentTimeMillis();
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(rlQuestionContentBottom, rlQuestionContent, mIsLand);
+            businessBll.initViewF(liveViewAction, rlQuestionContentBottom, rlQuestionContent, mIsLand);
         }
 
 
@@ -573,7 +580,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         //直播
         if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
             //理科
-            if (liveBackBll.getIsArts() == 0) {
+            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_SEC) {
                 initLiveRemarkBll();
                 liveBackBll.addBusinessBll(new SuperSpeakerBackBll(activity, liveBackBll));//语文半身直播回放走的理科
             } else {
@@ -625,7 +632,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             return liveBaseBll;
         } catch (Exception e) {
             logger.d("creatBll:business=" + className, e);
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return null;
     }
@@ -960,7 +967,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (liveBackVideoBll != null) {
             liveBackVideoBll.onDestroy();
         }
-        LiveVideoConfig.isNewArts = false;
+       // LiveVideoConfig.isNewArts = false;
         ProxUtil.getProxUtil().clear(activity);
     }
 
@@ -970,7 +977,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             videoPlayStatus = MediaPlayer.VIDEO_TEACHER_TUTOR;
             mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER,
                     MediaPlayer.VIDEO_TEACHER_TUTOR, "");
-
+            isNetWorkEnable = true;
             startNewVideo();
             return;
         }

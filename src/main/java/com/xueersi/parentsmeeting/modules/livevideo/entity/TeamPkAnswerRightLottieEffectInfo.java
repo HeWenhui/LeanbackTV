@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.are.ContextManager;
 
 /**
  * 战队pk二期 答对超难题 lottie 动效
@@ -62,7 +63,7 @@ public class TeamPkAnswerRightLottieEffectInfo extends LottieEffectInfo {
             paint.setTextSize(textSize);
             paint.setTextAlign(Paint.Align.LEFT);
 
-            Typeface fontFace = FontCache.getTypeface(BaseApplication.getContext(), "fangzhengcuyuan.ttf");
+            Typeface fontFace = FontCache.getTypeface(ContextManager.getContext(), "fangzhengcuyuan.ttf");
             if (fontFace != null) {
                 paint.setTypeface(fontFace);
             }

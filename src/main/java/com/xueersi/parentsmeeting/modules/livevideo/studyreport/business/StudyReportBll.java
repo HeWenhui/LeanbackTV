@@ -9,7 +9,7 @@ import android.os.Looper;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -207,7 +207,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         } catch (Exception e) {
             e.printStackTrace();
             mLogtf.e("getViewBitmap", e);
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return resultBitmap;
     }
@@ -244,7 +244,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     }
                 } catch (Exception e) {
                     mLogtf.e("cutImage", e);
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });
@@ -310,9 +310,9 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                                         videoBitmap.recycle();
                                         logger.d("onGetBitmap:create=" + createBitmap.getWidth() + ",old=" + oldBitmap.getWidth() + ",height=" + oldBitmap.getHeight() + ",left=" + left + ",top=" + top);
                                     } catch (Exception e) {
-                                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                                         uploadWonderMoment(type, saveFile.getPath());
-                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                                        LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
                             }
@@ -323,7 +323,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     }
                 } catch (Exception e) {
                     mLogtf.e("cutImageAndVideo", e);
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         };
@@ -447,7 +447,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
 //                    }
 //                } catch (Exception e) {
 //                    mLogtf.e("cutImage", e);
-//                    CrashReport.postCatchedException(e);
+//                    LiveCrashReport.postCatchedException(e);
 //                }
 //            }
 //        };

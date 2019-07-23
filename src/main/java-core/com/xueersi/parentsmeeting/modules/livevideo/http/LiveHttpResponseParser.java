@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
@@ -287,6 +287,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveVideoConfig.isSmallChinese = false;
         LiveVideoConfig.isPrimary = false;
         LiveVideoConfig.isScience = false;
+        LiveVideoConfig.isMulLiveBack = false;
     }
 
     /**
@@ -1864,7 +1865,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject data = (JSONObject) responseEntity.getJsonObject();
             if (data.has("starList")) {
                 JSONArray jsonArray = data.optJSONArray("starList");
-                if(jsonArray != null && jsonArray.length() >0){
+                if (jsonArray != null && jsonArray.length() > 0) {
                     JSONObject jsonObject = null;
                     List<TeamEnergyAndContributionStarEntity.ContributionStar> contributionStarList
                             = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
@@ -1989,7 +1990,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 entity.setCompetitorResultInfo(resultInfo);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.d("parseStuPkResult",e);
             MobAgent.httpResponseParserError(TAG, "parseStuPkResult", e.getMessage());
         }
         return entity;
@@ -2129,7 +2130,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (Exception e) {
             e.printStackTrace();
             MobAgent.httpResponseParserError(TAG, "parsegetSelfTeamInfo", e.getMessage());
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return null;
     }
@@ -2168,7 +2169,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (Exception e) {
             e.printStackTrace();
             MobAgent.httpResponseParserError(TAG, "parseUpdataEnglishPkByTestId", e.getMessage());
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return null;
     }

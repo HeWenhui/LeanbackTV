@@ -165,17 +165,17 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     private AnswerResultEntity mAnswerReulst;
     private VideoQuestionLiveEntity mDetail;
 
-    public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, String headUrl, String userName) {
+    public VoiceAnswerStandPager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, String headUrl, String userName) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
-        this.mDetail = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+        this.mDetail = baseVideoQuestionEntity;
         isNewArts = mDetail.isNewArtsH5Courseware();
         this.questionSwitch = questionSwitch;
         this.type = type;
         this.assess_ref = assess_ref;
         this.headUrl = headUrl;
         this.userName = StandLiveTextView.getShortName(userName);
-        if (LiveVideoConfig.isNewArts) {
+        if (isNewArts) {
             try {
                 answer = assess_ref.getJSONArray("answer").getString(0);
             } catch (JSONException e) {
@@ -1056,7 +1056,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
     private void onCommit(VideoResultEntity entity, double speechDuration) {
         boolean isRight;
-        if (LiveVideoConfig.isNewArts) {
+        if (isNewArts) {
             if (entity.getResultType() == 2) {
                 isRight = true;
             } else {

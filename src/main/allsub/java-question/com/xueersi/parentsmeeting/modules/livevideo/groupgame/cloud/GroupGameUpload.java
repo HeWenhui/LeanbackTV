@@ -2,9 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.groupgame.cloud;
 
 import android.content.Context;
 
-import com.tencent.bugly.crashreport.CrashReport;
-import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.config.AppConfig;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -42,7 +41,7 @@ public class GroupGameUpload {
         if (saveFile.length() == 0) {
             return;
         }
-        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(BaseApplication.getContext());
+        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(ContextManager.getContext());
         CloudUploadEntity uploadEntity = new CloudUploadEntity();
         uploadEntity.setFilePath(saveFile.getPath());
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
@@ -67,7 +66,7 @@ public class GroupGameUpload {
                     stableLogHashMap.put("httppath", httpPath);
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_GAME_VOICE, stableLogHashMap.getData());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
 
@@ -85,7 +84,7 @@ public class GroupGameUpload {
                     stableLogHashMap.put("errorMsg", "" + result.getErrorMsg());
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_GAME_VOICE, stableLogHashMap.getData());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });
@@ -99,7 +98,7 @@ public class GroupGameUpload {
         if (saveFile.length() == 0) {
             return;
         }
-        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(BaseApplication.getContext());
+        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(ContextManager.getContext());
         CloudUploadEntity uploadEntity = new CloudUploadEntity();
         uploadEntity.setFilePath(saveFile.getPath());
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
@@ -125,7 +124,7 @@ public class GroupGameUpload {
                     stableLogHashMap.put("httppath", httpPath);
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_GAME_VOICE, stableLogHashMap.getData());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
 
@@ -143,7 +142,7 @@ public class GroupGameUpload {
                     stableLogHashMap.put("errorMsg", "" + result.getErrorMsg());
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_GAME_VOICE, stableLogHashMap.getData());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });
