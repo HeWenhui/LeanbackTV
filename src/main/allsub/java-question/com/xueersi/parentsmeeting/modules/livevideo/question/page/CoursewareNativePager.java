@@ -211,7 +211,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 //        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/");
         entranceTime = System.currentTimeMillis() / 1000;
         try {
-            NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            if (isPlayBack) {
+                NewCourseLog.sno1back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            } else {
+                NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            }
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
@@ -1243,6 +1247,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
+                if (isPlayBack) {
+                    try {
+                        NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "true", detailInfo.isTUtor());
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+                }
                 newCourseSec = (NewCourseSec) objData[0];
                 logger.d("onDataSucess:time=" + (newCourseSec.getEndTime() - newCourseSec.getReleaseTime()));
                 if (newCourseSec.getIsAnswer() == 1 && !isPlayBack) {
@@ -1448,6 +1459,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
                 ivCourseRefresh.setVisibility(View.VISIBLE);
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
+                if (isPlayBack) {
+                    try {
+                        NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "false", detailInfo.isTUtor());
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+                }
             }
         });
     }
