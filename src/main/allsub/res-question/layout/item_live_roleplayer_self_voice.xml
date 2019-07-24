@@ -22,16 +22,22 @@
 
 
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_live_roleplayer_message_counttime"
+                android:layout_marginTop="-12dp"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 android:layout_gravity="center_horizontal">
+
+                <ImageView
+                    android:id="@id/iv_live_roleplayer_message_user_segment"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_centerInParent="true" />
 
                 <com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView
                     android:id="@id/civ_live_roleplayer_message_user_head"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
                     android:focusable="false"
                     android:src="@drawable/ic_default_head_square" />
 
@@ -54,7 +60,7 @@
                 android:layout_width="60dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="-7dp"
                 android:textColor="#108479"
                 android:textSize="11sp"
                 android:singleLine="true"

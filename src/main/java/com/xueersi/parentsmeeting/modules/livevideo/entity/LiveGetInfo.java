@@ -1514,7 +1514,7 @@ public class LiveGetInfo {
         private boolean isArriveLate;
         private boolean isUseBetterMe;
         //段位信息
-        private StuSegmentEntity stuSegment = new StuSegmentEntity();
+        private StuSegmentEntity stuSegment;
         //本场小目标
         private BetterMeEntity target;
         //小目标实时完成值

@@ -512,6 +512,7 @@
     <item name="btn_live_roleplayer_enter" type="id" />
     <item name="rl_live_roleplayer_read_main" type="id" />
     <item name="lv_live_roleplayer_read_list" type="id" />
+    <item name="iv_live_roleplayer_message_user_segment" type="id" />
     <item name="civ_live_roleplayer_message_user_head" type="id" />
     <item name="ll_live_roleplayer_message_user_name" type="id" />
     <item name="tv_live_roleplayer_message_username" type="id" />

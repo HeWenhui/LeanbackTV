@@ -259,10 +259,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setSmallEnglish(false);
             LiveVideoConfig.isSmallChinese = false;
         }
-        //英语小目标
-        LiveGetInfo.BetterMe betterMe = getInfo.getBetterMe();
-        betterMe.setArriveLate("1".equals(data.optString("isArriveLate")));
-        betterMe.setUseBetterMe("1".equals(data.optString("isUseBetterMe")));
 
         JSONObject englishPkObj = data.optJSONObject("englishPk");
         if (englishPkObj != null) {
@@ -286,6 +282,19 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             enpkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
             enpkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
         }
+
+        //英语小目标
+        LiveGetInfo.BetterMe betterMe = getInfo.getBetterMe();
+        betterMe.setArriveLate("1".equals(data.optString("isArriveLate")));
+        betterMe.setUseBetterMe("1".equals(data.optString("isUseBetterMe")));
+        StuSegmentEntity stuSegmentEntity = new StuSegmentEntity();
+        stuSegmentEntity.setAimNumber(data.optString("segment"));
+        stuSegmentEntity.setSegmentType(data.optString("segmentType"));
+        stuSegmentEntity.setStar(data.optString("star"));
+        stuSegmentEntity.setAimNumber(data.optString("aimNumber"));
+        stuSegmentEntity.setSumCount(data.optString("sumCount"));
+        betterMe.setStuSegment(stuSegmentEntity);
+
     }
 
     /**

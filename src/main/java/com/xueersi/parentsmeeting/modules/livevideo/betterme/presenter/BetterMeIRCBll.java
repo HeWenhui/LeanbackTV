@@ -222,6 +222,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void run() {
                 BetterExit.EnglishAchievent.receiveBetterMe(mContext, mBetterMeEntity, !showBetterMeDialog);
+                updateBetterMe(false);
             }
         }, 1000);
         if (showBetterMeDialog) {
@@ -288,7 +289,8 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     synchronized public void getStuSegment(int method) {
         final boolean showPk = method == FROM_NOTICE;
-        final boolean showBetterMeDialog = method == FROM_NOTICE || method == FROM_TOPIC;
+        final boolean showBetterMeDialog = (method == FROM_NOTICE) || (method == FROM_TOPIC && LiveTopic.MODE_TRANING
+                .equals(mGetInfo.getMode()));
         getHttpManager().getStuSegment(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -366,7 +368,11 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      */
     @Override
     public StuSegmentEntity getStuSegmentEntity() {
-        return mStuSegmentEntity;
+        if (mStuSegmentEntity != null)
+            return mStuSegmentEntity;
+        else {
+            return betterMe.getStuSegment();
+        }
     }
 
     @Override

@@ -25,6 +25,9 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
@@ -45,6 +48,11 @@ public class RolePlayerSelfItem extends RolePlayerItem {
      * 头像
      */
     private CountDownHeadImageView civUserHead;
+
+    /**
+     * 段位
+     */
+    private ImageView ivUserSegment;
 
     /**
      * 用户的昵称
@@ -103,6 +111,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     @Override
     public void initViews(View root) {
         civUserHead = root.findViewById(R.id.civ_live_roleplayer_message_user_head);
+        ivUserSegment = root.findViewById(R.id.iv_live_roleplayer_message_user_segment);
         tvUserNickName = root.findViewById(R.id.tv_live_roleplayer_message_username);
         ivVoiceAnimtor = root.findViewById(R.id.iv_live_roleplayer_message_voice_main);
         vVoiceMain = root.findViewById(R.id.rl_live_roleplayer_message_voice_main);
@@ -237,6 +246,20 @@ public class RolePlayerSelfItem extends RolePlayerItem {
             imgUrl = UserBll.getInstance().getMyUserInfoEntity().getHeadImg();
         }
         updateUserHeadImage(civUserHead, imgUrl);
+
+        try {
+            StuSegmentEntity stuSegmentEntity = ProxUtil.getProxUtil().get(mContext, BetterMeContract
+                    .BetterMePresenter.class).getStuSegmentEntity();
+            if (stuSegmentEntity != null) {
+                int segmentType = Integer.valueOf(stuSegmentEntity.getSegmentType()) - 1;
+                int star = Integer.valueOf(stuSegmentEntity.getStar()) - 1;
+                ivUserSegment.setImageResource(BetterMeConfig.LEVEL_IMAGE_RES_HEAD[segmentType]);
+                ivUserSegment.setBackgroundResource(BetterMeConfig.STAR_IMAGE_RES[segmentType][star]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         rlMain.setVisibility(View.VISIBLE);
         tvMessageContent.setText(entity.getReadMsg());
         tvMessageContent.setTextColor(Color.parseColor("#333333"));

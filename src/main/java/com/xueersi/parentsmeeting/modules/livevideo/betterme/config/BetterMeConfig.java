@@ -71,6 +71,15 @@ public class BetterMeConfig {
             3, 3, 4, 5, 6, 6
     };
 
+    public static int[] LEVEL_IMAGE_RES_HEAD = new int[]{
+            R.drawable.app_livevideo_enteampk_juejiangqingtong_img_head,
+            R.drawable.app_livevideo_enteampk_qinfenbaiyin_img_head,
+            R.drawable.app_livevideo_enteampk_kekuhuangjin_img_head,
+            R.drawable.app_livevideo_enteampk_hengxinbojin_img_head,
+            R.drawable.app_livevideo_enteampk_zuanshi_img_head,
+            R.drawable.app_livevideo_enteampk_zuiqiangxueba_img_head
+    };
+
     /**
      * 满星段位图片资源
      */
@@ -150,4 +159,43 @@ public class BetterMeConfig {
     };
 
     public static int LEVEL_NUMBER = 6;
+
+    /**
+     * 星星
+     */
+    public static int[][] STAR_IMAGE_RES = new int[][]{
+            {
+                    R.drawable.app_livevideo_enteampk_qinfenbaiyin_xingxing1_img_nor,
+                    R.drawable.app_livevideo_enteampk_qinfenbaiyin_xingxing2_img_nor,
+                    R.drawable.app_livevideo_enteampk_qinfenbaiyin_xingxing3_img_nor,},
+            {
+                    R.drawable.app_livevideo_enteampk_qinfenbaiyin_xingxing1_img_nor,
+                    R.drawable.app_livevideo_enteampk_qinfenbaiyin_xingxing2_img_nor,
+                    R.drawable.app_livevideo_enteampk_qinfenbaiyin_xingxing3_img_nor,},
+            {
+                    R.drawable.app_livevideo_enteampk_kekuhuangjin_xingxing1_img_nor,
+                    R.drawable.app_livevideo_enteampk_kekuhuangjin_xingxing2_img_nor,
+                    R.drawable.app_livevideo_enteampk_kekuhuangjin_xingxing3_img_nor,
+                    R.drawable.app_livevideo_enteampk_kekuhuangjin_xingxing4_img_nor,},
+            {
+                    R.drawable.app_livevideo_enteampk_hengxinbojin_xingxign1_img_nor,
+                    R.drawable.app_livevideo_enteampk_hengxinbojin_xingxign2_img_nor,
+                    R.drawable.app_livevideo_enteampk_hengxinbojin_xingxign3_img_nor,
+                    R.drawable.app_livevideo_enteampk_hengxinbojin_xingxign4_img_nor,
+                    R.drawable.app_livevideo_enteampk_hengxinbojin_xingxign5_img_nor,},
+            {
+                    R.drawable.app_livevideo_enteampk_juejiangqingtong_img_head,
+                    R.drawable.app_livevideo_enteampk_qinfenbaiyin_img_head,
+                    R.drawable.app_livevideo_enteampk_kekuhuangjin_img_head,
+                    R.drawable.app_livevideo_enteampk_hengxinbojin_img_head,
+                    R.drawable.app_livevideo_enteampk_zuanshi_img_head,
+                    R.drawable.app_livevideo_enteampk_zuiqiangxueba_img_head},
+            {
+                    R.drawable.app_livevideo_enteampk_juejiangqingtong_img_head,
+                    R.drawable.app_livevideo_enteampk_qinfenbaiyin_img_head,
+                    R.drawable.app_livevideo_enteampk_kekuhuangjin_img_head,
+                    R.drawable.app_livevideo_enteampk_hengxinbojin_img_head,
+                    R.drawable.app_livevideo_enteampk_zuanshi_img_head,
+                    R.drawable.app_livevideo_enteampk_zuiqiangxueba_img_head}
+    };
 }
