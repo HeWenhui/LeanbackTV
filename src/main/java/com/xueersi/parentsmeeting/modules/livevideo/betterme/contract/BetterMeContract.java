@@ -18,18 +18,18 @@ public interface BetterMeContract {
     interface BetterMeView extends BaseView<BetterMePresenter> {
         void setRootView(RelativeLayout rootView);
 
-        void showIntroductionPager();
+        void showIntroductionPager(boolean showPK);
 
         void showLevelDisplayPager();
 
-        void showReceiveTargetPager();
+        void showReceiveTargetPager(boolean showPK);
 
         void showCompleteTargetPager(StuAimResultEntity stuAimResultEntity);
     }
 
     interface BetterMePresenter extends BasePresenter {
-        void getStuSegment(boolean isNotice);
-        void getBetterMe(boolean isNotice);
+        void getStuSegment(int method);
+        void getBetterMe(int method);
         void getStuAimResult();
         void updateBetterMe(boolean isShowBubble);
         BetterMeEntity getBetterMeEntity();

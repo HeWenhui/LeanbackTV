@@ -19,5 +19,5 @@ public interface UpdateAchievement {
 
     void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity,boolean isShowBubble);
 
-    void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isNotice);
+    void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isShowBubble);
 }

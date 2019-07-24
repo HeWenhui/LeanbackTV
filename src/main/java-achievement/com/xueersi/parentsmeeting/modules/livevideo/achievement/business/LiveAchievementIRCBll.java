@@ -181,9 +181,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
 
                 @Override
-                public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isNotice) {
+                public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isShowBubble) {
                     logger.d(" onReceiveBetterMe");
-                    betterMeInteractAction.onReceiveBetterMe(betterMeEntity, isNotice);
+                    betterMeInteractAction.onReceiveBetterMe(betterMeEntity, isShowBubble);
                 }
             });
             AppInfoEntity appInfoEntity = AppBll.getInstance().getAppInfoEntity();

@@ -42,6 +42,7 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
     public static final int PAGER_LEVEL_DISPLAY = 2;
     public static final int PAGER_RECEIVE_TARGET = 3;
     private BasePager currentPager;
+    private boolean showPK;
 
     public BetterMeViewImpl(Context context) {
         this.mContext = context;
@@ -56,7 +57,8 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
      * 小目标介绍弹窗
      */
     @Override
-    public void showIntroductionPager() {
+    public void showIntroductionPager(boolean showPK) {
+        this.showPK = showPK;
         if (rlBetterMeContent == null) {
             rlBetterMeContent = new RelativeLayout(mContext);
             rlBetterMeContent.setId(R.id.rl_livevideo_content_speechbul);
@@ -92,7 +94,7 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
      * 收到本场小目标弹窗
      */
     @Override
-    public void showReceiveTargetPager() {
+    public void showReceiveTargetPager(boolean showPK) {
         if (rlBetterMeContent == null) {
             rlBetterMeContent = new RelativeLayout(mContext);
             if (mRootView != null) {
@@ -102,6 +104,7 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
         }
         currentPager = new BetterMeReceiveTargetPager(mBetterMePresenter.getStuSegmentEntity(), mBetterMePresenter
                 .getBetterMeEntity(), mContext, this);
+        ((BetterMeReceiveTargetPager) currentPager).setShowPK(showPK);
         rlBetterMeContent.addView(currentPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
@@ -139,7 +142,6 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
     }
 
 
-
     @Override
     public void setPresenter(BetterMeContract.BetterMePresenter presenter) {
         this.mBetterMePresenter = presenter;
@@ -152,13 +154,12 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
      */
     @Override
     public void onClose(BasePager basePager) {
-        if(basePager instanceof BetterMeLevelDisplayPager){
+        if (basePager instanceof BetterMeLevelDisplayPager) {
             currentPager.getRootView().setVisibility(View.VISIBLE);
             if (rlBetterMeContent != null) {
                 rlBetterMeContent.removeView(basePager.getRootView());
             }
-        }
-      else{
+        } else {
             rlBetterMeContent.removeAllViews();
         }
     }
@@ -182,14 +183,11 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
     @Override
     public void onShow(int pagerType) {
         switch (pagerType) {
-            case PAGER_INTRODUCTION:
-                showIntroductionPager();
-                break;
             case PAGER_LEVEL_DISPLAY:
                 showLevelDisplayPager();
                 break;
             case PAGER_RECEIVE_TARGET:
-                showReceiveTargetPager();
+                showReceiveTargetPager(this.showPK);
                 break;
             default:
                 break;

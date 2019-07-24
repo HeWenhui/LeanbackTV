@@ -129,7 +129,8 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
             target = BetterMeUtil.secondToMinite(target);
         }
         if ("1".equals(mStuAimResultEntity.getIsDoneAim())) {
-            tvAimValue.setText("已完成目标");
+//            tvAimValue.setText("已完成目标");
+            tvAimValue.setText("目标" + target);
             pgComeletetar.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
                     .app_livevideo_enteampk_xiaomubiao_progressbar_img_nor1));
         } else {

@@ -259,8 +259,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onPKStart(boolean showPk) {
-        if (enTeamPkAction != null) {
-            enTeamPkAction.onRankStart(showPk);
+        if (!psOpen) {
+            psOpen = true;
+            if (enTeamPkAction != null) {
+                enTeamPkAction.onRankStart(showPk);
+            }
         }
     }
 
@@ -1224,25 +1227,25 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      */
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         //退出重进不显示分队仪式
-        try {
-            JSONObject room_2 = jsonObject.getJSONObject("room_2");
-            JSONObject teamPKObj = room_2.optJSONObject("teamPK");
-            if (teamPKObj != null) {
-                boolean status = teamPKObj.optBoolean("status", false);
-                if (status) {
-                    logger.d("onTopic:psOpen=" + psOpen);
-                    if (!psOpen) {
-                        psOpen = true;
-                        //firstTopic>1,说明不是退出重进
-                        if (enTeamPkAction != null) {
-                            enTeamPkAction.onRankStart(false);
-                        }
-                    }
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            JSONObject room_2 = jsonObject.getJSONObject("room_2");
+//            JSONObject teamPKObj = room_2.optJSONObject("teamPK");
+//            if (teamPKObj != null) {
+//                boolean status = teamPKObj.optBoolean("status", false);
+//                if (status) {
+//                    logger.d("onTopic:psOpen=" + psOpen);
+//                    if (!psOpen) {
+//                        psOpen = true;
+//                        //firstTopic>1,说明不是退出重进
+//                        if (enTeamPkAction != null) {
+//                            enTeamPkAction.onRankStart(false);
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

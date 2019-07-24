@@ -76,6 +76,12 @@ public class BetterMeReceiveTargetPager extends BasePager {
      */
     private LinearLayout llReveivetarNextLevel;
 
+    public void setShowPK(boolean showPK) {
+        this.showPK = showPK;
+    }
+
+    private boolean showPK;
+
     public BetterMeReceiveTargetPager(StuSegmentEntity stuSegmentEntity, BetterMeEntity betterMeEntity, Context context, OnBettePagerClose onBettePagerClose) {
         super(context);
         this.mStuSegmentEntity = stuSegmentEntity;
@@ -207,7 +213,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
                     mCountDownTimer.cancel();
                 }
                 onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
-                BetterExit.EnglishTeamPK.startPK(mContext, true);
+                BetterExit.EnglishTeamPK.startPK(mContext, showPK);
             }
         });
     }
@@ -233,7 +239,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
         @Override
         public void onFinish() {
             onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
-            BetterExit.EnglishTeamPK.startPK(mContext, true);
+            BetterExit.EnglishTeamPK.startPK(mContext, showPK);
         }
     };
 

@@ -120,11 +120,4 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
             enAchievePager.onReceiveBetterMe(betterMeEntity, isNotice);
         }
     }
-
-    @Override
-    public void onBetterMeLate() {
-        if (enAchievePager != null) {
-            enAchievePager.onBetterMeLate();
-        }
-    }
 }

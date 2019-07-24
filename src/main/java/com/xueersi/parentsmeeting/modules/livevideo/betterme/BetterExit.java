@@ -45,10 +45,10 @@ public class BetterExit {
             }
         }
 
-        public static void receiveBetterMe(Context context, BetterMeEntity betterMeEntity, boolean isNotice) {
+        public static void receiveBetterMe(Context context, BetterMeEntity betterMeEntity, boolean isShowBubble) {
             UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(context, UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.onReceiveBetterMe(betterMeEntity, isNotice);
+                updateAchievement.onReceiveBetterMe(betterMeEntity, isShowBubble);
             }
         }
     }

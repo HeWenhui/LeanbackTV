@@ -429,7 +429,7 @@ public class EnAchievePager extends LiveBasePager {
     /**
      * 收到本场小目标
      */
-    public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isNotice) {
+    public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isShowBubble) {
         //隐藏没有小目标时的默认视图
         if (tvAchiveAimEmpty != null) {
             tvAchiveAimEmpty.setVisibility(View.GONE);
@@ -454,7 +454,7 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveAimValue.setText("目标" + target);
         tvAchiveAimTips.setText(current);
         setBetterMePro(0);
-        if (!isNotice) {
+        if (isShowBubble) {
             receiveBetterMeBubble(betterMeEntity);
         }
     }
@@ -510,7 +510,7 @@ public class EnAchievePager extends LiveBasePager {
     /**
      * 小目标迟到
      */
-    public void onBetterMeLate() {
+    private void onBetterMeLate() {
         if (tvAchiveAimEmpty != null) {
             tvAchiveAimEmpty.setText("早点来上课才有小目标哦~");
         }
