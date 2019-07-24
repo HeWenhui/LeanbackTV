@@ -1,19 +1,18 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view;
 
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.IntelligentRecognitionHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.CommonRxObserver;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.ContentAudioManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.EvaluationAudioPlayerDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.SoundEffectPlayer;
@@ -208,14 +207,14 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                 if (judgeSpeechStatus(resultEntity) == IntelligentConstants.FEED_BACK_SENTENCE_1_0) {
                     lastScore = score;
                     speechType = SpeechType.SENTENCE;
-                    performRepeatSentence(IntelligentConstants.FEED_BACK_SENTENCE_1_0);
+                    performRepeateSentenceFromLocal(IntelligentConstants.FEED_BACK_SENTENCE_1_0);
                 } else {
                     speechType = SpeechType.WORD;
                     performRepeateCommon(IntelligentConstants.FEED_BACK_WORD_1, resultEntity.getLstPhonemeScore());
                 }
             } else {
                 speechType = SpeechType.SENTENCE;
-                performRepeatSentence(IntelligentConstants.FEED_BACK_SENTENCE_1_1);
+                performRepeateSentenceFromLocal(IntelligentConstants.FEED_BACK_SENTENCE_1_1);
             }
         } else if (getSpeechNum() == 2) {
             if (speechType == SpeechType.SENTENCE) {
@@ -230,8 +229,8 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                 } else {
                     performCommonList(IntelligentConstants.FEED_BACK_WORD_2_1,
                             Arrays.asList(
-                                    speechWord,
-                                    EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(IntelligentConstants.FEED_BACK_WORD_2_1)
+                                    EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(IntelligentConstants.FEED_BACK_WORD_2_1),
+                                    contentAudioManager.getAudioContentUrl(speechWord)
                             )
                     );
                 }
@@ -242,8 +241,8 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
             } else {
                 performCommonList(IntelligentConstants.FEED_BACK_WORD_3_1,
                         Arrays.asList(
-                                speechWord,
-                                EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(IntelligentConstants.FEED_BACK_WORD_3_1)
+                                EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(IntelligentConstants.FEED_BACK_WORD_3_1),
+                                contentAudioManager.getAudioContentUrl(speechWord)
                         )
                 );
             }
@@ -282,12 +281,11 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
      * @param status
      */
     private void performRxZipList(final int status) {
-        ContentAudioManager contentAudioManager = new ContentAudioManager(mActivity, mRecord.getLiveId(), mRecord.getMaterialId());
         Observable.
-                zip(Observable.
-                                just(EvaluationAudioPlayerDataManager.getInstance(mActivity).
-                                        getJudgeAudioUrl(status)),
-                        contentAudioManager.getAudioContentObserb(speechWord),
+                zip(Observable.just(EvaluationAudioPlayerDataManager.
+                                getInstance(mActivity).
+                                getJudgeAudioUrl(status)),
+                        contentAudioManager.getRxAudioContent(speechWord),
                         new BiFunction<String, String, List<String>>() {
                             @Override
                             public List<String> apply(String s, String s2) throws Exception {
@@ -300,12 +298,12 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                         playRepeateAudio(status, list);
                     }
                 });
+//        Observable.just("1").lift();
     }
 
     private void performRxMergeWithList(final int status) {
-        ContentAudioManager contentAudioManager = new ContentAudioManager(mActivity, mRecord.getLiveId(), mRecord.getMaterialId());
         contentAudioManager.
-                getAudioContentObserb(speechWord).
+                getRxAudioContent(speechWord).
                 mergeWith(Observable.
                         just(EvaluationAudioPlayerDataManager.
                                 getInstance(mActivity).
@@ -317,7 +315,6 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
 
                     }
                 });
-        MediaPlayer mediaPlayer = new MediaPlayer();
     }
 
     /** 得到满分点赞 */
@@ -393,12 +390,13 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                         return speechWord;
                     }
                 }).
+                subscribeOn(Schedulers.io()).
                 subscribe(new CommonRxObserver<String>() {
                     @Override
                     public void onNext(String s) {
                         playRepeateAudio(status, Arrays.asList(
-                                s,
-                                EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(status)));
+                                EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(status),
+                                contentAudioManager.getAudioContentUrl(s)));
                         disposable.dispose();
                     }
                 });
@@ -443,24 +441,27 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
         }
     }
 
-    /** 重读整个句子 */
-    private void performRepeatSentence(final int status) {
+    private void performRepeateSentenceFromLocal(final int status) {
+        String url = contentAudioManager.getLocalSentenceUrl();
+        if (TextUtils.isEmpty(url)) {
+            if (mViewModel.getIeResultData() == null) return;
+            final String sentenceKey = mViewModel.getIeResultData().getValue().getSentence();
+            performRepeatSentenceFromRemote(status, sentenceKey);
+        } else {
+            performRepeatSentenceFromRemote(status, url);
+        }
 
-        if (mViewModel.getIeResultData() == null) return;
-        final Map<String, String> audioHashMap = mViewModel.getIeResultData().getValue().getAudioHashMap();
-        if (audioHashMap == null)
-            return;
-        final String sentenceKey = mViewModel.getIeResultData().getValue().getSentence();
+    }
 
+
+    /**
+     * 从远程url读取句子，然后重读整个句子
+     *
+     * @param status
+     */
+    private void performRepeatSentenceFromRemote(final int status, String url) {
         Observable.
-                just(sentenceKey).
-                filter(RxFilter.<String>filterNull()).
-                map(new Function<String, String>() {
-                    @Override
-                    public String apply(String s) throws Exception {
-                        return audioHashMap.get(sentenceKey);
-                    }
-                }).
+                just(url).
                 filter(RxFilter.<String>filterNull()).
                 subscribeOn(Schedulers.io()).
                 subscribe(new Consumer<String>() {
@@ -485,15 +486,13 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                         soundEffectPlayer.start();
                     }
                 });
-
-
     }
 
     /**
      * 重读某个单词，分数最低的某个单词
      * 处理评测结果时，一定不能在同一个线程里面播放音频
      */
-    protected void performRepeatWord(final List<PhoneScore> phoneScores, final int status) {
+    protected void performRxRepeatWord(final List<PhoneScore> phoneScores, final int status) {
         sortResult(phoneScores);
         if (mViewModel.getIeResultData() == null) return;
         Map<String, String> audioHashMap = mViewModel.getIeResultData().getValue().getAudioHashMap();
@@ -528,7 +527,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                         return strings != null && strings.size() != 0;
                     }
                 }).
-                observeOn(Schedulers.io()).
+                subscribeOn(Schedulers.io()).
                 subscribe(new Consumer<List<String>>() {
                     @Override
                     public void accept(List<String> strings) throws Exception {

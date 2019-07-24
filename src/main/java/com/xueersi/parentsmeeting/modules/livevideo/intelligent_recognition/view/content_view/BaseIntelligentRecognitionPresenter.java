@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.enti
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechStopEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.IntelligentRecognitionHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.ContentAudioManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.BaseIntelligentRecognitionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentLifecycleObserver;
@@ -58,6 +59,7 @@ public abstract class BaseIntelligentRecognitionPresenter extends
 
     SpeechUtils mSpeechUtils;
 
+    ContentAudioManager contentAudioManager;
 //    protected MediaPlayer mediaPlayer;
 
 //    protected IntelligentRecognitionViewModel mViewModel;
@@ -85,6 +87,7 @@ public abstract class BaseIntelligentRecognitionPresenter extends
         this.mActivity = context;
         this.mViewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
         this.mRecord = mViewModel.getRecordData();
+        contentAudioManager = new ContentAudioManager(mActivity, mRecord.getLiveId(), mRecord.getMaterialId());
 //        httpManager = new IntelligentRecognitionHttpManager();
 //        intelligentRecognitionHttpResponseParser = new IntelligentRecognitionHttpResponseParser();
     }

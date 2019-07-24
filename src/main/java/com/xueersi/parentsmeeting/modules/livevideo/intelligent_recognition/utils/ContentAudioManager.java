@@ -33,7 +33,7 @@ public class ContentAudioManager {
      * @param wordName 需要播放的音频文件的名字，注意大小写
      * @return
      */
-    public Observable<String> getAudioContentObserb(final String wordName) {
+    public Observable<String> getRxAudioContent(final String wordName) {
         return Observable.fromArray(liveCacheFile.list()).filter(new Predicate<String>() {
             @Override
             public boolean test(String s) throws Exception {
@@ -57,7 +57,7 @@ public class ContentAudioManager {
     }
 
     /**
-     * 同{@link #getAudioContentObserb(String)}
+     * 同{@link #getRxAudioContent(String)}
      * 音频文件是否存在,如果文件过多，可能存在for循环遍历耗时的情况，建议在子线程中使用该方法
      *
      * @param wordName 需要播放的音频文件的名字，注意大小写
@@ -83,4 +83,28 @@ public class ContentAudioManager {
         return "";
     }
 
+    public String getLocalSentenceUrl() {
+        if (liveCacheFile == null || !liveCacheFile.exists()) {
+            return "";
+        }
+        for (String fileName : liveCacheFile.list()) {
+            if (TextUtils.isEmpty(fileName) || fileName.length() < 4) {
+                continue;
+            }
+            if (hasDigit(fileName)) {
+                return fileName;
+            }
+        }
+        return "";
+    }
+
+    private boolean hasDigit(String fileName) {
+        for (int ii = 0; ii < fileName.length(); ii++) {
+            char charA = fileName.charAt(ii);
+            if (charA >= '0' && charA <= '9') {
+                return true;
+            }
+        }
+        return false;
+    }
 }

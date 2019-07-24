@@ -65,4 +65,6 @@ public interface IntelligentConstants {
     String UNITY3D_EVALUATE = "unity_3d";
 
     String CACHE_FILE = "intelligent_recognition/unity3D";
+
+    String SENTENCE_NAME = "1.mp3";
 }

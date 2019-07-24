@@ -32,6 +32,7 @@ public class IEResult {
     private String setAnswerTime;
     private String releaseGold;
     private String answered;
+    ///存储句子的url
     private String sentence;
 
     public String getSentence() {

@@ -13,6 +13,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * MediaCodec解码AAC(MediaRecord录制的AAC，已经编好码了)
  * <p>
@@ -141,6 +147,101 @@ public class AudioMediaCodecUtils {
         listener.pcmComplete(true);
     }
 
+    public static class PCMEntity {
+        private byte[] bytes;
+        private int size;
+
+        public byte[] getBytes() {
+            return bytes;
+        }
+
+        public void setBytes(byte[] bytes) {
+            this.bytes = bytes;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public void setSize(int size) {
+            this.size = size;
+        }
+
+        public PCMEntity(byte[] bytes, int size) {
+            this.bytes = bytes;
+            this.size = size;
+        }
+    }
+
+    public Flowable<PCMEntity> rxAACToPCM() {
+        return Flowable.
+                create(new FlowableOnSubscribe<PCMEntity>() {
+                    @Override
+                    public void subscribe(FlowableEmitter<PCMEntity> e) throws Exception {
+
+                    }
+
+//                    @Override
+//                    public void subscribe(ObservableEmitter<PCMEntity> e) throws Exception {
+
+//        listener.pcmComplete(true);
+
+//                    }
+                }, BackpressureStrategy.BUFFER).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * aacToPCM
+     */
+    public boolean aacRxToPCM() {
+        MediaCodec.BufferInfo decodeBufferInfo = new MediaCodec.BufferInfo();
+        while (!isFinish && mIsPalying) {
+            try {
+                int inputIdex = mAudioDecoder.dequeueInputBuffer(10000);//等待10s
+                if (inputIdex < 0) {
+                    isFinish = true;
+                }
+                ByteBuffer inputBuffer = mAudioDecoder.getInputBuffer(inputIdex);
+                inputBuffer.clear();
+                int samplesize = mMediaExtractor.readSampleData(inputBuffer, 0);
+                if (samplesize > 0) {
+                    mAudioDecoder.queueInputBuffer(inputIdex, 0, samplesize, 0, 0);
+                    mMediaExtractor.advance();
+                } else {
+                    isFinish = true;
+                }
+                int outputIndex = mAudioDecoder.dequeueOutputBuffer(decodeBufferInfo, 10000);
+
+                ByteBuffer outputBuffer;
+                byte[] chunkPCM;
+
+                while (outputIndex >= 0) {            //每次解码完成的数据不一定能一次吐出 所以用while循环，保证解码器吐出所有数据
+                    outputBuffer = mAudioDecoder.getOutputBuffer(outputIndex);
+                    chunkPCM = new byte[decodeBufferInfo.size];
+                    outputBuffer.get(chunkPCM);
+                    outputBuffer.clear();
+//                    Byte[] bytes = new Byte[chunkPCM.length];
+                    if (listener != null) {
+                        listener.pcmData(chunkPCM, decodeBufferInfo.size);
+                    }
+//                audioTrack.write(chunkPCM, 0, decodeBufferInfo.size);
+                    mAudioDecoder.releaseOutputBuffer(outputIndex, false);
+                    outputIndex = mAudioDecoder.dequeueOutputBuffer(decodeBufferInfo, 10000);
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.e(e);
+//                if (listener != null) {
+//                    listener.pcmComplete(false);
+//                }
+                return false;
+            }
+        }
+        stopPlay();
+//        listener.pcmComplete(true);
+        return true;
+    }
 
     private void stopPlay() {
         mIsPalying = false;

@@ -39,8 +39,13 @@ public class IntelligentRecognitionHttpResponseParser {
                 Iterator iterator = audioJSON.keys();
                 while (iterator.hasNext()) {
                     String key = (String) iterator.next();
+
                     String value = audioJSON.optString("key");
-                    map.put(key, value);
+                    if (hasDigit(key)) {
+                        map.put(key, value);
+                    } else {
+                        ieResult.setSentence(value);
+                    }
                 }
                 ieResult.setAudioHashMap(map);
             }
@@ -48,6 +53,17 @@ public class IntelligentRecognitionHttpResponseParser {
             ieResult.setImgSrc(imgSrc);
         }
         return ieResult;
+    }
+
+
+    private boolean hasDigit(String fileName) {
+        for (int ii = 0; ii < fileName.length(); ii++) {
+            char charA = fileName.charAt(ii);
+            if (charA >= '0' && charA <= '9') {
+                return true;
+            }
+        }
+        return false;
     }
 
     public SpeechScoreEntity parseSpeechScore(ResponseEntity responseEntity) {
