@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 
 import com.xueersi.common.base.BaseHttpBusiness;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -152,7 +151,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                 params.addBodyParam("answers", testResult);
                 params.addBodyParam("isPlayBack", "2");
                 params.addBodyParam("isForce", isSubmit);
-                params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
+                params.addBodyParam("Cookie", LiveAppUserInfo.getInstance().getUserToken());
                 sendPost(url, params, requestCallBack);
             }
         } else {

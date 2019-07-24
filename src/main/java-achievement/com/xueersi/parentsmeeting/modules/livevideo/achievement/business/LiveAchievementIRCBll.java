@@ -9,9 +9,7 @@ import android.view.View;
 
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.entity.AppInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.route.XueErSiRouter;
@@ -166,7 +164,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     }
                 }
             });
-            AppInfoEntity appInfoEntity = AppBll.getInstance().getAppInfoEntity();
             boolean voiceRecognSwitchOn = mShareDataManager.getBoolean(ShareBusinessConfig.SP_VOICE_RECOGNI_SWITCH,
                     true,
                     ShareDataManager.SHAREDATA_USER);

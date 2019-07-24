@@ -2,12 +2,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
 
 import android.os.Environment;
 
-import com.xueersi.common.base.XueErSiRunningEnvironment;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
-import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.RunningEnvironment;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;

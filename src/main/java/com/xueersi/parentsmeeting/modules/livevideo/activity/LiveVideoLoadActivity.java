@@ -8,7 +8,6 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.xueersi.common.base.BaseActivity;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.http.HttpCallBack;
@@ -65,12 +64,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        String token = AppBll.getInstance().getUserToken();
+        String token = LiveAppUserInfo.getInstance().getUserToken();
         //如果没有token，只能重新点击进入了
         if (StringUtils.isEmpty(token)) {
             XESToastUtils.showToast(this, "登录信息失效，重新登录");
             StableLogHashMap logHashMap = new StableLogHashMap();
-            String rfh = AppBll.getInstance().getUserRfh();
+            String rfh = LiveAppUserInfo.getInstance().getUserRfh();
             logHashMap.put("token", "" + token);
             logHashMap.put("rfh", "" + rfh);
             logHashMap.put("create_times", "" + CREATE_TIMES);

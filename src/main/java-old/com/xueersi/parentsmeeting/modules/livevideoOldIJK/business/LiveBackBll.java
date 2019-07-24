@@ -322,7 +322,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         LiveGetInfo liveGetInfo = new LiveGetInfo(null);
         mGetInfo = liveGetInfo;
         liveGetInfo.setId(mVideoEntity.getLiveId());
-        liveGetInfo.setUname(AppBll.getInstance().getAppInfoEntity().getChildName());
+        liveGetInfo.setUname(LiveAppUserInfo.getInstance().getChildName());
         MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         liveGetInfo.setStuId(userInfoEntity.getStuId());
         liveGetInfo.setStuCouId(stuCourId);
@@ -762,7 +762,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         if ("PublicLiveDetailActivity".equals(where)) {
@@ -779,7 +779,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         if ("PublicLiveDetailActivity".equals(where)) {
@@ -796,7 +796,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         if ("PublicLiveDetailActivity".equals(where)) {

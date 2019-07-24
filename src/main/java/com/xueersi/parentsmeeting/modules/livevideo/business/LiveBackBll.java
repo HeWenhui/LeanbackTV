@@ -7,7 +7,6 @@ import android.util.SparseArray;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
@@ -320,7 +319,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         LiveGetInfo liveGetInfo = new LiveGetInfo(null);
         mGetInfo = liveGetInfo;
         liveGetInfo.setId(mVideoEntity.getLiveId());
-        liveGetInfo.setUname(AppBll.getInstance().getAppInfoEntity().getChildName());
+        liveGetInfo.setUname(LiveAppUserInfo.getInstance().getChildName());
         liveGetInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
         liveGetInfo.setStuCouId(stuCourId);
         if (liveVideoSAConfig != null) {
@@ -777,7 +776,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
         mData.put("uid", LiveAppUserInfo.getInstance().getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         if ("PublicLiveDetailActivity".equals(where)) {
@@ -793,7 +792,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         mData.put("uid", LiveAppUserInfo.getInstance().getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         if ("PublicLiveDetailActivity".equals(where)) {
@@ -809,7 +808,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         mData.put("uid", LiveAppUserInfo.getInstance().getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         if ("PublicLiveDetailActivity".equals(where)) {

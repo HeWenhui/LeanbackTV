@@ -2,9 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -24,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
@@ -299,7 +298,7 @@ public class CoursewarePreload {
         logger.i("" + courseWareInfos.size() + " " + subjectNum.get());
         if (courseWareInfos.size() == subjectNum.get()) {
             logger.i("perform download ");
-            AppBll.getInstance().registerAppEvent(CoursewarePreload.this);
+            LiveAppBll.getInstance().registerAppEvent(CoursewarePreload.this);
 //            storageLiveId();
             execDownLoad(
                     sortArrays(),
@@ -1290,7 +1289,7 @@ public class CoursewarePreload {
 //        logger.i("remaining " + documentNum.get());
         //下载完成，则注销
         if (documentNum.get() == 0) {
-            AppBll.getInstance().unRegisterAppEvent(this);
+            LiveAppBll.getInstance().unRegisterAppEvent(this);
         }
     }
 

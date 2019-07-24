@@ -9,7 +9,7 @@ public class LiveAppUserInfo {
 
     public static synchronized LiveAppUserInfo getInstance() {
         if (mInstance == null) {
-            synchronized (UserBll.class) {
+            synchronized (LiveAppUserInfo.class) {
                 if (mInstance == null) {
                     mInstance = new LiveAppUserInfo();
                 }
@@ -94,5 +94,27 @@ public class LiveAppUserInfo {
 
     public String getGradeCode() {
         return UserBll.getInstance().getMyUserInfoEntity().getGradeCode();
+    }
+
+    public String getChildName() {
+        return AppBll.getInstance().getAppInfoEntity().getChildName();
+    }
+
+    /**
+     * 获取用户当前的Token,间接调用AppBll
+     *
+     * @return
+     */
+    public String getUserToken() {
+        return AppBll.getInstance().getUserToken();
+    }
+
+    /**
+     * 获取用户当前的Token，间接调用AppBll
+     *
+     * @return
+     */
+    public String getUserRfh() {
+        return AppBll.getInstance().getUserRfh();
     }
 }

@@ -33,7 +33,6 @@ import android.widget.Toast;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.XesActivity;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
@@ -349,7 +348,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                     }
                                     isChangeLine = false;
                                 } else {
-                                    String userName = AppBll.getInstance().getAppInfoEntity().getChildName();
+                                    String userName = LiveAppUserInfo.getInstance().getChildName();
                                     String userId = LiveAppUserInfo.getInstance().getStuId();
                                     try {
                                         if (vPlayer.getPlayer() instanceof PSIJK) {

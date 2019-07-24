@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.event.AppEvent;
@@ -67,6 +66,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.dialog.StudyResultDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
@@ -655,7 +655,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         onModeChanged();
 
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
 
         getHandler.postDelayed(liveModeTask, getModeInterval());
 
@@ -673,7 +673,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         getHandler.removeCallbacks(liveHeartTask);
         getHandler.removeCallbacks(playDelayTask);
 
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
 
         if (videoPlayState.isPlaying) {
             stopPlayer();

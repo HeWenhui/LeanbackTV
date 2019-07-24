@@ -18,13 +18,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
@@ -189,7 +187,7 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                     String userName = null;
                                     String userId = null;
                                     try {
-                                        userName = AppBll.getInstance().getAppInfoEntity().getChildName();
+                                        userName = LiveAppUserInfo.getInstance().getChildName();
                                         userId = LiveAppUserInfo.getInstance().getStuId();
                                         if (TextUtils.isEmpty(userName)) {
                                             userName = "";

@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.se;
 import android.app.Activity;
 import android.text.TextUtils;
 
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -201,7 +200,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
         mData.put("uid", LiveAppUserInfo.getInstance().getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         mData.put("orderid", mVideoEntity.getChapterId());
@@ -223,7 +222,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
         mData.put("uid", LiveAppUserInfo.getInstance().getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         mData.put("livetype", "" + 4);
@@ -240,7 +239,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
         mData.put("uid", LiveAppUserInfo.getInstance().getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         mData.put("livetype", "" + 4);
