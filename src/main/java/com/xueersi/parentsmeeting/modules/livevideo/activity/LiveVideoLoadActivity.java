@@ -76,19 +76,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             //距离进程创建的时间
             logHashMap.put("app_time", "" + (System.currentTimeMillis() - UmsConstants.PROCRESS_CREATE_TIME));
             UmsAgentManager.umsAgentDebug(this, LogConfig.LIVE_TOKEN_NULL, logHashMap.getData());
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            }, 700);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    System.exit(0);
-                }
-            }, 1000);
+            finishAndExit();
             return;
         }
         CREATE_TIMES++;
@@ -226,7 +214,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                    finish();
+                    finishAndExit();
                 }
             });
         } else if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -306,7 +294,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                    finish();
+                    finishAndExit();
                 }
             });
         }
@@ -410,6 +398,22 @@ public class LiveVideoLoadActivity extends BaseActivity {
             finish();
 
         }
+    }
+
+    private void finishAndExit() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 700);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                System.exit(0);
+            }
+        }, 1000);
     }
 
     /**
