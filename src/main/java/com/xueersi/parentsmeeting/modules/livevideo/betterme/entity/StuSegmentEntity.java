@@ -22,6 +22,15 @@ public class StuSegmentEntity {
      * 学生累计完成目标的次数
      */
     private String sumCount;
+    private String segmentType;
+
+    public String getSegmentType() {
+        return segmentType;
+    }
+
+    public void setSegmentType(String segmentType) {
+        this.segmentType = segmentType;
+    }
 
     public String getSegment() {
         return segment;

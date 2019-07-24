@@ -88,7 +88,7 @@ public class EnStandAchievePager extends LiveBasePager {
     private TextView tvAchiveAimValue;
     private ProgressBar pgAchiveAim;
     private TextView tvAchiveAimTips;
-    private AimRealTimeValEntity mAimRealTimeValEntity;
+    private String realTimeVal;
 
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -185,26 +185,26 @@ public class EnStandAchievePager extends LiveBasePager {
 //                }
             }
         });
-        LiveGetInfo.EnglishBetterMe englishBetterMe = mLiveGetInfo.getEnglishBetterMe();
-        if (englishBetterMe.isUseBetterMe && englishBetterMe.isArriveLate) {
+        LiveGetInfo.BetterMe betterMe = mLiveGetInfo.getBetterMe();
+        if (betterMe.isUseBetterMe() && betterMe.isArriveLate()) {
             onBetterMeLate();
         }
-        if (englishBetterMe.isUseBetterMe && !englishBetterMe.isArriveLate && englishBetterMe.aimType != null &&
-                englishBetterMe.realTimeVal != null && englishBetterMe.aimValue !=
-                null) {
-            AimRealTimeValEntity aimRealTimeValEntity = new AimRealTimeValEntity();
-            aimRealTimeValEntity.setType(englishBetterMe.aimType);
-            aimRealTimeValEntity.setRealTimeVal(englishBetterMe.realTimeVal);
-            aimRealTimeValEntity.setAimValue(englishBetterMe.aimValue);
-            aimRealTimeValEntity.setDoneAim(englishBetterMe.isDoneAim);
-            onBetterMeUpdate(aimRealTimeValEntity, false);
+        if (betterMe.isUseBetterMe() && !betterMe.isArriveLate()) {
+            if (betterMe.getCurrent() != null) {
+                onReceiveBetterMe(betterMe.getTarget(), false);
+                realTimeVal = "0";
+            }
+            if (betterMe.getCurrent() != null) {
+                onBetterMeUpdate(betterMe.getCurrent(), false);
+                realTimeVal = betterMe.getCurrent().getRealTimeVal();
+            }
         }
     }
 
     /**
      * 收到本场小目标
      */
-    public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isNotice) {
+    public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isShowBubble) {
         //隐藏没有小目标时的默认视图
         if (tvAchiveAimEmpty != null) {
             tvAchiveAimEmpty.setVisibility(View.GONE);
@@ -218,10 +218,10 @@ public class EnStandAchievePager extends LiveBasePager {
         String target = betterMeEntity.getAimValue();
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(betterMeEntity.getAimType())) {
             tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(betterMeEntity.getAimType())) {
             tvAchiveAimType.setText(BetterMeConfig.PARTICIPATERATE);
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(betterMeEntity.getAimType())) {
             tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
             target = BetterMeUtil.secondToMinite(target);
@@ -230,9 +230,10 @@ public class EnStandAchievePager extends LiveBasePager {
         tvAchiveAimValue.setText("目标" + target);
         tvAchiveAimTips.setText(current);
         setBetterMePro(0);
-        if (!isNotice) {
+        if (isShowBubble) {
             receiveBetterMeBubble(betterMeEntity);
         }
+        this.realTimeVal = "0";
     }
 
     /**
@@ -281,7 +282,7 @@ public class EnStandAchievePager extends LiveBasePager {
         if(isShowBubble){
             updateBetterMeBubble(aimRealTimeValEntity);
         }
-        mAimRealTimeValEntity = aimRealTimeValEntity;
+        this.realTimeVal = aimRealTimeValEntity.getRealTimeVal();
     }
 
     /**
@@ -324,7 +325,7 @@ public class EnStandAchievePager extends LiveBasePager {
             target = BetterMeUtil.secondToMinite(target);
         }
         message.append("达到").append(target);
-        showBetterMeBubble(message.toString());
+        showBetterMeBubble(null, message.toString(), false, false);
     }
 
     /**
@@ -337,12 +338,15 @@ public class EnStandAchievePager extends LiveBasePager {
         StringBuilder message = new StringBuilder();
         String current = aimRealTimeValEntity.getRealTimeVal();
         String target = aimRealTimeValEntity.getAimValue();
-        boolean increasing;
-        if (mAimRealTimeValEntity != null) {
-            //如果有上次目标值的记录
-            double doubleCurrent = (Double.valueOf(target));
-            double doublePrevious = (Double.valueOf(mAimRealTimeValEntity.getRealTimeVal()));
-            increasing = doubleCurrent > doublePrevious;
+
+        //当前完成率是上升还是下降
+        boolean isIncrease = false;
+        boolean isDecrease = false;
+        if (realTimeVal != null) {
+            double doubleCurrent = (Double.valueOf(current));
+            double doublePrevious = (Double.valueOf(realTimeVal));
+            isIncrease = doubleCurrent > doublePrevious;
+            isDecrease = doubleCurrent < doublePrevious;
         }
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
             message.append(BetterMeConfig.CORRECTRATE);
@@ -357,15 +361,18 @@ public class EnStandAchievePager extends LiveBasePager {
             current = BetterMeUtil.secondToMinite(current);
             target = BetterMeUtil.secondToMinite(target);
         }
-        message.append("当前").append(current).append(" ").append("目标").append(target);
-        showBetterMeBubble(message.toString());
+        message.append("当前").append(current);
+        if (isIncrease || isDecrease) {
+            showBetterMeBubble(message.toString(), "目标" + target, isIncrease, isDecrease);
+        }
     }
 
     /**
      * 蓝色气泡动效
      */
-    private void showBetterMeBubble(String msg) {
-        final LottieEffectInfo bubbleEffectInfo = new BubbleStandLottieEffectInfo(mContext, msg);
+    private void showBetterMeBubble(String current, String target, boolean isIncrease, boolean isDecrease) {
+        final LottieEffectInfo bubbleEffectInfo = new BubbleStandLottieEffectInfo(mContext, current, target,
+                isIncrease, isDecrease);
         final LottieAnimationView lottieAnimationView = mView.findViewById(R.id.lav_livevideo_en_stand_achive_bubble);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override

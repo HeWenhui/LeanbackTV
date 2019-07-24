@@ -617,7 +617,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         //更新小目标开口时长
-                        if (BetterMeConfig.TYPE_TALKTIME.equals(mGetInfo.getEnglishBetterMe().aimType)) {
+                        String aimType = "";
+                        if(mGetInfo.getBetterMe().getTarget()!=null){
+                            aimType = mGetInfo.getBetterMe().getTarget().getAimType();
+                        }
+                        else if(mGetInfo.getBetterMe().getCurrent()!=null){
+                            aimType = mGetInfo.getBetterMe().getCurrent().getType();
+                        }
+                        if (BetterMeConfig.TYPE_TALKTIME.equals(aimType)) {
                             BetterMeContract.BetterMePresenter betterMePresenter = ProxUtil.getProxUtil().get
                                     (mContext, BetterMeContract.BetterMePresenter.class);
                             if (betterMePresenter != null) {

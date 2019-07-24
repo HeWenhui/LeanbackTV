@@ -54,6 +54,8 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private static int FROM_MODE_CHANGE = 3;
     private static int FROM_LIVE_INITED = 4;
 
+    private LiveGetInfo.BetterMe betterMe;
+
     public BetterMeIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         mBetterMeView = new BetterMeViewImpl(mContext);
@@ -105,8 +107,14 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void onQuestionEnd() {
-        if (BetterMeConfig.TYPE_CORRECTRATE.equals(mGetInfo.getEnglishBetterMe().aimType) || BetterMeConfig
-                .TYPE_PARTICIPATERATE.equals(mGetInfo.getEnglishBetterMe().aimType)) {
+        String aimType = "";
+        if (betterMe.getTarget() != null) {
+            aimType = betterMe.getTarget().getAimType();
+        } else if (betterMe.getCurrent() != null) {
+            aimType = betterMe.getCurrent().getType();
+        }
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimType) || BetterMeConfig
+                .TYPE_PARTICIPATERATE.equals(aimType)) {
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -121,8 +129,9 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.onLiveInited(getInfo);
         //从本地读取本场是否开启了小目标
         mBetterMeView.setRootView(mRootView);
-        this.isUseBetterMe = getInfo.getEnglishBetterMe().isUseBetterMe;
-        this.isArriveLate = getInfo.getEnglishBetterMe().isArriveLate;
+        betterMe = getInfo.getBetterMe();
+        this.isUseBetterMe = betterMe.isUseBetterMe();
+        this.isArriveLate = betterMe.isArriveLate();
         logger.d("isUseBetterMe = " + isUseBetterMe + "; isArriveLate = " + isArriveLate);
         isShowBetterMe = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_OPEN, "", ShareDataManager
                 .SHAREDATA_USER).equals(mGetInfo.getId());
@@ -158,15 +167,14 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     synchronized public void getBetterMe(final int method) {
         final boolean showPk = method == FROM_NOTICE;
-        final boolean showBetterMe = method == FROM_NOTICE || method == FROM_TOPIC;
+        final boolean showBetterMeDialog = (method == FROM_NOTICE) || (method == FROM_TOPIC && LiveTopic.MODE_TRANING
+                .equals(mGetInfo.getMode()));
         //小目标接口开关
         if (!isUseBetterMe) {
-            BetterExit.EnglishTeamPK.startPK(mContext, showPk);
             return;
         }
         //迟到
         if (isArriveLate) {
-            BetterExit.EnglishTeamPK.startPK(mContext, showPk);
             return;
         }
         if (isShowBetterMe) {
@@ -183,7 +191,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 mBetterMeEntity = getHttpResponseParser().parseBetterMeInfo(responseEntity);
                 if (mBetterMeEntity != null) {
                     if (mStuSegmentEntity != null) {
-                        onBetterMeSuccess(showPk,showBetterMe);
+                        onBetterMeSuccess(showPk, showBetterMeDialog);
                     } else {
                         getStuSegment(method);
                     }
@@ -208,12 +216,15 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         });
     }
 
-    private void onBetterMeSuccess(boolean showPK,boolean showBetterMe) {
-        mGetInfo.getEnglishBetterMe().aimType = mBetterMeEntity.getAimType();
-        mGetInfo.getEnglishBetterMe().aimValue = mBetterMeEntity.getAimValue();
-        mGetInfo.getEnglishBetterMe().realTimeVal = "0";
-        BetterExit.EnglishAchievent.receiveBetterMe(mContext, mBetterMeEntity, !showBetterMe);
-        if (showBetterMe) {
+    private void onBetterMeSuccess(boolean showPK, final boolean showBetterMeDialog) {
+        mGetInfo.getBetterMe().setTarget(mBetterMeEntity);
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                BetterExit.EnglishAchievent.receiveBetterMe(mContext, mBetterMeEntity, !showBetterMeDialog);
+            }
+        }, 1000);
+        if (showBetterMeDialog) {
             if (mBetterMeEntity.isFirstReceive()) {
                 mBetterMeView.showIntroductionPager(showPK);
             } else {
@@ -235,12 +246,10 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     synchronized public void getStuAimResult() {
         //小目标接口开关
         if (!isUseBetterMe) {
-            BetterExit.EnglishTeamPK.endPK(mContext);
             return;
         }
         //迟到
         if (isArriveLate) {
-            BetterExit.EnglishTeamPK.endPK(mContext);
             return;
         }
         String liveId = mLiveBll.getLiveId();
@@ -279,15 +288,15 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     synchronized public void getStuSegment(int method) {
         final boolean showPk = method == FROM_NOTICE;
-        final boolean showBetterMe = method == FROM_NOTICE || method == FROM_TOPIC;
+        final boolean showBetterMeDialog = method == FROM_NOTICE || method == FROM_TOPIC;
         getHttpManager().getStuSegment(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.i("getStuSegment:onPmSuccess():json=" + responseEntity.getJsonObject());
                 mStuSegmentEntity = getHttpResponseParser().parseStuSegmentInfo(responseEntity);
                 if (mStuSegmentEntity != null) {
-                    mGetInfo.getEnglishBetterMe().segmentCount = mStuSegmentEntity.getSumCount();
-                    onBetterMeSuccess(showPk,showBetterMe);
+                    mGetInfo.getBetterMe().setStuSegment(mStuSegmentEntity);
+                    onBetterMeSuccess(showPk, showBetterMeDialog);
                 } else {
                     BetterExit.EnglishTeamPK.startPK(mContext, showPk);
                 }
@@ -337,10 +346,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         (responseEntity);
                 if (aimRealTimeValEntity != null) {
                     mAimRealTimeValEntity = aimRealTimeValEntity;
-                    mGetInfo.getEnglishBetterMe().isDoneAim =  mAimRealTimeValEntity.isDoneAim();
-                    mGetInfo.getEnglishBetterMe().aimType = mAimRealTimeValEntity.getType();
-                    mGetInfo.getEnglishBetterMe().aimValue = mAimRealTimeValEntity.getAimValue();
-                    mGetInfo.getEnglishBetterMe().realTimeVal = mAimRealTimeValEntity.getRealTimeVal();
+                    mGetInfo.getBetterMe().setCurrent(mAimRealTimeValEntity);
                     BetterExit.EnglishAchievent.updateBetterMe(mContext, aimRealTimeValEntity, isShowBubble);
                 }
             }

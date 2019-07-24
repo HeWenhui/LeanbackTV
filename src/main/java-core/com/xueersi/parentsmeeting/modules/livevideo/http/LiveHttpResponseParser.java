@@ -260,13 +260,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isSmallChinese = false;
         }
         //英语小目标
-        LiveGetInfo.EnglishBetterMe betterMe = getInfo.getEnglishBetterMe();
-        betterMe.isArriveLate = "1".equals(data.optString("isArriveLate"));
-        betterMe.isUseBetterMe = "1".equals(data.optString("isUseBetterMe"));
-        betterMe.segment = data.optString("segment");
-        betterMe.segmentType = data.optString("segmentType");
-        betterMe.star = data.optString("star");
-        betterMe.aimNumber = data.optString("aimNumber");
+        LiveGetInfo.BetterMe betterMe = getInfo.getBetterMe();
+        betterMe.setArriveLate("1".equals(data.optString("isArriveLate")));
+        betterMe.setUseBetterMe("1".equals(data.optString("isUseBetterMe")));
 
         JSONObject englishPkObj = data.optJSONObject("englishPk");
         if (englishPkObj != null) {

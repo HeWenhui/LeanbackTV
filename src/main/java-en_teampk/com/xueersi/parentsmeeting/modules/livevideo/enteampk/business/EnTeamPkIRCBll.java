@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
@@ -378,11 +379,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                     mLogtf.d("reportStuInfo:nick_name=" + nick_name + ",mode=" + mGetInfo.getMode());
                     LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
-                    LiveGetInfo.EnglishBetterMe englishBetterMe = mGetInfo.getEnglishBetterMe();
+                    StuSegmentEntity stuSegmentEntity = mGetInfo.getBetterMe().getStuSegment();
                     getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStandLiveName(), mGetInfo
                             .getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name,
-                            unique_id, englishBetterMe.segmentType, englishBetterMe.segment, englishBetterMe.star,
-                            englishBetterMe.segmentCount, new HttpCallBack(false) {
+                            unique_id, stuSegmentEntity.getSegmentType(), stuSegmentEntity.getSegment(), stuSegmentEntity.getStar(),
+                            stuSegmentEntity.getSumCount(), new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
                             logger.d("reportStuInfo:onPmSuccess" + responseEntity.getJsonObject());
@@ -909,7 +910,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         switch (type) {
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN:
                 logger.d("onNotice:XCR_ROOM_TEAMPK_OPEN");
-                if (mGetInfo.getEnglishBetterMe().isUseBetterMe && !mGetInfo.getEnglishBetterMe().isArriveLate) {
+                if (mGetInfo.getBetterMe().isUseBetterMe() && !mGetInfo.getBetterMe().isArriveLate()) {
                     break;
                 }
                 if (!psOpen) {
@@ -920,7 +921,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
                 break;
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT:
-                if (mGetInfo.getEnglishBetterMe().isUseBetterMe && !mGetInfo.getEnglishBetterMe().isArriveLate) {
+                if (mGetInfo.getBetterMe().isUseBetterMe() && !mGetInfo.getBetterMe().isArriveLate()) {
                     break;
                 }
                 logger.d("onNotice:XCR_ROOM_TEAMPK_RESULT:pkTeamEntity=" + pkTeamEntity);
@@ -1226,26 +1227,30 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      * @param modeChange
      */
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+        //辅导模式，战队PK在小目标后显示
+        if(LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())){
+            return;
+        }
         //退出重进不显示分队仪式
-//        try {
-//            JSONObject room_2 = jsonObject.getJSONObject("room_2");
-//            JSONObject teamPKObj = room_2.optJSONObject("teamPK");
-//            if (teamPKObj != null) {
-//                boolean status = teamPKObj.optBoolean("status", false);
-//                if (status) {
-//                    logger.d("onTopic:psOpen=" + psOpen);
-//                    if (!psOpen) {
-//                        psOpen = true;
-//                        //firstTopic>1,说明不是退出重进
-//                        if (enTeamPkAction != null) {
-//                            enTeamPkAction.onRankStart(false);
-//                        }
-//                    }
-//                }
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            JSONObject room_2 = jsonObject.getJSONObject("room_2");
+            JSONObject teamPKObj = room_2.optJSONObject("teamPK");
+            if (teamPKObj != null) {
+                boolean status = teamPKObj.optBoolean("status", false);
+                if (status) {
+                    logger.d("onTopic:psOpen=" + psOpen);
+                    if (!psOpen) {
+                        psOpen = true;
+                        //firstTopic>1,说明不是退出重进
+                        if (enTeamPkAction != null) {
+                            enTeamPkAction.onRankStart(false);
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -79,7 +79,7 @@ public class EnAchievePager extends LiveBasePager {
     private TextView tvAchiveAimValue;
     private ProgressBar pgAchiveAim;
     private TextView tvAchiveAimTips;
-    private AimRealTimeValEntity mAimRealTimeValEntity;
+    private String realTimeVal;
 
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -149,19 +149,17 @@ public class EnAchievePager extends LiveBasePager {
 //            lp.topMargin = (int) (73 * ScreenUtils.getScreenDensity());
 //            view.setLayoutParams(lp);
 //        }
-        LiveGetInfo.EnglishBetterMe englishBetterMe = mLiveGetInfo.getEnglishBetterMe();
-        if (englishBetterMe.isUseBetterMe && englishBetterMe.isArriveLate) {
+        LiveGetInfo.BetterMe betterMe = mLiveGetInfo.getBetterMe();
+        if (betterMe.isUseBetterMe() && betterMe.isArriveLate()) {
             onBetterMeLate();
         }
-        if (englishBetterMe.isUseBetterMe && !englishBetterMe.isArriveLate && englishBetterMe.aimType != null &&
-                englishBetterMe.realTimeVal != null && englishBetterMe.aimValue !=
-                null) {
-            AimRealTimeValEntity aimRealTimeValEntity = new AimRealTimeValEntity();
-            aimRealTimeValEntity.setType(englishBetterMe.aimType);
-            aimRealTimeValEntity.setRealTimeVal(englishBetterMe.realTimeVal);
-            aimRealTimeValEntity.setAimValue(englishBetterMe.aimValue);
-            aimRealTimeValEntity.setDoneAim(englishBetterMe.isDoneAim);
-            onBetterMeUpdate(aimRealTimeValEntity, false);
+        if (betterMe.isUseBetterMe() && !betterMe.isArriveLate()) {
+            if (betterMe.getCurrent() != null) {
+                onReceiveBetterMe(betterMe.getTarget(), false);
+            }
+            if (betterMe.getCurrent() != null) {
+                onBetterMeUpdate(betterMe.getCurrent(), false);
+            }
         }
     }
 
@@ -442,10 +440,10 @@ public class EnAchievePager extends LiveBasePager {
         String target = betterMeEntity.getAimValue();
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(betterMeEntity.getAimType())) {
             tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(betterMeEntity.getAimType())) {
             tvAchiveAimType.setText(BetterMeConfig.PARTICIPATERATE);
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(betterMeEntity.getAimType())) {
             tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
             target = BetterMeUtil.secondToMinite(target);
@@ -457,6 +455,7 @@ public class EnAchievePager extends LiveBasePager {
         if (isShowBubble) {
             receiveBetterMeBubble(betterMeEntity);
         }
+        realTimeVal = "0";
     }
 
     /**
@@ -475,12 +474,12 @@ public class EnAchievePager extends LiveBasePager {
         String target = aimRealTimeValEntity.getAimValue();
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
             tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
-            current = (int) (Double.valueOf(current) * 100) + "%";
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            current = Math.round(Double.valueOf(current) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
             tvAchiveAimType.setText(BetterMeConfig.PARTICIPATERATE);
-            current = (int) (Double.valueOf(current) * 100) + "%";
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            current = Math.round(Double.valueOf(current) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
             tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
             current = BetterMeUtil.secondToMinite(current);
@@ -504,7 +503,7 @@ public class EnAchievePager extends LiveBasePager {
         if (isShowBubble) {
             updateBetterMeBubble(aimRealTimeValEntity);
         }
-        mAimRealTimeValEntity = aimRealTimeValEntity;
+        this.realTimeVal = aimRealTimeValEntity.getRealTimeVal();
     }
 
     /**
@@ -547,7 +546,7 @@ public class EnAchievePager extends LiveBasePager {
             target = BetterMeUtil.secondToMinite(target);
         }
         message.append("达到").append(target);
-        showBetterMeBubble(message.toString());
+        showBetterMeBubble(null, message.toString(), false, false);
     }
 
     /**
@@ -560,12 +559,15 @@ public class EnAchievePager extends LiveBasePager {
         StringBuilder message = new StringBuilder();
         String current = aimRealTimeValEntity.getRealTimeVal();
         String target = aimRealTimeValEntity.getAimValue();
-        boolean increasing;
-        if (mAimRealTimeValEntity != null) {
-            //如果有上次目标值的记录
-            double doubleCurrent = (Double.valueOf(target));
-            double doublePrevious = (Double.valueOf(mAimRealTimeValEntity.getRealTimeVal()));
-            increasing = doubleCurrent > doublePrevious;
+
+        //当前完成率是上升还是下降
+        boolean isIncrease = false;
+        boolean isDecrease = false;
+        if (realTimeVal != null) {
+            double doubleCurrent = (Double.valueOf(current));
+            double doublePrevious = (Double.valueOf(realTimeVal));
+            isIncrease = doubleCurrent > doublePrevious;
+            isDecrease = doubleCurrent < doublePrevious;
         }
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
             message.append(BetterMeConfig.CORRECTRATE);
@@ -580,18 +582,21 @@ public class EnAchievePager extends LiveBasePager {
             current = BetterMeUtil.secondToMinite(current);
             target = BetterMeUtil.secondToMinite(target);
         }
-        message.append("当前").append(current).append(" ").append("目标").append(target);
-        showBetterMeBubble(message.toString());
+        message.append("当前").append(current);
+        if (isIncrease || isDecrease) {
+            showBetterMeBubble(message.toString(), "目标" + target, isIncrease, isDecrease);
+        }
     }
 
     /**
      * 蓝色气泡动效
      */
-    private void showBetterMeBubble(String msg) {
+    private void showBetterMeBubble(String current, String target, boolean isIncrease, boolean isDecrease) {
         ViewGroup rlLivevideoinfo = ((Activity) mContext).findViewById(R.id.rl_livevideo_info);
         if (rlLivevideoinfo != null) {
             ViewGroup viewGroup = (ViewGroup) rlLivevideoinfo.getParent();
-            final LottieEffectInfo bubbleEffectInfo = new BubbleLottieEffectInfo(mContext, msg);
+            final LottieEffectInfo bubbleEffectInfo = new BubbleLottieEffectInfo(mContext, current, target,
+                    isIncrease, isDecrease);
             final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
             ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
                 @Override
