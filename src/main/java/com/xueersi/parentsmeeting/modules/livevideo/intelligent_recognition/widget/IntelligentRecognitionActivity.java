@@ -110,6 +110,8 @@ public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
      * Unity初始化
      */
     private void unityInit() {
+
+//        AudioEvaluationDownload.startDownLoad(getApplicationContext(),);
         UnityCommandPlay.downloadModel("https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/temp/monscene6");
         UnityCommandPlay.downloadModel("https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/temp/monavater7");
     }

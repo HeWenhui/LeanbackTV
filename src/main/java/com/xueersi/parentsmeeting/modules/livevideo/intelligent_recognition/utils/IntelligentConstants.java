@@ -61,10 +61,14 @@ public interface IntelligentConstants {
                     File.separator + "unity3d"};
 
     String AUDIO_EVALUATE_FILE_NAME = "audio_evaluate";
-
+    /** unity3D的文件名 */
     String UNITY3D_EVALUATE = "unity_3d";
-
-    String CACHE_FILE = "intelligent_recognition/unity3D";
+    /** 英语智能测评的缓存目录 */
+    String CACHE_FILE = "intelligent_recognition";
 
     String SENTENCE_NAME = "1.mp3";
+
+    String UNITY3D_FILE_NAME_1_V_1 = "monscene6";
+
+//    String unity3d_file_NAME_2_V_2 =
 }

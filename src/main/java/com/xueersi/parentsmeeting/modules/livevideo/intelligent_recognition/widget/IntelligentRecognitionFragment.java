@@ -15,12 +15,18 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.AudioEvaluationDownload;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentLiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentLifecycleObserver;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view.IntelligentRecognitionPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view.IntelligentRecognitionPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.top3.IntelligentRecognitionTop3View;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
+
+import java.io.File;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.AUDIO_EVALUATE_FILE_NAME;
 
 public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -54,6 +60,10 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AudioEvaluationDownload.startDownLoad(mActivity.getApplicationContext(),
+                IntelligentLiveCacheFile.
+                        getInstanceFile(mActivity).
+                        getPath() + File.separator + AUDIO_EVALUATE_FILE_NAME, "");
     }
 
     @Nullable
@@ -118,6 +128,7 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
             }
         });
     }
+
     /** 添加Top3的页面 */
     private void performShowTop3() {
         if (isTop3DataSuccess && isTop3TimeUp) {

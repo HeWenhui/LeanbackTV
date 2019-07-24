@@ -20,7 +20,6 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.AUDIO_EVALUATE_FILE_NAME;
-import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.CACHE_FILE;
 
 public class EvaluationAudioPlayerDataManager {
 
@@ -71,6 +70,8 @@ public class EvaluationAudioPlayerDataManager {
     private static class AudioData<T> {
         private int nowPlayAudioPos;
         private List<T> audioUrl;
+        private String audioListName;
+
 
 //        public int getNowPlayAudioPos() {
 //            return nowPlayAudioPos;
@@ -121,7 +122,7 @@ public class EvaluationAudioPlayerDataManager {
     }
 
     private void initAudioPath() {
-        AudioRespository audioRespository = new AudioRespository(context, CACHE_FILE);
+        AudioRespository audioRespository = new AudioRespository(context, AUDIO_EVALUATE_FILE_NAME);
         Observable.
                 just(audioRespository.getAudioEvaluateFile(AUDIO_EVALUATE_FILE_NAME)).
                 filter(RxFilter.filterFile()).
@@ -136,9 +137,14 @@ public class EvaluationAudioPlayerDataManager {
                 subscribe(new Consumer<File>() {
                     @Override
                     public void accept(File file) throws Exception {
+                        int pos = queue.poll();
+//                        Integer.valueOf(file.getName());
+//                        if (String.valueOf(pos).equals(file.getName())) {
+//
+//                        }
                         AudioData<String> audioData = new AudioData<>();
                         audioData.setAudioUrl(Arrays.asList(file.list()));
-                        map.put(queue.poll(), audioData);
+                        map.put(pos, audioData);
                     }
                 });
     }

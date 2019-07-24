@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -44,9 +46,13 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
+// FIXME: 2019/7/24  如何拿到是否该试题对应的视频正在上传。可以将正在上传的视频通过List保存，然后通过Binder通信告诉当前视频正在上传
 //https://blog.csdn.net/imxiangzi/article/details/76039978
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class UploadVideoService extends Service {
+
+    private Set<String> courseWeareList = new ConcurrentSkipListSet<>();
+
     private String videoUrl, audioUrl = "";
     Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
@@ -56,11 +62,14 @@ public class UploadVideoService extends Service {
     private AtomicInteger uploadVideoNum = new AtomicInteger(3);
     private XesStsUploadListener videoUploadListener;
 
+    private String uploadVideoSetKey;
+
     private class VideoUploadListener implements XesStsUploadListener {
         String videoLocalUrl;
 
         public VideoUploadListener(String videoLocalUrl) {
             this.videoLocalUrl = videoLocalUrl;
+            courseWeareList.add(uploadVideoSetKey);
         }
 
         @Override
@@ -85,6 +94,7 @@ public class UploadVideoService extends Service {
             latch.countDown();
             try {
                 latch.await();
+                courseWeareList.remove(uploadVideoSetKey);
                 uploadSuccess();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -97,6 +107,7 @@ public class UploadVideoService extends Service {
 //            uploadSuccess();
             logger.i("video upload fail");
             //重试uploadVideoNum次
+            courseWeareList.remove(uploadVideoSetKey);
             if (uploadVideoNum.get() > 0) {
                 uploadVideoNum.getAndDecrement();
                 uploadVideo(videoLocalUrl);
@@ -437,7 +448,7 @@ public class UploadVideoService extends Service {
         audioUploadListener = new AudioUploadListener(audioLocalUrl);
         videoUploadListener = new VideoUploadListener(videoLocalUrl);
         uploadVideo(videoLocalUrl);
-
+        uploadVideoSetKey = ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + uploadVideoEntity.getLiveId() + "_" + courseWareId;
 //        convertMP3();
         decodeAudio();
 //        uploadAudio(audioLocalUrl);
@@ -449,5 +460,10 @@ public class UploadVideoService extends Service {
             return UploadVideoService.this;
         }
 
+
+    }
+
+    public Set<String> getUploadingVideo() {
+        return courseWeareList;
     }
 }
