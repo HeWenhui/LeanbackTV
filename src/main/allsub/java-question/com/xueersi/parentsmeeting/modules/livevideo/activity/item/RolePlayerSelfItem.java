@@ -253,8 +253,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
             if (stuSegmentEntity != null) {
                 int segmentType = Integer.valueOf(stuSegmentEntity.getSegmentType()) - 1;
                 int star = Integer.valueOf(stuSegmentEntity.getStar()) - 1;
-                ivUserSegment.setImageResource(BetterMeConfig.LEVEL_IMAGE_RES_HEAD[segmentType]);
-                ivUserSegment.setBackgroundResource(BetterMeConfig.STAR_IMAGE_RES[segmentType][star]);
+                ivUserSegment.setBackgroundResource(BetterMeConfig.LEVEL_IMAGE_RES_HEAD[segmentType]);
+                ivUserSegment.setImageResource(BetterMeConfig.STAR_IMAGE_RES[segmentType][star]);
             }
         } catch (Exception e) {
             e.printStackTrace();
