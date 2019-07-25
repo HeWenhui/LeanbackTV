@@ -19,20 +19,33 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView
-                android:id="@id/civ_live_roleplayer_message_user_head"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center_horizontal"
-                android:clickable="true"
-                android:src="@drawable/ic_default_head_square" />
+            <RelativeLayout
+                android:layout_marginTop="-8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@id/iv_live_roleplayer_message_user_segment"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_centerInParent="true" />
+
+                <com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView
+                    android:id="@id/civ_live_roleplayer_message_user_head"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:clickable="true"
+                    android:src="@drawable/ic_default_head_square" />
+            </RelativeLayout>
+
 
             <TextView
                 android:id="@id/tv_live_roleplayer_message_username"
                 style="@style/text_style_chat__name_style"
                 android:layout_gravity="center_horizontal"
                 android:layout_width="60dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="-7dp"
                 android:gravity="center"
                 android:textColor="#078EC2"
                 android:textSize="11sp"

@@ -6,13 +6,19 @@
 
     <RelativeLayout
         android:id="@id/rl_live_speech_result_member_head"
-        android:layout_width="28dp"
-        android:layout_height="28dp">
+        android:layout_width="43dp"
+        android:layout_height="43dp">
+
+        <ImageView
+            android:id="@id/iv_live_speech_result_member_head_segment"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
+            android:layout_centerInParent="true" />
 
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_live_speech_result_member_head"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
             android:layout_centerInParent="true"
             app:border_width="0dp" />
 
@@ -22,6 +28,7 @@
         android:id="@id/tv_live_speech_result_member_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/rl_live_speech_result_member_head"
         android:includeFontPadding="false"
@@ -35,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/rl_live_speech_result_member_head"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="17dp"
+        android:layout_marginBottom="7dp"
         android:layout_toRightOf="@id/rl_live_speech_result_member_head"
         android:includeFontPadding="false"
         android:singleLine="true"

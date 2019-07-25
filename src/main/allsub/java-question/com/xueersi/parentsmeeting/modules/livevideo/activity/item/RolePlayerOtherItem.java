@@ -21,6 +21,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
@@ -43,6 +44,11 @@ public class RolePlayerOtherItem extends RolePlayerItem {
      * 头像
      */
     private CountDownHeadImageView civUserHead;
+
+    /**
+     * 段位
+     */
+    private ImageView ivUserSegment;
 
     /**
      * 用户的昵称
@@ -95,6 +101,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
     @Override
     public void initViews(View root) {
         civUserHead = root.findViewById(R.id.civ_live_roleplayer_message_user_head);
+        ivUserSegment = root.findViewById(R.id.iv_live_roleplayer_message_user_segment);
         tvUserNickName = root.findViewById(R.id.tv_live_roleplayer_message_username);
         ivVoiceAnimtor = root.findViewById(R.id.iv_live_roleplayer_message_voice_main);
         vVoiceMain = root.findViewById(R.id.rl_live_roleplayer_message_voice_main);
@@ -240,6 +247,21 @@ public class RolePlayerOtherItem extends RolePlayerItem {
         super.updateViews(entity, position, objTag);
         mPosition = position;
         updateUserHeadImage(civUserHead, entity.getRolePlayer().getHeadImg()); // 绑定用户头像
+
+        try {
+            int segmentType = (entity.getRolePlayer().getSegment_type() - 1);
+            int star = entity.getRolePlayer().getStar() - 1;
+            if (segmentType < 0) {
+                segmentType = 0;
+            }
+            if (star < 0) {
+                star = 0;
+            }
+            ivUserSegment.setBackgroundResource(BetterMeConfig.LEVEL_IMAGE_RES_HEAD[segmentType]);
+            ivUserSegment.setImageResource(BetterMeConfig.STAR_IMAGE_RES[segmentType][star]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // 播放语音
         ivVoiceAnimtor.setBackgroundResource(R.drawable.bg_chat_voice_from_playing_img_blue);

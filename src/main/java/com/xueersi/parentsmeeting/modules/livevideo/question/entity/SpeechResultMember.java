@@ -8,4 +8,6 @@ public class SpeechResultMember {
     public String name;
     public int score;
     public String headUrl;
+    public int segmentType;
+    public int star;
 }

@@ -556,6 +556,7 @@
     <item name="rv_live_speech_result_other" type="id" />
     <item name="rl_live_speech_result_member_head" type="id" />
     <item name="civ_live_speech_result_member_head" type="id" />
+    <item name="iv_live_speech_result_member_head_segment" type="id" />
     <item name="tv_live_speech_result_member_score" type="id" />
     <item name="tv_live_speech_result_member_name" type="id" />
     <!--战队pk-->

@@ -155,7 +155,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/v_live_speech_result_line"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:fadeScrollbars="false"
             android:scrollbars="none" />
 

@@ -1080,6 +1080,8 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                     speechResultMember.name = head1.getNickName();
                     speechResultMember.score = head1.getSpeechScore();
                     speechResultMember.headUrl = head1.getHeadImg();
+                    speechResultMember.segmentType = head1.getSegment_type();
+                    speechResultMember.star = head1.getStar();
                     speechResultMembers.add(speechResultMember);
                 }
                 SpeechResultPager resultPager = new SpeechResultPager(mContext, group, speechResultEntity, mLiveGetInfo);
