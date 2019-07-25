@@ -427,7 +427,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     @Override
     public void close() {
-
+        onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
     }
 
     @Override
@@ -1145,6 +1145,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onDataSucess(Object... objData) {
                 JSONObject jsonObject = (JSONObject) objData[0];
+                if (jsonObject != null && jsonObject.optInt("toAnswered", 0) == 1) {
+                    XESToastUtils.showToast(mContext, "已答过");
+                }
                 showScienceAnswerResult(isforce);
                 onSubmitSuccess(isforce);
             }
