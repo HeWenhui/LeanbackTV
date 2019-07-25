@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -181,7 +182,7 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
                 e.printStackTrace();
             }
         }
-        String url = TextUtils.isEmpty(mHalfBodyUrl)?LiveVideoConfig.URL_HALFBODY_EXPERIENCE_LIVE_H5:mHalfBodyUrl;
+        String url = TextUtils.isEmpty(mHalfBodyUrl) ? LiveHttpConfig.URL_HALFBODY_EXPERIENCE_LIVE_H5 : mHalfBodyUrl;
         stringBuilder.append(url)
                 .append("?stuId=").append(stuId)
                 .append("&liveId=").append(mVideoEntity.getLiveId())

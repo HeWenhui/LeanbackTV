@@ -636,7 +636,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("srcType", srcType);
         params.addBodyParam("isForce", isForce);
         params.addBodyParam("videoDuration", videoDuration);
-        sendPost(LiveVideoConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
+        sendPost(LiveHttpConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
     }
 
 
@@ -667,7 +667,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("voice_url", voice_url);
         params.addBodyParam("isUpload", isUpload);
         params.addBodyParam("averVocieDecibel", averVocieDecibel);
-        sendPost(LiveVideoConfig.SUPER_SPEAKER_UPLOAD_SPEECH_SHOW, params, httpCallBack);
+        sendPost(LiveHttpConfig.SUPER_SPEAKER_UPLOAD_SPEECH_SHOW, params, httpCallBack);
     }
 
 
@@ -685,7 +685,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
 //        params.addBodyParam("srcType", srcType);
 //        params.addBodyParam("cameraStatus", cameraStatus);
-        sendPost(LiveVideoConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
+        sendPost(LiveHttpConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
 
     }
 

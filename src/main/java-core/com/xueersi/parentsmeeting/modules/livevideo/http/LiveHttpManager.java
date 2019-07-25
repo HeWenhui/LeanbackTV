@@ -324,7 +324,6 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * 用户在线心跳
      *
      * @param type            直播类型
-     * @param enstuId         用户加密ID
      * @param liveId          直播ID
      * @param currentDutyId   当前责任ID
      * @param hbTime          观看时长
@@ -840,8 +839,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuCouId", stuCouId);
         setDefaultParameter(params);
-        String url = isArts ? LiveVideoConfig.URL_HALFBODY_LIVE_STULIVEINFO_ARTS
-                : LiveVideoConfig.URL_HALFBODY_LIVE_STULIVEINFO;
+        String url = isArts ? LiveHttpConfig.URL_HALFBODY_LIVE_STULIVEINFO_ARTS
+                : LiveHttpConfig.URL_HALFBODY_LIVE_STULIVEINFO;
 
         sendPost(url, params, requestCallBack);
     }
@@ -968,7 +967,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         if (liveId != null && !"".equals(liveId)) {
             params.addBodyParam("liveId", liveId);
         }
-        requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_ARTS_COURSEWARE_URL;
+        requestCallBack.url = LiveHttpConfig.URL_LIVE_GET_ARTS_COURSEWARE_URL;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
@@ -983,7 +982,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         if (liveId != null && !"".equals(liveId)) {
             params.addBodyParam("liveId", liveId);
         }
-        requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_ENGLISH_COURSEWARE_URL;
+        requestCallBack.url = LiveHttpConfig.URL_LIVE_GET_ENGLISH_COURSEWARE_URL;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
@@ -998,7 +997,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         if (liveId != null && !"".equals(liveId)) {
             params.addBodyParam("liveId", liveId);
         }
-        requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_SCIENCE_COURSEWARE_URL;
+        requestCallBack.url = LiveHttpConfig.URL_LIVE_GET_SCIENCE_COURSEWARE_URL;
 //        requestCallBack.url = "https://laoshi.xueersi.com/science/LiveCourses/preLoadNewCourseWare/?liveId=355540";
         sendPost(requestCallBack.url, params, requestCallBack);
     }
@@ -2025,7 +2024,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         setDefaultParameter(params);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("id", id);
-        sendPost(LiveVideoConfig.URL_GOLD_MICROPHONE_TO_AI, params, httpCallBack);
+        sendPost(LiveHttpConfig.URL_GOLD_MICROPHONE_TO_AI, params, httpCallBack);
     }
 
     /** 是否开启了麦克风权限，以及是否是金话筒 */
@@ -2035,7 +2034,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("isOpenMicrophone", isOpenMicrophone);
         params.addBodyParam("isGoldMicrophone", isGoldMicrophone);
         params.addBodyParam("id", id);
-        sendPost(LiveVideoConfig.URL_IS_GOLD_MICROPHONE, params, httpCallBack);
+        sendPost(LiveHttpConfig.URL_IS_GOLD_MICROPHONE, params, httpCallBack);
     }
 
     /**
@@ -2052,7 +2051,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("testId", testId);
 //        params.addBodyParam("srcType", srcType);
 //        params.addBodyParam("cameraStatus", cameraStatus);
-        sendPost(LiveVideoConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
+        sendPost(LiveHttpConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
 
     }
 
@@ -2083,7 +2082,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("voice_url", voice_url);
         params.addBodyParam("isUpload", isUpload);
         params.addBodyParam("averVocieDecibel", averVocieDecibel);
-        sendPost(LiveVideoConfig.SUPER_SPEAKER_UPLOAD_SPEECH_SHOW, params, httpCallBack);
+        sendPost(LiveHttpConfig.SUPER_SPEAKER_UPLOAD_SPEECH_SHOW, params, httpCallBack);
     }
 
     /**
@@ -2108,7 +2107,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("srcType", srcType);
         params.addBodyParam("isForce", isForce);
         params.addBodyParam("videoDuration", videoDuration);
-        sendPost(LiveVideoConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
+        sendPost(LiveHttpConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
     }
 
     /**

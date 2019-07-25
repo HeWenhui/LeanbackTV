@@ -24,7 +24,7 @@ public class LiveVideoConfig {
 //    public static final boolean getIsNewIJK() = true;
     // private static final String TEST_HOST="https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example";
 
-    public static String HTTP_HOST = "https://laoshi.xueersi.com";
+    public static String HTTP_HOST = AppConfig.HTTP_HOST;
     public static String HTTP_PRIMARY_CHINESE_HOST = "https://app.chs.xueersi.com";
     /** 文科的接口域名 */
     public static String APP_ARTS_HTTP_HOST = "https://app.arts.xueersi.com";
@@ -479,12 +479,6 @@ public class LiveVideoConfig {
     public static int IRC_TYPE_NOTICE = 0;
     public static int IRC_TYPE_TOPIC = 1;
 
-    /** 文理半身直播  理科家长旁听数据接口 */
-    public static final String URL_HALFBODY_LIVE_STULIVEINFO = "https://laoshi.xueersi.com/science/LiveCourse/getStuDateOfVisitedParentPage";
-    /** 文理半身直播  文科科家长旁听数据接口 */
-    public static final String URL_HALFBODY_LIVE_STULIVEINFO_ARTS = "https://app.chs.xueersi.com/LiveCourse/getStuDateOfVisitedParentPage";
-
-
     /**
      * 体验课类型
      */
@@ -494,42 +488,6 @@ public class LiveVideoConfig {
         /** 普通直播体验课 */
         int NORMAL = 1000;
     }
-
-    /** 半身直播体验课 试题 h5 地址 **/
-    public static final String URL_HALFBODY_EXPERIENCE_LIVE_H5 = "https://expclass.xueersi.com/live-rewrite/courseware-sci/index.html";
-
-    /**
-     * 文科课件预加载
-     */
-    public static String URL_LIVE_GET_ARTS_COURSEWARE_URL = "https://app.chs.xueersi.com/LiveCourses/preLoadNewCourseWare";
-    /**
-     * 英语课件预加载
-     */
-    public static String URL_LIVE_GET_ENGLISH_COURSEWARE_URL = "https://app.arts.xueersi.com/preloading/preLoading";
-    /**
-     * 理科课件预加载
-     */
-    public static String URL_LIVE_GET_SCIENCE_COURSEWARE_URL = LiveVideoConfig.HTTP_HOST + "/science/LiveCourses/preLoadNewCourseWare";
-
-    public static final String URL_GOLD_MICROPHONE_TO_AI = "https://app.chs.xueersi.com/LiveCourse/isGoldMicrophoneToAi";
-
-    public static final String URL_IS_GOLD_MICROPHONE = "https://app.chs.xueersi.com/LiveCourse/setGoldMicrophoneData";
-
-    /** NB加试实验 **/
-    public static String URL_NB_LOGIN = LiveHttpConfig.LIVE_HOST_SCIENCE + "/LiveExam/stuLoginNB";
-    /** 上传NB 实验答题结果 **/
-    @Deprecated
-    public static String URL_NB_RESULT_UPLOAD = LiveHttpConfig.LIVE_HOST_SCIENCE + "/LiveExam/receiveNBResult";
-    /** 获取 Nb 试题信息 **/
-    public static String URL_NB_COURSE_INFO = LiveHttpConfig.LIVE_HOST_SCIENCE + "/LiveExam/getNBTestInfo";
-    /** app端上传演讲秀视频 */
-    public static final String SUPER_SPEAKER_UPLOAD_SPEECH_SHOW = "https://app.chs.xueersi.com/LiveCourse/uploadSpeechShow";
-    /** app端摄像头开启状态 */
-    public static final String SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS = "https://app.chs.xueersi.com/LiveCourse/speechShowCameraStatus";
-    /** app端提交演讲秀 */
-    public static final String SUPER_SPEAKER_SUBMIT_SPEECH_SHOW = "https://app.chs.xueersi.com/LiveCourse/submitSpeechShow";
-    /** 超级演讲秀存储视频的地方 */
-    public static final String SUPER_SPEAKER_VIDEO_PATH = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/superSpeaker/";
 
     public static boolean assetsDownloadTag = true;
 
