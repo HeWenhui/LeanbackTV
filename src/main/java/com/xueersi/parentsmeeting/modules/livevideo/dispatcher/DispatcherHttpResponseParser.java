@@ -480,9 +480,9 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         MediaPlayer.setIsNewIJK((MediaPlayer.IS_NEW_IJK.equals(jsonObject.optString("isNewSDK")) &&
                 MediaPlayer.IS_NEW_IJK.equals(jsonObject.optString("isNewIRC"))));
 //        MediaPlayer.isPSIJK = ("1".equals(jsonObject.optString("isNewSDK")) && "1".equals(jsonObject.optString("isNewIRC")));
-        resultEntity.setExpLiveType(jsonObject.optInt("expLiveType",1));
-        resultEntity.setHbTime(jsonObject.optInt("hbTime",60));
-        resultEntity.setVisitTimeUrl(jsonObject.optString("visitTimeUrl",""));
+        resultEntity.setExpLiveType(jsonObject.optInt("expLiveType", 1));
+        resultEntity.setHbTime(jsonObject.optInt("hbTime", 60));
+        resultEntity.setVisitTimeUrl(jsonObject.optString("visitTimeUrl", ""));
 
         resultEntity.setPattern(jsonObject.optInt("pattern", 1));
         resultEntity.setExpSciAi(jsonObject.optBoolean("isExpSciAi"));
@@ -878,6 +878,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         resultEntity.setEvent(questionEntitys);
         return resultEntity;
     }
+
     public static ExpLiveInfo parserExliveInfo(ResponseEntity responseEntity) {
 
         ExpLiveInfo result = null;
@@ -899,6 +900,92 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         }
 
         return result;
+    }
+
+    public PublicEntity publicLiveCourseQuestionParser(ResponseEntity responseEntity) {
+        PublicEntity publicLiveCourseEntity = new PublicEntity();
+        try {
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            VideoQuestionEntity questionEntity = null;
+            if (jsonObject != null) {
+                MediaPlayer.setIsNewIJK("1".equals(jsonObject.optString("isNewSDK")) && "1".equals(jsonObject.optString("isNewIRC")));
+                publicLiveCourseEntity.setOnlineNums(jsonObject.optString("onlineNums", "[]"));
+                List<VideoQuestionEntity> questionLst = new ArrayList();
+                String videoPath = jsonObject.optString("videoPath");
+                JSONArray pathArray = jsonObject.optJSONArray("hostPath");
+                if (pathArray != null) {
+                    String url = pathArray.get(0).toString();
+                    publicLiveCourseEntity.setPlayBackUrl(url + videoPath);
+                }
+
+                int playVideoTime = 180;
+                if (!jsonObject.isNull("hbTime")) {
+                    playVideoTime = jsonObject.getInt("hbTime");
+                }
+
+                publicLiveCourseEntity.setSendPlayVideoTime(playVideoTime);
+                publicLiveCourseEntity.setRadioType(jsonObject.optString("radioType", "600P"));
+                JSONArray questionArray = jsonObject.optJSONArray("event");
+                if (questionArray != null) {
+                    for (int k = 0; k < questionArray.length(); ++k) {
+                        questionEntity = new VideoQuestionEntity();
+                        JSONObject questionJson = questionArray.getJSONObject(k);
+                        questionEntity.setvQuestionID(questionJson.optString("id"));
+                        int vCategory = questionJson.optInt("category");
+                        questionEntity.setvCategory(vCategory);
+                        questionEntity.setvQuestionInsretTime(questionJson.optInt("begintime"));
+                        questionEntity.setAnswerDay(questionJson.optString("date"));
+                        questionEntity.setvEndTime(questionJson.optInt("endtime"));
+                        questionEntity.setvQuestionType(questionJson.optString("type"));
+                        questionEntity.setSrcType(questionJson.optString("srcType"));
+                        String choiceType = questionJson.optString("choiceType", "1");
+                        if ("".equals(choiceType)) {
+                            choiceType = "1";
+                        }
+
+                        questionEntity.setChoiceType(choiceType);
+                        questionEntity.setQuestionNum(questionJson.optInt("num", 1));
+                        if ("2".equals(questionEntity.getvQuestionType())) {
+                            questionEntity.setvBlankSize(questionJson.optJSONArray("answer").length());
+                            List<AnswerEntity> anserEntityLst = new ArrayList();
+                            AnswerEntity answerEntity = null;
+                            JSONArray answerArray = questionJson.optJSONArray("answer");
+
+                            for (int j = 0; j < answerArray.length(); ++j) {
+                                answerEntity = new AnswerEntity();
+                                answerEntity.setQuestionId(questionJson.optString("id"));
+                                answerEntity.setAnswerId(String.valueOf(j));
+                                answerEntity.setRightAnswer(answerArray.getString(j));
+                                anserEntityLst.add(answerEntity);
+                            }
+
+                            questionEntity.setAnswerEntityLst(anserEntityLst);
+                        } else if ("1".equals(questionEntity.getvQuestionType())) {
+                            questionEntity.setvQuestionAnswer(questionJson.optString("answer"));
+                        }
+
+                        if (questionJson.optInt("category") == 1 && questionEntity.getvEndTime() == 0 && questionEntity.getvQuestionInsretTime() != 0) {
+                            questionEntity.setvEndTime(questionEntity.getvQuestionInsretTime() + questionJson.optInt("timer", 0));
+                        }
+
+                        if (questionEntity.getvCategory() == 8) {
+                            questionEntity.setH5Play_url(questionJson.optString("play_url"));
+                        }
+
+                        questionEntity.setvQuestionID(questionJson.optString("id"));
+                        questionLst.add(questionEntity);
+                    }
+
+                    publicLiveCourseEntity.setLstVideoQuestion(questionLst);
+                }
+
+                publicLiveCourseEntity.setStreamTimes(jsonObject.optString("streamTimes", "[]"));
+            }
+        } catch (Exception e) {
+            MobAgent.httpResponseParserError(TAG, "publicLiveCourseQuestionParser", e.getMessage());
+        }
+
+        return publicLiveCourseEntity;
     }
 
 

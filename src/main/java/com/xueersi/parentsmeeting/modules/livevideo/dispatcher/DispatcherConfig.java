@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.dispatcher;
 
+import com.xueersi.common.config.AppConfig;
+
 /**
  * Created by dqq on 2019/7/11.
  */
@@ -11,5 +13,8 @@ public class DispatcherConfig {
     /*** 语文H5默认新地址 */
     public final static String URL_DEFAULT_CHS_H5 = "https://live.chs.xueersi.com/Live/coursewareH5/";
 
-    public static final String stuId ="";
+    public static final String stuId = "";
+
+    public final static String URL_PUBLIC_LIVE_COURSE_QUESTION = AppConfig.HTTP_HOST + "/LiveLecture/getTestInfoForPlayBack";
+
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -13,14 +14,13 @@ import com.xueersi.common.route.module.startParam.ParamKey;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 
 import org.json.JSONObject;
 
-import java.util.List;
+import static com.xueersi.common.sharedata.ShareDataManager.SHAREDATA_USER;
 
 /**
  * Created by dqq on 2019/7/11.
@@ -48,10 +48,13 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     private String planId;
     private String chapterName;
     private String termId;
+    private String mid;
     private int type;
     private int status;
     private int rstatus;
     private int variety;
+    String teacherId;
+    String gotoClassTime;
     private DispatcherBll dispatcherBll;
 
     public interface LiveNewStatus {
@@ -89,7 +92,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 planId = jsonObject.optString("planId");
                 chapterName = jsonObject.optString("planName");
                 termId = jsonObject.optString("termId");
+                mid = jsonObject.optString("mid");
                 type = jsonObject.optInt("variety");
+                teacherId = jsonObject.optString("teacherId");
+                gotoClassTime = jsonObject.optString("stime");
                 if (type == TYPE_LIVE) {
                     startLive();
                 } else if (type == TYPE_RECORD) {
@@ -176,11 +182,9 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     }
 
     private void startLecture() {
-        //TODO
-        boolean isLive = false;
+        boolean isLive = rstatus == 1;
         if (isLive) {
-            //TODO
-            final String liveId = "";
+            final String liveId = planId;
             if (!AppBll.getInstance(activity).canSeeVideo(new AppBll.OnSelectListener() {
                 public void onSelect(boolean goon) {
                     if (goon) {
@@ -191,53 +195,54 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 AppBll.getInstance(activity.getApplicationContext());
                 return;
             }
-
             AppBll.getInstance(activity);
             startLivePlayActivity(liveId);
         } else {
-            //TODO
-            //TODO
-            String playBackUrl = "";
-            //TODO
-            String radioType = "";//publicLiveCourseEntity.getRadioType()
-            //TODO
-            String teacherId = "";// publicLiveCourseEntity.getTeacherId()
-            //TODO
-            List<VideoQuestionEntity> lstVideoQuestion = null;// publicLiveCourseEntity.getLstVideoQuestion()
-            //TODO
-            int sendPlayVideoTime = 0;// publicLiveCourseEntity.getSendPlayVideoTime()
-            //TODO
-            long gotoClassTime = 0;// publicLiveCourseEntity.getGotoClassTime()
-            //TODO
-            String onlineNums = "";// publicLiveCourseEntity.getOnlineNums()
-            //TODO
-            String streamTimes = "";//publicLiveCourseEntity.getStreamTimes()
-            VideoLivePlayBackEntity videoEntity = new VideoLivePlayBackEntity();
-            videoEntity.setCourseId(courseId);
-            videoEntity.setCourseName(chapterName);
-            videoEntity.setPlayVideoId(courseId);
-            videoEntity.setPlayVideoName(chapterName);
-            videoEntity.setVideoPath(playBackUrl);
-            videoEntity.setvCourseSendPlayVideoTime(ShareDataManager.getInstance().getInt("send_playvideo_time", 180, ShareDataManager.SHAREDATA_USER));
-            videoEntity.setVideoCacheKey(playBackUrl);
-            videoEntity.setLiveId(courseId);
-            videoEntity.setvLivePlayBackType(2);
-            videoEntity.setVisitTimeKey("2-" + courseId + "-" + teacherId);
-            videoEntity.setLstVideoQuestion(lstVideoQuestion);
-            videoEntity.setvCourseSendPlayVideoTime(sendPlayVideoTime);
-            videoEntity.setGotoClassTime(gotoClassTime);
-            videoEntity.setOnlineNums(onlineNums);
-            videoEntity.setStreamTimes(streamTimes);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("videoliveplayback", videoEntity);
-            bundle.putInt("type", 2);
-            if ("720P".equals(radioType)) {
-                LiveVideoEnter.intentToLectureLivePlayBackVideo(activity, bundle, activity.getClass().getSimpleName());
-            } else {
-                LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
-            }
+            dispatcherBll.getPublic(chapterName, planId, teacherId, gotoClassTime, new AbstractBusinessDataCallBack() {
+                @Override
+                public void onDataSucess(Object... objData) {
+                    PublicEntity publicEntity = (PublicEntity) objData[0];
+                    if (publicEntity != null) {
+                        playLivePlayBackVideo(publicEntity);
+                    }
+                }
+            });
         }
     }
+
+
+    public void playLivePlayBackVideo(PublicEntity publicLiveCourseEntity) {
+        // 播放数据设定
+        ShareDataManager dataManager = ShareDataManager.getInstance();
+        VideoLivePlayBackEntity videoEntity = new VideoLivePlayBackEntity();
+        videoEntity.setCourseId(publicLiveCourseEntity.getCourseId());
+        videoEntity.setCourseName(publicLiveCourseEntity.getCourseName());
+        videoEntity.setPlayVideoId(publicLiveCourseEntity.getCourseId());
+        videoEntity.setPlayVideoName(publicLiveCourseEntity.getCourseName());
+        videoEntity.setVideoPath(publicLiveCourseEntity.getPlayBackUrl());
+        videoEntity.setvCourseSendPlayVideoTime(dataManager.getInt(LocalCourseConfig.SENDPLAYVIDEOTIME, 180,
+                SHAREDATA_USER));
+        videoEntity.setVideoCacheKey(publicLiveCourseEntity.getPlayBackUrl());
+        videoEntity.setLiveId(publicLiveCourseEntity.getCourseId());
+        videoEntity.setvLivePlayBackType(LocalCourseConfig.LIVETYPE_LECTURE);
+        videoEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LECTURE + "-" + publicLiveCourseEntity.getCourseId() +
+                "-" + publicLiveCourseEntity.getTeacherId());
+        videoEntity.setLstVideoQuestion(publicLiveCourseEntity.getLstVideoQuestion());
+        videoEntity.setvCourseSendPlayVideoTime(publicLiveCourseEntity.getSendPlayVideoTime());
+        videoEntity.setGotoClassTime(publicLiveCourseEntity.getGotoClassTime());
+        videoEntity.setOnlineNums(publicLiveCourseEntity.getOnlineNums());
+        videoEntity.setStreamTimes(publicLiveCourseEntity.getStreamTimes());
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("videoliveplayback", videoEntity);
+        bundle.putInt("type", 2);
+        if ("720P".equals(publicLiveCourseEntity.getRadioType())) {
+            LiveVideoEnter.intentToLectureLivePlayBackVideo(activity, bundle, activity.getClass()
+                    .getSimpleName());
+        } else {
+            LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
+        }
+    }
+
 
     private void startLivePlayActivity(String sectionId) {
         LiveVideoEnter.intentToLiveVideoActivityLecture(activity, sectionId, LiveVideoBusinessConfig
@@ -248,8 +253,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         VideoSectionEntity sectionEntity = new VideoSectionEntity();
         sectionEntity.setvSectionName(chapterName);
         sectionEntity.setvChapterName(chapterName);
-        sectionEntity.setvChapterID(planId);
-        sectionEntity.setvSectionID(planId);
+        sectionEntity.setvChapterID(mid);
+        sectionEntity.setvSectionID(mid);
         sectionEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LIVE + "-" + sectionEntity
                 .getvSectionID());
         sectionEntity.setvCoursseID(courseId);
@@ -266,8 +271,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         VideoSectionEntity sectionEntity = new VideoSectionEntity();
         sectionEntity.setvSectionName(chapterName);
         sectionEntity.setvChapterName(chapterName);
-        sectionEntity.setvChapterID(planId);
-        sectionEntity.setvSectionID(planId);
+        sectionEntity.setvChapterID(mid);
+        sectionEntity.setvSectionID(mid);
         sectionEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LIVE + "-" + sectionEntity
                 .getvSectionID());
         sectionEntity.setvCoursseID(courseId);

@@ -61,4 +61,13 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
         sendPost(ShareBusinessConfig.URL_EXPERIENCE_LIVE_INFO, params, requestCallBack);
 //        sendPost("http://10.97.14.61/science/AutoLive/getAutoLiveInfo", params, requestCallBack);
     }
+
+
+    public void publicLiveCourseQuestion(String liveId, String teacherId, String timeStr, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("teacherId", teacherId);
+        params.addBodyParam("timeStr", timeStr);
+        sendPost(DispatcherConfig.URL_PUBLIC_LIVE_COURSE_QUESTION, params, requestCallBack);
+    }
 }

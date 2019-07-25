@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -432,6 +433,24 @@ public class DispatcherBll extends BaseBll {
                         }
                     }
                 });
+    }
 
+    public void getPublic(final String courseName, final String courseId, final String teacherId, final String gotoClassTime, final AbstractBusinessDataCallBack callBack) {
+        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
+        postDataLoadEvent(dataLoadEntity.beginLoading());
+        dispatcherHttpManager.publicLiveCourseQuestion(courseId, teacherId, gotoClassTime, new HttpCallBack(dataLoadEntity) {
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                PublicEntity publicLiveCourseEntity = dispatcherHttpResponseParser.publicLiveCourseQuestionParser(responseEntity);
+                if (publicLiveCourseEntity != null) {
+                    publicLiveCourseEntity.setCourseId(courseId);
+                    publicLiveCourseEntity.setCourseName(courseName);
+                    publicLiveCourseEntity.setTeacherId(teacherId);
+                    if (!TextUtils.isEmpty(gotoClassTime) && TextUtils.isDigitsOnly(gotoClassTime)) {
+                        publicLiveCourseEntity.setGotoClassTime(Long.parseLong(gotoClassTime));
+                    }
+                }
+                callBack.onDataSucess(publicLiveCourseEntity);
+            }
+        });
     }
 }
