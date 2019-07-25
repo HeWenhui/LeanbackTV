@@ -1,12 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils;
 
 import android.content.Context;
-import android.os.Environment;
 
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -154,12 +152,12 @@ public class EvaluationAudioPlayerDataManager {
     }
 
     private void initRepeat_word() {
-        AudioData<String> audioData = new AudioData<>();
-        List<String> queue = new ArrayList<>();
-        queue.add(Environment.getExternalStorageDirectory() +
-                File.separator + "parentsmeeting" + File.separator + "livevideo" +
-                File.separator + "05_01_You_made_it_Just_try_to_repeat_one_more_time_Please_read_after_me.mp3");
-        audioData.setAudioUrl(queue);
+//        AudioData<String> audioData = new AudioData<>();
+//        List<String> queue = new ArrayList<>();
+//        queue.add(Environment.getExternalStorageDirectory() +
+//                File.separator + "parentsmeeting" + File.separator + "livevideo" +
+//                File.separator + "05_01_You_made_it_Just_try_to_repeat_one_more_time_Please_read_after_me.mp3");
+//        audioData.setAudioUrl(queue);
 //        audioData.setNowPlayAudioPos(0);
 //        map.put(IntelligentConstants., audioData);
     }

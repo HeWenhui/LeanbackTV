@@ -51,16 +51,16 @@ public class Unity3DPlayManager {
                 Arrays.asList(IntelligentUnity3DBodyParam.A_MON_T_U, IntelligentUnity3DFaceParam.A_MON_S1));
 
         mapList.put(IntelligentConstants.END_GOOD_BYE_1,
-                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W, IntelligentUnity3DFaceParam.A_MON_S1));
 
         mapList.put(IntelligentConstants.END_GOOD_BYE_2,
-                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W, IntelligentUnity3DFaceParam.A_MON_S1));
 
         mapList.put(IntelligentConstants.END_GOOD_BYE_3,
-                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W, IntelligentUnity3DFaceParam.A_MON_S1));
 
         mapList.put(IntelligentConstants.END_GOOD_BYE_4,
-                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W));
+                Arrays.asList(IntelligentUnity3DBodyParam.A_MON_RH_W, IntelligentUnity3DFaceParam.A_MON_S1));
     }
 
 

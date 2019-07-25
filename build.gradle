@@ -16,7 +16,7 @@ android {
             java.srcDirs += ['src/main/java-achievement']
             res.srcDirs += ['src/main/res-achievement']
             java.srcDirs += ['src/main/english/java-en_tcp']
-             assets.srcDirs += ['src/main/english/assets']
+            assets.srcDirs += ['src/main/english/assets']
             java.srcDirs += ['src/main/java-core']
             //集体发言
             java.srcDirs += ['src/main/secience/java-collective_speech']
@@ -63,12 +63,14 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.browser)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xeslottie)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.pschatsdk)
-    implementation rootProject.ext.thirdlibraries.arouterapi
+//    implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.appcompat
     implementation rootProject.ext.thirdlibraries.recyclerview
     implementation rootProject.ext.thirdlibraries.okhttp
     implementation rootProject.ext.thirdlibraries.constraint
     implementation rootProject.ext.thirdlibraries.arouterapi
+//    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.arouterapi)
+//    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.aroutercompiler)
     implementation rootProject.ext.thirdlibraries.bugly
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
     implementation rootProject.ext.thirdlibraries.ticker

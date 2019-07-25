@@ -63,7 +63,7 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
         AudioEvaluationDownload.startDownLoad(mActivity.getApplicationContext(),
                 IntelligentLiveCacheFile.
                         getInstanceFile(mActivity).
-                        getPath() + File.separator + AUDIO_EVALUATE_FILE_NAME, "");
+                        getPath() + File.separator + AUDIO_EVALUATE_FILE_NAME, "https://wxapp.xesimg.com/Android/temp/ieAudio.zip");
     }
 
     @Nullable
