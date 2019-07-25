@@ -332,7 +332,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                             liveVideoSAConfig.inner.chsSubjectiveTestAnswerResult :
                             liveVideoSAConfig.inner.subjectiveTestAnswerResult);
         }
-        liveGetInfo.setTestPaperUrl("https://live.xueersi.com/Live/getMultiTestPaper");
+        liveGetInfo.setTestPaperUrl(LiveHttpConfig.LIVE_HOST + "/Live/getMultiTestPaper");
         liveGetInfo.setIs_show_ranks("0");
         liveGetInfo.setLiveType(mLiveType);
         liveGetInfo.setIsArts(isArts);
@@ -603,7 +603,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     index = i;
                     break;
                 }
-            }else if (LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT == videoQuestionEntity.getvCategory()) {
+            } else if (LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
 //                if (startTime == playPosition) {
@@ -928,6 +928,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     /**
      * 获取直播间初始换参数
+     *
      * @return
      */
     public LiveGetInfo getRommInitData() {
