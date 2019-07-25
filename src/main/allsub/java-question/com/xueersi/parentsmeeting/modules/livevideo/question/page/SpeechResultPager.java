@@ -14,11 +14,15 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember;
 import com.xueersi.parentsmeeting.modules.livevideo.question.item.SpeechResultOtherItem;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.adapter.RCommonAdapter;
 
 import java.util.ArrayList;
@@ -34,6 +38,8 @@ public class SpeechResultPager extends LiveBasePager {
     private ImageView ivSpeechResultClose;
     private TextView tvSpeechResultScore;
     private ImageView civSpeechResultHead;
+    /** 段位 */
+    private ImageView ivUserSegment;
     private View vSpeechResultLine;
     private RecyclerView rvSpeechResultOther;
     /** 准确度 */
@@ -110,6 +116,7 @@ public class SpeechResultPager extends LiveBasePager {
         ivSpeechResultClose = view.findViewById(R.id.iv_live_speech_result_close);
         tvSpeechResultScore = view.findViewById(R.id.tv_live_speech_result_score);
         civSpeechResultHead = view.findViewById(R.id.civ_live_speech_result_head);
+        ivUserSegment = view.findViewById(R.id.iv_live_speech_result_head_segment);
         vSpeechResultLine = view.findViewById(R.id.v_live_speech_result_line);
         rvSpeechResultOther = view.findViewById(R.id.rv_live_speech_result_other);
         tvSpeechResultAccuracyText = view.findViewById(R.id.tv_live_speech_result_accuracy_text);
@@ -131,6 +138,18 @@ public class SpeechResultPager extends LiveBasePager {
             tvSpeechResultMyPraise.setText("" + speechResultEntity.praise);
         }
         ImageLoader.with(mContext).load(speechResultEntity.headUrl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civSpeechResultHead);
+        try {
+            StuSegmentEntity stuSegmentEntity = ProxUtil.getProxUtil().get(mContext, BetterMeContract
+                    .BetterMePresenter.class).getStuSegmentEntity();
+            if (stuSegmentEntity != null) {
+                int segmentType = Integer.valueOf(stuSegmentEntity.getSegmentType()) - 1;
+                int star = Integer.valueOf(stuSegmentEntity.getStar()) - 1;
+                ivUserSegment.setBackgroundResource(BetterMeConfig.LEVEL_IMAGE_RES_HEAD[segmentType]);
+                ivUserSegment.setImageResource(BetterMeConfig.STAR_IMAGE_RES[segmentType][star]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //单人的
         if (isSingle) {
             rvSpeechResultOther.setVisibility(View.GONE);

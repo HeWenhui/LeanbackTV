@@ -540,6 +540,7 @@
     <item name="tv_live_speech_result_fluency_lable" type="id" />
     <item name="tv_live_speech_result_fluency_text" type="id" />
     <item name="civ_live_speech_result_head" type="id" />
+    <item name="iv_live_speech_result_head_segment" type="id" />
     <item name="v_live_speech_result_center" type="id" />
     <item name="vs_live_speech_result_myenergy" type="id" />
     <item name="rl_live_speech_result_myenergy" type="id" />
