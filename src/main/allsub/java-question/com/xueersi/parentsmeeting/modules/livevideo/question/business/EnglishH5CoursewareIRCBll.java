@@ -96,7 +96,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         int pattern = getInfo.getPattern();
-        if (pattern == 2) {
+        if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
             LiveStandVoiceAnswerCreat liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(activity, contextLiveAndBackDebug,
                     englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), mGetInfo.getHeadImgPath(), mGetInfo
                     .getStandLiveName());
@@ -106,10 +106,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(englishH5CoursewareBll.new
                     LiveQuestionSwitchImpl(), englishH5CoursewareBll, getInfo));
         }
-        LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
+        isArts = getInfo.getIsArts();
+        LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat(activity);
         liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(getInfo);
-        isArts = (int) mLiveBll.getBusinessShareParam("isArts");
-        liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         if (isArts == LiveVideoSAConfig.ART_SEC) {
             // TODO: 2018/12/5
             if (mAnswerRankBll != null) {
@@ -199,7 +198,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                 String status = coursewareH5.optString("status", "off");
                 if ("on".equals(status)) {
-                   // LiveVideoConfig.isNewArts = true;
+                    // LiveVideoConfig.isNewArts = true;
                     videoQuestionLiveEntity.noticeType = XESCODE.ARTS_SEND_QUESTION;
                     videoQuestionLiveEntity.setNewArtsCourseware(true);
                     JSONArray idObject = coursewareH5.optJSONArray("id");
@@ -261,9 +260,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
                     Loger.e("Duncan", "======>EnglishH5CoursewareIRCBll:" + "H5语音答题");
                 }
-                Loger.e(Tag, "=======>onTopic:" + "isNewArts: "+videoQuestionLiveEntity.isNewArtsH5Courseware());
+                Loger.e(Tag, "=======>onTopic:" + "isNewArts: " + videoQuestionLiveEntity.isNewArtsH5Courseware());
             } else {
-               // LiveVideoConfig.isNewArts = false;
+                // LiveVideoConfig.isNewArts = false;
                 Loger.e(Tag, "=======>onTopic:" + "isNewArts: false");
                 if ((englishH5CoursewareBll != null && jsonObject.has("H5_Courseware"))
                         || LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())) {
@@ -306,7 +305,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
                         }
                     } else {
-                       // englishH5Entity.setNewEnglishH5(false);
+                        // englishH5Entity.setNewEnglishH5(false);
                         if (englishH5CoursewareBll != null) {
                             JSONObject object = jsonObject.optJSONObject("platformTest");
                             // 辅导态不接收主讲消息
@@ -649,7 +648,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         @Override
         public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final
         AbstractBusinessDataCallBack callBack) {
-            getHttpManager().getTestAnswerTeamStatus(videoQuestionLiveEntity.isNewArtsH5Courseware(),videoQuestionLiveEntity.id, new HttpCallBack(false) {
+            getHttpManager().getTestAnswerTeamStatus(videoQuestionLiveEntity.isNewArtsH5Courseware(), videoQuestionLiveEntity.id, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     GoldTeamStatus entity = getHttpResponseParser().testAnswerTeamStatus(responseEntity, mGetInfo

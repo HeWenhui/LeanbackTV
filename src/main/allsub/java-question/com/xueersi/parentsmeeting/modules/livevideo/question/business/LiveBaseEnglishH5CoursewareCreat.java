@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -28,16 +29,19 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
  * Created by linyuqiang on 2018/7/26.
  */
 public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5CoursewareCreat {
+    private String TAG = "LiveBaseEnglishH5CoursewareCreat";
     private AnswerRankIRCBll mAnswerRankIRCBll;
-    private int isArts;
+    private int mIsArts;
     private boolean allowTeamPk;
     private LiveGetInfo liveGetInfo;
     private Logger logger;
     private LivePagerBack livePagerBack;
     private boolean isFirst = true;
+    private LogToFile mLogtf;
 
-    public LiveBaseEnglishH5CoursewareCreat() {
-        logger = LiveLoggerFactory.getLogger("LiveBaseEnglishH5CoursewareCreat");
+    public LiveBaseEnglishH5CoursewareCreat(Context context) {
+        logger = LiveLoggerFactory.getLogger(TAG);
+        mLogtf = new LogToFile(context, TAG);
     }
 
     public void setmAnswerRankBll(AnswerRankIRCBll mAnswerRankBll) {
@@ -46,10 +50,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
 
     public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
         this.liveGetInfo = liveGetInfo;
-    }
-
-    public void setArts(int isArts) {
-        this.isArts = isArts;
+        mIsArts = liveGetInfo.getIsArts();
     }
 
     public void setAllowTeamPk(boolean allowTeamPk) {
@@ -69,12 +70,15 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                 isShowRanks = mAnswerRankBll.getIsShow();
             }
         }
+        int isArts = mIsArts;
         if (videoQuestionH5Entity.isTUtor()) {
-            setArts(LiveVideoSAConfig.ART_SEC);
+            isArts = LiveVideoSAConfig.ART_SEC;
         }
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
         //应该是没有为null的时候
         if (liveGetInfo != null) {
+            mLogtf.d("creat:isArts=" + isArts + ",isNewCourse=" + liveGetInfo.isNewCourse() + ",mode=" + liveGetInfo.getMode() + ",ne=" + englishH5Entity.getNewEnglishH5()
+                    + ",ane=" + englishH5Entity.isArtsNewH5Courseware());
             if (isArts == LiveVideoSAConfig.ART_CH && LiveTopic.MODE_CLASS.equals(liveGetInfo.getMode())) {
                 String educationstage = liveGetInfo.getEducationStage();
                 videoQuestionH5Entity.setEducationstage(educationstage);
@@ -216,6 +220,8 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                     }
                 }
             }
+        } else {
+            mLogtf.d("creat:isArts=" + isArts + ",isNewCourse=null");
         }
         EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, isShowRanks, isArts, allowTeamPk);

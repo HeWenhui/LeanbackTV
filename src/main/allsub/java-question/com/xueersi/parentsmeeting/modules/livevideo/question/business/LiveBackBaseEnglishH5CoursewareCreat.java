@@ -30,16 +30,14 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
     private WrapOnH5ResultClose wrapOnH5ResultClose;
     LivePagerBack livePagerBack;
     private LiveGetInfo liveGetInfo;
-    private int isArts;
-
-    private boolean isFirst = true;
+    private int mIsArts;
 
     public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
         this.liveGetInfo = liveGetInfo;
     }
 
     public void setArts(int arts) {
-        this.isArts = arts;
+        this.mIsArts = arts;
     }
 
     public void setWrapOnH5ResultClose(WrapOnH5ResultClose wrapOnH5ResultClose) {
@@ -125,14 +123,15 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
 
     @Override
     public BaseEnglishH5CoursewarePager creat(Context context, VideoQuestionLiveEntity videoQuestionH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose, String mVSectionID) {
-
         wrapOnH5ResultClose.setOnH5ResultClose(onH5ResultClose);
         wrapOnH5ResultClose.setVideoQuestionH5Entity(videoQuestionH5Entity);
+        int isArts = mIsArts;
         if (videoQuestionH5Entity.isTUtor()) {
-            setArts(LiveVideoSAConfig.ART_SEC);
+            isArts = LiveVideoSAConfig.ART_SEC;
         }
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
         //应该是没有为null的时候
+
         if (liveGetInfo != null) {
             if (isArts == LiveVideoSAConfig.ART_CH) {
 //                String educationstage = liveGetInfo.getEducationStage();
