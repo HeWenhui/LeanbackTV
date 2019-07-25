@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -667,7 +668,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     private String buildCourseUrl(String testIds) {
         StringBuilder sb = new StringBuilder();
         String falseStr = Base64.encodeBytes("false".getBytes());
-        sb.append(new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_ARTS_H5_URL).append("?liveId=").append(mVideoEntity.getLiveId())
+        sb.append(LiveHttpConfig.URL_ARTS_H5_URL).append("?liveId=").append(mVideoEntity.getLiveId())
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append("2")
                 .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&stuId=").append(LiveAppUserInfo.getInstance().getStuId())
                 .append("&xesrfh=").append(LiveAppUserInfo.getInstance().getUserRfh())
@@ -679,7 +680,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
     private String buildCourseH5Url(String testIds) {
         StringBuilder sb = new StringBuilder();
-        sb.append(new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(LiveAppUserInfo.getInstance().getStuId())
+        sb.append(LiveHttpConfig.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(LiveAppUserInfo.getInstance().getStuId())
                 .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&liveId=").append(mVideoEntity.getLiveId())
                 .append("&testId=").append(testIds).append("&type=").append(17).append("&isPlayBack=1");
         return sb.toString();

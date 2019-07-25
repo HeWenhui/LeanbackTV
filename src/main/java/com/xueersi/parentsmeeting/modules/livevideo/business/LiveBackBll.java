@@ -326,8 +326,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (liveVideoSAConfig != null) {
             liveGetInfo.setSubjectiveTestAnswerResult(
                     (isArts == 2) ?
-                            liveVideoSAConfig.inner.chsSubjectiveTestAnswerResult :
-                            liveVideoSAConfig.inner.subjectiveTestAnswerResult);
+                            LiveHttpConfig.chsSubjectiveTestAnswerResult :
+                            LiveHttpConfig.subjectiveTestAnswerResult);
         }
         liveGetInfo.setTestPaperUrl(LiveHttpConfig.LIVE_HOST + "/Live/getMultiTestPaper");
         liveGetInfo.setIs_show_ranks("0");

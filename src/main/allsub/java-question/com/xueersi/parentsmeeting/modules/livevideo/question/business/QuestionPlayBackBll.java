@@ -563,12 +563,12 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         String url;
         if ("5".equals(type)) {
             if (mVideoEntity.getPattern() == 2) {
-                url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_STANDROALPLAY_URL;
+                url = LiveHttpConfig.URL_NEWARTS_STANDROALPLAY_URL;
             } else {
-                url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_ROALPLAY_URL;
+                url = LiveHttpConfig.URL_NEWARTS_ROALPLAY_URL;
             }
         } else {
-            url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_CHINESEREADING_URL;
+            url = LiveHttpConfig.URL_NEWARTS_CHINESEREADING_URL;
         }
         sb.append(url).append("?liveId=").append(mVideoEntity.getLiveId())
                 .append("&testId=").append(id).append("&isPlayBack=").append(isPlayback)
@@ -599,7 +599,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     private String buildCourseUrl(String testIds) {
         StringBuilder sb = new StringBuilder();
         String falseStr = Base64.encodeBytes("false".getBytes());
-        sb.append(new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_ARTS_H5_URL).append("?liveId=").append(mVideoEntity.getLiveId())
+        sb.append(LiveHttpConfig.URL_ARTS_H5_URL).append("?liveId=").append(mVideoEntity.getLiveId())
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append("2")
                 .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&stuId=").append(LiveAppUserInfo.getInstance().getStuId())
                 .append("&xesrfh=").append(LiveAppUserInfo.getInstance().getUserRfh())

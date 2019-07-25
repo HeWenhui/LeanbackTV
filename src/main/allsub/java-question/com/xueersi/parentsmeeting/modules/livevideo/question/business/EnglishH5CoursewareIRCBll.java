@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -280,7 +281,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         //englishH5Entity.setNewEnglishH5(false);
                         id = h5_Experiment.getString("id");
                         courseware_type = h5_Experiment.getString("courseware_type");
-                        String pre = mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                        String pre = mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? LiveHttpConfig.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
                         play_url = pre + mLiveId + "/" + mLiveBll
                                 .getStuCouId() + "/" + id +
                                 "/" + courseware_type
@@ -415,7 +416,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         if ("on".equals(status)) {
                             id = object.getString("id");
                             courseware_type = object.getString("courseware_type");
-                            String pre = mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                            String pre = mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? LiveHttpConfig.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
                             play_url = pre + mLiveId + "/" + mLiveBll
                                     .getStuCouId() + "/"
                                     + id + "/" + courseware_type
@@ -588,7 +589,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         }
         StringBuilder sb = new StringBuilder();
         String falseStr = Base64.encodeBytes("false".getBytes());
-        sb.append(mLiveBll.getLiveVideoSAConfig().inner.URL_ARTS_H5_URL).append("?liveId=").append(mLiveId)
+        sb.append(LiveHttpConfig.URL_ARTS_H5_URL).append("?liveId=").append(mLiveId)
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
                 .getStuId())
@@ -601,7 +602,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
     private String buildCourseH5Url(String testIds) {
         StringBuilder sb = new StringBuilder();
-        sb.append(mLiveBll.getLiveVideoSAConfig().inner.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(mGetInfo
+        sb.append(LiveHttpConfig.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(mGetInfo
                 .getStuId())
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&liveId=").append(mLiveId)
                 .append("&testId=").append(testIds).append("&type=").append(17).append("&isPlayBack=0");
