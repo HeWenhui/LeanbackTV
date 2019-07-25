@@ -984,6 +984,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     } else if(LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(detailInfo.type)){
                         //语音宝箱开始收音时间
                         startSpeechRecognizeTime = 1;
+                        turnPagetime =  mAnswersList.get(pageNum).getSingleTime();
                     }
                 } else {
                     if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
