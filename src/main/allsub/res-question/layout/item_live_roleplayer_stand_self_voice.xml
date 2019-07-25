@@ -30,15 +30,15 @@
                 >
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/roleplay_touxiangzhezhao_pic_nor"
+                    android:id="@id/iv_live_roleplayer_message_user_segment"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
                     android:layout_centerInParent="true"
                     />
                 <com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView
                     android:id="@id/civ_live_roleplayer_message_user_head"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_centerInParent="true"
                     android:focusable="false"
                     android:src="@drawable/ic_default_head_square"
@@ -62,7 +62,7 @@
                 android:layout_width="60dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="-7dp"
                 android:textColor="#e85c84"
                 android:textSize="11sp"
                 android:singleLine="true"

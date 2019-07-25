@@ -2601,6 +2601,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             stuSegmentEntity.setAimNumber(jsonObject.getString("aimNumber"));
             stuSegmentEntity.setSegment(jsonObject.getString("segment"));
+            stuSegmentEntity.setSegmentType(jsonObject.getString("segmentType"));
             stuSegmentEntity.setStar(jsonObject.getString("star"));
             stuSegmentEntity.setSumCount(jsonObject.getString("sumCount"));
             return  stuSegmentEntity;
