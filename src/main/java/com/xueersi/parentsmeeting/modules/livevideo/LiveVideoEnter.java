@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideo
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceThreeScreenActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
@@ -249,7 +250,7 @@ public class LiveVideoEnter {
                 bundle.putString("vSectionID", vSectionID);
                 bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
                 bundle.putInt(ENTER_ROOM_FROM, from);
-      //        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                //        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                 LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
             }
 
@@ -333,7 +334,7 @@ public class LiveVideoEnter {
                         .SP_APP_DEVICE_NOTICE, false,
                 ShareDataManager.SHAREDATA_USER)) {
 
-            Intent intent= new Intent(context, DeviceDetectionActivity.class);
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             return intent;
         }
@@ -362,7 +363,7 @@ public class LiveVideoEnter {
                 ("currentDutyId"))) {
             return null;
         }
-        Intent intent= new Intent(context, LiveVideoLoadActivity.class);
+        Intent intent = new Intent(context, LiveVideoLoadActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle bundle = new Bundle();
         bundle.putString("vSectionID", jsonObject.optString("vSectionId"));
@@ -384,7 +385,7 @@ public class LiveVideoEnter {
             return null;
         }
 
-        Intent intent= new Intent(context, LiveVideoLoadActivity.class);
+        Intent intent = new Intent(context, LiveVideoLoadActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle bundle = new Bundle();
         bundle.putString("vSectionID", jsonObject.optString("courseId"));
@@ -411,7 +412,7 @@ public class LiveVideoEnter {
         if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
                         .SP_APP_DEVICE_NOTICE, false,
                 ShareDataManager.SHAREDATA_USER)) {
-            Intent intent= new Intent(context, DeviceDetectionActivity.class);
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
             context.startActivity(intent);
             return false;
         }
@@ -512,7 +513,7 @@ public class LiveVideoEnter {
         return true;
     }
 
-    public static boolean intentToLiveBackExperience(final Activity context, final Bundle bundle, final String where){
+    public static boolean intentToLiveBackExperience(final Activity context, final Bundle bundle, final String where) {
         LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
             @Override
             public void start() {
@@ -521,7 +522,7 @@ public class LiveVideoEnter {
 
             @Override
             public void success() {
-                ExperienceThreeScreenActivity.intentTo(context,bundle,where,VIDEO_REQUEST);
+                ExperienceThreeScreenActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
             }
 
             @Override
@@ -606,6 +607,10 @@ public class LiveVideoEnter {
         return true;
     }
 
+    public static void intentToLivePlayBackVideo(Activity activity, Bundle bundle) {
+        LiveVideoTransferActivity.intentTo(activity, bundle);
+    }
+
     /**
      * 跳转到直播回放(已废弃)
      *
@@ -614,7 +619,7 @@ public class LiveVideoEnter {
      */
     public static void intentToLectureLivePlayBackVideo(final Activity context, final Bundle bundle, final String where) {
 
-        XESToastUtils.showToast(context,"已暂停服务");
+        XESToastUtils.showToast(context, "已暂停服务");
 //        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
 //            @Override
 //            public void start() {

@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -9,12 +10,14 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -76,7 +79,6 @@ public class LiveVideoTransferActivity extends BaseActivity {
         mLogtf = new LogToFile(this, TAG);
         mLogtf.d("sectionEntity=" + sectionEntity + "  stuCouId=" + stuCouId + "  from=" + from);
         deductStuGold(stuCouId);
-
     }
 
 
@@ -200,9 +202,49 @@ public class LiveVideoTransferActivity extends BaseActivity {
             ShareDataManager.getInstance().put(ShareBusinessConfig.SP_SPEECH_URL, sectionEntity.getSpeechEvalUrl(),
                     ShareDataManager.SHAREDATA_USER);
         }
-        LiveVideoEnter.intentTo(this, bundle, from);
-        // finish();
+        intentTo(this, bundle, from);
         // OtherModuleEnter.intentTo((Activity) mContext, bundle, CourseDetailActivity.class.getSimpleName());
+    }
+
+    /**
+     * 跳转到播放器(直播回放)
+     *
+     * @param context
+     * @param bundle
+     */
+    public boolean intentTo(final Activity context, final Bundle bundle, final String where) {
+        if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
+                        .SP_APP_DEVICE_NOTICE, false,
+                ShareDataManager.SHAREDATA_USER)) {
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
+            context.startActivity(intent);
+            finish();
+            return false;
+        }
+        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public void success() {
+                com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
+                        where, LiveVideoEnter.VIDEO_REQUEST);
+                finish();
+            }
+
+            @Override
+            public void progress(float progress, int type) {
+
+            }
+
+            @Override
+            public void fail(int errorCode, String errorMsg) {
+
+            }
+        });
+        return true;
     }
 
     public VideoLivePlayBackEntity videoLivePlayBackFromVideoSection(VideoResultEntity
@@ -271,5 +313,18 @@ public class LiveVideoTransferActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         finish();
+    }
+
+    /**
+     * 跳转到播放器
+     *
+     * @param context
+     * @param bundle
+     */
+    public static void intentTo(Activity context, Bundle bundle) {
+        Intent intent = new Intent(context, LiveVideoTransferActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }
