@@ -73,6 +73,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     private CourseWareHttpManager courseWareHttpManager;
     private VideoQuestionEntity mCurrentQuestionEntity;
 
+    private int isArts;
+
     public EnglishH5PlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         EventBus.getDefault().register(this);
@@ -107,7 +109,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new
                 LiveBackBaseEnglishH5CoursewareCreat();
         liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(liveGetInfo);
-        int isArts = liveBackBll.getIsArts();
+         isArts = liveBackBll.getIsArts();
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
@@ -430,6 +432,9 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             stringBuilder.append("&isShowTeamPk=").append(0);
             stringBuilder.append("&nonce=").append(nonce);
             stringBuilder.append("&isforce=").append(isforce);
+            if (isArts == LiveVideoSAConfig.ART_CH) {
+                stringBuilder.append("&chs=1");
+            }
             stringBuilder.append("&releasedPageInfos=").append(englishH5Entity.getReleasedPageInfos());
             String resUrl = stringBuilder.toString();
             return resUrl;
