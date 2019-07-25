@@ -48,7 +48,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  */
 public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuestionInter {
 
-    private String EXAM_URL = "https://live.xueersi.com/LiveExam/examPaper";
+    private String EXAM_URL = LiveHttpConfig.LIVE_HOST + "/LiveExam/examPaper";
     String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
     private Button btSubjectClose;
     Button bt_livevideo_subject_calljs;
@@ -74,7 +74,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private int mGoldNum;
     private int mEnergyNum;
     private boolean allowTeamPk;
-    /**是否接收到或者展示过答题结果页面**/
+    /** 是否接收到或者展示过答题结果页面 **/
     private boolean isAnswerResultRecived;
     /**
      * 答题结果是否是 由强制提交 得到的
@@ -415,11 +415,10 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
      * 理科 课件 答题结果回调
      */
     @JavascriptInterface
-    public void onAnswerResult_LiveVideo(String data){
+    public void onAnswerResult_LiveVideo(String data) {
         isAnswerResultRecived = true;
         EventBus.getDefault().post(new AnswerResultEvent(data));
     }
-
 
 
     @Override

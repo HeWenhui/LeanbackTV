@@ -16,7 +16,7 @@ public class LiveQueHttpConfig {
     /** 获得课件-英语 http://wiki.xesv5.com/pages/viewpage.action?pageId=12954621 */
     public static String LIVE_GET_COURSEWARE_TESTS_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/commonTestInfo/getTestInfos";
 
-   // http://live.xueersi.com/science/Tutorship/getCourseWareTest
+    // http://live.xueersi.com/science/Tutorship/getCourseWareTest
     // ?stuId=58074&stuCouId=9649079&packageId=59148&liveId=376269&packageSource=2&packageAttr=1&releasedPageInfos=%5B%7B%2272853%22%3A%5B%2221%22%2C%2220188%22%5D%7D%5D&benchmark=0&json=1
 
 
@@ -54,7 +54,7 @@ public class LiveQueHttpConfig {
     /** 辅导 获取课件结果 */
     public static String LIVE_GET_COURSEWARE_TUTOR_RESULT = LiveHttpConfig.LIVE_HOST + "/science/Tutorship/getStuTestResult";
 
-
-
+    /** 辅导 加载课件 */
+    public static String TUTOR_COURSE_URL = LiveHttpConfig.LIVE_HOST + "/scistatic/outDoorTest/index.html";
 
 }

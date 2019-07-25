@@ -23,6 +23,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -161,7 +162,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         if (isArts == 2) {
             EXAM_URL = LiveVideoChConfig.URL_EXAM_PAGER;
         } else {
-            EXAM_URL = "https://live.xueersi.com/" + host + "/LiveExam/examPaper";
+            EXAM_URL = LiveHttpConfig.LIVE_HOST + "/" + host + "/LiveExam/examPaper";
         }
         examUrl = EXAM_URL + "?liveId=" + liveid
                 + "&testPlan=" + num + "&isPlayBack=0&stuId=" + stuId + "&stuName=" + stuName;
