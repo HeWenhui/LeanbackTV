@@ -197,7 +197,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             intelligentRecognitionRecord.setStuId("1111");
             intelligentRecognitionRecord.setStuCouId("1234");
             newBundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
-            XueErSiRouter.startModule(this, "/english/intelligent_recognition_frame", newBundle);
+            XueErSiRouter.startModule(this, "/english/intelligent_recognition", newBundle);
 //            startActivity(new Intent(this, IntelligentRecognitionActivity.class));
             finish();
             return;

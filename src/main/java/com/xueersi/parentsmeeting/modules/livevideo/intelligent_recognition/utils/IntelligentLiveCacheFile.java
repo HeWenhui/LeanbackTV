@@ -8,7 +8,7 @@ import java.io.File;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.CACHE_FILE;
 
-public class IntelligentLiveCacheFile {
+class IntelligentLiveCacheFile {
 //    private volatile static IntelligentLiveCacheFile instance;
 
     private IntelligentLiveCacheFile() {
@@ -29,5 +29,4 @@ public class IntelligentLiveCacheFile {
         }
         return file;
     }
-
 }

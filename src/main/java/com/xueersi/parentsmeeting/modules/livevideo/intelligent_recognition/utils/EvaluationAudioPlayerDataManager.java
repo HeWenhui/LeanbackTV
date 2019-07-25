@@ -10,14 +10,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.AUDIO_EVALUATE_FILE_NAME;
 
 public class EvaluationAudioPlayerDataManager {
 
@@ -68,7 +67,7 @@ public class EvaluationAudioPlayerDataManager {
     private static class AudioData<T> {
         private int nowPlayAudioPos;
         private List<T> audioUrl;
-        private String audioListName;
+//        private String audioListName;
 
 
 //        public int getNowPlayAudioPos() {
@@ -107,7 +106,7 @@ public class EvaluationAudioPlayerDataManager {
         }
     }
 
-    private Map<Integer, AudioData<String>> map;
+    private Map<Integer, AudioData<String>> map = new ConcurrentHashMap<>();
 
     private void init() {
 //        List<Integer> iLst = Arrays.asList(IntelligentConstants.PERFECT, REPEAT_WORD);
@@ -120,9 +119,9 @@ public class EvaluationAudioPlayerDataManager {
     }
 
     private void initAudioPath() {
-        AudioRespository audioRespository = new AudioRespository(context, AUDIO_EVALUATE_FILE_NAME);
+        LocalFileRespository audioRespository = LocalFileRespository.getInstance(context);
         Observable.
-                just(audioRespository.getAudioEvaluateFile(AUDIO_EVALUATE_FILE_NAME)).
+                just(audioRespository.getAudioEvaluateFile()).
                 filter(RxFilter.filterFile()).
                 subscribeOn(Schedulers.io())
                 .flatMap(new Function<File, ObservableSource<File>>() {
@@ -145,10 +144,6 @@ public class EvaluationAudioPlayerDataManager {
                         map.put(pos, audioData);
                     }
                 });
-    }
-
-    private void initGood() {
-
     }
 
     private void initRepeat_word() {

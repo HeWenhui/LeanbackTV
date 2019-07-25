@@ -30,11 +30,11 @@ public class AudioEvaluationDownload {
 //        return instance;
 //    }
 //
-//    private AudioRespository respository;
+//    private LocalFileRespository respository;
 //
 //    public void startDownLoad(Context context, String path) {
 //        if (respository == null) {
-//            respository = new AudioRespository(context, path);
+//            respository = new LocalFileRespository(context, path);
 //        }
 
 //    }
@@ -73,9 +73,6 @@ public class AudioEvaluationDownload {
 //    }
 
     public static Observable<String> startDownLoad(Context context, String filePath, final String url) {
-//        if (respository == null) {
-//            respository = new AudioRespository(context, CACHE_FILE);
-//        }
         return Observable.
                 just(filePath).
                 map(new Function<String, File>() {

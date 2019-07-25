@@ -60,9 +60,9 @@ public interface IntelligentConstants {
                     File.separator + "parentsmeeting" + File.separator + "livevideo" +
                     File.separator + "unity3d"};
 
-    String AUDIO_EVALUATE_FILE_NAME = "audio_evaluate";
+    String AUDIO_EVALUATE_FILE_DIR = "audio_evaluate";
     /** unity3D的文件名 */
-    String UNITY3D_EVALUATE = "unity_3d";
+    String UNITY3D_DIR = "unity_3d";
     /** 英语智能测评的缓存目录 */
     String CACHE_FILE = "intelligent_recognition";
 
@@ -70,5 +70,9 @@ public interface IntelligentConstants {
 
     String UNITY3D_FILE_NAME_1_V_1 = "monscene6";
 
+    String UNITY3D_FILE_NAME_2_V_1 = "monavater7";
+
+    String UNITY_3D_FILE1_URL = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/temp/monscene6";
+    String UNITY_3D_FILE2_URL = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/temp/monavater7";
 //    String unity3d_file_NAME_2_V_2 =
 }

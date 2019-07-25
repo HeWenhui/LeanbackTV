@@ -19,14 +19,24 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.lib.unity3d.UnityCommandPlay;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.CommonRxObserver;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.AudioEvaluationDownload;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.EvaluationAudioPlayerDataManager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.LocalFileRespository;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.Unity3DPlayManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.UNITY3D_FILE_NAME_1_V_1;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.UNITY3D_FILE_NAME_2_V_1;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.UNITY_3D_FILE1_URL;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.UNITY_3D_FILE2_URL;
 
 /**
  * 英语语音测评使用的Activity
@@ -102,8 +112,82 @@ public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
     }
 
     private void addUnity() {
-        addUnityView();
-        unityInit();
+        downLoadUnityFromAli();
+//        downloadAudioFromAli();
+//        unityInit();
+    }
+
+    private void downloadAudioFromAli() {
+        AudioEvaluationDownload.startDownLoad(this,
+                LocalFileRespository.getInstance(this).getAudioEvaluateFile()
+                        + File.separator + "ieAudio",
+                "https://wxapp.xesimg.com/Android/temp/ieAudio").
+                subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        EvaluationAudioPlayerDataManager.getInstance(IntelligentRecognitionActivity.this);
+                    }
+                });
+    }
+
+    private void downLoadUnityFromAli() {
+
+//        AudioEvaluationDownload.
+//                startDownLoad(this,
+//                        LocalFileRespository.getInstance(this).getUnity3DEvaluateFile()
+//                                + File.separator + "monscene6",
+//                        "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/temp/monscene6").
+//                doOnNext(new Consumer<String>() {
+//                    @Override
+//                    public void accept(String s) throws Exception {
+//                        UnityCommandPlay.downloadModel(s);
+//                    }
+//                }).
+//                observeOn(AndroidSchedulers.mainThread()).
+//                subscribe(new Consumer<String>() {
+//                    @Override
+//                    public void accept(String s) throws Exception {
+//                        addUnityView();
+//                    }
+//                });
+//        AudioEvaluationDownload.
+//                startDownLoad(this,
+//                        LocalFileRespository.getInstance(this).getUnity3DEvaluateFile()
+//                                + File.separator + "monavater7",
+//                        "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/temp/monavater7").
+//                subscribe(new Consumer<String>() {
+//                    @Override
+//                    public void accept(String s) throws Exception {
+//                        UnityCommandPlay.downloadModel(s);
+//                    }
+//                });
+
+        AudioEvaluationDownload.startDownLoad(this,
+                LocalFileRespository.getInstance(this).getUnity3DEvaluateFile()
+                        + File.separator + UNITY3D_FILE_NAME_1_V_1, UNITY_3D_FILE1_URL).
+                doOnNext(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        UnityCommandPlay.downloadModel(s);
+                    }
+                }).mergeWith(
+                AudioEvaluationDownload.startDownLoad(this,
+                        LocalFileRespository.getInstance(this).getUnity3DEvaluateFile()
+                                + File.separator + UNITY3D_FILE_NAME_2_V_1, UNITY_3D_FILE2_URL).
+                        doOnNext(new Consumer<String>() {
+                            @Override
+                            public void accept(String s) throws Exception {
+                                UnityCommandPlay.downloadModel(s);
+                            }
+                        })).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new CommonRxObserver<String>() {
+                    @Override
+                    public void onComplete() {
+                        super.onComplete();
+                        addUnityView();
+                    }
+                });
     }
 
     /**
