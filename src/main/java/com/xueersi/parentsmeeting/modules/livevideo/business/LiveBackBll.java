@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -328,7 +329,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                             liveVideoSAConfig.inner.chsSubjectiveTestAnswerResult :
                             liveVideoSAConfig.inner.subjectiveTestAnswerResult);
         }
-        liveGetInfo.setTestPaperUrl("https://live.xueersi.com/Live/getMultiTestPaper");
+        liveGetInfo.setTestPaperUrl(LiveHttpConfig.LIVE_HOST + "/Live/getMultiTestPaper");
         liveGetInfo.setIs_show_ranks("0");
         liveGetInfo.setLiveType(mLiveType);
         liveGetInfo.setIsArts(isArts);

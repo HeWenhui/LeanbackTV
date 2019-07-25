@@ -49,7 +49,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  */
 public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuestionInter {
 
-    private String EXAM_URL = "https://live.xueersi.com/LiveExam/examPaper";
+    private String EXAM_URL = LiveHttpConfig.LIVE_HOST + "/LiveExam/examPaper";
     private String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
     private Button btSubjectClose;
     private Button bt_livevideo_subject_calljs;

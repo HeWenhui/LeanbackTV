@@ -176,15 +176,14 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_STUINFO = HTTP_HOST + "/LiveCourse/getStuInfoByIds";
 
         /** h5课件地址 */
-        public String coursewareH5 = "https://live.xueersi.com/" +
+        public String coursewareH5 = LiveHttpConfig.LIVE_HOST + "/" +
                 (IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS) + "/Live/coursewareH5/";
         /** 文科新域名 */
         public String chsCoursewareH5 = "https://live.chs.xueersi.com/Live/coursewareH5/";
         /** 文科新域名 */
         public String chsSubjectiveTestAnswerResult = "https://live.chs.xueersi.com/Live/subjectiveTestAnswerResult/";
         /** 语文主观题结果页地址 */
-        public String subjectiveTestAnswerResult = "https://live.xueersi.com/" + ShareBusinessConfig.LIVE_LIBARTS
-                + "/Live/subjectiveTestAnswerResult/";
+        public String subjectiveTestAnswerResult = LiveHttpConfig.LIVE_HOST_LIBARTS + "/Live/subjectiveTestAnswerResult/";
 
 
         /**战队pk 相关接口*/
@@ -280,7 +279,7 @@ public class LiveVideoSAConfig {
     }
 
     /** 出门测表扬榜 */
-    public static final String URL_LIVE_PRAISE_TUTOR_LIST = LiveVideoConfig.APP_ARTS_HTTP_HOST +"/LivePraise/getPraiseData";
+    public static final String URL_LIVE_PRAISE_TUTOR_LIST = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LivePraise/getPraiseData";
 
     /** 回放获取弹幕接口(英语) */
     public static final String URL_ENGLISH_GET_VOICE_BARRAGE_MSG = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getVoiceBarrageForPlayBack";
