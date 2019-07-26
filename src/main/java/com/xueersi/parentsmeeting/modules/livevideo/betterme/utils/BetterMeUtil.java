@@ -1,5 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.betterme.utils;
 
+import android.widget.ImageView;
+
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
+
 /**
  * @Date on 2019/7/15 20:51
  * @Author zhangyuansun
@@ -20,5 +24,15 @@ public class BetterMeUtil {
         } catch (Exception e) {
             return second;
         }
+    }
+
+    public static void addSegment(ImageView imageView, int segmentType, int star) {
+        try {
+            imageView.setBackgroundResource(BetterMeConfig.LEVEL_IMAGE_RES_HEAD[segmentType]);
+            imageView.setImageResource(BetterMeConfig.STAR_IMAGE_RES[segmentType][star]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

@@ -94,7 +94,7 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
                     return;
                 }
                 mComposition = composition;
-                standLiveHeadView.setImageAssetsFolder("live_stand/lottie/head");
+                standLiveHeadView.setImageAssetsFolder("live_stand/head_segment/images");
                 standLiveHeadView.setComposition(composition);
             }
         });

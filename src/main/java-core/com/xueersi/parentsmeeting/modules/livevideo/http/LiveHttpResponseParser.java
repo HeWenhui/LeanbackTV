@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.TeamPKBetterMeRewardsEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
@@ -2141,6 +2142,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     teamMemberEntity.name = jsonObject1.optString("stu_name");
                     teamMemberEntity.headurl = jsonObject1.optString("stu_head");
                     teamMemberEntity.setNick_name(jsonObject1.optString("nick_name"));
+                    teamMemberEntity.setSegmentType(jsonObject1.optInt("segment_tyoe",1));
+                    teamMemberEntity.setStar(jsonObject1.optInt("star",1));
                     bTeamMemberEntity.add(teamMemberEntity);
                 }
             }
@@ -2671,6 +2674,24 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             stuAimResultEntity.setRealTimeVal(jsonObject.getString("realTimeVal"));
             stuAimResultEntity.setAimValue(jsonObject.getString("aimValue"));
             return  stuAimResultEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**
+     * 英语小目标 - 战队PK小目标中间页
+     *
+     * @param responseEntity
+     * @return
+     */
+    public TeamPKBetterMeRewardsEntity parseBetterMeAndPkMiddlePageInfo(ResponseEntity responseEntity) {
+        try {
+            TeamPKBetterMeRewardsEntity entity = new TeamPKBetterMeRewardsEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            return  entity;
         } catch (Exception e) {
             e.printStackTrace();
         }

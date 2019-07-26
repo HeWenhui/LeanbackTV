@@ -356,6 +356,47 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     /**
+     * 获取小目标和战队PK中间页
+     */
+    @Override
+    public void getBetterMeAndPkMiddlePage() {
+        //小目标接口开关
+        if (!isUseBetterMe) {
+            return;
+        }
+        //迟到
+        if (isArriveLate) {
+            return;
+        }
+        String liveId = mLiveBll.getLiveId();
+        String courseId = mLiveBll.getCourseId();
+        getHttpManager().getStuAimResult(liveId, courseId, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.i("getBetterMeAndPkMiddlePage:onPmSuccess():json=" + responseEntity.getJsonObject());
+                mStuAimResultEntity = getHttpResponseParser().parseStuAimResultInfo(responseEntity);
+                if (mStuAimResultEntity != null) {
+
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.i("getBetterMeAndPkMiddlePage:onPmFailure():error=" + msg);
+                super.onPmFailure(error, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.i("getBetterMeAndPkMiddlePage:onPmError():error=" + responseEntity.getErrorMsg());
+                super.onPmError(responseEntity);
+            }
+        });
+    }
+
+    /**
      * 小目标：获取本场小目标实体
      */
     @Override

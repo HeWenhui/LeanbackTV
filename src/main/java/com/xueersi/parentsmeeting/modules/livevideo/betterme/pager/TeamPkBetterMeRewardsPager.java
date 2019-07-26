@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager;
+package com.xueersi.parentsmeeting.modules.livevideo.betterme.pager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,6 +18,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.lottie.RisingBubbleLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -48,8 +49,7 @@ public class TeamPkBetterMeRewardsPager extends LiveBasePager {
     private float finalFprog;
     private Handler handler = new Handler(Looper.getMainLooper());
 
-    public TeamPkBetterMeRewardsPager(Context context, EnTeamPkRankEntity enTeamPkRankEntity, int pattern,
-                                      OnPagerClose onPagerClose) {
+    public TeamPkBetterMeRewardsPager(Context context, int pattern, EnTeamPkRankEntity enTeamPkRankEntity, OnPagerClose onPagerClose) {
         super(context, false);
         this.enTeamPkRankEntity = enTeamPkRankEntity;
         this.pattern = pattern;
@@ -60,10 +60,12 @@ public class TeamPkBetterMeRewardsPager extends LiveBasePager {
     @Override
     public View initView() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_en_team_betterme_rewards, null);
-        if (pattern == 2) {
-            view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_16_9);
-        } else {
+        if (pattern == LiveVideoConfig.LIVE_PATTERN_COMMON) {
+            //三分屏
             view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_4_3);
+        } else if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+            //全身直播
+            view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_16_9);
         }
         pgTeampkLead = view.findViewById(R.id.pg_livevideo_en_teampk_lead);
         rlTeampkLeadLeft = view.findViewById(R.id.rl_livevideo_en_teampk_lead_left);
@@ -168,7 +170,6 @@ public class TeamPkBetterMeRewardsPager extends LiveBasePager {
                     if (viewTreeObserver.isAlive()) {
                         viewTreeObserver.removeOnPreDrawListener(this);
                     }
-                    logger.d("setVideoLayout:equal=" + (viewTreeObserver == pgTeampkLead.getViewTreeObserver()));
                     pgTeampkLead.getViewTreeObserver().removeOnPreDrawListener(this);
                 }
                 return false;
@@ -210,9 +211,6 @@ public class TeamPkBetterMeRewardsPager extends LiveBasePager {
             int fireWidth = (int) (ivWidth * fireRatio);
             //火最大和进度条右边距对齐
             int maxLeftMargin = (pgTeampkLead.getLeft() + widthPg - ivWidth / 2 - fireWidth / 2);
-            logger.d("setProgFire:width=" + mView.getWidth() + ",left=" + pgTeampkLead.getLeft() + ",widthPg=" +
-                    widthPg + "," + pgTeampkLead.getWidth() + ",pgLeftMargin=" + pgLeftMargin + ",maxLeftMargin=" +
-                    maxLeftMargin);
             int leftMargin2 = Math.min(pgLeftMargin, maxLeftMargin);
             if (lpIvProg.leftMargin != leftMargin2) {
                 lpIvProg.leftMargin = leftMargin2;

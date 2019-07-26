@@ -11,6 +11,8 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
@@ -21,6 +23,7 @@ import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
@@ -119,17 +122,6 @@ public class StandLiveHeadView extends LottieAnimationView {
 //        }
     }
 
-    public void updateBack() {
-        Bitmap img_7Bitmap;
-        AssetManager manager = getContext().getAssets();
-        try {
-            img_7Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/lottie/head/img_4.png"));
-            updateBitmap("image_3", img_7Bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * 设置名字
      */
@@ -138,12 +130,8 @@ public class StandLiveHeadView extends LottieAnimationView {
         AssetManager manager = getContext().getAssets();
         Bitmap img_7Bitmap;
         try {
-            if (isMine) {
-                img_7Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/lottie/head/img_3.png"));
-            } else {
-                img_7Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/lottie/head/img_4.png"));
-            }
-            Bitmap img_3Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/lottie/head/img_1.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/head_segment/image/img_3.png"));
+            Bitmap img_3Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/head_segment/image/img_1.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
@@ -165,6 +153,10 @@ public class StandLiveHeadView extends LottieAnimationView {
             return;
         }
         updateBitmap("image_3", img_7Bitmap);
+    }
+
+    public void updateTail(){
+
     }
 
     public void updateHeadUrl() {
@@ -203,7 +195,7 @@ public class StandLiveHeadView extends LottieAnimationView {
         AssetManager manager = getContext().getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/lottie/head/img_1.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/head_segment/image/img_0.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
@@ -231,6 +223,28 @@ public class StandLiveHeadView extends LottieAnimationView {
 //            e.printStackTrace();
             return;
         }
-        updateBitmap("image_1", img_7Bitmap);
+        updateBitmap("image_0", img_7Bitmap);
+    }
+
+    private void updateSegment(){
+        Bitmap bitmap;
+        try {
+            ImageView imageView = new ImageView(getContext());
+            imageView.setImageResource(BetterMeConfig.LEVEL_IMAGE_RES_NOSTAR[entity.getSegmentType()]);
+            imageView.setBackgroundResource(BetterMeConfig.STAR_IMAGE_RES[entity.getSegmentType()][entity.getStar()]);
+
+            Bitmap segmentBitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/head_segment/image/img_1.png"));
+            bitmap = Bitmap.createBitmap(segmentBitmap.getWidth(), segmentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(segmentBitmap.getWidth(), View.MeasureSpec.EXACTLY);
+            int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(segmentBitmap.getHeight(), View.MeasureSpec.EXACTLY);
+            imageView.measure(widthMeasureSpec, heightMeasureSpec);
+            imageView.layout(0, 0, segmentBitmap.getWidth(), segmentBitmap.getHeight());
+            imageView.draw(canvas);
+        } catch (IOException e) {
+            logger.e( "updateSegment", e);
+            return;
+        }
+        updateBitmap("image_1", bitmap);
     }
 }

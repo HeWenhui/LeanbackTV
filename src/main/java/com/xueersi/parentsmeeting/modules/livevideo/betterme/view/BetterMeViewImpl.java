@@ -18,7 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeLevel
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeReceiveTargetPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkBetterMeRewardsPager;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.TeamPkBetterMeRewardsPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 /**
@@ -129,8 +129,8 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
     /**
      * 小目标奖励页面
      */
-    public void showTeamPkBetterMeRewardsPager() {
-        currentPager = new TeamPkBetterMeRewardsPager(mContext, new EnTeamPkRankEntity(), 1, new LiveBasePager
+    public void showTeamPkBetterMeRewardsPager(int pattern) {
+        currentPager = new TeamPkBetterMeRewardsPager(mContext, pattern, new EnTeamPkRankEntity(), new LiveBasePager
                 .OnPagerClose() {
             @Override
             public void onClose(LiveBasePager basePager) {

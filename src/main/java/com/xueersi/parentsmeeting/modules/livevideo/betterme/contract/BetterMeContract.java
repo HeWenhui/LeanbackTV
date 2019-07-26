@@ -32,6 +32,7 @@ public interface BetterMeContract {
         void getBetterMe(int method);
         void getStuAimResult();
         void updateBetterMe(boolean isShowBubble);
+        void getBetterMeAndPkMiddlePage();
         BetterMeEntity getBetterMeEntity();
         StuSegmentEntity getStuSegmentEntity();
     }
