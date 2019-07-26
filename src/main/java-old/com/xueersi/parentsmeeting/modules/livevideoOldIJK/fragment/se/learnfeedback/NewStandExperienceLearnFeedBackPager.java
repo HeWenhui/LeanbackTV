@@ -166,7 +166,7 @@ public class NewStandExperienceLearnFeedBackPager<T extends IStandExperienceLear
                     }
                 };
                 presenter.sendHttp(
-                        UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+                        LiveAppUserInfo.getInstance().getStuId(),
                         mVideoEntity.getLiveId(),
                         mVideoEntity.getSubjectId(),
                         mVideoEntity.getGradId(),

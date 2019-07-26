@@ -38,16 +38,14 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
     private static final String TAG = "ArtsAnswerResultBll";
     private IArtsAnswerRsultDisplayer mDsipalyer;
     boolean forceSumbmit;
-    /** 当前答题结果 */
-    private ChineseAISubjectResultEntity mAnswerReulst;
     private final long AUTO_CLOSE_DELAY = 2000;
 
     public ChsAnswerResultBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
 
-    public ChsAnswerResultBll(Activity context, String liveId, int liveType, RelativeLayout rootView){
-        super(context,liveId,liveType);
+    public ChsAnswerResultBll(Activity context, String liveId, int liveType, RelativeLayout rootView) {
+        super(context, liveId, liveType);
     }
 
     @Override
@@ -60,7 +58,7 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
         EventBus.getDefault().register(this);
     }
 
-    private void showAnswerReulst(ChsAnswerResultEvent event) {
+    private void showAnswerReulst(ChsAnswerResultEvent event, ChineseAISubjectResultEntity mAnswerReulst) {
 
         if (mDsipalyer != null) {
             return;
@@ -73,12 +71,13 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
                         (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 addView(mDsipalyer.getRootLayout(), layoutParams);
             }
-        },100);
+        }, 100);
         VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
         if (detailInfo != null) {
-            NewCourseLog.sno8(contextLiveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_CH), event.isIspreload(), 0,detailInfo.isTUtor());
+            NewCourseLog.sno8(contextLiveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_CH), event.isIspreload(), 0, detailInfo.isTUtor());
         }
     }
+
     /**
      * 关闭作答结果页面
      *
@@ -103,14 +102,14 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
         switch (type) {
             case XESCODE.MULTIPLE_H5_COURSEWARE:
                 boolean status = data.optBoolean("open");
-                if (!status){
+                if (!status) {
                     closeAnswerResult(true);
-                }else {
+                } else {
                     forceSumbmit = false;
                 }
                 break;
             default:
-                    break;
+                break;
         }
     }
 
@@ -146,11 +145,12 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onAnswerResult(ChsAnswerResultEvent event) {
-        if (ChsAnswerResultEvent.TYPE_AI_CHINESE_ANSWERRESULT == event.getmType()){
-            mAnswerReulst = event.getResultEntity();
-            showAnswerReulst(event);
+        if (ChsAnswerResultEvent.TYPE_AI_CHINESE_ANSWERRESULT == event.getmType()) {
+            ChineseAISubjectResultEntity mAnswerReulst = event.getResultEntity();
+            showAnswerReulst(event, mAnswerReulst);
         }
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWebviewClose(LiveRoomH5CloseEvent event) {
         //logger.e( "=======>onWebviewClose called");
@@ -161,7 +161,6 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mAnswerReulst = null;
         EventBus.getDefault().unregister(this);
     }
 }

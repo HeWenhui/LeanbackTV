@@ -111,7 +111,7 @@
 ////                + "&stuId=" + stuId + "&stuName=" + stuName;
 //        examUrl = testPaperUrl + "?testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;
-////        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
+////        String mEnStuId = LiveAppUserInfo.getInstance().getEnstuId(); // token
 ////        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
 //        logger.d( "initData:examUrl=" + examUrl);
 //        wvSubjectWeb.loadUrl(examUrl);

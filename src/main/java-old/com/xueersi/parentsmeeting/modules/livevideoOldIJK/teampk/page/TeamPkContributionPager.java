@@ -312,7 +312,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
                 info.getEnergyIconInfo().setShow(true);
                 //绑定 旋转背景信息
                 //学生自己是贡献之星
-                info.getAnimBgInfo().setShow(starInfo.getStuId().equals(UserBll.getInstance().getMyUserInfoEntity()
+                info.getAnimBgInfo().setShow(starInfo.getStuId().equals(LiveAppUserInfo.getInstance()
                         .getStuId()));
             }
         }

@@ -23,8 +23,6 @@ import android.widget.Toast;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseActivity;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -47,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIn
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -360,9 +359,16 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return false;
     }
 
+    protected boolean handleMessage(Message msg) {
+        return false;
+    }
+
     Handler.Callback callback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            if (BasePlayerFragment.this.handleMessage(msg)) {
+                return true;
+            }
             switch (msg.what) {
                 case OPEN_FILE:
                     // 打开新的视频时长统计初始化
@@ -412,8 +418,8 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                 } else {
                                     String userName = "", userId = null;
                                     try {
-                                        userName = AppBll.getInstance().getAppInfoEntity().getChildName();
-                                        userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        userName = LiveAppUserInfo.getInstance().getChildName();
+                                        userId = LiveAppUserInfo.getInstance().getStuId();
                                         if (TextUtils.isEmpty(userName)) {
                                             userName = "";
                                         }

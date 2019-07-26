@@ -523,7 +523,7 @@
 ////            mQuestionEntity.setvQuestionID("2");
 ////            mQuestionEntity.setvEndTime(120);
 ////            showExam();
-//        MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+//        MyUserInfoEntity mMyInfo = LiveAppUserInfo.getInstance();
 //        if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
 //            showName = mMyInfo.getEnglishName();
 //        } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
@@ -1026,7 +1026,7 @@
 ////                            if (vPlayer != null) {
 ////                                vPlayer.start();
 ////                            }
-//                                MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//                                MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
 //                                AppInfoEntity mAppInfoEntity = AppBll.getInstance().getAppInfoEntity();
 //                                questionWebPager = new QuestionWebX5Pager(LiveStandPlayBackVideoActivity.this,
 //                                        LiveStandPlayBackVideoActivity.this, "http://live.xueersi" +
@@ -1153,7 +1153,7 @@
 //                if (rlQuestionContent != null && mQuestionEntity != null) {
 //                    Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showSpeech");
 //                    mPlayVideoControlHandler.sendMessage(msg);
-//                    MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//                    MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
 //                    String speechEvalResultUrl = mShareDataManager.getString(ShareBusinessConfig.SP_SPEECH_URL,
 //                            LiveVideoConfig.SPEECH_URL, ShareDataManager.SHAREDATA_USER);
 ////                    speechQuestionPlaybackPager = new SpeechAssessmentPager(LivePlayBackVideoActivity.this, false,
@@ -1162,7 +1162,7 @@
 //                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 //                            LayoutParams.MATCH_PARENT);
 //                    if ("1".equals(mQuestionEntity.getIsAllow42())) {
-//                        MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+//                        MyUserInfoEntity mMyInfo = LiveAppUserInfo.getInstance();
 //                        String learning_stage = mVideoEntity.getLearning_stage();
 //                        SpeechStandLog.sno2(LiveStandPlayBackVideoActivity.this, mQuestionEntity.getvQuestionID(), "");
 //                        speechQuestionPlaybackPager = new StandSpeechAssAutoPager(LiveStandPlayBackVideoActivity.this,
@@ -1595,7 +1595,7 @@
 //                questionEntity.setAnswered(true);
 //                rlQuestionContent.removeAllViews();
 //                if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(questionEntity.getvQuestionType())) {
-//                    MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//                    MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
 //                    subjectResultPager = new SubjectResultX5Pager(LiveStandPlayBackVideoActivity.this, LiveStandPlayBackVideoActivity.this,
 //                            liveVideoSAConfig.inner.subjectiveTestAnswerResult + mVideoEntity.getLiveId(),
 //                            userInfoEntity.getStuId(), mVideoEntity.getLiveId(), questionEntity.getvQuestionID(), stuCourId);
@@ -2760,7 +2760,7 @@
 //
 //    @Override
 //    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-//        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
 //        mData.put("uid", userInfoEntity.getStuId());
 //        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
 //        mData.put("courseid", mVideoEntity.getCourseId());
@@ -2777,7 +2777,7 @@
 //
 //    @Override
 //    public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
-//        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
 //        mData.put("uid", userInfoEntity.getStuId());
 //        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
 //        mData.put("courseid", mVideoEntity.getCourseId());
@@ -2794,7 +2794,7 @@
 //
 //    @Override
 //    public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
-//        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
 //        mData.put("uid", userInfoEntity.getStuId());
 //        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
 //        mData.put("courseid", mVideoEntity.getCourseId());

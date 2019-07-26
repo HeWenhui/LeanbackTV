@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.rollcall.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -10,20 +9,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by yuanwei2 on 2019/5/31.
@@ -77,7 +73,7 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
     }
 
     @Override
-    public void userSign(String enstuId, String liveId, String classId, String teacherId, HttpCallBack requestCallBack) {
+    public void userSign(String liveId, String classId, String teacherId, HttpCallBack requestCallBack) {
         mHttpManager.expUserSign(signInUrl, expLiveId, orderId, requestCallBack);
     }
 

@@ -5,13 +5,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
@@ -49,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -352,8 +350,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
     // 初始化相关
     public void getInfo(LiveGetInfo getInfo) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getInfo:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        mLogtf.d("getInfo:liveId=" + mLiveId);
         if (getInfo == null) {
             HttpCallBack callBack = new HttpCallBack(false) {
 
@@ -391,13 +388,13 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             };
             // 直播
             if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-                mHttpManager.liveGetInfo(enstuId, mCourseId, mLiveId, 0, callBack);
+                mHttpManager.liveGetInfo(mCourseId, mLiveId, 0, callBack);
             }
             // 录播
             else if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
-                mHttpManager.liveTutorialGetInfo(enstuId, mLiveId, callBack);
+                mHttpManager.liveTutorialGetInfo(mLiveId, callBack);
             } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-                mHttpManager.liveLectureGetInfo(enstuId, mLiveId, callBack);
+                mHttpManager.liveLectureGetInfo(mLiveId, callBack);
             }
         } else {
             onGetInfoSuccess(getInfo);
@@ -719,8 +716,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 return;
             }
             lastTopicstr = topicstr;
+            JSONTokener jsonTokener = null;
             try {
-                JSONObject jsonObject = new JSONObject(topicstr);
+                jsonTokener = new JSONTokener(topicstr);
+                JSONObject jsonObject = new JSONObject(jsonTokener);
                 LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
                 boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
                 ////直播相关//////
@@ -772,7 +771,15 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 }
                 mLiveTopic.copy(liveTopic);
             } catch (Exception e) {
-                mLogtf.e("onTopic", e);
+                try {
+                    if (jsonTokener != null) {
+                        mLogtf.e("onTopic:token=" + jsonTokener, e);
+                    } else {
+                        mLogtf.e("onTopic", e);
+                    }
+                } catch (Exception e2) {
+                    mLogtf.e("onTopic", e);
+                }
             }
         }
 

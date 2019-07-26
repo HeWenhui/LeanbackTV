@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.http.HttpCallBack;
@@ -19,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -170,10 +170,8 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
         getCourseHttpManager().saveTestRecords(
-                enstuId,
                 videoQuestionLiveEntity1.srcType,
                 videoQuestionLiveEntity1.id,
                 testAnswer,
@@ -239,9 +237,9 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
     }
 
     @Override
-    public void sendSpeechEvalResult2(boolean isNewArt,String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
+    public void sendSpeechEvalResult2(boolean isNewArt, String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
         String liveid = mVideoEntity.getLiveId();
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        String stuId = LiveAppUserInfo.getInstance().getStuId();
         String termId = mVideoEntity.getChapterId();
         String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
         getCourseHttpManager().sendExpSpeechEvalResult(mVideoEntity
@@ -272,9 +270,8 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
     }
 
     @Override
-    public void speechEval42IsAnswered(boolean isNewArt,String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getCourseHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
+    public void speechEval42IsAnswered(boolean isNewArt, String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
+        getCourseHttpManager().speechEval42IsAnswered(mVSectionID, num, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(final ResponseEntity responseEntity) {
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();

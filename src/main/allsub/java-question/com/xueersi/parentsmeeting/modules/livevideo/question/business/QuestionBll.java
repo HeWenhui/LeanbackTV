@@ -2121,7 +2121,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         mLogtf.d("removeAllResultViews:size=" + resultViews.size());
         while (!resultViews.isEmpty()) {
             View view = resultViews.remove(0);
-            liveViewAction.removeView(view);
+            ViewGroup group = (ViewGroup) view.getParent();
+            if (group != null) {
+                group.removeView(view);
+            }
         }
     }
 

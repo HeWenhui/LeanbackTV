@@ -50,6 +50,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.UserAnswerSave;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.UserAnswerSaveMem;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.UserAnswerSaveSahre;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
@@ -139,7 +142,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private StaticWeb staticWeb;
     /** 新课件是否是预加载 */
     private boolean ispreload;
-    private LiveAndBackDebug liveAndBackDebug;
+    private ContextLiveAndBackDebug liveAndBackDebug;
     /** 显示下方控制布局 */
     private boolean showControl = false;
     /** 在网页中嵌入js，只嵌入一次 */
@@ -170,7 +173,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private PreLoad preLoad;
     /** 课件题目数量 */
     private int totalQuestion = -1;
-
+    private UserAnswerSave userAnswerSave;
     /**
      * 结果页面 是否是由强制提交 产生的
      */
@@ -203,6 +206,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             this.educationstage = detailInfo.getEducationstage();
         }
         liveAndBackDebug = new ContextLiveAndBackDebug(context);
+        liveAndBackDebug.addCommonData("isplayback", isPlayBack ? "1" : "0");
         mView = initView();
 //        initWebView();
 //        setErrorTip("H5课件加载失败，请重试");
@@ -210,7 +214,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 //        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/");
         entranceTime = System.currentTimeMillis() / 1000;
         try {
-            NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            if (isPlayBack) {
+                NewCourseLog.sno1back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            } else {
+                NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            }
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
@@ -281,6 +289,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                 }
                 preLoad.onStop();
+                if (userAnswerSave != null) {
+                    userAnswerSave.clear();
+                    userAnswerSave = null;
+                }
             }
         });
         return view;
@@ -422,7 +434,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     @Override
     public void close() {
-
+        onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
     }
 
     @Override
@@ -440,7 +452,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     private void getTodayQues() {
-        String string = mShareDataManager.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+        if (isPlayBack) {
+            userAnswerSave = new UserAnswerSaveMem();
+        } else {
+            userAnswerSave = new UserAnswerSaveSahre(mShareDataManager);
+        }
+        String string = userAnswerSave.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
         JSONObject jsonObject = getTodayLive(string);
         if (jsonObject != null) {
             try {
@@ -498,7 +515,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     private void saveThisQues(int index, JSONArray userAnswerContent) {
         try {
-            String string = mShareDataManager.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+            String string = userAnswerSave.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
             JSONObject jsonObject = getTodayLive(string);
             if (jsonObject != null) {
                 JSONObject todayLiveObj = jsonObject.getJSONObject("todaylive").getJSONObject(liveId);
@@ -510,7 +527,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 ques.put("" + index, userAnswerContent);
                 todayLiveObj.put("ques-" + queskey, ques);
                 quesJson = ques;
-                mShareDataManager.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
+                userAnswerSave.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
@@ -771,10 +788,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         resultGotByForceSubmit = !loadResult;
         if (loadResult) {
             //初中结果页是网页，需要调接口
-            if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
-                wvSubjectWeb.loadUrl(jsClientSubmit);
-            } else if (detailInfo.isTUtor()) {
-                wvSubjectWeb.loadUrl(jsClientSubmit);
+            if (!isPlayBack) {
+                if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
+                    wvSubjectWeb.loadUrl(jsClientSubmit);
+                } else if (detailInfo.isTUtor()) {
+                    wvSubjectWeb.loadUrl(jsClientSubmit);
+                }
             }
         } else {
             getAnswerType = LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT;
@@ -1140,6 +1159,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onDataSucess(Object... objData) {
                 JSONObject jsonObject = (JSONObject) objData[0];
+                if (jsonObject != null && jsonObject.optInt("toAnswered", 0) == 1) {
+                    XESToastUtils.showToast(mContext, "您已经答过此题");
+                }
                 showScienceAnswerResult(isforce);
                 onSubmitSuccess(isforce);
             }
@@ -1242,6 +1264,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
+                if (isPlayBack) {
+                    try {
+                        NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "true", detailInfo.isTUtor());
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+                }
                 newCourseSec = (NewCourseSec) objData[0];
                 logger.d("onDataSucess:time=" + (newCourseSec.getEndTime() - newCourseSec.getReleaseTime()));
                 if (newCourseSec.getIsAnswer() == 1 && !isPlayBack) {
@@ -1447,6 +1476,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
                 ivCourseRefresh.setVisibility(View.VISIBLE);
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
+                if (isPlayBack) {
+                    try {
+                        NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "false", detailInfo.isTUtor());
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+                }
             }
         });
     }

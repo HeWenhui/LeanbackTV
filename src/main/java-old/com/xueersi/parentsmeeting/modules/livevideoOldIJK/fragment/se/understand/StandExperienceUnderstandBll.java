@@ -117,7 +117,7 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll im
         logger.i(option);
         livePlayBackHttpManager.sendStandExperienceUnderStand(
                 mVideoEntity.getSubmitUnderStandUrl(),
-                UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+                LiveAppUserInfo.getInstance().getStuId(),
                 mVideoEntity.getGradId(),
                 mVideoEntity.getLiveId(),
                 mVideoEntity.getSubjectId(),

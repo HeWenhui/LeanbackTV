@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
@@ -48,7 +47,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
@@ -58,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
@@ -258,7 +257,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         super.onVideoCreate(savedInstanceState);
         times++;
         createTime = System.currentTimeMillis();
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
         Intent intent = activity.getIntent();
@@ -390,7 +389,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             }
 
             @Override
-            public void setSpeed(float speed) {
+            public void setSpeed(float speed, String uuid) {
 
             }
 
@@ -497,13 +496,11 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 @Override
                 public boolean onPreDraw() {
                     activity.getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
-                    if (AppBll.getInstance(activity).isNetWorkAlert()) {
+                    if (LiveAppBll.getInstance().isNetWorkAlert()) {
                         // 互动题播放地址
-                        AppBll.getInstance(activity.getApplication());
                         playNewVideo();
                     } else {
                         mIsShowNoWifiAlert = false;
-                        AppBll.getInstance(activity.getApplication());
                     }
                     return false;
                 }
@@ -1124,9 +1121,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 return;
             }
             if (event.netWorkType == NetWorkHelper.MOBILE_STATE) {
-                if (AppBll.getInstance().getAppInfoEntity().isNotificationOnlyWIFI()) {
+                if (LiveAppBll.getInstance().isNotificationOnlyWIFI()) {
                     EventBus.getDefault().post(new AppEvent.OnlyWIFIEvent());
-                } else if (AppBll.getInstance().getAppInfoEntity().isNotificationMobileAlert()) {
+                } else if (LiveAppBll.getInstance().isNotificationMobileAlert()) {
                     EventBus.getDefault().post(new AppEvent.NowMobileEvent());
                 }
             } else if (event.netWorkType == NetWorkHelper.WIFI_STATE) {
@@ -1244,7 +1241,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     @Override
     public void onDestroy() {
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
         isFinishing = true;
         mHandler.removeCallbacks(mPlayDuration);
@@ -1280,7 +1277,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     protected void onRefresh() {
         resultFailed = false;
         isPlay = true;
-        if (AppBll.getInstance(activity).isNetWorkAlert()) {
+        if (LiveAppBll.getInstance().isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
             logger.d("onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
             if (MediaPlayer.getIsNewIJK()) {
@@ -1294,8 +1291,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //            initView();
 //            initData();
 //        }
-
-        AppBll.getInstance(activity.getApplication());
     }
 
     protected void updateIcon() {

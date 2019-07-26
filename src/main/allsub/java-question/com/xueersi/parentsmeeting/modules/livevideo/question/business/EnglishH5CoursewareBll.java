@@ -75,7 +75,7 @@ import java.util.Map;
  * Created by linyuqiang on 2017/3/25.
  * 英语h5课件业务类
  */
-public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug, BaseVoiceAnswerCreat.NewArtsAnswerRightResultVoice, LivePagerBack, EnglishShowReg {
+public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVoiceAnswerCreat.NewArtsAnswerRightResultVoice, LivePagerBack, EnglishShowReg {
     String TAG = "EnglishH5CoursewareBll";
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
@@ -806,7 +806,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         logToFile.d("removeAllResultViews:size=" + resultViews.size());
         while (!resultViews.isEmpty()) {
             View view = resultViews.remove(0);
-            liveViewAction.removeView(view);
+            ViewGroup group = (ViewGroup) view.getParent();
+            if (group != null) {
+                group.removeView(view);
+            }
         }
     }
 
@@ -842,36 +845,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         if (voiceAnswerPager != null) {
             voiceAnswerPager.onNetWorkChange(netWorkType);
         }
-    }
-
-    @Override
-    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        liveAndBackDebug.umsAgentDebugSys(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        liveAndBackDebug.umsAgentDebugInter(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-        liveAndBackDebug.umsAgentDebugPv(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
-
     }
 
     @Override
@@ -1226,7 +1199,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 });
 
             } else {
-              //  final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+                //  final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
                 JSONObject answerObj = new JSONObject();
                 JSONArray answerAnswer = new JSONArray();
                 try {

@@ -570,7 +570,6 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
     public void setGetInfo(LiveGetInfo getInfo) {
         super.setGetInfo(getInfo);
         if (getInfo != null) {
-            String educationStage = getInfo.getEducationStage();
             liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {

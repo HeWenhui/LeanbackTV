@@ -3,12 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.AnswerEntity;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.entity.ReleaseedInfos;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
@@ -19,7 +17,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoPointEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,6 +43,7 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
     private String sectionName;
     String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
     private List<String> questiongtype = Arrays.asList(ptTypeFilters);
+
     /**
      * 解析直播回放互动题扣除金币
      *
@@ -53,7 +54,6 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
     public VideoResultEntity deductStuGoldParser(String id, String stuCouId, ResponseEntity responseEntity) {
         VideoResultEntity entity = new VideoResultEntity();
         try {
-            MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
             Map<String, VideoSectionEntity> mapSection = new HashMap<String, VideoSectionEntity>();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
 //            MediaPlayer.isPSIJK = "1".equals(jsonObject.optString("isNewSDK")) &&
@@ -109,15 +109,15 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
                     section.setSpeechEvalUrl(sectionJson.optString("speechEvalUrl"));
                     speechEvalUrl = sectionJson.optString("speechEvalUrl");
                     List<VideoQuestionEntity> questionLst = parseEvent(sectionJson, isArts, stuCouId,
-                            sectionId, myUserInfoEntity.getStuId(), entity);
+                            sectionId, LiveAppUserInfo.getInstance().getStuId(), entity);
                     section.setLstVideoQuestionEntity(questionLst);
                     mapSection.put(sectionJson.optString("id"), section);
 
 
                     //解析辅导老师信息
                     VideoSectionEntity tutorEntity = parseTutorSetionEntity(entity, id, jsonObject, url, isArts,
-                            stuCouId, myUserInfoEntity.getStuId()
-                            , mapSection, liveInfo,sectionJson);
+                            stuCouId, LiveAppUserInfo.getInstance().getStuId()
+                            , mapSection, liveInfo, sectionJson);
                     if (tutorEntity != null) {
                         tutorEntity.setvStuCourseID(sectionJson.optString("courseId"));
                         tutorEntity.setExamPaperUrl(sectionJson.optString("examPaperUrl"));
@@ -205,11 +205,10 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
                     if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE) {
                         String host = isArts == 0 ? ShareBusinessConfig.LIVE_SCIENCE :
                                 ShareBusinessConfig.LIVE_LIBARTS;
-                        String coursewareH5 = "https://live.xueersi.com/" +
-                                host + "/Live/coursewareH5/";
+                        String coursewareH5 = LiveHttpConfig.LIVE_HOST + "/" + host + "/Live/coursewareH5/";
 
                         if (isArts == 2) {
-                            coursewareH5 = LiveVideoConfig.URL_DEFAULT_CHS_H5;
+                            coursewareH5 = LiveHttpConfig.URL_DEFAULT_CHS_H5;
                         }
                         questionEntity.setEnglishH5Play_url(coursewareH5 + sectionId + "/"
                                 + stuCouId + "/" + questionEntity.getvQuestionID()
@@ -330,16 +329,16 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
     public VideoResultEntity parseNewArtsEvent(String stucourseId, String id, VideoResultEntity entity,
                                                ResponseEntity responseEntity) {
         Map<String, VideoSectionEntity> mapSection = new HashMap<String, VideoSectionEntity>();
-        if(entity!=null && entity.getMapVideoSectionEntity()!=null && entity.getMapVideoSectionEntity().size()>0) {
-            for(String key:entity.getMapVideoSectionEntity().keySet()) {
-                if(!TextUtils.isEmpty(key) && key.endsWith("_t")){
-                    Map<String, VideoSectionEntity> map= new HashMap<>();
+        if (entity != null && entity.getMapVideoSectionEntity() != null && entity.getMapVideoSectionEntity().size() > 0) {
+            for (String key : entity.getMapVideoSectionEntity().keySet()) {
+                if (!TextUtils.isEmpty(key) && key.endsWith("_t")) {
+                    Map<String, VideoSectionEntity> map = new HashMap<>();
                     mapSection.put(key, entity.getMapVideoSectionEntity().get(key));
                 }
             }
         }
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-        UmsAgentTrayPreference.getInstance().put(LiveVideoConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE,jsonObject.optString("summerCourseWareSize"));
+        UmsAgentTrayPreference.getInstance().put(LiveHttpConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, jsonObject.optString("summerCourseWareSize"));
         VideoSectionEntity section = new VideoSectionEntity();
         List<VideoQuestionEntity> questionLst = new ArrayList<VideoQuestionEntity>();
         VideoQuestionEntity questionEntity = null;

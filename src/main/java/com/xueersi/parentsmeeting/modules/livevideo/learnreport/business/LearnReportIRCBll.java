@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.learnreport.business;
 
 import android.app.Activity;
 
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.XesMobAgent;
@@ -13,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
 import org.json.JSONObject;
@@ -71,10 +71,9 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
      */
     private synchronized void getLearnReport(final int from, final long delayTime) {
         XesMobAgent.liveLearnReport("request:" + from);
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getLearnReport:enstuId=" + enstuId + ",liveType=" + mLiveType + ",liveId=" + mLiveId + "," +
+        mLogtf.d("getLearnReport:liveType=" + mLiveType + ",liveId=" + mLiveId + "," +
                 "delayTime=" + delayTime);
-        getHttpManager().getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
+        getHttpManager().getLearnReport(mLiveId, mLiveType, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -151,13 +150,12 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
      * 提交教师评价
      */
     public synchronized void sendTeacherEvaluate(int[] score, final HttpCallBack requestCallBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("sendTeacherEvaluate:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        mLogtf.d("sendTeacherEvaluate:liveId=" + mLiveId);
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
-        getHttpManager().sendTeacherEvaluate(enstuId, mLiveId, classId, score, new HttpCallBack(false) {
+        getHttpManager().sendTeacherEvaluate(mLiveId, classId, score, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 requestCallBack.onPmSuccess(responseEntity);
