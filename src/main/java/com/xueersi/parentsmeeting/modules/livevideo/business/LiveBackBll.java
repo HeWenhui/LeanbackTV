@@ -103,7 +103,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
      */
     private boolean mIsShowQuestion = false;
     protected ArrayList<LiveBackBaseBll> liveBackBaseBlls = new ArrayList<>();
-    protected SparseArray<LiveBackBaseBll> array = new SparseArray<>();
+    protected SparseArray<ArrayList<LiveBackBaseBll>> array = new SparseArray<>();
     /**
      * 直播间内模块间 数据共享池
      */
@@ -301,7 +301,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         int[] categorys = bll.getCategorys();
         if (categorys != null) {
             for (int i = 0; i < categorys.length; i++) {
-                array.put(categorys[i], bll);
+                ArrayList<LiveBackBaseBll> arrayList = array.get(categorys[i]);
+                if (arrayList == null) {
+                    arrayList = new ArrayList<>();
+                    array.put(categorys[i], arrayList);
+                }
+                arrayList.add(bll);
             }
         }
     }
@@ -472,11 +477,14 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     return;
                 }
             }
-            LiveBackBaseBll liveBackBaseBll = array.get(oldQuestionEntity.getvCategory());
-            if (liveBackBaseBll != null) {
+            ArrayList<LiveBackBaseBll> arrayList = array.get(oldQuestionEntity.getvCategory());
+            if (arrayList != null) {
                 logger.d("scanQuestion:onQuestionEnd:id=" + oldQuestionEntity.getvCategory());
                 Log.e("mqtt", "关闭上一题" + "position:" + position);
-                liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
+                for (int i = 0; i < arrayList.size(); i++) {
+                    LiveBackBaseBll liveBackBaseBll = arrayList.get(i);
+                    liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
+                }
             }
             showQuestion.onHide(oldQuestionEntity);
         }
@@ -715,10 +723,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     }
 
     private void showQuestion(VideoQuestionEntity oldQuestionEntity, ShowQuestion showQuestion) {
-        LiveBackBaseBll liveBackBaseBll = array.get(mQuestionEntity.getvCategory());
-        logger.i("showQuestion :" + liveBackBaseBll);
-        if (liveBackBaseBll != null) {
-            liveBackBaseBll.showQuestion(oldQuestionEntity, mQuestionEntity, showQuestion);
+        ArrayList<LiveBackBaseBll> arrayList = array.get(mQuestionEntity.getvCategory());
+        logger.i("showQuestion :" + arrayList);
+        if (arrayList != null) {
+            for (int i = 0; i < arrayList.size(); i++) {
+                LiveBackBaseBll liveBackBaseBll = arrayList.get(i);
+                liveBackBaseBll.showQuestion(oldQuestionEntity, mQuestionEntity, showQuestion);
+            }
         } else {
             try {
                 HashMap<String, String> hashMap = new HashMap();

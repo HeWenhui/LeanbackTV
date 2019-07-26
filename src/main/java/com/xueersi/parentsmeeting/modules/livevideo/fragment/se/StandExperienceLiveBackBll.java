@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.Stan
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.StandExperienceRecommondBll;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -61,33 +62,46 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
                     if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
                         if (openQue.peek() < closeQue.peek()) {
                             if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
-                                LiveBackBaseBll liveBackBaseBll = array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT);
-                                if (liveBackBaseBll != null) {
-                                    liveBackBaseBll.showQuestion(oldQuestionEntity, videoQuestionEntity, showQuestion);
-                                    logger.i(playPosition + " 2:进去了打开站立直播聊天区");
+                                ArrayList<LiveBackBaseBll> arrayList = array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT);
+                                if (arrayList != null) {
+                                    for (int i = 0; i < arrayList.size(); i++) {
+                                        LiveBackBaseBll liveBackBaseBll = arrayList.get(i);
+                                        if (liveBackBaseBll != null) {
+                                            liveBackBaseBll.showQuestion(oldQuestionEntity, videoQuestionEntity, showQuestion);
+                                            logger.i(playPosition + " 2:进去了打开站立直播聊天区");
+                                        }
+                                    }
                                 }
                                 break;
                             }
                         }
-
                     } else {
                         if (playPosition < openQue.peek()) {
-                            LiveBackBaseBll liveBackBaseBll = array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT);
-                            if (liveBackBaseBll != null) {
-                                liveBackBaseBll.showQuestion(oldQuestionEntity, videoQuestionEntity, showQuestion);
-                                logger.i(playPosition + " 1:进去了关闭站立直播聊天区");
+                            ArrayList<LiveBackBaseBll> arrayList = array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT);
+                            if (arrayList != null) {
+                                for (int i = 0; i < arrayList.size(); i++) {
+                                    LiveBackBaseBll liveBackBaseBll = arrayList.get(i);
+                                    if (liveBackBaseBll != null) {
+                                        liveBackBaseBll.showQuestion(oldQuestionEntity, videoQuestionEntity, showQuestion);
+                                        logger.i(playPosition + " 1:进去了关闭站立直播聊天区");
+                                    }
+                                }
                             }
                             break;
                         } else if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
                         } else {
-
-                            LiveBackBaseBll liveBackBaseBll = array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT);
-                            if (liveBackBaseBll != null) {
-                                liveBackBaseBll.showQuestion(oldQuestionEntity,
-                                        videoQuestionEntity, showQuestion);
-                                logger.i(playPosition + " 3:进去了关闭站立直播聊天区");
-                                openQue.poll();
-                                closeQue.poll();
+                            ArrayList<LiveBackBaseBll> arrayList = array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT);
+                            if (arrayList != null) {
+                                for (int i = 0; i < arrayList.size(); i++) {
+                                    LiveBackBaseBll liveBackBaseBll = arrayList.get(i);
+                                    if (liveBackBaseBll != null) {
+                                        liveBackBaseBll.showQuestion(oldQuestionEntity,
+                                                videoQuestionEntity, showQuestion);
+                                        logger.i(playPosition + " 3:进去了关闭站立直播聊天区");
+                                        openQue.poll();
+                                        closeQue.poll();
+                                    }
+                                }
                             }
                             break;
                         }
