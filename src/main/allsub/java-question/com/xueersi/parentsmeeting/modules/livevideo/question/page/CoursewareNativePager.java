@@ -1146,7 +1146,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             public void onDataSucess(Object... objData) {
                 JSONObject jsonObject = (JSONObject) objData[0];
                 if (jsonObject != null && jsonObject.optInt("toAnswered", 0) == 1) {
-                    XESToastUtils.showToast(mContext, "已答过");
+                    XESToastUtils.showToast(mContext, "您已经答过此题");
                 }
                 showScienceAnswerResult(isforce);
                 onSubmitSuccess(isforce);
