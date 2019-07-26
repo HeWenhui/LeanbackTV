@@ -50,6 +50,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.UserAnswerSave;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.UserAnswerSaveMem;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.UserAnswerSaveSahre;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
@@ -170,7 +173,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private PreLoad preLoad;
     /** 课件题目数量 */
     private int totalQuestion = -1;
-
+    private UserAnswerSave userAnswerSave;
     /**
      * 结果页面 是否是由强制提交 产生的
      */
@@ -286,6 +289,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                 }
                 preLoad.onStop();
+                if (userAnswerSave != null) {
+                    userAnswerSave.clear();
+                    userAnswerSave = null;
+                }
             }
         });
         return view;
@@ -445,7 +452,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     private void getTodayQues() {
-        String string = mShareDataManager.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+        if (isPlayBack) {
+            userAnswerSave = new UserAnswerSaveMem();
+        } else {
+            userAnswerSave = new UserAnswerSaveSahre(mShareDataManager);
+        }
+        String string = userAnswerSave.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
         JSONObject jsonObject = getTodayLive(string);
         if (jsonObject != null) {
             try {
@@ -503,7 +515,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     private void saveThisQues(int index, JSONArray userAnswerContent) {
         try {
-            String string = mShareDataManager.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+            String string = userAnswerSave.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
             JSONObject jsonObject = getTodayLive(string);
             if (jsonObject != null) {
                 JSONObject todayLiveObj = jsonObject.getJSONObject("todaylive").getJSONObject(liveId);
@@ -515,7 +527,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 ques.put("" + index, userAnswerContent);
                 todayLiveObj.put("ques-" + queskey, ques);
                 quesJson = ques;
-                mShareDataManager.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
+                userAnswerSave.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
