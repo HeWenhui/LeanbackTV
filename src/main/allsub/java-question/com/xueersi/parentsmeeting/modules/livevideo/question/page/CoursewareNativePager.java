@@ -788,10 +788,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         resultGotByForceSubmit = !loadResult;
         if (loadResult) {
             //初中结果页是网页，需要调接口
-            if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
-                wvSubjectWeb.loadUrl(jsClientSubmit);
-            } else if (detailInfo.isTUtor()) {
-                wvSubjectWeb.loadUrl(jsClientSubmit);
+            if (!isPlayBack) {
+                if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
+                    wvSubjectWeb.loadUrl(jsClientSubmit);
+                } else if (detailInfo.isTUtor()) {
+                    wvSubjectWeb.loadUrl(jsClientSubmit);
+                }
             }
         } else {
             getAnswerType = LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT;
