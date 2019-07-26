@@ -308,9 +308,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                                 if (pkTeamEntity == null) {
                                     return;
                                 }
-                                if (oldPkTeamEntity == null) {
-                                    addTop("onRankStart2");
-                                }
+                                addTop("onRankStart2");
                             }
 
                             @Override
