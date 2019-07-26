@@ -47,7 +47,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
@@ -390,7 +389,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             }
 
             @Override
-            public void setSpeed(float speed) {
+            public void setSpeed(float speed, String uuid) {
 
             }
 
