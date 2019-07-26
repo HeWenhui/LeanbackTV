@@ -208,7 +208,7 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
                         String coursewareH5 = LiveHttpConfig.LIVE_HOST + "/" + host + "/Live/coursewareH5/";
 
                         if (isArts == 2) {
-                            coursewareH5 = LiveVideoConfig.URL_DEFAULT_CHS_H5;
+                            coursewareH5 = LiveHttpConfig.URL_DEFAULT_CHS_H5;
                         }
                         questionEntity.setEnglishH5Play_url(coursewareH5 + sectionId + "/"
                                 + stuCouId + "/" + questionEntity.getvQuestionID()
@@ -338,7 +338,7 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
             }
         }
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-        UmsAgentTrayPreference.getInstance().put(LiveVideoConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, jsonObject.optString("summerCourseWareSize"));
+        UmsAgentTrayPreference.getInstance().put(LiveHttpConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, jsonObject.optString("summerCourseWareSize"));
         VideoSectionEntity section = new VideoSectionEntity();
         List<VideoQuestionEntity> questionLst = new ArrayList<VideoQuestionEntity>();
         VideoQuestionEntity questionEntity = null;

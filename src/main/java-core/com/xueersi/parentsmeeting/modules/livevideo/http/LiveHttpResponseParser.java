@@ -33,8 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.EvaluateContent;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
@@ -81,7 +79,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -485,7 +482,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             getInfo.setNewTalkConfHosts(newTalkConfHosts);
             getInfo.setHbTime(data.getInt("hbTime"));
-            getInfo.setClientLog(data.optString("clientLog", LiveVideoConfig.URL_LIVE_ON_LOAD_LOGS));
+            getInfo.setClientLog(data.optString("clientLog", LiveHttpConfig.URL_LIVE_ON_LOAD_LOGS));
             getInfo.setGslbServerUrl(data.getString("gslbServerUrl"));
             getInfo.setLogServerUrl(data.optString("logServerUrl"));
             List<String> headImgUrl = new ArrayList<String>();
@@ -523,7 +520,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setUrlClick(data.optInt("urlClick", 0));
             getInfo.setAllowLinkMic(data.optInt("allowLinkMic", 1) == 1);
             getInfo.setStuLinkMicNum(data.optInt("stuLinkMicNum", 0));
-            getInfo.setTestPaperUrl(data.optString("testPaperUrl", LiveVideoConfig.URL_LIVE_MULTI_TEST));
+            getInfo.setTestPaperUrl(data.optString("testPaperUrl", LiveHttpConfig.URL_LIVE_MULTI_TEST));
             getInfo.setBlockChinese(data.optInt("blockChinese", 0) == 1);
             getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", LiveHttpConfig.LIVE_HOST + "/Live/subjectiveTestAnswerResult/" + getInfo.getId()));
             LiveGetInfo.TotalOpeningLength totalOpeningLength = new LiveGetInfo.TotalOpeningLength();
