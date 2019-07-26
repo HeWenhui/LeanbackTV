@@ -3,7 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
+import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -29,11 +32,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsSpeakEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ChiAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -62,7 +70,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
  * Created by linyuqiang on 2018/7/17.
  * 直播回放英语课件
  */
-public class EnglishH5PlayBackBll extends LiveBackBaseBll {
+public class EnglishH5PlayBackBll extends LiveBackBaseBll implements AnswerResultStateListener {
     EnglishH5CoursewareBll englishH5CoursewareBll;
     private EnglishH5Cache englishH5Cache;
     String[] filters = {"4", "0", "1", "2", "8", "5", "6"};
@@ -74,6 +82,10 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     private VideoQuestionEntity mCurrentQuestionEntity;
 
     private int isArts;
+    protected LiveGetInfo mGetInfo;
+    private IArtsAnswerRsultDisplayer mDsipalyer;
+    boolean forceSumbmit;
+    private final long AUTO_CLOSE_DELAY = 2000;
 
     public EnglishH5PlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -90,6 +102,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         englishH5CoursewareBll.setVSectionID(mVideoEntity.getLiveId());
         englishH5CoursewareBll.setLiveBll(getHttp());
         englishH5CoursewareBll.setGetInfo(liveGetInfo);
+        mGetInfo = liveGetInfo;
         if (liveBackBll.getPattern() == 2) {
             //语音答题
             LiveAndBackDebug liveAndBackDebug = getInstance(LiveAndBackDebug.class);
@@ -447,8 +460,14 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isPlayBack, AbstractBusinessDataCallBack callBack) {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
             String[] res = getSrcType(englishH5Entity);
-            getCourseWareHttpManager().getStuTestResult(liveGetInfo.getId(), liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
-                    englishH5Entity.getPackageAttr(), isPlayBack, callBack, detailInfo.isTUtor());
+            if ((LiveVideoConfig.EDUCATION_STAGE_3.equals(detailInfo.getEducationstage()) || LiveVideoConfig.EDUCATION_STAGE_4.equals(detailInfo.getEducationstage()))
+                    && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(englishH5Entity.getPackageAttr())) {
+                getCourseWareHttpManager().getStuChiAITestResult(mGetInfo.getId(), mGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
+                        englishH5Entity.getPackageAttr(), isPlayBack, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
+            } else {
+                getCourseWareHttpManager().getStuTestResult(liveGetInfo.getId(), liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
+                        englishH5Entity.getPackageAttr(), isPlayBack, callBack, detailInfo.isTUtor());
+            }
         }
 
         @Override
@@ -718,6 +737,78 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             }
         }
     }
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onAnswerResult(ChsAnswerResultEvent event) {
+        if (ChsAnswerResultEvent.TYPE_AI_CHINESE_ANSWERRESULT == event.getmType()) {
+            ChineseAISubjectResultEntity mAnswerReulst = event.getResultEntity();
+            showAnswerReulst(event, mAnswerReulst);
+        }
+    }
+    private void showAnswerReulst(ChsAnswerResultEvent event, ChineseAISubjectResultEntity mAnswerReulst) {
+
+        if (mDsipalyer != null) {
+            return;
+        }
+        mDsipalyer = new ChiAnswerResultPager(mContext, mAnswerReulst, EnglishH5PlayBackBll.this);
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                        (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                addView(mDsipalyer.getRootLayout(), layoutParams);
+            }
+        }, 100);
+        //VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
+//        if (detailInfo != null) {
+//            NewCourseLog.sno8(contextLiveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_CH), event.isIspreload(), 0, detailInfo.isTUtor());
+//        }
+    }
+
+
+    @Override
+    public void onCompeletShow() {
+        if (forceSumbmit) {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    EventBus.getDefault().post(new AnswerResultCplShowEvent("onCompeletShow"));
+                }
+            }, AUTO_CLOSE_DELAY);
+        }
+    }
+
+    @Override
+    public void onAutoClose(BasePager basePager) {
+        if (mDsipalyer != null) {
+            removeView(mDsipalyer.getRootLayout());
+            mDsipalyer = null;
+        }
+    }
+
+    @Override
+    public void onCloseByUser() {
+        closeAnswerResult(false);
+    }
+    /**
+     * 关闭语文主观题作答结果页面
+     *
+     * @param forceSumbmit
+     */
+    public void closeAnswerResult(boolean forceSumbmit) {
+        //logger.e( "=====>closeAnswerResult:" + forceSumbmit + ":" + mDsipalyer);
+        // 已展示过答题结果
+        if (mDsipalyer != null) {
+            mDsipalyer.close();
+            mDsipalyer = null;
+            EventBus.getDefault().post(new AnswerResultCplShowEvent("closeAnswerResult1"));
+        }
+
+
+        // logger.e("=====>closeAnswerResult:" + forceSumbmit + ":" + this);
+        this.forceSumbmit = forceSumbmit;
+    }
+
+
 
 
     @Override
