@@ -1212,7 +1212,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
                         addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"), jsonObject.optString("path",""));
+                                .getString("msg"), jsonObject.optString("path", ""), jsonObject.optInt("segmentType")
+                                , jsonObject.optInt("star"));
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));

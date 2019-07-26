@@ -145,7 +145,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         int persents = (int) (realTimeVal / aimVal * 100);
         setBetterMeProgress(persents);
 
-        tvCurrentLevel.setText(mStuAimResultEntity.getSegment() + mStuAimResultEntity.getStar() + "星");
+        tvCurrentLevel.setText(mStuAimResultEntity.getSegment() + mStuAimResultEntity.getStar() + "级");
         tvLevelUpgraded.setText("还需完成" + mStuAimResultEntity.getAimNumber() + "场目标可升级");
         //设置当前段位的背景
         int currentLevelIndex = getCurrentLevelIndex(mStuAimResultEntity.getSegment());
@@ -186,7 +186,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
             nextStarsNumber = 1;
         }
         if (nextLevelIndex < BetterMeConfig.LEVEL_IMAGE_RES_DISS.length) {
-            tvNextLevel.setText(BetterMeConfig.LEVEL_NAMES[nextLevelIndex] + nextStarsNumber + "星");
+            tvNextLevel.setText(BetterMeConfig.LEVEL_NAMES[nextLevelIndex] + nextStarsNumber + "级");
             ivNextLevel.setBackgroundResource(BetterMeConfig.LEVEL_IMAGE_RES_DISS[nextLevelIndex]);
             switch (BetterMeConfig.LEVEL_UPLEVEL_STARS[nextLevelIndex]) {
                 //下设3个小段位（星星）
@@ -274,7 +274,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
     private void onUpgradeLevel() {
         ivArrow.setVisibility(View.GONE);
         llNextLevel.setVisibility(View.GONE);
-        String string = CONGRATULATIONS_TO_UPGRADE + mStuAimResultEntity.getSegment() + mStuAimResultEntity.getStar() + "星";
+        String string = CONGRATULATIONS_TO_UPGRADE + mStuAimResultEntity.getSegment() + mStuAimResultEntity.getStar() + "级";
         SpannableString spannableString = new SpannableString(string);
         //设置颜色
         spannableString.setSpan(new ForegroundColorSpan(Color.parseColor("#FFFE6600")), CONGRATULATIONS_TO_UPGRADE.length(), string.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

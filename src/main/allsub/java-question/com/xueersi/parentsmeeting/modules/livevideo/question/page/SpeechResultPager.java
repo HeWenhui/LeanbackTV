@@ -14,9 +14,9 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.utils.BetterMeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
@@ -138,18 +138,17 @@ public class SpeechResultPager extends LiveBasePager {
             tvSpeechResultMyPraise.setText("" + speechResultEntity.praise);
         }
         ImageLoader.with(mContext).load(speechResultEntity.headUrl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civSpeechResultHead);
-        try {
+
+        if (ProxUtil.getProxUtil().get(mContext, BetterMeContract.BetterMePresenter.class) != null) {
             StuSegmentEntity stuSegmentEntity = ProxUtil.getProxUtil().get(mContext, BetterMeContract
                     .BetterMePresenter.class).getStuSegmentEntity();
             if (stuSegmentEntity != null) {
                 int segmentType = Integer.valueOf(stuSegmentEntity.getSegmentType()) - 1;
                 int star = Integer.valueOf(stuSegmentEntity.getStar()) - 1;
-                ivUserSegment.setBackgroundResource(BetterMeConfig.LEVEL_IMAGE_RES_HEAD[segmentType]);
-                ivUserSegment.setImageResource(BetterMeConfig.STAR_IMAGE_RES[segmentType][star]);
+                BetterMeUtil.addSegment(ivUserSegment, segmentType, star);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+
         //单人的
         if (isSingle) {
             rvSpeechResultOther.setVisibility(View.GONE);

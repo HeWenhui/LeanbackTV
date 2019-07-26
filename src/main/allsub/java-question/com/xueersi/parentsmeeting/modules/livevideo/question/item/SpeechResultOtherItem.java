@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.utils.BetterMeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember;
 import com.xueersi.ui.adapter.RItemViewInterface;
 import com.xueersi.ui.adapter.ViewHolder;
@@ -57,20 +57,8 @@ public class SpeechResultOtherItem implements RItemViewInterface<SpeechResultMem
 //        } else {
 //            rlSpeechResultMemberHead.setBackgroundResource(R.drawable.paiming_wodetouxiang_bg_other);
 //        }
-
-        try {
-            int segmentType = (speechResultMember.segmentType - 1);
-            int star = speechResultMember.star - 1;
-            if (segmentType < 0) {
-                segmentType = 0;
-            }
-            if (star < 0) {
-                star = 0;
-            }
-            ivSpeechResultMemberSegment.setBackgroundResource(BetterMeConfig.LEVEL_IMAGE_RES_HEAD[segmentType]);
-            ivSpeechResultMemberSegment.setImageResource(BetterMeConfig.STAR_IMAGE_RES[segmentType][star]);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        int segmentType = (speechResultMember.segmentType);
+        int star = speechResultMember.star ;
+        BetterMeUtil.addSegment(ivSpeechResultMemberSegment, segmentType, star);
     }
 }

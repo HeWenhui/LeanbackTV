@@ -132,6 +132,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         betterMe = getInfo.getBetterMe();
         this.isUseBetterMe = betterMe.isUseBetterMe();
         this.isArriveLate = betterMe.isArriveLate();
+        this.mStuSegmentEntity = betterMe.getStuSegment();
         logger.d("isUseBetterMe = " + isUseBetterMe + "; isArriveLate = " + isArriveLate);
         isShowBetterMe = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_OPEN, "", ShareDataManager
                 .SHAREDATA_USER).equals(mGetInfo.getId());

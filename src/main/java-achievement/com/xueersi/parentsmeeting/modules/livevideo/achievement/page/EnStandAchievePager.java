@@ -254,12 +254,12 @@ public class EnStandAchievePager extends LiveBasePager {
         logger.d("onBetterMeUpdate:current=" + current + ",target" + target);
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
             tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
-            current = (int) (Double.valueOf(current) * 100) + "%";
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            current = Math.round(Double.valueOf(current) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
             tvAchiveAimType.setText(BetterMeConfig.PARTICIPATERATE);
-            current = (int) (Double.valueOf(current) * 100) + "%";
-            target = (int) (Double.valueOf(target) * 100) + "%";
+            current = Math.round(Double.valueOf(current) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
         } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
             tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
             current = BetterMeUtil.secondToMinite(current);

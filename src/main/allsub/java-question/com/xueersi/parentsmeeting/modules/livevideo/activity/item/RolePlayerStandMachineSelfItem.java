@@ -25,9 +25,9 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.utils.BetterMeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
@@ -267,17 +267,14 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
         civUserHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 0));
         civUserHead.setBorderColor(Color.WHITE);
 
-        try {
+        if (ProxUtil.getProxUtil().get(mContext, BetterMeContract.BetterMePresenter.class) != null) {
             StuSegmentEntity stuSegmentEntity = ProxUtil.getProxUtil().get(mContext, BetterMeContract
                     .BetterMePresenter.class).getStuSegmentEntity();
             if (stuSegmentEntity != null) {
-                int segmentType = Integer.valueOf(stuSegmentEntity.getSegmentType()) - 1;
-                int star = Integer.valueOf(stuSegmentEntity.getStar()) - 1;
-                ivUserSegment.setBackgroundResource(BetterMeConfig.LEVEL_IMAGE_RES_HEAD[segmentType]);
-                ivUserSegment.setImageResource(BetterMeConfig.STAR_IMAGE_RES[segmentType][star]);
+                int segmentType = Integer.valueOf(stuSegmentEntity.getSegmentType());
+                int star = Integer.valueOf(stuSegmentEntity.getStar());
+                BetterMeUtil.addSegment(ivUserSegment, segmentType, star);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         rlMain.setVisibility(View.VISIBLE);
