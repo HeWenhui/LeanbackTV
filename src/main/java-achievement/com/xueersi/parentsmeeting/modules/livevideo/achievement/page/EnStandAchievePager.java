@@ -361,9 +361,14 @@ public class EnStandAchievePager extends LiveBasePager {
             current = BetterMeUtil.secondToMinite(current);
             target = BetterMeUtil.secondToMinite(target);
         }
+        if (aimRealTimeValEntity.isDoneAim()) {
+            target = "目标已完成";
+        } else {
+            target = "目标" + target;
+        }
         message.append("当前").append(current);
         if (isIncrease || isDecrease) {
-            showBetterMeBubble(message.toString(), "目标" + target, isIncrease, isDecrease);
+            showBetterMeBubble(message.toString(), target, isIncrease, isDecrease);
         }
     }
 
