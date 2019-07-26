@@ -18,7 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import org.json.JSONObject;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
 
 public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {

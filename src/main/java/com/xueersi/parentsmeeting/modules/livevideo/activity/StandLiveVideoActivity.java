@@ -1774,7 +1774,7 @@
 //        }
 //        FrameAnimation.allRecycle();
 //        if (liveStandFrameAnim != null) {
-//            liveStandFrameAnim.onDestory();
+//            liveStandFrameAnim.onDestroy();
 //        }
 //        super.onDestroy();
 //    }

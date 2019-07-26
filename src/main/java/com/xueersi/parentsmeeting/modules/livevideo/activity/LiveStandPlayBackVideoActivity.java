@@ -2487,7 +2487,7 @@
 //            }
 //        }
 //        if (liveStandFrameAnim != null) {
-//            liveStandFrameAnim.onDestory();
+//            liveStandFrameAnim.onDestroy();
 //        }
 //        ProxUtil.getProxUtil().clear(this);
 //    }

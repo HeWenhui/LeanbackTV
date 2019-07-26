@@ -74,7 +74,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         if (speechBulletView != null) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     speechBulletView.closeSpeechBullet(false);
@@ -97,7 +97,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                         (LiveTopic.MODE_CLASS.equals(mGetInfo.getMode()) && "t".equals(from) || LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) && "f".equals(from))) {
                     if ("true".equals(open)) {
                         if (speechBulletView != null) {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     speechBulletView.showSpeechBullet(mRootView);
@@ -106,7 +106,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                         }
                     } else if ("false".equals(open)) {
                         if (speechBulletView != null) {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     speechBulletView.closeSpeechBullet(true);
@@ -198,7 +198,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
             final String headImgUrl = jsonObject.optString("headImg");
             final String msg = jsonObject.optString("msg");
             if (speechBulletView != null) {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         speechBulletView.receiveDanmakuMsg(name, msg, headImgUrl, true, mRootView);
@@ -230,7 +230,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
         if (sourceNick.startsWith(TEACHER_PREFIX)) {
             logger.i("onQuit:mainTeacher quit");
             if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && speechBulletView != null) {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         speechBulletView.closeSpeechBullet(false);
@@ -240,7 +240,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
         } else if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
             logger.i("onQuit:Counteacher quit");
             if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode()) && speechBulletView != null) {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         speechBulletView.closeSpeechBullet(false);

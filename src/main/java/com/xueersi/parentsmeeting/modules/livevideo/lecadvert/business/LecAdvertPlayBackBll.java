@@ -137,9 +137,9 @@ public class LecAdvertPlayBackBll extends LiveBackBaseBll implements LecBackAdve
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
-        lecAdvertAction.onDestory();
-        lecBackAdvertPopBll.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
+        lecAdvertAction.onDestroy();
+        lecBackAdvertPopBll.onDestroy();
     }
 }

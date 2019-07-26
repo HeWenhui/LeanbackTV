@@ -13,10 +13,12 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RoomAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -35,7 +37,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveM
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallChineseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -44,7 +45,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
@@ -52,7 +52,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  * Created by linyuqiang on 2016/9/23.
  * 聊天消息，一些进入房间状态的消息
  */
-public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg,
+public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg, LiveMessageSend,
         KeyboardUtil.OnKeyboardShowingListener {
     private String TAG = "LiveMessageBll";
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -69,7 +69,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
     private Activity activity;
     private Handler mHandler = new Handler();
-    public QuestionBll questionBll;
     private RelativeLayout rlLiveMessageContent;
     private IRCState mLiveBll;
     private boolean openchat;
@@ -106,14 +105,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public LiveMessageBll(Activity activity, int liveType) {
         this.activity = activity;
         this.liveType = liveType;
-        ProxUtil.getProxUtil().put(activity, LiveMessageBll.class, this);
+        ProxUtil.getProxUtil().put(activity, LiveMessageSend.class, this);
         ProxUtil.getProxUtil().put(activity, KeyBordAction.class, this);
         ProxUtil.getProxUtil().put(activity, KeyboardShowingReg.class, this);
-    }
-
-    public void setQuestionBll(QuestionBll questionBll) {
-        this.questionBll = questionBll;
-        questionBll.registQuestionShow(this);
     }
 
     public void setLiveBll(IRCState mLiveBll) {
@@ -139,18 +133,17 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         return rlLiveMessageContent;
     }
 
-
     /**
      * 站立直播聊天
      *
-     * @param bottomContent
+     * @param liveViewAction
      */
-    public void initViewLiveStand(RelativeLayout bottomContent) {
+    public void initViewLiveStand(LiveViewAction liveViewAction) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
             rlLiveMessageContent = new RelativeLayout(activity);
-            bottomContent.addView(rlLiveMessageContent, params);
+            liveViewAction.addView(LiveVideoLevel.LEVEL_MES, rlLiveMessageContent, params);
         } else {
             rlLiveMessageContent.removeAllViews();
         }
@@ -178,7 +171,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
 
@@ -209,27 +201,24 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         });
     }
 
-
     /**
      * 半身直播 聊天
      *
-     * @param bottomContent
+     * @param liveViewAction
      */
-    public void initHalfBodyLive(final RelativeLayout bottomContent) {
+    public void initHalfBodyLive(final LiveViewAction liveViewAction) {
         final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
             rlLiveMessageContent = new RelativeLayout(activity);
             //调整 消息面板的层级
-            RelativeLayout msgContainer = bottomContent.findViewById(R.id.rl_live_halfbody_livemsg_container);
-            msgContainer.addView(rlLiveMessageContent, params);
+            liveViewAction.addView(LiveVideoLevel.LEVEL_MES, rlLiveMessageContent, params);
         } else {
             //调整 消息面板的层级
             //rlLiveMessageContent.removeAllViews();
             rlLiveMessageContent.removeAllViewsInLayout();
-            ((ViewGroup) rlLiveMessageContent.getParent()).removeView(rlLiveMessageContent);
-            RelativeLayout msgContainer = bottomContent.findViewById(R.id.rl_live_halfbody_livemsg_container);
-            msgContainer.addView(rlLiveMessageContent, params);
+            liveViewAction.removeView(rlLiveMessageContent);
+            liveViewAction.addView(LiveVideoLevel.LEVEL_MES, rlLiveMessageContent, params);
         }
 
         String text = null;
@@ -251,14 +240,14 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         BaseLiveMessagePager liveMessagePager = null;
 
         //根据不同的直播类型创建不同皮肤
-        if(getInfo != null && getInfo.isPreschool()){
+        if (getInfo != null && getInfo.isPreschool()) {
             // 幼教
             liveMessagePager = new PreSchoolLiveMainMsgPager(activity, this,
-                    null, baseLiveMediaControllerBottom,baseLiveMediaControllerTop,liveMessageLandEntities, null);
-        }else{
+                    null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop, liveMessageLandEntities, null);
+        } else {
             if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                 // 语文
-                if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                if (getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
                     liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
                             null, baseLiveMediaControllerBottom, liveMessageLandEntities, null, HalfBodyLiveConfig.SKIN_TYPE_CH);
                 } else {
@@ -267,7 +256,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 }
             } else {
                 // 理科
-                if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+                if (getInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
                     liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
                             null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop, liveMessageLandEntities, null);
                 } else {
@@ -281,7 +270,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.closeChat(isCloseChat);
@@ -312,16 +300,14 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 view.setVisibility(View.VISIBLE);
             }
         });
-
     }
 
-
-    public void initViewLive(RelativeLayout bottomContent) {
+    public void initViewLive(LiveViewAction liveViewAction) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
             rlLiveMessageContent = new RelativeLayout(activity);
-            bottomContent.addView(rlLiveMessageContent, params);
+            liveViewAction.addView(LiveVideoLevel.LEVEL_MES, rlLiveMessageContent, params);
         } else {
             //rlLiveMessageContent.removeAllViews();
             rlLiveMessageContent.removeAllViewsInLayout();
@@ -349,16 +335,16 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                         , liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = chineseLiveMessagePager;
 
-            }else if(getInfo != null && getInfo.isPreschool()){
-                 PreSchoolLiveTrainMsgPager liveMessagePager = new PreSchoolLiveTrainMsgPager(activity, this, null,
-                    baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-                    mLiveMessagePager = liveMessagePager;
-          } else if (LiveVideoConfig.isPrimary) {
+            } else if (getInfo != null && getInfo.isPreschool()) {
+                PreSchoolLiveTrainMsgPager liveMessagePager = new PreSchoolLiveTrainMsgPager(activity, this, null,
+                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                mLiveMessagePager = liveMessagePager;
+            } else if (LiveVideoConfig.isPrimary) {
                 LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
             } else {
-                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
+                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
             }
@@ -374,7 +360,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
 
@@ -396,16 +381,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
     }
 
-    public void initView(RelativeLayout bottomContent, boolean isLand) {
+    public void initView(LiveViewAction liveViewAction, boolean isLand) {
         rlLiveMessageContent = new RelativeLayout(activity);
+        rlLiveMessageContent.setId(R.id.iv_livevideo_message_content1);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        int pattern = activity.getIntent().getIntExtra("pattern", 0);
-        if (pattern == 2) {
-            bottomContent.addView(rlLiveMessageContent, 0, params);
-        } else {
-            bottomContent.addView(rlLiveMessageContent, params);
-        }
+        liveViewAction.addView(LiveVideoLevel.LEVEL_MES, rlLiveMessageContent, params);
         String text = null;
         boolean isRegister = false;
         boolean isHaveFlowers = false;
@@ -428,12 +409,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            }
             if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                 LiveMessagePager liveMessagePager =
-                        new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                        new LiveMessagePager(activity, null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = liveMessagePager;
             } else {
                 long before = System.currentTimeMillis();
                 if (!isSmallEnglish && !LiveVideoConfig.isSmallChinese) {
-                    LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
+                    LiveMessagePager liveMessagePager = new LiveMessagePager(activity, null,
                             baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                     mLiveMessagePager = liveMessagePager;
                 } else if (LiveVideoConfig.isSmallChinese) {
@@ -456,7 +437,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.setIsRegister(isRegister);
@@ -494,30 +474,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             mLiveMessagePager.setGetInfo(getInfo);
         }
 
-    }
-
-    /**
-     * 开始倒计时
-     *
-     * @param time 倒计时时间
-     * @return
-     */
-    public Runnable startCountDown(final String tag, final int time) {
-        final AtomicInteger atomicInteger = new AtomicInteger(time);
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (mLiveMessagePager != null) {
-                    mLiveMessagePager.countDown(tag, atomicInteger.get());
-                }
-                if (atomicInteger.get() > 0) {
-                    atomicInteger.set(atomicInteger.get() - 1);
-                    rlLiveMessageContent.postDelayed(this, 1000);
-                }
-            }
-        };
-        rlLiveMessageContent.post(runnable);
-        return runnable;
     }
 
     public void onTitleShow(boolean show) {
@@ -718,13 +674,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             mLiveMessagePager.onFDOpenbarrage(openFDbarrage, fromNotice);
         }
 
-    }
-
-    @Override
-    public void videoStatus(String status) {
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.videoStatus(status);
-        }
     }
 
     @Override

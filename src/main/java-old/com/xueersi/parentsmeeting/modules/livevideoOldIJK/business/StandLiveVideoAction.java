@@ -264,8 +264,8 @@ public class StandLiveVideoAction extends LiveVideoAction {
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         dwTeacherNotpresenBefore = null;
         dwTeacherNotpresenAfter = null;
         dwTeacherNotpresenDoing = null;

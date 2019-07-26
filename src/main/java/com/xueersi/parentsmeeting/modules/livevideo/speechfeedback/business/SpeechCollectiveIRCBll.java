@@ -72,7 +72,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
             if (speechCollectiveBll != null) {
                 speechCollectiveBll.start(roomId);
             } else {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         //如果是退出直播间再进来，不弹出倒计时和灰色收音球
@@ -128,7 +128,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
                 if (speechCollectiveBll != null) {
                     onStaus(status, from);
                 } else {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             createBll();
@@ -165,8 +165,8 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (speechCollectiveBll != null) {
             speechCollectiveBll.stop();
         }

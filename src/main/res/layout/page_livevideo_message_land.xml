@@ -95,9 +95,4 @@
 
     </RelativeLayout>
 
-    <master.flame.danmaku.danmaku.ui.widget.DanmakuView
-        android:id="@id/dv_livevideo_message_danmaku"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
 </RelativeLayout>

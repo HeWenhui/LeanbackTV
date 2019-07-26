@@ -78,10 +78,10 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if(h5CoursewareBll != null){
-            h5CoursewareBll.onDestory();
+            h5CoursewareBll.onDestroy();
         }
     }
 }

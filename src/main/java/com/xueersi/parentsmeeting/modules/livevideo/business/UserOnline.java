@@ -17,7 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by lyqai on 2018/6/26.
+ * Created by linyuqiang on 2018/6/26.
  * 直播心跳
  */
 public class UserOnline {

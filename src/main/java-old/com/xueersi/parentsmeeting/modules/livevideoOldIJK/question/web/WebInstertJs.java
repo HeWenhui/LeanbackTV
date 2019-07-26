@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.airbnb.lottie.AssertUtil;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.util.WebTrustVerifier;
@@ -48,7 +48,7 @@ public class WebInstertJs {
         try {
             logToFile.addCommon("testid", testid);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         this.context = context;
         logger = LiveLoggerFactory.getLogger(TAG);

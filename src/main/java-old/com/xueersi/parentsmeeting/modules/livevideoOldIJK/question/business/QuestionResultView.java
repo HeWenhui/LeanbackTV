@@ -29,7 +29,7 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
 import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE4;
 
 /**
- * Created by lyqai on 2017/12/19.
+ * Created by linyuqiang on 2017/12/19.
  * 语音答题结果显示
  */
 public class QuestionResultView {

@@ -5,7 +5,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseHttpBusiness;
@@ -39,7 +40,7 @@ import java.util.List;
 /**
  * 直播聊天调度
  *
- * @author lyqai
+ * @author linyuqiang
  * @date 2018/5/22
  */
 public class IRCTalkConf {
@@ -122,7 +123,7 @@ public class IRCTalkConf {
                 break;
             }
         }
-        netWorkType = NetWorkHelper.getNetWorkState(BaseApplication.getContext());
+        netWorkType = NetWorkHelper.getNetWorkState(ContextManager.getContext());
         if (baseHost == null) {
             baseHost = "chatgslb.xescdn.com";
         }
@@ -191,7 +192,7 @@ public class IRCTalkConf {
                         entity.setPwd(jsonObject.getString("pwd"));
                         mNewTalkConf.add(entity);
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
                 mLogtf.d("onPmSuccess:mIsDestory=" + mIsDestory + ",size=" + mNewTalkConf.size());
@@ -217,9 +218,9 @@ public class IRCTalkConf {
                     stableLogHashMap.put("errmsg", msg);
                     stableLogHashMap.put("ip", getHostIP());
                     stableLogHashMap.put("netWorkType", "" + netWorkType);
-                    UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), eventId, stableLogHashMap.getData());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 //体验课获取失败
                 final String finalmsg = msg;
@@ -258,9 +259,9 @@ public class IRCTalkConf {
                     stableLogHashMap.put("gslburl", url);
                     stableLogHashMap.put("errmsg", responseEntity.getErrorMsg());
                     stableLogHashMap.put("ip", getHostIP());
-                    UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), eventId, stableLogHashMap.getData());
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 reTry();
             }

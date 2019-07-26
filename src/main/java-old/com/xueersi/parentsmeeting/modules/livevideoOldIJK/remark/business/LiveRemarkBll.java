@@ -19,7 +19,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.config.AppConfig;
@@ -201,7 +201,7 @@ public class LiveRemarkBll {
                     + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration()
                     + " systime:" + (System.currentTimeMillis() / 1000 + sysTimeOffset) + "   nettime:" + time);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         //setBtEnable(true);
         setVideoReady(true);
@@ -595,7 +595,7 @@ public class LiveRemarkBll {
         } catch (Exception e) {
             logToFile.e("reMark", e);
             e.printStackTrace();
-            CrashReport.postCatchedException(e);
+            LiveCrashReport.postCatchedException(e);
         }
 
     }

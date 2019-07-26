@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business;
 
 /**
- * Created by lyqai on 2018/1/16.
+ * Created by linyuqiang on 2018/1/16.
  */
 
 public interface ActivityChangeLand {

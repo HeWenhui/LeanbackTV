@@ -52,7 +52,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/5/7.
  * 直播的一些公共方法
  */
-public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements VideoAction {
+public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements VideoAction, LivePlayAction {
     private String TAG = "LiveFragmentBase";
     /** 播放器同步 */
     protected static final Object mIjkLock = BasePlayerFragment.mIjkLock;
@@ -386,8 +386,6 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     protected abstract boolean initData();
 
-    public abstract void rePlay(boolean modechange);
-
     /**
      * PS重播
      *
@@ -403,9 +401,6 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     public abstract void changeLine(int pos);
 
     public abstract void changeNextLine();
-
-    /** 切换到当前线路，用于接麦 */
-    public abstract void changeNowLine();
 
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
@@ -535,6 +530,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
      * 播放完成时调用
      */
     private void playComplete() {
+        mLogtf.d("playComplete");
         if (liveVideoAction != null) {
             liveVideoAction.playComplete();
         }
@@ -673,9 +669,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             userOnline.stop();
         }
         if (mLiveBll != null) {
-            mLiveBll.onDestory();
+            mLiveBll.onDestroy();
         }
-        liveVideoAction.onDestory();
+        liveVideoAction.onDestroy();
         liveVideoAction = null;
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();

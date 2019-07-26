@@ -1,22 +1,29 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.http;
 
+import android.content.Context;
+
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.http.PrimaryClassResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 public class TeamPkHttp {
     String TAG = "TeamPkHttp";
-    Logger logger = LiveLoggerFactory.getLogger(TAG);
-    LiveHttpManager liveHttpManager;
-    PrimaryClassResponseParser primaryClassResponseParser;
+    private Logger logger = LiveLoggerFactory.getLogger(TAG);
+    private LiveHttpManager liveHttpManager;
+    private TeamPKHttpResponseParser teamPKHttpResponseParser;
 
-    public TeamPkHttp(LiveHttpManager liveHttpManager) {
+    public TeamPkHttp(Context context, LiveHttpManager liveHttpManager) {
         this.liveHttpManager = liveHttpManager;
-        primaryClassResponseParser = new PrimaryClassResponseParser();
+        teamPKHttpResponseParser = new TeamPKHttpResponseParser(context);
+    }
+
+    public TeamPKHttpResponseParser getTeamPKHttpResponseParser() {
+        return teamPKHttpResponseParser;
     }
 
     public void getMyTeamInfo(String classId, String stuId, String psuser, HttpCallBack requestCallBack) {
@@ -62,7 +69,7 @@ public class TeamPkHttp {
         params.addBodyParam("isWin", isWin + "");
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
-        liveHttpManager.sendPost( liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
+        liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
 
     }
 
@@ -101,6 +108,7 @@ public class TeamPkHttp {
         params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_GETCLASSCHESTRESULT + "/" + liveId, params, requestCallBack);
     }
+
     /**
      * 投票 能量
      *
@@ -173,9 +181,9 @@ public class TeamPkHttp {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("tests", tests+"");
-        params.addBodyParam("ctId", ctId+"");
-        params.addBodyParam("pSrc", pSrc+"");
+        params.addBodyParam("tests", tests + "");
+        params.addBodyParam("ctId", ctId + "");
+        params.addBodyParam("pSrc", pSrc + "");
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params,
                 requestCallBack);
     }
@@ -227,7 +235,8 @@ public class TeamPkHttp {
 
     /**
      * 小理战队PK 二期 获取明星榜
-     *  @param liveId
+     *
+     * @param liveId
      * @param classId
      * @param teamId
      * @param requestCallBack
@@ -258,4 +267,12 @@ public class TeamPkHttp {
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_GETPROGRESSSTU, params, requestCallBack);
     }
 
+    public TeamPkTeamInfoEntity setOldTeamPkTeamInfo(ResponseEntity responseEntity) {
+        TeamPkTeamInfoEntity teamInfoEntity = teamPKHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+        if (teamInfoEntity != null && teamInfoEntity.getTeamInfo() != null) {
+            teamPKHttpResponseParser.setFromLocal(true);
+            teamInfoEntity.getTeamInfo().setFromLocal(true);
+        }
+        return teamInfoEntity;
+    }
 }

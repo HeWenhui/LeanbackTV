@@ -26,7 +26,7 @@ import java.util.Map;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 /**
- * Created by lyqai on 2018/7/17.
+ * Created by linyuqiang on 2018/7/17.
  */
 
 public class UnderstandBll implements UnderstandAction, Handler.Callback {

@@ -20,7 +20,7 @@ import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechUtils;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
@@ -274,7 +274,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 rlGroupGameSingle.setVisibility(View.GONE);
                 mWaveView.stop();
                 wvSubjectWeb.reload();
-                singleModeAction.onDestory();
+                singleModeAction.onDestroy();
             }
         });
         mWaveView.setOnTouchListener(new View.OnTouchListener() {
@@ -383,7 +383,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 if (("" + consoleMessage.message()).contains("sendToCourseware")) {
-                    CrashReport.postCatchedException(new LiveException(TAG));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG));
                 }
                 return super.onConsoleMessage(consoleMessage);
             }
@@ -632,7 +632,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
         wvSubjectWeb.destroy();
         mWaveView.destroy();
-        singleModeAction.onDestory();
+        singleModeAction.onDestroy();
 
         if (liveAudioManager != null && !isVolumeResume) {
             liveAudioManager.setVolume(mVolume);
@@ -700,7 +700,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     isRightCount++;
                 }
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
         try {
@@ -710,7 +710,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             answerData.put("averageScore", averageScore);
             answerData.put("userAnswer", userAnswer);
         } catch (JSONException e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         isSubmit = true;
         englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, (int) voiceTime, 0, 0, starNum, fireNum, goldNum,
@@ -1000,7 +1000,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
 
         @Override
-        public void onDestory() {
+        public void onDestroy() {
             handler.removeCallbacks(turnPageRunnable);
             handler.removeCallbacks(startSpeechRecognizeRunnable);
         }
@@ -1172,7 +1172,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 resultData.put("studentInfo", studentInfo);
                 sendToCourseware(wvSubjectWeb, resultData, "*");
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 logger.d("onLoadComplete", e);
             }
             for (int i = 0; i < mAnswersList.size(); i++) {
@@ -1238,7 +1238,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
 
         @Override
-        public void onDestory() {
+        public void onDestroy() {
             handler.removeCallbacks(stopTimerRunnable);
         }
 
@@ -1298,7 +1298,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 jsonData.put("combo", 0);
                 postMessage(jsonData);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 logger.d("uploadScore", e);
             }
         }
@@ -1354,7 +1354,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             type.put("liveinfo", liveinfo);
         } catch (Exception e) {
             e.printStackTrace();
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         StaticWeb.sendToCourseware(wvSubjectWeb, type, data);
     }
@@ -1370,7 +1370,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             jsonData.put("liveinfo", liveinfo);
         } catch (Exception e) {
             e.printStackTrace();
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
     }
@@ -1392,7 +1392,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             jsonData.put("liveinfo", liveinfo);
         } catch (JSONException e) {
             e.printStackTrace();
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         postMessage(jsonData);
     }

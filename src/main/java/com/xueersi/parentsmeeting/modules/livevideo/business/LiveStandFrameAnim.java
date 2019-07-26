@@ -21,6 +21,7 @@ import com.xueersi.common.http.BaseHttp;
 import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -31,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.StandLoadLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -196,7 +198,7 @@ public class LiveStandFrameAnim {
         Bitmap bitmap2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.bg_live_stand_update_prog);
         //设置进度条宽度
         layoutParams.width = bitmap.getWidth();
-        pbLiveStandUpdate.setLayoutParams(layoutParams);
+        LayoutParamsUtil.setViewLayoutParams(pbLiveStandUpdate, layoutParams);
         //进度条背景和里面进度的差值
         progGap = (bitmap.getWidth() - bitmap2.getWidth()) / 2;
         progHeight = bitmap2.getHeight();
@@ -245,7 +247,7 @@ public class LiveStandFrameAnim {
                 logHashMap.put("version", "" + StandLiveConfig.version);
                 logHashMap.put("downloadsize", "" + downloadSize);
 //                Loger.d(activity, eventId, logHashMap.getData(), true);
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, logHashMap.getData());
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), eventId, logHashMap.getData());
                 onProgress(pbLiveStandUpdate.getLeft(), rlLiveStandUpdateProg, ivLiveStandUpdateProgLight, 50);
                 LiveZip liveZip = new LiveZip(view, callBack, saveFile, saveFileTemp);
                 zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, liveZip);
@@ -265,7 +267,7 @@ public class LiveStandFrameAnim {
                         @Override
                         public void run() {
                             String url = urls[times.get() % urls.length];
-                            logger.d( "onDownloadFailed:times=" + times.get() + ",url=" + url);
+                            logger.d("onDownloadFailed:times=" + times.get() + ",url=" + url);
                             downloadStart = System.currentTimeMillis();
                             baseHttp.downloadRenew(url, tempFileZip, downloadCallBack);
                         }
@@ -321,9 +323,9 @@ public class LiveStandFrameAnim {
     private void onProgress(int progLeft, RelativeLayout rlLiveStandUpdateProg, ImageView ivLiveStandUpdateProgLight, int progress) {
         int progTipWidth = rlLiveStandUpdateProg.getWidth();
         int lightWidth = ivLiveStandUpdateProgLight.getWidth();
-        logger.d( "onProgress:progLeft=" + progLeft + ",progTipWidth=" + progTipWidth + ",lightWidth=" + lightWidth);
+        logger.d("onProgress:progLeft=" + progLeft + ",progTipWidth=" + progTipWidth + ",lightWidth=" + lightWidth);
         int left = (int) (((float) progWidth) * (float) progress / 100.0f);
-        logger.d( "onProgress:progress=" + progress + ",left=" + left);
+        logger.d("onProgress:progress=" + progress + ",left=" + left);
         {
             RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rlLiveStandUpdateProg.getLayoutParams();
 //                        int left = pbLiveStandUpdate.getWidth() * progress / 100;
@@ -482,7 +484,7 @@ public class LiveStandFrameAnim {
             if (cancle) {
                 setCancle(true);
                 zipProg.setCancle(true);
-                logger.d( "onProgressUpdate:cancle");
+                logger.d("onProgressUpdate:cancle");
                 return;
             }
             super.onProgressUpdate(values);
@@ -497,10 +499,10 @@ public class LiveStandFrameAnim {
         }
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         cancle = true;
         if (zipExtractorTask != null) {
-            logger.d( "onDestory:cancle");
+            logger.d("onDestroy:cancle");
             zipExtractorTask.cancle = true;
         }
         if (liveSoundPool != null && loadTask != null) {

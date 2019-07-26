@@ -1,12 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PkAddEnergy;
@@ -53,6 +55,9 @@ public class LiveHalBodyPrimaryCnPkStateLayout extends TeamPkStateLayout {
 
         vContributionCotanier = findViewById(R.id.rl_live_halfbody_energy_contribution);
         tvEnergyMyContribution = findViewById(R.id.tv_live_halfbody_energy_contribution);
+        Typeface fontFace = FontCache.getTypeface(getContext(), "fangzhengcuyuan.ttf");
+        tvMyTeamEnergy.setTypeface(fontFace);
+        tvOtherTeamEnergy.setTypeface(fontFace);
     }
 
     @Override
@@ -60,7 +65,7 @@ public class LiveHalBodyPrimaryCnPkStateLayout extends TeamPkStateLayout {
         vContributionCotanier.setVisibility(VISIBLE);
         energy = energy < 0 ? 0 : energy;
         tvEnergyMyContribution.setText("我贡献了" + energy + "个能量");
-        showViewWithFadeInOutEffect(vContributionCotanier, ENERGY_MY_CONTRIBUTION_DURATION);
+        showViewWithFadeInOutEffect(vContributionCotanier, ENERGY_MY_CONTRIBUTION_DURATION,View.INVISIBLE);
         LiveEventBus.getDefault(getContext()).post(new PkAddEnergy(false, energy));
     }
 

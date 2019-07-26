@@ -55,7 +55,7 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
             if (speechFeedBackAction != null) {
                 speechFeedBackAction.start(roomId);
             } else {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         createBll();
@@ -110,7 +110,7 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
                 if (speechFeedBackAction != null) {
                     onStaus(object);
                 } else {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             createBll();
@@ -130,8 +130,8 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (speechFeedBackAction != null) {
             speechFeedBackAction.stop();
         }

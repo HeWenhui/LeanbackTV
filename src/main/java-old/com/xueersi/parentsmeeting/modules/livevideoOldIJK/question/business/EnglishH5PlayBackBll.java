@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -241,7 +241,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                             englishH5Entity.setPackageSource(packageSource);
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                         englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                         showQuestion.onShow(true, videoQuestionLiveEntity);
@@ -646,8 +646,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (englishH5Cache != null) {
             englishH5Cache.stop();
         }

@@ -23,6 +23,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -36,9 +37,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.NbCourseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.NbHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NbH5PagerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NbPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.web.NbCourseCache.NbCourseCache;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.web.NbCourseCache.NbWebJsProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.web.NbCourseCache;
-import com.xueersi.parentsmeeting.modules.livevideo.question.web.NbWebJsProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NbCourseLog;
@@ -199,8 +200,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
             @Override
             public void onClick(View v) {
                 if(currentMode == MODE_EXAM && !onSubmit){
-                    VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, (BaseApplication)
-                            BaseApplication.getContext(), false,
+                    VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                             VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                     cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
@@ -225,8 +225,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                     showResult();
                 } else {
                     isFresh = true;
-                    VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, (BaseApplication)
-                            BaseApplication.getContext(), false,
+                    VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                             VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                     cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
@@ -269,8 +268,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
      * 结束练习模式
      */
     private void endTestMode() {
-        VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, (BaseApplication)
-                BaseApplication.getContext(), false,
+        VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext,ContextManager.getApplication(), false,
                 VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
         cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
             @Override
@@ -793,7 +791,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
-                        handler.post(new Runnable() {
+                        mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 wvSubjectWeb.stopLoading();
@@ -810,7 +808,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
-                    handler.post(new Runnable() {
+                    mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             wvSubjectWeb.stopLoading();

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.airbnb.lottie.AssertUtil;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
@@ -71,7 +71,7 @@ public class NewCourseCache {
         try {
             logToFile.addCommon("testid", testid);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         webInstertJs = new WebInstertJs(mContext, testid);
         cacheFile = LiveCacheFile.geCacheFile(mContext, "webviewCache");
@@ -147,7 +147,7 @@ public class NewCourseCache {
                 return 0;
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            LiveCrashReport.postCatchedException(e);
         }
         return 0;
     }
@@ -261,7 +261,7 @@ public class NewCourseCache {
                 stableLogHashMap.put("filelength", "" + file.length());
                 UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             if (file.length() > 0) {
                 FileInputStream inputStream = null;
@@ -289,7 +289,7 @@ public class NewCourseCache {
                 stableLogHashMap.put("filepath", file.getPath());
                 UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
         return null;

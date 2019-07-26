@@ -30,7 +30,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallChineseRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallEnglishRedPackagePager;
@@ -411,7 +410,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         mVPlayVideoControlHandler.postDelayed(r, delayMillis);
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         if (mVPlayVideoControlHandler != null) {
             mVPlayVideoControlHandler.removeCallbacksAndMessages(null);
         }

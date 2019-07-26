@@ -43,7 +43,7 @@ public class LiveUidRx {
         }
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         try {
             StableLogHashMap logHashMap = new StableLogHashMap();
             logHashMap.put("time", "" + (System.currentTimeMillis() - timeAndUidRxBytes[0]));

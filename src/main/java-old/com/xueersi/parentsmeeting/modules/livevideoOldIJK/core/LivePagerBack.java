@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.core;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 
 /**
- * Created by lyqai on 2018/7/30.
+ * Created by linyuqiang on 2018/7/30.
  */
 
 public interface LivePagerBack {

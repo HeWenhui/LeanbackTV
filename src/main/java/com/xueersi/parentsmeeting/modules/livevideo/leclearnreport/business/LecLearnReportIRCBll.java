@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.leclearnreport.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
@@ -18,10 +17,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LecLear
 
 import org.json.JSONObject;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
- * Created by lyqai on 2018/7/18.
+ * Created by linyuqiang on 2018/7/18.
  */
 public class LecLearnReportIRCBll extends LiveBaseBll implements NoticeAction, LecLearnReportHttp, TopicAction {
     LecLearnReportBll learnReportBll;
@@ -35,7 +32,7 @@ public class LecLearnReportIRCBll extends LiveBaseBll implements NoticeAction, L
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
         if (mainRoomstatus.isOpenFeedback()) {
             if (learnReportBll == null) {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         learnReportBll = new LecLearnReportBll(activity);
@@ -57,7 +54,7 @@ public class LecLearnReportIRCBll extends LiveBaseBll implements NoticeAction, L
         switch (type) {
             case XESCODE.LEC_LEARNREPORT: {
                 if (learnReportBll == null) {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             learnReportBll = new LecLearnReportBll(activity);
@@ -131,9 +128,9 @@ public class LecLearnReportIRCBll extends LiveBaseBll implements NoticeAction, L
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+    public void initView() {
         if (learnReportBll != null) {
-            learnReportBll.initView(bottomContent);
+            learnReportBll.initView(mRootView);
         }
     }
 

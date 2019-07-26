@@ -1,8 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 
-public interface TcpMessageReg {
+public interface TcpMessageReg extends LiveProvide {
 
     void onConnect(OnTcpConnect onTcpConnect);
 

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 import com.xueersi.ui.dialog.BaseAlertDialog;
@@ -22,7 +22,7 @@ public class SmallEnglishMicPermissionDialog extends BaseAlertDialog {
     private ImageView imConfirm;
 
     public SmallEnglishMicPermissionDialog(Context context) {
-        super(context, (Application) BaseApplication.getContext(), false);
+        super(context, (Application) ContextManager.getContext(), false);
     }
 
     @Override

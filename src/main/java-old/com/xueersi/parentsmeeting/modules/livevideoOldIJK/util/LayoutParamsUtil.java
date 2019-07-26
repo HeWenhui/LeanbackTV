@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
 /**
- * Created by lyqai on 2017/11/7.
+ * Created by linyuqiang on 2017/11/7.
  */
 
 public class LayoutParamsUtil {

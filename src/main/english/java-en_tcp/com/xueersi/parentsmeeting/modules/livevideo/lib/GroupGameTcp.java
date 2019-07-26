@@ -6,7 +6,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.SparseArray;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -218,7 +218,7 @@ public class GroupGameTcp {
                             logs.put("times", "" + (CREATE_TIMES - 1));
                             receiveMegCallBack.onLog(inetSocketAddress, logs);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new TcpException(TAG, e));
+                            LiveCrashReport.postCatchedException(new TcpException(TAG, e));
                         }
                     }
                 }
@@ -380,7 +380,7 @@ public class GroupGameTcp {
                 if (readSave || saveRead) {
                     //暂时没有出现过异常
                     try {
-                        String name = ("" + inetSocketAddress).replaceAll("\\.", "_").replaceAll(":", "-");
+                        String name = ("" + inetSocketAddress).replaceAll("/", "_").replaceAll("\\.", "_").replaceAll(":", "-");
                         saveDir = new File(saveDir, name);
                         if (!saveDir.exists()) {
                             saveDir.mkdirs();
@@ -404,7 +404,7 @@ public class GroupGameTcp {
                             }
                         }
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new TcpException("testBuffer", e));
+                        LiveCrashReport.postCatchedException(new TcpException("testBuffer", e));
                     }
                 }
                 while (!isStop && (length = inputStream.read(readBuffer)) != -1) {
@@ -567,7 +567,7 @@ public class GroupGameTcp {
             } catch (Exception e) {
                 e.printStackTrace();
                 endEx = e;
-                CrashReport.postCatchedException(new TcpException("testBuffer", e));
+                LiveCrashReport.postCatchedException(new TcpException("testBuffer", e));
                 if (saveFile != null) {
                     if (receiveMegCallBack != null) {
                         receiveMegCallBack.onReadException(inetSocketAddress, e, saveFile);

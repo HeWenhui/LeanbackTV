@@ -27,8 +27,8 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -328,7 +328,7 @@ public class PkTeamResultPager extends BasePager {
             ivOwnerTeamState.setImageResource(R.drawable.livevideo_chpk_result_equal);
         }
 
-        ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
+        ImageLoader.with(ContextManager.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
                 (new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
@@ -344,7 +344,7 @@ public class PkTeamResultPager extends BasePager {
                     }
                 });
 
-        ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg())
+        ImageLoader.with(ContextManager.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg())
                 .asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
@@ -358,8 +358,8 @@ public class PkTeamResultPager extends BasePager {
 
                     }
                 });
-        ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getImg()).into(ivOwnerTeamImage);
-        ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getImg()).into
+        ImageLoader.with(ContextManager.getContext()).load(data.getMyTeamEngerInfo().getImg()).into(ivOwnerTeamImage);
+        ImageLoader.with(ContextManager.getContext()).load(data.getCompetitorEngerInfo().getImg()).into
                 (ivOtherTeamLogo);
         tvOwnerTeacherName.setText(data.getMyTeamEngerInfo().getTeacherName());
         tvOtherTeacherName.setText(data.getCompetitorEngerInfo().getTeacherName());
