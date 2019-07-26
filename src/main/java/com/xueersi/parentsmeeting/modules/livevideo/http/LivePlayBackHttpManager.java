@@ -8,6 +8,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
@@ -59,7 +60,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                                int livePlayType, boolean voice, boolean isRight, HttpCallBack requestCallBack) {
         if (isNewArt) {
             HttpRequestParams params = new HttpRequestParams();
-            String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER;
+            String url = LiveHttpConfig.URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER;
             params.addBodyParam("liveId", classId);
             params.addBodyParam("testId", testId);
             params.addBodyParam("answer", testResult);
@@ -73,10 +74,10 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
             String liveUrl;
             // 如果是录播直播回放
             if (livePlayType == LocalCourseConfig.LIVETYPE_RECORDED) {
-                liveUrl = LiveVideoConfig.URL_STUDY_SAVE_TEST_RECORD;
+                liveUrl = LiveHttpConfig.URL_STUDY_SAVE_TEST_RECORD;
                 // 直播讲座
             } else if (livePlayType == LocalCourseConfig.LIVETYPE_LECTURE) {
-                liveUrl = LiveVideoConfig.URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION;
+                liveUrl = LiveHttpConfig.URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION;
             } else {
                 if (voice) {
                     liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
@@ -110,7 +111,6 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     /**
      * 提交h5语音答题答案
      *
-     * @param enStuId
      * @param srcType
      * @param testId
      * @param testResult
@@ -128,7 +128,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         if (isNewArt) {
             if ("16".equals(type) || "15".equals(type)) {
                 HttpRequestParams params = new HttpRequestParams();
-                String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSH5_ANSWER;
+                String url = LiveHttpConfig.URL_LIVE_SUBMIT_NEWARTSH5_ANSWER;
                 setDefaultParameter(params);
                 params.addBodyParam("testId", testId);
                 params.addBodyParam("liveId", classId);
@@ -145,7 +145,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                 sendPost(url, params, requestCallBack);
             } else {
                 HttpRequestParams params = new HttpRequestParams();
-                String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
+                String url = LiveHttpConfig.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
                 setDefaultParameter(params);
                 params.addBodyParam("liveId", classId);
                 params.addBodyParam("answers", testResult);
@@ -194,7 +194,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("operateId", operateId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("sessid", LiveAppUserInfo.getInstance().getSessionId());
-        sendPost(LiveVideoConfig.URL_STUDY_GET_RED_PACKET, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_STUDY_GET_RED_PACKET, params, requestCallBack);
     }
 
     /**
@@ -226,7 +226,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("operateId", operateId);
         params.addBodyParam("termId", termId);
         params.addBodyParam("liveId", liveId);
-        sendPost(LiveVideoConfig.URL_AUTO_LIVE_RECEIVE_GOLD, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_AUTO_LIVE_RECEIVE_GOLD, params, requestCallBack);
     }
 
     //获取语音评测
@@ -235,7 +235,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
-        sendPost(LiveVideoConfig.URL_LIVE_GET_SPEECHEVAL, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_LIVE_GET_SPEECHEVAL, params, requestCallBack);
     }
 
     //语音评测2期答案提交
@@ -251,7 +251,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
             params.addBodyParam("type", "2");
             setDefaultParameter(params);
             Loger.i("Duncan", "sendSpeechEvalResult2:liveId=" + liveId);
-            sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
+            sendPost(LiveHttpConfig.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
         } else {
             HttpRequestParams params = new HttpRequestParams();
             setDefaultParameter(params);
@@ -284,8 +284,8 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("courseId", courseId);
-        requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_LEC_AD;
-        sendPost(LiveVideoConfig.URL_LIVE_GET_LEC_AD, params, requestCallBack);
+        requestCallBack.url = LiveHttpConfig.URL_LIVE_GET_LEC_AD;
+        sendPost(LiveHttpConfig.URL_LIVE_GET_LEC_AD, params, requestCallBack);
     }
 
     /**
@@ -308,7 +308,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         setDefaultParameter(params);
-        sendPost(LiveVideoConfig.URL_LEC_AD_CASE, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_LEC_AD_CASE, params, requestCallBack);
     }
 
     // 获取体验课学习报告
@@ -316,7 +316,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("orderId", termId);
         params.addBodyParam("liveId", liveId);
-        sendPost(LiveVideoConfig.URL_AUTO_LIVE_FEAD_BACK, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_AUTO_LIVE_FEAD_BACK, params, requestCallBack);
     }
 
     //发送体验课学习反馈
@@ -333,7 +333,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("option", jsonOption.toString());
 //        sendPost("https://www.easy-mock.com/mock/5b57f6919ddd1140ec2eb47b/xueersi.wx.android
 // .app/livevideo/feedback",params,requestCallBack);
-        sendPost(LiveVideoConfig.URL_AUTO_LIVE_LEARN_FEED_BACK, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_AUTO_LIVE_LEARN_FEED_BACK, params, requestCallBack);
     }
 
 //    public void saveExperienceTestRecord(String url, String enStuId, String srcType, String testId, String
@@ -413,7 +413,6 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     /**
      * 体验课提交互动题
      *
-     * @param enStuId
      * @param srcType         题库
      * @param testId
      * @param testResult
@@ -427,7 +426,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                                 int livePlayType, boolean voice, boolean isRight, String isArts, String questionType,
                                 String url,
                                 HttpCallBack requestCallBack) {
-        String liveUrl = LiveVideoConfig.LIVE_EXPE_SUBMIT;
+        String liveUrl = LiveHttpConfig.LIVE_EXPE_SUBMIT;
         // 如果是录播直播回放
 //        if (livePlayType == LocalCourseConfig.LIVETYPE_RECORDED) {
 //            liveUrl = LiveVideoConfig.URL_STUDY_SAVE_TEST_RECORD;
@@ -523,7 +522,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("groupId", groupId);
         params.addBodyParam("startTime", startTime);
         setDefaultParameter(params);
-        sendPost(LiveVideoSAConfig.URL_ENGLISH_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_ENGLISH_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
     }
 
     /**
@@ -603,7 +602,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("termId", termId);
         params.addBodyParam("content", content);
-        sendPost(LiveVideoConfig.URL_AUTO_LIVE_QUIT_FEED_BACK, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_AUTO_LIVE_QUIT_FEED_BACK, params, requestCallBack);
     }
 
     public void sumbitExperienceNoviceGuide(String stuId, String termId, String subjectId, HttpCallBack requestCallBack) {
@@ -611,7 +610,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("termId", termId);
         params.addBodyParam("subjectId", subjectId);
-        sendPost(LiveVideoConfig.URL_AUTO_LIVE_NOVIC_GUIDE, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_AUTO_LIVE_NOVIC_GUIDE, params, requestCallBack);
     }
 
 
@@ -637,7 +636,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("srcType", srcType);
         params.addBodyParam("isForce", isForce);
         params.addBodyParam("videoDuration", videoDuration);
-        sendPost(LiveVideoConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
+        sendPost(LiveHttpConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
     }
 
 
@@ -668,7 +667,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("voice_url", voice_url);
         params.addBodyParam("isUpload", isUpload);
         params.addBodyParam("averVocieDecibel", averVocieDecibel);
-        sendPost(LiveVideoConfig.SUPER_SPEAKER_UPLOAD_SPEECH_SHOW, params, httpCallBack);
+        sendPost(LiveHttpConfig.SUPER_SPEAKER_UPLOAD_SPEECH_SHOW, params, httpCallBack);
     }
 
 
@@ -686,7 +685,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
 //        params.addBodyParam("srcType", srcType);
 //        params.addBodyParam("cameraStatus", cameraStatus);
-        sendPost(LiveVideoConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
+        sendPost(LiveHttpConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
 
     }
 

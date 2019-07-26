@@ -813,7 +813,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
         StringBuilder sb = new StringBuilder();
         String falseStr = Base64.encodeBytes("false".getBytes());
-        sb.append(mLiveBll.getLiveVideoSAConfig().inner.URL_ARTS_H5_URL).append("?liveId=").append(mLiveId)
+        sb.append(LiveHttpConfig.URL_ARTS_H5_URL).append("?liveId=").append(mLiveId)
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
                 .getStuId())
@@ -830,12 +830,12 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         String url;
         if ("5".equals(type)) {
             if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
-                url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_STANDROALPLAY_URL;
+                url = LiveHttpConfig.URL_NEWARTS_STANDROALPLAY_URL;
             } else {
-                url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_ROALPLAY_URL;
+                url = LiveHttpConfig.URL_NEWARTS_ROALPLAY_URL;
             }
         } else {
-            url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_CHINESEREADING_URL;
+            url = LiveHttpConfig.URL_NEWARTS_CHINESEREADING_URL;
         }
         sb.append(url).append("?liveId=").append(mLiveId)
                 .append("&testId=").append(id).append("&isPlayBack=").append(isPlayback)

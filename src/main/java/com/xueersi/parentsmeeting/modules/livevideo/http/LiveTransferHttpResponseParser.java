@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoPointEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 
@@ -42,6 +43,7 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
     private String sectionName;
     String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
     private List<String> questiongtype = Arrays.asList(ptTypeFilters);
+
     /**
      * 解析直播回放互动题扣除金币
      *
@@ -115,7 +117,7 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
                     //解析辅导老师信息
                     VideoSectionEntity tutorEntity = parseTutorSetionEntity(entity, id, jsonObject, url, isArts,
                             stuCouId, LiveAppUserInfo.getInstance().getStuId()
-                            , mapSection, liveInfo,sectionJson);
+                            , mapSection, liveInfo, sectionJson);
                     if (tutorEntity != null) {
                         tutorEntity.setvStuCourseID(sectionJson.optString("courseId"));
                         tutorEntity.setExamPaperUrl(sectionJson.optString("examPaperUrl"));
@@ -203,11 +205,10 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
                     if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE) {
                         String host = isArts == 0 ? ShareBusinessConfig.LIVE_SCIENCE :
                                 ShareBusinessConfig.LIVE_LIBARTS;
-                        String coursewareH5 = "https://live.xueersi.com/" +
-                                host + "/Live/coursewareH5/";
+                        String coursewareH5 = LiveHttpConfig.LIVE_HOST + "/" + host + "/Live/coursewareH5/";
 
                         if (isArts == 2) {
-                            coursewareH5 = LiveVideoConfig.URL_DEFAULT_CHS_H5;
+                            coursewareH5 = LiveHttpConfig.URL_DEFAULT_CHS_H5;
                         }
                         questionEntity.setEnglishH5Play_url(coursewareH5 + sectionId + "/"
                                 + stuCouId + "/" + questionEntity.getvQuestionID()
@@ -328,16 +329,16 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
     public VideoResultEntity parseNewArtsEvent(String stucourseId, String id, VideoResultEntity entity,
                                                ResponseEntity responseEntity) {
         Map<String, VideoSectionEntity> mapSection = new HashMap<String, VideoSectionEntity>();
-        if(entity!=null && entity.getMapVideoSectionEntity()!=null && entity.getMapVideoSectionEntity().size()>0) {
-            for(String key:entity.getMapVideoSectionEntity().keySet()) {
-                if(!TextUtils.isEmpty(key) && key.endsWith("_t")){
-                    Map<String, VideoSectionEntity> map= new HashMap<>();
+        if (entity != null && entity.getMapVideoSectionEntity() != null && entity.getMapVideoSectionEntity().size() > 0) {
+            for (String key : entity.getMapVideoSectionEntity().keySet()) {
+                if (!TextUtils.isEmpty(key) && key.endsWith("_t")) {
+                    Map<String, VideoSectionEntity> map = new HashMap<>();
                     mapSection.put(key, entity.getMapVideoSectionEntity().get(key));
                 }
             }
         }
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-        UmsAgentTrayPreference.getInstance().put(LiveVideoConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE,jsonObject.optString("summerCourseWareSize"));
+        UmsAgentTrayPreference.getInstance().put(LiveHttpConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, jsonObject.optString("summerCourseWareSize"));
         VideoSectionEntity section = new VideoSectionEntity();
         List<VideoQuestionEntity> questionLst = new ArrayList<VideoQuestionEntity>();
         VideoQuestionEntity questionEntity = null;

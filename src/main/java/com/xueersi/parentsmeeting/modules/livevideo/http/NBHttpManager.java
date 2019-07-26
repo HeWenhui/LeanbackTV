@@ -6,6 +6,7 @@ import android.util.Log;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import org.xutils.xutils.common.util.MD5;
@@ -48,7 +49,7 @@ public class NBHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("nickName", nickName);
         params.addBodyParam("type", userType);
-        sendPost(LiveVideoConfig.URL_NB_LOGIN, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_NB_LOGIN, params, requestCallBack);
     }
 
 
@@ -70,7 +71,7 @@ public class NBHttpManager extends BaseHttpBusiness {
         params.addBodyParam("userResult", userResult);
         params.addBodyParam("isForce", isForce);
         params.addBodyParam("isPlayBack", isPlayBack);
-        sendPost(LiveVideoConfig.URL_NB_RESULT_UPLOAD, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_NB_RESULT_UPLOAD, params, requestCallBack);
     }
 
 
@@ -88,7 +89,7 @@ public class NBHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("experimentId", experimentId);
         params.addBodyParam("token", token);
-        sendPost(LiveVideoConfig.URL_NB_COURSE_INFO, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_NB_COURSE_INFO, params, requestCallBack);
     }
 
 }

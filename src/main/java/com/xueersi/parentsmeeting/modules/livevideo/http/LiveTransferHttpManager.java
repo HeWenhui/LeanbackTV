@@ -6,9 +6,10 @@ import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 
-public class LiveTransferHttpManager  extends BaseHttpBusiness {
+public class LiveTransferHttpManager extends BaseHttpBusiness {
 
     public LiveTransferHttpManager(Context context) {
         super(context);
@@ -30,6 +31,7 @@ public class LiveTransferHttpManager  extends BaseHttpBusiness {
         params.addBodyParam("sessid", LiveAppUserInfo.getInstance().getSessionId());
         sendPost(ShareBusinessConfig.URL_STUDY_GET_LIVE_COURSE_TEST_INFO_FOR_PLAYBACK, params, requestCallBack);
     }
+
     /**
      * 文科新课件平台回放事件的新接口
      *
@@ -40,7 +42,7 @@ public class LiveTransferHttpManager  extends BaseHttpBusiness {
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
-        sendPost("https://app.arts.xueersi.com/v2/playback/getEvent", params, requestCallBack);
+        sendPost(LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/playback/getEvent", params, requestCallBack);
     }
 
 }

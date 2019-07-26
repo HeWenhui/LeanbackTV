@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 
 /**
  * 直播网络访问类，排行榜
@@ -40,7 +41,7 @@ public class RankHttp {
      */
     public void getNewArtsAllRank(String liveId, String stuCouId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        liveHttpAction.sendPostDefault(liveHttpAction.getLiveVideoSAConfigInner().URL_ARTS_TEAM_CLASS_RANK, params, requestCallBack);
+        liveHttpAction.sendPostDefault(LiveHttpConfig.URL_ARTS_TEAM_CLASS_RANK, params, requestCallBack);
     }
 
     public void getAllRanking(String liveId, String classId, HttpCallBack requestCallBack) {
