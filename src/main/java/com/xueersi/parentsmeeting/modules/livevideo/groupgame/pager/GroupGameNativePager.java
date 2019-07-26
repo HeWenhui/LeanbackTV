@@ -1198,6 +1198,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             if (detailInfo.type.equals(LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON)) {
                 return;
             }
+
+            if(detailInfo.type.equals(LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX)){
+                return;
+            }
+
             tvOops.setVisibility(View.VISIBLE);
             handler.postDelayed(new Runnable() {
                 @Override
