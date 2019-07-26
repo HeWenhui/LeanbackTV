@@ -2183,6 +2183,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     teamMemberEntity.headurl = top3Obj.optString("head");
                     teamMemberEntity.gold = top3Obj.optInt("gold");
                     teamMemberEntity.energy = top3Obj.optInt("energy");
+                    teamMemberEntity.setSegmentType(top3Obj.optInt("segmentType"));
+                    teamMemberEntity.setStar(top3Obj.optInt("star"));
                     memberEntities.add(teamMemberEntity);
                 }
             }
