@@ -263,6 +263,15 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         liveAndBackDebug.addCommonData("isplayback", isPlayBack ? "1" : "0");
         mView = initView();
         entranceTime = System.currentTimeMillis() / 1000;
+        try {
+            if (isPlayBack) {
+                NewCourseLog.sno1back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            } else {
+                NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            }
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         initData();
     }
 
@@ -1001,11 +1010,24 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             public void onDataSucess(Object... objData) {
                 newCourseSec = (NewCourseSec) objData[0];
                 logger.d("onDataSucess:time=" + (newCourseSec.getEndTime() - newCourseSec.getReleaseTime()));
-
                 tests = newCourseSec.getTests();
                 if (tests.isEmpty()) {
                     XESToastUtils.showToast(mContext, "互动题为空");
+                    if (isPlayBack) {
+                        try {
+                            NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "false", detailInfo.isTUtor());
+                        } catch (Exception e) {
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
+                    }
                     return;
+                }
+                if (isPlayBack) {
+                    try {
+                        NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "true", detailInfo.isTUtor());
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
                 }
 //                    showControl();
                 if (quesJson != null) {
@@ -1045,6 +1067,13 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 }
                 ivCourseRefresh.setVisibility(View.VISIBLE);
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
+                if (isPlayBack) {
+                    try {
+                        NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "false", detailInfo.isTUtor());
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+                }
             }
         });
     }

@@ -1106,7 +1106,21 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 tests = newCourseSec.getTests();
                 if (tests.isEmpty()) {
                     XESToastUtils.showToast(mContext, "互动题为空");
+                    if (isPlayBack) {
+                        try {
+                            NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "false", detailInfo.isTUtor());
+                        } catch (Exception e) {
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
+                    }
                     return;
+                }
+                if (isPlayBack) {
+                    try {
+                        NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "true", detailInfo.isTUtor());
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
                 }
 //                    showControl();
                 if (quesJson != null) {
@@ -1150,6 +1164,13 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 }
                 ivCourseRefresh.setVisibility(View.VISIBLE);
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
+                if (isPlayBack) {
+                    try {
+                        NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "false", detailInfo.isTUtor());
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+                }
             }
         });
     }
