@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -698,7 +699,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll implements AnswerResul
 
     private String buildCourseH5Url(String testIds) {
         StringBuilder sb = new StringBuilder();
-        sb.append(new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(LiveAppUserInfo.getInstance().getStuId())
+        sb.append(LiveHttpConfig.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(LiveAppUserInfo.getInstance().getStuId())
                 .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&liveId=").append(mVideoEntity.getLiveId())
                 .append("&testId=").append(testIds).append("&type=").append(17).append("&isPlayBack=1");
         return sb.toString();
