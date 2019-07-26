@@ -23,7 +23,7 @@ public class LiveQueHttpConfig {
     /** 提交课件-理科 */
     public static String LIVE_SUBMIT_COURSEWARE = LiveHttpConfig.LIVE_HOST_SCIENCE + "/LiveExam/submitCourseWareTests";
     /** 提交课件-文科 */
-    public static String LIVE_SUBMIT_COURSEWARE_CN = LiveVideoChConfig.CH_LIVE_HTTP_HOST + "/LiveExam/submitCourseWareTests";
+    public static String LIVE_SUBMIT_COURSEWARE_CN = LiveHttpConfig.HTTP_LIVE_CHINESE_HOST + "/LiveExam/submitCourseWareTests";
     /** 提交课件-英语 http://wiki.xesv5.com/pages/viewpage.action?pageId=12954171 */
     public static String LIVE_SUBMIT_COURSEWARE_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/commonTest/submitMultiTest";
     public static String LIVE_SUBMIT_COURSEWARE_VOICE_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/CourseH5Test/submitH5";
@@ -40,7 +40,7 @@ public class LiveQueHttpConfig {
     /** 课件结果页-小学理科 */
     public static String LIVE_GET_STU_TESTS_RESULT = LiveHttpConfig.LIVE_HOST_SCIENCE + "/LiveExam/getStuTestResult";
     /** 课件结果页-小学文科 */
-    public static String LIVE_GET_STU_TESTS_RESULT_CN = LiveVideoChConfig.CH_LIVE_HTTP_HOST + "/LiveExam/getStuTestResult";
+    public static String LIVE_GET_STU_TESTS_RESULT_CN = LiveHttpConfig.HTTP_LIVE_CHINESE_HOST + "/LiveExam/getStuTestResult";
 //    public static String LIVE_GET_STU_TESTS_RESULT = "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example" + "/getStuTestResult";
 
 
