@@ -29,9 +29,11 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
@@ -236,6 +238,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                 } else {
                     VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, ContextManager.getApplication(), false,
                             VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                    final LiveBasePager liveBase =  liveBasePager;
                     cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -244,7 +247,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                                 h5CoursewarePager.onBack();
                                 h5CoursewarePager.destroy();
                                 bottomContent.removeView(h5CoursewarePager.getRootView());
-                                h5CoursewarePager = null;
+
                                 WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
                                 if (webViewRequest != null) {
                                     webViewRequest.releaseWebView();
@@ -252,6 +255,20 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                                 if (isMiddleScience()) {
                                     EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
                                 }
+                                if (isplayback == 1) {
+                                    BackMediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, BackMediaPlayerControl.class);
+                                    if (mediaPlayerControl != null) {
+                                        if (liveBase.getBaseVideoQuestionEntity() instanceof VideoQuestionLiveEntity) {
+                                            VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) liveBase.getBaseVideoQuestionEntity();
+                                            mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
+                                            mediaPlayerControl.start();
+                                            LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
+                                            showQuestion.onHide(videoQuestionLiveEntity);
+                                        }
+
+                                    }
+                                }
+                                h5CoursewarePager = null;
                             }
                         }
                     });
