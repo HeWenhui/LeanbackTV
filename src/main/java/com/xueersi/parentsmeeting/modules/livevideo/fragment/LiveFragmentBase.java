@@ -716,7 +716,8 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             @Override
             public void run() {
                 ProxUtil.getProxUtil().clear(activity);
-                LiveThreadPoolExecutor.destory();
+                //如果跳多个直播，会finish几个。所以不能释放
+//                LiveThreadPoolExecutor.destory();
             }
         });
         LiveVideoConfig.isSmallChinese = false;

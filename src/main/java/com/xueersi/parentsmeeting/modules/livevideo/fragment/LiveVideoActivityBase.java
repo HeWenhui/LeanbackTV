@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -24,6 +25,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+
 
 /***
  * 视频播放主界面
@@ -35,7 +38,14 @@ public class LiveVideoActivityBase extends XesActivity {
     /** 当前界面是否横屏 */
     protected boolean mIsLand = false;
     LiveVideoFragmentBase liveVideoFragmentBase;
+    protected static ArrayList<LiveVideoActivityBase> liveVideoActivityBases = new ArrayList<>();
+    private static int statIndex = 0;
+    protected int index;
 
+    public LiveVideoActivityBase() {
+        liveVideoActivityBases.add(this);
+        index = statIndex++;
+    }
     // endregion
 
     // region 生命周期及系统调用
@@ -80,6 +90,16 @@ public class LiveVideoActivityBase extends XesActivity {
         FileLogger.runActivity = this;
         //关闭系统后台声音
         AudioPlayer.requestAudioFocus(this);
+        logger.d("onResume:index=" + index + ",size=" + liveVideoActivityBases.size());
+        for (int i = 0; i < liveVideoActivityBases.size(); i++) {
+            LiveVideoActivityBase activity = liveVideoActivityBases.get(i);
+            if (activity != this) {
+                activity.finish();
+                liveVideoActivityBases.remove(i);
+                logger.d("onResume:index=" + activity.index);
+                i--;
+            }
+        }
     }
 
     @Override
@@ -108,6 +128,7 @@ public class LiveVideoActivityBase extends XesActivity {
         if (FileLogger.runActivity == this) {
             FileLogger.runActivity = null;
         }
+        liveVideoActivityBases.remove(this);
     }
 
     @Override
