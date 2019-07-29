@@ -90,7 +90,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
         CREATE_TIMES++;
 
         mDataLoadEntity = new DataLoadEntity(this);
-        if (LiveVideoConfig.assetsDownloadTag) {
+        boolean loadAsserts = getIntent().getBooleanExtra("loadAsserts", false);
+        if (!loadAsserts && LiveVideoConfig.assetsDownloadTag) {
             loadAssertsResource();
         } else {
             mDataLoadEntity.beginLoading();
