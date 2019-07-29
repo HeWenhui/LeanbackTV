@@ -382,8 +382,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     StuSegmentEntity stuSegmentEntity = mGetInfo.getBetterMe().getStuSegment();
                     getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStandLiveName(), mGetInfo
                             .getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name,
-                            unique_id, stuSegmentEntity.getSegmentType(), stuSegmentEntity.getSegment(), stuSegmentEntity.getStar(),
-                            stuSegmentEntity.getSumCount(), new HttpCallBack(false) {
+                            unique_id, "" + stuSegmentEntity.getSegmentType(), stuSegmentEntity.getSegment(), "" +
+                                    stuSegmentEntity.getStar(), "" + stuSegmentEntity.getSumCount(), new HttpCallBack
+                                    (false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
                             logger.d("reportStuInfo:onPmSuccess" + responseEntity.getJsonObject());

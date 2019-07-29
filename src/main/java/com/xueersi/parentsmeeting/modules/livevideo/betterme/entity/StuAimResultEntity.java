@@ -7,21 +7,22 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.entity;
  * created  at 2018/12/14
  */
 public class StuAimResultEntity {
-    String isUpGrade;
-    String segment;
-    String aimNumber;
-    String star;
-    String isDoneAim;
-    String aimType;
-    String realTimeVal;
-    String aimValue;
+    private boolean isUpGrade;
+    private String segment;
+    private int segmentType;
+    private int aimNumber;
+    private int star;
+    private boolean isDoneAim;
+    private String aimType;
+    private String realTimeVal;
+    private String aimValue;
 
-    public String getIsUpGrade() {
+    public boolean isUpGrade() {
         return isUpGrade;
     }
 
-    public void setIsUpGrade(String isUpGrade) {
-        this.isUpGrade = isUpGrade;
+    public void setUpGrade(boolean upGrade) {
+        isUpGrade = upGrade;
     }
 
     public String getSegment() {
@@ -32,28 +33,36 @@ public class StuAimResultEntity {
         this.segment = segment;
     }
 
-    public String getAimNumber() {
+    public int getSegmentType() {
+        return segmentType;
+    }
+
+    public void setSegmentType(int segmentType) {
+        this.segmentType = segmentType;
+    }
+
+    public int getAimNumber() {
         return aimNumber;
     }
 
-    public void setAimNumber(String aimNumber) {
+    public void setAimNumber(int aimNumber) {
         this.aimNumber = aimNumber;
     }
 
-    public String getStar() {
+    public int getStar() {
         return star;
     }
 
-    public void setStar(String star) {
+    public void setStar(int star) {
         this.star = star;
     }
 
-    public String getIsDoneAim() {
+    public boolean isDoneAim() {
         return isDoneAim;
     }
 
-    public void setIsDoneAim(String isDoneAim) {
-        this.isDoneAim = isDoneAim;
+    public void setDoneAim(boolean doneAim) {
+        isDoneAim = doneAim;
     }
 
     public String getAimType() {

@@ -132,10 +132,10 @@ public class BetterMeReceiveTargetPager extends BasePager {
         tvReceiveTarUpdateTips.setText("还需完成" + mStuSegmentEntity.getAimNumber() + "场目标可升级");
 
         //设置当前段位的背景
-        int currentLevelIndex = getCurrentLevelIndex(mStuSegmentEntity.getSegment());
+        int currentLevelIndex = mStuSegmentEntity.getSegmentType() - 1;
         ivReceivetarCurrentLevel.setBackgroundResource(BetterMeConfig.LEVEL_IMAGE_RES_NOSTAR[currentLevelIndex]);
         //当前星星的数量
-        int currentStarsNumber = getCurrentStarsNumber(mStuSegmentEntity.getStar());
+        int currentStarsNumber = mStuSegmentEntity.getStar();
         //升段位需要的星星的数量
         int needsStarsNumber = BetterMeConfig.LEVEL_UPLEVEL_STARS[currentLevelIndex];
         switch (needsStarsNumber) {
@@ -242,29 +242,4 @@ public class BetterMeReceiveTargetPager extends BasePager {
             BetterExit.EnglishTeamPK.startPK(mContext, showPK);
         }
     };
-
-    /**
-     * 当前段位的索引
-     */
-    private int getCurrentLevelIndex(String level) {
-        for (int i = 0; i < BetterMeConfig.LEVEL_NAMES.length; i++) {
-            if (BetterMeConfig.LEVEL_NAMES[i].equals(level)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * 当前星星的数量
-     */
-    private int getCurrentStarsNumber(String star) {
-        int stasNumber = -1;
-        try {
-            stasNumber = Integer.parseInt(star);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return stasNumber;
-    }
 }

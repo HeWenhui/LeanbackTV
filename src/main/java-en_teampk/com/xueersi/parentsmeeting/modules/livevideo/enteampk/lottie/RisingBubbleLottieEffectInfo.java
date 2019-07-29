@@ -2,14 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.lottie;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.TeamPKBetterMeRewardsEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 
 /**
@@ -19,15 +14,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
  */
 public class RisingBubbleLottieEffectInfo extends LottieEffectInfo {
     private Context mContext;
-    private EnTeamPkRankEntity enTeamPkRankEntity;
+    private TeamPKBetterMeRewardsEntity entity;
     private static String LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/rising_bubble";
     private static String IMAGE_RES_PATH = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
     private static String JSON_PATH = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
 
-    public RisingBubbleLottieEffectInfo(Context context, EnTeamPkRankEntity enTeamPkRankEntity) {
+    public RisingBubbleLottieEffectInfo(Context context, TeamPKBetterMeRewardsEntity entity) {
         super(IMAGE_RES_PATH, JSON_PATH, "");
         this.mContext = context;
-        this.enTeamPkRankEntity = enTeamPkRankEntity;
+        this.entity = entity;
     }
 
     @Override

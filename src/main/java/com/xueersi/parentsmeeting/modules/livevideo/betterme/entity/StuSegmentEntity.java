@@ -13,24 +13,15 @@ public class StuSegmentEntity {
     /**
      * 段位的星星数
      */
-    private String star;
+    private int star;
     /**
      * 剩余需要完成多少任务可以得到下一个星星
      */
-    private String aimNumber;
+    private int aimNumber;
     /**
      * 学生累计完成目标的次数
      */
-    private String sumCount;
-    private String segmentType;
-
-    public String getSegmentType() {
-        return segmentType;
-    }
-
-    public void setSegmentType(String segmentType) {
-        this.segmentType = segmentType;
-    }
+    private int sumCount;
 
     public String getSegment() {
         return segment;
@@ -40,27 +31,39 @@ public class StuSegmentEntity {
         this.segment = segment;
     }
 
-    public String getStar() {
+    public int getStar() {
         return star;
     }
 
-    public void setStar(String star) {
+    public void setStar(int star) {
         this.star = star;
     }
 
-    public String getAimNumber() {
+    public int getAimNumber() {
         return aimNumber;
     }
 
-    public void setAimNumber(String aimNumber) {
+    public void setAimNumber(int aimNumber) {
         this.aimNumber = aimNumber;
     }
 
-    public String getSumCount() {
+    public int getSumCount() {
         return sumCount;
     }
 
-    public void setSumCount(String sumCount) {
+    public void setSumCount(int sumCount) {
         this.sumCount = sumCount;
     }
+
+    public int getSegmentType() {
+        return segmentType;
+    }
+
+    public void setSegmentType(int segmentType) {
+        this.segmentType = segmentType;
+    }
+
+    private int segmentType;
+
+
 }

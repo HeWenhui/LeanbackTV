@@ -251,8 +251,8 @@ public class RolePlayerSelfItem extends RolePlayerItem {
             StuSegmentEntity stuSegmentEntity = ProxUtil.getProxUtil().get(mContext, BetterMeContract
                     .BetterMePresenter.class).getStuSegmentEntity();
             if (stuSegmentEntity != null) {
-                int segmentType = Integer.valueOf(stuSegmentEntity.getSegmentType());
-                int star = Integer.valueOf(stuSegmentEntity.getStar());
+                int segmentType = stuSegmentEntity.getSegmentType();
+                int star = stuSegmentEntity.getStar();
                 BetterMeUtil.addSegment(ivUserSegment, segmentType, star);
             }
         }

@@ -288,14 +288,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveGetInfo.BetterMe betterMe = getInfo.getBetterMe();
         betterMe.setArriveLate("1".equals(data.optString("isArriveLate")));
         betterMe.setUseBetterMe("1".equals(data.optString("isUseBetterMe")));
-        StuSegmentEntity stuSegmentEntity = new StuSegmentEntity();
-        stuSegmentEntity.setAimNumber(data.optString("segment"));
-        stuSegmentEntity.setSegmentType(data.optString("segmentType"));
-        stuSegmentEntity.setStar(data.optString("star"));
-        stuSegmentEntity.setAimNumber(data.optString("aimNumber"));
-        stuSegmentEntity.setSumCount(data.optString("sumCount"));
-        betterMe.setStuSegment(stuSegmentEntity);
-
+        try {
+            StuSegmentEntity stuSegmentEntity = new StuSegmentEntity();
+            stuSegmentEntity.setSegment(data.getString("segment"));
+            stuSegmentEntity.setSegmentType(data.getInt("segmentType"));
+            stuSegmentEntity.setStar(data.getInt("star"));
+            stuSegmentEntity.setAimNumber(data.getInt("aimNumber"));
+            stuSegmentEntity.setSumCount(data.getInt("sumCount"));
+            betterMe.setStuSegment(stuSegmentEntity);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -2604,11 +2607,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         try {
             StuSegmentEntity stuSegmentEntity = new StuSegmentEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-            stuSegmentEntity.setAimNumber(jsonObject.getString("aimNumber"));
+            stuSegmentEntity.setAimNumber(jsonObject.getInt("aimNumber"));
             stuSegmentEntity.setSegment(jsonObject.getString("segment"));
-            stuSegmentEntity.setSegmentType(jsonObject.getString("segmentType"));
-            stuSegmentEntity.setStar(jsonObject.getString("star"));
-            stuSegmentEntity.setSumCount(jsonObject.getString("sumCount"));
+            stuSegmentEntity.setSegmentType(jsonObject.getInt("segmentType"));
+            stuSegmentEntity.setStar(jsonObject.getInt("star"));
+            stuSegmentEntity.setSumCount(jsonObject.getInt("sumCount"));
             return  stuSegmentEntity;
         } catch (Exception e) {
             e.printStackTrace();
@@ -2667,11 +2670,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         try {
             StuAimResultEntity stuAimResultEntity = new StuAimResultEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-            stuAimResultEntity.setIsUpGrade(jsonObject.getString("isUpGrade"));
+            stuAimResultEntity.setUpGrade("1".equals(jsonObject.getString("isUpGrade")));
             stuAimResultEntity.setSegment(jsonObject.getString("segment"));
-            stuAimResultEntity.setAimNumber(jsonObject.getString("aimNumber"));
-            stuAimResultEntity.setStar(jsonObject.getString("star"));
-            stuAimResultEntity.setIsDoneAim(jsonObject.getString("isDoneAim"));
+            stuAimResultEntity.setSegmentType(jsonObject.getInt("segmentType"));
+            stuAimResultEntity.setAimNumber(jsonObject.getInt("aimNumber"));
+            stuAimResultEntity.setStar(jsonObject.getInt("star"));
+            stuAimResultEntity.setDoneAim("1".equals(jsonObject.getString("isDoneAim")));
             stuAimResultEntity.setAimType(jsonObject.getString("aimType"));
             stuAimResultEntity.setRealTimeVal(jsonObject.getString("realTimeVal"));
             stuAimResultEntity.setAimValue(jsonObject.getString("aimValue"));

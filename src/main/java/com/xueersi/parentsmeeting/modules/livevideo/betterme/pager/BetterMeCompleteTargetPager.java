@@ -128,7 +128,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
             reult = BetterMeUtil.secondToMinite(reult);
             target = BetterMeUtil.secondToMinite(target);
         }
-        if ("1".equals(mStuAimResultEntity.getIsDoneAim())) {
+        if (mStuAimResultEntity.isDoneAim()) {
 //            tvAimValue.setText("已完成目标");
             tvAimValue.setText("目标" + target);
             pgComeletetar.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
@@ -148,10 +148,10 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         tvCurrentLevel.setText(mStuAimResultEntity.getSegment() + mStuAimResultEntity.getStar() + "级");
         tvLevelUpgraded.setText("还需完成" + mStuAimResultEntity.getAimNumber() + "场目标可升级");
         //设置当前段位的背景
-        int currentLevelIndex = getCurrentLevelIndex(mStuAimResultEntity.getSegment());
+        int currentLevelIndex = mStuAimResultEntity.getSegmentType() - 1;
         ivCurrentLevel.setBackgroundResource(BetterMeConfig.LEVEL_IMAGE_RES_NOSTAR[currentLevelIndex]);
         //当前星星的数量
-        int currentStarsNumber = getCurrentStarsNumber(mStuAimResultEntity.getStar());
+        int currentStarsNumber = mStuAimResultEntity.getStar();
         //升段位需要的星星的数量
         int needsStarsNumber = BetterMeConfig.LEVEL_UPLEVEL_STARS[currentLevelIndex];
         switch (needsStarsNumber) {
@@ -214,11 +214,11 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         }
 
         //小目标完成失败
-        if ("0".equals(mStuAimResultEntity.getIsDoneAim())) {
+        if ("0".equals(mStuAimResultEntity.isDoneAim())) {
             onTargetFail();
         }
         //段位升级
-        if ("1".equals(mStuAimResultEntity.getIsUpGrade())) {
+        if ("1".equals(mStuAimResultEntity.isUpGrade())) {
             onUpgradeLevel();
         }
     }

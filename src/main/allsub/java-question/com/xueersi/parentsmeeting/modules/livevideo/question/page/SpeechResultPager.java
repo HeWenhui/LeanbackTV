@@ -143,8 +143,8 @@ public class SpeechResultPager extends LiveBasePager {
             StuSegmentEntity stuSegmentEntity = ProxUtil.getProxUtil().get(mContext, BetterMeContract
                     .BetterMePresenter.class).getStuSegmentEntity();
             if (stuSegmentEntity != null) {
-                int segmentType = Integer.valueOf(stuSegmentEntity.getSegmentType()) - 1;
-                int star = Integer.valueOf(stuSegmentEntity.getStar()) - 1;
+                int segmentType = Integer.valueOf(stuSegmentEntity.getSegmentType());
+                int star = Integer.valueOf(stuSegmentEntity.getStar());
                 BetterMeUtil.addSegment(ivUserSegment, segmentType, star);
             }
         }
