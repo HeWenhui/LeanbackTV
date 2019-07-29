@@ -13,7 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
  * @Author zhangyuansun
  * @Description 小目标引用其他业务入口
  */
-public class BetterExit {
+public class BetterMeExit {
     public static class EnglishTeamPK {
         /*
          * 开始战队PK分队仪式

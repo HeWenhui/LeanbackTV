@@ -2184,8 +2184,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     public void getBetterMe(String liveId, String courseId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("liveId", "" + liveId);
-        params.addBodyParam("courseId", "" + courseId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_BETTER_ME, params, requestCallBack);
     }
 
@@ -2199,8 +2199,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     public void getStuAimRealTimeVal(String liveId, String courseId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("liveId", "" + liveId);
-        params.addBodyParam("courseId", "" + courseId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_AIM_REALTIME_VAL, params, requestCallBack);
     }
 
@@ -2214,8 +2214,24 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     public void getStuAimResult(String liveId, String courseId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("liveId", "" + liveId);
-        params.addBodyParam("courseId", "" + courseId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_AIM_RESULT, params, requestCallBack);
+    }
+
+
+    /**
+     * 英语小目标 - 获取小目标能量加成
+     *
+     * @param liveId
+     * @param courseId
+     * @param requestCallBack
+     */
+    public void getBetterMeAndPkMiddlePage(String liveId, String courseId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_BETTER_ME_AND_PK_MIDDLE_PAGE, params, requestCallBack);
     }
 }

@@ -190,7 +190,7 @@ public class EnStandAchievePager extends LiveBasePager {
             onBetterMeLate();
         }
         if (betterMe.isUseBetterMe() && !betterMe.isArriveLate()) {
-            if (betterMe.getCurrent() != null) {
+            if (betterMe.getTarget() != null) {
                 onReceiveBetterMe(betterMe.getTarget(), false);
                 realTimeVal = "0";
             }

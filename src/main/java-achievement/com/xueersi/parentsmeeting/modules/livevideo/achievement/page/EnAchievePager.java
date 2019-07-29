@@ -154,7 +154,7 @@ public class EnAchievePager extends LiveBasePager {
             onBetterMeLate();
         }
         if (betterMe.isUseBetterMe() && !betterMe.isArriveLate()) {
-            if (betterMe.getCurrent() != null) {
+            if (betterMe.getTarget() != null) {
                 onReceiveBetterMe(betterMe.getTarget(), false);
             }
             if (betterMe.getCurrent() != null) {
@@ -223,7 +223,6 @@ public class EnAchievePager extends LiveBasePager {
         }
         if (myTotal + otherTotal != 0) {
             int progress = (int) ((float) myTotal * 100 / (float) (myTotal + otherTotal));
-            logger.d("updateEnpk:progress=" + progress + "," + pgAchivePk.getProgress());
             setEngPro(progress);
         }
     }

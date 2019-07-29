@@ -32,4 +32,6 @@ public class LiveVideoHttpEnConfig {
     public static String URL_LIVE_GET_STU_AIM_REALTIME_VAL = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getStuAimRealTimeVal";
     /** 英语小目标 -获取小目标结果 */
     public static String URL_LIVE_GET_STU_AIM_RESULT = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getStuAimResult";
+    /** 英语小目标 -获取小目标能量加成 */
+    public static String URL_LIVE_GET_BETTER_ME_AND_PK_MIDDLE_PAGE = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getBetterMeAndPkMiddlePage";
 }

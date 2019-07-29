@@ -3,7 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.TeamPKBetterMeRewardsEntity;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnergyBonusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
@@ -37,8 +39,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.EvaluateContent;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
@@ -85,7 +85,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -2127,6 +2126,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                     teamMemberEntity.name = jsonObject1.optString("stu_name");
                     teamMemberEntity.headurl = jsonObject1.optString("stu_head");
+                    teamMemberEntity.setSegmentType(jsonObject1.optInt("segment_type"));
+                    teamMemberEntity.setStar(jsonObject1.optInt("star"));
                     aTeamMemberEntity.add(teamMemberEntity);
                 }
             }
@@ -2145,8 +2146,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     teamMemberEntity.name = jsonObject1.optString("stu_name");
                     teamMemberEntity.headurl = jsonObject1.optString("stu_head");
                     teamMemberEntity.setNick_name(jsonObject1.optString("nick_name"));
-                    teamMemberEntity.setSegmentType(jsonObject1.optInt("segment_tyoe",1));
-                    teamMemberEntity.setStar(jsonObject1.optInt("star",1));
+                    teamMemberEntity.setSegmentType(jsonObject1.optInt("segment_type"));
+                    teamMemberEntity.setStar(jsonObject1.optInt("star"));
                     bTeamMemberEntity.add(teamMemberEntity);
                 }
             }
@@ -2688,18 +2689,59 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
 
     /**
-     * 英语小目标 - 战队PK小目标中间页
+     * 英语小目标 - 小目标战队PK中间页
      *
      * @param responseEntity
      * @return
      */
-    public TeamPKBetterMeRewardsEntity parseBetterMeAndPkMiddlePageInfo(ResponseEntity responseEntity) {
+    public BetterMeEnergyBonusEntity parseBetterMeAndPkMiddlePage(ResponseEntity responseEntity) {
         try {
-            TeamPKBetterMeRewardsEntity entity = new TeamPKBetterMeRewardsEntity();
+            BetterMeEnergyBonusEntity energyBonusEntity = new BetterMeEnergyBonusEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-            return  entity;
+
+            JSONObject stuInfo = jsonObject.getJSONObject("stuInfo");
+            JSONArray myTeam = stuInfo.getJSONArray("a");
+            if (myTeam != null) {
+                for (int i = 0; i < myTeam.length(); i++) {
+                    JSONObject member = myTeam.getJSONObject(i);
+                    TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                    teamMemberEntity.id = member.optInt("stuId");
+                    teamMemberEntity.name = member.optString("name");
+                    teamMemberEntity.headurl = member.optString("head");
+                    teamMemberEntity.setEnergy(member.optInt("energy"));
+                    energyBonusEntity.getMyTeamMemberList().add(teamMemberEntity);
+                }
+            }
+
+            JSONArray opTeam = stuInfo.getJSONArray("b");
+            if (opTeam != null) {
+                for (int i = 0; i < opTeam.length(); i++) {
+                    JSONObject member = opTeam.getJSONObject(i);
+                    TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                    teamMemberEntity.id = member.optInt("stuId");
+                    teamMemberEntity.name = member.optString("name");
+                    teamMemberEntity.headurl = member.optString("head");
+                    teamMemberEntity.setEnergy(member.optInt("energy"));
+                    energyBonusEntity.getOpTeamBMemberList().add(teamMemberEntity);
+                }
+            }
+
+            JSONObject total = jsonObject.getJSONObject("total");
+            JSONObject a = total.getJSONObject("a");
+            energyBonusEntity.setMyTeamId(a.getInt("PkHeadTeamId"));
+            energyBonusEntity.setMyTeamTotal(a.getInt("total"));
+            energyBonusEntity.setMyTeamBetterMeTotal(a.getInt("betterMeTotal"));
+
+            JSONObject b = total.getJSONObject("b");
+            energyBonusEntity.setMyTeamId(b.getInt("PkHeadTeamId"));
+            energyBonusEntity.setMyTeamTotal(b.getInt("total"));
+            energyBonusEntity.setMyTeamBetterMeTotal(b.getInt("betterMeTotal"));
+
+            return energyBonusEntity;
         } catch (Exception e) {
             e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseBetterMeAndPkMiddlePage", e.getMessage());
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return null;
     }

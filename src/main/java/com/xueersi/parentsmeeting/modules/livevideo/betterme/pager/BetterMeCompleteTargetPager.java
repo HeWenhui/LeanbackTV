@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.BetterExit;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
@@ -214,11 +213,11 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         }
 
         //小目标完成失败
-        if ("0".equals(mStuAimResultEntity.isDoneAim())) {
+        if (!mStuAimResultEntity.isDoneAim()) {
             onTargetFail();
         }
         //段位升级
-        if ("1".equals(mStuAimResultEntity.isUpGrade())) {
+        if (mStuAimResultEntity.isUpGrade()) {
             onUpgradeLevel();
         }
     }
@@ -232,7 +231,6 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
                     mCountDownTimer.cancel();
                 }
                 mOnpagerClose.onClose(BetterMeCompleteTargetPager.this);
-                BetterExit.EnglishTeamPK.endPK(mContext);
             }
         });
         ivLevelIndroduction.setOnClickListener(new View.OnClickListener() {
@@ -264,7 +262,6 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         @Override
         public void onFinish() {
             mOnpagerClose.onClose(BetterMeCompleteTargetPager.this);
-            BetterExit.EnglishTeamPK.endPK(mContext);
         }
     };
 

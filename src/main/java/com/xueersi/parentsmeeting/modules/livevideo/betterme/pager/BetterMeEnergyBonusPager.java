@@ -2,8 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.pager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,22 +16,21 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.TeamPKBetterMeRewardsEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnergyBonusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.lottie.RisingBubbleLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.lottie.RisingBubbleLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 完成目标奖励
+ * 小目标战队能量加成页面
  */
-public class TeamPkBetterMeRewardsPager extends LiveBasePager {
-    private TeamPKBetterMeRewardsEntity entity;
+public class BetterMeEnergyBonusPager extends LiveBasePager {
+    private BetterMeEnergyBonusEntity entity;
     private ProgressBar pgTeampkLead;
     private View rlTeampkLeadLeft;
     private View rlTeampkLeadRight;
@@ -48,13 +45,14 @@ public class TeamPkBetterMeRewardsPager extends LiveBasePager {
     private LottieAnimationView mLottieView;
     private int pattern;
     private float finalFprog;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private OnBettePagerClose onPagerClose;
 
-    public TeamPkBetterMeRewardsPager(Context context, int pattern, TeamPKBetterMeRewardsEntity entity, OnPagerClose onPagerClose) {
-        super(context, false);
+    public BetterMeEnergyBonusPager(Context context, int pattern, BetterMeEnergyBonusEntity entity, OnBettePagerClose
+            onBettePagerClose) {
+        super(context);
         this.entity = entity;
         this.pattern = pattern;
-        this.onPagerClose = onPagerClose;
+        this.onPagerClose = onBettePagerClose;
         initData();
     }
 
@@ -73,38 +71,38 @@ public class TeamPkBetterMeRewardsPager extends LiveBasePager {
         tvTeampkLeadScoreRight = view.findViewById(R.id.tv_livevideo_en_teampk_lead_score_right);
         tvClose = view.findViewById(R.id.tv_livevideo_en_teampk_betterme_rewards_close);
         mLottieView = view.findViewById(R.id.lav_livevideo_en_teampk_betterme_rewards_bubble);
-        if (pattern == LiveVideoConfig.LIVE_PATTERN_COMMON) {
-            //三分屏
-            view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_4_3);
-        } else if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
-            //全身直播
-            view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_16_9);
-        }
         return view;
     }
 
     @Override
     public void initData() {
-//        int[] res = EnTeamPkConfig.TEAM_RES;
-//        ivTeampkMine.setImageResource(res[enTeamPkRankEntity.getMyTeam()]);
-//        int progress = 50;
-//        float fprog = 0.5f;
-//        int total = enTeamPkRankEntity.getMyTeamTotal() + enTeamPkRankEntity.getOpTeamTotal();
-//        ivTeampkOther.setImageResource(res[enTeamPkRankEntity.getBpkTeamId()]);
-//        tvTeampkLeadFireAddLeft.setText("+" + enTeamPkRankEntity.getMyTeamCurrent());
-//        tvTeampkLeadScoreLeft.setText("" + enTeamPkRankEntity.getMyTeamTotal());
-//        ivTeampkLeadFireAddRight.setText("+" + enTeamPkRankEntity.getOpTeamCurrent());
-//        tvTeampkLeadScoreRight.setText("" + enTeamPkRankEntity.getOpTeamTotal());
-//        if (total != 0) {
-//            fprog = (float) (enTeamPkRankEntity.getMyTeamTotal()) / (float) (total);
-//            progress = (int) ((float) (enTeamPkRankEntity.getMyTeamTotal() * 100) / (float) (total));
-//        }
+        if (pattern == LiveVideoConfig.LIVE_PATTERN_COMMON) {
+            //三分屏
+            mView.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_4_3);
+        } else if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+            //全身直播
+            mView.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_16_9);
+        }
+        int[] res = EnTeamPkConfig.TEAM_RES;
+        ivTeampkMine.setImageResource(res[entity.getMyTeamId()]);
+        int progress = 50;
+        float fprog = 0.5f;
+        int total = entity.getMyTeamTotal() + entity.getOpTeamTotal();
+        ivTeampkOther.setImageResource(res[entity.getOpTeamId()]);
+        tvTeampkLeadFireAddLeft.setText("+" + entity.getMyTeamBetterMeTotal());
+        tvTeampkLeadScoreLeft.setText("" + entity.getMyTeamTotal());
+        ivTeampkLeadFireAddRight.setText("+" + entity.getOpTeamTotal());
+        tvTeampkLeadScoreRight.setText("" + entity.getOpTeamTotal());
+        if (total != 0) {
+            fprog = (float) (entity.getMyTeamTotal()) / (float) (total);
+            progress = (int) ((float) (entity.getMyTeamTotal() * 100) / (float) (total));
+        }
         int closeDelay = 10000;
         final AtomicInteger integer = new AtomicInteger(closeDelay / 1000);
         int countDelay = 1000;
 
-//        pgTeampkLead.setProgress(progress);
-//        finalFprog = fprog;
+        pgTeampkLead.setProgress(progress);
+        finalFprog = fprog;
         final ViewTreeObserver viewTreeObserver = pgTeampkLead.getViewTreeObserver();
         viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -117,13 +115,13 @@ public class TeamPkBetterMeRewardsPager extends LiveBasePager {
                 return false;
             }
         });
-        handler.postDelayed(new Runnable() {
+        mainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 int count = integer.decrementAndGet();
                 if (count == 0) {
                     if (onPagerClose != null) {
-                        onPagerClose.onClose(TeamPkBetterMeRewardsPager.this);
+                        onPagerClose.onClose(BetterMeEnergyBonusPager.this);
                     } else {
                         ViewGroup group = (ViewGroup) mView.getParent();
                         if (group != null) {

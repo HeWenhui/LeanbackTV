@@ -9,18 +9,19 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.BetterMeExit;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.TeamPKBetterMeRewardsEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnergyBonusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeCompleteTargetPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeIntroductionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeLevelDisplayPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeReceiveTargetPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.TeamPkBetterMeRewardsPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeEnergyBonusPager;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 /**
  * 英语小目标 view层
@@ -44,6 +45,8 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
     public static final int PAGER_RECEIVE_TARGET = 3;
     private BasePager currentPager;
     private boolean showPK;
+    private int pattern;
+    private BasePager eneryBonusPager;
 
     public BetterMeViewImpl(Context context) {
         this.mContext = context;
@@ -96,6 +99,7 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
      */
     @Override
     public void showReceiveTargetPager(boolean showPK) {
+        this.showPK = showPK;
         if (rlBetterMeContent == null) {
             rlBetterMeContent = new RelativeLayout(mContext);
             if (mRootView != null) {
@@ -105,7 +109,6 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
         }
         currentPager = new BetterMeReceiveTargetPager(mBetterMePresenter.getStuSegmentEntity(), mBetterMePresenter
                 .getBetterMeEntity(), mContext, this);
-        ((BetterMeReceiveTargetPager) currentPager).setShowPK(showPK);
         rlBetterMeContent.addView(currentPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
@@ -128,20 +131,42 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
     }
 
     /**
-     * 小目标奖励页面
+     * 小目标能量加成页面
      */
-    public void showTeamPkBetterMeRewardsPager(int pattern) {
-        currentPager = new TeamPkBetterMeRewardsPager(mContext, pattern, new TeamPKBetterMeRewardsEntity(), new LiveBasePager
-                .OnPagerClose() {
-            @Override
-            public void onClose(LiveBasePager basePager) {
-                rlBetterMeContent.removeView(currentPager.getRootView());
+    @Override
+    public void showEnergyBonusPager(int pattern, BetterMeEnergyBonusEntity energyBonusEntity) {
+        this.pattern = pattern;
+        if (rlBetterMeContent == null) {
+            rlBetterMeContent = new RelativeLayout(mContext);
+            if (mRootView != null) {
+                mRootView.addView(rlBetterMeContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
             }
-        });
-        rlBetterMeContent.addView(currentPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        if (pattern == LiveVideoConfig.LIVE_PATTERN_COMMON) {
+            layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
+        }
+        eneryBonusPager = new BetterMeEnergyBonusPager(mContext, pattern, energyBonusEntity, this);
+        rlBetterMeContent.addView(eneryBonusPager.getRootView(), layoutParams);
     }
 
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (eneryBonusPager != null) {
+            if (pattern == LiveVideoConfig.LIVE_PATTERN_COMMON) {
+                View mView = eneryBonusPager.getRootView();
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mView.getLayoutParams();
+                int rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
+                if (layoutParams.rightMargin != rightMargin) {
+                    layoutParams.rightMargin = rightMargin;
+                    mView.setLayoutParams(layoutParams);
+                    ((BetterMeEnergyBonusPager) eneryBonusPager).setVideoLayout();
+                }
+            }
+        }
+    }
 
     @Override
     public void setPresenter(BetterMeContract.BetterMePresenter presenter) {
@@ -157,9 +182,16 @@ public class BetterMeViewImpl implements BetterMeContract.BetterMeView, OnBetteP
     public void onClose(BasePager basePager) {
         if (basePager instanceof BetterMeLevelDisplayPager) {
             currentPager.getRootView().setVisibility(View.VISIBLE);
-            if (rlBetterMeContent != null) {
-                rlBetterMeContent.removeView(basePager.getRootView());
-            }
+            rlBetterMeContent.removeView(basePager.getRootView());
+        } else if (basePager instanceof BetterMeReceiveTargetPager) {
+            rlBetterMeContent.removeAllViews();
+            BetterMeExit.EnglishTeamPK.startPK(mContext, showPK);
+        } else if (basePager instanceof BetterMeCompleteTargetPager) {
+            rlBetterMeContent.removeAllViews();
+            mBetterMePresenter.getBetterMeAndPkMiddlePage();
+        } else if (basePager instanceof BetterMeEnergyBonusPager) {
+            rlBetterMeContent.removeAllViews();
+            BetterMeExit.EnglishTeamPK.endPK(mContext);
         } else {
             rlBetterMeContent.removeAllViews();
         }

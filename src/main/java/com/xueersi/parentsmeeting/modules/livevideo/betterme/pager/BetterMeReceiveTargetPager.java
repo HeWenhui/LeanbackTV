@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.BetterExit;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
@@ -75,12 +74,6 @@ public class BetterMeReceiveTargetPager extends BasePager {
      * 下一段位布局
      */
     private LinearLayout llReveivetarNextLevel;
-
-    public void setShowPK(boolean showPK) {
-        this.showPK = showPK;
-    }
-
-    private boolean showPK;
 
     public BetterMeReceiveTargetPager(StuSegmentEntity stuSegmentEntity, BetterMeEntity betterMeEntity, Context context, OnBettePagerClose onBettePagerClose) {
         super(context);
@@ -213,7 +206,6 @@ public class BetterMeReceiveTargetPager extends BasePager {
                     mCountDownTimer.cancel();
                 }
                 onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
-                BetterExit.EnglishTeamPK.startPK(mContext, showPK);
             }
         });
     }
@@ -239,7 +231,6 @@ public class BetterMeReceiveTargetPager extends BasePager {
         @Override
         public void onFinish() {
             onBettePagerClose.onClose(BetterMeReceiveTargetPager.this);
-            BetterExit.EnglishTeamPK.startPK(mContext, showPK);
         }
     };
 }

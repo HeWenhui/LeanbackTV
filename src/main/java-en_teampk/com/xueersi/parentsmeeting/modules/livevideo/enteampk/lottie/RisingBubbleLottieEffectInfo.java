@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.TeamPKBetterMeRewardsEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnergyBonusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 
 /**
@@ -14,12 +14,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
  */
 public class RisingBubbleLottieEffectInfo extends LottieEffectInfo {
     private Context mContext;
-    private TeamPKBetterMeRewardsEntity entity;
-    private static String LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/rising_bubble";
+    private BetterMeEnergyBonusEntity entity;
+    private static String LOTTIE_RES_ASSETS_ROOTDIR = "en_better_me/rising_bubble";
     private static String IMAGE_RES_PATH = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
     private static String JSON_PATH = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
 
-    public RisingBubbleLottieEffectInfo(Context context, TeamPKBetterMeRewardsEntity entity) {
+    public RisingBubbleLottieEffectInfo(Context context, BetterMeEnergyBonusEntity entity) {
         super(IMAGE_RES_PATH, JSON_PATH, "");
         this.mContext = context;
         this.entity = entity;
