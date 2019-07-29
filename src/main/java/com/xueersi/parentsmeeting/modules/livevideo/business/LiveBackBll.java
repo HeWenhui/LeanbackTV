@@ -385,6 +385,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     liveGetInfo.getStudentLiveInfo().setGroupId(liveInfo.optString("team_id"));
                     liveGetInfo.getStudentLiveInfo().setTeamId(liveInfo.optString("team_id"));
                 }
+                liveGetInfo.setEducationStage(liveInfo.optString("educationStage", "0"));
                 //解析学科id
                 if (liveInfo.has("subject_ids")) {
                     String strSubjIds = liveInfo.getString("subject_ids");
@@ -797,8 +798,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         } else {
             mData.put("livetype", "" + 3);
         }
-        mData.put("clits", "" + System.currentTimeMillis());
+        mData.put("timestamp", "" + System.currentTimeMillis());
 //        Loger.d(mContext, eventId, mData, true);
+        setLogParam(mData);
         UmsAgentManager.umsAgentDebug(activity, appID, eventId, mData);
     }
 
@@ -814,7 +816,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             mData.put("livetype", "" + 3);
         }
         mData.put("eventid", "" + eventId);
-        mData.put("clits", "" + System.currentTimeMillis());
+        mData.put("timestamp", "" + System.currentTimeMillis());
+        setLogParam(mData);
         UmsAgentManager.umsAgentOtherBusiness(activity, appID, UmsConstants.uploadBehavior, mData);
     }
 
@@ -830,8 +833,32 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             mData.put("livetype", "" + 3);
         }
         mData.put("eventid", "" + eventId);
-        mData.put("clits", "" + System.currentTimeMillis());
+        mData.put("timestamp", "" + System.currentTimeMillis());
+        setLogParam(mData);
         UmsAgentManager.umsAgentOtherBusiness(activity, appID, UmsConstants.uploadShow, mData);
+    }
+
+    /**
+     * 上传log 添加 公共参数
+     *
+     * @param mData
+     */
+    private void setLogParam(Map<String, String> mData) {
+        mData.put("ip", "" + IpAddressUtil.USER_IP);
+        if (mGetInfo == null) {
+            return;
+        }
+        String educationstage = mGetInfo.getEducationStage();
+        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
+            mData.put("gradejudgment", "primary");
+        } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
+            mData.put("gradejudgment", "middle");
+        }
+        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+        if (studentLiveInfo != null) {
+            mData.put("classid", "" + studentLiveInfo.getClassId());
+            mData.put("teamid", "" + studentLiveInfo.getTeamId());
+        }
     }
 
     @Override
