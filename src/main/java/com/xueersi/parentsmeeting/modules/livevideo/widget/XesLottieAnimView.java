@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -16,7 +17,6 @@ import android.util.AttributeSet;
 import android.util.JsonReader;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.animation.Animation;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
@@ -51,6 +51,11 @@ public class XesLottieAnimView extends LottieAnimationView {
     private int targetImgDesinWidth;
     private int targetImgDesinHeight;
     /**
+     * 绘制能点击的图片：避免用户无法交互的问题（待线上测试稳定后可去掉）
+     */
+    private static final boolean DRAW_FAKE_IMG = true;
+    private boolean drawFakImg;
+    /**
      * 目标图片点击区域是否已经初始化
      **/
     boolean areaClickInfoInited = false;
@@ -75,6 +80,8 @@ public class XesLottieAnimView extends LottieAnimationView {
     private int mTargetImgState = STATE_NOR;
     private Bitmap targetBitmapNor;
     private Bitmap targetBitmapPres;
+
+    private Bitmap fakeBitmap;
     private int mTargetImgNorResId;
     private int mTargetImgClickResId;
 
@@ -82,6 +89,12 @@ public class XesLottieAnimView extends LottieAnimationView {
      * 动画脚本是否加载完毕
      **/
     private boolean lottieCompostionLoaded;
+    /**
+     * 目标图片透明站位图
+     **/
+    private Bitmap mTransparent;
+    private Paint mBitmapPaint;
+    private Rect mFakeBitmapRect;
 
     public XesLottieAnimView(Context context) {
         this(context, null);
@@ -110,6 +123,42 @@ public class XesLottieAnimView extends LottieAnimationView {
                 initTragetImgClickInfo();
             }
         });
+
+        if (DRAW_FAKE_IMG) {
+            this.addAnimatorListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    //Log.e("ckTrac", "=====>onAnimationStart");
+                    drawFakImg = false;
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (!TextUtils.isEmpty(mTargetImgName)) {
+                        if (targetImgDesinWidth != 0 && targetImgDesinHeight != 0) {
+                            if (mTransparent == null) {
+                                mTransparent = Bitmap.createBitmap(targetImgDesinWidth, targetImgDesinHeight,
+                                        Bitmap.Config.ARGB_4444);
+                            }
+                           // Log.e("ckTrac", "=====>onAnimationEnd");
+                            drawFakImg = true;
+                            updateBitmap(mTargetImgName, mTransparent);
+                        }
+                    }
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+        }
+
     }
 
     @Override
@@ -154,15 +203,7 @@ public class XesLottieAnimView extends LottieAnimationView {
     private void resetInfo() {
         mTargetImgState = STATE_NOR;
         areaClickInfoInited = false;
-        if (targetBitmapNor != null) {
-            targetBitmapNor.recycle();
-            targetBitmapNor = null;
-        }
 
-        if (targetBitmapPres != null) {
-            targetBitmapPres.recycle();
-            targetBitmapPres = null;
-        }
         targetImgDesinWidth = 0;
         targetImgDesinHeight = 0;
     }
@@ -217,10 +258,19 @@ public class XesLottieAnimView extends LottieAnimationView {
             }
             //设置新目标图片时 需重新 初始化位置信息
             if (!imgName.equals(mTargetImgName)) {
-                mTargetImgName = imgName;
                 if (lottieCompostionLoaded) {
                     resetInfo();
+                    //恢复之前替换的图片
+                    updateTargeImgArea(STATE_NOR);
+                    //回收之前设置的点击态图片
+                    if (targetBitmapPres != null) {
+                        targetBitmapPres.recycle();
+                        targetBitmapPres = null;
+                    }
+                    mTargetImgName = imgName;
                     initTragetImgClickInfo();
+                } else {
+                    mTargetImgName = imgName;
                 }
                 //刷新
                 invalidate();
@@ -233,11 +283,40 @@ public class XesLottieAnimView extends LottieAnimationView {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+        calculateClickRect(canvas);
         if (debug) {
             drawClickArea(canvas);
         }
-        calculateClickRect(canvas);
+        if (DRAW_FAKE_IMG) {
+            drawFakeImg(canvas);
+        }
     }
+
+    /**
+     * 重新绘制目标图片
+     **/
+    private void drawFakeImg(Canvas canvas) {
+        initBitmPaintInneed();
+        if (mTargetClickRect != null && drawFakImg && fakeBitmap != null) {
+            if (mFakeBitmapRect == null) {
+                mFakeBitmapRect = new Rect();
+            }
+            mFakeBitmapRect.left = 0;
+            mFakeBitmapRect.top = 0;
+            mFakeBitmapRect.right = fakeBitmap.getWidth();
+            mFakeBitmapRect.bottom = fakeBitmap.getHeight();
+            canvas.drawBitmap(fakeBitmap, mFakeBitmapRect, mTargetClickRect, mBitmapPaint);
+        }
+    }
+
+    private void initBitmPaintInneed() {
+        if (mBitmapPaint == null) {
+            mBitmapPaint = new Paint();
+            mBitmapPaint.setAntiAlias(true);
+            mBitmapPaint.setFilterBitmap(true);
+        }
+    }
+
 
     /**
      * 计算目标图片可点击区域
@@ -336,8 +415,8 @@ public class XesLottieAnimView extends LottieAnimationView {
      * @param presResId 点击态资源图片id
      */
     public void setTargeImgRes(int norResId, int presResId) {
-           mTargetImgClickResId = presResId;
-           mTargetImgNorResId = norResId;
+        mTargetImgClickResId = presResId;
+        mTargetImgNorResId = norResId;
         if (targetImgDesinWidth != 0 && targetImgDesinHeight != 0) {
             generateTargetImgStateRes(targetImgDesinWidth, targetImgDesinHeight);
         }
@@ -432,9 +511,10 @@ public class XesLottieAnimView extends LottieAnimationView {
         if (targetImgDesinWidth == 0 || targetImgDesinHeight == 0) {
             if (this.getComposition() != null) {
                 Map<String, LottieImageAsset> imgMap = this.getComposition().getImages();
-                if (imgMap != null && imgMap.size() > 0) {
-                    targetImgDesinWidth = imgMap.get(mTargetImgName).getWidth();
-                    targetImgDesinHeight = imgMap.get(mTargetImgName).getHeight();
+                LottieImageAsset imageAsset = null;
+                if (imgMap != null && imgMap.size() > 0  && (imageAsset=imgMap.get(mTargetImgName))!= null) {
+                    targetImgDesinWidth = imageAsset.getWidth();
+                    targetImgDesinHeight = imageAsset.getHeight();
                 }
                 Rect bounds = this.getComposition().getBounds();
                 //json 文件中的 画布尺寸
@@ -460,13 +540,13 @@ public class XesLottieAnimView extends LottieAnimationView {
             if (mTargetImgNorResId != 0) {
                 targetBitmapNor = BitmapFactory.decodeResource(getResources(), mTargetImgNorResId);
             }
-
             //缩放到目标图片尺寸
             if (targetBitmapPres != null) {
                 targetBitmapPres = Bitmap.createScaledBitmap(targetBitmapPres, imgWidth, imgHeight, true);
             }
             if (targetBitmapNor != null) {
                 targetBitmapNor = Bitmap.createScaledBitmap(targetBitmapNor, imgWidth, imgHeight, true);
+                fakeBitmap = targetBitmapNor;
             }
         }
     }
@@ -517,9 +597,19 @@ public class XesLottieAnimView extends LottieAnimationView {
         if (mTargetImgState != state) {
             mTargetImgState = state;
             if (mTargetImgState == STATE_NOR && targetBitmapNor != null) {
-                updateBitmap(mTargetImgName, targetBitmapNor);
+                if (!DRAW_FAKE_IMG) {
+                    updateBitmap(mTargetImgName, targetBitmapNor);
+                } else {
+                    fakeBitmap = targetBitmapNor;
+                    invalidate();
+                }
             } else if (mTargetImgState == STATE_PRESS && targetBitmapPres != null) {
-                updateBitmap(mTargetImgName, targetBitmapPres);
+                if (!DRAW_FAKE_IMG) {
+                    updateBitmap(mTargetImgName, targetBitmapPres);
+                } else {
+                    fakeBitmap = targetBitmapPres;
+                    invalidate();
+                }
             }
         }
     }
@@ -542,10 +632,12 @@ public class XesLottieAnimView extends LottieAnimationView {
             targetBitmapNor.recycle();
             targetBitmapNor = null;
         }
-
         if (targetBitmapPres != null) {
             targetBitmapPres.recycle();
             targetBitmapPres = null;
+        }
+        if (mFakeBitmapRect != null) {
+            mFakeBitmapRect = null;
         }
         mImgClickListener = null;
     }
