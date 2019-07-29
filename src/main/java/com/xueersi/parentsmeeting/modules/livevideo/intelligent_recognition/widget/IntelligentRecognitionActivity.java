@@ -14,6 +14,8 @@ import com.xueersi.common.base.XrsUiManagerInterface;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.UIData;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.ZipExtractorTask;
+import com.xueersi.lib.framework.utils.ZipProg;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.lib.unity3d.UnityCommandPlay;
@@ -21,9 +23,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.CommonRxObserver;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.AudioEvaluationDownload;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.EvaluationAudioPlayerDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.LocalFileRespository;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.Unity3DPlayManager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentLocalFileManager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.audio.EvaluationAudioPlayerDataManager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.unity_3d.Unity3DPlayManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
 
 import java.io.File;
@@ -33,6 +35,8 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.AUDIO_EVALUATE_FILE_NAME;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.AUDIO_EVALUATE_URL;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.UNITY3D_FILE_NAME_1_V_1;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.UNITY3D_FILE_NAME_2_V_1;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.UNITY_3D_FILE1_URL;
@@ -69,6 +73,8 @@ public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
         return null;
     }
 
+    private IntelligentRecognitionViewModel mViewModel;
+
     /**
      * @param savedInstanceState
      */
@@ -76,11 +82,25 @@ public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intelligent_recognition);
-        addUnity();
+        addViewModelData();
+        performAddUnity();
         addFragment();
         handleUnity3D();
     }
 
+    /**
+     * 添加ViewModel数据
+     */
+    private void addViewModelData() {
+        IntelligentRecognitionRecord intelligentRecognitionRecord =
+                getIntent().getParcelableExtra("intelligentRecognitionRecord");
+        mViewModel = ViewModelProviders.of(this).get(IntelligentRecognitionViewModel.class);
+        mViewModel.setRecordData(intelligentRecognitionRecord);
+    }
+
+    /**
+     * 处理Unity3D的消息
+     */
     private void handleUnity3D() {
         if (AppConfig.DEBUG) {
             Observable.
@@ -111,30 +131,120 @@ public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
 //        unityPlayer.setStateListAnimator();
     }
 
-    private void addUnity() {
-        downLoadUnityFromAli();
-//        downloadAudioFromAli();
+    /**
+     * 添加unity3D的资源文件，没有的话从远程下载
+     */
+    private void performAddUnity() {
+        addUnityView();
+        String unity3DUrl1 = IntelligentLocalFileManager.getInstance(this).getUnity3DEvaluateFile()
+                + File.separator + UNITY3D_FILE_NAME_1_V_1;
+        String unity3DUrl2 = IntelligentLocalFileManager.getInstance(this).getUnity3DEvaluateFile()
+                + File.separator + UNITY3D_FILE_NAME_2_V_1;
+        File unity3DFile1 = new File(unity3DUrl1);
+        File unity3DFile2 = new File(unity3DUrl2);
+//        try {
+//            MD5Utils.bytesToHex(new FileInputStream(unity3DFile1)., false);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        ByteString byteString = new ByteString();
+//        byteString.toByteArray()
+        logger.i(unity3DUrl1 + ":" + unity3DFile1.exists() + " " + unity3DUrl2 + ":" + unity3DFile2.exists());
+        logger.i(unity3DFile1.getTotalSpace() + " " + unity3DFile2.getTotalSpace());
+        if (unity3DFile1.exists() && unity3DFile2.exists()) {
+            handleAddUnity(unity3DUrl1);
+            handleAddUnity(unity3DUrl2);
+        } else {
+            downLoadUnityFromAli(unity3DUrl1, unity3DUrl2);
+        }
+        String audioZipPath = IntelligentLocalFileManager.getInstance(this).getAudioEvaluateFile()
+                + File.separator + AUDIO_EVALUATE_FILE_NAME;
+//        File audioFileZip = new File(audioPath);
+        File audioFile = IntelligentLocalFileManager.getInstance(IntelligentRecognitionActivity.this).getAudioEvaluateFile();
+        if (!audioFile.exists()) {
+            downloadAudioFromAli(audioZipPath);
+        } else {
+            initAudioPath();
+        }
 //        unityInit();
     }
 
-    private void downloadAudioFromAli() {
-        AudioEvaluationDownload.startDownLoad(this,
-                LocalFileRespository.getInstance(this).getAudioEvaluateFile()
-                        + File.separator + "ieAudio",
-                "https://wxapp.xesimg.com/Android/temp/ieAudio").
-                subscribe(new Consumer<String>() {
+    private void handleAddUnity(String url) {
+        UnityCommandPlay.downloadModel(url);
+    }
+
+    /**
+     * 从阿里服务器下载语音测评文件
+     */
+    private void downloadAudioFromAli(final String audioPath) {
+//        final String audioPath = IntelligentLocalFileManager.getInstance(this).getAudioEvaluateFile()
+//                + File.separator + AUDIO_EVALUATE_FILE_NAME;
+        AudioEvaluationDownload.startDownLoad(audioPath, AUDIO_EVALUATE_URL).
+                subscribe(new CommonRxObserver<String>() {
                     @Override
-                    public void accept(String s) throws Exception {
-                        EvaluationAudioPlayerDataManager.getInstance(IntelligentRecognitionActivity.this);
+                    public void onComplete() {
+                        super.onComplete();
+                        handleUnzip(audioPath);
                     }
                 });
     }
 
-    private void downLoadUnityFromAli() {
+    private void handleUnzip(final String audioPath) {
+        //下载完成解压
+        new ZipExtractorTask(new File(audioPath),
+                IntelligentLocalFileManager.getInstance(IntelligentRecognitionActivity.this).getAudioEvaluateFile(),
+                true,
+                new ZipProg() {
+                    @Override
+                    public void onProgressUpdate(Integer... values) {
+
+                    }
+
+                    @Override
+                    public void onPostExecute(Exception exception) {
+                        logger.i("start unzip : " + audioPath);
+                        if (exception != null) {
+                            logger.i("zip fail ");
+                            logger.e(exception.getMessage());
+                        } else {
+                            logger.i("zip success");
+                            initAudioPath();
+                        }
+                    }
+
+                    @Override
+                    public void setMax(int max) {
+
+                    }
+                }).execute();
+    }
+//    private boolean judgeAudioReady = false;
+
+    private void initAudioPath() {
+        logger.i("initAudioPath");
+        EvaluationAudioPlayerDataManager.
+                getInstance(this).
+                initAudioPath().
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new CommonRxObserver<File>() {
+                    @Override
+                    public void onComplete() {
+                        super.onComplete();
+                        logger.i("initAudioPath postValue:true");
+                        mViewModel.getIsEvaluationReady().setValue(true);
+                    }
+                });
+
+    }
+
+    /**
+     * 从阿里云服务器下载unity3D资源
+     */
+    private void downLoadUnityFromAli(String url1, String url2) {
 
 //        AudioEvaluationDownload.
 //                startDownLoad(this,
-//                        LocalFileRespository.getInstance(this).getUnity3DEvaluateFile()
+//                        IntelligentLocalFileManager.getInstance(this).getUnity3DEvaluateFile()
 //                                + File.separator + "monscene6",
 //                        "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/temp/monscene6").
 //                doOnNext(new Consumer<String>() {
@@ -152,7 +262,7 @@ public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
 //                });
 //        AudioEvaluationDownload.
 //                startDownLoad(this,
-//                        LocalFileRespository.getInstance(this).getUnity3DEvaluateFile()
+//                        IntelligentLocalFileManager.getInstance(this).getUnity3DEvaluateFile()
 //                                + File.separator + "monavater7",
 //                        "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/temp/monavater7").
 //                subscribe(new Consumer<String>() {
@@ -162,21 +272,19 @@ public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
 //                    }
 //                });
 
-        AudioEvaluationDownload.startDownLoad(this,
-                LocalFileRespository.getInstance(this).getUnity3DEvaluateFile()
-                        + File.separator + UNITY3D_FILE_NAME_1_V_1, UNITY_3D_FILE1_URL).
+        AudioEvaluationDownload.startDownLoad(url1, UNITY_3D_FILE1_URL).
                 doOnNext(new Consumer<String>() {
                     @Override
                     public void accept(String s) throws Exception {
+                        logger.i(UNITY3D_FILE_NAME_1_V_1 + " " + s);
                         UnityCommandPlay.downloadModel(s);
                     }
                 }).mergeWith(
-                AudioEvaluationDownload.startDownLoad(this,
-                        LocalFileRespository.getInstance(this).getUnity3DEvaluateFile()
-                                + File.separator + UNITY3D_FILE_NAME_2_V_1, UNITY_3D_FILE2_URL).
+                AudioEvaluationDownload.startDownLoad(url2, UNITY_3D_FILE2_URL).
                         doOnNext(new Consumer<String>() {
                             @Override
                             public void accept(String s) throws Exception {
+                                logger.i(UNITY3D_FILE_NAME_2_V_1 + " " + s);
                                 UnityCommandPlay.downloadModel(s);
                             }
                         })).
@@ -185,7 +293,6 @@ public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
                     @Override
                     public void onComplete() {
                         super.onComplete();
-                        addUnityView();
                     }
                 });
     }
@@ -201,13 +308,9 @@ public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
     }
 
     private void addFragment() {
-        IntelligentRecognitionRecord intelligentRecognitionRecord =
-                getIntent().getParcelableExtra("intelligentRecognitionRecord");
+
 //        Bundle bundle = new Bundle();
 //        bundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
-
-        IntelligentRecognitionViewModel mViewModel = ViewModelProviders.of(this).get(IntelligentRecognitionViewModel.class);
-        mViewModel.setRecordData(intelligentRecognitionRecord);
 
         getSupportFragmentManager().
                 beginTransaction().
@@ -221,17 +324,31 @@ public class IntelligentRecognitionActivity extends XrsBaseFragmentActivity {
      * 该方法是unity返回回调不要删除
      */
     public void FailedLoad(String model) {
-        logger.e("FailedLoad = " + model);
+        if (UNITY3D_FILE_NAME_1_V_1.equals(model)) {
+            unity3DFile1LoadSuccess = false;
+        } else if (UNITY3D_FILE_NAME_2_V_1.equals(model)) {
+            unity3DFile2LoadSuccess = false;
+        }
+        logger.e("unity3D FailedLoad = " + model);
     }
 
+    /**
+     * unity3D是否加载成功
+     */
+    private boolean unity3DFile1LoadSuccess;
+    private boolean unity3DFile2LoadSuccess;
 
     /**
      * {@link #ParternerConfig}
      * 该方法是unity返回回调不要删除
      */
     public void onLoadedEnd(String model) {
-
-        logger.i("onLoadedEnd " + model);
+        if (UNITY3D_FILE_NAME_1_V_1.equals(model)) {
+            unity3DFile1LoadSuccess = true;
+        } else if (UNITY3D_FILE_NAME_2_V_1.equals(model)) {
+            unity3DFile2LoadSuccess = true;
+        }
+        logger.i("unity3D onLoadedEnd " + model);
 
         int width = ScreenUtils.getScreenWidth();
         int height = ScreenUtils.getScreenHeight();

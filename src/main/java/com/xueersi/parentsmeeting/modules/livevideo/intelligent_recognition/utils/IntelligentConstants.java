@@ -38,7 +38,7 @@ public interface IntelligentConstants {
     int END_GOOD_BYE_3 = 14;
     //byebye动作4
     // 4）	一旦收到收题指令，题干板区域toast提示3s倒计时收题。提示文案“3s后收题”。
-    int END_GOOD_BYE_4 = 15;
+//    int END_GOOD_BYE_4 = 15;
 
     /** 并未测评 */
     int NOT_SPEECH = 0;
@@ -74,5 +74,11 @@ public interface IntelligentConstants {
 
     String UNITY_3D_FILE1_URL = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/temp/monscene6";
     String UNITY_3D_FILE2_URL = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/temp/monavater7";
+
+    String AUDIO_EVALUATE_URL = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/test/ieAudio.zip";
+
+    String AUDIO_EVALUATE_FILE_NAME = "ieAudio.zip";
+
+    String PRELOAD_DIR = "webviewCache";
 //    String unity3d_file_NAME_2_V_2 =
 }

@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.htt
 
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
@@ -15,6 +17,7 @@ import java.util.Iterator;
 public class IntelligentRecognitionHttpResponseParser {
 
     private String TAG = "IntelligentRecognitionHttpResponseParser";
+    Logger logger = LoggerFactory.getLogger(TAG);
 //    private LiveHttpResponseParser liveHttpResponseParser;
 
     public IEResult parseIEResponse(ResponseEntity responseEntity) {
@@ -40,10 +43,13 @@ public class IntelligentRecognitionHttpResponseParser {
                 while (iterator.hasNext()) {
                     String key = (String) iterator.next();
 
-                    String value = audioJSON.optString("key");
-                    if (hasDigit(key)) {
+                    String value = audioJSON.optString(key);
+
+                    if (hasChar(key)) {
+//                        logger.i("parseIEResponse word key:" + key + " value:" + value);
                         map.put(key, value);
                     } else {
+//                        logger.i("parseIEResponse sentence key:" + key + " value:" + value);
                         ieResult.setSentence(value);
                     }
                 }
@@ -60,6 +66,19 @@ public class IntelligentRecognitionHttpResponseParser {
         for (int ii = 0; ii < fileName.length(); ii++) {
             char charA = fileName.charAt(ii);
             if (charA >= '0' && charA <= '9') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasChar(String fileName) {
+        for (int ii = 0; ii < fileName.length(); ii++) {
+            char charA = fileName.charAt(ii);
+            if (charA == '.') {
+                break;
+            }
+            if ((charA >= 'a' && charA <= 'z') || (charA >= 'A' && charA <= 'Z')) {
                 return true;
             }
         }

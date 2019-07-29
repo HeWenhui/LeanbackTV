@@ -35,6 +35,7 @@ public class IntelligentRecognitionBll extends LiveBaseBll implements NoticeActi
                     intelligentRecognitionRecord.setStuId(mGetInfo.getStuId());
                     intelligentRecognitionRecord.setStuCouId(mGetInfo.getStuCouId());
                     intelligentRecognitionRecord.setLiveId(mGetInfo.getId());
+                    intelligentRecognitionRecord.setContent(data.optString("answer"));
                     JSONArray jsonArray = data.optJSONArray("id");
                     if (jsonArray != null && jsonArray.length() > 0) {
                         intelligentRecognitionRecord.setMaterialId(jsonArray.optString(0));

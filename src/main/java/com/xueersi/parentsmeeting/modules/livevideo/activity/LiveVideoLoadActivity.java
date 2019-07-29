@@ -193,9 +193,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
             IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
 //            intelligentRecognitionRecord.setAnswers("1000");
             intelligentRecognitionRecord.setAnswerTime("121322");
-            intelligentRecognitionRecord.setLiveId(vSectionID);
-            intelligentRecognitionRecord.setStuId("1111");
-            intelligentRecognitionRecord.setStuCouId("1234");
+            intelligentRecognitionRecord.setContent("whose ball is it?");
+            intelligentRecognitionRecord.setLiveId("584955");
+            intelligentRecognitionRecord.setStuId("37899");
+            intelligentRecognitionRecord.setStuCouId("1111");
+            intelligentRecognitionRecord.setMaterialId("21642");
             newBundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
             XueErSiRouter.startModule(this, "/english/intelligent_recognition", newBundle);
 //            startActivity(new Intent(this, IntelligentRecognitionActivity.class));

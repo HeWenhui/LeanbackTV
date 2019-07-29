@@ -3,17 +3,20 @@ package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.vie
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.tal.speech.speechrecognizer.PhoneScore;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
+
+import java.util.List;
 
 public class IntelligentRecognitionViewModel extends ViewModel {
     /** 跨进程传递进来的用户数据和试题数据 */
     private IntelligentRecognitionRecord recordData;
     /** 测评返回的数据 */
     private MutableLiveData<IEResult> ieResultData = new MutableLiveData<>();
-    /** 语音测评是否初始化完成 */
+    /** 语音测评是否准备完成，可以开始测评 */
     private MutableLiveData<Boolean> isSpeechReady = new MutableLiveData<>();
     /** 音量 */
     private MutableLiveData<Integer> volume = new MutableLiveData<>();
@@ -31,6 +34,23 @@ public class IntelligentRecognitionViewModel extends ViewModel {
     private MutableLiveData<GoldTeamStatus> isTop3DataSuccess = new MutableLiveData<>();
     /** top3是否显示 */
     private MutableLiveData<Boolean> isTop3Show = new MutableLiveData<>();
+    private MutableLiveData<List<PhoneScore>> resultPhoneScores = new MutableLiveData<>();
+    /** 语音测评的语句是否准备完成 */
+    private MutableLiveData<Boolean> isEvaluationReady = new MutableLiveData<>();
+
+    private MutableLiveData<Boolean> isScorePopWindowFinish = new MutableLiveData<>();
+
+    public MutableLiveData<Boolean> getIsScorePopWindowFinish() {
+        return isScorePopWindowFinish;
+    }
+
+    public MutableLiveData<Boolean> getIsEvaluationReady() {
+        return isEvaluationReady;
+    }
+
+    public MutableLiveData<List<PhoneScore>> getResultPhoneScores() {
+        return resultPhoneScores;
+    }
 
     public MutableLiveData<Boolean> getIsTop3Show() {
         return isTop3Show;

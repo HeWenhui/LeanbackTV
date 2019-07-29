@@ -21,6 +21,15 @@
         app:barrierDirection="left"
         app:constraint_referenced_ids="iv_livevideo_intelligent_recognition_background_textview" />
 
+    <ImageView
+        android:id="@+id/iv_livevideo_intelligent_recognition_question"
+        android:layout_width="200dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="80dp"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_intelligent_recognition_background_textview" />
+
     <TextView
         android:id="@+id/tv_livevideo_intelligent_recognition_textview"
         android:layout_width="0dp"
@@ -42,16 +51,6 @@
         android:layout_height="wrap_content"
         app:barrierDirection="right"
         app:constraint_referenced_ids="iv_livevideo_intelligent_recognition_background_textview" />
-    <!--显示能量条Lottie动画-->
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_view_livevideo_intelligent_recognition_waveview_open_start"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
-        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
-        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
-        app:lottie_fileName="intelligent_recognition_study_v2/english/waveview_open_start/data.json"
-        app:lottie_imageAssetsFolder="intelligent_recognition_study_v2/english/waveview_open_start/images" />
 
     <include
         android:id="@+id/layout_livevideo_intelligent_recognition_permission"
@@ -91,13 +90,21 @@
         android:visibility="gone"
         app:constraint_referenced_ids="iv_livevideo_intelligent_recognition_end_tip_background,
                 tv_livevideo_intelligent_recognition_end_tip_text" />
+    <!--显示能量条Lottie动画-->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_view_livevideo_intelligent_recognition_waveview_open_start"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
+        app:lottie_fileName="intelligent_recognition_study_v2/english/waveview_open_start/data.json"
+        app:lottie_imageAssetsFolder="intelligent_recognition_study_v2/english/waveview_open_start/images" />
 
     <com.xueersi.ui.widget.WaveView
         android:id="@+id/wv_livevideo_intelligent_recognition_energy_bar"
         android:layout_width="230dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="230dp"
-
+        android:layout_height="80dp"
+        android:layout_marginTop="225dp"
         app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
         app:layout_constraintRight_toRightOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
         app:layout_constraintTop_toTopOf="@+id/iv_livevideo_intelligent_recognition_background_textview" />
@@ -109,7 +116,8 @@
         android:visibility="gone"
         app:lottie_fileName="intelligent_recognition_study_v2/english/get_score/data.json"
         app:lottie_imageAssetsFolder="intelligent_recognition_study_v2/english/get_score/images"
-        app:lottie_loop="true" />
+        app:lottie_loop="true"
+        app:lottie_repeatCount="0" />
 
     <!--Ready GO!欢迎页面-->
     <com.airbnb.lottie.LottieAnimationView

@@ -1,11 +1,15 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.audio;
 
 import android.content.Context;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentLocalFileManager;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +23,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class EvaluationAudioPlayerDataManager {
-
+    Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private Queue<Integer> queue;
 
     {
@@ -38,7 +42,7 @@ public class EvaluationAudioPlayerDataManager {
         queue.add(IntelligentConstants.END_GOOD_BYE_1);
         queue.add(IntelligentConstants.END_GOOD_BYE_2);
         queue.add(IntelligentConstants.END_GOOD_BYE_3);
-        queue.add(IntelligentConstants.END_GOOD_BYE_4);
+//        queue.add(IntelligentConstants.END_GOOD_BYE_4);
 //        queue.add(IntelligentConstants.GOOD);
 //        queue.add(IntelligentConstants.PERFECT);
 //        queue.add(IntelligentConstants.GOOD);
@@ -57,7 +61,7 @@ public class EvaluationAudioPlayerDataManager {
             synchronized (EvaluationAudioPlayerDataManager.class) {
                 if (instance == null) {
                     instance = new EvaluationAudioPlayerDataManager(context);
-                    instance.init();
+//                    instance.init();
                 }
             }
         }
@@ -118,50 +122,59 @@ public class EvaluationAudioPlayerDataManager {
         initAudioPath();
     }
 
-    private void initAudioPath() {
-        LocalFileRespository audioRespository = LocalFileRespository.getInstance(context);
-        Observable.
-                just(audioRespository.getAudioEvaluateFile()).
+    public Observable<File> initAudioPath() {
+        IntelligentLocalFileManager audioRespository = IntelligentLocalFileManager.getInstance(context);
+
+        return Observable.
+                just(new File(audioRespository.getAudioEvaluateFile(), "ieAudio")).
                 filter(RxFilter.filterFile()).
-                subscribeOn(Schedulers.io())
-                .flatMap(new Function<File, ObservableSource<File>>() {
+                subscribeOn(Schedulers.io()).
+                flatMap(new Function<File, ObservableSource<File>>() {
                     @Override
                     public ObservableSource<File> apply(File file) throws Exception {
                         return Observable.fromArray(file.listFiles());
                     }
                 }).
                 filter(RxFilter.filterFile()).
-                subscribe(new Consumer<File>() {
+                doOnNext(new Consumer<File>() {
                     @Override
                     public void accept(File file) throws Exception {
-                        int pos = queue.poll();
+//                        int pos = queue.poll();
 //                        Integer.valueOf(file.getName());
 //                        if (String.valueOf(pos).equals(file.getName())) {
 //
 //                        }
+                        int fileNameToInt = 0;
+                        try {
+                            logger.i(" file Name:" + file.getName());
+                            fileNameToInt = Integer.valueOf(file.getName());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            logger.e(e.getMessage());
+                        }
+
                         AudioData<String> audioData = new AudioData<>();
-                        audioData.setAudioUrl(Arrays.asList(file.list()));
-                        map.put(pos, audioData);
+                        List<String> itemFileNames = new ArrayList<>();
+                        for (File itemFile : file.listFiles()) {
+                            itemFileNames.add(itemFile.getPath());
+                            logger.i("pos=" + fileNameToInt + " judge File url " + itemFile.getPath());
+                        }
+                        audioData.setAudioUrl(itemFileNames);
+                        map.put(fileNameToInt, audioData);
                     }
                 });
     }
 
-    private void initRepeat_word() {
-//        AudioData<String> audioData = new AudioData<>();
-//        List<String> queue = new ArrayList<>();
-//        queue.add(Environment.getExternalStorageDirectory() +
-//                File.separator + "parentsmeeting" + File.separator + "livevideo" +
-//                File.separator + "05_01_You_made_it_Just_try_to_repeat_one_more_time_Please_read_after_me.mp3");
-//        audioData.setAudioUrl(queue);
-//        audioData.setNowPlayAudioPos(0);
-//        map.put(IntelligentConstants., audioData);
-    }
-
+    private boolean workFinish = false;
 
     public String getJudgeAudioUrl(Integer integer) {
+        logger.i("JudgeAudioUrl-Integer:" + integer);
         if (map != null && map.get(integer) != null) {
-            return map.get(integer).getAndIncreateAudioUrl();
+            String url = map.get(integer).getAndIncreateAudioUrl();
+            logger.i("JudgeAudioUrl:" + url);
+            return url;
         } else {
+            logger.i("JudgeAudioUrl:null" + " map " + (map != null ? " valid " : " null"));
             return null;
         }
     }

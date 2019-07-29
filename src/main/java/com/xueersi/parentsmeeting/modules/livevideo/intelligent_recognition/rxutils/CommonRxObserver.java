@@ -18,11 +18,15 @@ public class CommonRxObserver<T> implements Observer<T> {
 
     @Override
     public void onError(Throwable e) {
-        disposable.dispose();
+        if (!disposable.isDisposed()) {
+            disposable.dispose();
+        }
     }
 
     @Override
     public void onComplete() {
-        disposable.dispose();
+        if (!disposable.isDisposed()) {
+            disposable.dispose();
+        }
     }
 }

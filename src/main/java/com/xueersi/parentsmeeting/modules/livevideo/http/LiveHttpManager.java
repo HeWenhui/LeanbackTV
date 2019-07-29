@@ -1001,6 +1001,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
+     * 测试使用，预加载接口
+     *
+     * @param callBack
+     */
+    public void getTestIntelligentRecognitionInfo(HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        sendPost(" https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/intelligent_recognition", params, callBack);
+    }
+
+    /**
      * 英语预加载互动题
      *
      * @param liveId

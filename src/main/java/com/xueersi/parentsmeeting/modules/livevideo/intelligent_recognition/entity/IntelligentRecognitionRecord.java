@@ -18,6 +18,8 @@ public class IntelligentRecognitionRecord implements Parcelable {
     private String stuCouId;
     //直播0， 回放1
     private String isPlayBack;
+    //测评内容
+    private String content;
     //第一次作答详细数据
 //    private String answers;
     //纠音详情
@@ -34,6 +36,14 @@ public class IntelligentRecognitionRecord implements Parcelable {
     private String classId;
     //    小组id
     private String teamId;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public String getClassId() {
         return classId;
@@ -154,9 +164,7 @@ public class IntelligentRecognitionRecord implements Parcelable {
         dest.writeString(this.stuId);
         dest.writeString(this.stuCouId);
         dest.writeString(this.isPlayBack);
-//        dest.writeString(this.answers);
-//        dest.writeString(this.correctCase);
-//        dest.writeString(this.rereadCase);
+        dest.writeString(this.content);
         dest.writeString(this.answerTime);
         dest.writeString(this.useClient);
         dest.writeString(this.useClientVer);
@@ -170,9 +178,7 @@ public class IntelligentRecognitionRecord implements Parcelable {
         this.stuId = in.readString();
         this.stuCouId = in.readString();
         this.isPlayBack = in.readString();
-//        this.answers = in.readString();
-//        this.correctCase = in.readString();
-//        this.rereadCase = in.readString();
+        this.content = in.readString();
         this.answerTime = in.readString();
         this.useClient = in.readString();
         this.useClientVer = in.readString();

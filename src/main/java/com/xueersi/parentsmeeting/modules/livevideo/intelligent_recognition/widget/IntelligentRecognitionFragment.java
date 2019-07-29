@@ -132,6 +132,8 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
             ViewGroup.LayoutParams layoutParams = new ViewGroup.
                     LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             viewGroup.addView(top3View.getRootView(), layoutParams);
+        } else {
+            logger.i("isTop3DataSuccess:" + isTop3DataSuccess + " isTop3TimeUp:" + isTop3TimeUp);
         }
     }
 

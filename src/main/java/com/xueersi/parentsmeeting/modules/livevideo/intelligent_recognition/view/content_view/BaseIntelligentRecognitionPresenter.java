@@ -1,8 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.IntentFilter;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 
@@ -25,8 +27,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.enti
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechStopEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.http.IntelligentRecognitionHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.rxutils.RxFilter;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.ContentAudioManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.audio.ContentAudioManager;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.BaseIntelligentRecognitionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentLifecycleObserver;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.IIntelligentRecognitionPresenter;
@@ -39,6 +41,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -47,9 +50,10 @@ import io.reactivex.functions.Consumer;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
 
-public abstract class BaseIntelligentRecognitionPresenter extends
+abstract class BaseIntelligentRecognitionPresenter extends
         BaseIntelligentRecognitionBll<IntelligentRecognitionViewModel>
-        implements IIntelligentRecognitionPresenter<IIntelligentRecognitionView>, IntelligentLifecycleObserver {
+        implements IIntelligentRecognitionPresenter<IIntelligentRecognitionView>,
+        IntelligentLifecycleObserver {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
@@ -81,15 +85,70 @@ public abstract class BaseIntelligentRecognitionPresenter extends
     private long speechStartTime;
     /** 纠音开口时长 */
     private long speechRepeatTime;
+    /** 本地音频评价文件是否成功加载到内存中 */
+    private boolean isEvaluationReady = false;
+
+    private ResultEntity _resultEntity;
 
     public BaseIntelligentRecognitionPresenter(FragmentActivity context) {
         super(context, IntelligentRecognitionViewModel.class);
         this.mActivity = context;
-        this.mViewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
+//        this.mViewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
         this.mRecord = mViewModel.getRecordData();
-        contentAudioManager = new ContentAudioManager(mActivity, mRecord.getLiveId(), mRecord.getMaterialId());
-//        httpManager = new IntelligentRecognitionHttpManager();
-//        intelligentRecognitionHttpResponseParser = new IntelligentRecognitionHttpResponseParser();
+        contentAudioManager = new ContentAudioManager(mActivity,
+                mRecord.getLiveId(),
+                mRecord.getMaterialId());
+//        observeScoreLottieFinish();
+        //这里做一次转化是因为Boolean可能为null
+        Boolean isEvaluationReadyB = mViewModel.getIsEvaluationReady().getValue();
+        if (isEvaluationReadyB != null) {
+            isEvaluationReady = isEvaluationReadyB;
+            if (!isEvaluationReady) {
+                observeEvaluationReady();
+            } else {
+//                isEvaluationReady = true;
+                logger.i("isEvaluationReady2:" + isEvaluationReady);
+                notifyWaveView();
+            }
+        } else {
+            observeEvaluationReady();
+            logger.i("isEvaluationReadyB is null");
+        }
+    }
+
+    protected abstract void performResultUnity3DAudio(ResultEntity resultEntity);
+
+    private void observeScoreLottieFinish() {
+        mViewModel.getIsScorePopWindowFinish().observe(mActivity, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                logger.i("observeScoreLottieFinish:" + aBoolean);
+                Observable.
+                        just(aBoolean).
+                        filter(RxFilter.filterTrue()).
+                        delay(2, TimeUnit.SECONDS).
+                        subscribe(new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean aBoolean) throws Exception {
+                                logger.i("isEvaluationReady1:" + aBoolean);
+                                performResultUnity3DAudio(_resultEntity);
+                            }
+                        });
+            }
+        });
+    }
+
+    private void observeEvaluationReady() {
+        mViewModel.getIsEvaluationReady().observe(mActivity, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                isEvaluationReady = aBoolean;
+                logger.i("isEvaluationReady1:" + aBoolean);
+                if (isEvaluationReady) {
+                    notifyWaveView();
+                }
+            }
+        });
     }
 
     //返回当前是第几个speechNum
@@ -145,6 +204,9 @@ public abstract class BaseIntelligentRecognitionPresenter extends
         }
     }
 
+    /**
+     * 取消监听
+     */
     private void unregistEvent() {
         if (broadcast != null) {
             mActivity.unregisterReceiver(broadcast);
@@ -175,11 +237,11 @@ public abstract class BaseIntelligentRecognitionPresenter extends
         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         mParam.setMultRef(false);
         mParam.setPcm(true);
-        if (mViewModel.getIeResultData().getValue() == null) {
-            logger.i("viewModel IEResult is null");
-            return;
-        }
-        String aiRecogStr = mViewModel.getIeResultData().getValue().getContent();
+//        if (mViewModel.getIeResultData().getValue() == null) {
+//            logger.i("viewModel IEResult is null");
+//            return;
+//        }
+        String aiRecogStr = mViewModel.getRecordData().getContent();
 //        if(aiRecogStr)
         if (TextUtils.isEmpty(aiRecogStr) && AppConfig.DEBUG) {
             return;
@@ -187,56 +249,72 @@ public abstract class BaseIntelligentRecognitionPresenter extends
         }
         mParam.setStrEvaluator(aiRecogStr);
         logger.i("strRecog:" + aiRecogStr);
-
-        Observable.
-                just(mSpeechUtils.isOfflineSuccess()).
-                filter(RxFilter.filterTrue()).
-                subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        mSpeechUtils.cancel();
-                        mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
-                            @Override
-                            public void onBeginOfSpeech() {
-                                if (speechNum >= 2) {
-                                    speechStatus.set(IntelligentConstants.SPEECH_AGIN);
-                                } else {
-                                    speechStatus.set(IntelligentConstants.SPEECH_ING);
-                                }
-                                speechStartTime = System.currentTimeMillis();
-                                logger.i("speech begin");
-                            }
-
-                            @Override
-                            public void onResult(ResultEntity result) {
-                                if (result == null) {
-                                    logger.e("result = null");
-                                    return;
-                                }
-                                if (AppConfig.DEBUG) {
-                                    logger.i("speech result = " + getResultString(result));
-                                }
-
-                                if (result.getStatus() == ResultEntity.SUCCESS) {
-                                    handleResult(result);
-                                    speechStatus.set(IntelligentConstants.SPEECH_OVER_JUDGE);
-                                }
-                            }
-
-                            @Override
-                            public void onVolumeUpdate(int volume) {
-                                logger.i("speech volume:" + volume);
-                                mViewModel.getVolume().setValue(volume);
-                            }
-                        });
+        if (mSpeechUtils.isOfflineSuccess()) {
+//            Observable.
+//                    just(mSpeechUtils.isOfflineSuccess()).
+//                    filter(RxFilter.filterTrue()).
+//                    subscribe(new Consumer<Boolean>() {
+//                        @Override
+//                        public void accept(Boolean aBoolean) throws Exception {
+            mSpeechUtils.cancel();
+            mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
+                @Override
+                public void onBeginOfSpeech() {
+                    if (speechNum >= 2) {
+                        speechStatus.set(IntelligentConstants.SPEECH_AGIN);
+                    } else {
+                        speechStatus.set(IntelligentConstants.SPEECH_ING);
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        logger.e(throwable.getStackTrace());
-                        throwable.printStackTrace();
+                    speechStartTime = System.currentTimeMillis();
+                    logger.i("speech begin");
+                }
+
+                @Override
+                public void onResult(ResultEntity result) {
+
+                    if (result == null) {
+                        logger.e("result = null");
+                        return;
                     }
-                });
+                    if (AppConfig.DEBUG && result.getStatus() == ResultEntity.SUCCESS) {
+                        logger.i("speech result = " + getResultString(result));
+                    }
+
+                    if (result.getStatus() == ResultEntity.SUCCESS) {
+                        _resultEntity = result;
+                        handleResult(result);
+                        speechStatus.set(IntelligentConstants.SPEECH_OVER_JUDGE);
+                    }
+                }
+
+                @Override
+                public void onVolumeUpdate(int volume) {
+//                                logger.i("speech volume:" + volume);
+                    mViewModel.getVolume().setValue(volume);
+                }
+            });
+//                        }
+//                    }, new Consumer<Throwable>() {
+//                        @Override
+//                        public void accept(Throwable throwable) throws Exception {
+//                            logger.e(throwable.getStackTrace());
+//                            throwable.printStackTrace();
+//                        }
+//                    });
+        }
+    }
+
+    /**
+     * 语音测评准备工作已经完成，可以开始测评了
+     */
+    private void notifyWaveView() {
+        logger.i("notifyWaveView: isSpeechReady:" +
+                isSpeechReady.get()
+                + " isEvaluationReady:" +
+                isEvaluationReady);
+        if (isSpeechReady.get() && isEvaluationReady) {
+            mViewModel.getIsSpeechReady().postValue(true);
+        }
     }
 
 //    private List<PhoneScore> phoneScores;
@@ -276,6 +354,7 @@ public abstract class BaseIntelligentRecognitionPresenter extends
      */
     private void getRemoteEntity() {
 //        final IntelligentRecognitionHttpManager httpManager = new IntelligentRecognitionHttpManager(mActivity);
+
         getHttpManager().getIEResult(
                 mActivity,
                 mRecord.getLiveId(),
@@ -288,14 +367,23 @@ public abstract class BaseIntelligentRecognitionPresenter extends
                         IntelligentRecognitionHttpResponseParser intelligentRecognitionHttpResponseParser = new IntelligentRecognitionHttpResponseParser();
                         IEResult ieResult = intelligentRecognitionHttpResponseParser.parseIEResponse(responseEntity);
                         if (ieResult != null) {
-                            ViewModelProviders.
-                                    of(mActivity).
-                                    get(IntelligentRecognitionViewModel.class).
-                                    getIeResultData().
-                                    setValue(ieResult);
+                            ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class).
+                                    getIeResultData().setValue(ieResult);
                         } else {
 
                         }
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        logger.e("getRemoteEntity pmError");
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        logger.e("getRemoteEntity pmFail:" + msg);
                     }
                 });
     }
@@ -317,14 +405,15 @@ public abstract class BaseIntelligentRecognitionPresenter extends
                 // 文件初始化完了，评测准备就绪
                 logger.i("Speech Success");
                 isSpeechReady.set(true);
-                mViewModel.getIsSpeechReady().setValue(true);
+                notifyWaveView();
+//                mViewModel.getIsSpeechReady().postValue(true);
             }
 
             @Override
             public void onFileFail() {
                 logger.i("Speech Fail");
                 isSpeechReady.set(false);
-                mViewModel.getIsSpeechReady().setValue(false);
+//                mViewModel.getIsSpeechReady().postValue(false);
                 XESToastUtils.showToast(mActivity.getApplicationContext(), "加载评测模型失败");
             }
         });

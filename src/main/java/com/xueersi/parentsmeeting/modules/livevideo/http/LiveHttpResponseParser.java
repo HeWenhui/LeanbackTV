@@ -2302,7 +2302,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
                                 if (coursewareJson.has("resource")) {
                                     CoursewareInfoEntity.CourseWareIntelligentEntity intelligentEntity = new CoursewareInfoEntity.CourseWareIntelligentEntity();
-                                    intelligentEntity.setResource("resource");
+                                    intelligentEntity.setResource(coursewareJson.optString("resource"));
                                     coursewareInfo.setIntelligentEntity(intelligentEntity);
                                 }
                                 coursewareInfos.add(coursewareInfo);

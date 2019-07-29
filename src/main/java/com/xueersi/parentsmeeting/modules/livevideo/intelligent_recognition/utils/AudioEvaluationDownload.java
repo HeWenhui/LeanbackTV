@@ -12,7 +12,6 @@ import io.reactivex.ObservableSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -30,11 +29,11 @@ public class AudioEvaluationDownload {
 //        return instance;
 //    }
 //
-//    private LocalFileRespository respository;
+//    private IntelligentLocalFileManager respository;
 //
 //    public void startDownLoad(Context context, String path) {
 //        if (respository == null) {
-//            respository = new LocalFileRespository(context, path);
+//            respository = new IntelligentLocalFileManager(context, path);
 //        }
 
 //    }
@@ -72,7 +71,14 @@ public class AudioEvaluationDownload {
 //        }
 //    }
 
-    public static Observable<String> startDownLoad(Context context, String filePath, final String url) {
+    /**
+     * 如果本地文件{new File(filePath)}不存在，则从url下载到本地
+     *
+     * @param filePath
+     * @param url
+     * @return
+     */
+    public static Observable<String> startDownLoad(String filePath, final String url) {
         return Observable.
                 just(filePath).
                 map(new Function<String, File>() {
@@ -102,11 +108,15 @@ public class AudioEvaluationDownload {
         return Observable.just(url).subscribeOn(Schedulers.io()).doOnNext(new Consumer<String>() {
             @Override
             public void accept(String s) throws Exception {
-                Request request = new Request.Builder().url(s).build();
-                OkHttpClient okHttpClient = new OkHttpClient();
+//                Request request = new Request.Builder().url(s).build();
+//                OkHttpClient okHttpClient = OkhttpUtils.getOkHttpClient();
                 try {
-                    Response response = okHttpClient.newCall(request).execute();
-                    storageFile(response, file);
+//                    Response response = OkhttpUtils.getOkHttpClient().newCall(new Request.Builder().url(s).build()).execute();
+                    storageFile(
+                            OkhttpUtils.getOkHttpClient().newCall(
+                                    new Request.Builder().url(s).build()).
+                                    execute(),
+                            file);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

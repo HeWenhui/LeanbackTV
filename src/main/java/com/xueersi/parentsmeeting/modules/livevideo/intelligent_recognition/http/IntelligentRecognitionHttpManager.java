@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.htt
 import android.content.Context;
 
 import com.xueersi.common.base.BaseHttpBusiness;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -34,10 +35,28 @@ public class IntelligentRecognitionHttpManager {
         params.addBodyParam("stuCouId", stuCouId);
 //        params.addBodyParam("srcType", srcType);
 //        params.addBodyParam("cameraStatus", cameraStatus);
-        liveHttpManager.sendPost(LiveVideoConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
+
+        if (AppConfig.DEBUG) {
+            liveHttpManager.sendPost("https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/getMaterialVoiceInfos", params, httpCallBack);
+        } else {
+            liveHttpManager.sendPost(LiveVideoConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
+        }
 
     }
 
+    /**
+     * 英语智能测评第一次提交测评数据
+     *
+     * @param context
+     * @param stuId
+     * @param materialId
+     * @param isPlayBack
+     * @param answers
+     * @param liveId
+     * @param stuCouId
+     * @param testTime
+     * @param httpCallBack
+     */
     public void getIntelligentSpeechSumbmitResult(Context context,
                                                   String stuId,
                                                   String materialId,
@@ -62,7 +81,11 @@ public class IntelligentRecognitionHttpManager {
         params.addBodyParam("testTime", testTime);
 //        params.addBodyParam("useClient", useClient);
 //        params.addBodyParam("useClientVer", useClientVer);
-        liveHttpManager.sendPost(LiveVideoConfig.URL_INTELLIGENT_SPEECH_SUBMIT, params, httpCallBack);
+        if (AppConfig.DEBUG) {
+            liveHttpManager.sendPost("https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/submitIntellectVoice", params, httpCallBack);
+        } else {
+            liveHttpManager.sendPost(LiveVideoConfig.URL_INTELLIGENT_SPEECH_SUBMIT, params, httpCallBack);
+        }
     }
 
     /**
@@ -86,7 +109,12 @@ public class IntelligentRecognitionHttpManager {
         httpRequestParams.addBodyParam("testId", testId);
         httpRequestParams.addBodyParam("classId", classId);
         httpRequestParams.addBodyParam("teamId", teamId);
-        liveHttpManager.sendPost(LiveVideoConfig.URL_INTELLIGENT_RECOGNITION_TOP3, httpRequestParams, httpCallBack);
+        if (AppConfig.DEBUG) {
+            liveHttpManager.sendPost("https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/getSpeechEvalAnswerTeamRank", httpRequestParams, httpCallBack);
+        } else {
+            liveHttpManager.sendPost(LiveVideoConfig.URL_INTELLIGENT_RECOGNITION_TOP3, httpRequestParams, httpCallBack);
+        }
+
     }
 
     /**
