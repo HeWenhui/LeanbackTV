@@ -55,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfi
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -76,11 +77,11 @@ import java.util.Map;
  * 英语h5课件业务类
  */
 public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVoiceAnswerCreat.NewArtsAnswerRightResultVoice, LivePagerBack, EnglishShowReg {
-    String TAG = "EnglishH5CoursewareBll";
-    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
-    String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
-    String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
-    Context context;
+    private String TAG = "EnglishH5CoursewareBll";
+    protected Logger logger = LiveLoggerFactory.getLogger(TAG);
+    private String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
+    private String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
+    private Context context;
     private Handler handler = new Handler(Looper.getMainLooper());
     /** 互动题作答成功的布局列表 */
     private ArrayList<View> resultViews = new ArrayList<>();
@@ -112,7 +113,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
     private LiveGetInfo mGetInfo;
     private EnglishH5CoursewareHttp mLiveBll;
     private LiveAndBackDebug liveAndBackDebug;
-    SpeechUtils mIse;
+    private SpeechUtils mIse;
     private AnswerRankBll mAnswerRankBll;
     /** 智能私信业务 */
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
@@ -458,10 +459,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                     if (mLiveBll != null) {
                         mLiveBll.getStuGoldCount("forceClose:" + method);
                     }
-                    h5CoursewarePager.destroy();
-                    bottomContent.removeView(h5CoursewarePager.getRootView());
-                    h5CoursewarePager = null;
-                    onQuestionShow(null, false, "forceClose:" + method);
+                    h5CoursewarePager.close();
+                    //如果重写了close。调用了onClose.onH5ResultClose 方法以后，h5CoursewarePager为空
+                    if (h5CoursewarePager != null) {
+                        h5CoursewarePager.destroy();
+                        bottomContent.removeView(h5CoursewarePager.getRootView());
+                        h5CoursewarePager = null;
+                        onQuestionShow(null, false, "forceClose:" + method);
+                    }
                 }
             }
         });
@@ -1294,7 +1299,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
         }
     }
 
-
     public void destroy() {
         if (h5CoursewarePager != null) {
             h5CoursewarePager.destroy();
@@ -1327,50 +1331,4 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
         }
     }
 
-    class SmEnAnswerRightResultVoice extends EnAnswerRightResultVoice implements BaseVoiceAnswerCreat.NewArtsAnswerRightResultVoice {
-
-        @Override
-        public View initArtsAnswerRightResultVoice(AnswerResultEntity entity) {
-            return EnglishH5CoursewareBll.this.initArtsAnswerRightResultVoice(entity);
-        }
-
-    }
-
-    class EnAnswerRightResultVoice implements BaseVoiceAnswerCreat.AnswerRightResultVoice {
-
-        @Override
-        public void initQuestionAnswerReslut(View popupWindowView) {
-            EnglishH5CoursewareBll.this.initQuestionAnswerReslut(popupWindowView);
-        }
-
-        @Override
-        public void removeQuestionAnswerReslut(View popupWindowView) {
-            EnglishH5CoursewareBll.this.removeQuestionAnswerReslut(popupWindowView);
-        }
-
-        @Override
-        public void removeBaseVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
-            EnglishH5CoursewareBll.this.removeBaseVoiceAnswerPager(voiceAnswerPager);
-        }
-
-        @Override
-        public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
-            EnglishH5CoursewareBll.this.initSelectAnswerRightResultVoice(entity);
-        }
-
-        @Override
-        public void initFillinAnswerRightResultVoice(VideoResultEntity entity) {
-            EnglishH5CoursewareBll.this.initFillinAnswerRightResultVoice(entity);
-        }
-
-        @Override
-        public void initSelectAnswerWrongResultVoice(VideoResultEntity entity) {
-            EnglishH5CoursewareBll.this.initSelectAnswerWrongResultVoice(entity);
-        }
-
-        @Override
-        public void initFillAnswerWrongResultVoice(VideoResultEntity entity) {
-            EnglishH5CoursewareBll.this.initFillAnswerWrongResultVoice(entity);
-        }
-    }
 }
