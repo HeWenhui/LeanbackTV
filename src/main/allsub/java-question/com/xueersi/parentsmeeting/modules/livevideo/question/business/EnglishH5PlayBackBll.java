@@ -177,7 +177,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         final int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
-            //    LiveVideoConfig.isNewArts = false;
+                //    LiveVideoConfig.isNewArts = false;
                 BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
                     mediaPlayerControl.pause();
@@ -282,7 +282,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
                 //LiveVideoConfig.isNewArts = true;
                 mCurrentQuestionEntity.setNewArtsCourseware(true);
-               // mCurrentQuestionEntity.setNewArtsCourseware(true);
+                // mCurrentQuestionEntity.setNewArtsCourseware(true);
                 Log.e("Duncan", "mqtt+文科新课件平台");
                 BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
@@ -485,7 +485,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
         @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
-            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN) {
+            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN && !detailInfo.isTUtor()) {
                 if (LiveQueConfig.isGroupGame(detailInfo.type)) {
                     getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, liveGetInfo.getStuId(), detailInfo.type, callBack);
                 } else {
