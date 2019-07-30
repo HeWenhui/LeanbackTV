@@ -2733,9 +2733,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             energyBonusEntity.setMyTeamBetterMeTotal(a.getInt("betterMeTotal"));
 
             JSONObject b = total.getJSONObject("b");
-            energyBonusEntity.setMyTeamId(b.getInt("PkHeadTeamId"));
-            energyBonusEntity.setMyTeamTotal(b.getInt("total"));
-            energyBonusEntity.setMyTeamBetterMeTotal(b.getInt("betterMeTotal"));
+            energyBonusEntity.setOpTeamId(b.getInt("PkHeadTeamId"));
+            energyBonusEntity.setOpTeamTotal(b.getInt("total"));
+            energyBonusEntity.setOpTeamBetterMeTotal(b.getInt("betterMeTotal"));
 
             return energyBonusEntity;
         } catch (Exception e) {

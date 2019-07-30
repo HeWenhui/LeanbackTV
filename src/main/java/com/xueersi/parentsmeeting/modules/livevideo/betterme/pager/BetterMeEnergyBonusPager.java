@@ -20,7 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePag
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnergyBonusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.lottie.RisingBubbleLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.lottie.RisingBubbleLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
@@ -91,15 +91,15 @@ public class BetterMeEnergyBonusPager extends LiveBasePager {
         ivTeampkOther.setImageResource(res[entity.getOpTeamId()]);
         tvTeampkLeadFireAddLeft.setText("+" + entity.getMyTeamBetterMeTotal());
         tvTeampkLeadScoreLeft.setText("" + entity.getMyTeamTotal());
-        ivTeampkLeadFireAddRight.setText("+" + entity.getOpTeamTotal());
+        ivTeampkLeadFireAddRight.setText("+" + entity.getOpTeamBetterMeTotal());
         tvTeampkLeadScoreRight.setText("" + entity.getOpTeamTotal());
         if (total != 0) {
             fprog = (float) (entity.getMyTeamTotal()) / (float) (total);
             progress = (int) ((float) (entity.getMyTeamTotal() * 100) / (float) (total));
         }
         int closeDelay = 10000;
-        final AtomicInteger integer = new AtomicInteger(closeDelay / 1000);
         int countDelay = 1000;
+        final AtomicInteger integer = new AtomicInteger(closeDelay / 1000);
 
         pgTeampkLead.setProgress(progress);
         finalFprog = fprog;
@@ -138,7 +138,7 @@ public class BetterMeEnergyBonusPager extends LiveBasePager {
     }
 
     private void startLottie() {
-        final LottieEffectInfo bubbleEffectInfo = new RisingBubbleLottieEffectInfo(mContext, entity);
+        final LottieEffectInfo bubbleEffectInfo = new RisingBubbleLottieEffectInfo(mContext,mLottieView, entity);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
