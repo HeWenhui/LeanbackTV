@@ -933,7 +933,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         @Override
         public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity,
                                          String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
-            mLogtf.d("liveSubmitTestAnswer:type=" + videoQuestionLiveEntity.srcType + ",testId=" +
+            mLogtf.d("liveSubmitTestAnswer:type=" + videoQuestionLiveEntity.srcType + ",newarts=" + videoQuestionLiveEntity.isNewArtsH5Courseware() + ",testId=" +
                     videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
                     + testAnswer);
             String userMode = "1";
