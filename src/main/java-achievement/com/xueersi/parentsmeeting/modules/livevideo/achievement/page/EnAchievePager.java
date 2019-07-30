@@ -186,7 +186,6 @@ public class EnAchievePager extends LiveBasePager {
         }
         if (myTotal + otherTotal != 0) {
             int progress = (int) ((float) myTotal * 100 / (float) (myTotal + otherTotal));
-            logger.d("updateEnpk:progress=" + progress + "," + pgAchivePk.getProgress());
             setEngPro(progress);
         }
     }
