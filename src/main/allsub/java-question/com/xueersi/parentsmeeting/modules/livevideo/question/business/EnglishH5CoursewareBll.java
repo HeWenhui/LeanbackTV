@@ -779,6 +779,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
 
             @Override
             public void onClick(View v) {
+                resultViews.remove(popupWindow_view);
                 liveViewAction.removeView(popupWindow_view);
             }
         });
@@ -828,10 +829,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
         logToFile.d("removeAllResultViews:size=" + resultViews.size());
         while (!resultViews.isEmpty()) {
             View view = resultViews.remove(0);
-            ViewGroup group = (ViewGroup) view.getParent();
-            if (group != null) {
-                group.removeView(view);
-            }
+            liveViewAction.removeView(view);
         }
     }
 
