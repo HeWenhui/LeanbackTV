@@ -7,7 +7,7 @@
     android:ellipsize="end"
     android:gravity="center_horizontal"
     android:includeFontPadding="false"
-    android:singleLine="true"
+    android:maxLines="1"
     android:textColor="#009CE5">
 
 </com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView>

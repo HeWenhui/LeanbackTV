@@ -70,7 +70,7 @@ public class BubbleStandLottieEffectInfo extends LottieEffectInfo {
                             .app_livevideo_enteampk_benchangchengjiu_tips_rise_bg_nor);
                     increaseBitmap = Bitmap.createScaledBitmap(increaseBitmap, (int) (iconHeight * 8 / 9), (int)
                             iconHeight, true);
-                    ImageSpan imageSpan = new ImageSpan(mContext, increaseBitmap,ImageSpan.ALIGN_BASELINE);
+                    ImageSpan imageSpan = new ImageSpan(mContext, increaseBitmap, ImageSpan.ALIGN_BASELINE);
                     message.setSpan(imageSpan, currentMessage.length(), currentMessage.length() + 1, SpannableString
                             .SPAN_INCLUSIVE_EXCLUSIVE);
                 } else if (isDecrease) {
@@ -79,7 +79,7 @@ public class BubbleStandLottieEffectInfo extends LottieEffectInfo {
                             .app_livevideo_enteampk_benchangchengjiu_tips_drop_bg_nor);
                     decreaseBitmap = Bitmap.createScaledBitmap(decreaseBitmap, (int) (iconHeight * 8 / 9), (int)
                             iconHeight, true);
-                    ImageSpan imageSpan = new ImageSpan(mContext, decreaseBitmap,ImageSpan.ALIGN_BASELINE);
+                    ImageSpan imageSpan = new ImageSpan(mContext, decreaseBitmap, ImageSpan.ALIGN_BASELINE);
                     message.setSpan(imageSpan, currentMessage.length(), currentMessage.length() + 1, SpannableString
                             .SPAN_INCLUSIVE_EXCLUSIVE);
                 } else {
@@ -100,6 +100,8 @@ public class BubbleStandLottieEffectInfo extends LottieEffectInfo {
             textView.measure(widthMeasureSpec, heightMeasureSpec);
             textView.layout(0, 0, width, height);
             textView.draw(canvas);
+            int a = 0;
+            int b = a;
             return bitmap;
         } catch (Exception e) {
             e.printStackTrace();

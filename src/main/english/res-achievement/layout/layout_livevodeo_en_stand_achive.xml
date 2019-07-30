@@ -192,15 +192,17 @@
             android:background="@drawable/selector_live_en_stand_achive_open"
             android:button="@null"
             android:checked="false" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_marginTop="-16dp"
+            android:id="@+id/lav_livevideo_en_stand_achive_bubble"
+            android:layout_width="177dp"
+            android:layout_height="37dp"
+            android:layout_below="@id/cb_livevideo_en_stand_achive_title"/>
+
     </RelativeLayout>
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lav_livevideo_en_stand_achive_bubble"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rl_livevideo_en_stand_achive__content"
-        android:layout_alignLeft="@id/rl_livevideo_en_stand_achive__content"
-        android:layout_alignRight="@id/rl_livevideo_en_stand_achive__content" />
+
 
     <LinearLayout
         android:id="@id/ll_livevideo_en_stand_achive_user_head_imge"

@@ -819,7 +819,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
         }
 
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5) {
-            String fileName = "live_stand_head.json";
+            String fileName = "live_stand/head_segment/data.json";
 
             @Override
             public Object getItemViewType(LiveMessageEntity liveMessageEntity) {
