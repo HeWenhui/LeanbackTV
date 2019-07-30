@@ -912,7 +912,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity,
                                          String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
+            mLogtf.d("liveSubmitTestAnswer:type=" + videoQuestionLiveEntity.srcType + ",newarts=" + videoQuestionLiveEntity.isNewArtsH5Courseware() + ",testId=" +
                     videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
                     + testAnswer);
             String userMode = "1";
@@ -921,7 +921,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     userMode = "0";
                 }
             }
-            if (LiveVideoConfig.isNewArts) {
+            if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
                 logger.e("======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
                 getHttpManager().liveNewArtsSubmitTestAnswer(
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, isSubmit, new HttpCallBack() {
