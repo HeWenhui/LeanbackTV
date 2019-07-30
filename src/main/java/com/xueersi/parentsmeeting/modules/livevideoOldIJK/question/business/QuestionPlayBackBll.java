@@ -11,6 +11,7 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -20,6 +21,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
@@ -186,6 +188,17 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.speechContent = questionEntity.getSpeechContent();
                 videoQuestionLiveEntity.time = questionEntity.getEstimatedTime();
                 videoQuestionLiveEntity.num = questionEntity.getQuestionNum();
+                //讲座的答题数量。
+                if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
+                    try {
+                        List<AnswerEntity> answerEntityLst = questionEntity.getAnswerEntityLst();
+                        for (int i = 0; i < answerEntityLst.size(); i++) {
+                            videoQuestionLiveEntity.addAnswerEntity(answerEntityLst.get(i));
+                        }
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(TAG, e);
+                    }
+                }
                 videoQuestionLiveEntity.examSubmit = questionEntity.getvEndTime() - questionEntity
                         .getvQuestionInsretTime();
                 videoQuestionLiveEntity.srcType = questionEntity.getSrcType();
