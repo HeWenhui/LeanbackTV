@@ -346,9 +346,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
         if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
             liveGetInfo.setEn_name(mMyInfo.getEnglishName());
-        } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
+        }
+        if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
             liveGetInfo.setStuName(mMyInfo.getRealName());
-        } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
+        }
+        if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
             liveGetInfo.setNickname(mMyInfo.getNickName());
         }
         //解析性别
@@ -603,7 +605,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     index = i;
                     break;
                 }
-            }else if (LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT == videoQuestionEntity.getvCategory()) {
+            } else if (LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
 //                if (startTime == playPosition) {
@@ -928,6 +930,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     /**
      * 获取直播间初始换参数
+     *
      * @return
      */
     public LiveGetInfo getRommInitData() {

@@ -345,9 +345,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
         if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
             liveGetInfo.setEn_name(mMyInfo.getEnglishName());
-        } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
+        }
+        if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
             liveGetInfo.setStuName(mMyInfo.getRealName());
-        } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
+        }
+        if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
             liveGetInfo.setNickname(mMyInfo.getNickName());
         }
         //解析性别
