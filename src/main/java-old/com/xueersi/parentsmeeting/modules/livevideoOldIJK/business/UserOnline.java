@@ -80,7 +80,7 @@ public class UserOnline {
      * 用户在线心跳
      */
     private void getUserOnline() {
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        final String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         String teacherId = "";
         if (mGetInfo != null) {
             teacherId = mGetInfo.getTeacherId();

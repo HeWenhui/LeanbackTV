@@ -36,7 +36,7 @@ public class StandExperienceEvaluationBll extends
 //                String url = mVideoEntity.getExamUrl() + "#/index?nowLevel=" + "&liveId=" + mVideoEntity.getLiveId() +
 //                        "&gradeId=" + mVideoEntity.getGradId() + "&subjectId=" + mVideoEntity.getSubjectId() +
 //                        "&teacherId=" + mVideoEntity.getTeacherId() + "&orderId=" + mVideoEntity.getChapterId() +
-//                        "&userId=" + UserBll.getInstance().getMyUserInfoEntity().getStuId();
+//                        "&userId=" + LiveAppUserInfo.getInstance().getStuId();
 
 //            ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
 //            activityChangeLand.changeLOrP();

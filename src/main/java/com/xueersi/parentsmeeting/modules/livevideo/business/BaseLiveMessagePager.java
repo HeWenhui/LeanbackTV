@@ -25,8 +25,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.xueersi.common.base.BasePager;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.ConstUtils;
@@ -36,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuPro;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveExPressionEditData;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
@@ -671,7 +670,7 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
                 onUrlClick = (OnMsgUrlClick) mContext;
             }
             String params = "fromtype=livelecturechat&fromplatformtype=android&fromliveid=" + getInfo.getId()
-                    + "&fromuserid=" + UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    + "&fromuserid=" + LiveAppUserInfo.getInstance().getStuId();
             if (url.contains("?")) {
                 mUrl = url + "&" + params;
             } else {

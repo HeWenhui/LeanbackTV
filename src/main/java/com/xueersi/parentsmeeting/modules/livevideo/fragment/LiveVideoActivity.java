@@ -9,13 +9,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 
 /**
  * 直播
@@ -55,7 +55,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
 
     @Override
     public void onDestroy() {
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
 //        System.exit(0);
     }

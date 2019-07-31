@@ -7,8 +7,6 @@ import android.widget.RelativeLayout;
 import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -35,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -342,7 +341,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         //LiveVideoConfig.isNewArts = true;
                         videoQuestionLiveEntity.noticeType = XESCODE.ARTS_SEND_QUESTION;
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
-                        Loger.e(Tag, "=======>onTopic:" + "isNewArts: true" );
+                        Loger.e(Tag, "=======>onTopic:" + "isNewArts: true");
                         String status = onlineTechObj.optString("status");
                         if ("on".equals(status)) {
                             videoQuestionLiveEntity.package_socurce = onlineTechObj.optInt("package_source");
@@ -814,12 +813,12 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
         StringBuilder sb = new StringBuilder();
         String falseStr = Base64.encodeBytes("false".getBytes());
-        sb.append(mLiveBll.getLiveVideoSAConfig().inner.URL_ARTS_H5_URL).append("?liveId=").append(mLiveId)
+        sb.append(LiveHttpConfig.URL_ARTS_H5_URL).append("?liveId=").append(mLiveId)
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
                 .getStuId())
-                .append("&xesrfh=").append(AppBll.getInstance().getUserRfh())
-                .append("&cookie=").append(AppBll.getInstance().getUserToken())
+                .append("&xesrfh=").append(LiveAppUserInfo.getInstance().getUserRfh())
+                .append("&cookie=").append(LiveAppUserInfo.getInstance().getUserToken())
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
         return sb.toString();
@@ -831,19 +830,19 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         String url;
         if ("5".equals(type)) {
             if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
-                url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_STANDROALPLAY_URL;
+                url = LiveHttpConfig.URL_NEWARTS_STANDROALPLAY_URL;
             } else {
-                url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_ROALPLAY_URL;
+                url = LiveHttpConfig.URL_NEWARTS_ROALPLAY_URL;
             }
         } else {
-            url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_CHINESEREADING_URL;
+            url = LiveHttpConfig.URL_NEWARTS_CHINESEREADING_URL;
         }
         sb.append(url).append("?liveId=").append(mLiveId)
                 .append("&testId=").append(id).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
                 .getStuId())
-                .append("&xesrfh=").append(AppBll.getInstance().getUserRfh())
-                .append("&cookie=").append(AppBll.getInstance().getUserToken());
+                .append("&xesrfh=").append(LiveAppUserInfo.getInstance().getUserRfh())
+                .append("&cookie=").append(LiveAppUserInfo.getInstance().getUserToken());
         return sb.toString();
     }
 
@@ -907,8 +906,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            getHttpManager().getQuestion(enstuId, mGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), new
+            getHttpManager().getQuestion(mGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), new
                     HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -935,8 +933,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         @Override
         public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity,
                                          String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
+            mLogtf.d("liveSubmitTestAnswer:type=" + videoQuestionLiveEntity.srcType + ",newarts=" + videoQuestionLiveEntity.isNewArtsH5Courseware() + ",testId=" +
                     videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
                     + testAnswer);
             String userMode = "1";
@@ -994,7 +991,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             }
                         });
             } else {
-                getHttpManager().liveSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
+                getHttpManager().liveSubmitTestAnswer(mLiveType, videoQuestionLiveEntity.srcType,
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
 
                             @Override
@@ -1044,11 +1041,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
 
         @Override
-        public void sendSpeechEvalResult2(boolean isNewArt,String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
+        public void sendSpeechEvalResult2(boolean isNewArt, String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
             String liveid = mGetInfo.getId();
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             if (isNewArt) {
-                getHttpManager().sendSpeechEvalResultNewArts(enstuId, liveid, id, stuAnswer, isSubmit, new HttpCallBack(false) {
+                getHttpManager().sendSpeechEvalResultNewArts(liveid, id, stuAnswer, isSubmit, new HttpCallBack(false) {
 
                     @Override
                     public void onPmSuccess(final ResponseEntity responseEntity) {
@@ -1070,7 +1066,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 });
             } else {
-                getHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
+                getHttpManager().sendSpeechEvalResult2(liveid, id, stuAnswer, new HttpCallBack(false) {
 
                     @Override
                     public void onPmSuccess(final ResponseEntity responseEntity) {
@@ -1104,7 +1100,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
-            getHttpManager().getTestAnswerTeamStatus(videoQuestionLiveEntity.isNewArtsH5Courseware(),videoQuestionLiveEntity.id, new HttpCallBack(false) {
+            getHttpManager().getTestAnswerTeamStatus(videoQuestionLiveEntity.isNewArtsH5Courseware(), videoQuestionLiveEntity.id, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     GoldTeamStatus entity = getHttpResponseParser().testAnswerTeamStatus(responseEntity, mGetInfo.getStuId(),
@@ -1141,10 +1137,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
 
         @Override
-        public void speechEval42IsAnswered(boolean isNewArt,String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        public void speechEval42IsAnswered(boolean isNewArt, String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
             if (isNewArt) {
-                getHttpManager().speechNewArtEvaluateIsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
+                getHttpManager().speechNewArtEvaluateIsAnswered(mVSectionID, num, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(final ResponseEntity responseEntity) {
                         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
@@ -1170,7 +1165,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 });
             } else {
-                getHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
+                getHttpManager().speechEval42IsAnswered(mVSectionID, num, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(final ResponseEntity responseEntity) {
                         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
@@ -1241,8 +1236,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         }
 
-        public void getSpeechEvalAnswerTeamRank(boolean isNewArt,String id, final AbstractBusinessDataCallBack callBack) {
-            getHttpManager().getSpeechEvalAnswerTeamRank(isNewArt,id, new HttpCallBack(false) {
+        public void getSpeechEvalAnswerTeamRank(boolean isNewArt, String id, final AbstractBusinessDataCallBack callBack) {
+            getHttpManager().getSpeechEvalAnswerTeamRank(isNewArt, id, new HttpCallBack(false) {
 
                 @Override
                 public void onPmSuccess(final ResponseEntity responseEntity) {
@@ -1269,8 +1264,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             return mGetInfo.getRequestTime();
         }
 
-        public void getSpeechEvalAnswerTeamStatus(boolean isNewArt,String testId, final AbstractBusinessDataCallBack callBack) {
-            getHttpManager().getSpeechEvalAnswerTeamStatus(isNewArt,testId, new HttpCallBack(false) {
+        public void getSpeechEvalAnswerTeamStatus(boolean isNewArt, String testId, final AbstractBusinessDataCallBack callBack) {
+            getHttpManager().getSpeechEvalAnswerTeamStatus(isNewArt, testId, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     GoldTeamStatus entity = getHttpResponseParser().getSpeechEvalAnswerTeamStatus(responseEntity, mGetInfo
@@ -1321,8 +1316,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             });
         }
 
-        public void getRolePlayAnswerTeamRank(boolean isNewArt,String testId, final AbstractBusinessDataCallBack callBack) {
-            getHttpManager().getRolePlayAnswerTeamRank(isNewArt,testId, new HttpCallBack() {
+        public void getRolePlayAnswerTeamRank(boolean isNewArt, String testId, final AbstractBusinessDataCallBack callBack) {
+            getHttpManager().getRolePlayAnswerTeamRank(isNewArt, testId, new HttpCallBack() {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     mLogtf.d("getRolePlayAnswerTeamRank:responseEntity=" + responseEntity.getJsonObject());

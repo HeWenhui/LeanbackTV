@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter;
 import android.app.Activity;
 import android.view.View;
 
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.are.ContextManager;
@@ -326,12 +325,11 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
      */
     @Override
     public synchronized void getLikeProbability() {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
         }
-        getHttpManager().getLikeProbability(classId, enstuId, new HttpCallBack(false) {
+        getHttpManager().getLikeProbability(classId, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

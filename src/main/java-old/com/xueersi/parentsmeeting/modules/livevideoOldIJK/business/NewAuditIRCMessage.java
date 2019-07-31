@@ -135,7 +135,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                 mChatClient.logout("Nickname is already in use");
                 liveInfo.nickname = "pt_" + mNickname;
                 mChatClient.setLiveInfo(liveInfo);
-                MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
                 int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
             }
         }
@@ -564,7 +564,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         if (!workSpaceDir.exists()) {
             workSpaceDir.mkdirs();
         }
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         mChatClient = ChatClient.getInstance();
         mChatClient.addListener(mClientListener);
         mChatClient.getRoomManager().addListener(mRoomListener);
@@ -581,7 +581,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             logHashMap.put("PsAppClientKey",myUserInfoEntity.getPsAppClientKey());
             logHashMap.put("workspace",workSpaceDir.getAbsolutePath());
             logHashMap.put("time",""+System.currentTimeMillis());
-            logHashMap.put("userid",UserBll.getInstance().getMyUserInfoEntity().getStuId());
+            logHashMap.put("userid",LiveAppUserInfo.getInstance().getStuId());
             logHashMap.put("where","NewAuditIRCMessage");
             logHashMap.put("liveId",mLiveInfo.getId());
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
@@ -654,9 +654,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                 jsonObject.put("status", "on");
                 jsonObject.put("nonce", nonce);
                 String target = "s_" + mNickname;
-                sendMessage(target, UserBll.getInstance().getMyUserInfoEntity().getPsimId(),jsonObject.toString());
+                sendMessage(target, LiveAppUserInfo.getInstance().getPsimId(),jsonObject.toString());
                 target = "ws_" + mNickname;
-                sendMessage(target,UserBll.getInstance().getMyUserInfoEntity().getPsimId(),jsonObject.toString());
+                sendMessage(target,LiveAppUserInfo.getInstance().getPsimId(),jsonObject.toString());
                 //旁听日志
                 StableLogHashMap logHashMap = new StableLogHashMap("sendListenCmd");
                 logHashMap.put("status", "on");

@@ -192,7 +192,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                 try {
                     logger.d( "start:startRecording:mAudioRecord=" + (mAudioRecord == null));
                     //initAudioRecorder();
-                    int stuid = Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                    int stuid = Integer.parseInt(LiveAppUserInfo.getInstance().getStuId());
                     long time = System.currentTimeMillis();
                     mWorkerThread = new WorkerThread(activity, stuid, true);
                     try {

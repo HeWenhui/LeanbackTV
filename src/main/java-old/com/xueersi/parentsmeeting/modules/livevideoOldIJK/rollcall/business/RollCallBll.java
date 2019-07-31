@@ -418,7 +418,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
         if (classSignEntity.getStatus() != 1) {
             stopRollCall();
         } else {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
             String classId = "";
             if (mGetInfo.getStudentLiveInfo() != null) {
                 classId = mGetInfo.getStudentLiveInfo().getClassId();

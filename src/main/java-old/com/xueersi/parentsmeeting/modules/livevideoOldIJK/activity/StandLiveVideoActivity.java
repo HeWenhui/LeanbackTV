@@ -411,7 +411,7 @@
 //            FullMarkListEntity entity=new FullMarkListEntity();
 //            entity.setAnswer_time(""+(60+i));
 //            entity.setStuName("李亚龙啊");
-//            entity.setId(UserBll.getInstance().getMyUserInfoEntity().getStuId()+(i==5?"":"abc"));
+//            entity.setId(LiveAppUserInfo.getInstance().getStuId()+(i==5?"":"abc"));
 //            lst.add(entity);
 //        }
 //        final ArrayList<RankUserEntity> lst1=new ArrayList<>();
@@ -441,7 +441,7 @@
 //        from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
 //        XesMobAgent.enterLiveRoomFrom(from);
 //        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
-//            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+//            String stuId = LiveAppUserInfo.getInstance().getStuId();
 //            mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
 //            mLiveBll = new LiveBll(this, vStuCourseID, courseId, mVSectionID, from, mGetInfo);
 //        } else if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {

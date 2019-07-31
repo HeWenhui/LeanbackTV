@@ -5,6 +5,7 @@ import android.content.Context;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import org.json.JSONArray;
@@ -43,7 +44,7 @@ public class ExperienceBusiness extends BaseHttpBusiness {
         params.addBodyParam("planId", planId);
         params.addBodyParam("orderId", orderId);
         params.addBodyParam("userId", userId);
-        sendPost(LiveVideoConfig.URL_AUTO_LIVE_FEAD_BACK, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_AUTO_LIVE_FEAD_BACK, params, requestCallBack);
     }
 
     //发送体验课学习反馈
@@ -60,7 +61,7 @@ public class ExperienceBusiness extends BaseHttpBusiness {
         params.addBodyParam("option", jsonOption.toString());
 //        sendPost("https://www.easy-mock.com/mock/5b57f6919ddd1140ec2eb47b/xueersi.wx.android
 // .app/livevideo/feedback",params,requestCallBack);
-        sendPost(LiveVideoConfig.URL_AUTO_LIVE_LEARN_FEED_BACK, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_AUTO_LIVE_LEARN_FEED_BACK, params, requestCallBack);
     }
 
 }

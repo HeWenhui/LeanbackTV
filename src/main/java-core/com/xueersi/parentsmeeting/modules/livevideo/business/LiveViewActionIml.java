@@ -5,10 +5,14 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.RelativeLayout;
 
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import java.util.HashMap;
@@ -19,7 +23,6 @@ public class LiveViewActionIml implements LiveViewAction {
     private Activity activity;
     private RelativeLayout bottomContent;
     private RelativeLayout mContentView;
-    private SparseArray<View> views = new SparseArray<View>();
     private HashMap<View, LiveVideoLevel> liveVideoLevelHashMap = new HashMap<>();
 
     public LiveViewActionIml(Activity activity, RelativeLayout mContentView, RelativeLayout bottomContent) {
@@ -43,7 +46,18 @@ public class LiveViewActionIml implements LiveViewAction {
     @Override
     public void removeView(View child) {
         logger.d("removeView:child=" + child);
-        bottomContent.removeView(child);
+        try {
+            bottomContent.removeView(child);
+        } catch (IndexOutOfBoundsException e) {
+            int index = bottomContent.indexOfChild(child);
+            ViewParent mParent = child.getParent();
+            HashMap<String, String> map = new HashMap<>();
+            map.put("logtype", "removeView");
+            map.put("index", "" + index);
+            map.put("parent", "" + (mParent == bottomContent));
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), TAG, map);
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
     }
 
     @Override

@@ -108,7 +108,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
 
 
     private void nBLogin() {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         final String userid = userInfoEntity.getStuId();
         String nickName = userInfoEntity.getNickName();
         mNbHttpManager.nbLogin(mLiveId,userid,nickName, NbCourseWareConfig.USER_TYPE_STU, new HttpCallBack(){
@@ -251,7 +251,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
 
     @Override
     public void uploadNbResult(String resultStr, String isForce, HttpCallBack requestCallBack) {
-        mNbHttpManager.upLoadNbReuslt(mLiveId, UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+        mNbHttpManager.upLoadNbReuslt(mLiveId, LiveAppUserInfo.getInstance().getStuId(),
                 stuCouId ,resultStr,
                 isForce, isPlayback ? "1" : "0", requestCallBack);
     }
@@ -262,7 +262,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
         mNbCourseInfo = testInfo;
         mTestInfoCallBack = requestCallBack;
        if(!TextUtils.isEmpty(nbToken)){
-           mNbHttpManager.getNbTestInfo(mLiveId, UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+           mNbHttpManager.getNbTestInfo(mLiveId, LiveAppUserInfo.getInstance().getStuId(),
                    mNbCourseInfo.getExperimentId() ,nbToken, requestCallBack);
        }else{
           nBLogin();
@@ -285,7 +285,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("type", "" + XESCODE.NB_ADDEXPERIMENT_SUBMIT_SUCCESS);
-                jsonObject.put("stuId",  UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                jsonObject.put("stuId",  LiveAppUserInfo.getInstance().getStuId());
                 jsonObject.put("experimentId", mExperimentId);
                 mMsgSender.sendNoticeToMain(jsonObject);
             } catch (Exception e) {

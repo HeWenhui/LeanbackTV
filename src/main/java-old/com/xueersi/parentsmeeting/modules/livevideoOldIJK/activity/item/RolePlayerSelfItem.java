@@ -230,7 +230,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         mPosition = position;
         String imgUrl = entity.getRolePlayer().getHeadImg();
         if(TextUtils.isEmpty(imgUrl)){
-            imgUrl = UserBll.getInstance().getMyUserInfoEntity().getHeadImg();
+            imgUrl = LiveAppUserInfo.getInstance().getHeadImg();
         }
         updateUserHeadImage(civUserHead, imgUrl);
         rlMain.setVisibility(View.VISIBLE);

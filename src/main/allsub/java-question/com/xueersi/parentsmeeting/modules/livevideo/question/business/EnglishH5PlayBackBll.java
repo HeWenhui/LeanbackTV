@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
+import com.xueersi.common.base.BasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsSpeakEvent;
@@ -74,6 +75,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     private CourseWareHttpManager courseWareHttpManager;
     private VideoQuestionEntity mCurrentQuestionEntity;
 
+    private int isArts;
+
     public EnglishH5PlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         EventBus.getDefault().register(this);
@@ -108,7 +111,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new
                 LiveBackBaseEnglishH5CoursewareCreat();
         liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(liveGetInfo);
-        int isArts = liveBackBll.getIsArts();
+        isArts = liveBackBll.getIsArts();
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
@@ -174,7 +177,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         final int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
-            //    LiveVideoConfig.isNewArts = false;
+                //    LiveVideoConfig.isNewArts = false;
                 BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
                     mediaPlayerControl.pause();
@@ -279,7 +282,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
                 //LiveVideoConfig.isNewArts = true;
                 mCurrentQuestionEntity.setNewArtsCourseware(true);
-               // mCurrentQuestionEntity.setNewArtsCourseware(true);
+                // mCurrentQuestionEntity.setNewArtsCourseware(true);
                 Log.e("Duncan", "mqtt+文科新课件平台");
                 BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
@@ -431,6 +434,9 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             stringBuilder.append("&isShowTeamPk=").append(0);
             stringBuilder.append("&nonce=").append(nonce);
             stringBuilder.append("&isforce=").append(isforce);
+            if (isArts == LiveVideoSAConfig.ART_CH) {
+                stringBuilder.append("&chs=1");
+            }
             stringBuilder.append("&releasedPageInfos=").append(englishH5Entity.getReleasedPageInfos());
             String resUrl = stringBuilder.toString();
             return resUrl;
@@ -443,8 +449,14 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isPlayBack, AbstractBusinessDataCallBack callBack) {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
             String[] res = getSrcType(englishH5Entity);
-            getCourseWareHttpManager().getStuTestResult(liveGetInfo.getId(), liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
-                    englishH5Entity.getPackageAttr(), isPlayBack, callBack, detailInfo.isTUtor());
+            if ((LiveVideoConfig.EDUCATION_STAGE_3.equals(detailInfo.getEducationstage()) || LiveVideoConfig.EDUCATION_STAGE_4.equals(detailInfo.getEducationstage()))
+                    && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(englishH5Entity.getPackageAttr())) {
+                getCourseWareHttpManager().getStuChiAITestResult(liveGetInfo.getId(), liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
+                        englishH5Entity.getPackageAttr(), isPlayBack, liveGetInfo.getStudentLiveInfo().getClassId(), callBack);
+            } else {
+                getCourseWareHttpManager().getStuTestResult(liveGetInfo.getId(), liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
+                        englishH5Entity.getPackageAttr(), isPlayBack, callBack, detailInfo.isTUtor());
+            }
         }
 
         @Override
@@ -473,7 +485,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
         @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
-            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN) {
+            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN && !detailInfo.isTUtor()) {
                 if (LiveQueConfig.isGroupGame(detailInfo.type)) {
                     getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, liveGetInfo.getStuId(), detailInfo.type, callBack);
                 } else {
@@ -599,8 +611,6 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
             final Boolean isRights = isRight;
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            String userMode = "1";
             HttpCallBack httpCallBack = new HttpCallBack() {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
@@ -636,7 +646,6 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             };
 //            if (!liveBackBll.getExperience()) {
             getCourseHttpManager().sumitCourseWareH5(videoQuestionLiveEntity.isNewArtsH5Courseware(),
-                    enstuId,
                     videoQuestionLiveEntity.srcType,
                     videoQuestionLiveEntity.id,
                     testAnswer,
@@ -666,11 +675,11 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     private String buildCourseUrl(String testIds) {
         StringBuilder sb = new StringBuilder();
         String falseStr = Base64.encodeBytes("false".getBytes());
-        sb.append(new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_ARTS_H5_URL).append("?liveId=").append(mVideoEntity.getLiveId())
+        sb.append(LiveHttpConfig.URL_ARTS_H5_URL).append("?liveId=").append(mVideoEntity.getLiveId())
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append("2")
-                .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&stuId=").append(UserBll.getInstance().getMyUserInfoEntity().getStuId())
-                .append("&xesrfh=").append(AppBll.getInstance().getUserRfh())
-                .append("&cookie=").append(AppBll.getInstance().getUserToken())
+                .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&stuId=").append(LiveAppUserInfo.getInstance().getStuId())
+                .append("&xesrfh=").append(LiveAppUserInfo.getInstance().getUserRfh())
+                .append("&cookie=").append(LiveAppUserInfo.getInstance().getUserToken())
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
         return sb.toString();
@@ -678,7 +687,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
     private String buildCourseH5Url(String testIds) {
         StringBuilder sb = new StringBuilder();
-        sb.append(new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(UserBll.getInstance().getMyUserInfoEntity().getStuId())
+        sb.append(LiveHttpConfig.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(LiveAppUserInfo.getInstance().getStuId())
                 .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&liveId=").append(mVideoEntity.getLiveId())
                 .append("&testId=").append(testIds).append("&type=").append(17).append("&isPlayBack=1");
         return sb.toString();

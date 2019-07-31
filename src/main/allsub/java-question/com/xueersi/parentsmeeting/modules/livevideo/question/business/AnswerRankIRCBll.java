@@ -19,7 +19,7 @@ import java.util.List;
  * Created by linyuqiang on 2018/7/5.
  */
 public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
-    AnswerRankBll mAnswerRankBll;
+    private AnswerRankBll mAnswerRankBll;
 
     public AnswerRankIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);

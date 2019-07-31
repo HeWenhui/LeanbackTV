@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -80,14 +79,13 @@ public class UserOnline {
      * 用户在线心跳
      */
     private void getUserOnline() {
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String teacherId = "";
         if (mGetInfo != null) {
             teacherId = mGetInfo.getTeacherId();
         }
         final String finalTeacherId = teacherId;
         mHbCount++;
-        mHttpManager.liveUserOnline(mLiveType, enstuId, mLiveId, teacherId, mCurrentDutyId, mHbTime, new HttpCallBack() {
+        mHttpManager.liveUserOnline(mLiveType, mLiveId, teacherId, mCurrentDutyId, mHbTime, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -134,18 +132,18 @@ public class UserOnline {
                     if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                         //liveId
                         //teacherId
-                        mLogtf.d("getUserOnline(JSONException):enstuId=" + enstuId + ",mHbCount=" + mHbCount + "," +
+                        mLogtf.d("getUserOnline(JSONException):mHbCount=" + mHbCount + "," +
                                 "teacherId=" + finalTeacherId +
                                 ",result=" + result);
                     } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
                         //classId
                         //dutyId
-                        mLogtf.d("getUserOnline(JSONException):enstuId=" + enstuId + ",mHbCount=" + mHbCount + "," +
+                        mLogtf.d("getUserOnline(JSONException):mHbCount=" + mHbCount + "," +
                                 "mCurrentDutyId=" +
                                 mCurrentDutyId + ",result=" + result);
                     } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                         //liveId
-                        mLogtf.d("getUserOnline(JSONException):enstuId=" + enstuId + ",mHbCount=" + mHbCount + "," +
+                        mLogtf.d("getUserOnline(JSONException):mHbCount=" + mHbCount + "," +
                                 "result=" + result);
                     }
                     MobAgent.httpResponseParserError(TAG, "getUserOnline", result);

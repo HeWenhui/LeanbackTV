@@ -2,9 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -24,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
@@ -250,19 +249,6 @@ public class CoursewarePreload {
         @Override
         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
             CoursewareInfoEntity coursewareInfoEntity = liveHttpResponseParser.parseCoursewareInfo(responseEntity);
-            try {
-                StableLogHashMap hashMap = new StableLogHashMap();
-//            hashMap.put("eventid", LogConfig.PRE_LOAD_START);
-                hashMap.put("logtype", "onPmSuccess");
-                hashMap.put("size", "" + coursewareInfoEntity.getCoursewaresList().size());
-                hashMap.put("arts", "" + arts);
-                hashMap.put("liveId", "" + liveId);
-                hashMap.put("ip", IpAddressUtil.USER_IP);
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID,
-                        LogConfig.PRE_LOAD_START, hashMap.getData());
-            } catch (Exception e) {
-                LiveCrashReport.postCatchedException(TAG, e);
-            }
             logger.i(responseEntity.getJsonObject().toString());
             courseWareInfos.add(coursewareInfoEntity);
             logger.i(arts + " pmSuccess");
@@ -270,7 +256,26 @@ public class CoursewarePreload {
             if ("science".equals(arts) && coursewareInfoEntity != null) {
                 mNbCoursewareInfo = coursewareInfoEntity.getNbCoursewareInfo();
             }
-            performDownLoad();
+            boolean perform = performDownLoad();
+            try {
+                StableLogHashMap hashMap = new StableLogHashMap();
+//            hashMap.put("eventid", LogConfig.PRE_LOAD_START);
+                hashMap.put("logtype", "onPmSuccess");
+                if (coursewareInfoEntity != null) {
+                    hashMap.put("size", "" + coursewareInfoEntity.getCoursewaresList().size());
+                } else {
+                    hashMap.put("size", "-10");
+                }
+                hashMap.put("arts", "" + arts);
+                hashMap.put("subjectnum", "" + subjectNum.get());
+                hashMap.put("perform", "" + perform);
+                hashMap.put("liveId", "" + liveId);
+                hashMap.put("ip", IpAddressUtil.USER_IP);
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID,
+                        LogConfig.PRE_LOAD_START, hashMap.getData());
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
         }
 
         @Override
@@ -295,17 +300,20 @@ public class CoursewarePreload {
         }
     }
 
-    private void performDownLoad() {
-        logger.i("" + courseWareInfos.size() + " " + subjectNum.get());
+    private boolean performDownLoad() {
+        logger.i("performDownLoad:size=" + courseWareInfos.size() + " " + subjectNum.get());
         if (courseWareInfos.size() == subjectNum.get()) {
             logger.i("perform download ");
-            AppBll.getInstance().registerAppEvent(CoursewarePreload.this);
+            LiveAppBll.getInstance().registerAppEvent(CoursewarePreload.this);
 //            storageLiveId();
             execDownLoad(
                     sortArrays(),
                     mergeList(courseWareInfos, 1),
                     mergeList(courseWareInfos, 2),
                     mergeList(courseWareInfos, 3));
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -1290,7 +1298,7 @@ public class CoursewarePreload {
 //        logger.i("remaining " + documentNum.get());
         //下载完成，则注销
         if (documentNum.get() == 0) {
-            AppBll.getInstance().unRegisterAppEvent(this);
+            LiveAppBll.getInstance().unRegisterAppEvent(this);
         }
     }
 

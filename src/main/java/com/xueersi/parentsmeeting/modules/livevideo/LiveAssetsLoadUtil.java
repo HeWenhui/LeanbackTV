@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Environment;
 import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -11,8 +10,6 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.route.module.ModuleHandler;
-import com.xueersi.common.route.module.ModuleManager;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;

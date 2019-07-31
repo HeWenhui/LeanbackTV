@@ -93,7 +93,7 @@ public class LectureLivePlayBackBll extends BaseBll {
                     return;
                 }
 
-                MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
                 // 网络加载数据
                 mCourseHttpManager.getRedPacket(myUserInfoEntity.getEnstuId(), operateId, liveId,
                         new HttpCallBack(dataLoadEntity) {
@@ -133,7 +133,7 @@ public class LectureLivePlayBackBll extends BaseBll {
             EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
             return;
         }
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         // 网络加载数据
         mCourseHttpManager.saveTestRecord(myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
                 liveId, livePlayType, voice, isRight, new HttpCallBack(dataLoadEntity) {
@@ -166,7 +166,7 @@ public class LectureLivePlayBackBll extends BaseBll {
     public void saveQuestionH5Result(final DataLoadEntity dataLoadEntity, final VideoQuestionEntity questionEntity,
                                      final String result, final String liveId, String isSubmit, String type,
                                      double voiceTime, boolean isRight, final AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         // 网络加载数据
         mCourseHttpManager.sumitCourseWareH5(myUserInfoEntity.getEnstuId(), questionEntity.getSrcType(), questionEntity.getvQuestionID(), result, questionEntity.getAnswerDay(),
                 liveId, isSubmit, type, voiceTime, isRight, new HttpCallBack(dataLoadEntity) {
@@ -210,7 +210,7 @@ public class LectureLivePlayBackBll extends BaseBll {
             EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
             return;
         }
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         // 网络加载数据
         mCourseHttpManager.saveTestRecord(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
                 liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {
@@ -258,7 +258,7 @@ public class LectureLivePlayBackBll extends BaseBll {
                     return;
                 }
 
-                MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
                 // 网络加载数据
                 mCourseHttpManager.getLivePlayRedPacket(myUserInfoEntity.getEnstuId(), operateId, liveId,
                         new HttpCallBack(dataLoadEntity) {
@@ -291,7 +291,7 @@ public class LectureLivePlayBackBll extends BaseBll {
     }
 
     public void getLivePlayRedPacket(final DataLoadEntity dataLoadEntity, final String liveId, final String operateId, final AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         // 网络加载数据
         mCourseHttpManager.getLivePlayRedPacket(myUserInfoEntity.getEnstuId(), operateId, liveId,
                 new HttpCallBack(dataLoadEntity) {
@@ -341,7 +341,7 @@ public class LectureLivePlayBackBll extends BaseBll {
                     return;
                 }
 
-                MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
                 // 网络加载数据
                 mCourseHttpManager.getLivePlayRedPackets(myUserInfoEntity.getEnstuId(), operateId, termId, liveId,
                         new HttpCallBack(dataLoadEntity) {
@@ -398,7 +398,7 @@ public class LectureLivePlayBackBll extends BaseBll {
     /** 请求并保存当前的聊天，不回调 */
     public void saveLiveLectureMsgs(final File dir, String channel, final String start, final
     ArrayList<VideoQuestionEntity> timeEntities) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         logger.i( "saveLiveLectureMsgs:start=" + start);
         mCourseHttpManager.getLiveLectureMsgs(myUserInfoEntity.getEnstuId(), channel, 50, start, 1, new
                 HttpCallBack(false) {
@@ -472,7 +472,7 @@ public class LectureLivePlayBackBll extends BaseBll {
     public void getLiveLectureMsgs(final File dir, String channel, final String start, final
     ArrayList<VideoQuestionEntity> timeEntities, final LectureLivePlayBackVideoActivity.GetLiveLectureMsgs
                                            getLiveLectureMsgs) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         logger.i( "getLiveLectureMsgs:start=" + start);
         File file = new File(dir, start);
         LiveMessageGroupEntity liveMessageGroupEntity = getLiveLectureMsgsFromFile(file);
@@ -566,7 +566,7 @@ public class LectureLivePlayBackBll extends BaseBll {
     }
 
     public void getSpeechEval(String liveid, String id, final OnSpeechEval onSpeechEval) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mCourseHttpManager.getSpeechEval(enstuId, liveid, id, new HttpCallBack() {
 
             @Override
@@ -597,7 +597,7 @@ public class LectureLivePlayBackBll extends BaseBll {
 
     public void sendSpeechEvalResult(String liveid, String id, String stuAnswer, String times, int entranceTime,
                                      final OnSpeechEval onSpeechEval) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mCourseHttpManager.sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new
                 HttpCallBack(false) {
 
@@ -622,7 +622,7 @@ public class LectureLivePlayBackBll extends BaseBll {
     }
 
     public void speechEval42IsAnswered(final String liveId, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mCourseHttpManager.speechEval42IsAnswered(enstuId, liveId, num, new
                 HttpCallBack(false) {
 
@@ -646,7 +646,7 @@ public class LectureLivePlayBackBll extends BaseBll {
     }
 
     public void getAdOnLL(String liveId, final LecAdvertEntity lecAdvertEntity, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mCourseHttpManager.getAdOnLL(enstuId, liveId, lecAdvertEntity.course_id, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -759,7 +759,7 @@ public class LectureLivePlayBackBll extends BaseBll {
 //            EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
 //            return;
 //        }
-//        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
 //        // 网络加载数据
 //        mCourseHttpManager.saveTestRecords(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
 //                liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {
@@ -785,7 +785,7 @@ public class LectureLivePlayBackBll extends BaseBll {
 //    }
 
     public void sendLiveCourseVisitTime(final String stuCouId, final String liveId, final int hbTime, final Handler handler, final long delayMillis) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         mCourseHttpManager.sendLiveCourseVisitTime(myUserInfoEntity.getEnstuId(), stuCouId, liveId, hbTime, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

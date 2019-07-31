@@ -21,8 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.event.AppEvent;
@@ -68,6 +66,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.dialog.StudyResultDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -225,7 +225,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         @Override
         public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
             mData.put("appid", appID);
-            mData.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId() + "");
+            mData.put("userid", LiveAppUserInfo.getInstance().getStuId() + "");
             mData.put("usertype", "student");
             mData.put("teacherid", expLiveInfo.getCoachTeacherId() + "");
             mData.put("timestamp", System.currentTimeMillis() + "");
@@ -610,7 +610,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         StableLogHashMap logHashMap = new StableLogHashMap(logtype);
 
         logHashMap.put("appid", appID);
-        logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId() + "");
+        logHashMap.put("userid", LiveAppUserInfo.getInstance().getStuId() + "");
         logHashMap.put("usertype", "student");
         logHashMap.put("teacherid", expLiveInfo.getCoachTeacherId() + "");
         logHashMap.put("timestamp", System.currentTimeMillis() + "");
@@ -655,7 +655,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         onModeChanged();
 
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
 
         getHandler.postDelayed(liveModeTask, getModeInterval());
 
@@ -673,7 +673,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         getHandler.removeCallbacks(liveHeartTask);
         getHandler.removeCallbacks(playDelayTask);
 
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
 
         if (videoPlayState.isPlaying) {
             stopPlayer();
@@ -995,15 +995,14 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         mGetInfo.setId(playBackEntity.getLiveId());
         mGetInfo.setLiveType(expLiveInfo.getLiveType());
-        mGetInfo.setStuId(UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        mGetInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
         mGetInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
 
-        String stuName = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName())
-                ? UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance()
-                .getMyUserInfoEntity().getRealName();
+        String stuName = TextUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())
+                ? LiveAppUserInfo.getInstance().getNickName() : LiveAppUserInfo.getInstance().getRealName();
         mGetInfo.setStuName(stuName);
-        mGetInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
-        mGetInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
+        mGetInfo.setNickname(LiveAppUserInfo.getInstance().getNickName());
+        mGetInfo.setHeadImgPath(LiveAppUserInfo.getInstance().getHeadImg());
 
         mGetInfo.getStudentLiveInfo().setSignStatus(expLiveInfo.getIsSignIn());
     }
@@ -1369,7 +1368,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         try {
             data.put("type", XESCODE.ExpLive.XEP_BACK_FINISH);
-            data.put("stuid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+            data.put("stuid", LiveAppUserInfo.getInstance().getStuId());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1423,7 +1422,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         String planId = playBackEntity.getLiveId();
         String orderId = playBackEntity.getChapterId();
-        String userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        String userId = LiveAppUserInfo.getInstance().getStuId();
         expBusiness.getExperienceResult(planId, orderId, userId, callBack);
     }
 

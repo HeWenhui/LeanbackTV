@@ -7,7 +7,6 @@ import android.view.View;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -1184,9 +1183,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         @Override
         public void praiseTeacher(final String formWhichTeacher, String ftype, String educationStage, final
         HttpCallBack callBack) {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
-            mHttpManager.praiseTeacher(mLiveType, enstuId, mLiveId, teacherId, ftype, educationStage, new
+            mHttpManager.praiseTeacher(mLiveType, mLiveId, teacherId, ftype, educationStage, new
                     HttpCallBack() {
 
                         @Override

@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -27,6 +26,7 @@ import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -252,7 +252,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
         mPosition = position;
         String imgUrl = entity.getRolePlayer().getHeadImg();
         if(TextUtils.isEmpty(imgUrl)){
-            imgUrl = UserBll.getInstance().getMyUserInfoEntity().getHeadImg();
+            imgUrl = LiveAppUserInfo.getInstance().getHeadImg();
         }
         updateUserHeadImage(civUserHead, imgUrl);
         civUserHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 0));

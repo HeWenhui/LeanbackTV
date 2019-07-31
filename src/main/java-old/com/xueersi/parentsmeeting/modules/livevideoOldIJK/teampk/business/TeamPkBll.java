@@ -538,7 +538,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         };
         if (primary) {
             getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
-                    roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), callBack);
+                    roomInitInfo.getStuId(), LiveAppUserInfo.getInstance().getPsimId(), callBack);
         } else {
             getTeamPkHttp().getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStudentLiveInfo().getTeamId(), callBack);
@@ -569,7 +569,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         TeamPkLog.clickFastEnter(contextLiveAndBackDebug);
         if (primaryClass) {
             getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
-                    roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
+                    roomInitInfo.getStuId(), LiveAppUserInfo.getInstance().getPsimId(), new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             TeamPkTeamInfoEntity teamInfoEntityres = parseTeamInfoPrimary(responseEntity);
@@ -1150,7 +1150,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             //获得旧的数据
             final TeamPkTeamInfoEntity saveTeamInfoEntity = getTeamPkTeamInfo();
             getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
-                    roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
+                    roomInitInfo.getStuId(), LiveAppUserInfo.getInstance().getPsimId(), new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             TeamPkTeamInfoEntity teamInfoEntityres = parseTeamInfoPrimary(responseEntity);
@@ -1857,7 +1857,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             for (int i = 0; i < mTeamMates.size(); i++) {
                 //除去自己
                 stuId = mTeamMates.get(i).getId();
-                if (stuId != null && !stuId.equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())) {
+                if (stuId != null && !stuId.equals(LiveAppUserInfo.getInstance().getStuId())) {
                     for (int j = 0; j < onLineChatIds.size(); j++) {
                         if (onLineChatIds.get(j).contains(stuId)) {
                             onLineTeamMate = new TeamMate();

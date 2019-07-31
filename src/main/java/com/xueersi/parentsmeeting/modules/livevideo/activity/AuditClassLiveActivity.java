@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseCacheData;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
@@ -57,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
@@ -196,7 +196,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         // 设置不可自动横竖屏
         setAutoOrientation(false);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
         boolean init = initData();
         if (!init) {
             onUserBackPressed();
@@ -1800,7 +1800,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 ProxUtil.getProxUtil().clear(AuditClassLiveActivity.this);
             }
         }.start();
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
 
         if (xv_livevideo_student != null) {
             xv_livevideo_student.onDestroy();

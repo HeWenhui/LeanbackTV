@@ -26,8 +26,6 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
@@ -47,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
@@ -183,7 +182,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * 新课件是否是预加载
      */
     private boolean ispreload;
-    private LiveAndBackDebug liveAndBackDebug;
+    private ContextLiveAndBackDebug liveAndBackDebug;
     /**
      * 显示下方控制布局
      */
@@ -302,8 +301,18 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             this.educationstage = detailInfo.getEducationstage();
         }
         liveAndBackDebug = new ContextLiveAndBackDebug(context);
+        liveAndBackDebug.addCommonData("isplayback", isPlayBack ? "1" : "0");
         mView = initView();
         entranceTime = System.currentTimeMillis() / 1000;
+        try {
+            if (isPlayBack) {
+                NewCourseLog.sno1back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            } else {
+                NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            }
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         initData();
     }
 
@@ -763,7 +772,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 }
                 /* 语音保存位置 */
                 saveVideoFile = new File(dir, "speakChinese" + System.currentTimeMillis()
-                        +"U"+ UserBll.getInstance().getMyUserInfoEntity().getStuId() +"P"+liveId+ ".mp3");
+                        +"U"+ LiveAppUserInfo.getInstance().getStuId() +"P"+liveId+ ".mp3");
                 SpeechParamEntity mParam = new SpeechParamEntity();
                 mParam.setRecogType(SpeechConfig.SPEECH_CHINESE_EVALUATOR_OFFLINE_ONLINE);
                 mParam.setLang(Constants.ASSESS_PARAM_LANGUAGE_CH);
@@ -1106,7 +1115,21 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 tests = newCourseSec.getTests();
                 if (tests.isEmpty()) {
                     XESToastUtils.showToast(mContext, "互动题为空");
+                    if (isPlayBack) {
+                        try {
+                            NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "false", detailInfo.isTUtor());
+                        } catch (Exception e) {
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
+                    }
                     return;
+                }
+                if (isPlayBack) {
+                    try {
+                        NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "true", detailInfo.isTUtor());
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
                 }
 //                    showControl();
                 if (quesJson != null) {
@@ -1150,6 +1173,13 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 }
                 ivCourseRefresh.setVisibility(View.VISIBLE);
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
+                if (isPlayBack) {
+                    try {
+                        NewCourseLog.sno2back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, "false", detailInfo.isTUtor());
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+                }
             }
         });
     }
@@ -1403,7 +1433,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      */
     private void uploadLOG(String assessContent) {
         final Map<String, String> mData = new HashMap<>();
-        mData.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        mData.put("userid", LiveAppUserInfo.getInstance().getStuId());
         mData.put("liveid", liveId);
         mData.put("assessContent", assessContent);
         uploadCloud(saveVideoFile.getPath(), new AbstractBusinessDataCallBack() {

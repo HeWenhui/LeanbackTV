@@ -140,7 +140,7 @@ public class NewIRCMessage implements IIRCMessage {
                 mNickname = target;
                 liveInfo.nickname = target;
                 mChatClient.setLiveInfo(liveInfo);
-                MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
                 int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
             }
         }
@@ -356,7 +356,7 @@ public class NewIRCMessage implements IIRCMessage {
                     } else if (mNickname.startsWith("ws")) {
                         target = mNickname.substring(1);
                     }
-                    PMDefs.PsIdEntity user = new PMDefs.PsIdEntity(target, UserBll.getInstance().getMyUserInfoEntity().getPsimId());
+                    PMDefs.PsIdEntity user = new PMDefs.PsIdEntity(target, LiveAppUserInfo.getInstance().getPsimId());
                     List<PMDefs.PsIdEntity> userList = new ArrayList<>();
                     userList.add(user);
                     mChatClient.getPeerManager().sendPeerMessage(userList, "T", PMDefs.MessagePriority.MSG_PRIORITY_PRI);
@@ -642,7 +642,7 @@ public class NewIRCMessage implements IIRCMessage {
         if (!workSpaceDir.exists()) {
             workSpaceDir.mkdirs();
         }
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         mChatClient = ChatClient.getInstance();
         mChatClient.addListener(mClientListener);
         mChatClient.getRoomManager().addListener(mRoomListener);
@@ -660,7 +660,7 @@ public class NewIRCMessage implements IIRCMessage {
                 logHashMap.put("PsAppClientKey", myUserInfoEntity.getPsAppClientKey());
                 logHashMap.put("workspace", workSpaceDir.getAbsolutePath());
                 logHashMap.put("time", "" + System.currentTimeMillis());
-                logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                logHashMap.put("userid", LiveAppUserInfo.getInstance().getStuId());
                 logHashMap.put("where", "NewIRCMessage");
                 logHashMap.put("liveId", mLiveInfo.getId());
                 liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());

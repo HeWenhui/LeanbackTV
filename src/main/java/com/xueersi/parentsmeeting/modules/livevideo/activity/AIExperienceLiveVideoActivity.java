@@ -31,11 +31,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SimpleLiveBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
@@ -78,6 +77,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -272,7 +273,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         }
     };
 
-    private class ExperkDebug implements LiveAndBackDebug {
+    private class ExperkDebug extends SimpleLiveBackDebug {
         ExperkDebug() {
             ProxUtil.getProxUtil().put(AIExperienceLiveVideoActivity.this, LiveAndBackDebug.class, this);
         }
@@ -457,7 +458,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
 
         // 设置不可自动横竖屏
         setAutoOrientation(false);
@@ -507,20 +508,19 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
         getInfo.setId(mVideoEntity.getLiveId());
         getInfo.setLiveType(EXP_LIVE_TYPE);
-        getInfo.setStuId(UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        getInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
         getInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
 
-        String stuName = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName())
-                ? UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance()
-                .getMyUserInfoEntity().getRealName();
+        String stuName = TextUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())
+                ? LiveAppUserInfo.getInstance().getNickName() : LiveAppUserInfo.getInstance().getRealName();
         getInfo.setStuName(stuName);
-        getInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
-        getInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
+        getInfo.setNickname(LiveAppUserInfo.getInstance().getNickName());
+        getInfo.setHeadImgPath(LiveAppUserInfo.getInstance().getHeadImg());
         logger.i("====>getRoomInitData:"
-                + UserBll.getInstance().getMyUserInfoEntity().getRealName() + ":"
-                + UserBll.getInstance().getMyUserInfoEntity().getNickName() + ":" +
-                UserBll.getInstance().getMyUserInfoEntity().getChatName() + ":" +
-                UserBll.getInstance().getMyUserInfoEntity().getHeadImg()
+                + LiveAppUserInfo.getInstance().getRealName() + ":"
+                + LiveAppUserInfo.getInstance().getNickName() + ":" +
+                LiveAppUserInfo.getInstance().getChatName() + ":" +
+                LiveAppUserInfo.getInstance().getHeadImg()
 
         );
         return getInfo;
@@ -1648,7 +1648,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
     @Override
     protected void onRefresh() {
-        if (AppBll.getInstance(this).isNetWorkAlert()) {
+        if (LiveAppBll.getInstance().isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
 //            logger.d( "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
 //            if (rlQuestionContent.getChildCount() > 0) {
@@ -1669,7 +1669,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 setmDisplayName(mSectionName);
             }
         }
-        AppBll.getInstance(ContextManager.getApplication());
     }
 
     @Override
@@ -1685,7 +1684,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         logHashMap.put("termid", mVideoEntity.getChapterId());
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_EXIT);
         ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_EXIT, logHashMap.getData());
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
         liveBackBll.onDestroy();
         mLiveMessagePager = null;
         if (mIRCMessage != null) {

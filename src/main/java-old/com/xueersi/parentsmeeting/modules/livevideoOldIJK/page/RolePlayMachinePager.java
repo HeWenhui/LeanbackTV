@@ -899,7 +899,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 //            if (mContext instanceof Activity) {
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
 //                    if (!((Activity) mContext).isDestroyed()) {
-//                        ImageLoader.with(mContext).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
+//                        ImageLoader.with(mContext).load(LiveAppUserInfo.getInstance().getHeadImg())
 //                                .into(civResultHeadImg);
 //                    }
 //                }
@@ -1068,7 +1068,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
         civMatchHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
         civMatchHead.setBorderColor(Color.WHITE);
-        ImageLoader.with(BaseApplication.getContext()).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
+        ImageLoader.with(BaseApplication.getContext()).load(LiveAppUserInfo.getInstance().getHeadImg())
                 .into(civMatchHead);
 
         rlMatchPager.setVisibility(View.VISIBLE);

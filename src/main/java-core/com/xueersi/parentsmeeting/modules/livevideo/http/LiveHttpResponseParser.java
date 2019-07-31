@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
@@ -32,8 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.EvaluateContent;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
@@ -80,7 +79,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -333,9 +331,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             //连对激励
             getInfo.setIsOpenNewCourseWare(data.optInt("isOpenNewCourseWare"));
 //            getInfo.setIsOpenNewCourseWare(1);
-            getInfo.setGetJournalUrl(data.optString("getJournalUrl", "https://live.xueersi.com/science/Stimulation/getJournal"));
-            getInfo.setGetEvenPairListUrl(data.optString("getEvenPairListUrl", "https://live.xueersi.com/science/Stimulation/evenPairList"));
-            getInfo.setGetThumbsUpUrl(data.optString("getThumbsUpUrl", "https://live.xueersi.com/science/Stimulation/thumbsUp"));
+            getInfo.setGetJournalUrl(data.optString("getJournalUrl", LiveHttpConfig.LIVE_HOST_SCIENCE + "/Stimulation/getJournal"));
+            getInfo.setGetEvenPairListUrl(data.optString("getEvenPairListUrl", LiveHttpConfig.LIVE_HOST_SCIENCE + "/Stimulation/evenPairList"));
+            getInfo.setGetThumbsUpUrl(data.optString("getThumbsUpUrl", LiveHttpConfig.LIVE_HOST_SCIENCE + "/Stimulation/thumbsUp"));
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
@@ -484,7 +482,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             getInfo.setNewTalkConfHosts(newTalkConfHosts);
             getInfo.setHbTime(data.getInt("hbTime"));
-            getInfo.setClientLog(data.optString("clientLog", LiveVideoConfig.URL_LIVE_ON_LOAD_LOGS));
+            getInfo.setClientLog(data.optString("clientLog", LiveHttpConfig.URL_LIVE_ON_LOAD_LOGS));
             getInfo.setGslbServerUrl(data.getString("gslbServerUrl"));
             getInfo.setLogServerUrl(data.optString("logServerUrl"));
             List<String> headImgUrl = new ArrayList<String>();
@@ -518,14 +516,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             } else {
 //                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayF=null");
             }
-            getInfo.setSpeechEvalUrl(data.optString("speechEvalUrl", "https://live.xueersi.com/Live/speechEval/"));
+            getInfo.setSpeechEvalUrl(data.optString("speechEvalUrl", LiveHttpConfig.LIVE_HOST + "/Live/speechEval/"));
             getInfo.setUrlClick(data.optInt("urlClick", 0));
             getInfo.setAllowLinkMic(data.optInt("allowLinkMic", 1) == 1);
             getInfo.setStuLinkMicNum(data.optInt("stuLinkMicNum", 0));
-            getInfo.setTestPaperUrl(data.optString("testPaperUrl", LiveVideoConfig.URL_LIVE_MULTI_TEST));
+            getInfo.setTestPaperUrl(data.optString("testPaperUrl", LiveHttpConfig.URL_LIVE_MULTI_TEST));
             getInfo.setBlockChinese(data.optInt("blockChinese", 0) == 1);
-            getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", "https://live.xueersi" +
-                    ".com/Live/subjectiveTestAnswerResult/" + getInfo.getId()));
+            getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", LiveHttpConfig.LIVE_HOST + "/Live/subjectiveTestAnswerResult/" + getInfo.getId()));
             LiveGetInfo.TotalOpeningLength totalOpeningLength = new LiveGetInfo.TotalOpeningLength();
             Object getTotalOpeningLengthObj = data.opt("getTotalOpeningLength");
             if (getTotalOpeningLengthObj instanceof JSONObject) {
@@ -1990,7 +1987,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 entity.setCompetitorResultInfo(resultInfo);
             }
         } catch (Exception e) {
-            logger.d("parseStuPkResult",e);
+            logger.d("parseStuPkResult", e);
             MobAgent.httpResponseParserError(TAG, "parseStuPkResult", e.getMessage());
         }
         return entity;

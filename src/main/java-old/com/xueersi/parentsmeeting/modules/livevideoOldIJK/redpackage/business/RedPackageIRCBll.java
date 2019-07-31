@@ -126,7 +126,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     }
 
     public void sendReceiveGold(final int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        final String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mLogtf.d("sendReceiveGold:enstuId=" + enstuId + ",operateId=" + operateId + ",liveId=" + liveId);
         getHttpManager().sendReceiveGold(mLiveType, enstuId, operateId, liveId, new HttpCallBack() {
 

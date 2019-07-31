@@ -33,8 +33,6 @@ import android.widget.Toast;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.XesActivity;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
@@ -61,6 +59,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -349,8 +348,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                     }
                                     isChangeLine = false;
                                 } else {
-                                    String userName = AppBll.getInstance().getAppInfoEntity().getChildName();
-                                    String userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                    String userName = LiveAppUserInfo.getInstance().getChildName();
+                                    String userId = LiveAppUserInfo.getInstance().getStuId();
                                     try {
                                         if (vPlayer.getPlayer() instanceof PSIJK) {
                                             vPlayer.getPlayer().setUserInfo(userName, userId);

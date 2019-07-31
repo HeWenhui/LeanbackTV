@@ -1,25 +1,27 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.xueersi.common.base.BaseActivity;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveTransferHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveTransferHttpResponseParser;
 import com.xueersi.ui.dataload.DataLoadEntity;
@@ -52,31 +54,31 @@ public class LiveVideoTransferActivity extends BaseActivity {
     protected LogToFile mLogtf;
 
     DataLoadEntity dataLoadEntity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         init();
         Intent intent = getIntent();
-        String sectionEntity =  intent.getStringExtra("sectionEntity");
+        String sectionEntity = intent.getStringExtra("sectionEntity");
         String stuCouId = intent.getStringExtra("stuCouId");
         from = intent.getStringExtra("where");
         try {
-             sectionEntityJson = new JSONObject(sectionEntity);
-             vCoursseID = sectionEntityJson.optString("vCoursseID");
-             vChapterID = sectionEntityJson.optString("vChapterID");
-             vSectionName = sectionEntityJson.optString("vSectionName");
-             vTradeId = sectionEntityJson.optString("vTradeId");
-             vSectionID = sectionEntityJson.optString("vSectionID");
-             vStuCourseID = sectionEntityJson.optString("vStuCourseID");
-             VisitTimeKey = sectionEntityJson.optString("VisitTimeKey");
+            sectionEntityJson = new JSONObject(sectionEntity);
+            vCoursseID = sectionEntityJson.optString("vCoursseID");
+            vChapterID = sectionEntityJson.optString("vChapterID");
+            vSectionName = sectionEntityJson.optString("vSectionName");
+            vTradeId = sectionEntityJson.optString("vTradeId");
+            vSectionID = sectionEntityJson.optString("vSectionID");
+            vStuCourseID = sectionEntityJson.optString("vStuCourseID");
+            VisitTimeKey = sectionEntityJson.optString("VisitTimeKey");
         } catch (JSONException e) {
-            Loger.e(TAG,e.getMessage());
+            Loger.e(TAG, e.getMessage());
         }
         mLogtf = new LogToFile(this, TAG);
-        mLogtf.d("sectionEntity="+sectionEntity+"  stuCouId="+stuCouId+"  from="+from);
+        mLogtf.d("sectionEntity=" + sectionEntity + "  stuCouId=" + stuCouId + "  from=" + from);
         deductStuGold(stuCouId);
-
     }
 
 
@@ -98,12 +100,11 @@ public class LiveVideoTransferActivity extends BaseActivity {
      *
      * @param stuCouId
      */
-    public void deductStuGold( final String stuCouId) {
+    public void deductStuGold(final String stuCouId) {
         dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        mCourseHttpManager.deductStuGold(myUserInfoEntity.getEnstuId(),stuCouId, vCoursseID,
+        mCourseHttpManager.deductStuGold(stuCouId, vCoursseID,
                 vSectionID, 0, new HttpCallBack(dataLoadEntity) {
 
                     @Override
@@ -135,7 +136,6 @@ public class LiveVideoTransferActivity extends BaseActivity {
     VideoResultEntity entitys) {
         //   DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
         mCourseHttpManager.artscoursewarenewpoint(vSectionID, new HttpCallBack(dataLoadEntity) {
 
@@ -163,7 +163,7 @@ public class LiveVideoTransferActivity extends BaseActivity {
         });
     }
 
-    public void intentToPlayBack( VideoResultEntity result) {
+    public void intentToPlayBack(VideoResultEntity result) {
         VideoSectionEntity sectionEntity = result.getMapVideoSectionEntity().get(vSectionID);
         // 播放数据设定
         VideoLivePlayBackEntity videoEntity = videoLivePlayBackFromVideoSection(result,
@@ -202,9 +202,49 @@ public class LiveVideoTransferActivity extends BaseActivity {
             ShareDataManager.getInstance().put(ShareBusinessConfig.SP_SPEECH_URL, sectionEntity.getSpeechEvalUrl(),
                     ShareDataManager.SHAREDATA_USER);
         }
-        LiveVideoEnter.intentTo(this,bundle,from);
-       // finish();
-       // OtherModuleEnter.intentTo((Activity) mContext, bundle, CourseDetailActivity.class.getSimpleName());
+        intentTo(this, bundle, from);
+        // OtherModuleEnter.intentTo((Activity) mContext, bundle, CourseDetailActivity.class.getSimpleName());
+    }
+
+    /**
+     * 跳转到播放器(直播回放)
+     *
+     * @param context
+     * @param bundle
+     */
+    public boolean intentTo(final Activity context, final Bundle bundle, final String where) {
+        if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
+                        .SP_APP_DEVICE_NOTICE, false,
+                ShareDataManager.SHAREDATA_USER)) {
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
+            context.startActivity(intent);
+            finish();
+            return false;
+        }
+        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public void success() {
+                com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
+                        where, LiveVideoEnter.VIDEO_REQUEST);
+                finish();
+            }
+
+            @Override
+            public void progress(float progress, int type) {
+
+            }
+
+            @Override
+            public void fail(int errorCode, String errorMsg) {
+
+            }
+        });
+        return true;
     }
 
     public VideoLivePlayBackEntity videoLivePlayBackFromVideoSection(VideoResultEntity
@@ -258,6 +298,7 @@ public class LiveVideoTransferActivity extends BaseActivity {
         videoEntity.setTutorTeacherImg(sectionEntity.getTutorTeacherImg());
         return videoEntity;
     }
+
     /**
      * 获取观看视频统计间隔时间
      *
@@ -272,5 +313,18 @@ public class LiveVideoTransferActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         finish();
+    }
+
+    /**
+     * 跳转到播放器
+     *
+     * @param context
+     * @param bundle
+     */
+    public static void intentTo(Activity context, Bundle bundle) {
+        Intent intent = new Intent(context, LiveVideoTransferActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }
