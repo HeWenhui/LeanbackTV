@@ -33,11 +33,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
@@ -173,7 +175,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
      * 语音评测工具类
      */
     //    private SpeechUtils mSpeechUtils;
-    private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
+    private SpeechUtils mSpeechEvaluatorUtils;
     private SpeechParamEntity mParam;
     /**
      * 语音保存位置-目录
@@ -197,6 +199,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
             return false;
         }
     });
+    private SpeechParamEntity param;
 
     public SpeechBulletScreenPager(Context context, boolean isNewView) {
         super(context, isNewView);
@@ -256,7 +259,8 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
             }
         }, 100);
         if (mSpeechEvaluatorUtils == null) {
-            mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
+            mSpeechEvaluatorUtils = SpeechUtils.getInstance(mBaseApplication);
+            mSpeechEvaluatorUtils.prepar();
         }
 //        if (mSpeechUtils == null) {
 //            mSpeechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
@@ -655,44 +659,88 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
     private void startEvaluator() {
         logger.i("startEvaluator()");
         File saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startSpeechBulletScreenRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
-                new EvaluatorListener() {
-                    @Override
-                    public void onBeginOfSpeech() {
-                        logger.i("onBeginOfSpeech");
-                        hasValidSpeechInput = false;
-                        mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
-                        mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
-                        mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-                        int v = (int) (0.1f * mMaxVolume);
-                        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0);
-                        isVolumeResume = false;
-                    }
+        if (param == null){
+            param = new SpeechParamEntity();
+        }
+        param.setRecogType(SpeechConfig.SPEECH_DEFAULT_RECOGNIZE_ONLINE);
+        param.setPid(SpeechConfig.EXTRA_PID_CHINESE_SCI_BULLET);
+        param.setMultRef(false);
+        param.setLocalSavePath(saveFile.getPath());
+        mSpeechEvaluatorUtils.startRecog(param,new EvaluatorListener() {
+            @Override
+            public void onBeginOfSpeech() {
+                logger.i("onBeginOfSpeech");
+                hasValidSpeechInput = false;
+                mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
+                mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
+                mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
+                int v = (int) (0.1f * mMaxVolume);
+                mAM.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0);
+                isVolumeResume = false;
+            }
 
-                    @Override
-                    public void onResult(ResultEntity resultEntity) {
-                        logger.i("onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity.getErrorNo() + ",sid=" + resultEntity.getSid());
-                        if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                            if (resultEntity.getSid() != null) {
-                                sid = resultEntity.getSid().toString();
-                            }
-                            onEvaluatorSuccess(resultEntity.getCurString(), true);
-                        } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                            if (resultEntity.getSid() != null) {
-                                sid = resultEntity.getSid().toString();
-                            }
-                            onEvaluatorError(resultEntity);
-                        } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                            onEvaluatorSuccess(resultEntity.getCurString(), false);
-                        }
+            @Override
+            public void onResult(ResultEntity resultEntity) {
+                logger.i("onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity.getErrorNo() + ",sid=" + resultEntity.getSid());
+                if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                    if (resultEntity.getSid() != null) {
+                        sid = resultEntity.getSid().toString();
                     }
+                    onEvaluatorSuccess(resultEntity.getCurString(), true);
+                } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+                    if (resultEntity.getSid() != null) {
+                        sid = resultEntity.getSid().toString();
+                    }
+                    onEvaluatorError(resultEntity);
+                } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+                    onEvaluatorSuccess(resultEntity.getCurString(), false);
+                }
+            }
 
-                    @Override
-                    public void onVolumeUpdate(int volume) {
-                        logger.d("onVolumeUpdate:volume=" + volume);
-                        vwvSpeechbulWave.setVolume(volume * 3);
-                    }
-                });
+            @Override
+            public void onVolumeUpdate(int volume) {
+                logger.d("onVolumeUpdate:volume=" + volume);
+                vwvSpeechbulWave.setVolume(volume * 3);
+            }
+        });
+//        mSpeechEvaluatorUtils.startSpeechBulletScreenRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
+//                new EvaluatorListener() {
+//                    @Override
+//                    public void onBeginOfSpeech() {
+//                        logger.i("onBeginOfSpeech");
+//                        hasValidSpeechInput = false;
+//                        mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
+//                        mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
+//                        mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
+//                        int v = (int) (0.1f * mMaxVolume);
+//                        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0);
+//                        isVolumeResume = false;
+//                    }
+//
+//                    @Override
+//                    public void onResult(ResultEntity resultEntity) {
+//                        logger.i("onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity.getErrorNo() + ",sid=" + resultEntity.getSid());
+//                        if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+//                            if (resultEntity.getSid() != null) {
+//                                sid = resultEntity.getSid().toString();
+//                            }
+//                            onEvaluatorSuccess(resultEntity.getCurString(), true);
+//                        } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+//                            if (resultEntity.getSid() != null) {
+//                                sid = resultEntity.getSid().toString();
+//                            }
+//                            onEvaluatorError(resultEntity);
+//                        } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+//                            onEvaluatorSuccess(resultEntity.getCurString(), false);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onVolumeUpdate(int volume) {
+//                        logger.d("onVolumeUpdate:volume=" + volume);
+//                        vwvSpeechbulWave.setVolume(volume * 3);
+//                    }
+//                });
 
 //        mParam.setRecogType(SpeechConfig.SPEECH_BULLET_RECOGNIZE_ONLINE);
 //        mParam.setLocalSavePath(saveFile.getPath());

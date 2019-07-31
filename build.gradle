@@ -140,7 +140,8 @@ dependencies {
 //    implementation "androidx.work:work-runtime:2.01"
     //    implementation project(':library:agora')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.businessinterface)
-
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.xutils)
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.danmaku)
 //    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.3'
 //    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
 }
