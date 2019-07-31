@@ -158,6 +158,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            enTeamPkRankEntity.setApkTeamId(2);
 //            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
 //            for (int i = 0; i < 7; i++) {
+
 //                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
 //                teamMemberEntity.id = 100 + i;
 //                if (i == 2) {
@@ -249,7 +250,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (mInteractiveTeam != null) {
                 iid = mInteractiveTeam.getInteractive_team_id();
             }
-            tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), LiveAppUserInfo.getInstance().getUserRfh(), mGetInfo.getId(), classInt + "", -1, pid, iid, "");
+            tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), LiveAppUserInfo.getInstance().getUserRfh(),
+                    mGetInfo.getId(), classInt + "", -1, pid, iid, "");
             tcpDispatch.setOnTcpConnects(onTcpConnects);
             tcpDispatch.setAddresses(addresses);
             tcpDispatch.registTcpMessageAction(new TeamMessageAction());
@@ -385,11 +387,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mLogtf.d("reportStuInfo:nick_name=" + nick_name + ",mode=" + mGetInfo.getMode());
                     LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
                     StuSegmentEntity stuSegmentEntity = mGetInfo.getBetterMe().getStuSegment();
-                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStandLiveName(), mGetInfo
-                            .getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name,
-                            unique_id, "" + stuSegmentEntity.getSegmentType(), stuSegmentEntity.getSegment(), "" +
-                                    stuSegmentEntity.getStar(), "" + stuSegmentEntity.getSumCount(), new HttpCallBack
-                                    (false) {
+                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStandLiveName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, "" + stuSegmentEntity.getSegmentType(), stuSegmentEntity.getSegment(), "" + stuSegmentEntity.getStar(), "" + stuSegmentEntity.getSumCount(), new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
                             logger.d("reportStuInfo:onPmSuccess" + responseEntity.getJsonObject());
@@ -1246,7 +1244,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      */
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         //辅导模式，战队PK在小目标后显示
-        if(LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())){
+        if (LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) && mGetInfo.getBetterMe().isUseBetterMe() && !mGetInfo
+                .getBetterMe().isArriveLate()) {
             return;
         }
         //退出重进不显示分队仪式
