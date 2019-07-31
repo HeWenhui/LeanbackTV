@@ -877,13 +877,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         if (!hasPermission) {
                             inspectMicPermission();
                         } else {
-                            mView.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    isRecogSpeeking = false;
-                                    startVoiceInput();
-                                }
-                            }, 300);
+                            isRecogSpeeking = false;
+                            startVoiceInput();
                         }
                     } else {
                         XESToastUtils.showToast(mContext, mSpeechFail);
@@ -969,22 +964,26 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         rlMessageVoiceContent.setVisibility(View.VISIBLE);
         vwvVoiceChatWave.setVisibility(View.VISIBLE);
         if (speechUtils != null) {
-            speechUtils.stop();
+            speechUtils.cancel();
         }
         tvMessageVoiceContent.setText(VOICE_RECOG_HINT);
         tvMessageVoiceCount.setText("");
-
-        if (mAudioRequest != null) {
-            mAudioRequest.request(new AudioRequest.OnAudioRequest() {
-                @Override
-                public void requestSuccess() {
-                    if (!isRecogSpeeking) {
-                        startEvaluator();
-                        isRecogSpeeking = true;
-                    }
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mAudioRequest != null) {
+                    mAudioRequest.request(new AudioRequest.OnAudioRequest() {
+                        @Override
+                        public void requestSuccess() {
+                            if (!isRecogSpeeking) {
+                                startEvaluator();
+                                isRecogSpeeking = true;
+                            }
+                        }
+                    });
                 }
-            });
-        }
+            }
+        }, 300);
 
 
     }
@@ -2250,13 +2249,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
             @Override
             public void onGuarantee(String permission, int position) {
-                mView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        isRecogSpeeking = false;
-                        startVoiceInput();
-                    }
-                }, 300);
+                isRecogSpeeking = false;
+                startVoiceInput();
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
     }

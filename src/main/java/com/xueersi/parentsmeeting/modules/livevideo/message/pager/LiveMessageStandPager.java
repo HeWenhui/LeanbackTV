@@ -752,7 +752,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
         if (mSpeechUtils == null) {
             mSpeechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
-            mSpeechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
         }
         mParam = new SpeechParamEntity();
         mSpeechUtils.prepar(new SpeechEvaluatorUtils.OnFileSuccess() {
@@ -1860,7 +1859,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             mAudioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
-                    startEvaluator();
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startEvaluator();
+                        }
+                    },300);
                 }
             });
         }
