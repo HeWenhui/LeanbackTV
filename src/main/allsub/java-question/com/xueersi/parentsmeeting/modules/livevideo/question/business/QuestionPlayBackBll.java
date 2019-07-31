@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
@@ -181,6 +182,17 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.speechContent = questionEntity.getSpeechContent();
                 videoQuestionLiveEntity.time = questionEntity.getEstimatedTime();
                 videoQuestionLiveEntity.num = questionEntity.getQuestionNum();
+                //讲座的答题数量。
+                if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
+                    try {
+                        List<AnswerEntity> answerEntityLst = questionEntity.getAnswerEntityLst();
+                        for (int i = 0; i < answerEntityLst.size(); i++) {
+                            videoQuestionLiveEntity.addAnswerEntity(answerEntityLst.get(i));
+                        }
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(TAG, e);
+                    }
+                }
                 videoQuestionLiveEntity.examSubmit = questionEntity.getvEndTime() - questionEntity
                         .getvQuestionInsretTime();
                 videoQuestionLiveEntity.srcType = questionEntity.getSrcType();
