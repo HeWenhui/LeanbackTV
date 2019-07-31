@@ -146,7 +146,7 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
     }
 
     private void sendReceiveGold(final int operateId, String sectionID) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         receiveGold.sendReceiveGold(operateId, sectionID, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {

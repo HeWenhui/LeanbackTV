@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
@@ -145,8 +144,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      * 播放器数据初始化
      */
     public void getInfo() {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("getInfo:enstuId=" + enstuId + ",liveId=" + mLiveId);
+        mLogtf.d("getInfo:liveId=" + mLiveId);
         HttpCallBack callBack = new HttpCallBack(false) {
 
             @Override
@@ -183,7 +181,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             }
         };
         if (mLiveType == LIVE_TYPE_LIVE) {// 直播
-            mHttpManager.liveGetInfo(enstuId, "", mLiveId, 1, callBack);
+            mHttpManager.liveGetInfo("", mLiveId, 1, callBack);
         }
     }
 
@@ -191,11 +189,13 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     public boolean isHalfBodyLive() {
         return isHalfBodyLive;
     }
+
     /**
      * 设置是否是半身直播
+     *
      * @param halfBodyLive
      */
-    public void setHalfBodyLive(boolean halfBodyLive){
+    public void setHalfBodyLive(boolean halfBodyLive) {
         this.isHalfBodyLive = halfBodyLive;
     }
 
@@ -611,9 +611,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     /**
      * 是否是 语文半身直播
+     *
      * @return
      */
-    private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo){
+    private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo) {
         return liveGetInfo != null && liveGetInfo.getPattern()
                 == LiveVideoConfig.LIVE_TYPE_HALFBODY
                 && liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH;
@@ -624,9 +625,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      * 签名
      */
     public synchronized void getStudentLiveInfo() {
-        if(isHalfBodyLive){
+        if (isHalfBodyLive) {
             getHalfBodyLiveStudentLiveInfo();
-        }else{
+        } else {
             getNorLiveStudentLiveInfo();
         }
     }
@@ -635,8 +636,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      * 普通直播 获取旁听数据
      */
     private void getNorLiveStudentLiveInfo() {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mHttpManager.getStudentLiveInfo(enstuId, mLiveId, new HttpCallBack(false) {
+        mHttpManager.getStudentLiveInfo(mLiveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 String oldMode = mLiveTopic.getMode();
@@ -672,37 +672,38 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      */
     public synchronized void getHalfBodyLiveStudentLiveInfo() {
 
-        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH,
-                new HttpCallBack(false){
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                String oldMode = mLiveTopic.getMode();
-                HalfBodyLiveStudyInfo stuLiveInfo = mHttpResponseParser.parseStuHalfbodyLiveInfo(responseEntity, oldMode);
-               if (auditClassAction != null) {
-                    auditClassAction.onGetStudyInfo(stuLiveInfo);
-                }
+        mHttpManager.getHalfBodyStuLiveInfo(mLiveId, mStuCouId, mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH,
+                new HttpCallBack(false) {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        String oldMode = mLiveTopic.getMode();
+                        HalfBodyLiveStudyInfo stuLiveInfo = mHttpResponseParser.parseStuHalfbodyLiveInfo(responseEntity, oldMode);
+                        if (auditClassAction != null) {
+                            auditClassAction.onGetStudyInfo(stuLiveInfo);
+                        }
 
-                String mode = stuLiveInfo.getMode();
-                Log.e("parseLiveInfo","getHalfBodyStuLiveInfo=====>oldMode:"+oldMode+":"+mode);
-                if (!oldMode.equals(mode)) {
-                    if (mVideoAction != null) {
-                        mVideoAction.onModeChange(mode, true);
-                        Log.e("parseLiveInfo"," getHalfBodyStuLiveInfo====>mVideoAction.onModeChange"+oldMode+":"+mode);
+                        String mode = stuLiveInfo.getMode();
+                        Log.e("parseLiveInfo", "getHalfBodyStuLiveInfo=====>oldMode:" + oldMode + ":" + mode);
+                        if (!oldMode.equals(mode)) {
+                            if (mVideoAction != null) {
+                                mVideoAction.onModeChange(mode, true);
+                                Log.e("parseLiveInfo", " getHalfBodyStuLiveInfo====>mVideoAction.onModeChange" + oldMode + ":" + mode);
+                            }
+                            mLiveTopic.setMode(mode);
+                            liveGetPlayServer(true);
+                        }
                     }
-                    mLiveTopic.setMode(mode);
-                    liveGetPlayServer(true);
-                }
-            }
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                logger.e( "getHalfBodyLiveStudentLiveInfo:onPmFailure:msg=" + msg, error);
-            }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                logger.e( "getHalfBodyLiveStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
-            }
-        });
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        logger.e("getHalfBodyLiveStudentLiveInfo:onPmFailure:msg=" + msg, error);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        logger.e("getHalfBodyLiveStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
+                    }
+                });
     }
 
 

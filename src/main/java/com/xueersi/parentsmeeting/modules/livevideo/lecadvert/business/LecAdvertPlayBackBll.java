@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -103,8 +102,7 @@ public class LecAdvertPlayBackBll extends LiveBackBaseBll implements LecBackAdve
 
     @Override
     public void getAdOnLL(String liveId, final LecAdvertEntity lecAdvertEntity, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getCourseHttpManager().getAdOnLL(enstuId, liveId, lecAdvertEntity.course_id, new HttpCallBack() {
+        getCourseHttpManager().getAdOnLL(liveId, lecAdvertEntity.course_id, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();

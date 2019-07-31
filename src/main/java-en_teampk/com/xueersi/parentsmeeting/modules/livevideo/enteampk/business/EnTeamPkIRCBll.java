@@ -7,7 +7,6 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
@@ -19,6 +18,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTe
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -188,6 +189,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
+        boolean hasAddTop = teamPkBll.isHasAddTop();
+        if (hasAddTop && englishPk.hasGroup == EnglishPk.HAS_GROUP_TRAN) {
+            poseEvent();
+        }
     }
 
     @Override
@@ -244,7 +249,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (mInteractiveTeam != null) {
                 iid = mInteractiveTeam.getInteractive_team_id();
             }
-            tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), AppBll.getInstance().getUserRfh(), mGetInfo.getId(), classInt + "", -1, pid, iid, "");
+            tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), LiveAppUserInfo.getInstance().getUserRfh(), mGetInfo.getId(), classInt + "", -1, pid, iid, "");
             tcpDispatch.setOnTcpConnects(onTcpConnects);
             tcpDispatch.setAddresses(addresses);
             tcpDispatch.registTcpMessageAction(new TeamMessageAction());
@@ -401,6 +406,15 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             logger.e("reportStuInfo:onPmError" + responseEntity.getErrorMsg());
+//                    if (getSelfTeamInfoTimes > 10) {
+//                        return;
+//                    }
+//                    postDelayedIfNotFinish(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            reportStuInfo(abstractBusinessDataCallBack);
+//                        }
+//                    }, (getSelfTeamInfoTimes++) * 1000);
                         }
 
                         @Override
@@ -473,6 +487,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (pkTeamEntity != null) {
                         saveTeam(responseEntity);
                     }
+//                    if (AppConfig.DEBUG) {
+//                        abstractBusinessDataCallBack.onDataFail(1, responseEntity.getErrorMsg());
+//                    }
                 }
 
                 @Override

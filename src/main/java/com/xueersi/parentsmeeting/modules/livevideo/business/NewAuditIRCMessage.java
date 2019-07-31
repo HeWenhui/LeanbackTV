@@ -9,13 +9,12 @@ import com.tal100.chatsdk.IChatClientListener;
 import com.tal100.chatsdk.IPeerChatListener;
 import com.tal100.chatsdk.IRoomChatListener;
 import com.tal100.chatsdk.PMDefs;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -134,8 +133,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                 mChatClient.logout("Nickname is already in use");
                 liveInfo.nickname = "pt_" + mNickname;
                 mChatClient.setLiveInfo(liveInfo);
-                MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-                int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
+                int logincode = mChatClient.login(LiveAppUserInfo.getInstance().getPsimId(), LiveAppUserInfo.getInstance().getPsimPwd());
             }
             StableLogHashMap logHashMap = defaultlog("login");
             logHashMap.put("loginCode", "" + loginResp.code);
@@ -583,27 +581,26 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         if (!workSpaceDir.exists()) {
             workSpaceDir.mkdirs();
         }
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         mChatClient = ChatClient.getInstance();
         mChatClient.addListener(mClientListener);
         mChatClient.getRoomManager().addListener(mRoomListener);
         mChatClient.getPeerManager().addListener(mPeerListener);
-        String appid = myUserInfoEntity.getPsAppId();
+        String appid = LiveAppUserInfo.getInstance().getPsAppId();
         //irc sdk初始化  code: 0 成功 ，1 参数错误 ， 19 已初始化
-        int initcode = mChatClient.init(mContext.getApplicationContext(), myUserInfoEntity.getPsAppId(), myUserInfoEntity.getPsAppClientKey(), workSpaceDir.getAbsolutePath());
-        logger.i("psAppId:" + myUserInfoEntity.getPsAppId() + " PsAppClientKey:" + myUserInfoEntity.getPsAppClientKey() + " workspace:" + workSpaceDir.getAbsolutePath());
+        int initcode = mChatClient.init(mContext.getApplicationContext(), appid, LiveAppUserInfo.getInstance().getPsAppClientKey(), workSpaceDir.getAbsolutePath());
+        logger.i("psAppId:" + appid + " PsAppClientKey:" + LiveAppUserInfo.getInstance().getPsAppClientKey() + " workspace:" + workSpaceDir.getAbsolutePath());
         logger.i("irc sdk initcode: " + initcode);
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = "p_" + mNickname;
-        if (myUserInfoEntity.getRealName() != null){
-            liveInfo.realname = myUserInfoEntity.getRealName();
+        if (LiveAppUserInfo.getInstance().getRealName() != null){
+            liveInfo.realname = LiveAppUserInfo.getInstance().getRealName();
         }else {
             liveInfo.realname = mNickname;
         }
         liveInfo.liveId = mLiveInfo.getId();
-        if (myUserInfoEntity.getNickName() != null) {
-            liveInfo.username = myUserInfoEntity.getNickName();
+        if (LiveAppUserInfo.getInstance().getNickName() != null) {
+            liveInfo.username = LiveAppUserInfo.getInstance().getNickName();
         } else {
             liveInfo.username = "p_" + mNickname;
         }
@@ -613,14 +610,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             liveInfo.classId = "";
         }
         liveInfo.businessId = "1";
-        if (myUserInfoEntity.getAreaCode() != null) {
-            liveInfo.location = myUserInfoEntity.getAreaCode();
+        if (LiveAppUserInfo.getInstance().getAreaCode() != null) {
+            liveInfo.location = LiveAppUserInfo.getInstance().getAreaCode();
         } else {
             liveInfo.location = "";
         }
         int infocode = mChatClient.setLiveInfo(liveInfo);
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
-        int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
+        int logincode = mChatClient.login(LiveAppUserInfo.getInstance().getPsimId(), LiveAppUserInfo.getInstance().getPsimPwd());
         logger.i("irc sdk logincode:" + logincode);
         StableLogHashMap logHashMap = defaultlog("IRCMessage");
         logHashMap.put("initcode", "" + initcode);
@@ -628,10 +625,10 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("logincode", "" + logincode);
         logHashMap.put("initLoginState", PMDefs.ResultCode.Result_Success == logincode ? "success" : "fail");
         logHashMap.put("nickname", mNickname);
-        logHashMap.put("PsAppId", myUserInfoEntity.getPsAppId());
-        logHashMap.put("PsAppClientKey", myUserInfoEntity.getPsAppClientKey());
-        logHashMap.put("PsImId", myUserInfoEntity.getPsimId());
-        logHashMap.put("PsImPwd", myUserInfoEntity.getPsimPwd());
+        logHashMap.put("PsAppId", appid);
+        logHashMap.put("PsAppClientKey", LiveAppUserInfo.getInstance().getPsAppClientKey());
+        logHashMap.put("PsImId", LiveAppUserInfo.getInstance().getPsimId());
+        logHashMap.put("PsImPwd", LiveAppUserInfo.getInstance().getPsimPwd());
         logHashMap.put("infocode",""+infocode);
         logHashMap.put("realname",liveInfo.realname);
         logHashMap.put("nickname",liveInfo.nickname);
@@ -642,7 +639,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("liveId",liveInfo.liveId);
         logHashMap.put("workspace", workSpaceDir.getAbsolutePath());
         logHashMap.put("time", "" + System.currentTimeMillis());
-        logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        logHashMap.put("userid", LiveAppUserInfo.getInstance().getStuId());
         logHashMap.put("where", "NewIRCMessage");
         logHashMap.put("liveId", mLiveInfo.getId());
         liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
@@ -684,9 +681,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                 jsonObject.put("status", "on");
                 jsonObject.put("nonce", nonce);
                 String target = "s_" + mNickname;
-                sendMessage(target, UserBll.getInstance().getMyUserInfoEntity().getPsimId(), jsonObject.toString());
+                sendMessage(target, LiveAppUserInfo.getInstance().getPsimId(), jsonObject.toString());
                 target = "ws_" + mNickname;
-                sendMessage(target, UserBll.getInstance().getMyUserInfoEntity().getPsimId(), jsonObject.toString());
+                sendMessage(target, LiveAppUserInfo.getInstance().getPsimId(), jsonObject.toString());
                 //旁听日志
                 StableLogHashMap logHashMap = new StableLogHashMap("sendListenCmd");
                 logHashMap.put("status", "on");
@@ -817,7 +814,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logMap.put("sid",mSid.toString());
         logMap.put("nickname", mNickname);
         logMap.put("time", "" + System.currentTimeMillis());
-        logMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        logMap.put("userid", LiveAppUserInfo.getInstance().getStuId());
         logMap.put("liveId", mLiveInfo.getId());
         return logMap;
     }

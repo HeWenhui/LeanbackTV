@@ -12,11 +12,38 @@ import java.util.WeakHashMap;
  * Created by linyuqiang on 2018/8/23.
  */
 public class ContextLiveAndBackDebug implements LiveAndBackDebug {
-    LiveAndBackDebug liveAndBackDebug;
-    WeakHashMap<String, Context> contextWeakHashMap = new WeakHashMap<>();
+    private LiveAndBackDebug liveAndBackDebug;
+    private WeakHashMap<String, Context> contextWeakHashMap = new WeakHashMap<>();
+    private StableLogHashMap commonStableLogHashMap;
 
     public ContextLiveAndBackDebug(Context context) {
         contextWeakHashMap.put("context", context);
+    }
+
+    /**
+     * 一些共有参数
+     *
+     * @param key
+     * @param value
+     */
+    public void addCommonData(String key, String value) {
+        if (commonStableLogHashMap == null) {
+            commonStableLogHashMap = new StableLogHashMap();
+        }
+        commonStableLogHashMap.put(key, value);
+    }
+
+    /**
+     * 一些共有参数
+     *
+     * @param key
+     * @param value
+     */
+    public void addCommonAnal(String key, String value) {
+        if (commonStableLogHashMap == null) {
+            commonStableLogHashMap = new StableLogHashMap();
+        }
+        commonStableLogHashMap.putAnal(key, value);
     }
 
     @Override
@@ -25,6 +52,10 @@ public class ContextLiveAndBackDebug implements LiveAndBackDebug {
             liveAndBackDebug = ProxUtil.getProxUtil().get(contextWeakHashMap.get("context"), LiveAndBackDebug.class);
         }
         if (liveAndBackDebug != null) {
+            if (commonStableLogHashMap != null) {
+                Map<String, String> mData2 = commonStableLogHashMap.getData();
+                mData.putAll(mData2);
+            }
             liveAndBackDebug.umsAgentDebugSys(eventId, mData);
         }
     }
@@ -35,6 +66,10 @@ public class ContextLiveAndBackDebug implements LiveAndBackDebug {
             liveAndBackDebug = ProxUtil.getProxUtil().get(contextWeakHashMap.get("context"), LiveAndBackDebug.class);
         }
         if (liveAndBackDebug != null) {
+            if (commonStableLogHashMap != null) {
+                Map<String, String> mData2 = commonStableLogHashMap.getData();
+                mData.putAll(mData2);
+            }
             liveAndBackDebug.umsAgentDebugInter(eventId, mData);
         }
     }
@@ -45,6 +80,10 @@ public class ContextLiveAndBackDebug implements LiveAndBackDebug {
             liveAndBackDebug = ProxUtil.getProxUtil().get(contextWeakHashMap.get("context"), LiveAndBackDebug.class);
         }
         if (liveAndBackDebug != null) {
+            if (commonStableLogHashMap != null) {
+                Map<String, String> mData2 = commonStableLogHashMap.getData();
+                mData.putAll(mData2);
+            }
             liveAndBackDebug.umsAgentDebugPv(eventId, mData);
         }
     }
@@ -55,6 +94,9 @@ public class ContextLiveAndBackDebug implements LiveAndBackDebug {
             liveAndBackDebug = ProxUtil.getProxUtil().get(contextWeakHashMap.get("context"), LiveAndBackDebug.class);
         }
         if (liveAndBackDebug != null) {
+            if (commonStableLogHashMap != null) {
+                stableLogHashMap.putAll(commonStableLogHashMap);
+            }
             liveAndBackDebug.umsAgentDebugSys(eventId, stableLogHashMap);
         }
     }
@@ -65,6 +107,9 @@ public class ContextLiveAndBackDebug implements LiveAndBackDebug {
             liveAndBackDebug = ProxUtil.getProxUtil().get(contextWeakHashMap.get("context"), LiveAndBackDebug.class);
         }
         if (liveAndBackDebug != null) {
+            if (commonStableLogHashMap != null) {
+                stableLogHashMap.putAll(commonStableLogHashMap);
+            }
             liveAndBackDebug.umsAgentDebugInter(eventId, stableLogHashMap);
         }
     }
@@ -75,6 +120,9 @@ public class ContextLiveAndBackDebug implements LiveAndBackDebug {
             liveAndBackDebug = ProxUtil.getProxUtil().get(contextWeakHashMap.get("context"), LiveAndBackDebug.class);
         }
         if (liveAndBackDebug != null) {
+            if (commonStableLogHashMap != null) {
+                stableLogHashMap.putAll(commonStableLogHashMap);
+            }
             liveAndBackDebug.umsAgentDebugPv(eventId, stableLogHashMap);
         }
     }

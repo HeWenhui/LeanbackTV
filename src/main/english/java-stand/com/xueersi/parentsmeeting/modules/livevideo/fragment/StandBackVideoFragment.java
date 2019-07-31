@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackStandMediaController;
@@ -98,7 +99,7 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
                 layoutParams.topMargin = SizeUtils.Dp2Px(activity,10);
                 llUserHeadImage.setLayoutParams(layoutParams);
                 llUserHeadImage.setVisibility(View.VISIBLE);
-                ImageLoader.with(activity).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civUserHeadImage);
+                ImageLoader.with(activity).load(LiveAppUserInfo.getInstance().getHeadImg()).into(civUserHeadImage);
 
             }
         } else if( llUserHeadImage!=null){

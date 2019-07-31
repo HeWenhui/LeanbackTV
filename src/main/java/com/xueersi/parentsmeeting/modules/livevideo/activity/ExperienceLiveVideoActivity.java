@@ -30,12 +30,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SimpleLiveBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
@@ -77,6 +76,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -130,19 +131,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
      * 横屏聊天信息
      */
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
-    private ScanRunnable scanRunnable;
     private Handler scanHandler;
     private List<ExPerienceLiveMessage.LiveExMsg> mMsgs;
     private LiveMessagePager mLiveMessagePager;
     private Long timer = 0L;
     private static final Object mIjkLock = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
-
-
-    /**
-     * 是否展示历史聊天信息
-     */
-    private boolean HISTROY_MSG_DISPLAY = false;
 
     /**
      * 视频宽度
@@ -227,35 +221,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
 
-    // 定时获取聊天记录的任务
-    class ScanRunnable implements Runnable {
-        HandlerThread handlerThread = new HandlerThread("ScanRunnable");
-
-        ScanRunnable() {
-            logger.i("ScanRunnable");
-            handlerThread.start();
-            scanHandler = new Handler(handlerThread.getLooper());
-        }
-
-        void exit() {
-            handlerThread.quit();
-        }
-
-        @Override
-        public void run() {
-            if (isFinishing()) {
-                return;
-            }
-            initOldMessage(mVideoEntity.getLiveId(), mVideoEntity.getCourseId(), timer + Long.parseLong(mVideoEntity
-                    .getVisitTimeKey()));
-//            initOldMessage(mVideoEntity.getLiveId(),mVideoEntity.getCourseId(),timer + 2970L);
-            timer = timer + 10;
-            logger.i("timer:" + timer);
-            scanHandler.postDelayed(this, 10000);
-
-
-        }
-    }
 
     /**
      * 播放时长，5分钟统计
@@ -273,8 +238,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
     };
 
-    // 体验课相关日志的埋点
-    LiveAndBackDebug ums = new LiveAndBackDebug() {
+    private class ExperkDebug extends SimpleLiveBackDebug {
+        ExperkDebug() {
+            ProxUtil.getProxUtil().put(ExperienceLiveVideoActivity.this, LiveAndBackDebug.class, this);
+        }
+
         @Override
         public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
             UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
@@ -314,7 +282,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
 
         }
-    };
+    }
+
+    // 体验课相关日志的埋点
+    LiveAndBackDebug ums = new ExperkDebug();
 
     private String TAG = "ExpericenceLiveVideoActivityLog";
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
@@ -453,7 +424,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
 
         // 设置不可自动横竖屏
         setAutoOrientation(false);
@@ -502,20 +473,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         getInfo.setId(mVideoEntity.getLiveId());
         getInfo.setLiveType(EXP_LIVE_TYPE);
-        getInfo.setStuId(UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        getInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
         getInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
 
-        String stuName = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName())
-                ? UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance()
-                .getMyUserInfoEntity().getRealName();
+        String stuName = TextUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())
+                ? LiveAppUserInfo.getInstance().getNickName() : LiveAppUserInfo.getInstance().getRealName();
         getInfo.setStuName(stuName);
-        getInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
-        getInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
+        getInfo.setNickname(LiveAppUserInfo.getInstance().getNickName());
+        getInfo.setHeadImgPath(LiveAppUserInfo.getInstance().getHeadImg());
         logger.i("====>getRoomInitData:"
-                + UserBll.getInstance().getMyUserInfoEntity().getRealName() + ":"
-                + UserBll.getInstance().getMyUserInfoEntity().getNickName() + ":" +
-                UserBll.getInstance().getMyUserInfoEntity().getChatName() + ":" +
-                UserBll.getInstance().getMyUserInfoEntity().getHeadImg()
+                + LiveAppUserInfo.getInstance().getRealName() + ":"
+                + LiveAppUserInfo.getInstance().getNickName() + ":" +
+                LiveAppUserInfo.getInstance().getChatName() + ":" +
+                LiveAppUserInfo.getInstance().getHeadImg()
 
         );
         return getInfo;
@@ -801,8 +771,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlLiveMessageContent, 0, params);
         long before = System.currentTimeMillis();
-        mLiveMessagePager = new LiveMessagePager(this, ums, liveMediaControllerBottom,
+        mLiveMessagePager = new LiveMessagePager(this, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
+        mLiveMessagePager.setDebugMsg(true);
         logger.d("initViewLive:time1=" + (System.currentTimeMillis() - before));
         final View contentView = findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
@@ -840,9 +811,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.setIsRegister(true);
-
-        // 03.22 设置统计日志的公共参数
-        mLiveMessagePager.setLiveTermId(mVideoEntity.getLiveId(), mVideoEntity.getChapterId());
 
         // 隐藏锁屏按钮
         mLiveMessagePager.hideclock();
@@ -970,21 +938,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity);
 
         void onPmFailure();
-    }
-
-    private void initOldMessage(String liveId, String classId, Long start) {
-        lectureLivePlayBackBll.getExperienceMsgs(liveId, classId, start, new GetExperienceLiveMsgs() {
-            @Override
-            public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
-                mMessage = liveMessageGroupEntity;
-                sendMessage();
-            }
-
-            @Override
-            public void onPmFailure() {
-
-            }
-        });
     }
 
     private void sendMessage() {
@@ -1250,9 +1203,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // 扫描互动题
         scanQuestion(currentPosition);
         logger.i("currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
-        if (HISTROY_MSG_DISPLAY) {
-            displayHistoryMsg();
-        }
     }
 
     public void scanQuestion(long position) {
@@ -1266,27 +1216,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             for (int i = 0; i < roomChatEvent.size(); i++) {
                 // 处理聊天事件 开闭事件
                 handleChatEvent(TimeUtils.gennerSecond(position), roomChatEvent.get(i));
-            }
-        }
-    }
-
-    /**
-     * 展示历史聊天信息
-     */
-    private void displayHistoryMsg() {
-        // 获取聊天记录
-        if (scanRunnable == null) {
-            scanRunnable = new ScanRunnable();
-            scanHandler.post(scanRunnable);
-        }
-        //发送聊天记录
-        if (send && mMsgs.size() > 0) {
-            for (int i = 0; i < mMsgs.size(); i++) {
-                if (currentMsg / 1000 == mMsgs.get(i).getReleative_time()) {
-                    mLiveMessagePager.addMessage(mMsgs.get(i).getText().getName(), LiveMessageEntity.MESSAGE_TIP,
-                            mMsgs.get(i).getText().getMsg(), "");
-                    mMsgs.remove(i);
-                }
             }
         }
     }
@@ -1387,9 +1316,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                 getDataCallBack);
         EventBus.getDefault().post(new BrowserEvent.ExperienceLiveEndEvent(1));
-        if (scanRunnable != null) {
-            scanRunnable.exit();
-        }
         if (experienceQuitFeedbackBll != null) {
             experienceQuitFeedbackBll.playComplete();
         }
@@ -1399,7 +1325,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     @Override
     protected void onRefresh() {
-        if (AppBll.getInstance(this).isNetWorkAlert()) {
+        if (LiveAppBll.getInstance().isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
 //            logger.d( "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
 //            if (rlQuestionContent.getChildCount() > 0) {
@@ -1420,16 +1346,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 setmDisplayName(mSectionName);
             }
         }
-        AppBll.getInstance(ContextManager.getApplication());
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         isPlay = false;
-        if (scanRunnable != null) {
-            scanRunnable.exit();
-        }
 
         // 03.22 统计用户离开体验播放器的时间
         StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayExit");
@@ -1437,7 +1359,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         logHashMap.put("termid", mVideoEntity.getChapterId());
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_EXIT);
         ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_EXIT, logHashMap.getData());
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
         liveBackBll.onDestroy();
         mLiveMessagePager = null;
         if (mIRCMessage != null) {
@@ -1451,7 +1373,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 }
             }.start();
         }
-//        System.exit(0);
+        ProxUtil.getProxUtil().clear(this);
     }
 
 

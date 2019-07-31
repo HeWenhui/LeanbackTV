@@ -2,6 +2,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@id/ll_livevideo_question_content_bord"
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout
+            android:id="@id/v_livevideo_question_content_bord"
+            android:layout_width="100dp"
+            android:layout_height="@dimen/panel_height"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@id/rl_livevideo_subject_web"
         android:layout_width="match_parent"

@@ -35,8 +35,6 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechUtils;
-import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -51,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -753,8 +752,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             }
 
 
-            headUrl = UserBll.getInstance().getMyUserInfoEntity()
-                    .getHeadImg();
+            headUrl = LiveAppUserInfo.getInstance().getHeadImg();
 
             ImageLoader.with(ContextManager.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig
                     .BitmapListener() {

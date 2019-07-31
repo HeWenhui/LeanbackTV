@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -234,7 +233,6 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     };
 
     private void sendReceiveGold(final int operateId, String sectionID) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         receiveGold.sendReceiveGold(operateId, sectionID, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {

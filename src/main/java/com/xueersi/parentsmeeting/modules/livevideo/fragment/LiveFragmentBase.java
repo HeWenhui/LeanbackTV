@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
@@ -30,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -93,7 +93,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         liveType = activity.getIntent().getIntExtra("type", 0);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
         boolean init = initData();
         if (!init) {
             onUserBackPressed();
@@ -139,7 +139,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         return mContentView;
     }
 
-    //遍历所有布局。
+    //遍历所有布局，找到错误的
     private void testLayout() {
         mContentView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
@@ -710,13 +710,14 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         }
         liveVideoAction.onDestroy();
         liveVideoAction = null;
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 ProxUtil.getProxUtil().clear(activity);
-                LiveThreadPoolExecutor.destory();
+                //如果跳多个直播，会finish几个。所以不能释放
+//                LiveThreadPoolExecutor.destory();
             }
         });
         LiveVideoConfig.isSmallChinese = false;

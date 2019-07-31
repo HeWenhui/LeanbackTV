@@ -779,7 +779,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             if (liveGetInfo.isNewCourse()) {
                                 EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
                                 CoursewareNativePager questionWebPager = new CoursewareNativePager(activity,
-                                        videoQuestionLiveEntity, videoQuestionLiveEntity.isLive(), liveGetInfo.getId(), videoQuestionLiveEntity.id,
+                                        videoQuestionLiveEntity, !videoQuestionLiveEntity.isLive(), liveGetInfo.getId(), videoQuestionLiveEntity.id,
                                         englishH5Entity, "", "", new EnglishH5CoursewareBll.OnH5ResultClose() {
                                     @Override
                                     public void onH5ResultClose(BaseEnglishH5CoursewarePager
@@ -1830,8 +1830,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
 
     @Override
-    public void speechIsAnswered(boolean isNewArt,String num, AbstractBusinessDataCallBack callBack) {
-        questionHttp.speechEval42IsAnswered(isNewArt,mVSectionID, num, callBack);
+    public void speechIsAnswered(boolean isNewArt, String num, AbstractBusinessDataCallBack callBack) {
+        questionHttp.speechEval42IsAnswered(isNewArt, mVSectionID, num, callBack);
     }
 
     private void setHaveExam(boolean haveExam) {
@@ -2121,7 +2121,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         mLogtf.d("removeAllResultViews:size=" + resultViews.size());
         while (!resultViews.isEmpty()) {
             View view = resultViews.remove(0);
-            liveViewAction.removeView(view);
+            ViewGroup group = (ViewGroup) view.getParent();
+            if (group != null) {
+                group.removeView(view);
+            }
         }
     }
 
@@ -2248,7 +2251,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     @Override
     public void sendSpeechEvalResult2(String id, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuAnswer,
                                       String isSubmit, AbstractBusinessDataCallBack callBack) {
-        questionHttp.sendSpeechEvalResult2(videoQuestionLiveEntity.isNewArtsH5Courseware(),id, stuAnswer, isSubmit, callBack);
+        questionHttp.sendSpeechEvalResult2(videoQuestionLiveEntity.isNewArtsH5Courseware(), id, stuAnswer, isSubmit, callBack);
     }
 
     public void onPause() {

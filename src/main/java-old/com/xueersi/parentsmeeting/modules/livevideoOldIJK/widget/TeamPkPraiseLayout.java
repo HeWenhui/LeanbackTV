@@ -185,8 +185,8 @@ public class TeamPkPraiseLayout extends FrameLayout {
     private void generateMsg() {
         if(mWrodList != null && mWrodList.size() > 0){
             wrodsIndex = new Random().nextInt(mWrodList.size());
-            String name = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName()) ?
-                    UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance().getMyUserInfoEntity
+            String name = TextUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName()) ?
+                    LiveAppUserInfo.getInstance().getNickName() : UserBll.getInstance().getMyUserInfoEntity
                     ().getRealName();
             String wrods = mWrodList.get(wrodsIndex);
             Msg msg = new Msg(name, wrods, true);

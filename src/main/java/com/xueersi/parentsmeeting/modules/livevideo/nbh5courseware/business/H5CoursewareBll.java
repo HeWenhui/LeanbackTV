@@ -6,19 +6,16 @@ import android.content.pm.ActivityInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbLoginEntity;
@@ -112,9 +109,8 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
 
 
     private void nBLogin() {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        final String userid = userInfoEntity.getStuId();
-        String nickName = userInfoEntity.getNickName();
+        final String userid = LiveAppUserInfo.getInstance().getStuId();
+        String nickName = LiveAppUserInfo.getInstance().getNickName();
         mNbHttpManager.nbLogin(mLiveId,userid,nickName, NbCourseWareConfig.USER_TYPE_STU, new HttpCallBack(){
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -260,7 +256,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
 
     @Override
     public void uploadNbResult(String resultStr, String isForce, HttpCallBack requestCallBack) {
-        mNbHttpManager.upLoadNbReuslt(mLiveId, UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+        mNbHttpManager.upLoadNbReuslt(mLiveId, LiveAppUserInfo.getInstance().getStuId(),
                 stuCouId ,resultStr,
                 isForce, isPlayback ? "1" : "0", requestCallBack);
     }
@@ -272,7 +268,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
         mNbCourseInfo = testInfo;
         mTestInfoCallBack = requestCallBack;
        if(!TextUtils.isEmpty(nbToken)){
-           mNbHttpManager.getNbTestInfo(mLiveId, UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+           mNbHttpManager.getNbTestInfo(mLiveId, LiveAppUserInfo.getInstance().getStuId(),
                    mNbCourseInfo.getExperimentId() ,nbToken, requestCallBack);
        }else{
           nBLogin();
@@ -295,7 +291,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("type", "" + XESCODE.NB_ADDEXPERIMENT_SUBMIT_SUCCESS);
-                jsonObject.put("stuId",  UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                jsonObject.put("stuId",  LiveAppUserInfo.getInstance().getStuId());
                 jsonObject.put("experimentId", mExperimentId);
                 mMsgSender.sendNoticeToMain(jsonObject);
             } catch (Exception e) {

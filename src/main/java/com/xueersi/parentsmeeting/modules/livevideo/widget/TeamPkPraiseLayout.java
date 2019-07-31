@@ -26,6 +26,7 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
@@ -185,9 +186,8 @@ public class TeamPkPraiseLayout extends FrameLayout {
     private void generateMsg() {
         if(mWrodList != null && mWrodList.size() > 0){
             wrodsIndex = new Random().nextInt(mWrodList.size());
-            String name = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName()) ?
-                    UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance().getMyUserInfoEntity
-                    ().getRealName();
+            String name = TextUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName()) ?
+                    LiveAppUserInfo.getInstance().getNickName() : LiveAppUserInfo.getInstance().getRealName();
             String wrods = mWrodList.get(wrodsIndex);
             Msg msg = new Msg(name, wrods, true);
             mCacheMsgList.add(0, msg);

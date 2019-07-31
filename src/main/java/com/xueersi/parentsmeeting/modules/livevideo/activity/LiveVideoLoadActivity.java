@@ -8,8 +8,6 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.xueersi.common.base.BaseActivity;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.http.HttpCallBack;
@@ -34,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -60,42 +59,39 @@ public class LiveVideoLoadActivity extends BaseActivity {
     /** Activity创建次数 */
     public static int CREATE_TIMES = 0;
     DataLoadEntity mDataLoadEntity;
+    protected static ArrayList<LiveVideoLoadActivity> liveVideoLoadActivities = new ArrayList<>();
+    private static int statIndex = 0;
+    protected int index;
+
+    public LiveVideoLoadActivity() {
+        liveVideoLoadActivities.add(this);
+        index = statIndex++;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        String token = AppBll.getInstance().getUserToken();
+        String token = LiveAppUserInfo.getInstance().getUserToken();
         //如果没有token，只能重新点击进入了
         if (StringUtils.isEmpty(token)) {
             XESToastUtils.showToast(this, "登录信息失效，重新登录");
             StableLogHashMap logHashMap = new StableLogHashMap();
-            String rfh = AppBll.getInstance().getUserRfh();
+            String rfh = LiveAppUserInfo.getInstance().getUserRfh();
             logHashMap.put("token", "" + token);
             logHashMap.put("rfh", "" + rfh);
             logHashMap.put("create_times", "" + CREATE_TIMES);
             //距离进程创建的时间
             logHashMap.put("app_time", "" + (System.currentTimeMillis() - UmsConstants.PROCRESS_CREATE_TIME));
             UmsAgentManager.umsAgentDebug(this, LogConfig.LIVE_TOKEN_NULL, logHashMap.getData());
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            }, 700);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    System.exit(0);
-                }
-            }, 1000);
+            finishAndExit();
             return;
         }
         CREATE_TIMES++;
 
         mDataLoadEntity = new DataLoadEntity(this);
-        if (LiveVideoConfig.assetsDownloadTag) {
+        boolean loadAsserts = getIntent().getBooleanExtra("loadAsserts", false);
+        if (!loadAsserts && LiveVideoConfig.assetsDownloadTag) {
             loadAssertsResource();
         } else {
             mDataLoadEntity.beginLoading();
@@ -166,6 +162,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
         if (FileLogger.runActivity == this) {
             FileLogger.runActivity = null;
         }
+        liveVideoLoadActivities.remove(this);
     }
 
     private void performDownLoadPreLoad(LiveHttpManager mHttpManager, LiveGetInfo getInfo) {
@@ -191,6 +188,13 @@ public class LiveVideoLoadActivity extends BaseActivity {
     }
 
     private void initData() {
+        logger.d("initData:index=" + index + ",size=" + liveVideoLoadActivities.size());
+        LiveVideoLoadActivity activity = liveVideoLoadActivities.get(0);
+        if (activity != this) {
+            DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity.webDataSuccess());
+            finish();
+            return;
+        }
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
         final String vSectionID = intent.getStringExtra("vSectionID");
@@ -200,7 +204,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
         final LiveHttpManager httpManager = new LiveHttpManager(this);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-            httpManager.liveLectureGetInfo("", vSectionID, new HttpCallBack(mDataLoadEntity) {
+            httpManager.liveLectureGetInfo(vSectionID, new HttpCallBack(mDataLoadEntity) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);
@@ -212,7 +216,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         finish();
                         return;
                     }
-                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    String stuId = LiveAppUserInfo.getInstance().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                     finish();
@@ -227,7 +231,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                    finish();
+                    finishAndExit();
                 }
             });
         } else if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -236,7 +240,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             httpManager.addBodyParam("stuCouId", vStuCourseID);
             httpManager.addBodyParam("liveId", vSectionID);
             httpManager.addBodyParam("from", "" + from);
-            httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(mDataLoadEntity) {
+            httpManager.liveGetInfo(courseId, vSectionID, 0, new HttpCallBack(mDataLoadEntity) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);
@@ -255,7 +259,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         return;
                     }*/
 
-                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    String stuId = LiveAppUserInfo.getInstance().getStuId();
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
 //                    mGetInfo.setPattern(1);
                     bundle.putString("mode", mGetInfo.getMode());
@@ -307,7 +311,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                    finish();
+                    finishAndExit();
                 }
             });
         }
@@ -411,6 +415,22 @@ public class LiveVideoLoadActivity extends BaseActivity {
             finish();
 
         }
+    }
+
+    private void finishAndExit() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 700);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                System.exit(0);
+            }
+        }, 1000);
     }
 
     /**

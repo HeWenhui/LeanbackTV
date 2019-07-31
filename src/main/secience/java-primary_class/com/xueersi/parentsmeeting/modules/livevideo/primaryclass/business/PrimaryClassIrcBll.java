@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PkAddEnergy;
@@ -81,7 +82,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     private int tryTimes = 0;
 
     private void getMyTeamInfo() {
-        getPrimaryClassHttp().getMyTeamInfo(classId, mGetInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new AbstractBusinessDataCallBack() {
+        getPrimaryClassHttp().getMyTeamInfo(classId, mGetInfo.getStuId(), LiveAppUserInfo.getInstance().getPsimId(), new AbstractBusinessDataCallBack() {
 
             @Override
             public void onDataSucess(Object... objData) {

@@ -138,7 +138,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         @Override
                         public void run() {
                             String liveid = mGetInfo.getId();
-                            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+                            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
                             getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -239,7 +239,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                            .getInstance();
 //                    boolean result = speakerRecognitionerInterface.init();
 //                    if (result) {
-//                        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+//                        String stuId = LiveAppUserInfo.getInstance().getStuId();
 //                        if (StringUtils.isEmpty(stuId)) {
 //                            mLogtf.d("onResume:stuId=" + stuId);
 //                            startAchievement();
@@ -557,7 +557,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void setStuStarCount(final long reTryTime, final String starId, final AbstractBusinessDataCallBack
             callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         getHttpManager().setStuStarCount(mLiveType, enstuId, mLiveId, starId, new HttpCallBack() {
 
             @Override
@@ -589,7 +589,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void setTotalOpeningLength(final long reTryTime, final String duration, final String speakingNum, final
     String speakingLen, final float x, final float y) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         String classId = mGetInfo.getStudentLiveInfo().getClassId();
         getHttpManager().setTotalOpeningLength(enstuId, mLiveBll.getCourseId(), mLiveId, classId, duration,
                 speakingNum, speakingLen,
@@ -628,7 +628,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
     @Override
     public void setNotOpeningNum() {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         getHttpManager().setNotOpeningNum(enstuId, mGetInfo.getId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -816,7 +816,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 @Override
                 public void run() {
                     String liveid = mGetInfo.getId();
-                    String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+                    String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
                     getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

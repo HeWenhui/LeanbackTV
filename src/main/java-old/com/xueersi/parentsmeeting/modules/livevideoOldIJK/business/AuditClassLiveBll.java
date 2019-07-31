@@ -154,7 +154,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      * 播放器数据初始化
      */
     public void getInfo() {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mLogtf.d("getInfo:enstuId=" + enstuId + ",liveId=" + mLiveId);
         HttpCallBack callBack = new HttpCallBack(false) {
 
@@ -651,7 +651,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
      * 普通直播 获取旁听数据
      */
     private void getNorLiveStudentLiveInfo() {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mHttpManager.getStudentLiveInfo(enstuId, mLiveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -1070,7 +1070,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mHttpManager.getSpeechEval(enstuId, liveid, id, new HttpCallBack() {
 
             @Override
@@ -1101,7 +1101,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mHttpManager.sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack(false) {
 
             @Override

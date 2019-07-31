@@ -9,10 +9,7 @@ import android.view.View;
 
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.entity.AppInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.route.XueErSiRouter;
@@ -34,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnPkTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -142,8 +140,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         @Override
                         public void run() {
                             String liveid = mGetInfo.getId();
-                            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-                            getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
+                            getHttpManager().getStuGoldCount(liveid, new HttpCallBack() {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                                     StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
@@ -186,7 +183,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     betterMeInteractAction.onReceiveBetterMe(betterMeEntity, isShowBubble);
                 }
             });
-            AppInfoEntity appInfoEntity = AppBll.getInstance().getAppInfoEntity();
             boolean voiceRecognSwitchOn = mShareDataManager.getBoolean(ShareBusinessConfig.SP_VOICE_RECOGNI_SWITCH,
                     true,
                     ShareDataManager.SHAREDATA_USER);
@@ -256,7 +252,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                            .getInstance();
 //                    boolean result = speakerRecognitionerInterface.init();
 //                    if (result) {
-//                        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+//                        String stuId = LiveAppUserInfo.getInstance().getStuId();
 //                        if (StringUtils.isEmpty(stuId)) {
 //                            mLogtf.d("onResume:stuId=" + stuId);
 //                            startAchievement();
@@ -577,8 +573,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void setStuStarCount(final long reTryTime, final String starId, final AbstractBusinessDataCallBack
             callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getHttpManager().setStuStarCount(mLiveType, enstuId, mLiveId, starId, new HttpCallBack() {
+        getHttpManager().setStuStarCount(mLiveType, mLiveId, starId, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -609,9 +604,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void setTotalOpeningLength(final long reTryTime, final String duration, final String speakingNum, final
     String speakingLen, final float x, final float y) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = mGetInfo.getStudentLiveInfo().getClassId();
-        getHttpManager().setTotalOpeningLength(enstuId, mLiveBll.getCourseId(), mLiveId, classId, duration,
+        getHttpManager().setTotalOpeningLength(mLiveBll.getCourseId(), mLiveId, classId, duration,
                 speakingNum, speakingLen,
                 new HttpCallBack(false) {
                     @Override
@@ -663,8 +657,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
     @Override
     public void setNotOpeningNum() {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getHttpManager().setNotOpeningNum(enstuId, mGetInfo.getId(), new HttpCallBack(false) {
+        getHttpManager().setNotOpeningNum(mGetInfo.getId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.d("setNotOpeningNum:onPmSuccess" + responseEntity.getJsonObject());
@@ -841,8 +834,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 @Override
                 public void run() {
                     String liveid = mGetInfo.getId();
-                    String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-                    getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
+                    getHttpManager().getStuGoldCount(liveid, new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             final StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount

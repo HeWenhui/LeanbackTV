@@ -5,9 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -89,7 +87,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState {
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpManager.addBodyParam("form", "" + form);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(context,TAG);
+        mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         if (liveGetInfo != null) {
             mLiveTopic.setMode(liveGetInfo.getMode());
@@ -104,7 +102,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState {
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(context,TAG);
+        mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
@@ -120,7 +118,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState {
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(context,TAG);
+        mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
@@ -162,9 +160,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState {
 
     @Override
     public void praiseTeacher(final String formWhichTeacher, String ftype, String educationStage, final HttpCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
-        mHttpManager.praiseTeacher(mLiveType, enstuId, mLiveId, teacherId, ftype, educationStage, new HttpCallBack() {
+        mHttpManager.praiseTeacher(mLiveType, mLiveId, teacherId, ftype, educationStage, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -367,8 +364,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState {
     }
 
     public void setNotOpeningNum() {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mHttpManager.setNotOpeningNum(enstuId, mGetInfo.getId(), new HttpCallBack(false) {
+        mHttpManager.setNotOpeningNum(mGetInfo.getId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.d("setNotOpeningNum:onPmSuccess" + responseEntity.getJsonObject());

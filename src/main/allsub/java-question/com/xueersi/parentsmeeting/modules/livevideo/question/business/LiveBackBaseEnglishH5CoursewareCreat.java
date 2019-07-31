@@ -6,24 +6,21 @@ import android.text.TextUtils;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameEmptyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ChineseAiSubjectiveCoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeakChineseCoursewarePager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
  * Created by linyuqiang on 2018/7/26.
@@ -33,16 +30,14 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
     private WrapOnH5ResultClose wrapOnH5ResultClose;
     LivePagerBack livePagerBack;
     private LiveGetInfo liveGetInfo;
-    private int isArts;
-
-    private boolean isFirst = true;
+    private int mIsArts;
 
     public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
         this.liveGetInfo = liveGetInfo;
     }
 
     public void setArts(int arts) {
-        this.isArts = arts;
+        this.mIsArts = arts;
     }
 
     public void setWrapOnH5ResultClose(WrapOnH5ResultClose wrapOnH5ResultClose) {
@@ -128,33 +123,34 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
 
     @Override
     public BaseEnglishH5CoursewarePager creat(Context context, VideoQuestionLiveEntity videoQuestionH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose, String mVSectionID) {
-
         wrapOnH5ResultClose.setOnH5ResultClose(onH5ResultClose);
         wrapOnH5ResultClose.setVideoQuestionH5Entity(videoQuestionH5Entity);
+        int isArts = mIsArts;
         if (videoQuestionH5Entity.isTUtor()) {
-            setArts(LiveVideoSAConfig.ART_SEC);
+            isArts = LiveVideoSAConfig.ART_SEC;
         }
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
         //应该是没有为null的时候
+
         if (liveGetInfo != null) {
-            if (isArts == LiveVideoSAConfig.ART_CH ) {
-                String educationstage = liveGetInfo.getEducationStage();
-                videoQuestionH5Entity.setEducationstage(educationstage);
-                //语文
-                if (englishH5Entity.getNewEnglishH5()) {
-                    if (LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(videoQuestionH5Entity.englishH5Entity.getPackageAttr())) {
-                        ChineseAiSubjectiveCoursewarePager h5CoursewarePager = new ChineseAiSubjectiveCoursewarePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
-                                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
-                                , isArts, false, liveGetInfo.getSubjectiveItem2AIUrl());
-                        h5CoursewarePager.setLivePagerBack(livePagerBack);
-                        return h5CoursewarePager;
-                    }
-                }
+            if (isArts == LiveVideoSAConfig.ART_CH) {
+//                String educationstage = liveGetInfo.getEducationStage();
+//                videoQuestionH5Entity.setEducationstage(educationstage);
+//                //语文
+//                if (englishH5Entity.getNewEnglishH5()) {
+//                    if (LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(videoQuestionH5Entity.englishH5Entity.getPackageAttr())) {
+//                        ChineseAiSubjectiveCoursewarePager h5CoursewarePager = new ChineseAiSubjectiveCoursewarePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+//                                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
+//                                , isArts, false, liveGetInfo.getSubjectiveItem2AIUrl());
+//                        h5CoursewarePager.setLivePagerBack(livePagerBack);
+//                        return h5CoursewarePager;
+//                    }
+//                }
             } else if (isArts == LiveVideoSAConfig.ART_SEC) {
                 if (englishH5Entity.getNewEnglishH5()) {
                     String educationstage = liveGetInfo.getEducationStage();
                     videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
-                    englishH5Entity.setDynamicurl("https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml");
+                    englishH5Entity.setDynamicurl(LiveHttpConfig.LIVE_HOST_SCIENCE + "/LiveExam/getCourseWareTestHtml");
                     if (LiveQueConfig.CHI_COURESWARE_TYPE_SPEAKING_CHINESE.equals(videoQuestionH5Entity.englishH5Entity.getPackageAttr())
                             && LiveVideoConfig.LIVE_TYPE_HALFBODY == liveGetInfo.getPattern()) {
                         SpeakChineseCoursewarePager h5CoursewarePager = new SpeakChineseCoursewarePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
@@ -193,7 +189,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
 //                    } else {
 //                        englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + ScienceStaticConfig.THIS_VERSION_HTML + "/index.html");
 //                    }
-                        englishH5Entity.setDynamicurl("https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml");
+                        englishH5Entity.setDynamicurl(LiveHttpConfig.LIVE_HOST_SCIENCE + "/LiveExam/getCourseWareTestHtml");
                         if (englishH5Entity.getNewEnglishH5()) {
                             CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                     videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
@@ -215,7 +211,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                             h5CoursewarePager.setLivePagerBack(livePagerBack);
                             return h5CoursewarePager;
                         }
-                        CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                        CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
                                 , isArts, false);
                         h5CoursewarePager.setLivePagerBack(livePagerBack);
@@ -235,7 +231,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                             return groupGameMultNativePager;
 
                         } else {
-                            CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                            CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                     videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", isArts, false);
                             coursewareNativePager.setLivePagerBack(livePagerBack);
                             h5CoursewarePager = coursewareNativePager;
@@ -247,7 +243,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                     }
                 }
             } else {
-                if (isArts == 0) {
+                if (isArts == LiveVideoSAConfig.ART_SEC) {
                     String educationstage = liveGetInfo.getEducationStage();
                     videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
                     if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
@@ -270,7 +266,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
 //                    }
                         englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + ScienceStaticConfig.THIS_VERSION_HTML + "/index.html");
                     }
-                } else if (isArts == 2) {
+                } else if (isArts == LiveVideoSAConfig.ART_CH) {
                     englishH5Entity.setDynamicurl("https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml");
                     if (LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(englishH5Entity.getPackageAttr())) {
                         englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew());
@@ -289,11 +285,21 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                 }
             }
         }
+        if (videoQuestionH5Entity.isTUtor()) {
+            String tutorHttp = UmsAgentTrayPreference.getInstance().getString(AppConfig.XES_LIVE_VIDEO_TUTOR_RESULT_HTML, "");
+            if (TextUtils.isEmpty(tutorHttp)) {
+                tutorHttp = LiveQueHttpConfig.TUTOR_COURSE_URL;
+            }
+            englishH5Entity.setDynamicurl(tutorHttp);
             EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
-                    videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
-                    , isArts, false);
+                    videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", LiveVideoSAConfig.ART_SEC, false);
             h5CoursewarePager.setLivePagerBack(livePagerBack);
             return h5CoursewarePager;
         }
-
+        EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
+                , isArts, false);
+        h5CoursewarePager.setLivePagerBack(livePagerBack);
+        return h5CoursewarePager;
     }
+}

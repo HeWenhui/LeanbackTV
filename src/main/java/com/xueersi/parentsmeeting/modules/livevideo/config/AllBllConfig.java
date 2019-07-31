@@ -61,6 +61,8 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportBll",
             //辅导老师表扬榜
             "com.xueersi.parentsmeeting.modules.livevideo.practice.PraiseTutorBll",
+            //金话筒
+            "com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldMicroPhoneBll",
             //接麦，初中小学
             "com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoChatCreat",
             //直播反馈

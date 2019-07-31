@@ -5,8 +5,6 @@ import android.util.Log;
 
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -20,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -28,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.H5OnlineTechEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -97,7 +97,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         int pattern = getInfo.getPattern();
-        if (pattern == 2) {
+        if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
             LiveStandVoiceAnswerCreat liveStandVoiceAnswerCreat = new LiveStandVoiceAnswerCreat(activity, contextLiveAndBackDebug,
                     englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), mGetInfo.getHeadImgPath(), mGetInfo
                     .getStandLiveName());
@@ -107,10 +107,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(englishH5CoursewareBll.new
                     LiveQuestionSwitchImpl(), englishH5CoursewareBll, getInfo));
         }
-        LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
+        isArts = getInfo.getIsArts();
+        LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat(activity);
         liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(getInfo);
-        isArts = (int) mLiveBll.getBusinessShareParam("isArts");
-        liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         if (isArts == LiveVideoSAConfig.ART_SEC) {
             // TODO: 2018/12/5
             if (mAnswerRankBll != null) {
@@ -200,7 +199,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                 String status = coursewareH5.optString("status", "off");
                 if ("on".equals(status)) {
-                   // LiveVideoConfig.isNewArts = true;
+                    // LiveVideoConfig.isNewArts = true;
                     videoQuestionLiveEntity.noticeType = XESCODE.ARTS_SEND_QUESTION;
                     videoQuestionLiveEntity.setNewArtsCourseware(true);
                     JSONArray idObject = coursewareH5.optJSONArray("id");
@@ -262,9 +261,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
                     Loger.e("Duncan", "======>EnglishH5CoursewareIRCBll:" + "H5语音答题");
                 }
-                Loger.e(Tag, "=======>onTopic:" + "isNewArts: "+videoQuestionLiveEntity.isNewArtsH5Courseware());
+                Loger.e(Tag, "=======>onTopic:" + "isNewArts: " + videoQuestionLiveEntity.isNewArtsH5Courseware());
             } else {
-               // LiveVideoConfig.isNewArts = false;
+                // LiveVideoConfig.isNewArts = false;
                 Loger.e(Tag, "=======>onTopic:" + "isNewArts: false");
                 if ((englishH5CoursewareBll != null && jsonObject.has("H5_Courseware"))
                         || LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())) {
@@ -282,7 +281,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         //englishH5Entity.setNewEnglishH5(false);
                         id = h5_Experiment.getString("id");
                         courseware_type = h5_Experiment.getString("courseware_type");
-                        String pre = mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                        String pre = mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? LiveHttpConfig.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
                         play_url = pre + mLiveId + "/" + mLiveBll
                                 .getStuCouId() + "/" + id +
                                 "/" + courseware_type
@@ -307,7 +306,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
                         }
                     } else {
-                       // englishH5Entity.setNewEnglishH5(false);
+                        // englishH5Entity.setNewEnglishH5(false);
                         if (englishH5CoursewareBll != null) {
                             JSONObject object = jsonObject.optJSONObject("platformTest");
                             // 辅导态不接收主讲消息
@@ -417,7 +416,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         if ("on".equals(status)) {
                             id = object.getString("id");
                             courseware_type = object.getString("courseware_type");
-                            String pre = mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                            String pre = mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH ? LiveHttpConfig.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
                             play_url = pre + mLiveId + "/" + mLiveBll
                                     .getStuCouId() + "/"
                                     + id + "/" + courseware_type
@@ -590,12 +589,12 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         }
         StringBuilder sb = new StringBuilder();
         String falseStr = Base64.encodeBytes("false".getBytes());
-        sb.append(mLiveBll.getLiveVideoSAConfig().inner.URL_ARTS_H5_URL).append("?liveId=").append(mLiveId)
+        sb.append(LiveHttpConfig.URL_ARTS_H5_URL).append("?liveId=").append(mLiveId)
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
                 .getStuId())
-                .append("&xesrfh=").append(AppBll.getInstance().getUserRfh())
-                .append("&cookie=").append(AppBll.getInstance().getUserToken())
+                .append("&xesrfh=").append(LiveAppUserInfo.getInstance().getUserRfh())
+                .append("&cookie=").append(LiveAppUserInfo.getInstance().getUserToken())
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
         return sb.toString();
@@ -603,7 +602,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
     private String buildCourseH5Url(String testIds) {
         StringBuilder sb = new StringBuilder();
-        sb.append(mLiveBll.getLiveVideoSAConfig().inner.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(mGetInfo
+        sb.append(LiveHttpConfig.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(mGetInfo
                 .getStuId())
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&liveId=").append(mLiveId)
                 .append("&testId=").append(testIds).append("&type=").append(17).append("&isPlayBack=0");
@@ -650,7 +649,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         @Override
         public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final
         AbstractBusinessDataCallBack callBack) {
-            getHttpManager().getTestAnswerTeamStatus(videoQuestionLiveEntity.isNewArtsH5Courseware(),videoQuestionLiveEntity.id, new HttpCallBack(false) {
+            getHttpManager().getTestAnswerTeamStatus(videoQuestionLiveEntity.isNewArtsH5Courseware(), videoQuestionLiveEntity.id, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     GoldTeamStatus entity = getHttpResponseParser().testAnswerTeamStatus(responseEntity, mGetInfo
@@ -693,8 +692,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
             final Boolean isRights = isRight;
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            mLogtf.d("liveSubmitTestH5Answer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
+            mLogtf.d("liveSubmitTestH5Answer:type=" + videoQuestionLiveEntity.srcType + ",testId=" +
                     videoQuestionLiveEntity.id + ",liveId=" + mLiveId + ",testAnswer="
                     + testAnswer);
             String userMode = "1";
@@ -804,7 +802,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
 
             } else {
-                getHttpManager().liveSubmitTestH5Answer(enstuId, videoQuestionLiveEntity.srcType,
+                getHttpManager().liveSubmitTestH5Answer(videoQuestionLiveEntity.srcType,
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
                         isRight, new
                                 HttpCallBack() {

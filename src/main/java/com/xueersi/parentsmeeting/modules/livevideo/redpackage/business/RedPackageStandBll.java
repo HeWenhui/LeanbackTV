@@ -8,14 +8,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.RedPackagePage;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
 
@@ -149,12 +148,11 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                         receiveGold.onReceiveGold();
                         if (clickPackage == RedPackagePage.CLICK_PACKAGE_1) {
                             //结果页增加自己数据
-                            MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
                             GoldTeamStatus goldTeamStatus = new GoldTeamStatus();
                             GoldTeamStatus.Student student = new GoldTeamStatus.Student();
                             student.setNickname(userName);
                             student.setAvatar_path(headUrl);
-                            student.setStuId(mMyInfo.getStuId());
+                            student.setStuId(LiveAppUserInfo.getInstance().getStuId());
                             student.setGold("" + entity.getGoldNum());
                             student.setMe(true);
                             goldTeamStatus.getStudents().add(student);

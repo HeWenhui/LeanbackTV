@@ -164,7 +164,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
             }
         }
         content = content.substring(0, content.length() - 1);
-        livePlayBackHttpManager.sendExperienceQuitFeedback(UserBll.getInstance().getMyUserInfoEntity()
+        livePlayBackHttpManager.sendExperienceQuitFeedback(LiveAppUserInfo.getInstance()
                 .getStuId(), mVideoEntity.getChapterId(), content, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

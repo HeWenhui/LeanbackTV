@@ -55,7 +55,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     public LiveBaseBll(Activity context, LiveBll2 liveBll) {
         super(context);
         this.activity = context;
-        contextLiveAndBackDebug = new ContextLiveAndBackDebug(context);
+        contextLiveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         mLiveBll = liveBll;
         mLiveId = liveBll.getLiveId();
         mLiveType = liveBll.getLiveType();
@@ -72,7 +72,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     public LiveBaseBll(Activity context, String liveId, int liveType) {
         super(context);
         this.activity = context;
-        contextLiveAndBackDebug = new ContextLiveAndBackDebug(context);
+        contextLiveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         this.mLiveId = liveId;
         this.mLiveType = liveType;
         mLogtf = new LogToFile(TAG);

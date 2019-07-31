@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -128,9 +127,8 @@ public class ExperienceIrcState implements IRCState {
 
     @Override
     public void praiseTeacher(final String formWhichTeacher, String ftype, String educationStage, final HttpCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
-        mHttpManager.praiseTeacher(mGetInfo.getLiveType(), enstuId, playBackEntity.getLiveId(), teacherId, ftype, educationStage, new HttpCallBack() {
+        mHttpManager.praiseTeacher(mGetInfo.getLiveType(), playBackEntity.getLiveId(), teacherId, ftype, educationStage, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -156,6 +154,7 @@ public class ExperienceIrcState implements IRCState {
             }
         });
     }
+
     @Override
     public boolean isDisable() {
         return mLiveTopic.isDisable();

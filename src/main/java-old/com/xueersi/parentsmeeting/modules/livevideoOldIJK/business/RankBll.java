@@ -161,7 +161,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                         XESToastUtils.showToast(activity, "请稍等");
                         return;
                     }
-                    String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+                    String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
                     String classId = "";
                     if (mGetInfo.getStudentLiveInfo() != null) {
                         classId = mGetInfo.getStudentLiveInfo().getClassId();
@@ -295,7 +295,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     }
 
     private void getOldRankingData(final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
