@@ -103,6 +103,19 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     getBetterMe(FROM_MODE_CHANGE);
                 }
             }
+            break;
+            case XESCODE.CLASSBEGIN:
+                boolean end = data.optBoolean("end", false);
+                try {
+                    if (end) {
+                        if (Integer.parseInt(mGetInfo.getStudentLiveInfo().getClassId()) < 0) {
+                            getStuAimResult();
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
             default:
                 break;
         }
@@ -429,7 +442,8 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 XESCODE.ARTS_H5_COURSEWARE,
                 XESCODE.STOPQUESTION,
                 XESCODE.EXAM_STOP,
-                XESCODE.MODECHANGE
+                XESCODE.MODECHANGE,
+                XESCODE.CLASSBEGIN
         };
     }
 

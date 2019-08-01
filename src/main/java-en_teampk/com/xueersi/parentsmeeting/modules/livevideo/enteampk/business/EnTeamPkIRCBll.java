@@ -998,6 +998,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             case XESCODE.CLASSBEGIN:
                 boolean end = data.optBoolean("end", false);
                 mLogtf.d("CLASSBEGIN:end=" + end + ",classInt=" + classInt);
+                if (mGetInfo.getBetterMe().isUseBetterMe() && !mGetInfo.getBetterMe().isArriveLate()) {
+                    break;
+                }
                 if (end) {
                     try {
                         if (classInt < 0) {
