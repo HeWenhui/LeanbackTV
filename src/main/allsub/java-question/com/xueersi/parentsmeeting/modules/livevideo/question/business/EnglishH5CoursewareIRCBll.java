@@ -90,7 +90,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
     @Override
     public void initView() {
-        englishH5CoursewareBll.initView(mRootView, getLiveViewAction());
+        englishH5CoursewareBll.initView(getLiveViewAction());
     }
 
     @Override
