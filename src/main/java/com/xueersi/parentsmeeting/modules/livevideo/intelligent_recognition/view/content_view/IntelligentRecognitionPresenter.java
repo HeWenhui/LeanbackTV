@@ -37,6 +37,8 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.JUDGE_OVER;
+
 public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionPresenter {
 
     public IntelligentRecognitionPresenter(FragmentActivity context) {
@@ -59,6 +61,9 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
     private SpeechType speechType;
     //测评的单词
     private String speechWord;
+    //正在测评的单词信息
+    private PhoneScore phoneScore;
+    //音频播放器
     SoundEffectPlayer soundPlayer;
     //情况0，状态出现异常
     private final int STATUS_0 = 0;
@@ -415,6 +420,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
             @Override
             public void onSoundFinish() {
                 mViewModel.getIsSpeechJudgeFinish().postValue(status);
+                setSpeechStatus(JUDGE_OVER);
                 Unity3DPlayManager.playSayStop();
             }
         });
@@ -442,9 +448,9 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                         return phoneScore != null &&
                                 mViewModel.getIeResultData() != null &&
                                 mViewModel.getIeResultData().getValue().getAudioHashMap() != null &&
-                                mViewModel.getIeResultData().getValue().getAudioHashMap().containsKey(phoneScore.getWord());
+                                !mViewModel.getIeResultData().getValue().getAudioHashMap().containsKey(phoneScore.getWord());
                     }
-                }).
+                }).take(1).
                 map(new Function<PhoneScore, String>() {
                     @Override
                     public String apply(PhoneScore phoneScore) throws Exception {
@@ -452,7 +458,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                         logger.i("speechWord:" + speechWord);
                         return speechWord;
                     }
-                }).take(1).
+                }).
                 subscribeOn(Schedulers.io()).
                 subscribe(new CommonRxObserver<String>() {
                     @Override
@@ -483,6 +489,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                     mViewModel.getIsSpeechJudgeFinish().postValue(1);
                     Unity3DPlayManager.playSayStop();
                     performStartRecord();
+                    setSpeechStatus(JUDGE_OVER);
                 }
                 mViewModel.getIsSpeechJudgeFinish().postValue(status);
             }
@@ -552,6 +559,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                                     mViewModel.getIsSpeechJudgeFinish().postValue(1);
                                     Unity3DPlayManager.playSayStop();
                                     performStartRecord();
+                                    setSpeechStatus(JUDGE_OVER);
                                 }
                             }
                         });
@@ -616,6 +624,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                                     mViewModel.getIsSpeechJudgeFinish().postValue(1);
                                     Unity3DPlayManager.playSayStop();
                                     performStartRecord();
+                                    setSpeechStatus(JUDGE_OVER);
                                 }
                             }
                         });

@@ -86,19 +86,22 @@ public class IntelligentLocalFileManager {
     }
 
     public File getContentAudioFile(Context context, String liveId, String sourceId) {
-        File file = LiveCacheFile.geCacheFile(context, "webviewCache");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
-        Date date = new Date();
-        final String today = dateFormat.format(date);
-        File todayCacheDir = new File(file, today);
-        File todayLiveCacheDir = new File(todayCacheDir, liveId);
-        File mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
-        mMorecacheout = new File(mMorecacheout, sourceId);
+        if (contentAudioFile == null) {
+            File file = LiveCacheFile.geCacheFile(context, "webviewCache");
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+            Date date = new Date();
+            final String today = dateFormat.format(date);
+            File todayCacheDir = new File(file, today);
+            File todayLiveCacheDir = new File(todayCacheDir, liveId);
+            File mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
+            contentAudioFile = new File(mMorecacheout, sourceId);
 //        mMorecacheout = new File(mMorecacheout, sourceId);//文件名字默认时sourceId
 //        if (!mMorecacheout.exists()) {
 //            mMorecacheout.mkdirs();
 //        }
-        return mMorecacheout;
+        }
+        return contentAudioFile;
     }
 
     public File getUnity3DEvaluateFile() {

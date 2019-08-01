@@ -48,6 +48,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.JUDGE_OVER;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.IntelligentRecognitionContract.FILTER_ACTION;
 
 abstract class BaseIntelligentRecognitionPresenter extends
@@ -199,7 +200,9 @@ abstract class BaseIntelligentRecognitionPresenter extends
     }
 
     protected void performStartRecord() {
-        if (speechStatus.get() == IntelligentConstants.NOT_SPEECH && isSpeechReady.get()) {
+        if ((speechStatus.get() == IntelligentConstants.NOT_SPEECH ||
+                speechStatus.get() == JUDGE_OVER)
+                && isSpeechReady.get()) {
             startRecordSound();
         }
     }
@@ -494,6 +497,10 @@ abstract class BaseIntelligentRecognitionPresenter extends
      */
     protected int getSpeechStatus() {
         return speechStatus.get();
+    }
+
+    protected void setSpeechStatus(int num) {
+        speechStatus.set(num);
     }
 
     /**

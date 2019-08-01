@@ -48,6 +48,8 @@ public interface IntelligentConstants {
     int SPEECH_OVER_JUDGE = 2;
     /** 正在重读 */
     int SPEECH_AGIN = 3;
+    /** 评价完成 */
+    int JUDGE_OVER = 4;
     /** 本地语音文件存放位置 */
     String AUDIO_EVALUATE_PARENT_URL = Environment.getExternalStorageDirectory() +
             File.separator + "parentsmeeting" + File.separator + "livevideo" +

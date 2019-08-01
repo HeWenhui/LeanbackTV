@@ -128,8 +128,73 @@
         app:lottie_fileName="intelligent_recognition_study_v2/english/ready_go/data.json"
         app:lottie_imageAssetsFolder="intelligent_recognition_study_v2/english/ready_go/images" />
 
-    <FrameLayout
-        android:id="@+id/framelayout_english_intelligent_recognition_top3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_livevideo_intelligent_recognition_word_score_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_intelligent_recognition_background_textview"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/iv_livevideo_intelligent_recognition_word_score_correct_layout_background"
+            android:layout_width="300dp"
+            android:layout_height="80dp"
+            android:src="@drawable/bg_livevideo_intelligent_recognition_word_score_background" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_intelligent_recognition_score_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/COLOR_FFFFFF"
+            android:textSize="32dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_intelligent_recognition_word_score_correct_layout_background"
+            app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_intelligent_recognition_word_score_correct_layout_background"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_intelligent_recognition_word_score_correct_layout_background"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_intelligent_recognition_word_score_correct_layout_background"
+            tools:text="that" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_intelligent_recognition_word_score_background"
+            android:layout_width="47dp"
+            android:layout_height="47dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/bg_livevideo_intelligent_recognition_word_score"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_intelligent_recognition_word_score_correct_layout_background"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_intelligent_recognition_word_score_correct_layout_background"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_intelligent_recognition_word_score_correct_layout_background" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_intelligent_recognition_word_score_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/COLOR_FFFFFF"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_intelligent_recognition_word_score_background"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_intelligent_recognition_word_score_background"
+            app:layout_constraintRight_toLeftOf="@+id/tv_livevideo_intelligent_recognition_score_text"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_intelligent_recognition_word_score_background"
+            tools:text="90" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_intelligent_recognition_score_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2.5dp"
+            android:text="分"
+            android:textColor="@color/COLOR_FFFFFF"
+            android:textSize="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_livevideo_intelligent_recognition_word_score_value"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toRightOf="@+id/tv_livevideo_intelligent_recognition_word_score_value"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_intelligent_recognition_word_score_background" />
+    </android.support.constraint.ConstraintLayout>
+    <!--<FrameLayout-->
+    <!--android:id="@+id/framelayout_english_intelligent_recognition_top3"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
 </android.support.constraint.ConstraintLayout>

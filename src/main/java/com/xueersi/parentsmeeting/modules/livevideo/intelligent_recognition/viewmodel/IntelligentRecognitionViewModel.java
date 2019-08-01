@@ -40,6 +40,12 @@ public class IntelligentRecognitionViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> isScorePopWindowFinish = new MutableLiveData<>();
 
+    private MutableLiveData<PhoneScore> phoneScore = new MutableLiveData<>();
+
+    public MutableLiveData<PhoneScore> getPhoneScore() {
+        return phoneScore;
+    }
+
     public MutableLiveData<Boolean> getIsScorePopWindowFinish() {
         return isScorePopWindowFinish;
     }

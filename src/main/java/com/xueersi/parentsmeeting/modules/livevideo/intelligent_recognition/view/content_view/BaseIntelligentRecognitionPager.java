@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.support.v4.app.FragmentActivity;
 import android.text.SpannableString;
@@ -79,6 +80,7 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
 
     private ImageView ivQuestion;
 
+    private ConstraintLayout layoutScore;
 //    private Handler handler = new Handler(Looper.getMainLooper());
     /** 使用回答时间 */
     private int answerTime;
@@ -92,6 +94,10 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
     private boolean waveViewinit = false;
 
     protected ViewGroup settingViewGroup;
+    /** 需要纠音的单词 */
+    TextView tvLayoutScoreWord;
+    /** 语音测评完需要纠音的分数 */
+    TextView tvLayoutScore;
 
     /** 测评使用的单词列表(句子中的单词拆出来) */
     List<WordInfo> wordList = new LinkedList<>();
@@ -138,6 +144,8 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
     }
 
     private void afterInitView(View mView) {
+        tvLayoutScore = mView.findViewById(R.id.tv_livevideo_intelligent_recognition_word_score_value);
+        tvLayoutScoreWord = mView.findViewById(R.id.tv_livevideo_intelligent_recognition_score_word);
         waveView = mView.findViewById(R.id.wv_livevideo_intelligent_recognition_energy_bar);
         waveLottie = mView.findViewById(R.id.lottie_view_livevideo_intelligent_recognition_waveview_open_start);
         tvContent = mView.findViewById(R.id.tv_livevideo_intelligent_recognition_textview);
@@ -146,6 +154,8 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
         groupEndTip = mView.findViewById(R.id.group_livevideo_intelligent_recognition_end_tip);
         settingViewGroup = mView.findViewById(R.id.layout_livevideo_intelligent_recognition_permission);
         ivQuestion = mView.findViewById(R.id.iv_livevideo_intelligent_recognition_question);
+        layoutScore = mView.findViewById(R.id.layout_livevideo_intelligent_recognition_word_score_background);
+
         performOpenViewStart();
         initData();
         initListener();
@@ -221,6 +231,10 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
         }
     }
 
+    private boolean isWord() {
+        return true;
+    }
+
     @Override
     public void initData() {
 //        tvContent.setText(viewModel.getRecordData().getContent());
@@ -272,6 +286,11 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
                 if (integer != IntelligentConstants.PERFECT) {
                     logger.i("judge finish wave");
                     performStartWaveLottie();
+                    if (isWord()) {
+                        if (layoutScore != null && layoutScore.getVisibility() != View.VISIBLE) {
+                            layoutScore.setVisibility(View.VISIBLE);
+                        }
+                    }
                 }
             }
         });
