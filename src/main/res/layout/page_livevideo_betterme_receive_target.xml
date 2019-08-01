@@ -20,6 +20,7 @@
         android:layout_height="375dp"
         android:layout_gravity="top|center_horizontal"
         android:orientation="vertical"
+        android:visibility="gone"
         android:gravity="center_horizontal"
         android:paddingTop="30dp">
 

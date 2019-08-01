@@ -129,13 +129,14 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        //从本地读取本场是否开启了小目标
         mBetterMeView.setRootView(mRootView);
         betterMe = getInfo.getBetterMe();
         this.isUseBetterMe = betterMe.isUseBetterMe();
         this.isArriveLate = betterMe.isArriveLate();
         this.mStuSegmentEntity = betterMe.getStuSegment();
         logger.d("isUseBetterMe = " + isUseBetterMe + "; isArriveLate = " + isArriveLate);
+
+        //从本地读取本场是否开启了小目标
         isShowBetterMe = mShareDataManager.getString(ShareDataConfig.LIVE_BETTERME_OPEN, "", ShareDataManager
                 .SHAREDATA_USER).equals(mGetInfo.getId());
         //如果辅导老师没有发小目标，并且进入直播间是主讲态

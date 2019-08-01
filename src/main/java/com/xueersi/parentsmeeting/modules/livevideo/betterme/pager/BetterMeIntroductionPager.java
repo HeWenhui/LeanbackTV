@@ -93,7 +93,7 @@ public class BetterMeIntroductionPager extends BasePager {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float animatedFraction = valueAnimator.getAnimatedFraction();
-                if (animatedFraction > 0.3) {
+                if (animatedFraction > 0.2) {
                     llContent.setVisibility(View.VISIBLE);
                     mLottieAnimationView.removeUpdateListener(this);
                 }

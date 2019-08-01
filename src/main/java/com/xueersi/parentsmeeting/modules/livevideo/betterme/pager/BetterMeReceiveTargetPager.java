@@ -116,9 +116,6 @@ public class BetterMeReceiveTargetPager extends BasePager {
     @Override
     public void initData() {
         logger.i("initData()");
-        if (mCountDownTimer != null) {
-            mCountDownTimer.start();
-        }
         String target = mBetterMeEntity.getAimValue();
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(mBetterMeEntity.getAimType())) {
             tvReceiveTarType.setText(BetterMeConfig.CORRECTRATE);
@@ -233,7 +230,10 @@ public class BetterMeReceiveTargetPager extends BasePager {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float animatedFraction = valueAnimator.getAnimatedFraction();
-                if (animatedFraction > 0.25) {
+                if (animatedFraction > 0.2) {
+                    if (mCountDownTimer != null) {
+                        mCountDownTimer.start();
+                    }
                     llContent.setVisibility(View.VISIBLE);
                     mLottieAnimationView.removeUpdateListener(this);
                 }
