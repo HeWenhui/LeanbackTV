@@ -10,6 +10,8 @@ import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -43,14 +45,14 @@ public class LiveBackVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 
     @Override
     public BaseVoiceAnswerPager create(Context activity, VideoQuestionLiveEntity videoQuestionLiveEntity, JSONObject assess_ref, String type,
-                                       RelativeLayout rlQuestionContent, SpeechUtils mIse) {
+                                       LiveViewAction liveViewAction, SpeechUtils mIse) {
         questionSwitch.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch);
         voiceAnswerPager2.setIse(mIse);
         voiceAnswerPager2.setLivePagerBack(livePagerBack);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        rlQuestionContent.addView(voiceAnswerPager2.getRootView(), params);
+        liveViewAction.addView(LiveVideoLevel.LEVEL_QUES, voiceAnswerPager2.getRootView(), params);
         String sourcetype = questionSwitch.getsourcetype(videoQuestionLiveEntity);
         VoiceAnswerLog.sno2(voiceAnswerPager2, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce, sourcetype);
         return voiceAnswerPager2;
