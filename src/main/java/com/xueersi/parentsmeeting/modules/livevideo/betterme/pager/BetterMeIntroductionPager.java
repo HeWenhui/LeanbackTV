@@ -1,16 +1,22 @@
 package com.xueersi.parentsmeeting.modules.livevideo.betterme.pager;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImpl;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 
 /**
  * 英语小目标 小目标介绍
@@ -19,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewIm
  * created  at 2018/11/26
  */
 public class BetterMeIntroductionPager extends BasePager {
+    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_better_me/introduction/";
     /**
      * 查看段位
      */
@@ -29,8 +36,8 @@ public class BetterMeIntroductionPager extends BasePager {
     private ImageView btnGotit;
     private LottieAnimationView mLottieAnimationView;
     private LinearLayout llContent;
-    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_better_me/introduction/";
     private OnBettePagerClose onBettePagerClose;
+
 
     public BetterMeIntroductionPager(Context context, OnBettePagerClose onBettePagerClose) {
         super(context);
@@ -55,34 +62,43 @@ public class BetterMeIntroductionPager extends BasePager {
 
     @Override
     public void initData() {
-  /*      final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
+        final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
         final String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
-        mLottieAnimationView.setAnimation(lottieJsonPath);
-        mLottieAnimationView.setImageAssetsFolder(lottieResPath);
+        final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                if ("img_0.png".equals(lottieImageAsset.getFileName())
+                        || "img_1.png".equals(lottieImageAsset.getFileName())
+                        || "img_2.png".equals(lottieImageAsset.getFileName())
+                        || "img_3.png".equals(lottieImageAsset.getFileName())
+                        || "img_4.png".equals(lottieImageAsset.getFileName())
+                        || "img_20.png".equals(lottieImageAsset.getFileName())) {
+                    return null;
+                }
+                return lottieEffectInfo.fetchBitmapFromAssets(
+                        mLottieAnimationView,
+                        lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(),
+                        lottieImageAsset.getWidth(),
+                        lottieImageAsset.getHeight(),
+                        mContext);
+            }
+        };
+        mLottieAnimationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "introduction");
+        mLottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         mLottieAnimationView.useHardwareAcceleration(true); //使用硬件加速
-        mLottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+        mLottieAnimationView.playAnimation();
+        mLottieAnimationView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            public void onAnimationStart(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) {
-
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float animatedFraction = valueAnimator.getAnimatedFraction();
+                if (animatedFraction > 0.3) {
+                    llContent.setVisibility(View.VISIBLE);
+                    mLottieAnimationView.removeUpdateListener(this);
+                }
             }
         });
-        mLottieAnimationView.playAnimation();*/
-        llContent.setVisibility(View.VISIBLE);
     }
 
     @Override

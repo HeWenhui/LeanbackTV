@@ -1,22 +1,30 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="564dp"
+    android:layout_height="375dp"
+    android:layout_gravity="center"
     android:background="@color/transparent_80"
     android:clickable="true"
     android:focusable="true">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="564dp"
+        android:layout_height="375dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center" />
 
     <RelativeLayout
         android:layout_width="564dp"
         android:layout_height="375dp"
-        android:layout_gravity="center">
+        android:id="@+id/rl_livevideo_betterme_level_content"
+        android:layout_gravity="center"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@drawable/app_xiaomubiao_shellwindow_duanweizhanshi_bg"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:paddingTop="80dp">

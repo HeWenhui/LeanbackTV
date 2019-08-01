@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.betterme.pager;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -8,13 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.ImageAssetDelegate;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeLevelEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.util.ArrayList;
@@ -27,6 +34,7 @@ import java.util.List;
  * created  at 2018/11/26
  */
 public class BetterMeLevelDisplayPager extends LiveBasePager {
+    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_better_me/segment/";
     /**
      * 左箭头
      */
@@ -39,13 +47,14 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
      * 关闭
      */
     private ImageView ivClose;
+    private LottieAnimationView mLottieAnimationView;
+    private RelativeLayout rlContent;
     private int currentPagerItem = 0;
     private ViewPager mViewPager;
     private LinearLayout llPagerIndicator;
     private BetterMeLevelDisplayPagerAdapter mPagerAdapter;
     private List<BetterMeLevelEntity> mLevelEntityList = new ArrayList<>();
     private OnBettePagerClose onBettePagerClose;
-
 
     public BetterMeLevelDisplayPager(Context context) {
         super(context);
@@ -66,6 +75,8 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
         ivClose = view.findViewById(R.id.iv_livevideo_betterme_level_close);
         ivArrowLeft = view.findViewById(R.id.iv_livevideo_betterme_level_arrow_left);
         ivArrowRight = view.findViewById(R.id.iv_livevideo_betterme_level_arrow_right);
+        rlContent = view.findViewById(R.id.rl_livevideo_betterme_level_content);
+        mLottieAnimationView = view.findViewById(R.id.animation_view);
         return view;
     }
 
@@ -83,6 +94,50 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(new PageIndicator(mContext, llPagerIndicator, mLevelEntityList.size() / 2));
         ivArrowLeft.setEnabled(false);
+
+        final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
+        final String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
+        final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                if ("img_18.png".equals(lottieImageAsset.getFileName())
+                        || "img_19.png".equals(lottieImageAsset.getFileName())
+                        || "img_20.png".equals(lottieImageAsset.getFileName())
+                        || "img_21.png".equals(lottieImageAsset.getFileName())
+                        || "img_22.png".equals(lottieImageAsset.getFileName())
+                        || "img_23.png".equals(lottieImageAsset.getFileName())
+                        || "img_24.png".equals(lottieImageAsset.getFileName())
+                        || "img_25.png".equals(lottieImageAsset.getFileName())
+                        || "img_26.png".equals(lottieImageAsset.getFileName())
+                        || "img_27.png".equals(lottieImageAsset.getFileName())
+                        || "img_28.png".equals(lottieImageAsset.getFileName())
+                        || "img_28.png".equals(lottieImageAsset.getFileName())) {
+                    return lottieEffectInfo.fetchBitmapFromAssets(
+                            mLottieAnimationView,
+                            lottieImageAsset.getFileName(),
+                            lottieImageAsset.getId(),
+                            lottieImageAsset.getWidth(),
+                            lottieImageAsset.getHeight(),
+                            mContext);
+                }
+                return null;
+            }
+        };
+        mLottieAnimationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "levelDisplay");
+        mLottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
+        mLottieAnimationView.useHardwareAcceleration(true); //使用硬件加速
+        mLottieAnimationView.playAnimation();
+        mLottieAnimationView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float animatedFraction = valueAnimator.getAnimatedFraction();
+                if (animatedFraction > 0.3) {
+                    rlContent.setVisibility(View.VISIBLE);
+                    mLottieAnimationView.removeUpdateListener(this);
+                }
+            }
+        });
     }
 
     @Override
