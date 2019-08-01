@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.betterme.pager;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.text.SpannableString;
@@ -13,6 +15,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.ImageAssetDelegate;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
@@ -20,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnBettePag
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.utils.BetterMeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMeViewImpl;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 /**
@@ -29,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
  * created  at 2018/12/10
  */
 public class BetterMeCompleteTargetPager extends LiveBasePager {
+    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_better_me/result/";
     private OnBettePagerClose mOnpagerClose;
     /**
      * 图标 - 标题
@@ -73,6 +80,8 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
      * 升级提示
      */
     private TextView tvLevelUpgraded;
+    private LottieAnimationView mLottieAnimationView;
+    private LinearLayout llContent;
 
     private StuAimResultEntity mStuAimResultEntity;
     private static final String CONGRATULATIONS_TO_UPGRADE = "恭喜你升级为";
@@ -103,14 +112,13 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         ivCurrentLevel = view.findViewById(R.id.iv_livevideo_betterme_completetarget_current_level);
         tvNextLevel = view.findViewById(R.id.tv_livevideo_betterme_completetarget_next_level);
         ivNextLevel = view.findViewById(R.id.iv_livevideo_betterme_completetarget_next_level);
+        llContent = view.findViewById(R.id.ll_livevideo_betterme_completetarget_content);
+        mLottieAnimationView = view.findViewById(R.id.animation_view);
         return view;
     }
 
     @Override
     public void initData() {
-        if (mCountDownTimer != null) {
-            mCountDownTimer.start();
-        }
         String reult = mStuAimResultEntity.getRealTimeVal();
         String target = mStuAimResultEntity.getAimValue();
         //目标类型
@@ -220,6 +228,46 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         if (mStuAimResultEntity.isUpGrade()) {
             onUpgradeLevel();
         }
+
+        final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
+        final String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
+        final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                if ("img_0.png".equals(lottieImageAsset.getFileName())
+                        || "img_1.png".equals(lottieImageAsset.getFileName())
+                        || "img_2.png".equals(lottieImageAsset.getFileName())
+                        || "img_3.png".equals(lottieImageAsset.getFileName())
+                        || "img_4.png".equals(lottieImageAsset.getFileName()) ){
+                    return null;
+                }
+                return lottieEffectInfo.fetchBitmapFromAssets(
+                        mLottieAnimationView,
+                        lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(),
+                        lottieImageAsset.getWidth(),
+                        lottieImageAsset.getHeight(),
+                        mContext);
+            }
+        };
+        mLottieAnimationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "introduction");
+        mLottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
+        mLottieAnimationView.useHardwareAcceleration(true); //使用硬件加速
+        mLottieAnimationView.playAnimation();
+        mLottieAnimationView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float animatedFraction = valueAnimator.getAnimatedFraction();
+                if (animatedFraction > 0.1) {
+                    if (mCountDownTimer != null) {
+                        mCountDownTimer.start();
+                    }
+                    llContent.setVisibility(View.VISIBLE);
+                    mLottieAnimationView.removeUpdateListener(this);
+                }
+            }
+        });
     }
 
     @Override

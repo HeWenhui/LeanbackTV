@@ -152,7 +152,7 @@
 
                 <ProgressBar
                     android:id="@+id/pg_livevideo_en_achive_aim"
-                    style="@style/ProgressBar_live_en_achive"
+                    style="@style/ProgressBar_live_en_achive_betterme"
                     android:layout_width="143dp"
                     android:layout_height="13dp"
                     android:layout_below="@+id/tv_livevideo_en_achive_aimtype"

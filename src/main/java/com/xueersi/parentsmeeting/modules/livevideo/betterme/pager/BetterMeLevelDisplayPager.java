@@ -132,7 +132,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float animatedFraction = valueAnimator.getAnimatedFraction();
-                if (animatedFraction > 0.2) {
+                if (animatedFraction > 0.1) {
                     rlContent.setVisibility(View.VISIBLE);
                     mLottieAnimationView.removeUpdateListener(this);
                 }

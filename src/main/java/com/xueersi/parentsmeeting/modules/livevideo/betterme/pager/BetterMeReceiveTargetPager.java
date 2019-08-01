@@ -230,7 +230,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float animatedFraction = valueAnimator.getAnimatedFraction();
-                if (animatedFraction > 0.2) {
+                if (animatedFraction > 0.1) {
                     if (mCountDownTimer != null) {
                         mCountDownTimer.start();
                     }
