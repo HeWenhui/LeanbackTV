@@ -91,7 +91,7 @@ public class RedPackageExperienceBll extends LiveBackBaseBll {
 
     public void getRedPacket(final DataLoadEntity dataLoadEntity, final String liveId, final String operateId, final
     AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         // 网络加载数据
         getCourseHttpManager().getRedPacket(myUserInfoEntity.getEnstuId(), operateId, liveId,
                 new HttpCallBack(dataLoadEntity) {
@@ -118,7 +118,7 @@ public class RedPackageExperienceBll extends LiveBackBaseBll {
 
     public void getLivePlayRedPacket(final DataLoadEntity dataLoadEntity, final String liveId, final String termId, final String
             operateId, final AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity myUserInfoEntity = LiveAppUserInfo.getInstance();
         // 网络加载数据
         getCourseHttpManager().getLivePlayRedPackets(myUserInfoEntity.getEnstuId(), operateId, termId,liveId,
                 new HttpCallBack(dataLoadEntity) {

@@ -103,7 +103,7 @@ public class LecAdvertPlayBackBll extends LiveBackBaseBll implements LecBackAdve
 
     @Override
     public void getAdOnLL(String liveId, final LecAdvertEntity lecAdvertEntity, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         getCourseHttpManager().getAdOnLL(enstuId, liveId, lecAdvertEntity.course_id, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

@@ -438,7 +438,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     if (englishH5Entity.getLiveType() == LiveVideoConfig.ExperiencLiveType.HALF_BODY) {
                         mLoadUrls = englishH5Entity.getUrl();
                     } else {
-                        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                        String stuId = LiveAppUserInfo.getInstance().getStuId();
                         // 一题多发的课件预加载(直播回放)
                         String packageId = "";
                         String packageSource = "";
@@ -469,7 +469,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                                 "&educationStage=" + LiveVideoConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1" + "&nonce="
                                 + "" + UUID.randomUUID();
                         if(isArts == 2 && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
-                            mLoadUrls += "&aiUrl="+detailInfo.getSubjectiveItem2AIUrl()+"&deviceId=8&gradeType="+Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
+                            mLoadUrls += "&aiUrl="+detailInfo.getSubjectiveItem2AIUrl()+"&deviceId=8&gradeType="+Integer.parseInt(LiveAppUserInfo.getInstance().getGradeCode());
                         }
                     }
                 } else {
@@ -528,7 +528,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" +
                             LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
                     if(isArts == 2 && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
-                        mLoadUrls += "&aiUrl="+detailInfo.getSubjectiveItem2AIUrl()+"&deviceId=8&gradeType="+Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
+                        mLoadUrls += "&aiUrl="+detailInfo.getSubjectiveItem2AIUrl()+"&deviceId=8&gradeType="+Integer.parseInt(LiveAppUserInfo.getInstance().getGradeCode());
                     }
                     // 上传接收到教师端指令的日志
                     StableLogHashMap logHashMap = new StableLogHashMap("receivePlatformtest");

@@ -49,7 +49,7 @@ public class AuditClassRoomBll extends BaseBll {
      * @param dataLoadEntity
      */
     public void getLiveCourseUserScoreDetail(String liveId, String stuCouId, final AbstractBusinessDataCallBack auditClassRoomRequestCallBack, final DataLoadEntity dataLoadEntity) {
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        final String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mAuditClassRoomHttpManager.getLiveCourseUserScoreDetail(enstuId, liveId, stuCouId, new HttpCallBack(dataLoadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -76,7 +76,7 @@ public class AuditClassRoomBll extends BaseBll {
      * @param auditClassRoomRequestCallBack
      */
     public void getHasLiveCourse(final Handler handler, final long delayMillis, final String roomId, final AbstractBusinessDataCallBack auditClassRoomRequestCallBack) {
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        final String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mAuditClassRoomHttpManager.getHasLiveCourse(enstuId, roomId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

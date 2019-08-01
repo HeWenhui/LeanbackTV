@@ -18,7 +18,6 @@ import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -31,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackD
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NbCourseEvent;
@@ -310,7 +310,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         StringBuilder sb = new StringBuilder();
         sb.append(NbCourseWareConfig.LIVE_NB_COURSE_RESULT).append("?liveId=")
                 .append(mCourseWareEntity.getLiveId())
-                .append("&stuId=").append(UserBll.getInstance().getMyUserInfoEntity().getStuId())
+                .append("&stuId=").append(LiveAppUserInfo.getInstance().getStuId())
                 .append("&experimentId=").append(mCourseWareEntity.getExperimentId())
                 .append("&isPlayBack=").append(mCourseWareEntity.isPlayBack()?"1":"0")
                 .append("&force=").append(isForceSubmit ? "1" : "0");
@@ -586,7 +586,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                         NbCourseLog.sno6(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"1",spendTiem+"");
                         // 向主讲发送消息 学生提交成功了
                         if(mCourseWareEntity != null && !mCourseWareEntity.isPlayBack()){
-                            mPresenter.sendSubmitSuccessMsg(UserBll.getInstance().getMyUserInfoEntity().getStuId(),mCourseWareEntity.getExperimentId());
+                            mPresenter.sendSubmitSuccessMsg(LiveAppUserInfo.getInstance().getStuId(),mCourseWareEntity.getExperimentId());
                         }
                         onSubmit = false;
 

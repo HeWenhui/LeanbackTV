@@ -21,12 +21,15 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ActivityUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.parentsmeeting.module.videoplayer.config.LogConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+
+import java.util.HashMap;
 
 /**
  * @author linyuqiang
@@ -42,7 +45,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     /** 是否显示控制栏 */
     protected boolean mIsShowMediaController = true;
     protected float mySpeed = 1.0f;
-
+    protected String uuid;
     private OnVideoCreate onVideoCreate;
 
     /**
@@ -378,18 +381,26 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     /** 视频预加载成功 */
     protected void onPlayOpenSuccess() {
         if (mySpeed != 1.0f) {
-            setSpeed(mySpeed);
+            setSpeed(mySpeed, uuid);
         }
     }
 
     @Override
-    public void setSpeed(float speed) {
+    public void setSpeed(float speed, String uuid) {
         mySpeed = speed;
-        if (isInitialized())
-        // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
-        {
-            vPlayer.setSpeed(speed);
+        this.uuid = uuid;
+        HashMap<String, String> hmParams = new HashMap<>();
+        hmParams.put("logtype", "backsetspeed");
+        hmParams.put("speed", "" + speed);
+        hmParams.put("muri", "" + mUri);
+        hmParams.put("uuid", "" + uuid);
+        if (isInitialized()) {
+            vPlayer.setSpeed(speed, uuid);
+            hmParams.put("mInitialized", "true");
+        } else {
+            hmParams.put("mInitialized", "false");
         }
+        UmsAgentManager.umsAgentDebug(activity, LogConfig.PLAY_SET_SPEED, hmParams);
     }
 
     @Override

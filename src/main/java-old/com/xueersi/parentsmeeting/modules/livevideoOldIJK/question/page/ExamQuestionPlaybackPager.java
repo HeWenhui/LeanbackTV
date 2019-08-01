@@ -115,7 +115,7 @@
 //        ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
 //        ((AnimationDrawable) ivLoading.getBackground()).start();
 ////        wvSubjectWeb.loadUrl("file:///android_asset/testjs.html");
-//        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
 //        AppInfoEntity mAppInfoEntity = AppBll.getInstance().getAppInfoEntity();
 //        String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
 //        if (isArts) {

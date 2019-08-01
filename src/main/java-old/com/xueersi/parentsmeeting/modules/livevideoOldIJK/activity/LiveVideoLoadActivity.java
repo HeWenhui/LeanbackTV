@@ -208,7 +208,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         finish();
                         return;
                     }
-                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    String stuId = LiveAppUserInfo.getInstance().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
                     if (!MediaPlayer.getIsNewIJK()) {
                         com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -255,7 +255,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         return;
                     }*/
 
-                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    String stuId = LiveAppUserInfo.getInstance().getStuId();
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
 //                    mGetInfo.setPattern(1);
                     bundle.putString("mode", mGetInfo.getMode());

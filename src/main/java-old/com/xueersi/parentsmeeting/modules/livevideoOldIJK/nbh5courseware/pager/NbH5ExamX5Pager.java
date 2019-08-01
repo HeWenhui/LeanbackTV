@@ -311,7 +311,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         StringBuilder sb = new StringBuilder();
         sb.append(NbCourseWareConfig.LIVE_NB_COURSE_RESULT).append("?liveId=")
                 .append(mCourseWareEntity.getLiveId())
-                .append("&stuId=").append(UserBll.getInstance().getMyUserInfoEntity().getStuId())
+                .append("&stuId=").append(LiveAppUserInfo.getInstance().getStuId())
                 .append("&experimentId=").append(mCourseWareEntity.getExperimentId())
                 .append("&isPlayBack=").append(mCourseWareEntity.isPlayBack()?"1":"0")
                 .append("&force=").append(isForceSubmit ? "1" : "0");
@@ -593,7 +593,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                         NbCourseLog.sno6(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"1",spendTiem+"");
                         // 向主讲发送消息 学生提交成功了
                         if(mCourseWareEntity != null && !mCourseWareEntity.isPlayBack()){
-                            mPresenter.sendSubmitSuccessMsg(UserBll.getInstance().getMyUserInfoEntity().getStuId(),mCourseWareEntity.getExperimentId());
+                            mPresenter.sendSubmitSuccessMsg(LiveAppUserInfo.getInstance().getStuId(),mCourseWareEntity.getExperimentId());
                         }
                         onSubmit = false;
                         NbCourseLog.submitNbCourseWare(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"1","网校提交成功");

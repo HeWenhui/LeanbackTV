@@ -41,6 +41,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayerListening;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -233,7 +234,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
 //        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
 //                liveid + "/" + stuCouId + "/" + testId + "/" + stuId;
-            mUrl = "https://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
+            mUrl = LiveHttpConfig.LIVE_HOST + "/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
                     liveid + "/" + testId + "/" + stuId;
 //        String url = "http://172.88.1.180:8082";
             if (!StringUtils.isEmpty(nonce)) {

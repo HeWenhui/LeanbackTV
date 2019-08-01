@@ -28,7 +28,7 @@ public class AuditClassRoomHttpManager extends BaseHttpBusiness {
      * @param liveId
      * @param requestCallBack
      */
-    public void getLiveCourseUserScoreDetail(String enstuId, String liveId, String stuCouId, HttpCallBack
+    public void getLiveCourseUserScoreDetail(String liveId, String stuCouId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
@@ -46,11 +46,10 @@ public class AuditClassRoomHttpManager extends BaseHttpBusiness {
     /**
      * 是否有旁听课堂数据
      *
-     * @param enstuId
      * @param roomId
      * @param requestCallBack
      */
-    public void getHasLiveCourse(String enstuId, String roomId, HttpCallBack
+    public void getHasLiveCourse(String roomId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("rid", roomId);

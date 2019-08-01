@@ -6,7 +6,6 @@ import android.os.Message;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -424,12 +423,11 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
         if (classSignEntity.getStatus() != 1) {
             stopRollCall();
         } else {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String classId = "";
             if (mGetInfo.getStudentLiveInfo() != null) {
                 classId = mGetInfo.getStudentLiveInfo().getClassId();
             }
-            rollCallHttp.userSign(enstuId, mGetInfo.getId(), classId, mGetInfo.getTeacherId()
+            rollCallHttp.userSign(mGetInfo.getId(), classId, mGetInfo.getTeacherId()
                     , new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

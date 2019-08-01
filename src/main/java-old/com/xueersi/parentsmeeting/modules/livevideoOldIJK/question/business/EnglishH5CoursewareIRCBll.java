@@ -713,7 +713,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
             final Boolean isRights = isRight;
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
             mLogtf.d("liveSubmitTestH5Answer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                     videoQuestionLiveEntity.id + ",liveId=" + mLiveId + ",testAnswer="
                     + testAnswer);

@@ -9,6 +9,7 @@ import java.util.Map;
  */
 
 public class SimpleLiveBackDebug implements LiveAndBackDebug {
+
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
 

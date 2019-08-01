@@ -204,9 +204,9 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      */
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         mData.put("orderid", mVideoEntity.getChapterId());
@@ -227,9 +227,9 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 
     @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         mData.put("livetype", "" + 4);
@@ -245,9 +245,9 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 
     @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        MyUserInfoEntity userInfoEntity = LiveAppUserInfo.getInstance();
         mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         mData.put("livetype", "" + 4);

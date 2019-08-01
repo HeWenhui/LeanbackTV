@@ -1200,7 +1200,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         @Override
         public void praiseTeacher(final String formWhichTeacher, String ftype, String educationStage, final
         HttpCallBack callBack) {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
             String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
             mHttpManager.praiseTeacher(mLiveType, enstuId, mLiveId, teacherId, ftype, educationStage, new
                     HttpCallBack() {

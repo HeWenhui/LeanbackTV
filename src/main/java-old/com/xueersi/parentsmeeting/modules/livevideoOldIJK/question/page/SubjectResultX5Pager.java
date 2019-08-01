@@ -124,7 +124,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
             examUrl = testPaperUrl + "/" + liveid + "?testId=" + testId
                     + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;
         }
-//        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
+//        String mEnStuId = LiveAppUserInfo.getInstance().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
         mLogtf.d("initData:examUrl=" + examUrl);
         LiveHttpManager liveHttpManager = new LiveHttpManager(mContext);

@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -63,10 +64,14 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     public EnTeamPkBll(Context context, String liveId) {
         super(context);
         mLogtf = new LogToFile(context, TAG);
-        String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TOP, "", ShareDataManager.SHAREDATA_USER);
+        String string = LiveShareDataManager.getInstance().getString(ShareDataConfig.LIVE_ENPK_MY_TOP, "");
         if (("" + string).contains((liveId + ","))) {
             hasAddTop = true;
         }
+    }
+
+    public boolean isHasAddTop() {
+        return hasAddTop;
     }
 
     public void setEnTeamPkHttp(EnTeamPkHttp enTeamPkHttp) {
@@ -185,6 +190,15 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         });
     }
 
+    public void saveTop() {
+        String string = LiveShareDataManager.getInstance().getString(ShareDataConfig.LIVE_ENPK_MY_TOP, "");
+        String[] liveIds = string.split(",");
+        if (liveIds.length > 6) {
+            string = "";
+        }
+        LiveShareDataManager.getInstance().put(ShareDataConfig.LIVE_ENPK_MY_TOP, string + "" + getInfo.getId() + ",");
+    }
+
     /**
      * 上方提示
      *
@@ -195,12 +209,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         if (hasAddTop) {
             return;
         }
-        String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TOP, "", ShareDataManager.SHAREDATA_USER);
-        String[] liveIds = string.split(",");
-        if (liveIds.length > 6) {
-            string = "";
-        }
-        mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TOP, string + "" + getInfo.getId() + ",", ShareDataManager.SHAREDATA_USER);
+        saveTop();
         hasAddTop = true;
         final View view = liveViewAction.inflateView(R.layout.layout_livevideo_en_team_join);
         TextView tv_livevideo_en_teampk_top_name = view.findViewById(R.id.tv_livevideo_en_teampk_top_name);
@@ -239,6 +248,8 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                 @Override
                 public void run() {
                     if (LiveTopic.MODE_TRANING.equals(mode) && showPk) {
+                        saveTop();
+                        hasAddTop = true;
                         teamPkRankPager = new TeamPkRankPager(mContext);
                         teamPkRankPager.setOnTeamSelect(new TeamPkRankPager.OnTeamSelect() {
                             @Override
@@ -308,9 +319,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                                 if (pkTeamEntity == null) {
                                     return;
                                 }
-                                if (oldPkTeamEntity == null) {
-                                    addTop("onRankStart2");
-                                }
+                                addTop("onRankStart2");
                             }
 
                             @Override

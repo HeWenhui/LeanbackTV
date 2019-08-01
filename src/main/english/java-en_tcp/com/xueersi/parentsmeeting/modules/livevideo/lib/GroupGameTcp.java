@@ -25,7 +25,7 @@ import java.util.HashMap;
 public class GroupGameTcp {
     private static int CREATE_TIMES = 0;
     private String TAG = "GroupGameTcp" + CREATE_TIMES++;
-    private Logger log = LiveLoggerFactory.getLogger(TAG);
+    private Logger log = LiveTcpLoggerFactory.getLogger(TAG);
     private ReceiveMegCallBack receiveMegCallBack;
     /** 测试用，从本地文件读 */
     private boolean readSave = false;
@@ -163,7 +163,7 @@ public class GroupGameTcp {
     }
 
     class WriteThread extends HandlerThread {
-        Logger log = LiveLoggerFactory.getLogger(TAG + ":WriteThread");
+        Logger log = LiveTcpLoggerFactory.getLogger(TAG + ":WriteThread");
         OutputStream outputStream;
 
         WriteThread(OutputStream outputStream) {
@@ -302,7 +302,7 @@ public class GroupGameTcp {
     }
 
     class ReadThread implements Runnable {
-        Logger log = LiveLoggerFactory.getLogger(TAG + ":ReadThread");
+        Logger log = LiveTcpLoggerFactory.getLogger(TAG + ":ReadThread");
         WriteThread writeThread;
         InputStream inputStream;
         // 每包最小长度

@@ -651,7 +651,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
                 onUrlClick = (OnMsgUrlClick) mContext;
             }
             String params = "fromtype=livelecturechat&fromplatformtype=android&fromliveid=" + getInfo.getId()
-                    + "&fromuserid=" + UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    + "&fromuserid=" + LiveAppUserInfo.getInstance().getStuId();
             if (url.contains("?")) {
                 mUrl = url + "&" + params;
             } else {

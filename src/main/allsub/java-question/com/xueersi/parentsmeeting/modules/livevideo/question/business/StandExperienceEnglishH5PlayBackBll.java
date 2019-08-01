@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -109,7 +108,6 @@ public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
                                            String testAnswer, String courseware_type, String isSubmit, double
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
-            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String userMode = "1";
             HttpCallBack httpCallBack = new HttpCallBack() {
                 @Override

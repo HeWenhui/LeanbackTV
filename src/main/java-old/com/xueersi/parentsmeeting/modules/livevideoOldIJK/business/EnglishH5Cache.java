@@ -246,7 +246,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         JSONObject infoObj = infoArray.getJSONObject(i);
                         String id = infoObj.getString("id");
                         String courseware_type = infoObj.getString("type");
-                        String play_url = "https://live.xueersi.com/Live/coursewareH5/" + liveId + "/" + id + "/" + courseware_type
+                        String play_url = LiveHttpConfig.LIVE_HOST + "/Live/coursewareH5/" + liveId + "/" + id + "/" + courseware_type
                                 + "/123456";
                         logger.d("getCourseWareUrl:onPmSuccess:play_url=" + play_url);
 //                        urls.add(play_url);

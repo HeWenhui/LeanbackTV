@@ -93,7 +93,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityC
 
     @Override
     protected void startGetInfo() {
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        String stuId = LiveAppUserInfo.getInstance().getStuId();
         LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(liveType + "-" + stuId + "-" + mVSectionID);
         mLiveBll.getInfo(mGetInfo);
     }
@@ -136,7 +136,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityC
         }
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        String stuId = LiveAppUserInfo.getInstance().getStuId();
         LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(liveType + "-" + stuId + "-" + mVSectionID);
         mLiveBll = new LiveBll2(activity, mVSectionID, liveType, from, mGetInfo);
         ProxUtil.getProxUtil().put(activity, LiveBll2.class, mLiveBll);

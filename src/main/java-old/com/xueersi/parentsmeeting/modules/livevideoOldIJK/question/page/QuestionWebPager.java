@@ -139,7 +139,7 @@
 //        ((AnimationDrawable) ivLoading.getBackground()).start();
 //        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName + "&isTowall=" + isShowRanks;
-////        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
+////        String mEnStuId = LiveAppUserInfo.getInstance().getEnstuId(); // token
 ////        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
 //        if (!StringUtils.isEmpty(nonce)) {
 //            examUrl += "&nonce=" + nonce;

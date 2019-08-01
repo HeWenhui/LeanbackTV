@@ -85,7 +85,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     private int tryTimes = 0;
 
     private void getMyTeamInfo() {
-        getPrimaryClassHttp().getMyTeamInfo(classId, mGetInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new AbstractBusinessDataCallBack() {
+        getPrimaryClassHttp().getMyTeamInfo(classId, mGetInfo.getStuId(), LiveAppUserInfo.getInstance().getPsimId(), new AbstractBusinessDataCallBack() {
 
             @Override
             public void onDataSucess(Object... objData) {

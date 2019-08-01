@@ -130,7 +130,6 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
      * 竖屏的时候，也添加横屏的消息
      */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
-    LiveAndBackDebug liveAndBackDebug;
     private String liveId;
     private String termId;
     private View mFloatView;
@@ -156,15 +155,13 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
     private LiveMessageEntity mLastMsg;
 
 
-    public HalfBodyExpLiveMsgPager(Context context,
-                                   LiveAndBackDebug ums, BaseLiveMediaControllerBottom
-                                           liveMediaControllerBottom, ArrayList<LiveMessageEntity>
+    public HalfBodyExpLiveMsgPager(Context context, BaseLiveMediaControllerBottom
+            liveMediaControllerBottom, ArrayList<LiveMessageEntity>
                                            liveMessageEntities, ArrayList<LiveMessageEntity>
                                            otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
-        this.liveAndBackDebug = ums;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
@@ -572,7 +569,6 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
     public void setGetInfo(LiveGetInfo getInfo) {
         super.setGetInfo(getInfo);
         if (getInfo != null) {
-            String educationStage = getInfo.getEducationStage();
             liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {

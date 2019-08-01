@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -37,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -146,20 +146,24 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
     /** 设置显示的加载动画 */
     protected void setLoadingView() {
+        boolean overrideHandler = false;
         liveVideoPlayFragment = (LivePlayerFragment) getChildFragmentManager().findFragmentByTag("LivePlayerFragment");
         if (LiveVideoConfig.isSmallChinese) {
+            overrideHandler = true;
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING);
         } else if (LiveVideoConfig.isPrimary) {
             mLogtf.i("primary_science_loading");
+            overrideHandler = true;
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_SCIENCE_LOADING);
         } else if (isSmallEnglish) {
+            overrideHandler = true;
             mLogtf.i("primary_english_loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_ENGLISH_LOADING);
         } else {
             mLogtf.i("other loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_MIDDLE_LOADING);
         }
-        liveVideoPlayFragment.overrideHandlerCallBack();
+        liveVideoPlayFragment.overrideHandlerCallBack(overrideHandler);
     }
 
     @Override
@@ -186,7 +190,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
     @Override
     protected void startGetInfo() {
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        String stuId = LiveAppUserInfo.getInstance().getStuId();
         LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
         if (mGetInfo != null) {
             mode = mGetInfo.getMode();
@@ -579,7 +583,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {// 直播
-            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+            String stuId = LiveAppUserInfo.getInstance().getStuId();
             LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
             if (mGetInfo != null) {
                 mode = mGetInfo.getMode();

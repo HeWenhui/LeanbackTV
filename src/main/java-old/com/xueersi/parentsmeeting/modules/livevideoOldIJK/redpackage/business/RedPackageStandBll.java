@@ -150,7 +150,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                         receiveGold.onReceiveGold();
                         if (clickPackage == RedPackagePage.CLICK_PACKAGE_1) {
                             //结果页增加自己数据
-                            MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
+                            MyUserInfoEntity mMyInfo = LiveAppUserInfo.getInstance();
                             GoldTeamStatus goldTeamStatus = new GoldTeamStatus();
                             GoldTeamStatus.Student student = new GoldTeamStatus.Student();
                             student.setNickname(userName);

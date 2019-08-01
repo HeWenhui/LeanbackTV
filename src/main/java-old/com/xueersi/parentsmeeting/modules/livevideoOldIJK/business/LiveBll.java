@@ -240,8 +240,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      * @param str
      */
     public void getOnloadLogs(String TAG, String str) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
+        String bz = LiveAppUserInfo.getInstance().getUserType() == 1 ? "student" : "teacher";
         PackageManager packageManager = mContext.getPackageManager();
         PackageInfo packInfo = null;
         String filenam = "f";
@@ -268,7 +268,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      * 用户在线心跳
      */
     private void getUserOnline() {
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        final String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         String teacherId = "";
         if (mGetInfo != null) {
             teacherId = mGetInfo.getTeacherId();
@@ -351,7 +351,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      * @param callBack
      */
     public void sendReceiveGold(final int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        final String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mLogtf.d("sendReceiveGold:enstuId=" + enstuId + ",operateId=" + operateId + ",liveId=" + liveId);
         mHttpManager.sendReceiveGold(mLiveType, enstuId, operateId, liveId, new HttpCallBack() {
 
@@ -459,7 +459,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     @Override
     public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity, String liveId, String
             testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + liveId + ",testAnswer="
                 + testAnswer);
@@ -617,7 +617,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     public void liveSubmitTestH5Answer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String liveId, String
             testAnswer, String type, String isSubmit, double voiceTime, boolean isRight, final QuestionSwitch
             .OnAnswerReslut answerReslut) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mLogtf.d("liveSubmitTestH5Answer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + liveId + ",testAnswer="
                 + testAnswer);
@@ -706,7 +706,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
     private void getOldRankingData(final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
@@ -734,7 +734,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
 //    public void getStuRanking(HttpCallBack requestCallBack) {
-//        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+//        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
 //        String classId = "";
 //        if (mGetInfo.getStudentLiveInfo() != null) {
 //            classId = mGetInfo.getStudentLiveInfo().getClassId();
@@ -746,7 +746,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      * 用户试听
      */
     public void userModeTime(AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mHttpManager.userModeTime(enstuId, mLiveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -901,7 +901,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
     public void getLecLearnReport(final long delayTime, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mLogtf.d("getLecLearnReport:enstuId=" + enstuId + ",liveType=" + mLiveType + ",liveId=" + mLiveId + "," +
                 "delayTime=" + delayTime);
         mHttpManager.getLearnReport(enstuId, mLiveId, mLiveType, new HttpCallBack(false) {
@@ -946,7 +946,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      * 提交教师评价
      */
     public synchronized void sendTeacherEvaluate(int[] score, final HttpCallBack requestCallBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mLogtf.d("sendTeacherEvaluate:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
@@ -1126,7 +1126,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
     @Override
     public void praiseTeacher(final String formWhichTeacher, String ftype, String educationStage, final HttpCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
         mHttpManager.praiseTeacher(mLiveType, enstuId, mLiveId, teacherId, ftype, educationStage, new HttpCallBack() {
 
@@ -1482,7 +1482,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     @Override
     public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mHttpManager.getSpeechEval(enstuId, liveid, id, new HttpCallBack() {
 
             @Override
@@ -1515,7 +1515,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
             onSpeechEval) {
         String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mHttpManager.sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack(false) {
 
             @Override
@@ -1541,7 +1541,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     @Override
     public void sendSpeechEvalResult2(final String id, final String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mHttpManager.sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
 
             @Override
@@ -1600,7 +1600,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     @Override
     public void speechEval42IsAnswered(final String id, String num, final SpeechEvalAction.SpeechIsAnswered
             isAnswered) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mHttpManager.speechEval42IsAnswered(enstuId, id, num, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(final ResponseEntity responseEntity) {
@@ -1628,7 +1628,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             @Override
             public void run() {
                 String liveid = mGetInfo.getId();
-                String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+                String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
                 mHttpManager.getStuGoldCount(enstuId, liveid, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -1652,7 +1652,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
     public void setNotOpeningNum() {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mHttpManager.setNotOpeningNum(enstuId, mGetInfo.getId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -1676,7 +1676,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     @Override
     public void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack
             callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String enstuId = LiveAppUserInfo.getInstance().getEnstuId();
         mHttpManager.getQuestion(enstuId, mGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), new
                 HttpCallBack() {
                     @Override

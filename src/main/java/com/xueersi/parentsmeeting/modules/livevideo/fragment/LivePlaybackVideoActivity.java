@@ -1,16 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandLiveVideoExperienceFragment;
 
 import java.util.HashMap;
 
@@ -35,13 +36,22 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
 
         isExperience = getIntent().getBooleanExtra("isExperience", false);
         if (!isExperience) {
-            if (pattern == 2) {
-                return new StandBackVideoFragment();
+            if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+//                return new StandBackVideoFragment();
+                try {
+                    String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.StandBackVideoFragment";
+                    LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
+                    return fragmentBase;
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(TAG, e);
+                }
             }
             return new LiveBackVideoFragment();
         }
 //        setRequestedOrientation(Configuration.ORIENTATION_LANDSCAPE);
-        return StandLiveVideoExperienceFragment.newInstance(isExperience);
+        String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandLiveVideoExperienceFragment";
+        LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
+        return fragmentBase;
     }
 
     @Override

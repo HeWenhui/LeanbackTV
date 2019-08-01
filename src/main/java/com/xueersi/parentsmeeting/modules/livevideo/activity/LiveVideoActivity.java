@@ -228,7 +228,7 @@
 //        logger.d( "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System
 //                .currentTimeMillis() - before));
 //        before = System.currentTimeMillis();
-//        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+//        String stuId = LiveAppUserInfo.getInstance().getStuId();
 //        LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
 //        initAllBll();
 //        logger.d( "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
@@ -369,7 +369,7 @@
 //            FullMarkListEntity entity=new FullMarkListEntity();
 //            entity.setAnswer_time(""+(60+i));
 //            entity.setStuName("李亚龙啊");
-//            entity.setId(UserBll.getInstance().getMyUserInfoEntity().getStuId()+(i==5?"":"abc"));
+//            entity.setId(LiveAppUserInfo.getInstance().getStuId()+(i==5?"":"abc"));
 //            lst.add(entity);
 //        }
 //        final ArrayList<RankUserEntity> lst1=new ArrayList<>();

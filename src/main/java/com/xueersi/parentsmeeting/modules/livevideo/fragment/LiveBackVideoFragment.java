@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.config.AppConfig;
@@ -61,6 +60,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
@@ -171,7 +171,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         super.onVideoCreate(savedInstanceState);
         times++;
         createTime = System.currentTimeMillis();
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
         Intent intent = activity.getIntent();
@@ -495,13 +495,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 @Override
                 public boolean onPreDraw() {
                     activity.getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
-                    if (AppBll.getInstance(activity).isNetWorkAlert() || isNetWorkEnable) {
+                    if (LiveAppBll.getInstance().isNetWorkAlert() || isNetWorkEnable) {
                         // 互动题播放地址
-                        AppBll.getInstance(activity.getApplication());
                         playNewVideo();
                     } else {
                         mIsShowNoWifiAlert = false;
-                        AppBll.getInstance(activity.getApplication());
                     }
                     return false;
                 }
@@ -698,8 +696,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     @Override
-    public void setSpeed(float speed) {
-        super.setSpeed(speed);
+    public void setSpeed(float speed, String uuid) {
+        super.setSpeed(speed, uuid);
         String key = "null";
         if (mVideoEntity != null) {
             if ("LivePlayBackActivity".equals(where)) {//直播辅导
@@ -854,9 +852,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 return;
             }
             if (event.netWorkType == NetWorkHelper.MOBILE_STATE) {
-                if (AppBll.getInstance().getAppInfoEntity().isNotificationOnlyWIFI()) {
+                if (LiveAppBll.getInstance().isNotificationOnlyWIFI()) {
                     EventBus.getDefault().post(new AppEvent.OnlyWIFIEvent());
-                } else if (AppBll.getInstance().getAppInfoEntity().isNotificationMobileAlert()) {
+                } else if (LiveAppBll.getInstance().isNotificationMobileAlert()) {
                     EventBus.getDefault().post(new AppEvent.NowMobileEvent());
                 }
             } else if (event.netWorkType == NetWorkHelper.WIFI_STATE) {
@@ -959,7 +957,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     public void onDestroy() {
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
         if (liveBackBll != null) {
             liveBackBll.onDestroy();
@@ -967,7 +965,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (liveBackVideoBll != null) {
             liveBackVideoBll.onDestroy();
         }
-       // LiveVideoConfig.isNewArts = false;
+        // LiveVideoConfig.isNewArts = false;
         ProxUtil.getProxUtil().clear(activity);
     }
 
@@ -978,7 +976,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER,
                     MediaPlayer.VIDEO_TEACHER_TUTOR, "");
             isNetWorkEnable = true;
-            startNewVideo();
+            //为了让LiveBackVideoBll的onPlaybackComplete回调能完成。
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    startNewVideo();
+                }
+            });
             return;
         }
         onUserBackPressed();
@@ -987,7 +992,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     @Override
     protected void onRefresh() {
         resultFailed = false;
-        if (AppBll.getInstance(activity).isNetWorkAlert()) {
+        if (LiveAppBll.getInstance().isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
             logger.d("onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
             playNewVideo();
@@ -1007,7 +1012,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 //            initView();
 //            initData();
 //        }
-        AppBll.getInstance(activity.getApplication());
     }
 
     protected void updateIcon() {
