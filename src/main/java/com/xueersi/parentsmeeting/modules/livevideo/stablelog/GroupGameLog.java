@@ -42,7 +42,7 @@ public class GroupGameLog {
      * 学生收到题目信息（SNO 2）   ---交互日志
      */
     public void sno2(LiveAndBackDebug liveAndBackDebug, String testid, int signal) {
-        StableLogHashMap logHashMap = new StableLogHashMap("voicecannonReceive");
+        StableLogHashMap logHashMap = new StableLogHashMap(eventId+"Receive");
         logHashMap.put("testid", testid);
         logHashMap.put("signal", "" + signal);
         logHashMap.put("sno", "2");
@@ -53,7 +53,7 @@ public class GroupGameLog {
      * 开始作答时间---展示日志
      */
     public void sno3(LiveAndBackDebug liveAndBackDebug, String testid, int signal) {
-        StableLogHashMap logHashMap = new StableLogHashMap("voicecannonAnswer");
+        StableLogHashMap logHashMap = new StableLogHashMap(eventId+"Answer");
         logHashMap.put("testid", testid);
         logHashMap.put("signal", "" + signal);
         logHashMap.put("sno", "3");
@@ -64,7 +64,7 @@ public class GroupGameLog {
      * 翻页时间---交互
      */
     public void sno4(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, int signal) {
-        StableLogHashMap logHashMap = new StableLogHashMap("voicecannonNextPage");
+        StableLogHashMap logHashMap = new StableLogHashMap(eventId+"NextPage");
         logHashMap.put("testid", testid);
         logHashMap.put("subtestid", subtestid);
         logHashMap.put("signal", "" + signal);
@@ -77,7 +77,7 @@ public class GroupGameLog {
      */
     public void sno5(LiveAndBackDebug liveAndBackDebug, String testid, String state,
                      String hasvoicetime, int signal) {
-        StableLogHashMap logHashMap = new StableLogHashMap("voicecannonSubmit");
+        StableLogHashMap logHashMap = new StableLogHashMap(eventId+"Submit");
         logHashMap.put("testid", testid);
         logHashMap.put("state", state);
         logHashMap.put("hasvoicetime", hasvoicetime);
@@ -90,7 +90,7 @@ public class GroupGameLog {
      * sno6显示结果页
      */
     public void sno6(LiveAndBackDebug liveAndBackDebug, String testid, String mvpnum, int signal) {
-        StableLogHashMap logHashMap = new StableLogHashMap("voicecannonShowMvp");
+        StableLogHashMap logHashMap = new StableLogHashMap(eventId+"ShowMvp");
         logHashMap.put("testid", testid);
         logHashMap.put("mvpnum", "" + mvpnum);
         logHashMap.put("signal", "" + signal);
