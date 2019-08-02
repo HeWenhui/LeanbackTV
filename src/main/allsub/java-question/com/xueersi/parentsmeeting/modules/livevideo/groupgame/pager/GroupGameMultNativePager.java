@@ -2805,6 +2805,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 //本地比之前的试题小，删除到当前页数-1
                                 final AtomicBoolean lessOther = new AtomicBoolean(false);
                                 if (currentAnswerIndex < current_word) {
+                                    answerInfoOfGetIt.clear();
+                                    answerInfoOfGetIt.put(""+who_id,1);
                                     lessOther.set(true);
                                     currentAnswerIndex = current_word;
                                     int oldSize = allAnswerList.size();
@@ -2974,6 +2976,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             } else {
                                                 isEmpty = speechResults.isEmpty();
                                             }
+                                            Integer currentPageRightNum = 0;
                                             JSONArray word_score = word_scores.getJSONArray(key);
                                             for (int wordIndex = 0; wordIndex < word_score.length(); wordIndex++) {
                                                 int score = word_score.getInt(wordIndex);
@@ -2985,8 +2988,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                 }
                                                 rightNum++;
                                                 integer++;
+                                                currentPageRightNum++;
                                             }
                                             wordCount.put(key, integer);
+                                            answerInfoOfGetIt.put(stu_id,currentPageRightNum);
                                             int maxSingCount = testEntity.getSingleCount();
                                             mLogtf.d("VOICE_CANNO_SCENE:key=" + key + ",integer=" + integer + ",maxSingCount=" + maxSingCount);
                                             if (integer >= maxSingCount) {

@@ -944,7 +944,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 coursewareStartAnimationTime = 0;
                 coursewareEndAnimationTime = GroupGameConfig.HOT_AIR_BALLAN_END_ANMITION_TIME;
             } else if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(detailInfo.type)) {
-                coursewareStartAnimationTime = 3;
+                coursewareStartAnimationTime = 0;
                 coursewareEndAnimationTime = GroupGameConfig.SOLITAIRE_END_ANMITION_TIME;
             }
         }
