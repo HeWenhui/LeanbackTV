@@ -304,7 +304,7 @@ public class EnStandAchievePager extends LiveBasePager {
         }
         pgAchiveAim.setProgress(progress);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
-        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 147) / 100;
+        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 145) / 100;
         tvAchiveAimTips.setLayoutParams(layoutParams);
     }
 

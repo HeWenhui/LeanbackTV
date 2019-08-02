@@ -487,7 +487,7 @@ public class EnAchievePager extends LiveBasePager {
         if (aimRealTimeValEntity.isDoneAim()) {
             tvAchiveAimValue.setText("已完成目标");
             pgAchiveAim.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
-                    .app_livevideo_enteampk_xiaomubiao_progressbar_img_nor1));
+                    .app_livevideo_enteampk_xiaomubiao_progressbar_finish));
 
         } else {
             tvAchiveAimValue.setText("目标" + target);

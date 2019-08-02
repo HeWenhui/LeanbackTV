@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/livevideo_enteampk_xiaomubiao_progressbar_bg_img_nor"></item>
+        android:drawable="@drawable/app_livevideo_enteampk_xiaomubiao_progressbar_achieventment_stand_bg"></item>
     <!--<item-->
     <!--android:id="@android:id/progress"-->
     <!--android:drawable="@drawable/app_livevideo_enteampk_xiaomubiao_progressbar_img_nor">-->

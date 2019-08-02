@@ -18,11 +18,11 @@
         android:id="@+id/ll_livevideo_betterme_receivetarget_content"
         android:layout_width="564dp"
         android:layout_height="375dp"
-        android:layout_gravity="top|center_horizontal"
+        android:layout_gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
         android:gravity="center_horizontal"
-        android:paddingTop="30dp">
+        android:paddingTop="40dp">
 
         <ImageView
             android:layout_width="162dp"

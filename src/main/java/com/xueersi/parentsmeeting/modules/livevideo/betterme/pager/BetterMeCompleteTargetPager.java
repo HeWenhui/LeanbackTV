@@ -139,11 +139,11 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
 //            tvAimValue.setText("已完成目标");
             tvAimValue.setText("目标" + target);
             pgComeletetar.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
-                    .app_livevideo_enteampk_xiaomubiao_progressbar_img_nor1));
+                    .app_livevideo_enteampk_xiaomubiao_progressbar_finish));
         } else {
             tvAimValue.setText("目标" + target);
             pgComeletetar.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
-                    .layerlst_livevideo_achieve_betterme_prog));
+                    .layerlst_livevideo_betterme_prog));
         }
         tvTips.setText(reult);
 
@@ -342,7 +342,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         if (progress > 100) {
             progress = 100;
             pgComeletetar.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
-                    .app_livevideo_enteampk_xiaomubiao_progressbar_img_nor1));
+                    .app_livevideo_enteampk_xiaomubiao_progressbar_finish));
         }
         pgComeletetar.setProgress(progress);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvTips.getLayoutParams();
