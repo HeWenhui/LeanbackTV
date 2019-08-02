@@ -242,6 +242,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         } else {
             singleModeAction = new CleanUpAction();
         }
+        initListener();
         setVoice();
         groupGameUpload = new GroupGameUpload(mContext, liveId, detailInfo.id);
         mLog = new GroupGameLog(detailInfo.type);
@@ -341,7 +342,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         singleModeAction.startTimer();
         videoSizeChange(LiveVideoPoint.getInstance());
-        initListener();
     }
 
     private void setVoice() {
