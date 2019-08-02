@@ -185,6 +185,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
+        boolean hasAddTop = teamPkBll.isHasAddTop();
+        if (hasAddTop && englishPk.hasGroup == EnglishPk.HAS_GROUP_TRAN) {
+            poseEvent();
+        }
     }
 
     @Override

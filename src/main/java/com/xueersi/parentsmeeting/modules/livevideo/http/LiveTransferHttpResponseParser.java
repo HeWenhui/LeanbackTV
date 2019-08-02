@@ -66,9 +66,8 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
             VideoSectionEntity section = null;
             if (arrData != null) {
                 if (arrData.length() > 0) {
-                    JSONObject json0 = arrData.getJSONObject(0);
-                    MediaPlayer.setIsNewIJK(MediaPlayer.IS_NEW_IJK.equals(json0.optString("isNewSDK")) &&
-                            MediaPlayer.IS_NEW_IJK.equals(json0.optString("isNewIRC")));
+                  //  JSONObject json0 = arrData.getJSONObject(0);
+                    MediaPlayer.setIsNewIJK(true);
                 }
                 for (int i = 0; i < arrData.length(); i++) {
                     JSONObject sectionJson = arrData.getJSONObject(i);

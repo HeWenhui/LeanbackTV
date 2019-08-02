@@ -779,7 +779,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             if (liveGetInfo.isNewCourse()) {
                                 EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
                                 CoursewareNativePager questionWebPager = new CoursewareNativePager(activity,
-                                        videoQuestionLiveEntity, videoQuestionLiveEntity.isLive(), liveGetInfo.getId(), videoQuestionLiveEntity.id,
+                                        videoQuestionLiveEntity, !videoQuestionLiveEntity.isLive(), liveGetInfo.getId(), videoQuestionLiveEntity.id,
                                         englishH5Entity, "", "", new EnglishH5CoursewareBll.OnH5ResultClose() {
                                     @Override
                                     public void onH5ResultClose(BaseEnglishH5CoursewarePager
@@ -1643,7 +1643,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     if (voiceAnswerPager != null) {
                         voiceAnswerPager.onUserBack();
                         voiceAnswerPager.onDestroy();
-                        rlQuestionContent.removeView(voiceAnswerPager.getRootView());
+                        liveViewAction.removeView(voiceAnswerPager.getRootView());
                         voiceAnswerPager = null;
                         AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
                         if (audioRequest != null) {
@@ -1830,8 +1830,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
 
     @Override
-    public void speechIsAnswered(boolean isNewArt,String num, AbstractBusinessDataCallBack callBack) {
-        questionHttp.speechEval42IsAnswered(isNewArt,mVSectionID, num, callBack);
+    public void speechIsAnswered(boolean isNewArt, String num, AbstractBusinessDataCallBack callBack) {
+        questionHttp.speechEval42IsAnswered(isNewArt, mVSectionID, num, callBack);
     }
 
     private void setHaveExam(boolean haveExam) {
@@ -1891,7 +1891,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 voiceAnswerPager.setEnd();
                 voiceAnswerPager.stopPlayer();
                 voiceAnswerPager.onDestroy();
-                rlQuestionContent.removeView(voiceAnswerPager.getRootView());
+                liveViewAction.removeView(voiceAnswerPager.getRootView());
                 voiceAnswerPager = null;
             }
             logger.e("普通互动题展示了0");
@@ -1904,8 +1904,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             showQuestion(videoQuestionLiveEntity);
         }
         BaseVoiceAnswerPager voiceAnswerPager2 =
-                baseVoiceAnswerCreat.create(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity
-                        .type, rlQuestionContent, mIse);
+                baseVoiceAnswerCreat.create(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, liveViewAction, mIse);
 
 //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -2065,13 +2064,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             if (voiceAnswerPager.isEnd()) {
                 mLogtf.d("removeBaseVoiceAnswerPager1");
                 voiceAnswerPager2.onDestroy();
-                rlQuestionContent.removeView(voiceAnswerPager2.getRootView());
+                liveViewAction.removeView(voiceAnswerPager2.getRootView());
                 voiceAnswerPager = null;
             }
         } else {
             mLogtf.d("removeBaseVoiceAnswerPager1");
             voiceAnswerPager2.onDestroy();
-            rlQuestionContent.removeView(voiceAnswerPager2.getRootView());
+            liveViewAction.removeView(voiceAnswerPager2.getRootView());
         }
     }
 
@@ -2121,10 +2120,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         mLogtf.d("removeAllResultViews:size=" + resultViews.size());
         while (!resultViews.isEmpty()) {
             View view = resultViews.remove(0);
-            ViewGroup group = (ViewGroup) view.getParent();
-            if (group != null) {
-                group.removeView(view);
-            }
+            liveViewAction.removeView(view);
         }
     }
 
@@ -2251,7 +2247,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     @Override
     public void sendSpeechEvalResult2(String id, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuAnswer,
                                       String isSubmit, AbstractBusinessDataCallBack callBack) {
-        questionHttp.sendSpeechEvalResult2(videoQuestionLiveEntity.isNewArtsH5Courseware(),id, stuAnswer, isSubmit, callBack);
+        questionHttp.sendSpeechEvalResult2(videoQuestionLiveEntity.isNewArtsH5Courseware(), id, stuAnswer, isSubmit, callBack);
     }
 
     public void onPause() {
@@ -2263,7 +2259,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private void switchVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
         voiceAnswerPager.stopPlayer();
         voiceAnswerPager.onDestroy();
-        rlQuestionContent.removeView(voiceAnswerPager.getRootView());
+        liveViewAction.removeView(voiceAnswerPager.getRootView());
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
         if (audioRequest != null) {
             audioRequest.release();
@@ -2276,7 +2272,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private void stopVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
         voiceAnswerPager.stopPlayer();
         voiceAnswerPager.onDestroy();
-        rlQuestionContent.removeView(voiceAnswerPager.getRootView());
+        liveViewAction.removeView(voiceAnswerPager.getRootView());
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
         if (audioRequest != null) {
             audioRequest.release();
@@ -2289,7 +2285,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private void stopVoiceAnswerPager() {
         voiceAnswerPager.stopPlayer();
         voiceAnswerPager.onDestroy();
-        rlQuestionContent.removeView(voiceAnswerPager.getRootView());
+        liveViewAction.removeView(voiceAnswerPager.getRootView());
         voiceAnswerPager = null;
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
         if (audioRequest != null) {

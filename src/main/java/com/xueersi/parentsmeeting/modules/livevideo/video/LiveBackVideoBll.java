@@ -13,7 +13,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceVideoBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import org.json.JSONArray;
@@ -28,30 +30,27 @@ import java.util.ArrayList;
  * 类似的还有{@link StandExperienceVideoBll}
  */
 public class LiveBackVideoBll {
-    Logger logger;
-    Activity activity;
+    private String TAG = "LiveBackVideoBll";
+    private Logger logger = LiveLoggerFactory.getLogger(TAG);
+    private Activity activity;
     /** 视频节对象 */
-    VideoLivePlayBackEntity mVideoEntity;
-    LiveBackPlayerFragment liveBackPlayVideoFragment;
+    private VideoLivePlayBackEntity mVideoEntity;
+    private LiveBackPlayerFragment liveBackPlayVideoFragment;
     /** 节名称 */
     private String mSectionName;
-    static int index = 0;
-    ArrayList<String> mWebPaths = new ArrayList<>();
+    private static int index = 0;
+    private ArrayList<String> mWebPaths = new ArrayList<>();
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
-    String mUri = "";
+    private String mUri = "";
     /** 进度缓存的追加KEY值 */
     protected String mShareKey = "LiveBack";
-    boolean playbackComplete = false;
-    boolean islocal;
+    private boolean playbackComplete = false;
+    private boolean islocal;
 
     public LiveBackVideoBll(Activity activity, boolean islocal) {
         this.activity = activity;
         this.islocal = islocal;
-        logger = LoggerFactory.getLogger("LiveBackVideoBll");
-        if (islocal) {
-            return;
-        }
     }
 
     public void setSectionName(String mSectionName) {
@@ -64,17 +63,20 @@ public class LiveBackVideoBll {
 
     public void setVideoEntity(VideoLivePlayBackEntity mVideoEntity) {
         this.mVideoEntity = mVideoEntity;
+        String hostPath = "";
         try {
-            String hostPath = mVideoEntity.getHostPath();
-            String videoPathNoHost = mVideoEntity.getVideoPathNoHost();
-            JSONArray jsonArray = new JSONArray(hostPath);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String url = jsonArray.getString(i) + videoPathNoHost;
-                mWebPaths.add(url);
+            hostPath = mVideoEntity.getHostPath();
+            if (hostPath != null) {
+                String videoPathNoHost = mVideoEntity.getVideoPathNoHost();
+                JSONArray jsonArray = new JSONArray(hostPath);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    String url = jsonArray.getString(i) + videoPathNoHost;
+                    mWebPaths.add(url);
+                }
+                logger.d("setVideoEntity:hostPath=" + hostPath + ",videoPathNoHost=" + videoPathNoHost + ",mWebPaths=" + mWebPaths.size());
             }
-            logger.d("setVideoEntity:hostPath=" + hostPath + ",videoPathNoHost=" + videoPathNoHost + ",mWebPaths=" + mWebPaths.size());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.d("setVideoEntity:hostPath=" + hostPath, e);
         }
         mUri = mVideoEntity.getVideoPath();
         if (mWebPaths.isEmpty()) {
@@ -173,7 +175,7 @@ public class LiveBackVideoBll {
             } else {
                 videoPath = url;
             }
-
+            logger.d("savePosition:videoPath=" + videoPath + ",fromStart=" + fromStart);
             ShareDataManager.getInstance().put(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart,
                     ShareDataManager.SHAREDATA_USER);
         }
@@ -191,11 +193,14 @@ public class LiveBackVideoBll {
             } else {
                 videoPath = url;
             }
-            return ShareDataManager.getInstance().getLong(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
+            long pos = ShareDataManager.getInstance().getLong(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
                     ShareDataManager.SHAREDATA_USER);
+            logger.d("getStartPosition:videoPath=" + videoPath + ",pos=" + pos);
+            return pos;
         } catch (Exception e) {
             // 有一定不知明原因造成取出的播放点位int转long型失败,故加上这个值确保可以正常观看
             e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG, e);
             return 0L;
         }
         // return mStartPos;

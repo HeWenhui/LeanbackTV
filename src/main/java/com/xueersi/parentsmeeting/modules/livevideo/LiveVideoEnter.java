@@ -161,6 +161,7 @@ public class LiveVideoEnter {
                 bundle.putString("vStuCourseID", vStuCourseID);
                 bundle.putString("vSectionID", vSectionID);
                 bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
+                bundle.putBoolean("loadAsserts", true);
                 bundle.putInt(ENTER_ROOM_FROM, from);
                 LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
             }
@@ -249,6 +250,7 @@ public class LiveVideoEnter {
                 Bundle bundle = new Bundle();
                 bundle.putString("vSectionID", vSectionID);
                 bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
+                bundle.putBoolean("loadAsserts", true);
                 bundle.putInt(ENTER_ROOM_FROM, from);
                 //        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                 LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);

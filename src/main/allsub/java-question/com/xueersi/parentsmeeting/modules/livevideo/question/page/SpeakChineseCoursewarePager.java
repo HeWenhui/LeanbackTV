@@ -304,6 +304,15 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         liveAndBackDebug.addCommonData("isplayback", isPlayBack ? "1" : "0");
         mView = initView();
         entranceTime = System.currentTimeMillis() / 1000;
+        try {
+            if (isPlayBack) {
+                NewCourseLog.sno1back(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            } else {
+                NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType, detailInfo.isTUtor());
+            }
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         initData();
     }
 

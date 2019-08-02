@@ -59,6 +59,14 @@ public class LiveVideoLoadActivity extends BaseActivity {
     /** Activity创建次数 */
     public static int CREATE_TIMES = 0;
     DataLoadEntity mDataLoadEntity;
+    protected static ArrayList<LiveVideoLoadActivity> liveVideoLoadActivities = new ArrayList<>();
+    private static int statIndex = 0;
+    protected int index;
+
+    public LiveVideoLoadActivity() {
+        liveVideoLoadActivities.add(this);
+        index = statIndex++;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +90,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
         CREATE_TIMES++;
 
         mDataLoadEntity = new DataLoadEntity(this);
-        if (LiveVideoConfig.assetsDownloadTag) {
+        boolean loadAsserts = getIntent().getBooleanExtra("loadAsserts", false);
+        if (!loadAsserts && LiveVideoConfig.assetsDownloadTag) {
             loadAssertsResource();
         } else {
             mDataLoadEntity.beginLoading();
@@ -153,6 +162,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
         if (FileLogger.runActivity == this) {
             FileLogger.runActivity = null;
         }
+        liveVideoLoadActivities.remove(this);
     }
 
     private void performDownLoadPreLoad(LiveHttpManager mHttpManager, LiveGetInfo getInfo) {
@@ -178,6 +188,13 @@ public class LiveVideoLoadActivity extends BaseActivity {
     }
 
     private void initData() {
+        logger.d("initData:index=" + index + ",size=" + liveVideoLoadActivities.size());
+        LiveVideoLoadActivity activity = liveVideoLoadActivities.get(0);
+        if (activity != this) {
+            DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity.webDataSuccess());
+            finish();
+            return;
+        }
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
         final String vSectionID = intent.getStringExtra("vSectionID");

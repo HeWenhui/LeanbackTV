@@ -249,19 +249,6 @@ public class CoursewarePreload {
         @Override
         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
             CoursewareInfoEntity coursewareInfoEntity = liveHttpResponseParser.parseCoursewareInfo(responseEntity);
-            try {
-                StableLogHashMap hashMap = new StableLogHashMap();
-//            hashMap.put("eventid", LogConfig.PRE_LOAD_START);
-                hashMap.put("logtype", "onPmSuccess");
-                hashMap.put("size", "" + coursewareInfoEntity.getCoursewaresList().size());
-                hashMap.put("arts", "" + arts);
-                hashMap.put("liveId", "" + liveId);
-                hashMap.put("ip", IpAddressUtil.USER_IP);
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID,
-                        LogConfig.PRE_LOAD_START, hashMap.getData());
-            } catch (Exception e) {
-                LiveCrashReport.postCatchedException(TAG, e);
-            }
             logger.i(responseEntity.getJsonObject().toString());
             courseWareInfos.add(coursewareInfoEntity);
             logger.i(arts + " pmSuccess");
@@ -269,7 +256,26 @@ public class CoursewarePreload {
             if ("science".equals(arts) && coursewareInfoEntity != null) {
                 mNbCoursewareInfo = coursewareInfoEntity.getNbCoursewareInfo();
             }
-            performDownLoad();
+            boolean perform = performDownLoad();
+            try {
+                StableLogHashMap hashMap = new StableLogHashMap();
+//            hashMap.put("eventid", LogConfig.PRE_LOAD_START);
+                hashMap.put("logtype", "onPmSuccess");
+                if (coursewareInfoEntity != null) {
+                    hashMap.put("size", "" + coursewareInfoEntity.getCoursewaresList().size());
+                } else {
+                    hashMap.put("size", "-10");
+                }
+                hashMap.put("arts", "" + arts);
+                hashMap.put("subjectnum", "" + subjectNum.get());
+                hashMap.put("perform", "" + perform);
+                hashMap.put("liveId", "" + liveId);
+                hashMap.put("ip", IpAddressUtil.USER_IP);
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID,
+                        LogConfig.PRE_LOAD_START, hashMap.getData());
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
         }
 
         @Override
@@ -294,8 +300,8 @@ public class CoursewarePreload {
         }
     }
 
-    private void performDownLoad() {
-        logger.i("" + courseWareInfos.size() + " " + subjectNum.get());
+    private boolean performDownLoad() {
+        logger.i("performDownLoad:size=" + courseWareInfos.size() + " " + subjectNum.get());
         if (courseWareInfos.size() == subjectNum.get()) {
             logger.i("perform download ");
             LiveAppBll.getInstance().registerAppEvent(CoursewarePreload.this);
@@ -305,6 +311,9 @@ public class CoursewarePreload {
                     mergeList(courseWareInfos, 1),
                     mergeList(courseWareInfos, 2),
                     mergeList(courseWareInfos, 3));
+            return true;
+        } else {
+            return false;
         }
     }
 

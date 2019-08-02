@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
-import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -126,7 +124,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
     @Override
     public void initView() {
-        englishH5CoursewareBll.initView(mRootView, getLiveViewAction());
+        englishH5CoursewareBll.initView(getLiveViewAction());
     }
 
     @Override
@@ -177,7 +175,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         final int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
-            //    LiveVideoConfig.isNewArts = false;
+                //    LiveVideoConfig.isNewArts = false;
                 BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
                     mediaPlayerControl.pause();
@@ -282,7 +280,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
                 //LiveVideoConfig.isNewArts = true;
                 mCurrentQuestionEntity.setNewArtsCourseware(true);
-               // mCurrentQuestionEntity.setNewArtsCourseware(true);
+                // mCurrentQuestionEntity.setNewArtsCourseware(true);
                 Log.e("Duncan", "mqtt+文科新课件平台");
                 BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
@@ -485,7 +483,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
         @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
-            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN) {
+            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN && !detailInfo.isTUtor()) {
                 if (LiveQueConfig.isGroupGame(detailInfo.type)) {
                     getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, liveGetInfo.getStuId(), detailInfo.type, callBack);
                 } else {

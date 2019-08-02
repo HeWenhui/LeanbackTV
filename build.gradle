@@ -84,8 +84,8 @@ android {
             getEngSource(this.android.sourceSets.main);
         }
     }
-    compileSdkVersion 26
-    buildToolsVersion '27.0.3'
+    compileSdkVersion rootProject.ext.configuration.compileSdkVersion
+    buildToolsVersion rootProject.ext.configuration.buildToolsVersion
 }
 
 dependencies {
@@ -100,6 +100,8 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.uicomponent)
     //framework
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.framework)
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.xutils)
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.danmaku)
     //统计
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.analytics)
     //图片处理

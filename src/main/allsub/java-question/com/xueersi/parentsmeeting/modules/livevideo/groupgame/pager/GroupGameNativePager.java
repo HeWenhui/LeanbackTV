@@ -761,7 +761,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         logger.d("submitGroupGame -> onDataFail:" + failMsg);
                         isSubmit = false;
                         if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
-                            XESToastUtils.showToast(mContext, failMsg);
+                            XESToastUtils.showToastAtCenter(mContext, failMsg);
                         }
                         onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo);
                     }
@@ -1253,8 +1253,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 JSONArray studentInfo = new JSONArray();
                 JSONObject student = new JSONObject();
                 student.put("studentNum", 1);
-                student.put("name", liveGetInfo.getStuName());
-                student.put("avatar", liveGetInfo.getHeadImgPath());
+                student.put("name", "" + liveGetInfo.getStuName());
+                student.put("avatar", "" + liveGetInfo.getHeadImgPath());
 
                 JSONObject rankInfo = new JSONObject();
                 rankInfo.put("grading", 0);
