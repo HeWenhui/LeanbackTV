@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
@@ -401,7 +403,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private void showResultPager() {
         ArrayList<TeamMemberEntity> entities = new ArrayList<>();
         TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
-        teamMemberEntity.name = liveGetInfo.getStuName();
+        teamMemberEntity.name = liveGetInfo.getStandLiveName();
         teamMemberEntity.headurl = liveGetInfo.getHeadImgPath();
         teamMemberEntity.gold = goldNum;
         teamMemberEntity.energy = fireNum;
@@ -1001,6 +1003,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     startSpeechRecognizeTime = coursewareEndAnimationTime;
                     turnPagetime = mAnswersList.get(pageNum).getSingleTime() + coursewareEndAnimationTime;
                 }
+               // Log.e("ckTrac","======>startTimer:"+startSpeechRecognizeTime+":"+turnPagetime);
                 mainHandler.postDelayed(startSpeechRecognizeRunnable, (int)(startSpeechRecognizeTime * 1000));
                 mainHandler.postDelayed(turnPageRunnable, (int)(turnPagetime * 1000));
             }
@@ -1041,9 +1044,14 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void onHitSentence(ResultEntity resultEntity) {
+
+            if(isVoiceTreasuerBox() && !isTargetWord(resultEntity)){
+                return;
+            }
             int newSenIndex = resultEntity.getNewSenIdx();
             int score = resultEntity.getScore();
             double speechDuration = resultEntity.getSpeechDuration();
+            //Log.e("ckTrac","========>onHitSentence:"+newSenIndex+":"+score);
             if (newSenIndex < 0) {
                 return;
             }
@@ -1064,6 +1072,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     } else {
                         goldNum = 2;
                     }
+                    //Log.e("ckTrac","========>onHitSentence:uploadScore9999999");
                     uploadScore(score, true);
                     //翻页到下一页
                     startTimer();
@@ -1226,6 +1235,29 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), scoreArray.toString(), 0);
             }
         }
+    }
+
+    /**
+     * 是否是语音宝箱
+     * @return
+     */
+    private boolean isVoiceTreasuerBox() {
+        boolean result = detailInfo!= null && LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(detailInfo.type);
+        return result;
+    }
+
+    private boolean isTargetWord(ResultEntity resultEntity) {
+        boolean result = false;
+        try {
+            List<PhoneScore> list =  resultEntity.getLstPhonemeScore();
+            if(list != null && list.size() > 0){
+                PhoneScore phoneScore = list.get(0);
+                result = phoneScore != null && phoneScore.getWord().equalsIgnoreCase(content.toString());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  result;
     }
 
     /**
