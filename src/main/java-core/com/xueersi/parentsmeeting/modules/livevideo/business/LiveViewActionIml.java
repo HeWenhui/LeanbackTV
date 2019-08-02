@@ -49,7 +49,7 @@ public class LiveViewActionIml implements LiveViewAction {
     public void removeView(final View child) {
         int index = bottomContent.indexOfChild(child);
         ViewParent mParent = child.getParent();
-        logger.d("removeView:child=" + child + ",index=" + index + ",parent=" + (mParent == bottomContent));
+        logger.d("removeView:child=" + child + ",id=" + child.getId() + ",index=" + index + ",parent=" + (mParent == bottomContent));
         bottomContent.removeView(child);
     }
 
