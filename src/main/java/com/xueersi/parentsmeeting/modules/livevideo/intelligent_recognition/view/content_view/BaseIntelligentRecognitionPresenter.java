@@ -96,7 +96,7 @@ abstract class BaseIntelligentRecognitionPresenter extends
         this.mActivity = context;
 //        this.mViewModel = ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class);
         this.mRecord = mViewModel.getRecordData();
-        contentAudioManager = new ContentAudioManager(mActivity,
+        contentAudioManager = ContentAudioManager.init(mActivity,
                 mRecord.getLiveId(),
                 mRecord.getMaterialId());
 //        observeScoreLottieFinish();
@@ -381,14 +381,31 @@ abstract class BaseIntelligentRecognitionPresenter extends
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
                         logger.e("getRemoteEntity pmError");
+                        handleLocalIntelligent();
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
                         logger.e("getRemoteEntity pmFail:" + msg);
+                        handleLocalIntelligent();
                     }
                 });
+    }
+
+    /**
+     * 拉题接口请求失败时，判断本地预加载是否成功，如果成功，正常走测评
+     */
+    private void handleLocalIntelligent() {
+        String imgUrl = contentAudioManager.getLocalImgUrl();
+        if (!TextUtils.isEmpty(imgUrl)) {
+            IEResult _result = new IEResult();
+            _result.setSentence(contentAudioManager.getSentence());
+            _result.setImgSrc(contentAudioManager.getLocalImgUrl());
+            _result.setAudioHashMap(contentAudioManager.getAudioMap());
+            _result.setContent(mViewModel.getRecordData().getContent());
+        }
+
     }
 
     /** 初始化语音测评模块 */

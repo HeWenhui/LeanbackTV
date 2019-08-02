@@ -119,7 +119,7 @@ public class EvaluationAudioPlayerDataManager {
 //        initGood();
 //        initRepeat_word();
 //        initRepeat_sentence();
-        initAudioPath();
+//        initAudioPath();
     }
 
     public Observable<File> initAudioPath() {
@@ -156,7 +156,7 @@ public class EvaluationAudioPlayerDataManager {
                         AudioData<String> audioData = new AudioData<>();
                         List<String> itemFileNames = new ArrayList<>();
                         for (File itemFile : file.listFiles()) {
-                            itemFileNames.add(itemFile.getPath());
+                                itemFileNames.add(itemFile.getPath());
                             logger.i("pos=" + fileNameToInt + " judge File url " + itemFile.getPath());
                         }
                         audioData.setAudioUrl(itemFileNames);
@@ -178,5 +178,4 @@ public class EvaluationAudioPlayerDataManager {
             return null;
         }
     }
-
 }

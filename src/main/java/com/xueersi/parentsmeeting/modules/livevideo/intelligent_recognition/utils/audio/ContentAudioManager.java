@@ -9,6 +9,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentLocalFileManager;
 
 import java.io.File;
+import java.util.HashMap;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -23,14 +24,70 @@ public class ContentAudioManager {
 
     private File liveCacheFile;
 
-    public ContentAudioManager(Context context, String liveId, String resourseId) {
+    private static volatile ContentAudioManager instance;
+    /** 本地图片url */
+    private String localImgUrl;
 
+    private HashMap<String, String> map;
+
+    private String sentence;
+
+    public static ContentAudioManager init(Context context, String liveId, String resourseId) {
+        if (instance == null) {
+            synchronized (ContentAudioManager.class) {
+                if (instance == null) {
+                    instance = new ContentAudioManager(context, liveId, resourseId);
+                }
+            }
+        }
+        return instance;
+    }
+
+    private ContentAudioManager(Context context, String liveId, String resourseId) {
         try {
             IntelligentLocalFileManager intelligentLocalFileManager = IntelligentLocalFileManager.getInstance(context);
             liveCacheFile = intelligentLocalFileManager.getContentAudioFile(context, liveId, resourseId);
+            initAudioPath();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getSentence() {
+        return sentence;
+    }
+
+    public HashMap<String, String> getAudioMap() {
+        return map;
+    }
+
+    private void initAudioPath() {
+        if (map == null) {
+            map = new HashMap<>();
+        }
+        try {
+            for (File itemFile : liveCacheFile.listFiles()) {
+                logger.i("itemFile Name:" + itemFile);
+                for (File audioFile : itemFile.listFiles()) {
+                    String fileName = audioFile.getName();
+                    if (fileName.endsWith(".mp3")) {
+                        if (hasChar(fileName)) {
+                            map.put(fileName.toLowerCase(), audioFile.getPath());
+                        } else {
+                            sentence = audioFile.getPath();
+                        }
+                    } else {
+                        localImgUrl = fileName;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getLocalImgUrl() {
+        return localImgUrl;
     }
 
     /**
@@ -72,7 +129,7 @@ public class ContentAudioManager {
      * @return
      */
     @WorkerThread
-    public String getAudioContentUrl(String wordName, boolean isWord) {
+    public String getAudioContentUrlFromLocal(String wordName, boolean isWord) {
         if ((isWord && TextUtils.isEmpty(wordName)) ||
                 liveCacheFile == null || !liveCacheFile.exists()) {
             logger.i("getLocalSentenceUrl:" + liveCacheFile + " not exist");
@@ -146,15 +203,13 @@ public class ContentAudioManager {
     }
 
     private boolean hasChar(String fileName) {
-        if (fileName.endsWith(".mp3")) {
-            for (int ii = 0; ii < fileName.length(); ii++) {
-                char charA = fileName.charAt(ii);
-                if (charA == '.') {
-                    break;
-                }
-                if ((charA >= 'a' && charA <= 'z') || (charA >= 'A' && charA <= 'Z')) {
-                    return true;
-                }
+        for (int ii = 0; ii < fileName.length(); ii++) {
+            char charA = fileName.charAt(ii);
+            if (charA == '.') {
+                break;
+            }
+            if ((charA >= 'a' && charA <= 'z') || (charA >= 'A' && charA <= 'Z')) {
+                return true;
             }
         }
         return false;

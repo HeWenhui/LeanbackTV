@@ -31,6 +31,7 @@ public class IEResult {
     private String imgSrc;
     private String setAnswerTime;
     private String releaseGold;
+    //是否作答过
     private String answered;
     ///存储句子的url
     private String sentence;

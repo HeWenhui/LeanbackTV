@@ -231,6 +231,11 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
         }
     }
 
+    /**
+     * 是否正在测评单词
+     *
+     * @return
+     */
     private boolean isWord() {
         return true;
     }
@@ -286,11 +291,25 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
                 if (integer != IntelligentConstants.PERFECT) {
                     logger.i("judge finish wave");
                     performStartWaveLottie();
-                    if (isWord()) {
-                        if (layoutScore != null && layoutScore.getVisibility() != View.VISIBLE) {
-                            layoutScore.setVisibility(View.VISIBLE);
-                        }
+                }
+            }
+        });
+        //
+        viewModel.getPhoneScore().observe(mActivity, new Observer<PhoneScore>() {
+            @Override
+            public void onChanged(@Nullable PhoneScore phoneScore) {
+                if (phoneScore != null) {
+                    if (tvLayoutScoreWord != null) {
+                        tvLayoutScoreWord.setText(phoneScore.getWord());
                     }
+                    if (tvLayoutScore != null) {
+                        tvLayoutScore.setText(phoneScore.getScore());
+                    }
+//                    if (isWord()) {
+                    if (layoutScore != null && layoutScore.getVisibility() != View.VISIBLE) {
+                        layoutScore.setVisibility(View.VISIBLE);
+                    }
+//                    }
                 }
             }
         });

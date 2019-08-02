@@ -42,9 +42,13 @@ public class IntelligentRecognitionHttpResponseParser {
                 Iterator iterator = audioJSON.keys();
                 while (iterator.hasNext()) {
                     String key = (String) iterator.next();
-
+                    if (key != null) {
+                        key = key.toLowerCase();
+                    }
                     String value = audioJSON.optString(key);
-
+                    if (value != null) {
+                        value = value.toLowerCase();
+                    }
                     if (hasChar(key)) {
 //                        logger.i("parseIEResponse word key:" + key + " value:" + value);
                         map.put(key, value);

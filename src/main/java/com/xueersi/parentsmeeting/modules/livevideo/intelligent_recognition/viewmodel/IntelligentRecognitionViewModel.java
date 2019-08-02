@@ -37,10 +37,15 @@ public class IntelligentRecognitionViewModel extends ViewModel {
     private MutableLiveData<List<PhoneScore>> resultPhoneScores = new MutableLiveData<>();
     /** 语音测评的语句是否准备完成 */
     private MutableLiveData<Boolean> isEvaluationReady = new MutableLiveData<>();
-
+    /** 弹窗是否结束 */
     private MutableLiveData<Boolean> isScorePopWindowFinish = new MutableLiveData<>();
-
+    /** 对语音测评结果的评价完成(评价语句说话，接下来需要播放纠音的单词) */
+//    private MutableLiveData<Boolean> isSpeechJudgeSentenceFinish = new MutableLiveData<>();
     private MutableLiveData<PhoneScore> phoneScore = new MutableLiveData<>();
+
+//    public MutableLiveData<Boolean> getIsSpeechJudgeSentenceFinish() {
+//        return isSpeechJudgeSentenceFinish;
+//    }
 
     public MutableLiveData<PhoneScore> getPhoneScore() {
         return phoneScore;
