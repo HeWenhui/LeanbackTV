@@ -47,6 +47,10 @@ public class LiveViewActionIml implements LiveViewAction {
 
     @Override
     public void removeView(final View child) {
+        if (child == null) {
+            LiveCrashReport.postCatchedException(TAG, new Exception());
+            return;
+        }
         int index = bottomContent.indexOfChild(child);
         ViewParent mParent = child.getParent();
         logger.d("removeView:child=" + child + ",id=" + child.getId() + ",index=" + index + ",parent=" + (mParent == bottomContent));
