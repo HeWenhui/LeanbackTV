@@ -741,6 +741,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
 
                 @Override
+                public void send(final short type, final int operation, final JSONObject bodyJson, final AbstractBusinessDataCallBack callBack) {
+                    getEnTeamPkHttpManager().reportOperateGroupGame(type,operation,bodyJson,callBack);
+                }
+
+                @Override
                 public void registTcpMessageAction(final TcpMessageAction tcpMessageAction) {
                     if (tcpDispatch != null) {
                         tcpDispatch.registTcpMessageAction(tcpMessageAction);

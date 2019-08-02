@@ -8,7 +8,7 @@ public class TcpConstants {
     private static short PackSize = 4;
     private static short HeaderSize = 2;
     private static short VerSize = 2;
-    static short ver = 2;
+    public static short ver = 2;
     private static short TypeSize = 2;
     private static short OperationSize = 4;
     private static short SeqIDSize = 4;

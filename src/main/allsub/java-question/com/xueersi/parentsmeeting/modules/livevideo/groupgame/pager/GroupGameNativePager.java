@@ -231,6 +231,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         preLoad = new MiddleSchoolPreLoad();
         if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type) || LiveQueConfig
                 .EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type) || LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING
+                .equals(detailInfo.type) || LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
+                .equals(detailInfo.type) || LiveQueConfig.EN_COURSE_TYPE_GET_IT
                 .equals(detailInfo.type)) {
             singleModeAction = new HotAirBallonAction();
         } else {
@@ -687,8 +689,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 fireNum = rightNum < 50 ? rightNum : 50;
             } else if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
                 fireNum = rightNum < 30 ? rightNum : 30;
-            }
-            else if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type)) {
+            }else if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(detailInfo.type)) {
+                fireNum = rightNum < 30 ? rightNum : 30;
+            }else if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type)) {
                 fireNum = (rightNum + 5) < 30 ? ((rightNum + 5)) : 30;
             } else {
                 fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
@@ -940,6 +943,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             } else if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type)) {
                 coursewareStartAnimationTime = 0;
                 coursewareEndAnimationTime = GroupGameConfig.HOT_AIR_BALLAN_END_ANMITION_TIME;
+            } else if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = 3;
+                coursewareEndAnimationTime = GroupGameConfig.SOLITAIRE_END_ANMITION_TIME;
             }
         }
 
@@ -983,6 +989,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
                 resultData.put("pageNum", 0);
                 resultData.put("restTime", mAnswersList.get(0).getSingleTime());
+                if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
+                        .equals(detailInfo.type)){
+                    resultData.put("nextStudentNum", 2);
+                }
                 resultData.put("currentRight", 0);
                 resultData.put("isSingle", true);
 
@@ -1116,9 +1126,19 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
                 //答对题目学生序号（1/2/3）  单人模式只有2号学生
-                jsonData.put("studentNum", 2);
+                if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
+                        .equals(detailInfo.type)){
+                    if(!isTurnPage)
+                        return;
+                    jsonData.put("nextStudentNum", 2);
+                } else if(LiveQueConfig.EN_COURSE_TYPE_GET_IT
+                        .equals(detailInfo.type)){
+                    jsonData.put("studentNum", 3);
+                } else {
+                    jsonData.put("studentNum", 2);
+                    jsonData.put("isTurnPage", isTurnPage);
+                }
                 jsonData.put("score", score);
-                jsonData.put("isTurnPage", isTurnPage);
                 jsonData.put("turnToPageNum", turnToPageNum);
                 logger.d("uploadScore : jsonData = " + jsonData.toString());
                 postMessage(jsonData);
@@ -1140,6 +1160,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 return;
             }
             if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)&&fireNum > 30) {
+                return;
+            }
+            if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(detailInfo.type)&&fireNum > 30) {
+                return;
+            }
+            if (LiveQueConfig.EN_COURSE_TYPE_GET_IT.equals(detailInfo.type)&&fireNum > 30) {
                 return;
             }
             tvFireSum.setText("" + fireNum);
@@ -1431,7 +1457,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         try {
             jsonData.put("type", "coursewareComeOn");
             jsonData.put("comeOn", true);
-
+            if (LiveQueConfig.EN_COURSE_TYPE_GET_IT.equals(detailInfo.type)) {
+                jsonData.put("studentNum", 3);
+            }
             JSONObject liveinfo = new JSONObject();
             liveinfo.put("liveid", liveId);
             liveinfo.put("userid", stuId);

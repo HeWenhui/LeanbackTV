@@ -57,4 +57,6 @@ public class LiveQueHttpConfig {
     /** 辅导 加载课件 */
     public static String TUTOR_COURSE_URL = LiveHttpConfig.LIVE_HOST + "/scistatic/outDoorTest/index.html";
 
+    /** 小组互动-上报答题信息 */
+    public static String LIVE_GROUPGAME_REPORT = "http://groupgame.xueersi.com/report/operate";
 }
