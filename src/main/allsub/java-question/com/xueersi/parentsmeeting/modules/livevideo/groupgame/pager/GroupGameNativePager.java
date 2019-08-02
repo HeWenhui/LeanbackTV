@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -342,6 +341,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         singleModeAction.startTimer();
         videoSizeChange(LiveVideoPoint.getInstance());
+        initListener();
     }
 
     private void setVoice() {
@@ -1003,7 +1003,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     startSpeechRecognizeTime = coursewareEndAnimationTime;
                     turnPagetime = mAnswersList.get(pageNum).getSingleTime() + coursewareEndAnimationTime;
                 }
-               // Log.e("ckTrac","======>startTimer:"+startSpeechRecognizeTime+":"+turnPagetime);
                 mainHandler.postDelayed(startSpeechRecognizeRunnable, (int)(startSpeechRecognizeTime * 1000));
                 mainHandler.postDelayed(turnPageRunnable, (int)(turnPagetime * 1000));
             }
@@ -1051,7 +1050,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             int newSenIndex = resultEntity.getNewSenIdx();
             int score = resultEntity.getScore();
             double speechDuration = resultEntity.getSpeechDuration();
-            //Log.e("ckTrac","========>onHitSentence:"+newSenIndex+":"+score);
             if (newSenIndex < 0) {
                 return;
             }
@@ -1072,7 +1070,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     } else {
                         goldNum = 2;
                     }
-                    //Log.e("ckTrac","========>onHitSentence:uploadScore9999999");
                     uploadScore(score, true);
                     //翻页到下一页
                     startTimer();
