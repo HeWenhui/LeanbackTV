@@ -34,8 +34,10 @@ public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
     protected LiveBackBll liveBackBll;
     protected Activity activity;
     protected RelativeLayout mRootViewBottom;
+    /** 过时，使用LiveViewAction和实现的方法替代*/
+    @Deprecated
     protected RelativeLayout mRootView;
-    /** 视频节对象 */
+    /** 视频节对象,尽量使用liveGetInfo */
     protected VideoLivePlayBackEntity mVideoEntity;
     protected LiveGetInfo liveGetInfo;
     protected AtomicBoolean mIsLand;

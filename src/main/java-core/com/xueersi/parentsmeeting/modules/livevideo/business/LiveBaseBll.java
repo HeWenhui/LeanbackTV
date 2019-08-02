@@ -36,6 +36,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class LiveBaseBll extends BaseBll implements LiveViewAction {
 
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    /** 过时，使用LiveViewAction和实现的方法替代*/
+    @Deprecated
     protected RelativeLayout mRootView;
     protected RelativeLayout mContentView;
     protected LiveBll2 mLiveBll;
