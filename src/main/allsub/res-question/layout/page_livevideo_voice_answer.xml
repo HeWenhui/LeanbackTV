@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/rl_livevideo_voiceans_pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -32,10 +33,10 @@
                 android:background="@drawable/shape_livevideo_voice_answer_switch_bt"
                 android:gravity="center"
                 android:includeFontPadding="false"
-                android:paddingBottom="3dp"
                 android:paddingLeft="8dp"
-                android:paddingRight="8dp"
                 android:paddingTop="3dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="3dp"
                 android:text="手动答题" />
 
         </RelativeLayout>
@@ -58,11 +59,11 @@
             android:id="@id/iv_livevideo_speecteval_tip_pao"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/iv_livevideo_speecteval_tip"
             android:layout_alignLeft="@id/iv_livevideo_speecteval_tip"
             android:layout_alignRight="@id/tv_livevideo_speecteval_tip"
-            android:layout_marginBottom="29.3dp"
+            android:layout_alignBottom="@id/iv_livevideo_speecteval_tip"
             android:layout_marginLeft="50dp"
+            android:layout_marginBottom="29.3dp"
             android:background="@drawable/bg_livevideo_speecteval_tip_paopao" />
 
         <TextView
@@ -70,8 +71,8 @@
             style="@style/text_font12_ff4343_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/iv_livevideo_speecteval_tip_pao"
             android:layout_alignTop="@id/iv_livevideo_speecteval_tip_pao"
+            android:layout_alignBottom="@id/iv_livevideo_speecteval_tip_pao"
             android:layout_toRightOf="@id/iv_livevideo_speecteval_tip"
             android:gravity="center_vertical"
             android:paddingLeft="5dp"

@@ -31,7 +31,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
@@ -91,16 +93,15 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     }
 
     @Override
-    public BaseVoiceAnswerPager create(Context activity, VideoQuestionLiveEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
-                                       RelativeLayout rlQuestionContent, SpeechUtils mIse) {
-        VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+    public BaseVoiceAnswerPager create(Context activity, VideoQuestionLiveEntity videoQuestionLiveEntity, JSONObject assess_ref, String type,
+                                       LiveViewAction liveViewAction, SpeechUtils mIse) {
         VoiceAnswerStandLog.sno2(this.liveAndBackDebug, videoQuestionLiveEntity);
-        VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, headUrl, userName);
+        VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, headUrl, userName);
         voiceAnswerPager2.setIse(mIse);
         voiceAnswerPager2.setLivePagerBack(livePagerBack);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        rlQuestionContent.addView(voiceAnswerPager2.getRootView(), params);
+        liveViewAction.addView(LiveVideoLevel.LEVEL_QUES, voiceAnswerPager2.getRootView(), params);
         return voiceAnswerPager2;
     }
 
@@ -118,7 +119,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         CreateAnswerReslutEntity createAnswerReslutEntity = new CreateAnswerReslutEntity();
         boolean isSuccess = false;
         final String type;
-        boolean isNewArt =false;
+        boolean isNewArt = false;
         if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
             final VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
             type = videoQuestionLiveEntity.type;
@@ -130,9 +131,9 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             } else {
                 type = questionEntity.getvQuestionType();
             }
-            isNewArt =questionEntity.isNewArtsH5Courseware();
+            isNewArt = questionEntity.isNewArtsH5Courseware();
         }
-        if ((isNewArt&& entity.getResultType() == 2) || (!isNewArt&& (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4))) {
+        if ((isNewArt && entity.getResultType() == 2) || (!isNewArt && (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4))) {
             String path;
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                questionBll.initSelectAnswerRightResultVoice(entity);
@@ -310,7 +311,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             img_7Bitmap.recycle();
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-            logger.e( "setRightGold", e);
+            logger.e("setRightGold", e);
             return;
         }
         lottieAnimationView.updateBitmap("image_22", img_7Bitmap);

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ public class LiveViewActionIml implements LiveViewAction {
     private RelativeLayout mContentView;
     private HashMap<View, LiveVideoLevel> liveVideoLevelHashMap = new HashMap<>();
 
+    /** 必须在主线程 */
     public LiveViewActionIml(Activity activity, RelativeLayout mContentView, RelativeLayout bottomContent) {
         this.activity = activity;
         this.mContentView = mContentView;
@@ -44,20 +46,15 @@ public class LiveViewActionIml implements LiveViewAction {
     }
 
     @Override
-    public void removeView(View child) {
-        logger.d("removeView:child=" + child);
-        try {
-            bottomContent.removeView(child);
-        } catch (IndexOutOfBoundsException e) {
-            int index = bottomContent.indexOfChild(child);
-            ViewParent mParent = child.getParent();
-            HashMap<String, String> map = new HashMap<>();
-            map.put("logtype", "removeView");
-            map.put("index", "" + index);
-            map.put("parent", "" + (mParent == bottomContent));
-            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), TAG, map);
-            LiveCrashReport.postCatchedException(TAG, e);
+    public void removeView(final View child) {
+        if (child == null) {
+            LiveCrashReport.postCatchedException(TAG, new Exception());
+            return;
         }
+        int index = bottomContent.indexOfChild(child);
+        ViewParent mParent = child.getParent();
+        logger.d("removeView:child=" + child + ",id=" + child.getId() + ",index=" + index + ",parent=" + (mParent == bottomContent));
+        bottomContent.removeView(child);
     }
 
     @Override

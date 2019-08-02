@@ -102,6 +102,7 @@ public class EnglishSpeechBulletPlayBackPager extends LiveBasePager implements S
         overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
         overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
         mDanmakuView = new DanmakuView(mContext);
+        mDanmakuView.setId(R.id.dv_livevideo_bullet_playback);
         mDanmakuContext = DanmakuContext.create();
         mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3)
                 .setDuplicateMergingEnabled(false)
