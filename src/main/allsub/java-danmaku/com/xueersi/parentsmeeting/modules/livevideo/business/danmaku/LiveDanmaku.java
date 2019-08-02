@@ -611,6 +611,8 @@ public class LiveDanmaku implements LiveDanmakuPro {
     }
 
     public void onDestroy() {
-        dvMessageDanmaku.release();
+        if (dvMessageDanmaku != null) {
+            dvMessageDanmaku.release();
+        }
     }
 }
