@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankRes
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
@@ -529,7 +530,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                 int rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
                 if (layoutParams.rightMargin != rightMargin) {
                     layoutParams.rightMargin = rightMargin;
-                    mView.setLayoutParams(layoutParams);
+                    LayoutParamsUtil.setViewLayoutParams(mView, layoutParams);
                     teamPkLeadPager.setVideoLayout(liveVideoPoint);
                 }
             }

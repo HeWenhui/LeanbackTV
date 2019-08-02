@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -547,8 +548,8 @@ public class ChatTipBll {
         ll_livevideo_chat_people.addView(videoChatInter.getRootView(), RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         if (micType == 1) {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_chat_people.getLayoutParams();
-            lp.leftMargin = (int) (15 * ScreenUtils.getScreenDensity());
-            ll_livevideo_chat_people.setLayoutParams(lp);
+            lp.leftMargin = SizeUtils.Dp2Px(activity, 15);
+            LayoutParamsUtil.setViewLayoutParams(ll_livevideo_chat_people, lp);
         }
     }
 

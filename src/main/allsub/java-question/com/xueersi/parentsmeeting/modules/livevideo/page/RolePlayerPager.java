@@ -54,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResult
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
@@ -646,7 +647,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
             //修改类型转换异常
             ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px
                     (mContext, 50));
-            vHead.setLayoutParams(lp);
+            LayoutParamsUtil.setViewLayoutParams(vHead,lp);
             lvReadList.addFooterView(vHead);
         } catch (Exception e) {
             logger.e("waitRolePlayer but test lvReadList may be null ：" + lvReadList + " : " + e.toString() + ":" + e.getMessage());
