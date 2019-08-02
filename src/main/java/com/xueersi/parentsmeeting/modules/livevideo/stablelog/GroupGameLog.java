@@ -3,14 +3,45 @@ package com.xueersi.parentsmeeting.modules.livevideo.stablelog;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 
 public class GroupGameLog {
-    static String eventId = LogConfig.LIVE_VOICE_CANNON;
+    private String eventId;
+
+    /**
+     * 试题类型
+     *
+     * @param type
+     */
+    public GroupGameLog(String type) {
+        this.eventId = getIdFromType(type);
+    }
+    /**
+     * 根据试题类型 获取埋点日志id
+     *
+     * @param type
+     * @return
+     */
+    private String getIdFromType(String type) {
+        String eventId = "";
+        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(type)) {
+            eventId = "treasurehunt";
+        } else if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(type)) {
+            eventId = "what'smissing";
+        } else if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(type)) {
+            eventId = "voicecannon";
+        } else if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type)) {
+            eventId = "hotairballoon";
+        } else if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(type)) {
+            eventId = "cleaningup";
+        }
+        return eventId;
+    }
 
     /**
      * 学生收到题目信息（SNO 2）   ---交互日志
      */
-    public static void sno2(LiveAndBackDebug liveAndBackDebug, String testid, int signal) {
+    public void sno2(LiveAndBackDebug liveAndBackDebug, String testid, int signal) {
         StableLogHashMap logHashMap = new StableLogHashMap("voicecannonReceive");
         logHashMap.put("testid", testid);
         logHashMap.put("signal", "" + signal);
@@ -21,7 +52,7 @@ public class GroupGameLog {
     /**
      * 开始作答时间---展示日志
      */
-    public static void sno3(LiveAndBackDebug liveAndBackDebug, String testid, int signal) {
+    public void sno3(LiveAndBackDebug liveAndBackDebug, String testid, int signal) {
         StableLogHashMap logHashMap = new StableLogHashMap("voicecannonAnswer");
         logHashMap.put("testid", testid);
         logHashMap.put("signal", "" + signal);
@@ -32,7 +63,7 @@ public class GroupGameLog {
     /**
      * 翻页时间---交互
      */
-    public static void sno4(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, int signal) {
+    public void sno4(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, int signal) {
         StableLogHashMap logHashMap = new StableLogHashMap("voicecannonNextPage");
         logHashMap.put("testid", testid);
         logHashMap.put("subtestid", subtestid);
@@ -44,8 +75,8 @@ public class GroupGameLog {
     /**
      * 游戏结束时间（SNO 5）---交互日志
      */
-    public static void sno5(LiveAndBackDebug liveAndBackDebug, String testid, String state,
-                            String hasvoicetime, int signal) {
+    public void sno5(LiveAndBackDebug liveAndBackDebug, String testid, String state,
+                     String hasvoicetime, int signal) {
         StableLogHashMap logHashMap = new StableLogHashMap("voicecannonSubmit");
         logHashMap.put("testid", testid);
         logHashMap.put("state", state);
@@ -55,8 +86,10 @@ public class GroupGameLog {
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
-    /** sno6显示结果页 */
-    public static void sno6(LiveAndBackDebug liveAndBackDebug, String testid, String mvpnum, int signal) {
+    /**
+     * sno6显示结果页
+     */
+    public void sno6(LiveAndBackDebug liveAndBackDebug, String testid, String mvpnum, int signal) {
         StableLogHashMap logHashMap = new StableLogHashMap("voicecannonShowMvp");
         logHashMap.put("testid", testid);
         logHashMap.put("mvpnum", "" + mvpnum);

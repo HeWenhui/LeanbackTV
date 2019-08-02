@@ -216,6 +216,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private boolean isVolumeResume = true;
     private LiveAndBackDebug liveAndBackDebug;
     private View waveContainerView;
+    private GroupGameLog mLog;
 
     public GroupGameNativePager(Context context, boolean isPlayBack, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity
             detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
@@ -240,11 +241,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         } else {
             singleModeAction = new CleanUpAction();
         }
-        initListener();
         setVoice();
         groupGameUpload = new GroupGameUpload(mContext, liveId, detailInfo.id);
-        GroupGameLog.sno2(liveAndBackDebug, detailInfo.id, 0);
+        mLog = new GroupGameLog(detailInfo.type);
+        mLog.sno2(liveAndBackDebug, detailInfo.id, 0);
     }
+
 
     @Override
     public View initView() {
@@ -494,8 +496,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 initData();
             }
         });
-        GroupGameLog.sno3(liveAndBackDebug, detailInfo.id, 0);
-        GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, "0", 0);
+        mLog.sno3(liveAndBackDebug, detailInfo.id, 0);
+        mLog.sno4(liveAndBackDebug, detailInfo.id, "0", 0);
     }
 
     private void onCoursewareDoing(String where, JSONObject message) {
@@ -750,7 +752,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         if (!isForce) {
                             showResultPager();
                         }
-                        GroupGameLog.sno6(liveAndBackDebug, detailInfo.id, "1", 0);
+                        mLog.sno6(liveAndBackDebug, detailInfo.id, "1", 0);
                     }
 
                     @Override
@@ -764,7 +766,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo);
                     }
                 });
-        GroupGameLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?
+        mLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?
                 "0" : "1", 0);
     }
 
@@ -1147,7 +1149,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     presentTime = System.currentTimeMillis() - presentTime;
                     presentTimeList.add(presentTime);
                     turnToPageNum = pageNum;
-                    GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, pageNum + "", 0);
+                    mLog.sno4(liveAndBackDebug, detailInfo.id, pageNum + "", 0);
                 }
                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
                 //答对题目学生序号（1/2/3）  单人模式只有2号学生

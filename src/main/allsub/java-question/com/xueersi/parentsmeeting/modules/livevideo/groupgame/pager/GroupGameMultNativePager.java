@@ -213,6 +213,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
     private GroupGameUpload groupGameUpload;
     private int MAX_ENERGY = GroupGameConfig.CANNON_MAX_ENERGY;
+    private final GroupGameLog mLog;
 
     public GroupGameMultNativePager(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
         super(context);
@@ -228,6 +229,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         preLoad = new MiddleSchool();
         initData();
         initListener();
+        mLog = new GroupGameLog(detailInfo.type);
     }
 
     @Override
@@ -285,7 +287,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
             multModeAction = new CleanUpOnMessage();
         } else {
-            GroupGameLog.sno2(liveAndBackDebug, detailInfo.id, 1);
+            mLog.sno2(liveAndBackDebug, detailInfo.id, 1);
             multModeAction = new VoiceCannonOnMessage();
         }
 //        startSpeechRecognize();
@@ -419,7 +421,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                jsonData.put("studentNum", -1);
                         jsonData.put("turnToPageNum", currentAnswerIndex);
                         postMessage(jsonData);
-                        GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, currentAnswerIndex + "", 1);
+                        mLog.sno4(liveAndBackDebug, detailInfo.id, currentAnswerIndex + "", 1);
                         reStartSpeechRecognize(oldSpeechContent);
                     }
                     mLogtf.d("VoiceCannonTurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex + ",remove=" + remove);
@@ -465,8 +467,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             if (enterTime == 0) {
                 enterTime = System.currentTimeMillis();
             }
-            GroupGameLog.sno3(liveAndBackDebug, detailInfo.id, 1);
-            GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, "0", 1);
+            mLog.sno3(liveAndBackDebug, detailInfo.id, 1);
+            mLog.sno4(liveAndBackDebug, detailInfo.id, "0", 1);
             final GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
 
             //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1.5秒再开始倒计时和收音
@@ -1937,7 +1939,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
         mLogtf.d("submit:averageScore=" + averageScore + ",starNum=" + starNum + ",energy=" + energy);
         if (LiveQueConfig.isTypeOfCannon(gameType)) {
-            GroupGameLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?
+            mLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?
                     "0" : "1", 1);
         }
         englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 2, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
@@ -1962,7 +1964,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 }
                             });
                             if (LiveQueConfig.isTypeOfCannon(gameType)) {
-                                GroupGameLog.sno6(liveAndBackDebug, detailInfo.id, "" + entities.size(), 1);
+                                mLog.sno6(liveAndBackDebug, detailInfo.id, "" + entities.size(), 1);
                             }
                         } else {
                             onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo);
@@ -2717,7 +2719,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                     jsonData.put("score", score);
                                                     jsonData.put("studentNum", finalStudentNum);
                                                     if (isTurnPage) {
-                                                        GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, currentAnswerIndex + "", 1);
+                                                        mLog.sno4(liveAndBackDebug, detailInfo.id, currentAnswerIndex + "", 1);
                                                         jsonData.put("turnToPageNum", currentAnswerIndex);
                                                         reStartSpeechRecognize(oldSpeechContent);
                                                     } else {
