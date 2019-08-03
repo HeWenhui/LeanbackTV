@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.content_view;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.IntentFilter;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -64,6 +63,9 @@ abstract class BaseIntelligentRecognitionPresenter extends
 
     SpeechUtils mSpeechUtils;
 
+    //现在是测评哪种类型(句子或者单词)
+    protected SpeechType speechType;
+
     ContentAudioManager contentAudioManager;
 //    protected MediaPlayer mediaPlayer;
 
@@ -72,7 +74,8 @@ abstract class BaseIntelligentRecognitionPresenter extends
     private IIntelligentRecognitionView baseView;
 
     protected IntelligentRecognitionRecord mRecord;
-
+    //正在测评的单词信息
+    protected PhoneScore phoneScore;
     //    private IntelligentRecognitionHttpManager httpManager;
     private IntelligentRecognitionHttpResponseParser intelligentRecognitionHttpResponseParser;
     //    private AtomicBoolean isSpeechStart = new AtomicBoolean(false);
@@ -90,6 +93,12 @@ abstract class BaseIntelligentRecognitionPresenter extends
     private boolean isEvaluationReady = false;
 
     private ResultEntity _resultEntity;
+
+
+    /** 当前正在测评哪一种模型 */
+    protected enum SpeechType {
+        WORD, SENTENCE
+    }
 
     public BaseIntelligentRecognitionPresenter(FragmentActivity context) {
         super(context, IntelligentRecognitionViewModel.class);
@@ -244,7 +253,14 @@ abstract class BaseIntelligentRecognitionPresenter extends
 //            logger.i("viewModel IEResult is null");
 //            return;
 //        }
-        String aiRecogStr = mViewModel.getRecordData().getContent();
+        String aiRecogStr;
+        if (speechType == SpeechType.SENTENCE) {
+            aiRecogStr = mViewModel.getRecordData().getContent();
+        } else if (speechType == SpeechType.WORD && phoneScore != null) {
+            aiRecogStr = phoneScore.getWord();
+        } else {
+            aiRecogStr = mViewModel.getRecordData().getContent();
+        }
 //        if(aiRecogStr)
         if (TextUtils.isEmpty(aiRecogStr) && AppConfig.DEBUG) {
             return;
@@ -370,8 +386,7 @@ abstract class BaseIntelligentRecognitionPresenter extends
                         IntelligentRecognitionHttpResponseParser intelligentRecognitionHttpResponseParser = new IntelligentRecognitionHttpResponseParser();
                         IEResult ieResult = intelligentRecognitionHttpResponseParser.parseIEResponse(responseEntity);
                         if (ieResult != null) {
-                            ViewModelProviders.of(mActivity).get(IntelligentRecognitionViewModel.class).
-                                    getIeResultData().setValue(ieResult);
+                            mViewModel.getIeResultData().setValue(ieResult);
                         } else {
 
                         }
@@ -404,6 +419,7 @@ abstract class BaseIntelligentRecognitionPresenter extends
             _result.setImgSrc(contentAudioManager.getLocalImgUrl());
             _result.setAudioHashMap(contentAudioManager.getAudioMap());
             _result.setContent(mViewModel.getRecordData().getContent());
+            mViewModel.getIeResultData().postValue(_result);
         }
 
     }

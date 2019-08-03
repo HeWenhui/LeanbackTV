@@ -50,21 +50,15 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
     /** 调试使用TAG，专门区别是哪种测评状态 */
     private String T_T = "IntelligentRecognitionPresenter Speech_Status = ";
 
-    /** 当前正在测评哪一种模型 */
-    private enum SpeechType {
-        WORD, SENTENCE
-    }
 
     /** 播放第几个语音 */
     private AtomicInteger audioPlayNum = new AtomicInteger(0);
     /** 当前是第几次测评 */
 
-    //现在是测评哪种类型(句子或者单词)
-    private SpeechType speechType;
+
     //测评的单词
 //    private String phoneScore.getWord();
-    //正在测评的单词信息
-    private PhoneScore phoneScore;
+
     //音频播放器
     SoundEffectPlayer soundPlayer;
     //情况0，状态出现异常
@@ -83,17 +77,17 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
      *
      * @param resultEntity
      */
-    private void getSpeechScore(final ResultEntity resultEntity) {
+    private void getSpeechScore(final ResultEntity _resultEntity) {
         IntelligentRecognitionRecord record = mViewModel.getRecordData();
         if (getSpeechNum() <= 1) {
             //第一次测评时，做出文字改变颜色.
-            mViewModel.getResultPhoneScores().postValue(resultEntity.getLstPhonemeScore());
+            mViewModel.getResultPhoneScores().postValue(_resultEntity.getLstPhonemeScore());
             getHttpManager().getIntelligentSpeechSumbmitResult(
                     mActivity.getApplicationContext(),
                     record.getStuId(),
                     record.getMaterialId(),
                     record.getIsPlayBack(),
-                    getFirstJsonString(resultEntity),
+                    getFirstJsonString(_resultEntity),
                     record.getLiveId(),
                     record.getStuCouId(),
                     record.getAnswerTime(),
@@ -102,18 +96,9 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             IntelligentRecognitionHttpResponseParser parser = new IntelligentRecognitionHttpResponseParser();
                             SpeechScoreEntity speechScoreEntity = parser.parseSpeechScore(responseEntity);
-                            mViewModel.getSpeechScoreData().
-                                    setValue(speechScoreEntity);
+                            mViewModel.getSpeechScoreData().setValue(speechScoreEntity);
                             //延迟2s钟 然后播放语音
-                            Observable.just(true).
-                                    delay(4, TimeUnit.SECONDS).
-                                    subscribe(new CommonRxObserver<Boolean>() {
-                                        @Override
-                                        public void onComplete() {
-                                            super.onComplete();
-                                            performResultUnity3DAudio(resultEntity);
-                                        }
-                                    });
+                            delayPerformResultUnity3DAudio(_resultEntity);
                             logger.i("gold:" + speechScoreEntity.getGold() + " score:" +
                                     speechScoreEntity.getScore() + " star:" + speechScoreEntity.getStar());
                         }
@@ -121,13 +106,21 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
-                            logger.i("pmFail:" + msg);
+                            logger.e("getIntelligentSpeechSumbmitResult pmFail:" + msg);
+                            if (AppConfig.DEBUG) {
+                                SpeechScoreEntity _speechScoreEntity = new SpeechScoreEntity();
+                                _speechScoreEntity.setScore("90");
+                                _speechScoreEntity.setGold("60");
+                                _speechScoreEntity.setStar("50");
+                                mViewModel.getSpeechScoreData().setValue(_speechScoreEntity);
+                                delayPerformResultUnity3DAudio(_resultEntity);
+                            }
                         }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            logger.i("pmError:");
+                            logger.i("getIntelligentSpeechSumbmitResult pmError:");
                         }
                     }
             );
@@ -139,16 +132,45 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                     record.getIsPlayBack(),
                     record.getLiveId(),
                     record.getStuCouId(),
-                    getRepeatWordJsonString(resultEntity),
-                    getRepeatSentenceJsonString(resultEntity),
+                    getRepeatWordJsonString(_resultEntity),
+                    getRepeatSentenceJsonString(_resultEntity),
                     new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             logger.i("success");
+                            mViewModel.getPhoneScore().setValue(phoneScore);
+                            performResultUnity3DAudio(_resultEntity);
+                        }
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            super.onPmFailure(error, msg);
+                            logger.e("getSubmitIntellectVoiceCorrect:msg" + msg);
+                            mViewModel.getPhoneScore().setValue(phoneScore);
+                            performResultUnity3DAudio(_resultEntity);
+                        }
+
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                            logger.e("getSubmitIntellectVoiceCorrect:pmError");
+                            performResultUnity3DAudio(_resultEntity);
                         }
                     });
         }
 
+    }
+
+    private void delayPerformResultUnity3DAudio(final ResultEntity _resultEntity) {
+        Observable.just(true).
+                delay(4, TimeUnit.SECONDS).
+                subscribe(new CommonRxObserver<Boolean>() {
+                    @Override
+                    public void onComplete() {
+                        super.onComplete();
+                        performResultUnity3DAudio(_resultEntity);
+                    }
+                });
     }
 
     /**
@@ -170,8 +192,8 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                 detailItem.put("level", resultEntity.getLevel());
                 {
                     JSONObject nbestJSONObj = new JSONObject();
-                    for (PhoneScore phoneScore : resultEntity.getLstPhonemeScore()) {
-                        nbestJSONObj.put(phoneScore.getWord(), phoneScore.getScore());
+                    for (PhoneScore _phoneScore : resultEntity.getLstPhonemeScore()) {
+                        nbestJSONObj.put(getWordLower(_phoneScore), _phoneScore.getScore());
                     }
                     detailItem.put("nbest", nbestJSONObj);
                 }
@@ -229,16 +251,17 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
         int pronScore = resultEntity.getPronScore();
         //总得分
         int score = resultEntity.getScore();
-        if (AppConfig.DEBUG) {
-            contScore = 70;
-            pronScore = 50;
-        }
+//        if (AppConfig.DEBUG) {
+//            contScore = 70;
+//            pronScore = 50;
+//        }
         if (getSpeechNum() == 1) {
             if (score == 100) {
                 logger.i(T_T + IntelligentConstants.PERFECT);
                 performPerfact();
             } else if (contScore >= 60 && pronScore >= 60) {
                 logger.i(T_T + IntelligentConstants.GOOD);
+                speechType = SpeechType.SENTENCE;
                 String sentenceUrl = contentAudioManager.getAudioContentUrlFromLocal("", false);
                 logger.i("sentenceUrl:" + sentenceUrl);
                 if (TextUtils.isEmpty(sentenceUrl)) {
@@ -285,7 +308,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                     performCommonList(IntelligentConstants.FEED_BACK_WORD_2_1,
                             Arrays.asList(
                                     EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(IntelligentConstants.FEED_BACK_WORD_2_1),
-                                    contentAudioManager.getAudioContentUrlFromLocal(phoneScore.getWord(), true)
+                                    contentAudioManager.getAudioContentUrlFromLocal(getWordLower(phoneScore), true)
                             )
                     );
                 }
@@ -299,7 +322,7 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
                 performCommonList(IntelligentConstants.FEED_BACK_WORD_3_1,
                         Arrays.asList(
                                 EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(IntelligentConstants.FEED_BACK_WORD_3_1),
-                                contentAudioManager.getAudioContentUrlFromLocal(phoneScore.getWord(), true)
+                                contentAudioManager.getAudioContentUrlFromLocal(getWordLower(phoneScore), true)
                         )
                 );
             }
@@ -312,6 +335,8 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
         if (resultEntity == null) {
             return;
         }
+        sortResult(resultEntity.getLstPhonemeScore());
+        getFilterWord(resultEntity.getLstPhonemeScore());
         getSpeechScore(resultEntity);
         //连贯性
 //        int contScore = resultEntity.getContScore();
@@ -334,14 +359,20 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
 
     }
 
-
+    /**
+     * 重读单词
+     *
+     * @param status
+     * @param _phoneScores
+     */
     private void performWord(int status, List<PhoneScore> _phoneScores) {
         String evaluationUrl = EvaluationAudioPlayerDataManager.getInstance(mActivity).getJudgeAudioUrl(status);
-        String wordName = getFilterWord(_phoneScores).getWord();
+        String wordName = getWordLower(getFilterWord(_phoneScores));//.getWord().toLowerCase();
         String wordUrl = contentAudioManager.getAudioContentUrlFromLocal(wordName, true);
         if (TextUtils.isEmpty(wordUrl)) {
             wordUrl = mViewModel.getIeResultData().getValue().getAudioHashMap().get(wordName);
         }
+        logger.i("performWord evaluationUrl:" + evaluationUrl + " wordName:" + wordName + " wordUrl:" + wordUrl);
         performCommonList(status, Arrays.asList(evaluationUrl, wordUrl));
     }
 
@@ -450,7 +481,11 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
      */
     private void handleAudioPlayEOver(int status) {
         mViewModel.getIsSpeechJudgeFinish().postValue(status);
-        mViewModel.getPhoneScore().postValue(phoneScore);
+        if (speechType == SpeechType.WORD) {
+            mViewModel.getPhoneScore().postValue(phoneScore);
+        } else {
+            mViewModel.getPhoneScore().postValue(null);
+        }
         setSpeechStatus(JUDGE_OVER);
         Unity3DPlayManager.playSayStop();
     }
@@ -675,13 +710,17 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
      */
     private PhoneScore getFilterWord(List<PhoneScore> list) {
         PhoneScore repeatWord = null;
-        for (PhoneScore phoneScore : list) {
-            if (!filterWordList.contains(phoneScore.getWord())) {
-                repeatWord = phoneScore;
+        for (PhoneScore _phoneScore : list) {
+            if (!filterWordList.contains(getWordLower(_phoneScore))) {
+                repeatWord = _phoneScore;
                 break;
             }
         }
         return phoneScore = repeatWord;
+    }
+
+    private String getWordLower(PhoneScore _phoneScore) {
+        return _phoneScore != null && _phoneScore.getWord() != null ? _phoneScore.getWord().toLowerCase() : "";
     }
 
     /**
@@ -694,11 +733,14 @@ public class IntelligentRecognitionPresenter extends BaseIntelligentRecognitionP
             @Override
             public int compare(PhoneScore o1, PhoneScore o2) {
                 if (o1.getScore() < o2.getScore()) {
-                    return 1;
-                } else {
                     return -1;
+                } else {
+                    return 1;
                 }
             }
         });
+        for (PhoneScore _phoneScore : list) {
+            logger.i("sortResult:word:" + _phoneScore.getWord() + " score:" + _phoneScore.getScore());
+        }
     }
 }

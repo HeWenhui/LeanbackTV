@@ -1,7 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils;
 
-import android.content.Context;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,60 +14,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class AudioEvaluationDownload {
-//    private volatile static AudioEvaluationDownload instance;
-//
-//    public static AudioEvaluationDownload getInstance() {
-//        if (instance == null) {
-//            synchronized (AudioEvaluationDownload.class) {
-//                if (instance == null) {
-//                    instance = new AudioEvaluationDownload();
-//                }
-//            }
-//        }
-//        return instance;
-//    }
-//
-//    private IntelligentLocalFileManager respository;
-//
-//    public void startDownLoad(Context context, String path) {
-//        if (respository == null) {
-//            respository = new IntelligentLocalFileManager(context, path);
-//        }
-
-//    }
-
-//    public Observable<String> startRxDownLoad(Context context, String filePath, String url) {
-//        Observable.zip(startDownLoad(context, filePath, url),
-//                Observable.just(url),
-//                new BiFunction<String, String, Object>() {
-//                })
-//    }
-
-//    private class RxDownLoadFileEntity {
-//        File file;
-//        String url;
-//
-//        public RxDownLoadFileEntity(File file, String url) {
-//            this.file = file;
-//            this.url = url;
-//        }
-//
-//        public File getFile() {
-//            return file;
-//        }
-//
-//        public void setFile(File file) {
-//            this.file = file;
-//        }
-//
-//        public String getUrl() {
-//            return url;
-//        }
-//
-//        public void setUrl(String url) {
-//            this.url = url;
-//        }
-//    }
 
     /**
      * 如果本地文件{new File(filePath)}不存在，则从url下载到本地
@@ -129,27 +73,22 @@ public class AudioEvaluationDownload {
         if (!file.exists()) {
             file.createNewFile();
         }
-//        Log.e(TAG, "accept: atomic" + atomicInteger.getAndIncrement());
         InputStream is = null;
         byte[] buf = new byte[2048];
         int len = 0;
         FileOutputStream fos = null;
         try {
             long total = response.body().contentLength();
-//            Log.e(TAG, "total------>" + total);
             long current = 0;
             is = response.body().byteStream();
             fos = new FileOutputStream(file);
             while ((len = is.read(buf)) != -1) {
                 current += len;
                 fos.write(buf, 0, len);
-//                Log.e(TAG, "current------>" + current);
 //                                progressCallBack(total, current, callBack);
             }
             fos.flush();
-//                            successCallBack((T) file, callBack);
         } catch (IOException e) {
-//            Log.e(TAG, e.toString());
 //                            failedCallBack("下载失败", callBack);
         } finally {
             try {
@@ -160,7 +99,6 @@ public class AudioEvaluationDownload {
                     fos.close();
                 }
             } catch (IOException e) {
-//                Log.e(TAG, e.toString());
             }
         }
     }

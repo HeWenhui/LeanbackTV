@@ -249,6 +249,7 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
 
         String content;
         if (!TextUtils.isEmpty(content = viewModel.getRecordData().getContent())) {
+            logger.i("initData() content:" + content);
             tvContent.setText(content);
             handleContentWordList(content);
         }
@@ -303,7 +304,7 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
                         tvLayoutScoreWord.setText(phoneScore.getWord());
                     }
                     if (tvLayoutScore != null) {
-                        tvLayoutScore.setText(phoneScore.getScore());
+                        tvLayoutScore.setText(phoneScore.getScore() + "");
                     }
 //                    if (isWord()) {
                     if (layoutScore != null && layoutScore.getVisibility() != View.VISIBLE) {
@@ -403,7 +404,7 @@ abstract class BaseIntelligentRecognitionPager extends BasePager implements IInt
     protected abstract SpannableString getSpannableString(final List<PhoneScore> list, String content);
 
 
-    private boolean isNotNullEquals(String word, String contentWord) {
+    protected boolean isNotNullEquals(String word, String contentWord) {
         return !TextUtils.isEmpty(word) &&
                 !TextUtils.isEmpty(contentWord) &&
                 word.equals(contentWord);

@@ -132,12 +132,12 @@ public class ContentAudioManager {
     public String getAudioContentUrlFromLocal(String wordName, boolean isWord) {
         if ((isWord && TextUtils.isEmpty(wordName)) ||
                 liveCacheFile == null || !liveCacheFile.exists()) {
-            logger.i("getLocalSentenceUrl:" + liveCacheFile + " not exist");
+            logger.i("getAudioContentUrlFromLocal:liveCacheFile " + liveCacheFile + " not exist");
             return "";
         }
         try {
             for (File itemFile : liveCacheFile.listFiles()) {
-                logger.i("itemFile Name:" + itemFile);
+                logger.i("getAudioContentUrlFromLocal itemFile Name:" + itemFile);
                 for (File audioFile : itemFile.listFiles()) {
                     String fileName = audioFile.getName();
                     if (!fileName.endsWith(".mp3")) {
@@ -147,12 +147,12 @@ public class ContentAudioManager {
                         if (TextUtils.isEmpty(fileName) || fileName.length() < 4) {
                             continue;
                         }
-                        logger.i("getLocalSentenceUrl:" + fileName);
-                        if (wordName.toLowerCase().equals(fileName.substring(fileName.lastIndexOf(File.separator), fileName.length() - 4).toLowerCase())) {
+                        logger.i("getAudioContentUrlFromLocal:word:" + fileName);
+                        if (wordName.toLowerCase().equals(fileName.substring(0, fileName.length() - 4).toLowerCase())) {
                             return audioFile.getPath();
                         }
                     } else {
-                        logger.i("getLocalSentenceUrl:" + fileName);
+                        logger.i("getAudioContentUrlFromLocal:sentence:" + fileName);
                         if (TextUtils.isEmpty(fileName) || fileName.length() < 4) {
                             continue;
                         }
@@ -188,7 +188,7 @@ public class ContentAudioManager {
                 }
             }
         }
-        logger.i("getLocalSentenceUrl:" + liveCacheFile + " null");
+        logger.i("getAudioContentUrlFromLocal:" + liveCacheFile + " null");
         return "";
     }
 

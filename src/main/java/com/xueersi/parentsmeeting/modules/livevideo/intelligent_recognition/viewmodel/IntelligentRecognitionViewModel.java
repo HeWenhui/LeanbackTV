@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentEvaluationTop3Entity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
 
@@ -31,7 +32,7 @@ public class IntelligentRecognitionViewModel extends ViewModel {
     /** 语音测评分数 */
     private MutableLiveData<SpeechScoreEntity> speechScoreData = new MutableLiveData<>();
     /** 获取Top3的Data成功 */
-    private MutableLiveData<GoldTeamStatus> isTop3DataSuccess = new MutableLiveData<>();
+    private MutableLiveData<IntelligentEvaluationTop3Entity> top3Data = new MutableLiveData<>();
     /** top3是否显示 */
     private MutableLiveData<Boolean> isTop3Show = new MutableLiveData<>();
     private MutableLiveData<List<PhoneScore>> resultPhoneScores = new MutableLiveData<>();
@@ -67,8 +68,8 @@ public class IntelligentRecognitionViewModel extends ViewModel {
         return isTop3Show;
     }
 
-    public MutableLiveData<GoldTeamStatus> getIsTop3DataSuccess() {
-        return isTop3DataSuccess;
+    public MutableLiveData<IntelligentEvaluationTop3Entity> getIsTop3DataSuccess() {
+        return top3Data;
     }
 
     //    private MutableLiveData<Integer> speechScore = new MutableLiveData<>();

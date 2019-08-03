@@ -108,15 +108,15 @@ public class IntelligentRecognitionFragment extends BaseMVPAssociateFragment {
             }
         });
 
-        mViewModel.getIsTop3DataSuccess().observe(mActivity, new Observer<GoldTeamStatus>() {
-            @Override
-            public void onChanged(@Nullable GoldTeamStatus goldTeamStatus) {
-
-                IntelligentRecognitionFragment.this.goldTeamStatus = goldTeamStatus;
-                isTop3DataSuccess = true;
-                performShowTop3();
-            }
-        });
+//        mViewModel.getIsTop3DataSuccess().observe(mActivity, new Observer<GoldTeamStatus>() {
+//            @Override
+//            public void onChanged(@Nullable GoldTeamStatus goldTeamStatus) {
+//
+//                IntelligentRecognitionFragment.this.goldTeamStatus = goldTeamStatus;
+//                isTop3DataSuccess = true;
+//                performShowTop3();
+//            }
+//        });
     }
 
     /** 添加Top3的页面 */

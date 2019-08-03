@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentEvaluationTop3Entity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.view.BaseIntelligentRecognitionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.viewmodel.IntelligentRecognitionViewModel;
 
@@ -42,12 +42,12 @@ public class IntelligentRecognitionTop3Bll extends BaseIntelligentRecognitionBll
                 new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        GoldTeamStatus goldTeamStatus =
+                        IntelligentEvaluationTop3Entity top3Entity =
                                 getHttpResponseParser().
                                         parseSpeechTeamRank(responseEntity,
                                                 mViewModel.getRecordData().getStuId());
 
-                        mViewModel.getIsTop3DataSuccess().postValue(goldTeamStatus);
+                        mViewModel.getIsTop3DataSuccess().postValue(top3Entity);
                     }
                 });
     }

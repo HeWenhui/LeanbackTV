@@ -21,7 +21,6 @@ import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.utils.IntelligentConstants.INTELLIGENT_LOTTIE_PATH;
@@ -131,31 +130,38 @@ public class IntelligentRecognitionPermissionPager extends BaseIntelligentRecogn
                 logger.i("phoneScore null");
                 continue;
             }
-            String word = phoneScore.getWord();
-            WordInfo wordInfo = wordList.get(i);
-            if (wordInfo == null) {
-                logger.i("wordInfo null");
-                continue;
-            }
-            String contentWord = wordInfo.getWord();
-//            if (isNotNullEquals(word, contentWord)) {
-            int score = phoneScore.getScore();
-            int contentPos = wordInfo.getPos();
-            int color = mActivity.getResources().getColor(R.color.COLOR_303134);
-            color = Color.parseColor("#303134");
-            if (score >= 80) {//
-                color = mActivity.getResources().getColor(R.color.COLOR_56D80A);
-                color = Color.parseColor("#56D80A");
-            } else if (score < 60) {
-                color = mActivity.getResources().getColor(R.color.COLOR_FF5C37);
-                color = Color.parseColor("#FF5C37");
+            String _word = phoneScore.getWord();
+            for (WordInfo _wordInfo : wordList) {
+//                WordInfo _wordInfo = wordList.get(i);
+                if (_wordInfo == null) {
+                    logger.i("wordInfo null");
+                    continue;
+                }
+                String contentWord = _wordInfo.getWord();
+                if (isNotNullEquals(_word, contentWord)) {
+                    int score = phoneScore.getScore();
+                    int contentPos = _wordInfo.getPos();
+                    int color;// = mActivity.getResources().getColor(R.color.COLOR_303134);
+                    color = Color.parseColor("#303134");
+                    if (score >= 80) {//
+                        color = mActivity.getResources().getColor(R.color.COLOR_56D80A);
+                        color = Color.parseColor("#56D80A");
+                    } else if (score < 60) {
+                        color = mActivity.getResources().getColor(R.color.COLOR_FF5C37);
+                        color = Color.parseColor("#FF5C37");
 //                            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(Color.alpha(color));
-            }
+                    }
 //            logger.i("color :" + color + " word:" + contentPos + " length:" + word.length());
 //            Color.alpha(1l);
-            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(color);
-            spannableString.setSpan(foregroundColorSpan,
-                    contentPos, contentPos + word.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(color);
+                    logger.i("contentPos:" + contentPos + " contentWord:" + contentWord + " contentWord.length:"
+                            + contentWord.length() + " phoneScore:_word:" + _word + " word.length():" + _word.length());
+                    int contentEndPos = contentPos + contentWord.length();
+                    contentEndPos = contentEndPos > showContent.length() ? showContent.length() : contentEndPos;
+                    spannableString.setSpan(foregroundColorSpan,
+                            contentPos, contentEndPos, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                }
+            }
         }
         return spannableString;
     }

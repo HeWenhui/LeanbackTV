@@ -4,8 +4,9 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IEResult;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentEvaluationTop3Entity;
 import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.SpeechScoreEntity;
 
 import org.json.JSONArray;
@@ -100,8 +101,8 @@ public class IntelligentRecognitionHttpResponseParser {
         return speechScoreEntity;
     }
 
-    public GoldTeamStatus parseSpeechTeamRank(ResponseEntity responseEntity, String stuId) {
-        GoldTeamStatus entity = new GoldTeamStatus();
+    public IntelligentEvaluationTop3Entity parseSpeechTeamRank(ResponseEntity responseEntity, String stuId) {
+        IntelligentEvaluationTop3Entity entity = new IntelligentEvaluationTop3Entity();
         try {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             JSONArray stuList = jsonObject.optJSONArray("stuList");
@@ -111,7 +112,7 @@ public class IntelligentRecognitionHttpResponseParser {
                 for (int i = 0; i < stuList.length(); i++) {
                     try {
                         JSONObject stu = stuList.getJSONObject(i);
-                        GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+                        IntelligentEvaluationTop3Entity.Student student = new IntelligentEvaluationTop3Entity.Student();
                         String stuId2 = stu.getString("stuId");
                         student.setMe(stuId != null && stuId.equals(stuId2));
                         student.setStuId(stuId2);
@@ -131,7 +132,7 @@ public class IntelligentRecognitionHttpResponseParser {
             }
 //            if (AppConfig.DEBUG && lyqTest) {
 //                for (int i = 0; i < 3; i++) {
-//                    GoldTeamStatus.Student student = new GoldTeamStatus.Student();
+//                    IntelligentEvaluationTop3Entity.Student student = new IntelligentEvaluationTop3Entity.Student();
 //                    student.setStuId("12345" + testid++);
 //                    student.setName(student.getStuId());
 //                    student.setNickname("测试" + testid++);

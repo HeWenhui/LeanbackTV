@@ -6,14 +6,14 @@ import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.config.EvaluationHttpConfig;
 
-public class IntelligentRecognitionHttpManager {
-    private BaseHttpBusiness liveHttpManager;
+public class IntelligentRecognitionHttpManager extends BaseHttpBusiness {
+//    private BaseHttpBusiness liveHttpManager;
 
     public IntelligentRecognitionHttpManager(Context context) {
-        liveHttpManager = new LiveHttpManager(context.getApplicationContext());
+        super(context);
+//        liveHttpManager = new Bas(context.getApplicationContext());
     }
 
     /**
@@ -25,9 +25,9 @@ public class IntelligentRecognitionHttpManager {
                             String stuId,
                             String stuCouId,
                             HttpCallBack httpCallBack) {
-        if (liveHttpManager == null) {
-            liveHttpManager = new LiveHttpManager(context.getApplicationContext());
-        }
+//        if (liveHttpManager == null) {
+//            liveHttpManager = new LiveHttpManager(context.getApplicationContext());
+//        }
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuId", stuId);
@@ -37,9 +37,9 @@ public class IntelligentRecognitionHttpManager {
 //        params.addBodyParam("cameraStatus", cameraStatus);
 
         if (AppConfig.DEBUG) {
-            liveHttpManager.sendPost("https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/getMaterialVoiceInfos", params, httpCallBack);
+            sendPost("https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/getMaterialVoiceInfos", params, httpCallBack);
         } else {
-            liveHttpManager.sendPost(LiveVideoConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
+            sendPost(EvaluationHttpConfig.GET_MATERIAL_VOICE_INFOS_URL, params, httpCallBack);
         }
 
     }
@@ -68,9 +68,9 @@ public class IntelligentRecognitionHttpManager {
 //                                                         String useClient,
 //                                                         String useClientVer,
                                                   HttpCallBack httpCallBack) {
-        if (liveHttpManager == null) {
-            liveHttpManager = new LiveHttpManager(context.getApplicationContext());
-        }
+//        if (liveHttpManager == null) {
+//            liveHttpManager = new LiveHttpManager(context.getApplicationContext());
+//        }
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("materialId", materialId);
@@ -82,9 +82,9 @@ public class IntelligentRecognitionHttpManager {
 //        params.addBodyParam("useClient", useClient);
 //        params.addBodyParam("useClientVer", useClientVer);
         if (AppConfig.DEBUG) {
-            liveHttpManager.sendPost("https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/submitIntellectVoice", params, httpCallBack);
+            sendPost("https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/submitIntellectVoice", params, httpCallBack);
         } else {
-            liveHttpManager.sendPost(LiveVideoConfig.URL_INTELLIGENT_SPEECH_SUBMIT, params, httpCallBack);
+            sendPost(EvaluationHttpConfig.INTELLIGENT_SPEECH_SUBMIT_URL, params, httpCallBack);
         }
     }
 
@@ -110,9 +110,9 @@ public class IntelligentRecognitionHttpManager {
         httpRequestParams.addBodyParam("classId", classId);
         httpRequestParams.addBodyParam("teamId", teamId);
         if (AppConfig.DEBUG) {
-            liveHttpManager.sendPost("https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/getSpeechEvalAnswerTeamRank", httpRequestParams, httpCallBack);
+            sendPost("https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/getSpeechEvalAnswerTeamRank", httpRequestParams, httpCallBack);
         } else {
-            liveHttpManager.sendPost(LiveVideoConfig.URL_INTELLIGENT_RECOGNITION_TOP3, httpRequestParams, httpCallBack);
+            sendPost(EvaluationHttpConfig.INTELLIGENT_RECOGNITION_TOP3_URL, httpRequestParams, httpCallBack);
         }
 
     }
@@ -138,9 +138,9 @@ public class IntelligentRecognitionHttpManager {
                                                String correctCase,
                                                String rereadCase,
                                                HttpCallBack httpCallBack) {
-        if (liveHttpManager == null) {
-            liveHttpManager = new LiveHttpManager(context);
-        }
+//        if (liveHttpManager == null) {
+//            liveHttpManager = new LiveHttpManager(context);
+//        }
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.addBodyParam("stuId", stuId);
         httpRequestParams.addBodyParam("materialId", materialId);
@@ -149,6 +149,6 @@ public class IntelligentRecognitionHttpManager {
         httpRequestParams.addBodyParam("stuCouId", stuCouId);
         httpRequestParams.addBodyParam("correctCase", correctCase);
         httpRequestParams.addBodyParam("rereadCase", rereadCase);
-        liveHttpManager.sendPost(LiveVideoConfig.URL_SUBMIT_INTELLECT_VOICE_CORRECT, httpRequestParams, httpCallBack);
+        sendPost(EvaluationHttpConfig.SUBMIT_INTELLECT_VOICE_CORRECT_URL, httpRequestParams, httpCallBack);
     }
 }
