@@ -13,12 +13,12 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application>
-        <activity android:name=".intelligent_recognition.Unity3DToFrameActivity"></activity>
-        <activity
-            android:name=".intelligent_recognition.widget.IntelligentRecognitionActivity"
-            android:process=":livevideo"
-            android:screenOrientation="landscape"
-            android:theme="@style/AppTheme" /> <!-- <activity -->
+        <!--<activity android:name=".intelligent_recognition.Unity3DToFrameActivity"></activity>-->
+        <!--<activity-->
+            <!--android:name=".intelligent_recognition.widget.IntelligentRecognitionActivity"-->
+            <!--android:process=":livevideo"-->
+            <!--android:screenOrientation="landscape"-->
+            <!--android:theme="@style/AppTheme" /> &lt;!&ndash; <activity &ndash;&gt;-->
         <!-- android:name=".activity.LivePlayBackVideoActivity" -->
         <!-- android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation" -->
         <!-- android:launchMode="singleTask" -->

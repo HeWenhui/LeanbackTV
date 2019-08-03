@@ -61,7 +61,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recoginition.IntelligentRecognitionBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll;

@@ -48,7 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.Ev
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldMicroPhoneBll;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recoginition.IntelligentRecognitionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll;

@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition;
+package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recoginition;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.entity.IntelligentRecognitionRecord;
 
 public class IntelligentRecognitionBackBll extends LiveBackBaseBll {
     public IntelligentRecognitionBackBll(Activity activity, LiveBackBll liveBackBll) {
@@ -23,7 +22,7 @@ public class IntelligentRecognitionBackBll extends LiveBackBaseBll {
             case LocalCourseConfig.CATEGORY_BIG_TEST: {
 
                 Bundle bundle = new Bundle();
-                IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
+//                IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
 //                intelligentRecognitionRecord.setAnswerTime(data.optString("time"));
 //                intelligentRecognitionRecord.setStuId(mGetInfo.getStuId());
 //                intelligentRecognitionRecord.setStuCouId(mGetInfo.getStuCouId());
@@ -37,7 +36,7 @@ public class IntelligentRecognitionBackBll extends LiveBackBaseBll {
 //                    intelligentRecognitionRecord.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
 //                    intelligentRecognitionRecord.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
 //                }
-                bundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
+//                bundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
                 XueErSiRouter.startModule(activity, "/english/intelligent_recognition", bundle);
                 break;
             }
