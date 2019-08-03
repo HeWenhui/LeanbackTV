@@ -161,7 +161,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
     @Override
     public void initView() {
-        questionBll.initView(getLiveViewAction(), mIsLand.get());
+        questionBll.initView(getLiveViewAction(), mIsLand);
     }
 
     @Override

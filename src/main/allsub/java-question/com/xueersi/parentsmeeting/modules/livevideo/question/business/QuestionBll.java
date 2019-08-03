@@ -369,10 +369,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
-    public void initView(LiveViewAction liveViewAction, boolean isLand) {
+    public void initView(LiveViewAction liveViewAction, AtomicBoolean isLand) {
         this.liveViewAction = liveViewAction;
-        this.isLand = isLand;
-        isAbLand.set(isLand);
+        this.isLand = isLand.get();
+        isAbLand = isLand;
+        liveQuestionCreat.setIsAbLand(isAbLand);
         //互动题
         if (rlQuestionContent == null) {
             rlQuestionContent = new RelativeLayout(activity);

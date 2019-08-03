@@ -290,6 +290,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setLiveType(int liveType) {
         this.liveType = liveType;
+        liveQuestionCreat.setLiveType(liveType);
     }
 
     public void setLiveBll(QuestionHttp mLiveBll) {
@@ -366,9 +367,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     private RelativeLayout bottomeContent;
 
-    public void initView(RelativeLayout bottomContent, boolean isLand) {
-        this.isLand = isLand;
-        isAbLand.set(isLand);
+    public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
+        this.isLand = isLand.get();
+        isAbLand = isLand;
+        liveQuestionCreat.setIsAbLand(isAbLand);
         bottomeContent = bottomContent;
         //互动题
         if (rlQuestionContent == null) {
