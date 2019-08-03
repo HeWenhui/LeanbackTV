@@ -51,9 +51,9 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_NEW_GAME = "17";
     public static final String EN_COURSE_TYPE_18 = "18";
     public static final String EN_COURSE_TYPE_19 = "19";
-    /** 语文AI主观题*/
+    /** 语文AI主观题 */
     public static final String CHI_COURESWARE_TYPE_AISUBJECTIVE = "17";
-    /** 开讲吧*/
+    /** 开讲吧 */
     public static final String CHI_COURESWARE_TYPE_SPEAKING_CHINESE = "19";
     /** 直播- voice cannon */
     public static final String EN_COURSE_TYPE_VOICE_CANNON = "22";
@@ -61,6 +61,8 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_CLEANING_UP = "23";
     /** 直播- 热气球 */
     public static final String EN_COURSE_TYPE_HOT_AIR_BALLON = "24";
+    /** 英语智能评测 */
+    public static final String EN_INTELLIGENT_EVALUTION = "30";
     /** 直播-小组互动语音炮弹 */
     public static final int EN_COURSE_GAME_TYPE_1 = 1;
     /** 直播-小组互动Cleaning up */

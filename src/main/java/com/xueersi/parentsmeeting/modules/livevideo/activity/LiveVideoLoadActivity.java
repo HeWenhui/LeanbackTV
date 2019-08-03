@@ -12,12 +12,10 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.LoadFileCallBack;
@@ -187,23 +185,23 @@ public class LiveVideoLoadActivity extends BaseActivity {
         final String vSectionID = intent.getStringExtra("vSectionID");
         final int liveType = bundle.getInt("type", 0);
         final int from = intent.getIntExtra("", 0);
-        if (AppConfig.DEBUG) {
-            Bundle newBundle = new Bundle();
+//        if (AppConfig.DEBUG) {
+//            Bundle newBundle = new Bundle();
 //            IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
 ////            intelligentRecognitionRecord.setAnswers("1000");
 //            intelligentRecognitionRecord.setAnswerTime("121322");
-//            intelligentRecognitionRecord.setContent("whose ball is it?");
+//            intelligentRecognitionRecord.setContent("whose soccer ball is it?");
 //            intelligentRecognitionRecord.setLiveId("584955");
 //            intelligentRecognitionRecord.setStuId("37899");
 //            intelligentRecognitionRecord.setStuCouId("1111");
 //            intelligentRecognitionRecord.setMaterialId("21642");
 //            newBundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
 //            XueErSiRouter.startModule(this, "/english/intelligent_recognition", newBundle);
-            XueErSiRouter.startModule(this, "/english/intelligent_recognition", newBundle);
-//            startActivity(new Intent(this, IntelligentRecognitionActivity.class));
-            finish();
-            return;
-        }
+////            XueErSiRouter.startModule(this, "/english/intelligent_recognition", newBundle);
+////            startActivity(new Intent(this, IntelligentRecognitionActivity.class));
+//            finish();
+//            return;
+//        }
 
         final LiveHttpManager httpManager = new LiveHttpManager(this);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {

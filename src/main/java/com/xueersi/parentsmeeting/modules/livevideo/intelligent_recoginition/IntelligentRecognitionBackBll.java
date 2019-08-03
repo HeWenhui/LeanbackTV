@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 
@@ -22,21 +23,21 @@ public class IntelligentRecognitionBackBll extends LiveBackBaseBll {
             case LocalCourseConfig.CATEGORY_BIG_TEST: {
 
                 Bundle bundle = new Bundle();
-//                IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
-//                intelligentRecognitionRecord.setAnswerTime(data.optString("time"));
-//                intelligentRecognitionRecord.setStuId(mGetInfo.getStuId());
-//                intelligentRecognitionRecord.setStuCouId(mGetInfo.getStuCouId());
-//                intelligentRecognitionRecord.setLiveId(mGetInfo.getId());
+                IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
+//                intelligentRecognitionRecord.setAnswerTime(questionEntity.get);
+                intelligentRecognitionRecord.setStuId(liveGetInfo.getStuId());
+                intelligentRecognitionRecord.setStuCouId(liveGetInfo.getStuCouId());
+                intelligentRecognitionRecord.setLiveId(liveGetInfo.getId());
 //                JSONArray jsonArray = data.optJSONArray("id");
 //                if (jsonArray != null && jsonArray.length() > 0) {
-//                    intelligentRecognitionRecord.setMaterialId(jsonArray.optString(0));
+                intelligentRecognitionRecord.setMaterialId(questionEntity.getvQuestionID());
 //                }
-//                intelligentRecognitionRecord.setIsPlayBack("1");
-//                if (mGetInfo.getStudentLiveInfo() != null) {
-//                    intelligentRecognitionRecord.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
-//                    intelligentRecognitionRecord.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
+                intelligentRecognitionRecord.setIsPlayBack("1");
+//                if (liveGetInfo.getStudentLiveInfo() != null) {
+//                    intelligentRecognitionRecord.setClassId(liveGetInfo.getStudentLiveInfo().getClassId());
+//                    intelligentRecognitionRecord.setTeamId(liveGetInfo.getStudentLiveInfo().getTeamId());
 //                }
-//                bundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
+                bundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
                 XueErSiRouter.startModule(activity, "/english/intelligent_recognition", bundle);
                 break;
             }
@@ -45,5 +46,4 @@ public class IntelligentRecognitionBackBll extends LiveBackBaseBll {
             }
         }
     }
-
 }

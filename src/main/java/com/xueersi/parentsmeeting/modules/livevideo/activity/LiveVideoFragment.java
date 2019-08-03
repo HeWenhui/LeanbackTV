@@ -176,6 +176,15 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         return onVideoCreate;
     }
 
+    /**
+     * 下载Unity3D模型，接口(getInfo)没有返回是否需要这个字段
+     */
+    private void downLoadUnity3D() {
+        if (isArts == 1 && (pattern == 2 || pattern == 1)) {
+
+        }
+    }
+
     /** 设置显示的加载动画 */
     protected void setLoadingView() {
         liveVideoPlayFragment = (LivePlayerFragment) getChildFragmentManager().findFragmentByTag("LivePlayerFragment");

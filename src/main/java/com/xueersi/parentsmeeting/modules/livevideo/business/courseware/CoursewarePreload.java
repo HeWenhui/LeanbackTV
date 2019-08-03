@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -220,13 +221,16 @@ public class CoursewarePreload {
             }
         } else {//下载当天所有课件资源
             logger.i("donwload all subjects");
-//            subjectNum.getAndIncrement();
-//            mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack(false, "science"));
-//            subjectNum.getAndIncrement();
-//            mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack(false, "english"));
             subjectNum.getAndIncrement();
-//            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs"));
-            mHttpManager.getTestIntelligentRecognitionInfo(new CoursewareHttpCallBack(false, "intelligent_recg"));
+            mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack(false, "science"));
+            subjectNum.getAndIncrement();
+            mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack(false, "english"));
+            subjectNum.getAndIncrement();
+            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs"));
+            if (AppConfig.DEBUG) {
+                subjectNum.getAndIncrement();
+                mHttpManager.getTestIntelligentRecognitionInfo(new CoursewareHttpCallBack(false, "intelligent_recg"));
+            }
         }
     }
 

@@ -39,17 +39,17 @@ import okhttp3.Call;
 
 public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicAction, ISuperSpeakerContract.ICameraPresenter {
 
+    private boolean isDebug = false;
+
     public SuperSpeakerBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
-
     }
 
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
-
         Observable.
-                just(AppConfig.DEBUG).
+                just(AppConfig.DEBUG && isDebug).
                 delay(2, TimeUnit.SECONDS).
                 observeOn(AndroidSchedulers.mainThread()).
                 subscribe(new Consumer<Boolean>() {
