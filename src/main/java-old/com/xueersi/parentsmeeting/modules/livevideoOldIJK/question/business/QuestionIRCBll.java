@@ -921,7 +921,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     userMode = "0";
                 }
             }
-            if (LiveVideoConfig.isNewArts) {
+            if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
                 logger.e("======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
                 getHttpManager().liveNewArtsSubmitTestAnswer(
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, isSubmit, new HttpCallBack() {
