@@ -129,7 +129,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
         }
         tvReceiveTarValue.setText(target);
 
-        tvReceiveTarCurrentLevel.setText(mStuSegmentEntity.getSegment() + mStuSegmentEntity.getStar() + "星");
+        tvReceiveTarCurrentLevel.setText(mStuSegmentEntity.getSegment() + mStuSegmentEntity.getStar() + "级");
         tvReceiveTarUpdateTips.setText("还需完成" + mStuSegmentEntity.getAimNumber() + "场目标可升级");
 
         //设置当前段位的背景
@@ -171,7 +171,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
             nextStarsNumber = 1;
         }
         if (nextLevelIndex < BetterMeConfig.LEVEL_IMAGE_RES_DISS.length) {
-            tvReceiveTarNextLevel.setText(BetterMeConfig.LEVEL_NAMES[nextLevelIndex] + nextStarsNumber + "星");
+            tvReceiveTarNextLevel.setText(BetterMeConfig.LEVEL_NAMES[nextLevelIndex] + nextStarsNumber + "级");
             ivReceivetarNextLevel.setBackgroundResource(BetterMeConfig.LEVEL_IMAGE_RES_DISS[nextLevelIndex]);
             switch (BetterMeConfig.LEVEL_UPLEVEL_STARS[nextLevelIndex]) {
                 //下设3个小段位（星星）
