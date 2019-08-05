@@ -408,20 +408,20 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    courseGroupItem.muteLocalAudio(false);
                     startSpeechRecognize();
+                    courseGroupItem.muteLocalAudio(false);
                 }
             }, 3 * 1000);
             logger.d("uploadScore :"+stuid+" --自己 = " +nextNum +"--"+speechContent);
             return 3;
         } else {
+            if (mIse != null) {
+                mIse.cancel();
+            }
             mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     courseGroupItem.muteLocalAudio(true);
-                    if (mIse != null) {
-                        mIse.cancel();
-                    }
                 }
             }, 3 * 1000);
             logger.d("uploadScore :"+stuid+" --别人 = " +nextNum +"--"+speechContent);
@@ -562,11 +562,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 coursewareStartAnimationTime = test.getAnswerList().size() + 1;
                 coursewareEndAnimationTime = GroupGameConfig.WHATIS_MISSING_COURSEWARE_END_ANMITION_TIME;
             } else if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
-                coursewareStartAnimationTime = 3;
+                coursewareStartAnimationTime = 0;
                 coursewareEndAnimationTime = GroupGameConfig.VOICE_CANNON_END_ANMITION_TIME;
             } else if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type)) {
                 coursewareStartAnimationTime = 0;
                 coursewareEndAnimationTime = GroupGameConfig.HOT_AIR_BALLAN_END_ANMITION_TIME;
+            } else if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = 0;
+                coursewareEndAnimationTime = GroupGameConfig.SOLITAIRE_END_ANMITION_TIME;
+            } else if (LiveQueConfig.EN_COURSE_TYPE_GET_IT.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = 0;
+                coursewareEndAnimationTime = GroupGameConfig.GET_IT_END_ANMITION_TIME;
             }
 
             try {
@@ -574,12 +580,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 //时间没结束,才倒计时
                 if (test.getTotalTime() > 0) {
                     double time = test.getAnswerList().get(currentAnswerIndex).getSingleTime() +
-                            coursewareEndAnimationTime;
-                    if (currentAnswerIndex == 0 && LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo
-                            .type)) {
-                        //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1.5秒再开始倒计时和收音
-                        time += test.getAnswerList().size();
-                    }
+                            coursewareStartAnimationTime;
                     if (turnRun == null) {
                         turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                         mainHandler.postDelayed(turnRun, (int) (time * 1000));
@@ -690,7 +691,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
                                 .equals(detailInfo.type)){
                             resultData.put("nextStudentNum", getNextPageNum(0));
-                            resultData.put("answerInfo", Arrays.toString( answerInfo.toArray()));
+                            JSONArray answerInfoData = new JSONArray();
+                            for (int i = 0; i < answerInfo.size(); i++) {
+                                answerInfoData.put(answerInfo.get(i));
+                            }
+                            resultData.put("answerInfo",answerInfoData );
                         }else if(LiveQueConfig.EN_COURSE_TYPE_GET_IT
                                 .equals(detailInfo.type)){
                             JSONArray answerInfo = new JSONArray();
@@ -763,7 +768,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
                                     .equals(detailInfo.type)){
                                 resultData.put("nextStudentNum", getNextPageNum(pageNum));
-                                resultData.put("answerInfo", Arrays.toString( answerInfo.toArray()));
+                                JSONArray answerInfoData = new JSONArray();
+                                for (int i = 0; i < answerInfo.size(); i++) {
+                                    answerInfoData.put(answerInfo.get(i));
+                                }
+                                resultData.put("answerInfo",answerInfoData );
                             }else if(LiveQueConfig.EN_COURSE_TYPE_GET_IT
                                     .equals(detailInfo.type)){
                                 JSONArray answerInfo = new JSONArray();
@@ -2445,6 +2454,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data) {
         try {
+            logger.d("uploadScore :"+stuid+" --jsonData = " + type.toString()+"--"+speechContent);
             JSONObject liveinfo = new JSONObject();
             liveinfo.put("liveid", liveId);
             liveinfo.put("userid", stuid);
@@ -2461,6 +2471,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private void postMessage(JSONObject jsonData) {
         try {
+            logger.d("uploadScore :"+stuid+" --jsonData = " + jsonData.toString()+"--"+speechContent);
             JSONObject liveinfo = new JSONObject();
             liveinfo.put("liveid", liveId);
             liveinfo.put("userid", stuid);
@@ -2737,6 +2748,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void onMessage(short type, int operation, String msg) {
+            logger.d("receiveTCP : onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg+"---"+Arrays.toString( answerInfo.toArray()));
             mLogtf.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
             if (TcpConstants.isTypeOfCannon(type)) {
                 switch (operation) {

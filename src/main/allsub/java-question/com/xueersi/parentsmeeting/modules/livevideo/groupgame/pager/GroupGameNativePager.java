@@ -938,7 +938,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 coursewareStartAnimationTime = mAnswersList.size() + 1;
                 coursewareEndAnimationTime = GroupGameConfig.WHATIS_MISSING_COURSEWARE_END_ANMITION_TIME;
             } else if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
-                coursewareStartAnimationTime = 3;
+                coursewareStartAnimationTime = 0;
                 coursewareEndAnimationTime = GroupGameConfig.VOICE_CANNON_END_ANMITION_TIME;
             } else if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type)) {
                 coursewareStartAnimationTime = 0;
@@ -946,6 +946,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             } else if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(detailInfo.type)) {
                 coursewareStartAnimationTime = 0;
                 coursewareEndAnimationTime = GroupGameConfig.SOLITAIRE_END_ANMITION_TIME;
+            } else if (LiveQueConfig.EN_COURSE_TYPE_GET_IT.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = 0;
+                coursewareEndAnimationTime = GroupGameConfig.GET_IT_END_ANMITION_TIME;
             }
         }
 

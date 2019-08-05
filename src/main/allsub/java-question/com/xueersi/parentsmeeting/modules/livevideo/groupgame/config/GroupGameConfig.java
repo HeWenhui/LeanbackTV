@@ -18,4 +18,6 @@ public class GroupGameConfig {
     public static double VOICE_CANNON_END_ANMITION_TIME = 1;
     /** 接龙 课件结束 动画时间 */
     public static double SOLITAIRE_END_ANMITION_TIME = 3;
+    /** 抢夺战 课件结束 动画时间 */
+    public static double GET_IT_END_ANMITION_TIME = 2;
 }
