@@ -7,6 +7,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
@@ -33,12 +34,24 @@ public class LiveQuestionCreat {
     private QuestionHttp questionHttp;
     String mVSectionID;
     LivePagerBack livePagerBack;
+    /**
+     * 直播类型
+     */
+    private int liveType;
 
     LiveQuestionCreat(Activity activity, AtomicBoolean isAbLand, LivePagerBack livePagerBack) {
         this.activity = activity;
         this.isAbLand = isAbLand;
         this.livePagerBack = livePagerBack;
         mLogtf = new LogToFile(activity, TAG);
+    }
+
+    public void setIsAbLand(AtomicBoolean isAbLand) {
+        this.isAbLand = isAbLand;
+    }
+
+    public void setLiveType(int liveType) {
+        this.liveType = liveType;
     }
 
     public void setmVSectionID(String mVSectionID) {
@@ -55,7 +68,8 @@ public class LiveQuestionCreat {
     public BaseLiveQuestionPager showFillBlankQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         BaseLiveQuestionPager baseQuestionPager;
         long before = System.currentTimeMillis();
-        if (isAbLand.get()) {
+        mLogtf.d("showFillBlankQuestion:liveType=" + liveType + ",isAbLand=" + isAbLand.get());
+        if (isAbLand.get() || liveType != LiveVideoConfig.LIVE_TYPE_LECTURE) {
             baseQuestionPager = new QuestionFillInBlankLivePager(activity, videoQuestionLiveEntity);
         } else {
             baseQuestionPager = new QuestionFillInBlankPortLivePager(activity, videoQuestionLiveEntity);
@@ -72,7 +86,9 @@ public class LiveQuestionCreat {
     public BaseLiveQuestionPager showSelectQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         BaseLiveQuestionPager baseQuestionPager;
         long before = System.currentTimeMillis();
-        if (isAbLand.get()) {
+        mLogtf.d("showSelectQuestion:liveType=" + liveType + ",isAbLand=" + isAbLand.get());
+        //直播只有横屏
+        if (isAbLand.get() || liveType != LiveVideoConfig.LIVE_TYPE_LECTURE) {
             baseQuestionPager = new QuestionSelectLivePager(activity, videoQuestionLiveEntity);
         } else {
             baseQuestionPager = new QuestionSelectPortLivePager(activity, videoQuestionLiveEntity);
@@ -88,7 +104,9 @@ public class LiveQuestionCreat {
      */
     public BaseLiveQuestionPager showMulitSelectQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         BaseLiveQuestionPager baseQuestionPager;
-        if (isAbLand.get()) {
+        mLogtf.d("showMulitSelectQuestion:liveType=" + liveType + ",isAbLand=" + isAbLand.get());
+        //直播只有横屏
+        if (isAbLand.get() || liveType != LiveVideoConfig.LIVE_TYPE_LECTURE) {
             baseQuestionPager = new QuestionMulitSelectLivePager(activity, videoQuestionLiveEntity);
         } else {
             baseQuestionPager = new QuestionMulitSelectPortLivePager(activity, videoQuestionLiveEntity);

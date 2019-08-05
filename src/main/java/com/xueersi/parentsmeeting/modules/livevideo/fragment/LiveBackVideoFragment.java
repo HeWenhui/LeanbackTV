@@ -976,7 +976,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER,
                     MediaPlayer.VIDEO_TEACHER_TUTOR, "");
             isNetWorkEnable = true;
-            startNewVideo();
+            //为了让LiveBackVideoBll的onPlaybackComplete回调能完成。
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    startNewVideo();
+                }
+            });
             return;
         }
         onUserBackPressed();

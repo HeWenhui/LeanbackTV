@@ -395,6 +395,7 @@
     <item name="rl_livevideo_common_rank" type="id" />
     <item name="rgiv_livevideo_stand_readygo" type="id" />
     <!--直播-语音答题-->
+    <item name="rl_livevideo_voiceans_pager" type="id" />
     <item name="tv_livevideo_voiceans_title" type="id" />
     <item name="rl_livevideo_voiceans_content" type="id" />
     <item name="lav_livevideo_voiceans_team_mine" type="id" />
@@ -408,6 +409,7 @@
     <item name="iv_livevideo_speecteval_tip" type="id" />
     <item name="iv_livevideo_speecteval_tip_pao" type="id" />
     <item name="tv_livevideo_speecteval_tip" type="id" />
+    <item name="rl_livevideo_stand_voice_result_wrong" type="id" />
     <item name="iv_livevideo_speecteval_result_close" type="id" />
     <item name="iv_livevideo_speecteval_result_top3" type="id" />
     <!--直播-语音弹幕-->

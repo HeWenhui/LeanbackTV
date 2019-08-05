@@ -831,7 +831,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     post(new Runnable() {
                         @Override
                         public void run() {
-                            if (!close) {
+                            if (!close && mRlResult != null) {
                                 removeView(mRlResult);
                             }
 
@@ -850,10 +850,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         post(new Runnable() {
                             @Override
                             public void run() {
-                                if (!close) {
+                                if (!close && mRlResult != null) {
                                     removeView(mRlResult);
                                 }
-
                             }
                         });
                         EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));
@@ -1136,7 +1135,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (!close) {
+                if (!close && mRlResult != null) {
                     removeView(mRlResult);
                 }
             }

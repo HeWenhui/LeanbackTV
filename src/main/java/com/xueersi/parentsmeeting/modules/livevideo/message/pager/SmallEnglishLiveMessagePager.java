@@ -1033,7 +1033,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     private void setMessageLayout(LiveVideoPoint liveVideoPoint, boolean isKeyboardShow) {
         int margin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
-        int leftmargin = liveVideoPoint.x2 + SizeUtils.Dp2Px(mContext, 10);
         RelativeLayout.LayoutParams rmcLayoutParams = (RelativeLayout.LayoutParams) rlMessageContent
                 .getLayoutParams();
         if (isKeyboardShow) {
@@ -1042,12 +1041,15 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             rmcLayoutParams.setMargins(0, 0, margin, liveVideoPoint.y2);
         }
         rmcLayoutParams.height = SizeUtils.Dp2Px(mContext, 68);
-        rlMessageContent.setLayoutParams(rmcLayoutParams);
+        LayoutParamsUtil.setViewLayoutParams(rlMessageContent, rmcLayoutParams);
 
         RelativeLayout.LayoutParams repeatLayoutParams = (RelativeLayout.LayoutParams) btnMessageSwitch
                 .getLayoutParams();
-        repeatLayoutParams.setMargins(leftmargin, 0, 0, 0);
-        btnMessageSwitch.setLayoutParams(repeatLayoutParams);
+        int leftmargin = liveVideoPoint.x2 + SizeUtils.Dp2Px(mContext, 10);
+        if (repeatLayoutParams.leftMargin != leftmargin) {
+            repeatLayoutParams.leftMargin = leftmargin;
+            LayoutParamsUtil.setViewLayoutParams(btnMessageSwitch, repeatLayoutParams);
+        }
     }
 
     @Override
@@ -1079,7 +1081,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
             if (cbMessageClock != null) {
-                int rightMargin = liveVideoPoint.getRightMargin();
+                int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
                 params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
                 if (params.rightMargin != rightMargin) {
                     params.rightMargin = rightMargin;

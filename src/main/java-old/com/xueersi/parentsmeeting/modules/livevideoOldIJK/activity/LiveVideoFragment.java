@@ -629,6 +629,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        mLogtf.d("onConfigurationChanged:orientation=" + getResources().getConfiguration().orientation + ",IsLand=" + mIsLand.get());
         if (mIsLand.get()) {
             mMediaController.setControllerBottom(liveMediaControllerBottom, false);
             setMediaControllerBottomParam();
