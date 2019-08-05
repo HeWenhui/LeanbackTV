@@ -818,7 +818,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     }
 
     private void loadData() {
-        BaseApplication baseApplication = BaseApplication.getInstance();
 //        mRedPacketDialog = new RedPacketAlertDialog(this, baseApplication, false);
         lectureLivePlayBackBll = new LectureLivePlayBackBll(ExperienceLiveVideoActivity.this, "");
         liveBackBll.setStuCourId(mVideoEntity.getStuCourseId());
