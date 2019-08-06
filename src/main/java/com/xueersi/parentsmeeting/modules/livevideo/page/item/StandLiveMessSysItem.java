@@ -104,11 +104,16 @@ public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEnt
         tvMessageItem.setText(entity.getText());
          standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
         standLiveHeadView.setSystem(true);
-        entity.setStandLiveHeadView(standLiveHeadView);
         standLiveHeadView.setEntity(entity);
+        entity.setStandLiveHeadView(standLiveHeadView);
         if (!entity.isPlayAnimation()) {
             entity.setPlayAnimation(true);
-            standLiveHeadView.playAnimation();
+            standLiveHeadView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    standLiveHeadView.playAnimation();
+                }
+            }, 10);
         } else {
             standLiveHeadView.setProgress(1.0f);
         }

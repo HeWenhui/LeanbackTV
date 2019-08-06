@@ -596,9 +596,9 @@ public class EnAchievePager extends LiveBasePager {
      * 蓝色气泡动效
      */
     private void showBetterMeBubble(String current, String target, boolean isIncrease, boolean isDecrease) {
-        ViewGroup rlLivevideoinfo = ((Activity) mContext).findViewById(R.id.rl_livevideo_info);
-        if (rlLivevideoinfo != null) {
-            ViewGroup viewGroup = (ViewGroup) rlLivevideoinfo.getParent();
+        ViewGroup rlLivevideoInfo = ((Activity) mContext).findViewById(R.id.rl_livevideo_info);
+        if (rlLivevideoInfo != null) {
+            ViewGroup viewGroup = (ViewGroup) rlLivevideoInfo.getParent();
             final LottieEffectInfo bubbleEffectInfo = new BubbleLottieEffectInfo(mContext, current, target,
                     isIncrease, isDecrease);
             final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
@@ -623,7 +623,7 @@ public class EnAchievePager extends LiveBasePager {
             lp.addRule(RelativeLayout.ALIGN_LEFT, R.id.rl_livevideo_info);
             lp.addRule(RelativeLayout.ALIGN_RIGHT, R.id.rl_livevideo_info);
             lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            lp.bottomMargin = ScreenUtils.getScreenHeight() - rlLivevideoinfo.getTop();
+            lp.bottomMargin = ScreenUtils.getScreenHeight() - rlLivevideoInfo.getTop() - SizeUtils.Dp2Px(mContext, 3);
             viewGroup.addView(lottieAnimationView, lp);
         }
     }

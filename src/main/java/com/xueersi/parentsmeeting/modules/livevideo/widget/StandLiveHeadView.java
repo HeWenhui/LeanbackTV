@@ -78,24 +78,21 @@ public class StandLiveHeadView extends LottieAnimationView {
     public void setComposition(@NonNull LottieComposition composition) {
         super.setComposition(composition);
         if (entity != null) {
-            if (isSystem) {
-                updateHeadSys();
-            } else {
-                updateHeadUrl();
-            }
-            updateName();
-            updateSegment();
-            updateTail();
+           return;
         }
+        if (isSystem) {
+            updateHeadSys();
+        } else {
+            updateHeadUrl();
+        }
+        updateName();
+        updateSegment();
+        updateTail();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        LottieComposition composition = getComposition();
-        if (composition == null) {
-            return;
-        }
     }
 
     public void updateHeadUrl() {

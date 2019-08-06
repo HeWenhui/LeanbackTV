@@ -184,18 +184,18 @@ public class BetterMeConfig {
                     R.drawable.app_livevideo_enteampk_hengxinbojin_xingxign4_img_nor,
                     R.drawable.app_livevideo_enteampk_hengxinbojin_xingxign5_img_nor,},
             {
-                    R.drawable.app_livevideo_enteampk_juejiangqingtong_img_head,
-                    R.drawable.app_livevideo_enteampk_qinfenbaiyin_img_head,
-                    R.drawable.app_livevideo_enteampk_kekuhuangjin_img_head,
-                    R.drawable.app_livevideo_enteampk_hengxinbojin_img_head,
-                    R.drawable.app_livevideo_enteampk_zuanshi_img_head,
-                    R.drawable.app_livevideo_enteampk_zuiqiangxueba_img_head},
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing1_img_nor,
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing2_img_nor,
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing3_img_nor,
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing4_img_nor,
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing5_img_nor,
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing6_img_nor},
             {
-                    R.drawable.app_livevideo_enteampk_juejiangqingtong_img_head,
-                    R.drawable.app_livevideo_enteampk_qinfenbaiyin_img_head,
-                    R.drawable.app_livevideo_enteampk_kekuhuangjin_img_head,
-                    R.drawable.app_livevideo_enteampk_hengxinbojin_img_head,
-                    R.drawable.app_livevideo_enteampk_zuanshi_img_head,
-                    R.drawable.app_livevideo_enteampk_zuiqiangxueba_img_head}
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing1_img_nor,
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing2_img_nor,
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing3_img_nor,
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing4_img_nor,
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing5_img_nor,
+                    R.drawable.app_livevideo_enteampk__zuiqiangxueba_xingxing6_img_nor}
     };
 }
