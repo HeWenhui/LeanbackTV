@@ -134,6 +134,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 }
             }
         }
+        mLogtf.addCommon("testid", mDetail.getvQuestionID());
         mLogtf.d("VoiceAnswerPager:answer=" + answer);
         initListener();
         initData();

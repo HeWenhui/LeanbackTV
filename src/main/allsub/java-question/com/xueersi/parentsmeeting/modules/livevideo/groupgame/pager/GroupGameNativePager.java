@@ -363,6 +363,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             logger.d(TAG + ":setVolume:0");
             StableLogHashMap stableLogHashMap = new StableLogHashMap("stop");
             stableLogHashMap.put("tag", TAG);
+            stableLogHashMap.put("creattime", "" + creattime);
             umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
             logger.d(TAG + ":setVolume:null");
@@ -650,6 +651,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             logger.d("onDestroy:setVolume:1");
             StableLogHashMap stableLogHashMap = new StableLogHashMap("start");
             stableLogHashMap.put("tag", TAG);
+            stableLogHashMap.put("creattime", "" + creattime);
             umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
             logger.d("onDestroy:setVolume:null");
