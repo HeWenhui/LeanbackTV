@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.AgoraVideoChatInter;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoAudioChatHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
@@ -503,7 +504,7 @@ public class AgoraChatPager extends LiveBasePager implements AgoraVideoChatInter
         TextView tv_livevideo_chat_count;
         ClassmateEntity classmateEntity;
         long before = 0;
-        Handler handler = new Handler(Looper.getMainLooper());
+        Handler handler = LiveMainHandler.getMainHandler();
 
         Runnable praiseRunnable = new Runnable() {
             @Override

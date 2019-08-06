@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.MidToast;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
@@ -47,7 +48,7 @@ public class ChatTipBll {
     protected Logger logger = LiveLoggerFactory.getLogger(TAG);
     Activity activity;
     private LiveViewAction liveViewAction;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler = LiveMainHandler.getMainHandler();
     private LiveAndBackDebug liveAndBackDebug;
     private String linkMicNonce = "";
     private VideoAudioChatHttp videoChatHttp;

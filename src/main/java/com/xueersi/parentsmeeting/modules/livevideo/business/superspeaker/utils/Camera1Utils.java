@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -311,7 +312,7 @@ public class Camera1Utils implements IRecordVideoView {
         }
     }
 
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     private Runnable mUpdateMicStatusTimer = new Runnable() {
         public void run() {
             updateMicStatus();
