@@ -611,11 +611,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         //更新小目标开口时长
-                        String aimType = "";
-                        if(mGetInfo.getBetterMe().getTarget()!=null){
+                        String aimType = null;
+                        if (mGetInfo.getBetterMe().getTarget() != null) {
                             aimType = mGetInfo.getBetterMe().getTarget().getAimType();
-                        }
-                        else if(mGetInfo.getBetterMe().getCurrent()!=null){
+                        } else if (mGetInfo.getBetterMe().getCurrent() != null) {
                             aimType = mGetInfo.getBetterMe().getCurrent().getType();
                         }
                         if (BetterMeConfig.TYPE_TALKTIME.equals(aimType)) {
@@ -628,9 +627,17 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         logger.d("setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
                         if (starAction != null) {
                             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                            int star = jsonObject.getInt("star");
-                            if (star > 0) {
-                                starAction.onStarAdd(star, x, y);
+                            if (jsonObject.has("star")) {
+                                int star = jsonObject.getInt("star");
+                                if (star > 0) {
+                                    starAction.onStarAdd(star, x, y);
+                                }
+                            } else if (jsonObject.has("data")) {
+                                //服务端可能返回data两层嵌套
+                                int star = jsonObject.getJSONObject("data").getInt("star");
+                                if (star > 0) {
+                                    starAction.onStarAdd(star, x, y);
+                                }
                             }
                         }
                     }
