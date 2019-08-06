@@ -88,7 +88,7 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
 
     @Override
     public int getLayoutResId() {
-        return R.layout.item_live_roleplayer_other_voice;
+        return R.layout.item_live_roleplayer_machine_other_voice;
     }
 
     @Override
