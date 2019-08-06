@@ -114,7 +114,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         questiongtype = Arrays.asList(ptTypeFilters);
     }
 
-    private void testPraise(RelativeLayout bottomContent){
+    private void testPraise(RelativeLayout bottomContent) {
         String data = "{\"bizId\":2,\"rankTitle\":\"课清测试\",\"category\":1,\"grade\":1,\"rankType\":1,\"isInList\":1," +
                 "\"word\":\"粤语,you're as good as gold!\",\"desc\":\"口述题测试, 口述题测试口述题测试口述题测试" +
                 ", 口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, " +
@@ -158,10 +158,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
         }
     }
+
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
-  //     testPraise(bottomContent);
+        //     testPraise(bottomContent);
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity answerResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity();
 //            answerResultEntity.isVoice = 1;
@@ -941,7 +942,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity,
                                          String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-            mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
+            mLogtf.d("liveSubmitTestAnswer:type=" + videoQuestionLiveEntity.srcType + ",newarts=" + videoQuestionLiveEntity.isNewArtsH5Courseware() + "," + LiveVideoConfig.isNewArts + ",testId=" +
                     videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
                     + testAnswer);
             String userMode = "1";
@@ -950,7 +951,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     userMode = "0";
                 }
             }
-            if (LiveVideoConfig.isNewArts) {
+            if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
                 logger.e("======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
                 getHttpManager().liveNewArtsSubmitTestAnswer(
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, isSubmit, new HttpCallBack() {

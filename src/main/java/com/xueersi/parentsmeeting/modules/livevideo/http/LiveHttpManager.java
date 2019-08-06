@@ -915,7 +915,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("duration", duration);
         params.addBodyParam("speakingNum", speakingNum);
-        params.addBodyParam("speakingLen", speakingLen);
+        //暂时去掉，这个数据太大20190731
+//        params.addBodyParam("speakingLen", speakingLen);
+        params.addBodyParam("speakingLen", "");
         setDefaultParameter(params);
         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_TOTAL_OPEN;
         sendPost(requestCallBack.url, params, requestCallBack);

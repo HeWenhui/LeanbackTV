@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -363,7 +364,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                                 put("protocol", String.valueOf(protocol)).
                                                 put("isPlayerCreated", String.valueOf(isPlayerCreated)).
                                                 put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
-                                                put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION);
+                                                put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
+                                                put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
                                         UmsAgentManager.umsAgentDebug(LiveVideoActivityBase.this, LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
                                         CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                         e.printStackTrace();

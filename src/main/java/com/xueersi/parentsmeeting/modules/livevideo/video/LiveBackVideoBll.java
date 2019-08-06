@@ -134,10 +134,10 @@ public class LiveBackVideoBll {
         if (this.nowPos < totalRouteNum) {
             changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
         } else {
-            if(totalRouteNum!=0) {
+            if (totalRouteNum != 0) {
                 this.nowPos = 0;
                 changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
-            }else{
+            } else {
                 playNewVideo();
             }
         }
@@ -185,7 +185,15 @@ public class LiveBackVideoBll {
             return;
         }
         if (vPlayer != null && mUri != null) {
-            ShareDataManager.getInstance().put(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart,
+            String videoPath;
+            String url = mVideoEntity.getVideoPath();
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+
+            ShareDataManager.getInstance().put(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart,
                     ShareDataManager.SHAREDATA_USER);
         }
     }

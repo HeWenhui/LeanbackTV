@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
@@ -22,6 +21,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -209,24 +209,24 @@ public class CoursewarePreload {
             if (0 == mSubject) {//理科
                 logger.i("donwload science");
                 subjectNum.getAndIncrement();
-                mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack(false, "science"));
+                mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack(false, "science", liveId));
             } else if (1 == mSubject) {//英语
                 logger.i("download english");
                 subjectNum.getAndIncrement();
-                mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack(false, "english"));
+                mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack(false, "english", liveId));
             } else if (2 == mSubject) {//语文
                 logger.i("download chs");
                 subjectNum.getAndIncrement();
-                mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack(false, "chs"));
+                mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack(false, "chs", liveId));
             }
         } else {//下载当天所有课件资源
             logger.i("donwload all subjects");
             subjectNum.getAndIncrement();
-            mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack(false, "science"));
+            mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack(false, "science", ""));
             subjectNum.getAndIncrement();
-            mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack(false, "english"));
+            mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack(false, "english", ""));
             subjectNum.getAndIncrement();
-            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs"));
+            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs", ""));
         }
     }
 
@@ -234,10 +234,12 @@ public class CoursewarePreload {
     public class CoursewareHttpCallBack extends HttpCallBack {
 
         private String arts;
+        private String liveId;
 
-        public CoursewareHttpCallBack(boolean isShow, String arts) {
+        public CoursewareHttpCallBack(boolean isShow, String arts, String liveId) {
             super(isShow);
             this.arts = arts;
+            this.liveId = liveId;
         }
 
         @Override
@@ -250,7 +252,26 @@ public class CoursewarePreload {
             if ("science".equals(arts) && coursewareInfoEntity != null) {
                 mNbCoursewareInfo = coursewareInfoEntity.getNbCoursewareInfo();
             }
-            performDownLoad();
+            boolean perform = performDownLoad();
+            try {
+                StableLogHashMap hashMap = new StableLogHashMap();
+//            hashMap.put("eventid", LogConfig.PRE_LOAD_START);
+                hashMap.put("logtype", "onPmSuccess");
+                if (coursewareInfoEntity != null) {
+                    hashMap.put("size", "" + coursewareInfoEntity.getCoursewaresList().size());
+                } else {
+                    hashMap.put("size", "-10");
+                }
+                hashMap.put("arts", "" + arts);
+                hashMap.put("subjectnum", "" + subjectNum.get());
+                hashMap.put("perform", "" + perform);
+                hashMap.put("liveId", "" + liveId);
+                hashMap.put("ip", IpAddressUtil.USER_IP);
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID,
+                        LogConfig.PRE_LOAD_START, hashMap.getData());
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
         }
 
         @Override
@@ -275,8 +296,8 @@ public class CoursewarePreload {
         }
     }
 
-    private void performDownLoad() {
-        logger.i("" + courseWareInfos.size() + " " + subjectNum.get());
+    private boolean performDownLoad() {
+        logger.i("performDownLoad:size=" + courseWareInfos.size() + " " + subjectNum.get());
         if (courseWareInfos.size() == subjectNum.get()) {
             logger.i("perform download ");
             AppBll.getInstance().registerAppEvent(CoursewarePreload.this);
@@ -286,6 +307,9 @@ public class CoursewarePreload {
                     mergeList(courseWareInfos, 1),
                     mergeList(courseWareInfos, 2),
                     mergeList(courseWareInfos, 3));
+            return true;
+        } else {
+            return false;
         }
     }
 
