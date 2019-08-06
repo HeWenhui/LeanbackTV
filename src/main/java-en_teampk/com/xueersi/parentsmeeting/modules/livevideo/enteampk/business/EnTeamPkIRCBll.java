@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.business;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
@@ -47,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -861,6 +863,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         final String teamId = "" + pkTeamEntity.getPkTeamId();
                         final String testId = ("" + old.id).replace(",", "-");
                         mLogtf.d("onCourseEnd:isShow:old=" + old.id + ",testId=" + testId + ",teamId=" + teamId);
+                        if(!TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21,old.type))
                         getHttpManager().updataEnglishPkByTestId(teamId, testId, new HttpCallBack(false) {
                             AtomicInteger tryCount = new AtomicInteger(5);
                             HttpCallBack callBack = this;
