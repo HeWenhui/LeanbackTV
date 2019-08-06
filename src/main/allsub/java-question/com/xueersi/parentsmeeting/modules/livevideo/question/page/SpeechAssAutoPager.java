@@ -52,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEv
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.EngForceSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TsSpeechLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
@@ -74,7 +75,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public static boolean DEBUG = false;
-    String eventId = LiveVideoConfig.LIVE_SPEECH_TEST2;
     /** 语音保存位置 */
     private String id;
     /** 时间倒计时，表情 */
@@ -181,14 +181,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.time = time;
         entranceTime = System.currentTimeMillis();
         this.livePagerBack = livePagerBack;
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "receiveVoiceTest");
-        mData.put("live", "" + isLive);
-        mData.put("testtype", "4");
-        mData.put("testid", id);
-        mData.put("answer", content);
-        mData.put("answertime", "" + time);
-        umsAgentDebugPv(eventId, mData);
+        TsSpeechLog.receiveVoiceTest(getLiveAndBackDebug(), isLive, id, content, time);
     }
 
     public SpeechAssAutoPager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String liveid, String
@@ -214,14 +207,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.learning_stage = learning_stage;
         entranceTime = System.currentTimeMillis();
         setLivePagerBack(livePagerBack);
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "receiveVoiceTest");
-        mData.put("live", "" + isLive);
-        mData.put("testtype", "4");
-        mData.put("testid", id);
-        mData.put("answer", content);
-        mData.put("answertime", "" + time);
-        umsAgentDebugPv(eventId, mData);
+        TsSpeechLog.receiveVoiceTest(getLiveAndBackDebug(), isLive, id, content, time);
     }
 
     public String getId() {
@@ -408,11 +394,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
             mIse.prepar();
         }
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "startRecord");
-        mData.put("testid", id);
-        mData.put("islive", "" + isLive);
-        umsAgentDebugInter(eventId, mData);
+        TsSpeechLog.startRecord(getLiveAndBackDebug(), isLive, id);
         saveFile();
         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         mParam.setStrEvaluator(content2);
@@ -434,11 +416,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     return;
                 }
                 if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                    Map<String, String> mData = new HashMap<>();
-                    mData.put("logtype", "voiceTestClose");
-                    mData.put("islive", "" + isLive);
-                    mData.put("testid", "" + id);
-                    umsAgentDebugInter(eventId, mData);
+                    TsSpeechLog.voiceTestClose(getLiveAndBackDebug(), isLive, id);
                     onEvaluatorSuccess(resultEntity, this);
 
 //                    resultEntity.setStatus(ResultEntity.ERROR);
@@ -522,7 +500,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    speechEvalAction.speechIsAnswered(isNewArts,id, new AbstractBusinessDataCallBack() {
+                    speechEvalAction.speechIsAnswered(isNewArts, id, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {
                             boolean answer = (boolean) objData[0];
@@ -817,19 +795,13 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         }
         speechEvalAction.onSpeechSuccess(id);
         Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "voiceTestResult");
-        mData.put("islive", "" + isLive);
-        mData.put("testid", id);
-        mData.put("goldnum", "" + gold);
-        mData.put("starnum", "" + progress);
-        mData.put("totalscore", "" + score);
-        mData.put("speaktime", "" + resultEntity.getSpeechDuration());
+        String state;
         if (haveAnswer) {
-            mData.put("state", "noSubmit");
+            state = "noSubmit";
         } else {
-            mData.put("state", isEnd ? "endPublish" : "autoSubmit");
+            state = isEnd ? "endPublish" : "autoSubmit";
         }
-        umsAgentDebugPv(eventId, mData);
+        TsSpeechLog.sno5(getLiveAndBackDebug(), id, isLive, state, gold, progress, score, resultEntity.getSpeechDuration());
     }
 
     private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {

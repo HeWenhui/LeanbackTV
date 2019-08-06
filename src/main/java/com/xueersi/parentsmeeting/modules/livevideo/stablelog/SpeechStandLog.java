@@ -35,7 +35,6 @@ public class SpeechStandLog {
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
-
     /** 语音测评第二步，收到互动题 */
     public static void sno2(LiveAndBackDebug liveAndBackDebug, String testId, String nonce) {
         StableLogHashMap logHashMap = new StableLogHashMap("voiceTestReceive");
