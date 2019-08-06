@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.AssertUtil;
@@ -77,6 +78,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -1212,8 +1214,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
                         addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"), jsonObject.optString("path", ""), jsonObject.optInt("segmentType")
-                                , jsonObject.optInt("star"));
+                                .getString("msg"), jsonObject.optString("path", ""), jsonObject.optInt
+                                ("segmentType"), jsonObject.optInt("star"));
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
@@ -1521,6 +1523,18 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 });
             }
         });
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        super.setVideoLayout(liveVideoPoint);
+        if (liveStandMessageContent == null) {
+            return;
+        }
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) liveStandMessageContent
+                .getLayoutParams();
+        layoutParams.leftMargin = liveVideoPoint.x2;
+        liveStandMessageContent.setLayoutParams(layoutParams);
     }
 
     /*添加聊天信息，超过120，移除60个*/
