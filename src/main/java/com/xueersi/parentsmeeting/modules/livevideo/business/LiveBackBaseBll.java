@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
     protected VideoLivePlayBackEntity mVideoEntity;
     protected LiveGetInfo liveGetInfo;
     protected AtomicBoolean mIsLand;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     protected final int mLiveType;
     protected LiveVideoPoint liveVideoPoint;
     private LiveViewAction liveViewAction;

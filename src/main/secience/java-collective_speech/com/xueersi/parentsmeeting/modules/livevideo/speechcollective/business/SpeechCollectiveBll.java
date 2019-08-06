@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageSend;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechCollectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -56,7 +57,7 @@ public class SpeechCollectiveBll implements com.xueersi.parentsmeeting.modules.l
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     private AcousticEchoCanceler m_canceler = null;
 
-    protected android.os.Handler mHandler = new android.os.Handler(Looper.getMainLooper());
+    protected android.os.Handler mHandler = LiveMainHandler.getMainHandler();
 
     public SpeechCollectiveBll(Activity activity) {
         this.activity = activity;

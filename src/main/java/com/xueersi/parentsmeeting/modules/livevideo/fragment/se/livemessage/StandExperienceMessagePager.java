@@ -86,6 +86,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOther
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessSysItem;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
@@ -858,10 +859,9 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
         logger.i("initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mFlowerWindow = flowerWindow;
-        Handler handler = new Handler(Looper.getMainLooper());
         for (int i = 0; i < flowerEntities.size(); i++) {
             final int index = i;
-            handler.postDelayed(new Runnable() {
+            LiveMainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     final FlowerEntity entity = flowerEntities.get(index);

@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONObject;
@@ -43,7 +44,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     protected RelativeLayout mContentView;
     protected LiveBll2 mLiveBll;
     protected LiveAndBackDebug contextLiveAndBackDebug;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     protected LiveGetInfo mGetInfo;
     protected String mLiveId;
     protected final int mLiveType;

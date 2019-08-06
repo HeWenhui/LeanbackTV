@@ -7,6 +7,7 @@ import android.os.Looper;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -21,8 +22,7 @@ public class UserGoldTotal {
         if (goldNum == null || time > 120000) {
             OtherModulesEnter.requestGoldTotal(mContext);
         } else {
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
+            LiveMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     AppEvent.OnGetGoldUpdateEvent event = new AppEvent.OnGetGoldUpdateEvent(goldNum);

@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -138,7 +139,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
             public void onResponse(Call call, Response response) throws IOException {
                 final String r = response.body().string();
                 logger.d("onResponse:r="+r);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                LiveMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         wvSubjectWeb.loadDataWithBaseURL("",r,"text/html", "UTF-8", "");

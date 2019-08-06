@@ -13,12 +13,11 @@ public class LiveMainHandler {
         return mHandler;
     }
 
-    public static void post(Runnable runnable) {
-        Handler mHandler = new Handler(Looper.getMainLooper());
-        mHandler.post(runnable);
-    }
-
     private static Handler mHandler = new Handler(Looper.getMainLooper());
+
+    public static boolean post(Runnable runnable) {
+        return mHandler.post(runnable);
+    }
 
     public static boolean postDelayed(Runnable r, long delayMillis) {
         return mHandler.postDelayed(r, delayMillis);

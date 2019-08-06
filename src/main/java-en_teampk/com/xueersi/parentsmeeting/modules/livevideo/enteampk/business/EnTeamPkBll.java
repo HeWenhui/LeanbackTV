@@ -34,16 +34,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
 
 public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpdata {
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler = LiveMainHandler.getMainHandler();
     /** 得到本组信息重试 */
     private int getSelfTeamInfoTimes = 1;
     private LiveViewAction liveViewAction;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
     private TeamPkRankPager teamPkRankPager;
     private boolean teamEnd = false;
     private TeamPkRankResultPager teamPkRankResultPager;
@@ -226,7 +226,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
             return;
         }
         liveViewAction.addView(view);
-        mHandler.postDelayed(new Runnable() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 liveViewAction.removeView(view);
