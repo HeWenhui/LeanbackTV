@@ -312,7 +312,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         tvSpeectevalEncourage.setTypeface(fontFace);
         mParam = new SpeechParamEntity();
         File dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
-        FileUtils.deleteDir(dir);
+        FileUtils.deleteFilesInDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -532,6 +532,11 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         });
     }
 
+    private void saveFile() {
+        File dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
+        saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
+    }
+
     private void setAudioRequest() {
         logger.d("setAudioRequest:userBack=" + userBack + ",isEnd=" + isEnd);
         if (userBack) {
@@ -543,6 +548,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             mIse.prepar();
         }
         SpeechStandLog.startRecord(getLiveAndBackDebug(), isLive, id);
+        saveFile();
         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         mParam.setStrEvaluator(content2);
         mParam.setLocalSavePath(saveVideoFile.getPath());
@@ -678,6 +684,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
+                        saveFile();
                         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
                         mParam.setStrEvaluator(content2);
                         mParam.setLocalSavePath(saveVideoFile.getPath());
@@ -695,6 +702,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
+                        saveFile();
                         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
                         mParam.setStrEvaluator(content2);
                         mParam.setLocalSavePath(saveVideoFile.getPath());
@@ -1017,6 +1025,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
+                        saveFile();
                         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
                         mParam.setStrEvaluator(content2);
                         mParam.setLocalSavePath(saveVideoFile.getPath());
@@ -1046,6 +1055,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                 @Override
                                 public void run() {
                                     errorSetGone();
+                                    saveFile();
                                     mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
                                     mParam.setStrEvaluator(content2);
                                     mParam.setLocalSavePath(saveVideoFile.getPath());
@@ -1068,6 +1078,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     if (!isEnd) {
                         errorSetGone();
                         if (isAttach()) {
+                            saveFile();
                             mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
                             mParam.setStrEvaluator(content2);
                             mParam.setLocalSavePath(saveVideoFile.getPath());
@@ -1090,6 +1101,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                 @Override
                                 public void run() {
                                     errorSetGone();
+                                    saveFile();
                                     mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
                                     mParam.setStrEvaluator(content2);
                                     mParam.setLocalSavePath(saveVideoFile.getPath());
