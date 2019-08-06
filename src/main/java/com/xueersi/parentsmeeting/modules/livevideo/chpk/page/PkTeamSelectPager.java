@@ -776,6 +776,8 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     }
 
     private void releaseRes() {
+        stopMusic(R.raw.war_bg);
+
         try {
             releaseSoundRes();
             cancelMarquee();
