@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONObject;
@@ -35,7 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LiveBaseBll extends BaseBll implements LiveViewAction {
 
-    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
     /** 过时，使用LiveViewAction和实现的方法替代*/
     @Deprecated
     protected RelativeLayout mRootView;

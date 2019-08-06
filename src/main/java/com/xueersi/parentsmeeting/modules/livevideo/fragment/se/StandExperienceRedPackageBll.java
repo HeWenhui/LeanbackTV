@@ -60,7 +60,7 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
                 redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
                 redPackageStandBll.setUserName(showName);
                 redPackageStandBll.setHeadUrl(headUrl);
-                redPackageStandBll.initView(mRootView);
+                redPackageStandBll.initView(mRootView, getLiveViewAction());
                 redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
                     @Override
                     public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {
@@ -111,7 +111,7 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
             } else {
                 RedPackageBll redPackageBll = new RedPackageBll(activity, liveGetInfo, false);
                 redPackageBll.setVSectionID(mVideoEntity.getSectionId());
-                redPackageBll.initView(mRootView);
+                redPackageBll.initView(mRootView, getLiveViewAction());
                 redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {

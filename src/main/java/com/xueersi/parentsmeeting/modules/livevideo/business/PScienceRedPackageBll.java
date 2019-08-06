@@ -35,6 +35,7 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
     /** 直播id */
     private String mVSectionID;
     private ReceiveGold receiveGold;
+    private LiveViewAction liveViewAction;
     /** 红包的布局 */
     private RelativeLayout rlRedpacketContent;
     boolean isLive;
@@ -88,7 +89,8 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         rlRedpacketContent.removeAllViews();
     }
 
-    public void initView(RelativeLayout bottomContent) {
+    public void initView(RelativeLayout bottomContent, LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
         //红包
         if (rlRedpacketContent != null) {
             bottomContent.addView(rlRedpacketContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

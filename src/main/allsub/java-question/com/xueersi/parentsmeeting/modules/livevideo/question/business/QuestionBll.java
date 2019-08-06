@@ -295,6 +295,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setLiveType(int liveType) {
         this.liveType = liveType;
+        liveQuestionCreat.setLiveType(liveType);
     }
 
     public void setQuestionHttp(QuestionHttp questionHttp) {
