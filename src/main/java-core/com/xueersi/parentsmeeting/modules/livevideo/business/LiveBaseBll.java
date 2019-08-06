@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class LiveBaseBll extends BaseBll implements LiveViewAction {
 
     protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
-    /** 过时，使用LiveViewAction和实现的方法替代*/
+    /** 过时，使用LiveViewAction和实现的方法替代 */
     @Deprecated
     protected RelativeLayout mRootView;
     protected RelativeLayout mContentView;
@@ -349,6 +349,11 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
 
     public void addView(LiveVideoLevel level, View child) {
         liveViewAction.addView(level, child);
+    }
+
+    @Override
+    public void addView(View child, int width, int height) {
+        liveViewAction.addView(child, width, height);
     }
 
     public void removeView(View child) {

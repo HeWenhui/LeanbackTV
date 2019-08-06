@@ -31,7 +31,7 @@
                 android:layout_gravity="bottom"
                 android:background="@drawable/addgoldcoin"
                 />
-            <TextView
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_livevideo_redpackage_gold"
                 android:text="8"
                 android:textSize="90sp"

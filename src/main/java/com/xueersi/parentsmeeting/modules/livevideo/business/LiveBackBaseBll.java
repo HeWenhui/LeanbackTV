@@ -181,6 +181,11 @@ public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
         liveViewAction.addView(level, child);
     }
 
+    @Override
+    public void addView(View child, int width, int height) {
+        liveViewAction.addView(child, width, height);
+    }
+
     public void removeView(View child) {
         liveViewAction.removeView(child);
     }
