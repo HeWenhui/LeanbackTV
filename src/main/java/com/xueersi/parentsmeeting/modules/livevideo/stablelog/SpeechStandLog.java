@@ -11,6 +11,31 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 public class SpeechStandLog {
     private static String eventId = LiveVideoConfig.LIVE_STAND_SPEECH_TEST;
 
+    public static void receiveVoiceTest(LiveAndBackDebug liveAndBackDebug, boolean isLive, String id, String content, int time) {
+        StableLogHashMap logHashMap = new StableLogHashMap("receiveVoiceTest");
+        logHashMap.put("live", "" + isLive);
+        logHashMap.put("testtype", "4");
+        logHashMap.put("testid", id);
+        logHashMap.put("answer", content);
+        logHashMap.put("answertime", "" + time);
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+    }
+
+    public static void startRecord(LiveAndBackDebug liveAndBackDebug, boolean isLive, String id) {
+        StableLogHashMap logHashMap = new StableLogHashMap("startRecord");
+        logHashMap.put("testid", id);
+        logHashMap.put("islive", "" + isLive);
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+    }
+
+    public static void voiceTestClose(LiveAndBackDebug liveAndBackDebug, boolean isLive, String id) {
+        StableLogHashMap logHashMap = new StableLogHashMap("voiceTestClose");
+        logHashMap.put("islive", "" + isLive);
+        logHashMap.put("testid", "" + id);
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+    }
+
+
     /** 语音测评第二步，收到互动题 */
     public static void sno2(LiveAndBackDebug liveAndBackDebug, String testId, String nonce) {
         StableLogHashMap logHashMap = new StableLogHashMap("voiceTestReceive");
