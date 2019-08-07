@@ -36,7 +36,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -53,7 +52,6 @@ import java.util.List;
  */
 public class LectureLiveVideoFragment extends LiveFragmentBase implements ActivityChangeLand {
     private String TAG = "LectureLiveVideoFrameLog";
-    protected LiveIRCMessageBll liveIRCMessageBll;
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     protected BaseLiveMediaControllerBottom liveMediaControllerBottom;
     RelativeLayout bottomContent;

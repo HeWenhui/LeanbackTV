@@ -99,4 +99,11 @@
         <attr name="cIsAlpha" format="boolean" />
         <attr name="cInnerRaidus" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="XesLottieAnimView">
+        <!--目标图片正常态图片-->
+        <attr name="nor_img_res" format="reference"></attr>
+        <!--目标图片点击态图片-->
+        <attr name="click_img_res" format="reference"></attr>
+    </declare-styleable>
 </resources>
