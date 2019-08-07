@@ -175,7 +175,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      */
     private boolean addJs = false;
     private boolean isSubmit = false;
-
     private PreLoad preLoad;
     private SingleModeAction singleModeAction;
     private StringBuilder content = new StringBuilder();
