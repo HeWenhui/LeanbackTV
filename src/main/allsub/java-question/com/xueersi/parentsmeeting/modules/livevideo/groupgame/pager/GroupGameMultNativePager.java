@@ -386,7 +386,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         return 0;
     }
 
-    public int getNextPageNum(int pageNum) {
+    public int getNextPageNum(int pageNum,Boolean isDelay) {
         ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
         List<Integer> lists = new ArrayList<Integer>();
         for (int i = 0; i < entities.size(); i++) {
@@ -405,25 +405,34 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         int nextNum = gameOrderList.get(pageNum % gameOrderList.size());
         final CourseGroupMyItem courseGroupItem = (CourseGroupMyItem) courseGroupItemHashMap.get("" + stuid);
         if (lists.get(nextNum - 1) == stuid) {
-            mainHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startSpeechRecognize();
-                    courseGroupItem.muteLocalAudio(false);
-                }
-            }, 3 * 1000);
+            if(isDelay){
+                mainHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startSpeechRecognize();
+                        courseGroupItem.muteLocalAudio(false);
+                    }
+                }, 3 * 1000);
+            }else {
+                startSpeechRecognize();
+                courseGroupItem.muteLocalAudio(false);
+            }
             logger.d("uploadScore :"+stuid+" --自己 = " +nextNum +"--"+speechContent);
             return 3;
         } else {
             if (mIse != null) {
                 mIse.cancel();
             }
-            mainHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    courseGroupItem.muteLocalAudio(true);
-                }
-            }, 3 * 1000);
+            if(isDelay){
+                mainHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        courseGroupItem.muteLocalAudio(true);
+                    }
+                }, 3 * 1000);
+            }else {
+                courseGroupItem.muteLocalAudio(true);
+            }
             logger.d("uploadScore :"+stuid+" --别人 = " +nextNum +"--"+speechContent);
             if(entities.size()<3){
                 return 2;
@@ -499,7 +508,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                jsonData.put("studentNum", -1);
                         if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
                                 .equals(detailInfo.type)){
-                            jsonData.put("nextStudentNum", getNextPageNum(currentAnswerIndex));
+                            jsonData.put("nextStudentNum", getNextPageNum(currentAnswerIndex,true));
                             answerInfo.add(false);
                         }
                         jsonData.put("turnToPageNum", currentAnswerIndex);
@@ -690,7 +699,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         resultData.put("pageNum", pageNum);
                         if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
                                 .equals(detailInfo.type)){
-                            resultData.put("nextStudentNum", getNextPageNum(0));
+                            resultData.put("nextStudentNum", getNextPageNum(0,false));
                             JSONArray answerInfoData = new JSONArray();
                             for (int i = 0; i < answerInfo.size(); i++) {
                                 answerInfoData.put(answerInfo.get(i));
@@ -767,7 +776,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             resultData.put("turnToPageNum", pageNum);
                             if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
                                     .equals(detailInfo.type)){
-                                resultData.put("nextStudentNum", getNextPageNum(pageNum));
+                                resultData.put("nextStudentNum", getNextPageNum(pageNum,false));
                                 JSONArray answerInfoData = new JSONArray();
                                 for (int i = 0; i < answerInfo.size(); i++) {
                                     answerInfoData.put(answerInfo.get(i));
@@ -2895,7 +2904,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                     if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
                                                             .equals(detailInfo.type)){
                                                         answerInfo.add(true);
-                                                        jsonData.put("nextStudentNum",  getNextPageNum(currentAnswerIndex));
+                                                        jsonData.put("nextStudentNum",  getNextPageNum(currentAnswerIndex,true));
                                                     } else {
                                                         jsonData.put("studentNum", finalStudentNum);
                                                     }
