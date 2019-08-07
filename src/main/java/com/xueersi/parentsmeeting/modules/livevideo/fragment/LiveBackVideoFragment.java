@@ -68,6 +68,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -904,8 +905,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             }
             final boolean finalPause = pause;
             logger.i("onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
+            LiveMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity
@@ -977,8 +977,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                     MediaPlayer.VIDEO_TEACHER_TUTOR, "");
             isNetWorkEnable = true;
             //为了让LiveBackVideoBll的onPlaybackComplete回调能完成。
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
+            LiveMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     startNewVideo();

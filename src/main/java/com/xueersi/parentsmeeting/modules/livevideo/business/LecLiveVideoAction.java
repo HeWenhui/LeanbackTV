@@ -12,6 +12,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -100,7 +101,7 @@ public class LecLiveVideoAction extends LiveVideoAction {
 //                        }
                         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
                         logger.d("onConfigurationChanged:mIsLand=" + mIsLand.get() + ",left=" + lp.leftMargin + "," + lp.topMargin);
-                        bt.setLayoutParams(lp);
+                        LayoutParamsUtil.setViewLayoutParams(bt, lp);
                         return false;
                     }
                 });

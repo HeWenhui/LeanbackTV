@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 
@@ -163,7 +164,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 logger.i( "完成播放");
                 mIsPlaying = false;
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                LiveMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         logger.i( "currentThread:"+Thread.currentThread());
@@ -180,7 +181,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 super.onStop(dataSource, manager);
                 logger.i( "停止播放");
                 mIsPlaying = false;
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                LiveMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         logger.i( "currentThread:"+Thread.currentThread());
@@ -204,7 +205,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
             public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
                 super.onError(msg, dataSource, manager);
                 mIsPlaying = false;
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                LiveMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         logger.i( "currentThread:"+Thread.currentThread());

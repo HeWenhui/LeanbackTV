@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.Map;
@@ -32,7 +33,7 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected LivePagerBack livePagerBack;
     protected VideoQuestionLiveEntity baseVideoQuestionEntity;
     protected OnPagerClose onPagerClose;
-    protected Handler mainHandler = new Handler(Looper.getMainLooper());
+    protected Handler mainHandler = LiveMainHandler.getMainHandler();
     /** pager创建时间 */
     protected long creattime;
     protected int mState = LiveActivityState.INITIALIZING;

@@ -11,6 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.UserOnlineLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +31,7 @@ public class UserOnline {
     private int userOnlineError = 0;
     private LogToFile mLogtf;
     private String TAG = "UserOnline";
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
+    private Handler mainHandler = LiveMainHandler.getMainHandler();
     private Activity activity;
     private ContextLiveAndBackDebug contextLiveAndBackDebug;
     private long startHeart;

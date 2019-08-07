@@ -52,10 +52,10 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     public void initView() {
         if (LiveVideoConfig.isPrimary && redPackageAction instanceof PScienceRedPackageBll) {
             PScienceRedPackageBll redPackageBll = (PScienceRedPackageBll) redPackageAction;
-            redPackageBll.initView(mRootView);
+            redPackageBll.initView(mRootView, getLiveViewAction());
         } else if (redPackageAction instanceof RedPackageBll) {
             RedPackageBll redPackageBll = (RedPackageBll) redPackageAction;
-            redPackageBll.initView(mRootView);
+            redPackageBll.initView(mRootView, getLiveViewAction());
         }
     }
 
@@ -91,14 +91,14 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             redPackageStandBll.setUserName(getInfo.getStandLiveName());
             redPackageStandBll.setHeadUrl(getInfo.getHeadImgPath());
             redPackageStandBll.setVSectionID(getInfo.getId());
-            redPackageStandBll.initView(mRootView);
+            redPackageStandBll.initView(mRootView, getLiveViewAction());
             redPackageAction = redPackageStandBll;
         } else {
             //
             if (LiveVideoConfig.isPrimary && !LiveVideoConfig.isSmallChinese) {
                 PScienceRedPackageBll redPackageBll = new PScienceRedPackageBll(activity, mGetInfo, true);
                 redPackageBll.setVSectionID(mLiveId);
-                redPackageBll.initView(mRootView);
+                redPackageBll.initView(mRootView, getLiveViewAction());
                 redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
@@ -109,7 +109,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             } else {
                 RedPackageBll redPackageBll = new RedPackageBll(activity, mGetInfo, true);
                 redPackageBll.setVSectionID(mLiveId);
-                redPackageBll.initView(mRootView);
+                redPackageBll.initView(mRootView, getLiveViewAction());
                 redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {

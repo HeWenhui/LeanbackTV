@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -35,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.MidToast;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
@@ -46,7 +48,7 @@ public class ChatTipBll {
     protected Logger logger = LiveLoggerFactory.getLogger(TAG);
     Activity activity;
     private LiveViewAction liveViewAction;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler = LiveMainHandler.getMainHandler();
     private LiveAndBackDebug liveAndBackDebug;
     private String linkMicNonce = "";
     private VideoAudioChatHttp videoChatHttp;
@@ -547,8 +549,8 @@ public class ChatTipBll {
         ll_livevideo_chat_people.addView(videoChatInter.getRootView(), RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         if (micType == 1) {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_chat_people.getLayoutParams();
-            lp.leftMargin = (int) (15 * ScreenUtils.getScreenDensity());
-            ll_livevideo_chat_people.setLayoutParams(lp);
+            lp.leftMargin = SizeUtils.Dp2Px(activity, 15);
+            LayoutParamsUtil.setViewLayoutParams(ll_livevideo_chat_people, lp);
         }
     }
 

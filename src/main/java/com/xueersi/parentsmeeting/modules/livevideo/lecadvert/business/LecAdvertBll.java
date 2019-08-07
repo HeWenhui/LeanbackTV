@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
     protected Logger logger = LoggerFactory.getLogger(TAG);
     private String eventid = LiveVideoConfig.LEC_ADS;
     private Context context;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     private LiveViewAction liveViewAction;
     private LecAdvertPager lecAdvertager;
     private ArrayList<LecAdvertEntity> entities = new ArrayList<>();

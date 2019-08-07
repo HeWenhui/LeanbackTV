@@ -60,11 +60,11 @@ public class LiveJsonUtil {
                     } else if (diffValue instanceof JSONObject) {
                         getDiffJson((JSONObject) diffValue, (JSONObject) lastValue);
                     } else {
-//                            if (lastValue.equals(curValue)) {
-//                                array.remove(i);
-//                                i--;
-//                                logger.d("getDiffJson:key=" + curValue + ",value=" + curValue);
-//                            }
+                        if (lastValue.equals(diffValue)) {
+                            diffArray.remove(i);
+                            i--;
+//                            logger.d("getDiffJson:key=" + lastValue + ",value=" + diffValue);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

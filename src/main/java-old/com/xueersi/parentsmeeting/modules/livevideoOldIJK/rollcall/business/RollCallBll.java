@@ -438,6 +438,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                                 jsonObject.put("name", "" + mGetInfo.getStuName());
                                 jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
                                 jsonObject.put("Version", "" + mGetInfo.getHeadImgVersion());
+                                jsonObject.put("stuImg", "" + mGetInfo.getStuImg());
                                 rollCallHttp.sendRollCallNotice(jsonObject, null);
                                 //mLogtf.d("onRollCallSuccess ok");
                             } catch (Exception e) {

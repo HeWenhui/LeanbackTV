@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.SparseArray;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,7 +45,7 @@ public class GroupGameTcp {
     private PingRunnable pingRunnable = new PingRunnable();
     private WriteThread writeThread;
     private Handler sendMessageHandler;
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
+    private Handler mainHandler = LiveMainHandler.getMainHandler();
     private boolean isStop = false;
     private SparseArray<SendCallBack> callBackSparseArray = new SparseArray<>();
 

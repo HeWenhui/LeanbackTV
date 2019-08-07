@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.redpackage.business;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
@@ -33,6 +35,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private Activity activity;
     /** 直播id */
     private String mVSectionID;
+    private LiveViewAction liveViewAction;
     /** 红包的布局 */
     private RelativeLayout rlRedpacketContent;
     private RedPackagePage redPackagePage;
@@ -41,7 +44,8 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private String headUrl;
     private String userName;
     private boolean isLive;
-    LiveAndBackDebug liveAndBackDebug;
+    private LiveAndBackDebug liveAndBackDebug;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     public RedPackageStandBll(Activity activity, boolean isLive, LiveAndBackDebug liveAndBackDebug) {
         mLogtf = new LogToFile(activity, TAG);
@@ -93,20 +97,20 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private void onGetPackageError(int operateId) {
         RedPackagePage redPackagePage = packagePageHashMap.remove("" + operateId);
         if (redPackagePage != null) {
-            rlRedpacketContent.removeView(redPackagePage.getRootView());
+            liveViewAction.removeView(redPackagePage.getRootView());
         }
     }
 
-    public void initView(RelativeLayout bottomContent) {
+    public void initView(RelativeLayout bottomContent, LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
         //红包
-        if (rlRedpacketContent != null) {
-            bottomContent.addView(rlRedpacketContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        } else {
-            rlRedpacketContent = new RelativeLayout(activity);
-            rlRedpacketContent.setId(R.id.rl_livevideo_content_readpackage);
-            bottomContent.addView(rlRedpacketContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        }
-
+//        if (rlRedpacketContent != null) {
+//            bottomContent.addView(rlRedpacketContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//        } else {
+//            rlRedpacketContent = new RelativeLayout(activity);
+//            rlRedpacketContent.setId(R.id.rl_livevideo_content_readpackage);
+//            bottomContent.addView(rlRedpacketContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//        }
         //测试红包自动关闭
 //        else {
 //            initRedPacketResult(5);
@@ -129,7 +133,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         if (oldRedPackagePage != null) {
             //新的红包来了，移除旧的
             packagePageHashMap.remove("" + oldRedPackagePage.getOperateId());
-            rlRedpacketContent.removeView(oldRedPackagePage.getRootView());
+            liveViewAction.removeView(oldRedPackagePage.getRootView());
         }
         redPackagePage = new RedPackagePage(activity, operateId, new RedPackagePage.RedPackagePageAction() {
 
@@ -161,7 +165,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                             if (isLive) {
                                 final AtomicBoolean stop = new AtomicBoolean(false);
                                 getReceiveGoldTeamStatus(operateId, stop);
-                                rlRedpacketContent.postDelayed(new Runnable() {
+                                mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         stop.set(true);
@@ -215,7 +219,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
             public void onPackageClose(int operateId) {
                 RedPackagePage redPackagePage = packagePageHashMap.remove("" + operateId);
                 if (redPackagePage != null) {
-                    rlRedpacketContent.removeView(redPackagePage.getRootView());
+                    liveViewAction.removeView(redPackagePage.getRootView());
                 }
             }
 
@@ -230,9 +234,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         packagePageHashMap.put("" + operateId, redPackagePage);
         view.setTag(operateId);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        rlRedpacketContent.addView(view, params);
-        activity.getWindow().getDecorView().requestLayout();
-        activity.getWindow().getDecorView().invalidate();
+        liveViewAction.addView(view, params);
         redPackagePage.initEnter();
     }
 

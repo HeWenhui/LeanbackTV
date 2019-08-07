@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
@@ -104,7 +105,7 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
     @Override
     public void updateViews(TeamMemberEntity entity, int position, Object objTag) {
         if (StringUtils.isEmpty(entity.name)) {
-            rlCourseItemName.setText("网校学员");
+            rlCourseItemName.setText(LiveAppUserInfo.getInstance().getUsernameDefault());
         } else {
             rlCourseItemName.setText(entity.name);
         }

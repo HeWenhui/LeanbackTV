@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAss
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechTop3Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 
 import java.util.HashMap;
 
@@ -55,8 +56,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
 
     @Override
     public void examSubmitAll(final BaseSpeechAssessmentPager speechAssessmentPager, final String num) {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
+        LiveMainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 //原生语音评测

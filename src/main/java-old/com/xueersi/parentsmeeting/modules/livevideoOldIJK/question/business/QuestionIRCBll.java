@@ -126,7 +126,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void initView(final RelativeLayout bottomContent, AtomicBoolean isLand) {
-        mQuestionAction.initView(bottomContent, isLand.get());
+        mQuestionAction.initView(bottomContent, isLand);
 //        new android.os.Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -921,7 +921,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     userMode = "0";
                 }
             }
-            if (LiveVideoConfig.isNewArts) {
+            if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
                 logger.e("======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
                 getHttpManager().liveNewArtsSubmitTestAnswer(
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, isSubmit, new HttpCallBack() {
