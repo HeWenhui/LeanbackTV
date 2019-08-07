@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -35,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnti
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.lottie.BubbleLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.utils.BetterMeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -80,6 +80,8 @@ public class EnAchievePager extends LiveBasePager {
     private ProgressBar pgAchiveAim;
     private TextView tvAchiveAimTips;
     private String realTimeVal;
+    private int WIDTH_PROGRESS_BAR_AIM_VIEWGROUP = 165;
+    private int WIDTH_SOLID_PROGRESS_BAR_AIM = 137;
 
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -455,6 +457,7 @@ public class EnAchievePager extends LiveBasePager {
             receiveBetterMeBubble(betterMeEntity);
         }
         realTimeVal = "0";
+        onBetterMeLayoutChange();
     }
 
     /**
@@ -503,6 +506,7 @@ public class EnAchievePager extends LiveBasePager {
             updateBetterMeBubble(aimRealTimeValEntity);
         }
         this.realTimeVal = aimRealTimeValEntity.getRealTimeVal();
+        onBetterMeLayoutChange();
     }
 
     /**
@@ -524,7 +528,7 @@ public class EnAchievePager extends LiveBasePager {
         }
         pgAchiveAim.setProgress(progress);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
-        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 114) / 100;
+        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, WIDTH_SOLID_PROGRESS_BAR_AIM) / 100;
         tvAchiveAimTips.setLayoutParams(layoutParams);
     }
 
@@ -665,6 +669,29 @@ public class EnAchievePager extends LiveBasePager {
 
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         setLayoutOnDraw();
+        onBetterMeLayoutChange();
+    }
+
+    private void onBetterMeLayoutChange() {
+        if (rlAchiveContent != null) {
+            rlAchiveContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                    .OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    if (rlAchiveContent.getWidth() != 0) {
+                        rlAchiveContent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        if (rlAchiveContent.getWidth() < SizeUtils.Dp2Px(mContext, WIDTH_PROGRESS_BAR_AIM_VIEWGROUP)) {
+                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) pgAchiveAim
+                                    .getLayoutParams();
+                            layoutParams.width = rlAchiveAimContent.getWidth() - SizeUtils.Dp2Px(mContext, 22);
+                            pgAchiveAim.setLayoutParams(layoutParams);
+                            WIDTH_SOLID_PROGRESS_BAR_AIM = SizeUtils.Px2Dp(mContext, rlAchiveAimContent.getWidth()) - 28;
+                        }
+                        setBetterMePro(pgAchiveAim.getProgress());
+                    }
+                }
+            });
+        }
     }
 
     private void setLayoutOnDraw() {

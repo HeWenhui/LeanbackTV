@@ -124,7 +124,7 @@
 
             <RelativeLayout
                 android:id="@+id/rl_livevideo_en_achive_aim_content"
-                android:layout_width="143dp"
+                android:layout_width="165dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rl_livevideo_en_achive_content_num"
                 android:layout_centerHorizontal="true"
