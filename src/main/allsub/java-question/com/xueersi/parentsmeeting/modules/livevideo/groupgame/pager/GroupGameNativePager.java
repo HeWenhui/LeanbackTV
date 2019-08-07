@@ -193,7 +193,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private List<List<Integer>> scoreMatrix = new ArrayList<>();
     private JSONObject answerData = new JSONObject();
     private JSONArray userAnswer = new JSONArray();
-
     /**一次作答尝试次数**/
     private static int MAX_SINGLE_COUNT;
     private LiveAudioManager liveAudioManager;
