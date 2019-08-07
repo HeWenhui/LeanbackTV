@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONArray;
@@ -53,7 +54,7 @@ import io.agora.rtc.plugin.rawdata.MediaPreProcessing;
  * created  at 2018/10/12
  */
 public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
-    Handler handler = new Handler(Looper.getMainLooper());
+    Handler handler = LiveMainHandler.getMainHandler();
     private LogToFile mLogtf;
     private MediaDataObserverPlugin mediaDataObserverPlugin;
     File alldir = LiveCacheFile.geCacheFile(activity, "studyreport");

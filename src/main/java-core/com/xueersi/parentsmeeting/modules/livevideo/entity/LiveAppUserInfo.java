@@ -2,7 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 public class LiveAppUserInfo {
     private static LiveAppUserInfo mInstance;
@@ -116,5 +118,10 @@ public class LiveAppUserInfo {
      */
     public String getUserRfh() {
         return AppBll.getInstance().getUserRfh();
+    }
+
+    public String getUsernameDefault() {
+        String username_default = ContextManager.getContext().getResources().getString(R.string.username_default);
+        return username_default;
     }
 }

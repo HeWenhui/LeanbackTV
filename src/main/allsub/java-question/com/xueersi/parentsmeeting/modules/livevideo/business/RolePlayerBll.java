@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseP
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -328,7 +329,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     public void goToRobot() {
         isGoToRobot = true;
         mLogtf.d("进人机");
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        LiveMainHandler.post(new Runnable() {
             @Override
             public void run() {
                 //移除roleplay界面，并释放该界面资源
@@ -569,7 +570,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                             for (RolePlayerEntity.RolePlayerHead head : mRolePlayerEntity.getLstRoleInfo()) {
                                 if (head.getRoleId() == from) {
                                     final RolePlayerEntity.RolePlayerHead mHead = head;
-                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    LiveMainHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
                                             if (mHead != null) {
@@ -605,7 +606,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                                     message.setSpeechScore(totalScore);
                                     message.setFluency(fluency);
                                     message.setAccuracy(accuracy);
-                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    LiveMainHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
                                             mRolePlayerPager.updateRolePlayList(message);

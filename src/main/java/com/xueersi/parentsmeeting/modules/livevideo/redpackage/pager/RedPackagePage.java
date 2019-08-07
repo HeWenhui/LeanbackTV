@@ -108,18 +108,18 @@ public class RedPackagePage extends LiveBasePager {
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View view) {
-                logger.d( "onViewAttachedToWindow");
+                logger.d("onViewAttachedToWindow");
                 viewAttached = true;
             }
 
             @Override
             public void onViewDetachedFromWindow(View view) {
                 viewAttached = false;
-                logger.d( "onViewDetachedFromWindow:frameAnimations=" + frameAnimations.size());
+                logger.d("onViewDetachedFromWindow:frameAnimations=" + frameAnimations.size());
                 for (int i = 0; i < frameAnimations.size(); i++) {
                     FrameAnimation animation = frameAnimations.get(i);
                     int destory = animation.destory();
-                    logger.d( "onViewDetachedFromWindow:animation=" + animation.path + ",destory=" + destory);
+                    logger.d("onViewDetachedFromWindow:animation=" + animation.path + ",destory=" + destory);
                 }
                 if (soundPool != null) {
                     soundPool.release();
@@ -217,7 +217,7 @@ public class RedPackagePage extends LiveBasePager {
                         if (click.get()) {
                             return;
                         }
-                        logger.d( "onPackageClick(timeout):operateId=" + operateId);
+                        logger.d("onPackageClick(timeout):operateId=" + operateId);
                         ivLivevideoRedpackageBg.setOnClickListener(null);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
@@ -234,7 +234,7 @@ public class RedPackagePage extends LiveBasePager {
                                 ivLivevideoRedpackageBg.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        logger.d( "onPackageClick2:operateId=" + operateId + "," + view.getTop());
+                                        logger.d("onPackageClick2:operateId=" + operateId + "," + view.getTop());
                                         ivLivevideoRedpackageBg.setOnClickListener(null);
                                         StandLiveMethod.onClickVoice(soundPool);
                                         btframeAnimationFile6.pauseAnimation();
@@ -260,7 +260,7 @@ public class RedPackagePage extends LiveBasePager {
                                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivLivevideoRedpackageBg.getLayoutParams();
                                 lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                                 lp.rightMargin = 40;
-                                ivLivevideoRedpackageBg.setLayoutParams(lp);
+                                LayoutParamsUtil.setViewLayoutParams(ivLivevideoRedpackageBg, lp);
                                 btframeAnimationFile7 = createFromAees(file7, true);
                                 frameAnimations.add(btframeAnimationFile7);
                             }
@@ -277,7 +277,7 @@ public class RedPackagePage extends LiveBasePager {
                     public void onClick(View view) {
                         click.set(true);
                         ivLivevideoRedpackageBg.setOnClickListener(null);
-                        logger.d( "onPackageClick:operateId=" + operateId);
+                        logger.d("onPackageClick:operateId=" + operateId);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
                             ivLivevideoRedpackageBg.postDelayed(new Runnable() {

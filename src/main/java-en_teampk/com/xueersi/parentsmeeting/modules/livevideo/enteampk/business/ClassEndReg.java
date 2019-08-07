@@ -9,13 +9,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.event.ClassEndEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 public class ClassEndReg implements LiveProvide {
     private LogToFile logToFile;
     public LiveGetInfo liveGetInfo;
     private Context context;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler = LiveMainHandler.getMainHandler();
     private EndRunnable endRunnable;
 
     ClassEndReg(Context context, LiveGetInfo liveGetInfo) {

@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,7 +57,7 @@ public class FrameAnimation {
 
     private ImageView mImageView;
     private View mView;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler = LiveMainHandler.getMainHandler();
     private int[] mFrameRess;
     private String[] files;
     public String path;

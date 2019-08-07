@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerTh
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.VoiceImageView;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.TextureVideoViewOutlineProvider;
 
 public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
@@ -31,7 +32,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     protected ImageView iv_livevideo_course_item_video_ufo;
     protected RelativeLayout rl_livevideo_course_item_video_off;
     protected VoiceImageView voiceImageView;
-    protected Handler handler = new Handler(Looper.getMainLooper());
+    protected Handler handler = LiveMainHandler.getMainHandler();
     protected OnNameClick onNameClick;
     protected boolean videoStatus = false;
     protected boolean audioStatus = false;

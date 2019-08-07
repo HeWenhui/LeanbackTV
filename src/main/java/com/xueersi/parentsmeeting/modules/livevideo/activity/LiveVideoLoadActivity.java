@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.dataload.DataLoadManager;
 
@@ -357,8 +358,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onGuarantee(String permission, int position) {
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(new Runnable() {
+                        LiveMainHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -382,8 +382,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onFinish() {
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(new Runnable() {
+                        LiveMainHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -418,14 +417,13 @@ public class LiveVideoLoadActivity extends BaseActivity {
     }
 
     private void finishAndExit() {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
+        LiveMainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 finish();
             }
         }, 700);
-        handler.postDelayed(new Runnable() {
+        LiveMainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 System.exit(0);

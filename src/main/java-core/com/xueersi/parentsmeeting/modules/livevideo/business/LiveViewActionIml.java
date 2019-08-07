@@ -46,6 +46,11 @@ public class LiveViewActionIml implements LiveViewAction {
     }
 
     @Override
+    public void addView(View child, int width, int height) {
+        bottomContent.addView(child, width, height);
+    }
+
+    @Override
     public void removeView(final View child) {
         if (child == null) {
             LiveCrashReport.postCatchedException(TAG, new Exception());

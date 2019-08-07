@@ -39,7 +39,7 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
                 JSONObject status = jsonObject.getJSONObject("room_2");
                 if (status.has("wordStatisticInfo")) {
                     JSONObject jsonWordStatisticInfo = status.getJSONObject("wordStatisticInfo");
-                    WordStatisticInfo wordStatisticInfo = new WordStatisticInfo();
+                    final WordStatisticInfo wordStatisticInfo = new WordStatisticInfo();
                     int state = jsonWordStatisticInfo.getInt("state");
                     wordStatisticInfo.state = state;
                     if (state == 1) {
@@ -56,7 +56,14 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
                                 wordDictationBll.setGetInfo(mGetInfo);
                                 wordDictationAction = wordDictationBll;
                             }
-                            wordDictationAction.onStart(wordStatisticInfo);
+                            post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (wordDictationAction != null) {
+                                        wordDictationAction.onStart(wordStatisticInfo);
+                                    }
+                                }
+                            });
                         }
                     } else {
                         if (isOpen) {
@@ -87,7 +94,7 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
         switch (type) {
             case XESCODE.ARTS_WORD_DICTATION:
                 try {
-                    WordStatisticInfo wordStatisticInfo = new WordStatisticInfo();
+                    final WordStatisticInfo wordStatisticInfo = new WordStatisticInfo();
                     int state = data.optInt("state", 0);
                     wordStatisticInfo.state = state;
                     if (state == 1) {
@@ -105,7 +112,14 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
                                 wordDictationBll.setGetInfo(mGetInfo);
                                 wordDictationAction = wordDictationBll;
                             }
-                            wordDictationAction.onStart(wordStatisticInfo);
+                            post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (wordDictationAction != null) {
+                                        wordDictationAction.onStart(wordStatisticInfo);
+                                    }
+                                }
+                            });
                         }
                     } else {
                         if (isOpen) {

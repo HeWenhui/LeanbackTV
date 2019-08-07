@@ -16,6 +16,8 @@ public class GroupGameConfig {
     public static double HOT_AIR_BALLAN_END_ANMITION_TIME = 1;
     /** 语音炮弹 课件结束 动画时间 */
     public static double VOICE_CANNON_END_ANMITION_TIME = 1;
+    /**语音宝箱 课件结束动画时间**/
+    public static double VOICE_TREASURE_BOX_END_ANIM_TIME = 1.5d;
     /** 接龙 课件结束 动画时间 */
     public static double SOLITAIRE_END_ANMITION_TIME = 3;
     /** 抢夺战 课件结束 动画时间 */

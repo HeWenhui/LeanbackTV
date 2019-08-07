@@ -13,6 +13,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 import java.util.ArrayList;
 
@@ -83,7 +84,7 @@ public class BigResultAdapter extends RecyclerView.Adapter {
             if (standAnswerLeft) {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_bigque_result_stand.getLayoutParams();
                 lp.width = SizeUtils.Dp2Px(itemView.getContext(), 140);
-                tv_livevideo_bigque_result_stand.setLayoutParams(lp);
+                LayoutParamsUtil.setViewLayoutParams(tv_livevideo_bigque_result_stand, lp);
                 tv_livevideo_bigque_result_stand.setGravity(Gravity.LEFT);
             } else {
 
@@ -93,7 +94,7 @@ public class BigResultAdapter extends RecyclerView.Adapter {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_bigque_result_your.getLayoutParams();
                 lp.width = SizeUtils.Dp2Px(itemView.getContext(), 140);
                 lp.addRule(RelativeLayout.ALIGN_LEFT, R.id.tv_livevideo_bigque_result_your_hind);
-                tv_livevideo_bigque_result_your.setLayoutParams(lp);
+                LayoutParamsUtil.setViewLayoutParams(tv_livevideo_bigque_result_your, lp);
             }
             iv_livevideo_bigque_result_type = itemView.findViewById(R.id.iv_livevideo_bigque_result_type);
         }

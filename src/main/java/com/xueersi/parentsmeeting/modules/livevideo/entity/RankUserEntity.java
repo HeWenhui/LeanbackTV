@@ -19,8 +19,8 @@ public class RankUserEntity {
     }
 
     public String getName() {
-        if(TextUtils.isEmpty(name)){
-            name="网校学员";
+        if (TextUtils.isEmpty(name)) {
+            name = LiveAppUserInfo.getInstance().getUsernameDefault();
         }
         return name;
     }

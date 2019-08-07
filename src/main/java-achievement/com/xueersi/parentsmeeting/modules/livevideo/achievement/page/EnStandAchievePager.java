@@ -406,18 +406,24 @@ public class EnStandAchievePager extends LiveBasePager {
                 return bitmap;
             }
         };
+
         lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp.topMargin = cbAchiveTitle.getHeight() * 144 / 189;
+        int desinWidth = SizeUtils.Dp2Px(mContext,135);
+        int desinHeight = SizeUtils.Dp2Px(mContext,50);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(desinWidth,desinHeight);
+        lp.topMargin = SizeUtils.Dp2Px(mContext,45);
+        RelativeLayout.LayoutParams anchorLayoutPrams = (RelativeLayout.LayoutParams)cbAchiveTitle.getLayoutParams();
         if (ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)){
-            lp.rightMargin = SizeUtils.Dp2Px(mContext,30);
+            int offSetX = rlAchieveContent.getPaddingRight()+(cbAchiveTitle.getMeasuredWidth() - desinWidth)/2;
+            offSetX += anchorLayoutPrams!= null?anchorLayoutPrams.rightMargin:0;
+            lp.rightMargin = offSetX;
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         } else {
-            lp.leftMargin = SizeUtils.Dp2Px(mContext, 30);
+            int offSetX = rlAchieveContent.getPaddingLeft()+ (cbAchiveTitle.getMeasuredWidth() - desinWidth)/2;
+            offSetX += anchorLayoutPrams!= null?anchorLayoutPrams.leftMargin:0;
+            lp.leftMargin = offSetX;
         }
-        final ViewGroup viewGroup = (ViewGroup) mView;
-        viewGroup.addView(lottieAnimationView, lp);
+        rlAchieveContent.addView(lottieAnimationView, lp);
         lottieAnimationView.playAnimation();
         lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
             long before;
@@ -429,7 +435,7 @@ public class EnStandAchievePager extends LiveBasePager {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                viewGroup.removeView(lottieAnimationView);
+                rlAchieveContent.removeView(lottieAnimationView);
                 mLogtf.d("onGetStar:onAnimationEnd=" + (System.currentTimeMillis() - before));
             }
 

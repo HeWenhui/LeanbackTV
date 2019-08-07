@@ -37,15 +37,15 @@ public class FullMarkListEntity {
     }
 
     public String getAnswer_time() {
-        try{
-            int t=Integer.parseInt(answer_time);
-            if(t>=60){
-                answer_time=t/60+"分"+t%60+"秒";
-            }else{
-                answer_time=t+"秒";
+        try {
+            int t = Integer.parseInt(answer_time);
+            if (t >= 60) {
+                answer_time = t / 60 + "分" + t % 60 + "秒";
+            } else {
+                answer_time = t + "秒";
             }
-        }catch (Exception e){
-            answer_time="";
+        } catch (Exception e) {
+            answer_time = "";
         }
         return answer_time;
     }
@@ -55,11 +55,11 @@ public class FullMarkListEntity {
     }
 
     public String getStuName() {
-        if(TextUtils.isEmpty(stuName)){
-            stuName="网校学员";
+        if (TextUtils.isEmpty(stuName)) {
+            stuName = LiveAppUserInfo.getInstance().getUsernameDefault();
         }
-        if(stuName.length()>4){
-            stuName=stuName.substring(0,3)+"...";
+        if (stuName.length() > 4) {
+            stuName = stuName.substring(0, 3) + "...";
         }
         return stuName;
     }

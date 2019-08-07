@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.TextureVideoViewOutlineProvider;
 
 import java.io.IOException;
@@ -442,7 +443,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         }
     }
 
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler = LiveMainHandler.getMainHandler();
     private StartRun startRun = new StartRun();
     private StopRun stopRun = new StopRun();
     private ProgRun progRun = new ProgRun();

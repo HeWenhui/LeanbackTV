@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
@@ -79,7 +80,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * 所有业务bll 集合
      */
     private List<LiveBaseBll> businessBlls = new ArrayList<>();
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     private AllLiveBasePagerIml allLiveBasePagerIml;
     private TeacherAction teacherAction;
     private final int mLiveType;

@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.StartInteractLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -49,7 +50,7 @@ public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAc
         relativeLayout.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams layoutParams = relativeLayout.getLayoutParams();
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        relativeLayout.setLayoutParams(layoutParams);
+        LayoutParamsUtil.setViewLayoutParams(relativeLayout,layoutParams);
         relativeLayout.setBackgroundColor(Color.TRANSPARENT);
         enAchievePager = new EnAchievePager(activity, relativeLayout, mLiveGetInfo);
         relativeLayout.addView(enAchievePager.getRootView());
