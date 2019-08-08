@@ -99,7 +99,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
 
     @Override
     public void initView() {
-        questionBll.initView(mRootView, mIsLand.get());
+        questionBll.initView(mRootView, mIsLand);
     }
 
     @Override

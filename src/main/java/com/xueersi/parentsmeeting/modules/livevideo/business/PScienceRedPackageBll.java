@@ -1,9 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
-import android.graphics.Typeface;
 import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,25 +17,26 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by David on 2018/6/29.
  */
-
-public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback {
+public class PScienceRedPackageBll implements RedPackageAction {
     String TAG = "PScienceRedPackageBll";
-    private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     private LogToFile mLogtf;
     private Activity activity;
     /** 直播id */
     private String mVSectionID;
     private ReceiveGold receiveGold;
-    /** 红包的布局 */
-    private RelativeLayout rlRedpacketContent;
-    boolean isLive;
+    private LiveViewAction liveViewAction;
+    private ArrayList<View> redViews = new ArrayList<>();
+    private boolean isLive;
     private LiveGetInfo mGetInfo;
 
     public PScienceRedPackageBll(Activity activity, LiveGetInfo liveGetInfo, boolean isLive) {
@@ -57,13 +56,8 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
     }
 
     @Override
-    public boolean handleMessage(Message msg) {
-        return false;
-    }
-
-    @Override
     public void onReadPackage(final int operateId, final OnReceivePackage onReceivePackage) {
-        mVPlayVideoControlHandler.post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 showRedPacket(operateId, onReceivePackage);
@@ -71,8 +65,9 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         });
     }
 
-    private void onGetPackage(VideoResultEntity entity) {
-        rlRedpacketContent.removeAllViews();
+    private void onGetPackage(VideoResultEntity entity, View view) {
+        redViews.remove(view);
+        liveViewAction.removeView(view);
         if (!isLive && entity.getResultType() == 0) {
             initRedPacketOtherResult();
         } else {
@@ -85,18 +80,14 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
     }
 
     private void onGetPackageError(int operateId) {
-        rlRedpacketContent.removeAllViews();
+        while (!redViews.isEmpty()) {
+            View view = redViews.remove(0);
+            liveViewAction.removeView(view);
+        }
     }
 
-    public void initView(RelativeLayout bottomContent) {
-        //红包
-        if (rlRedpacketContent != null) {
-            bottomContent.addView(rlRedpacketContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        } else {
-            rlRedpacketContent = new RelativeLayout(activity);
-            rlRedpacketContent.setId(R.id.rl_livevideo_content_readpackage);
-            bottomContent.addView(rlRedpacketContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        }
+    public void initView(RelativeLayout bottomContent, LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
     }
 
     /**
@@ -104,52 +95,34 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
      */
     private void showRedPacket(final int operateId, final OnReceivePackage onReceivePackage) {
         mLogtf.d("showRedPacket:operateId=" + operateId);
-        rlRedpacketContent.removeAllViews();
-        View view = activity.getLayoutInflater().inflate(R.layout.dialog_primary_redpacket, rlRedpacketContent, false);
+        final View view = liveViewAction.inflateView(R.layout.dialog_primary_redpacket);
+        redViews.add(view);
         view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
         view.setTag(operateId);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        rlRedpacketContent.addView(view, params);
-        ImageView btnRedPacket = (ImageView) view.findViewById(R.id.iv_livevideo_redpackage_cofirm);
+        liveViewAction.addView(view, params);
+        ImageView btnRedPacket = view.findViewById(R.id.iv_livevideo_redpackage_cofirm);
         btnRedPacket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendReceiveGold(operateId, mVSectionID);
+                sendReceiveGold(operateId, mVSectionID, view);
             }
         });
         view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rlRedpacketContent.removeAllViews();
+                redViews.remove(view);
+                liveViewAction.removeView(view);
             }
         });
-        activity.getWindow().getDecorView().requestLayout();
-        activity.getWindow().getDecorView().invalidate();
-//        String msg = 8 + "";
-//        View view = activity.getLayoutInflater().inflate(R.layout.dialog_primary_redpacket_success, rlRedpacketContent, false);
-//        view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
-//        SpannableString msp = new SpannableString(msg);
-//        float screenDensity = ScreenUtils.getScreenDensity();
-//        // 字体
-//        msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, 1,
-//                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        TextView tvGoldHint = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_gold);
-//        tvGoldHint.setText(msp);
-//        rlRedpacketContent.addView(view);
-//        view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                rlRedpacketContent.removeAllViews();
-//            }
-//        });
     }
 
-    private void sendReceiveGold(final int operateId, String sectionID) {
+    private void sendReceiveGold(final int operateId, String sectionID, final View view) {
         receiveGold.sendReceiveGold(operateId, sectionID, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
                 VideoResultEntity entity = (VideoResultEntity) objData[0];
-                onGetPackage(entity);
+                onGetPackage(entity, view);
                 // 广播 领取红包成功事件
                 EventBusUtil.post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
                         operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
@@ -174,7 +147,7 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
      */
     private void initRedPacketResult(int goldNum) {
         String msg = goldNum + "";
-        View view = activity.getLayoutInflater().inflate(R.layout.dialog_primary_redpacket_success, rlRedpacketContent, false);
+        final View view = liveViewAction.inflateView(R.layout.dialog_primary_redpacket_success);
         view.setBackgroundColor(activity.getResources().getColor(R.color.mediacontroller_bg));
 //        SpannableString msp = new SpannableString(msg);
 //        float screenDensity = ScreenUtils.getScreenDensity();
@@ -182,22 +155,19 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
 //        msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, msg.length(),
 //                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         // 将字体文件保存在assets/fonts/目录下，在程序中通过如下方式实例化自定义字体：
-        Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fangzhengcuyuan.ttf");
-        TextView tvGoldHint = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_gold);
-        // 应用字体
-        tvGoldHint.setTypeface(typeFace);
+        TextView tvGoldHint = view.findViewById(R.id.tv_livevideo_redpackage_gold);
         tvGoldHint.setText(msg);
-        rlRedpacketContent.addView(view);
-        final TextView tvAutoclose = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_autoclose);
+        liveViewAction.addView(view);
+        final TextView tvAutoclose = view.findViewById(R.id.tv_livevideo_redpackage_autoclose);
         final AtomicInteger count = new AtomicInteger(3);
         postDelayedIfNotFinish(new Runnable() {
             @Override
             public void run() {
                 count.set(count.get() - 1);
                 if (count.get() == 0) {
-                    rlRedpacketContent.removeAllViews();
+                    liveViewAction.removeView(view);
                 } else {
-                    if (rlRedpacketContent.getChildCount() > 0) {
+                    if (view.getParent() != null) {
                         tvAutoclose.setText(count.get() + "秒钟后自动关闭");
                         postDelayedIfNotFinish(this, 1000);
                     }
@@ -207,7 +177,7 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rlRedpacketContent.removeAllViews();
+                liveViewAction.removeView(view);
             }
         });
         StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
@@ -220,8 +190,7 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
      * 已获取红包
      */
     private void initRedPacketOtherResult() {
-        View popupWindow_view = activity.getLayoutInflater().inflate(R.layout.pop_question_redpacket_other, null,
-                false);
+        View popupWindow_view = liveViewAction.inflateView(R.layout.pop_question_redpacket_other);
         initQuestionAnswerReslut(popupWindow_view);
     }
 
@@ -229,19 +198,19 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
      * 创建互动题作答，抢红包结果提示PopupWindow
      */
     protected void initQuestionAnswerReslut(final View popupWindow_view) {
-        rlRedpacketContent.addView(popupWindow_view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
+        liveViewAction.addView(popupWindow_view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
                 .MATCH_PARENT);
         popupWindow_view.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                rlRedpacketContent.removeView(popupWindow_view);
+                liveViewAction.removeView(popupWindow_view);
             }
         });
-        mVPlayVideoControlHandler.postDelayed(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                rlRedpacketContent.removeView(popupWindow_view);
+                liveViewAction.removeView(popupWindow_view);
             }
         }, 3000);
     }
@@ -250,6 +219,6 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         if (activity.isFinishing()) {
             return;
         }
-        mVPlayVideoControlHandler.postDelayed(r, delayMillis);
+        mHandler.postDelayed(r, delayMillis);
     }
 }

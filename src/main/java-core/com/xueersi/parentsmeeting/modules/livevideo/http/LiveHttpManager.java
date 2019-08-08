@@ -93,6 +93,12 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         return liveVideoSAConfig;
     }
 
+    public void sendPost(final String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
+        long before = System.currentTimeMillis();
+        super.sendPost(url, httpRequestParams, httpCallBack);
+        logger.d("sendPost:time=" + (System.currentTimeMillis() - before) + ",url=" + url);
+    }
+
     /**
      * 播放器数据初始化
      *
@@ -888,7 +894,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("classId", classId);
         params.addBodyParam("duration", duration);
         params.addBodyParam("speakingNum", speakingNum);
-        params.addBodyParam("speakingLen", speakingLen);
+        //暂时去掉，这个数据太大20190731
+//        params.addBodyParam("speakingLen", speakingLen);
+        params.addBodyParam("speakingLen", "");
         setDefaultParameter(params);
         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_TOTAL_OPEN;
         sendPost(requestCallBack.url, params, requestCallBack);

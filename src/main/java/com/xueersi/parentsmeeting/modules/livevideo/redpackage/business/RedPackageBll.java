@@ -24,6 +24,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -59,6 +60,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
      * 直播id
      */
     private String mVSectionID;
+    private LiveViewAction liveViewAction;
     /**
      * 红包的布局
      */
@@ -119,7 +121,8 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         rlRedpacketContent.removeAllViews();
     }
 
-    public void initView(RelativeLayout bottomContent) {
+    public void initView(RelativeLayout bottomContent, LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
         //红包
         if (rlRedpacketContent != null) {
             bottomContent.addView(rlRedpacketContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

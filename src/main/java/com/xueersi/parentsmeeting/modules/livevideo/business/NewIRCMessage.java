@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveJsonUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -145,7 +146,7 @@ public class NewIRCMessage implements IIRCMessage {
                 mNickname = target;
                 liveInfo.nickname = target;
                 mChatClient.setLiveInfo(liveInfo);
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                LiveMainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         int logincode = mChatClient.login(LiveAppUserInfo.getInstance().getPsimId(), LiveAppUserInfo.getInstance().getPsimPwd());

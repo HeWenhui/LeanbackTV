@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.pager.NbH5Cou
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.pager.NbH5ExamX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NbCourseLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -49,7 +50,7 @@ import org.json.JSONObject;
 public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPresenter {
     String TAG = "H5CoursewareBll";
     Context context;
-    Handler handler = new Handler(Looper.getMainLooper());
+    Handler handler = LiveMainHandler.getMainHandler();
     NbH5PagerAction h5CoursewarePager;
 
     private LogToFile logToFile;

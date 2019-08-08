@@ -36,7 +36,7 @@ import ren.yale.android.cachewebviewlib.utils.NetworkUtils;
  */
 
 public class CacheWebView extends WebView {
-    private String TAG = "CacheWebView";
+    private static String TAG = "CacheWebView";
     private Logger logger = LiveLoggerFactory.getLogger(TAG);
     private static final String CACHE_NAME = "CacheWebView";
     private static final int CACHE_SIZE = 200 * 1024 * 1024;
@@ -139,7 +139,7 @@ public class CacheWebView extends WebView {
             intent.setPackage(AppConfig.APPLICATION_ID);
             context.startService(intent);
         } catch (Exception e) {
-
+            LiveCrashReport.postCatchedException(TAG, e);
         }
     }
 

@@ -6,6 +6,7 @@ import android.util.Log;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -119,6 +120,7 @@ public class LiveLog implements LiveOnLineLogs {
             LiveCrashReport.postCatchedException(new LiveException(TAG, err));
         }
         logHashMap.put("liveeventid", "" + LogConfig.LIVE_DEBUG_MESSAGE);
+        logHashMap.put("eventid", "" + eventid);
         logHashMap.put("tag", "" + TAG);
         logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);
@@ -129,7 +131,8 @@ public class LiveLog implements LiveOnLineLogs {
         logHashMap.put("logindex", "" + logIndex++);
         logHashMap.put("nowlivetime", "" + (System.currentTimeMillis() - enterTime));
         logHashMap.put("teacherId", "" + mGetInfo.getTeacherId());
-        UmsAgentManager.umsAgentDebug(mContext, eventid, logHashMap.getData());
+//        UmsAgentManager.umsAgentDebug(mContext, eventid, logHashMap.getData());
+        UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap.getData());
         if (AppConfig.DEBUG) {
             if (stableLogHashMap != null) {
                 Map<String, String> mData = stableLogHashMap.getData();
@@ -174,6 +177,7 @@ public class LiveLog implements LiveOnLineLogs {
             LiveCrashReport.postCatchedException(new LiveException(TAG, err));
         }
         logHashMap.put("liveeventid", "" + LogConfig.LIVE_DEBUG_MESSAGE);
+        logHashMap.put("eventid", "" + eventid);
         logHashMap.put("tag", "" + TAG);
         logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);
@@ -185,7 +189,8 @@ public class LiveLog implements LiveOnLineLogs {
         logHashMap.put("nowlivetime", "" + (System.currentTimeMillis() - enterTime));
         logHashMap.put("throwable", "" + Log.getStackTraceString(e));
         logHashMap.put("teacherId", "" + mGetInfo.getTeacherId());
-        UmsAgentManager.umsAgentDebug(mContext, eventid, logHashMap.getData());
+//        UmsAgentManager.umsAgentDebug(mContext, eventid, logHashMap.getData());
+        UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap.getData());
         if (AppConfig.DEBUG) {
             if (stableLogHashMap != null) {
                 Map<String, String> mData = stableLogHashMap.getData();

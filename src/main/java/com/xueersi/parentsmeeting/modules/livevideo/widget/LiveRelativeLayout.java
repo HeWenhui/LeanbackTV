@@ -49,8 +49,8 @@ public class LiveRelativeLayout extends RelativeLayout {
 
     @Override
     public void removeView(View view) {
-        super.removeView(view);
         logger.d( "removeView:id=" + view.getId());
+        super.removeView(view);
     }
 
     @Override

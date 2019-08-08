@@ -58,21 +58,20 @@ import okhttp3.Response;
  */
 
 public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBottom.MediaChildViewClick, NoticeAction, MessageAction {
-    Logger logger = LoggerFactory.getLogger("RankBll");
-    LiveMediaController mMediaController;
-    BaseLiveMediaControllerBottom liveMediaControllerBottom;
-    Button rl_livevideo_common_rank;//排名
-    View relativeLayout;
+    private LiveMediaController mMediaController;
+    private BaseLiveMediaControllerBottom liveMediaControllerBottom;
+    private Button rl_livevideo_common_rank;//排名
+    private View relativeLayout;
     /** 动画出现 */
     private Animation mAnimSlideIn;
     /** 动画隐藏 */
     private Animation mAnimSlideOut;
-    AllRankEntity allRankEntity;
+    private AllRankEntity allRankEntity;
     /** 上一次离开时的位置 */
-    int index = 1;
-    ListView lv_livevideo_rank_list;
-    int colorYellow;
-    int colorWhite;
+    private int index = 1;
+    private ListView lv_livevideo_rank_list;
+    private int colorYellow;
+    private int colorWhite;
     private RankHttp rankHttp;
     private Boolean isSmallEnglish = false;
     /** 小学语文排名 */
@@ -97,7 +96,9 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    relativeLayout.setVisibility(View.GONE);
+                    if (relativeLayout != null) {
+                        relativeLayout.setVisibility(View.GONE);
+                    }
                 }
 
                 @Override
@@ -146,7 +147,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
             liveUIStateReg.addLiveUIStateListener(onViewChange);
         }
 
-        rl_livevideo_common_rank = (Button) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank);
+        rl_livevideo_common_rank = liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank);
         if (rl_livevideo_common_rank == null) {
             return;
         }
@@ -159,8 +160,12 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 //bugly 7801.在getinfo之前点击会崩
                 if (relativeLayout == null) {
                     logger.d("rl_livevideo_common_rank.onClick:relativeLayout=null");
-                    XESToastUtils.showToast(activity, "请稍等");
-                    return;
+                    if (mGetInfo == null) {
+                        XESToastUtils.showToast(activity, "请稍等");
+                        return;
+                    } else {
+                        initView(getLiveViewAction());
+                    }
                 }
                 if (relativeLayout.getVisibility() == View.VISIBLE) {
                     relativeLayout.startAnimation(mAnimSlideOut);
@@ -358,7 +363,8 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        initView(getLiveViewAction());
+        //在点击的时候再创建view
+//        initView(getLiveViewAction());
         BaseLiveMediaControllerBottom.RegMediaChildViewClick regMediaChildViewClick = ProxUtil.getProxUtil().get
                 (activity, BaseLiveMediaControllerBottom.RegMediaChildViewClick.class);
         if (regMediaChildViewClick != null) {
@@ -400,20 +406,21 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         }
         if (isSmallEnglish) {
 //            Log.i("testRankBll", mGetInfo.getGrade() + " " + mGetInfo.getIsArts());
-            relativeLayout = liveViewAction.inflateView(R.layout.layout_livevideo_small_english_rank);
+            View view = liveViewAction.inflateView(R.layout.layout_livevideo_small_english_rank);
+            relativeLayout = view;
             //小组
-            final ImageView ivMyGroup = relativeLayout.findViewById(R.id.iv_livevideo_small_english_rank_mygroup);
+            final ImageView ivMyGroup = view.findViewById(R.id.iv_livevideo_small_english_rank_mygroup);
             //组内
-            final ImageView ivGroups = relativeLayout.findViewById(R.id.iv_livevideo_small_english_rank_groups);
+            final ImageView ivGroups = view.findViewById(R.id.iv_livevideo_small_english_rank_groups);
             //班级
-            final ImageView ivClass = relativeLayout.findViewById(R.id.iv_livevideo_small_english_rank_class);
+            final ImageView ivClass = view.findViewById(R.id.iv_livevideo_small_english_rank_class);
             //标题下面的字
-            final TextView ivRankId = relativeLayout.findViewById(R.id.tv_livevideo_rank_subtitle_mid);
-            Button btnMyGroup = relativeLayout.findViewById(R.id.btn_livevideo_small_english_rank_mygroup);
-            Button btnGroups = relativeLayout.findViewById(R.id.btn_livevideo_small_english_rank_groups);
-            Button btnClass = relativeLayout.findViewById(R.id.btn_livevideo_small_english_rank_class);
+            final TextView ivRankId = view.findViewById(R.id.tv_livevideo_rank_subtitle_mid);
+            Button btnMyGroup = view.findViewById(R.id.btn_livevideo_small_english_rank_mygroup);
+            Button btnGroups = view.findViewById(R.id.btn_livevideo_small_english_rank_groups);
+            Button btnClass = view.findViewById(R.id.btn_livevideo_small_english_rank_class);
             //展现排行榜的listview
-            lv_livevideo_rank_list = relativeLayout.findViewById(R.id.lv_livevideo_rank_list);
+            lv_livevideo_rank_list = view.findViewById(R.id.lv_livevideo_rank_list);
             //组内
             btnMyGroup.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -515,42 +522,41 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 scienceEvenDrivePager.initListener();
                 relativeLayout = scienceEvenDrivePager.getRootView();
             } else {
+                View view;
                 if (LiveVideoConfig.isPrimary) {
-                    relativeLayout = liveViewAction.inflateView(R.layout.layout_livevideo_psrank);
+                    view = liveViewAction.inflateView(R.layout.layout_livevideo_psrank);
                 } else {
-                    relativeLayout = liveViewAction.inflateView(R.layout.layout_livevodeo_rank);
+                    view = liveViewAction.inflateView(R.layout.layout_livevodeo_rank);
                 }
-
+                relativeLayout = view;
 //            rankEvenDriveTipsLayout = relativeLayout.findViewById(R.id.ctlayout_livevideo_rank_middle_science_even_drive_tips);
 //            rankTipsLayout = relativeLayout.findViewById(R.id.rl_livevideo_rank_tips);
 //            tvEvenDriveTitleRight = relativeLayout.findViewById(R.id.tv_livevideo_middle_science_even_title_right);
                 //是否是中学激励系统
                 //小组
-                View rl_livevideo_rank_mygroup = relativeLayout.findViewById(R.id.rl_livevideo_rank_mygroup);
-                final TextView tv_livevideo_rank_mygroup = (TextView) relativeLayout.findViewById(R.id
+                View rl_livevideo_rank_mygroup = view.findViewById(R.id.rl_livevideo_rank_mygroup);
+                final TextView tv_livevideo_rank_mygroup = view.findViewById(R.id
                         .tv_livevideo_rank_mygroup);
-                final View v_livevideo_rank_mygroup = relativeLayout.findViewById(R.id.v_livevideo_rank_mygroup);
+                final View v_livevideo_rank_mygroup = view.findViewById(R.id.v_livevideo_rank_mygroup);
                 //组内
-                View rl_livevideo_rank_groups = relativeLayout.findViewById(R.id.rl_livevideo_rank_groups);
-                final TextView tv_livevideo_rank_groups = (TextView) relativeLayout.findViewById(R.id
+                View rl_livevideo_rank_groups = view.findViewById(R.id.rl_livevideo_rank_groups);
+                final TextView tv_livevideo_rank_groups = view.findViewById(R.id
                         .tv_livevideo_rank_groups);
 
-                final View v_livevideo_rank_groups = relativeLayout.findViewById(R.id.v_livevideo_rank_groups);
+                final View v_livevideo_rank_groups = view.findViewById(R.id.v_livevideo_rank_groups);
                 //班级
-                View rl_livevideo_rank_class = relativeLayout.findViewById(R.id.rl_livevideo_rank_class);
-                final TextView tv_livevideo_rank_class = (TextView) relativeLayout.findViewById(R.id
+                View rl_livevideo_rank_class = view.findViewById(R.id.rl_livevideo_rank_class);
+                final TextView tv_livevideo_rank_class = view.findViewById(R.id
                         .tv_livevideo_rank_class);
-                final View v_livevideo_rank_class = relativeLayout.findViewById(R.id.v_livevideo_rank_class);
+                final View v_livevideo_rank_class = view.findViewById(R.id.v_livevideo_rank_class);
                 //下面标题中间的字
-                final TextView tv_livevideo_rank_subtitle_mid = (TextView) relativeLayout.findViewById(R.id
+                final TextView tv_livevideo_rank_subtitle_mid = view.findViewById(R.id
                         .tv_livevideo_rank_subtitle_mid);
-                lv_livevideo_rank_list = relativeLayout.findViewById(R.id.lv_livevideo_rank_list);
-
+                lv_livevideo_rank_list = view.findViewById(R.id.lv_livevideo_rank_list);
 
                 final int COLOR_F13232 = activity.getResources().getColor(R.color.COLOR_F13232);
                 final int white = activity.getResources().getColor(R.color.white);
                 final int slider = activity.getResources().getColor(R.color.COLOR_SLIDER);
-
 
                 rl_livevideo_rank_mygroup.setOnClickListener(new View.OnClickListener() {
                     @Override

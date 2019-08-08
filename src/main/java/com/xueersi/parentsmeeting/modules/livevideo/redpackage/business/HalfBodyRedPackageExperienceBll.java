@@ -53,7 +53,7 @@ public class HalfBodyRedPackageExperienceBll extends LiveBackBaseBll {
         if (redPackageAction == null) {
             PScienceRedPackageBll redPackageBll = new PScienceRedPackageBll(activity, liveGetInfo, false);
             redPackageBll.setVSectionID(mVideoEntity.getSectionId());
-            redPackageBll.initView(mRootView);
+            redPackageBll.initView(mRootView, getLiveViewAction());
             redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
                 @Override
                 public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {

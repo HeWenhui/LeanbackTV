@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog.Spee
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechCollectiveNo2Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.share.business.practice.entity.Speech;
 
@@ -96,7 +97,7 @@ public class SpeechCollectiveNo2Bll {
      */
     private String devicestatus = "0";
     SpeechCollectiveView speechCollectiveView;
-    Handler handler = new Handler(Looper.getMainLooper());
+    Handler handler = LiveMainHandler.getMainHandler();
     SpeechCollectiveHttp collectiveHttp;
     private SpeechStartDialog speechStartDialog;
     private LiveGetInfo liveGetInfo;

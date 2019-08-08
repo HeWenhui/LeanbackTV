@@ -762,7 +762,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
 
     private void loadData() {
-        BaseApplication baseApplication = BaseApplication.getInstance();
 //        mRedPacketDialog = new RedPacketAlertDialog(this, baseApplication, false);
         lectureLivePlayBackBll = new LectureLivePlayBackBll(HalfBodyLiveExperienceActivity.this, "");
         liveBackBll.setStuCourId(mVideoEntity.getStuCourseId());

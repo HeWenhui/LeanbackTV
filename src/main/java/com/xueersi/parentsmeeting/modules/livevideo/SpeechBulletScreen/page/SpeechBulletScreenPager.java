@@ -90,7 +90,8 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  * Created by Zhang Yuansun on 2018/7/11.
  */
 
-public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpeechBullletContract.ScienceSpeechBulletView {
+public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpeechBullletContract
+        .ScienceSpeechBulletView {
     /**
      * MVP:Presenter层接口
      */
@@ -103,14 +104,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
      * 语音弹幕布局
      */
     private RelativeLayout rlSpeechBulContent;
-    /**
-     * 根布局
-     */
-    private RelativeLayout root;
-    /**
-     * 底部布局
-     */
-    private RelativeLayout rlSpeechbulBottomContent;
     /**
      * 输入框布局
      */
@@ -193,6 +186,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
      * 是否恢复了音量
      */
     private boolean isVolumeResume = false;
+    private ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener;
     private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
@@ -225,10 +219,8 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_speech_bullet_screen, null);
-        root = mView.findViewById(R.id.rl_livevideo_speechbul_root);
         tvSpeechbulCloseTip = mView.findViewById(R.id.tv_livevideo_speechbul_closetip);
-        switchFSPanelLinearLayout = mView.findViewById(R.id.rl_livevideo_speechbul_panelroot);
-        rlSpeechbulBottomContent = mView.findViewById(R.id.rl_livevideo_speechbul_bottom_content);
+        switchFSPanelLinearLayout = mView.findViewById(R.id.rl_livevideo_speechbul_panel_root);
         tvSpeechbulTitle = mView.findViewById(R.id.tv_livevideo_speechbul_title);
         ivSpeechbulClose = mView.findViewById(R.id.tv_livevideo_speechbul_close);
         vwvSpeechbulWave = mView.findViewById(R.id.vwv_livevideo_speechbul_wave);
@@ -246,7 +238,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
         tvSpeechbulTitle.setTypeface(fontFace);
         tvSpeechbulCount.setTypeface(fontFace);
         tvSpeechbulCloseTip.setTypeface(fontFace);
-        root.setClickable(true);
+        mView.setClickable(true);
         return mView;
     }
 
@@ -352,7 +344,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
             @Override
             public void onClick(View view) {
                 logger.i("onClick: etSpeechbulWords");
-                KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etSpeechbulWords);
             }
         });
         etSpeechbulWords.addTextChangedListener(new TextWatcher() {
@@ -399,7 +390,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
             @Override
             public void onClick(View view) {
                 logger.i("onClick: tvSpeechbulRepeat");
-                KeyboardUtil.hideKeyboard(root);
+                KeyboardUtil.hideKeyboard(mView);
                 tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
                 rlSpeechbulInputContent.setVisibility(View.GONE);
                 tvSpeechbulTitle.setVisibility(View.VISIBLE);
@@ -458,24 +449,18 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
                         });
             }
         });
-
-        mWeakHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                KeyboardUtil.attach((Activity) mContext, switchFSPanelLinearLayout);
-            }
-        }, 10);
-
-        //重要！键盘高度发生变化时，刷新键盘高度
-        switchFSPanelLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
-                .OnGlobalLayoutListener() {
+        KeyboardUtil.attach((Activity) mContext, switchFSPanelLinearLayout);
+        KPSwitchConflictUtil.attach(switchFSPanelLinearLayout, etSpeechbulWords);
+        onGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 if (switchFSPanelLinearLayout.getHeight() != KeyboardUtil.getValidPanelHeight(mContext)) {
                     switchFSPanelLinearLayout.refreshHeight(KeyboardUtil.getValidPanelHeight(mContext));
                 }
             }
-        });
+        };
+        //重要！键盘高度发生变化时，刷新键盘高度
+        switchFSPanelLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
     }
 
     /**
@@ -559,8 +544,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
         if (hasTip) {
             tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
             countDownTimer.start();
-        }
-        else {
+        } else {
             removeSpeechBullet();
         }
     }
@@ -583,16 +567,17 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
     };
 
     public void removeSpeechBullet() {
-        if (root != null && rlSpeechBulContent != null) {
-            KeyboardUtil.hideKeyboard(root);
-            rlSpeechBulContent.removeView(root);
-            root.setClickable(false);
+        if (mView != null && rlSpeechBulContent != null) {
+            KeyboardUtil.hideKeyboard(mView);
+            rlSpeechBulContent.removeView(mView);
+            mView.setClickable(false);
         }
         stopEvaluator();
     }
 
     @Override
-    public void receiveDanmakuMsg(String name, String msg, String headImgUrl, boolean isGuset, RelativeLayout rootView) {
+    public void receiveDanmakuMsg(String name, String msg, String headImgUrl, boolean isGuset, RelativeLayout
+            rootView) {
         if (rlSpeechBulContent == null) {
             rlSpeechBulContent = new RelativeLayout(mContext);
             rlSpeechBulContent.setId(R.id.rl_livevideo_content_speechbul);
@@ -759,7 +744,8 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
 //
 //            @Override
 //            public void onResult(ResultEntity resultEntity) {
-//                logger.i("onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity.getErrorNo() + "," +
+//                logger.i("onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity.getErrorNo() +
+// "," +
 //                        "sid=" + resultEntity.getSid());
 //                if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
 //                    if (resultEntity.getSid() != null) {
@@ -1065,14 +1051,20 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
             paint.setColor(Color.BLACK);
             paint.setAlpha((int) (255 * 0.6)); //  透明度0.6
             if (danmaku.isGuest) {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1
-                                , left + danmaku.paintWidth - danmaku.padding,
-                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
+                canvas.drawRoundRect(new RectF(
+                                left + danmaku.padding + 1,
+                                top + danmaku.padding + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1,
+                                left + danmaku.paintWidth - danmaku.padding,
+                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 +
+                                        1 + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
             } else {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
-                                , left + danmaku.paintWidth - danmaku.padding,
-                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
+                canvas.drawRoundRect(new RectF(
+                                left + danmaku.padding + 1,
+                                top + danmaku.padding + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1,
+                                left + danmaku.paintWidth - danmaku.padding,
+                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                                        + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
             }
         }
@@ -1094,7 +1086,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
 
         @Override
         public void releaseResource(BaseDanmaku danmaku) {
-            // TODO 重要:清理含有ImageSpan的text中的一些占用内存的资源 例如drawable
             if (danmaku.text instanceof Spanned) {
                 danmaku.text = "";
             }
@@ -1251,6 +1242,9 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
     public void onDestroy() {
         logger.i("onDestroy()");
         super.onDestroy();
+        if (switchFSPanelLinearLayout != null && onGlobalLayoutListener != null) {
+            switchFSPanelLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
+        }
         if (mDanmakuView != null) {
             mDanmakuView.release();
             mDanmakuView = null;

@@ -16,13 +16,13 @@
         android:visibility="gone" />
 
     <RelativeLayout
-        android:id="@+id/rl_livevideo_speechbul_panelcontent"
+        android:id="@+id/rl_livevideo_speechbul_panel_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
         <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout
-            android:id="@+id/rl_livevideo_speechbul_panelroot"
+            android:id="@+id/rl_livevideo_speechbul_panel_root"
             android:layout_width="match_parent"
             android:layout_height="@dimen/panel_height"
             android:visibility="gone">
@@ -31,10 +31,9 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@id/rl_livevideo_speechbul_bottom_content"
         android:layout_width="match_parent"
         android:layout_height="112dp"
-        android:layout_above="@id/rl_livevideo_speechbul_panelcontent"
+        android:layout_above="@id/rl_livevideo_speechbul_panel_content"
         android:background="@drawable/livevideo_alertview_yuyinbeijing_icon_normal">
 
         <TextView

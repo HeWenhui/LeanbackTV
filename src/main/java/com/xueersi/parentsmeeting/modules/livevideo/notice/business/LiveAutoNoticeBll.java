@@ -79,16 +79,14 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             "禁止脏话及敏感词汇，你会被禁言。",
             "我会收到你发的被屏蔽的留言，别发喽！",
             "脏话及敏感词汇会被屏蔽掉，别再发了。"};
-    String[] noticeGaosan = {"网校公安局提醒你，请注意言辞！"
-            , "警察叔叔还有30秒到达战场，请注意敏感词汇。"
-            , "富强民主文明和谐自由平等公正法治……"};
-
+    private String[] noticeGaosan;
 
     public LiveAutoNoticeBll(Activity context, LiveBll2 liveBll2, RelativeLayout bottom) {
         super(context, liveBll2);
         this.mContext = context;
         this.bottom = bottom;
         setLayout(1920, 1080);
+        noticeGaosan = context.getResources().getStringArray(R.array.livevideo_notice_gaosan);
     }
 
     public void setLayout(int width, int height) {
@@ -172,7 +170,8 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
                 content = noticeLowLevel[(i + 1) % 4];
             } else if (grade >= 4 && grade <= 7) {
                 content = noticeHighLevel[(i + 1) % 4];
-            } else*/ if (grade == 13) {
+            } else*/
+            if (grade == 13) {
                 content = noticeGaosan[(i + 1) % 3];
             } else {
                 return;
@@ -369,7 +368,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
      * @param type
      */
     public void getAutoNotice(int isForce, int type) {
-        logger.i( "getAutoNotice");
+        logger.i("getAutoNotice");
         try {
             if (Integer.parseInt(classId) < 0) {
                 return;
@@ -382,7 +381,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 try {
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                    logger.i( "getAutoNotice success" + object.toString());
+                    logger.i("getAutoNotice success" + object.toString());
 
                     int type = object.optInt("type", -1);
                     int choose = object.optInt("choose", -1);
@@ -401,7 +400,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                logger.i( "getAutoNotice fail" + msg);
+                logger.i("getAutoNotice fail" + msg);
                 umsAgent(0, false);
                 //showNotice("老师",notice[1][1],"");
             }
@@ -409,7 +408,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                logger.i( "getAutoNotice fail" + responseEntity.getErrorMsg());
+                logger.i("getAutoNotice fail" + responseEntity.getErrorMsg());
                 umsAgent(0, false);
                 //showNotice("老师",notice[1][1],"");
             }

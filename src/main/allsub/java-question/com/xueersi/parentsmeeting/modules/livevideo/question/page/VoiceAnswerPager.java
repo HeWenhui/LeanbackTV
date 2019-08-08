@@ -134,6 +134,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 }
             }
         }
+        mLogtf.addCommon("testid", mDetail.getvQuestionID());
         mLogtf.d("VoiceAnswerPager:answer=" + answer);
         initListener();
         initData();
@@ -260,7 +261,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
             }
         }, 1000);
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
-        FileUtils.deleteDir(dir);
+        FileUtils.deleteFilesInDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();
         }

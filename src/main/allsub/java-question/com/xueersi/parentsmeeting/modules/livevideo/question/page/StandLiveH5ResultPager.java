@@ -43,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResu
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 
@@ -138,8 +139,7 @@ public class StandLiveH5ResultPager extends BasePager implements IArtsAnswerRsul
                             logger.d("onViewDetachedFromWindow right");
 //                        questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
                             liveSoundPool.stop(task);
-                            Handler handler = new Handler(Looper.getMainLooper());
-                            handler.postDelayed(new Runnable() {
+                            LiveMainHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     liveSoundPool.release();

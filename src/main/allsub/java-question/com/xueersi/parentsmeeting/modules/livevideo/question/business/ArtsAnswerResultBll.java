@@ -152,8 +152,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     /**
      * @param context
      * @param liveBll
-     * @param rootView
-     * @param isPse    是否是小学英语
      */
     public ArtsAnswerResultBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -279,8 +277,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                                     }
                                 }
                             });
-                            Handler handler = new Handler(Looper.getMainLooper());
-                            handler.postDelayed(new Runnable() {
+                            postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     mLiveSoundPool.release();
@@ -348,8 +345,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                                     }
                                 }
                             });
-                            Handler handler = new Handler(Looper.getMainLooper());
-                            handler.postDelayed(new Runnable() {
+                            postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     mLiveSoundPool.release();
@@ -831,7 +827,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     post(new Runnable() {
                         @Override
                         public void run() {
-                            if (!close) {
+                            if (!close && mRlResult != null) {
                                 removeView(mRlResult);
                             }
 
@@ -850,10 +846,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         post(new Runnable() {
                             @Override
                             public void run() {
-                                if (!close) {
+                                if (!close && mRlResult != null) {
                                     removeView(mRlResult);
                                 }
-
                             }
                         });
                         EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));
@@ -1133,10 +1128,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 回答问题结果提示框延迟三秒消失
      */
     public void disMissAnswerResult() {
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+        postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (!close) {
+                if (!close && mRlResult != null) {
                     removeView(mRlResult);
                 }
             }

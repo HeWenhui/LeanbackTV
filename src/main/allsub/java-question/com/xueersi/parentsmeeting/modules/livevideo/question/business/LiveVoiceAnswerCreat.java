@@ -12,7 +12,9 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -48,7 +50,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 
     @Override
     public BaseVoiceAnswerPager create(Context activity, VideoQuestionLiveEntity videoQuestionLiveEntity, JSONObject assess_ref, String type,
-                                       RelativeLayout rlQuestionContent, SpeechUtils mIse) {
+                                       LiveViewAction liveViewAction, SpeechUtils mIse) {
         if (questionSwitch instanceof WrapQuestionSwitch) {
             WrapQuestionSwitch wrapQuestionSwitch = (WrapQuestionSwitch) questionSwitch;
             wrapQuestionSwitch.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
@@ -59,15 +61,8 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-        if (liveVideoPoint != null) {
-            params.rightMargin = liveVideoPoint.getRightMargin();
-            logger.d("create:rightMargin=" + params.rightMargin);
-        } else {
-            int screenWidth = ScreenUtils.getScreenWidth();
-            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
-            params.rightMargin = wradio;
-        }
-        rlQuestionContent.addView(voiceAnswerPager2.getRootView(), params);
+        params.rightMargin = liveVideoPoint.getRightMargin();
+        liveViewAction.addView(LiveVideoLevel.LEVEL_QUES, voiceAnswerPager2.getRootView(), params);
         String sourcetype = questionSwitch.getsourcetype(videoQuestionLiveEntity);
         VoiceAnswerLog.sno2(voiceAnswerPager2, videoQuestionLiveEntity.type, videoQuestionLiveEntity.id, videoQuestionLiveEntity.nonce, sourcetype);
         return voiceAnswerPager2;

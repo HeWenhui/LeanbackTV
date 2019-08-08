@@ -88,13 +88,22 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
                         String id = data.optString("id");
                         classmateEntity.setId(id);
                         classmateEntity.setName(data.getString("name"));
-                        if (!headImgUrl.isEmpty()) {
-                            try {
-                                String img = headImgUrl.get(0) + "/" + data.getString("path") + "/" +
-                                        mGetInfo.getImgSizeType() + "?" + data.getString("Version");
-                                classmateEntity.setImg(img);
-                            } catch (JSONException e) {
-                                MobAgent.httpResponseParserError(TAG, "onNotice:setImg", e.getMessage());
+                        if (data.has("stuImg")) {
+                            classmateEntity.setImg(data.optString("stuImg"));
+                        } else {
+                            if (!headImgUrl.isEmpty()) {
+                                try {
+                                    String path = data.getString("path");
+                                    if (path.contains("http")) {
+                                        classmateEntity.setImg(path);
+                                    } else {
+                                        String img = headImgUrl.get(0) + "/" + path + "/" +
+                                                mGetInfo.getImgSizeType() + "?" + data.getString("Version");
+                                        classmateEntity.setImg(img);
+                                    }
+                                } catch (JSONException e) {
+                                    MobAgent.httpResponseParserError(TAG, "onNotice:setImg", e.getMessage());
+                                }
                             }
                         }
                         rollCallBll.onClassmateRollCall(classmateEntity);
