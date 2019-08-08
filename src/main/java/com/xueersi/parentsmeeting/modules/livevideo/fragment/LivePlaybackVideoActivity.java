@@ -45,10 +45,18 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(TAG, e);
                 }
+            }else{
+                // TODO: 2019/8/8 大班整合测试代码
+                try {
+                    String fname = "com.xueersi.parentsmeeting.modules.livebusiness.core.LiveBusinessBackFragment";
+                    LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
+                    return fragmentBase;
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(TAG, e);
+                }
             }
             return new LiveBackVideoFragment();
         }
-//        setRequestedOrientation(Configuration.ORIENTATION_LANDSCAPE);
         String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandLiveVideoExperienceFragment";
         LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
         return fragmentBase;
