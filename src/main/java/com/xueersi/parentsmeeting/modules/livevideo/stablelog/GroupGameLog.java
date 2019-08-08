@@ -34,6 +34,10 @@ public class GroupGameLog {
             eventId = "hotairballoon";
         } else if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(type)) {
             eventId = "cleaningup";
+        } else if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(type)) {
+            eventId = "passinggame";
+        } else if (LiveQueConfig.EN_COURSE_TYPE_GET_IT.equals(type)) {
+            eventId = "GetIt!";
         }
         return eventId;
     }

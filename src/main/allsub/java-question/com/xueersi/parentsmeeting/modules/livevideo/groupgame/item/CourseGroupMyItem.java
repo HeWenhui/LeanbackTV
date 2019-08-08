@@ -421,9 +421,11 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
             });
         }
         if (muted) {
-            ivCourseItemAudio.setImageResource(AUDIO_RES[1]);
+            ivCourseItemAudio.setImageResource(AUDIO_RES[0]);
+            ivCourseItemAudio.setEnabled(false);
         } else {
             ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
+            ivCourseItemAudio.setEnabled(true);
         }
     }
 

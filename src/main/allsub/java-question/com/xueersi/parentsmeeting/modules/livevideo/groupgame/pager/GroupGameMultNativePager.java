@@ -237,9 +237,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
         liveAndBackDebug = new ContextLiveAndBackDebug(context);
         preLoad = new MiddleSchool();
+        mLog = new GroupGameLog(detailInfo.type);
         initData();
         initListener();
-        mLog = new GroupGameLog(detailInfo.type);
     }
 
     @Override
@@ -2795,6 +2795,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                         if (vidooCannonEntity.teamMemberEntity.getEnergy() < MAX_ENERGY) {
                                             if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
                                                     .equals(detailInfo.type)){
+                                                vidooCannonEntity.rightNum++;
                                                 vidooCannonEntity.teamMemberEntity.setEnergy(vidooCannonEntity.teamMemberEntity.getEnergy() + 2);
                                             }else {
                                                 vidooCannonEntity.teamMemberEntity.setEnergy(vidooCannonEntity.teamMemberEntity.getEnergy() + 1);
