@@ -89,6 +89,15 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
             } catch (Exception e) {
                 LiveCrashReport.postCatchedException(TAG, e);
             }
+        }else{
+            //测试大班整合
+            try {
+                String fname = "com.xueersi.parentsmeeting.modules.livebusiness.core.LiveBusinessFragment";
+                LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
         }
         return new LiveVideoFragment();
     }
