@@ -57,7 +57,7 @@ import java.util.List;
  * <p>
  * created  at 2018/11/14 11:31
  */
-public class PkTeamSelectPager extends BasePager implements View.OnClickListener {
+public class PkTeamSelectPager extends SoundEffectPager implements View.OnClickListener {
     private static final String TAG = "TeamPkTeamSelectPager";
     private ChinesePkBll mPKBll;
 
@@ -776,18 +776,23 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     }
 
     private void releaseRes() {
+        if (soundPoolHelper != null) {
+            soundPoolHelper.release();
+            soundPoolHelper = null;
+        }
 
         try {
-            releaseSoundRes();
             cancelMarquee();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void releaseSoundRes() {
+    @Override
+    public void releaseSoundRes() {
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
+            soundPoolHelper = null;
         }
     }
 

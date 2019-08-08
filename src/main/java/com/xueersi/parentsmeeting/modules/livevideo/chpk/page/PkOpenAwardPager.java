@@ -68,7 +68,7 @@ import okhttp3.Call;
  *         <p>
  *         created  at 2018/11/14 11:31
  */
-public class PkOpenAwardPager extends BasePager {
+public class PkOpenAwardPager extends SoundEffectPager {
     private static final String TAG = "TeamPkAwardPager";
     Logger loger = LoggerFactory.getLogger(TAG);
     private AwardNumberView awardTeamNumber;
@@ -182,17 +182,16 @@ public class PkOpenAwardPager extends BasePager {
      * 关闭 宝箱展示页面
      */
     public void closeAwardPager() {
-        releaseRes();
         pkBll.closeCurrentPager();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        releaseRes();
     }
 
-    private void releaseRes() {
+    @Override
+    public void releaseSoundRes() {
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
         }
