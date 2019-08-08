@@ -393,12 +393,14 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         hmParams.put("logtype", "backsetspeed");
         hmParams.put("speed", "" + speed);
         hmParams.put("muri", "" + mUri);
+        hmParams.put("streamId", "" + streamId);
         hmParams.put("uuid", "" + uuid);
         if (isInitialized()) {
             vPlayer.setSpeed(speed);
             hmParams.put("mInitialized", "true");
         } else {
             hmParams.put("mInitialized", "false");
+            ThreadMap.getInstance().addKey("play_setspeed_init", "1");
         }
         UmsAgentManager.umsAgentDebug(activity, LogConfig.PLAY_SET_SPEED, hmParams);
     }
