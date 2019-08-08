@@ -26,7 +26,6 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -34,7 +33,6 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -1160,7 +1158,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             public void onDataSucess(Object... objData) {
                 JSONObject jsonObject = (JSONObject) objData[0];
                 if (jsonObject != null && jsonObject.optInt("toAnswered", 0) == 1) {
-                    XESToastUtils.showToastAtCenter(mContext, "该题已作答过~");
+                    XESToastUtils.showToastAtCenter("该题已作答过~");
                 }
                 showScienceAnswerResult(isforce);
                 onSubmitSuccess(isforce);
