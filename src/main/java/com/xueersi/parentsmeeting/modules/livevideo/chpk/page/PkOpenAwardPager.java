@@ -188,12 +188,18 @@ public class PkOpenAwardPager extends SoundEffectPager {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if (soundPoolHelper != null) {
+            soundPoolHelper.release();
+            soundPoolHelper = null;
+        }
     }
 
     @Override
     public void releaseSoundRes() {
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
+            soundPoolHelper = null;
         }
     }
 
