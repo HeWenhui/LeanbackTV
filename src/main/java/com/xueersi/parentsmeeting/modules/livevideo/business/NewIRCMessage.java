@@ -54,24 +54,8 @@ public class NewIRCMessage implements IIRCMessage {
     private String[] mChannels;
     private String mNickname;
 
-    private IRCTalkConf ircTalkConf;
-    /**
-     * 从上面的列表选择一个服务器
-     */
-    private int mSelectTalk = 0;
     private LogToFile mLogtf;
-    /**
-     * 播放器是不是销毁
-     */
-    private boolean mIsDestory = false;
-    /**
-     * 网络类型
-     */
-    private int netWorkType;
-    /**
-     * 调度是不是在无网络下失败
-     */
-    private boolean connectError = false;
+
     /**
      * 是不是获得过用户列表
      */
@@ -82,7 +66,10 @@ public class NewIRCMessage implements IIRCMessage {
     Context mContext;
     File workSpaceDir = new File(context.getCacheDir(), "irc/workspace");
     private String currentMode;
-    LiveGetInfo mLiveInfo;
+    /** 直播ID*/
+    private String liveId;
+    /** 班级ID*/
+    private String classId;
     private List<String> roomid;
     private PMDefs.LiveInfo liveInfo;
     private boolean isConnected;
@@ -91,15 +78,15 @@ public class NewIRCMessage implements IIRCMessage {
     private Map<String, String> analysis;
     private UUID mSid = UUID.randomUUID();
 
-    public NewIRCMessage(Context context, int netWorkType, String login, String nickname, LiveGetInfo liveInfo, String... channel) {
-        this.netWorkType = netWorkType;
+    public NewIRCMessage(Context context,  String nickname, String liveId,String classId, String... channel) {
         this.mChannels = channel;
         this.mNickname = nickname;
         this.mContext = context;
-        this.mLiveInfo = liveInfo;
+        this.liveId = liveId;
+        this.classId = classId;
         mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
-        mLogtf.d("IRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
+        mLogtf.d("IRCMessage:channel=" + channel  + ",nickname=" + nickname);
     }
 
     /**
@@ -470,6 +457,7 @@ public class NewIRCMessage implements IIRCMessage {
         public void onRecvRoomMetaData(PMDefs.RoomMetaData roomMetaData) {
             //code 322-聊天室信息 323-聊天室信息返回结束
             logger.i("ircsdk room Meta data code: " + roomMetaData.code);
+            logger.i("ircsdk room Meta data : " + roomMetaData.content != null?roomMetaData.content:"");
             if (PMDefs.ResultCode.Result_RoomData == roomMetaData.code) {
                 logger.i("ircsdk room Meta data : " + roomMetaData.content);
                 String channel = roomMetaData.roomId;
@@ -554,12 +542,16 @@ public class NewIRCMessage implements IIRCMessage {
             String channel = roomTopic.roomId;
             String topic = roomTopic.topic;
             long date = 0;
-            onTopic(channel, topic, date);
             Map<String, String> logHashMap = defaultlog();
             logHashMap.put("logtype", "roomTopic");
             logHashMap.put("roomCode", "" + roomTopic.code);
             logHashMap.put("roomTopic", "" + roomTopic.topic);
             UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+
+            if (roomTopic.code == PMDefs.ResultCode.Result_RoomTopicEnd){
+                return;
+            }
+            onTopic(channel, topic, date);
             if (topicIndex == 0) {
                 try {
                     mLogtf.d(SysLogLable.receivedMessageOfTopic, "onTopic:channel=" + channel + ",topicIndex=" + topicIndex + ",topic=" + topic);
@@ -762,10 +754,11 @@ public class NewIRCMessage implements IIRCMessage {
         mChatClient.getRoomManager().addListener(mRoomListener);
         mChatClient.getPeerManager().addListener(mPeerListener);
         String appid = LiveAppUserInfo.getInstance().getPsAppId();
+        String appkey = LiveAppUserInfo.getInstance().getPsAppClientKey();
         //irc sdk初始化  code: 0 成功 ，1 参数错误 ， 19 已初始化
-        int initcode = mChatClient.init(mContext.getApplicationContext(), appid, LiveAppUserInfo.getInstance().getPsAppClientKey(), workSpaceDir.getAbsolutePath());
+        int initcode = mChatClient.init(mContext.getApplicationContext(), appid, appkey, workSpaceDir.getAbsolutePath());
         logger.i("irc sdk initcode: " + initcode);
-        logger.i("psAppId:" + appid + " PsAppClientKey:" + LiveAppUserInfo.getInstance().getPsAppClientKey() + " workspace:" + workSpaceDir.getAbsolutePath());
+        logger.i("psAppId:" + appid + " PsAppClientKey:" + appkey + " workspace:" + workSpaceDir.getAbsolutePath());
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = mNickname;
@@ -774,14 +767,14 @@ public class NewIRCMessage implements IIRCMessage {
         } else {
             liveInfo.realname = mNickname;
         }
-        liveInfo.liveId = mLiveInfo.getId();
-        if (mLiveInfo.getNickname() != null) {
+        liveInfo.liveId = liveId;
+        if (LiveAppUserInfo.getInstance().getNickName() != null) {
             liveInfo.username = LiveAppUserInfo.getInstance().getNickName();
         } else {
             liveInfo.username = mNickname;
         }
-        if (mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null) {
-            liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
+        if (classId != null) {
+            liveInfo.classId = classId;
         } else {
             liveInfo.classId = "";
         }
@@ -793,7 +786,9 @@ public class NewIRCMessage implements IIRCMessage {
         }
         int infocode = mChatClient.setLiveInfo(liveInfo);
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
-        int logincode = mChatClient.login(LiveAppUserInfo.getInstance().getPsimId(), LiveAppUserInfo.getInstance().getPsimPwd());
+        String psimId = LiveAppUserInfo.getInstance().getPsimId() ;
+        String psimKey = LiveAppUserInfo.getInstance().getPsimPwd();
+        int logincode = mChatClient.login(psimId, psimKey);
 
         Map<String, String> logHashMap = defaultlog();
         logHashMap.put("logtype", "init");
@@ -802,9 +797,9 @@ public class NewIRCMessage implements IIRCMessage {
         logHashMap.put("logincode", "" + logincode);
         logHashMap.put("initLoginState", PMDefs.ResultCode.Result_Success == logincode ? "success" : "fail");
         logHashMap.put("PsAppId", appid);
-        logHashMap.put("PsAppClientKey", LiveAppUserInfo.getInstance().getPsAppClientKey());
-        logHashMap.put("PsImId", LiveAppUserInfo.getInstance().getPsimId());
-        logHashMap.put("PsImPwd", LiveAppUserInfo.getInstance().getPsimPwd());
+        logHashMap.put("PsAppClientKey", appkey);
+        logHashMap.put("PsImId", psimId);
+        logHashMap.put("PsImPwd", psimKey);
         logHashMap.put("infocode", "" + infocode);
         logHashMap.put("realname", liveInfo.realname);
         logHashMap.put("nickname", liveInfo.nickname);
@@ -855,10 +850,6 @@ public class NewIRCMessage implements IIRCMessage {
         return mNickname;
     }
 
-    @Override
-    public void setIrcTalkConf(IRCTalkConf ircTalkConf) {
-        this.ircTalkConf = ircTalkConf;
-    }
 
     /**
      * 发通知
@@ -972,10 +963,6 @@ public class NewIRCMessage implements IIRCMessage {
             UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
         }
         isConnected = false;
-        mIsDestory = true;
-        if (ircTalkConf != null) {
-            ircTalkConf.destory();
-        }
     }
 
     @Override
@@ -983,10 +970,6 @@ public class NewIRCMessage implements IIRCMessage {
         this.mIRCCallback = ircCallback;
     }
 
-
-    @Override
-    public void setConnectService(IConnectService connectService) {
-    }
 
     //模式切换
     @Override
@@ -1003,14 +986,14 @@ public class NewIRCMessage implements IIRCMessage {
         logMap.put("nickname", mNickname);
         logMap.put("time", "" + System.currentTimeMillis());
         logMap.put("userid", LiveAppUserInfo.getInstance().getStuId());
-        logMap.put("liveId", mLiveInfo.getId());
+        logMap.put("liveId", liveId);
         logMap.put("devicename", DeviceInfo.getDeviceName());
         if (analysis == null) {
             analysis = new HashMap<>();
         }
         analysis.put("timestamp", "" + System.currentTimeMillis());
-        analysis.put("userid", mLiveInfo.getStuId());
-        analysis.put("planid", mLiveInfo.getId());
+        analysis.put("userid", LiveAppUserInfo.getInstance().getStuId());
+        analysis.put("planid", liveId);
         analysis.put("clientip", IpAddressUtil.USER_IP);
         analysis.put("traceid", "" + UUID.randomUUID());
         analysis.put("platform", "android");

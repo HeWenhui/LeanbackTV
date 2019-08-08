@@ -507,7 +507,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
+        mIRCMessage = new NewIRCMessage(this,  chatRoomUid, mGetInfo.getId(),"", channel);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
 
