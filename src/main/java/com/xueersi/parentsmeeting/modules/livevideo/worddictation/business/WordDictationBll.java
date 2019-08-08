@@ -24,6 +24,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
@@ -88,7 +89,7 @@ public class WordDictationBll implements WordDictationAction {
                 XueErSiRouter.startModule(activity, "/dictation/MiddleResult", bundle);
             }else {
                 // 没有作答记录，直接进入引导页
-                RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers, UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers, LiveAppUserInfo.getInstance().getStuId());
                 bundle.putSerializable("data", recognizeFlow);
                 bundle.putString("what","MiddleLaunch");
                 XueErSiRouter.startModule(activity, "/dictation/MiddleLaunch", bundle);

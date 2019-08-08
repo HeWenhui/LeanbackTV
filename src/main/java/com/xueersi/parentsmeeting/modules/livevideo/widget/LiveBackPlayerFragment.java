@@ -19,6 +19,7 @@ import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ActivityUtils;
+import com.xueersi.lib.framework.utils.ThreadMap;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.videoplayer.config.LogConfig;
@@ -45,7 +46,6 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     /** 是否显示控制栏 */
     protected boolean mIsShowMediaController = true;
     protected float mySpeed = 1.0f;
-    protected String uuid;
     private OnVideoCreate onVideoCreate;
 
     /**
@@ -381,21 +381,21 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     /** 视频预加载成功 */
     protected void onPlayOpenSuccess() {
         if (mySpeed != 1.0f) {
-            setSpeed(mySpeed, uuid);
+            setSpeed(mySpeed);
         }
     }
 
     @Override
-    public void setSpeed(float speed, String uuid) {
+    public void setSpeed(float speed) {
         mySpeed = speed;
-        this.uuid = uuid;
+        String uuid = "" + ThreadMap.getInstance().getKey("play_setspeed_uid");
         HashMap<String, String> hmParams = new HashMap<>();
         hmParams.put("logtype", "backsetspeed");
         hmParams.put("speed", "" + speed);
         hmParams.put("muri", "" + mUri);
         hmParams.put("uuid", "" + uuid);
         if (isInitialized()) {
-            vPlayer.setSpeed(speed, uuid);
+            vPlayer.setSpeed(speed);
             hmParams.put("mInitialized", "true");
         } else {
             hmParams.put("mInitialized", "false");

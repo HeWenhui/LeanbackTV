@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -697,8 +695,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     @Override
-    public void setSpeed(float speed, String uuid) {
-        super.setSpeed(speed, uuid);
+    public void setSpeed(float speed) {
+        super.setSpeed(speed);
         String key = "null";
         if (mVideoEntity != null) {
             if ("LivePlayBackActivity".equals(where)) {//直播辅导
