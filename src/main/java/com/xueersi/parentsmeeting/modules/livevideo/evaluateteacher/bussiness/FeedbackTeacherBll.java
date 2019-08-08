@@ -24,7 +24,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     LivePlayAction livePlayAction;
     FeedBackEntity mFeedBackEntity;
     LiveFeedBackPager pager = null;
-    EvaluateResponseParser mParser;
+
     public FeedbackTeacherBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
@@ -43,9 +43,15 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         if (getInfo != null && getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
-            mParser =new EvaluateResponseParser();
-
-            showFeedBack();
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    long before = System.currentTimeMillis();
+                    //耗时20-100ms
+                    showFeedBack();
+                    logger.d("onLiveInited:showFeedBack:time=" + (System.currentTimeMillis() - before));
+                }
+            }, 500);
         }
     }
 
@@ -54,8 +60,9 @@ public class FeedbackTeacherBll extends LiveBaseBll {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 mLogtf.d("showFeedBack => onPmSuccess: error = " + responseEntity.getJsonObject().toString());
+                EvaluateResponseParser mParser = new EvaluateResponseParser();
                 mFeedBackEntity = mParser.parseFeedBackContent(responseEntity);
-                if(mFeedBackEntity == null) {
+                if (mFeedBackEntity == null) {
                     return;
                 }
                 mGetInfo.setShowHightFeedback(true);
@@ -91,7 +98,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     public boolean showFeedbackPager() {
 //        if (pager != null && mFeedBackEntity != null) {
 
-        if (pager!=null && mFeedBackEntity != null && System.currentTimeMillis() / 1000 > mFeedBackEntity.getEvaluateTime()) {
+        if (pager != null && mFeedBackEntity != null && System.currentTimeMillis() / 1000 > mFeedBackEntity.getEvaluateTime()) {
             logger.i("showEvaluateTeacher");
             logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mFeedBackEntity
                     .getEvaluateTime());
