@@ -51,9 +51,8 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
         enAchievePager = new EnStandAchievePager(activity, relativeLayout, mLiveGetInfo);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) enAchievePager.getRootView().getLayoutParams();
         LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
-        lp.leftMargin = videoPoint.screenWidth - videoPoint.x4 + SizeUtils.Dp2Px(activity, 10);
+        lp.leftMargin += videoPoint.x2;
         // lp.topMargin = SizeUtils.Dp2Px(activity,6);
-        logger.d("initView:rightMargin=" + lp.rightMargin);
 //        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         relativeLayout.addView(enAchievePager.getRootView(), lp);
     }

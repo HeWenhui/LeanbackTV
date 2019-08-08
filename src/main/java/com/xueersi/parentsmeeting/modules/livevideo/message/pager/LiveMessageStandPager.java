@@ -909,6 +909,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
                 get(liveVideoActivity, AudioRequest.class);
         logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
+        setVideoLayout(LiveVideoPoint.getInstance());
     }
 
     @Override
