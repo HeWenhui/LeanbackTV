@@ -38,10 +38,6 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_better_me/result/";
     private OnBettePagerClose mOnpagerClose;
     /**
-     * 图标 - 标题
-     */
-    private ImageView ivTitle;
-    /**
      * 按钮 - 太棒啦
      */
     private ImageView ivGreat;
@@ -97,7 +93,6 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_betterme_complete_target, null);
-        ivTitle = view.findViewById(R.id.iv_livevideo_betterme_completetarget_title);
         ivGreat = view.findViewById(R.id.iv_livevideo_betterme_completetarget_great);
         tvCountdown = view.findViewById(R.id.tv_livevideo_betterme_completetarget_countdown);
         ivArrow = view.findViewById(R.id.iv_livevideo_betterme_completetarget_arrow);
@@ -232,15 +227,26 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
         final String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
         final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        final String titleImage;
+        if (mStuAimResultEntity.isDoneAim()) {
+            titleImage = "img_3_1.png";
+        } else {
+            titleImage = "img_3_2.png";
+        }
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                if ("img_0.png".equals(lottieImageAsset.getFileName())
-                        || "img_1.png".equals(lottieImageAsset.getFileName())
-                        || "img_2.png".equals(lottieImageAsset.getFileName())
-                        || "img_3.png".equals(lottieImageAsset.getFileName())
-                        || "img_4.png".equals(lottieImageAsset.getFileName()) ){
+                if ("img_0.png".equals(lottieImageAsset.getFileName())) {
                     return null;
+                }
+                if ("img_3.png".equals(lottieImageAsset.getFileName())) {
+                    return lottieEffectInfo.fetchBitmapFromAssets(
+                            mLottieAnimationView,
+                            titleImage,
+                            lottieImageAsset.getId(),
+                            lottieImageAsset.getWidth(),
+                            lottieImageAsset.getHeight(),
+                            mContext);
                 }
                 return lottieEffectInfo.fetchBitmapFromAssets(
                         mLottieAnimationView,
@@ -330,7 +336,6 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
      * 小目标完成失败
      */
     private void onTargetFail() {
-        ivTitle.setImageResource(R.drawable.app_xiaomubiao_shellwindow_haokexi_title_pic);
         ivGreat.setImageResource(R.drawable.selector_livevideo_betterme_completetarget_keepon);
     }
 
@@ -341,13 +346,21 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         logger.i("setBetterMeProgress : progress = " + progress);
         if (progress > 100) {
             progress = 100;
-            pgComeletetar.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
-                    .app_livevideo_enteampk_xiaomubiao_progressbar_finish));
         }
-        pgComeletetar.setProgress(progress);
+
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvTips.getLayoutParams();
         layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 127) / 100;
         tvTips.setLayoutParams(layoutParams);
+
+        if (progress == 0) {
+            pgComeletetar.setProgress(0);
+        } else if (progress == 100) {
+            pgComeletetar.setProgress(100);
+        } else {
+            int a = (6 * 100) / 133;
+            int b = progress * 127 / (133);
+            pgComeletetar.setProgress(a + b);
+        }
     }
 
     /**

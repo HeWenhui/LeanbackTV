@@ -23,17 +23,10 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/iv_livevideo_betterme_completetarget_title"
-            android:layout_width="217dp"
-            android:layout_height="114dp"
-            android:layout_marginTop="-8dp"
-            android:src="@drawable/app_xiaomubiao_shellwindow_gongxiwancheng_title_pic" />
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="110dp"
             android:orientation="horizontal">
 
             <LinearLayout

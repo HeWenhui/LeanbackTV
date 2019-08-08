@@ -88,7 +88,7 @@ public class EnStandAchievePager extends LiveBasePager {
     private TextView tvAchiveAimValue;
     private ProgressBar pgAchiveAim;
     private TextView tvAchiveAimTips;
-    private String realTimeVal;
+    private String currentValue;
 
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -192,11 +192,11 @@ public class EnStandAchievePager extends LiveBasePager {
         if (betterMe.isUseBetterMe() && !betterMe.isArriveLate()) {
             if (betterMe.getTarget() != null) {
                 onReceiveBetterMe(betterMe.getTarget(), false);
-                realTimeVal = "0";
+                currentValue = "0";
             }
             if (betterMe.getCurrent() != null) {
                 onBetterMeUpdate(betterMe.getCurrent(), false);
-                realTimeVal = betterMe.getCurrent().getRealTimeVal();
+                currentValue = betterMe.getCurrent().getRealTimeVal();
             }
         }
     }
@@ -233,7 +233,7 @@ public class EnStandAchievePager extends LiveBasePager {
         if (isShowBubble) {
             receiveBetterMeBubble(betterMeEntity);
         }
-        this.realTimeVal = "0";
+        this.currentValue = "0";
     }
 
     /**
@@ -282,7 +282,7 @@ public class EnStandAchievePager extends LiveBasePager {
         if(isShowBubble){
             updateBetterMeBubble(aimRealTimeValEntity);
         }
-        this.realTimeVal = aimRealTimeValEntity.getRealTimeVal();
+        this.currentValue = aimRealTimeValEntity.getRealTimeVal();
     }
 
     /**
@@ -302,10 +302,20 @@ public class EnStandAchievePager extends LiveBasePager {
         if (progress > 100) {
             progress = 100;
         }
-        pgAchiveAim.setProgress(progress);
+
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
         layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 145) / 100;
         tvAchiveAimTips.setLayoutParams(layoutParams);
+
+        if (progress == 0) {
+            pgAchiveAim.setProgress(0);
+        } else if (progress == 100) {
+            pgAchiveAim.setProgress(100);
+        } else {
+            int a = (8 * 100) / 153;
+            int b = progress * 145 / (153);
+            pgAchiveAim.setProgress(a + b);
+        }
     }
 
     /**
@@ -342,9 +352,9 @@ public class EnStandAchievePager extends LiveBasePager {
         //当前完成率是上升还是下降
         boolean isIncrease = false;
         boolean isDecrease = false;
-        if (realTimeVal != null) {
+        if (currentValue != null) {
             double doubleCurrent = (Double.valueOf(current));
-            double doublePrevious = (Double.valueOf(realTimeVal));
+            double doublePrevious = (Double.valueOf(currentValue));
             isIncrease = doubleCurrent > doublePrevious;
             isDecrease = doubleCurrent < doublePrevious;
         }

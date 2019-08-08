@@ -1461,8 +1461,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             @Override
             public void run() {
                 final SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
-                                .chatSendContentDeal(text), mContext,
-                        messageSize);
+                                .chatSendContentDeal(text), mContext, messageSize);
                 mView.post(new Runnable() {
                     @Override
                     public void run() {

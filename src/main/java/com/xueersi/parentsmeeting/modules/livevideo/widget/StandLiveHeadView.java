@@ -77,7 +77,7 @@ public class StandLiveHeadView extends LottieAnimationView {
     @Override
     public void setComposition(@NonNull LottieComposition composition) {
         super.setComposition(composition);
-        if (entity != null) {
+        if (entity == null) {
            return;
         }
         if (isSystem) {
@@ -104,7 +104,7 @@ public class StandLiveHeadView extends LottieAnimationView {
         ImageLoader.with(ContextManager.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
-                if (headUrl.equals(entity.getHeadUrl())) {
+                if (("" + headUrl).equals(entity.getHeadUrl())) {
                     Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, logToFile, "updateHeadUrl", headUrl);
                     if (headBitmap != null) {
                         updateHead(headBitmap);

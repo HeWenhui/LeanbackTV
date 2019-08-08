@@ -79,9 +79,10 @@ public class EnAchievePager extends LiveBasePager {
     private TextView tvAchiveAimValue;
     private ProgressBar pgAchiveAim;
     private TextView tvAchiveAimTips;
-    private String realTimeVal;
     private int WIDTH_PROGRESS_BAR_AIM_VIEWGROUP = 165;
     private int WIDTH_SOLID_PROGRESS_BAR_AIM = 137;
+    private int currentProgress = 0;
+    private String curentValue;
 
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -429,6 +430,7 @@ public class EnAchievePager extends LiveBasePager {
      * 收到本场小目标
      */
     public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isShowBubble) {
+        onBetterMeLayoutChange();
         //隐藏没有小目标时的默认视图
         if (tvAchiveAimEmpty != null) {
             tvAchiveAimEmpty.setVisibility(View.GONE);
@@ -456,14 +458,14 @@ public class EnAchievePager extends LiveBasePager {
         if (isShowBubble) {
             receiveBetterMeBubble(betterMeEntity);
         }
-        realTimeVal = "0";
-        onBetterMeLayoutChange();
+        curentValue = "0";
     }
 
     /**
      * 更新本场小目标
      */
     public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity, boolean isShowBubble) {
+        onBetterMeLayoutChange();
         //隐藏没有小目标时的默认视图
         if (tvAchiveAimEmpty != null) {
             tvAchiveAimEmpty.setVisibility(View.GONE);
@@ -505,8 +507,7 @@ public class EnAchievePager extends LiveBasePager {
         if (isShowBubble) {
             updateBetterMeBubble(aimRealTimeValEntity);
         }
-        this.realTimeVal = aimRealTimeValEntity.getRealTimeVal();
-        onBetterMeLayoutChange();
+        this.curentValue = aimRealTimeValEntity.getRealTimeVal();
     }
 
     /**
@@ -526,10 +527,20 @@ public class EnAchievePager extends LiveBasePager {
         if (progress > 100) {
             progress = 100;
         }
-        pgAchiveAim.setProgress(progress);
+        currentProgress = progress;
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
         layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, WIDTH_SOLID_PROGRESS_BAR_AIM) / 100;
         tvAchiveAimTips.setLayoutParams(layoutParams);
+
+        if (progress == 0) {
+            pgAchiveAim.setProgress(0);
+        } else if (progress == 100) {
+            pgAchiveAim.setProgress(100);
+        } else {
+            int a = 6 * 100 / (6 + WIDTH_SOLID_PROGRESS_BAR_AIM);
+            int b = progress * WIDTH_SOLID_PROGRESS_BAR_AIM / (6 + WIDTH_SOLID_PROGRESS_BAR_AIM);
+            pgAchiveAim.setProgress(a + b);
+        }
     }
 
     /**
@@ -566,9 +577,9 @@ public class EnAchievePager extends LiveBasePager {
         //当前完成率是上升还是下降
         boolean isIncrease = false;
         boolean isDecrease = false;
-        if (realTimeVal != null) {
+        if (curentValue != null) {
             double doubleCurrent = (Double.valueOf(current));
-            double doublePrevious = (Double.valueOf(realTimeVal));
+            double doublePrevious = (Double.valueOf(curentValue));
             isIncrease = doubleCurrent > doublePrevious;
             isDecrease = doubleCurrent < doublePrevious;
         }
@@ -685,9 +696,10 @@ public class EnAchievePager extends LiveBasePager {
                                     .getLayoutParams();
                             layoutParams.width = rlAchiveAimContent.getWidth() - SizeUtils.Dp2Px(mContext, 22);
                             pgAchiveAim.setLayoutParams(layoutParams);
-                            WIDTH_SOLID_PROGRESS_BAR_AIM = SizeUtils.Px2Dp(mContext, rlAchiveAimContent.getWidth()) - 28;
+                            WIDTH_SOLID_PROGRESS_BAR_AIM = SizeUtils.Px2Dp(mContext, rlAchiveAimContent.getWidth()) -
+                                    28;
                         }
-                        setBetterMePro(pgAchiveAim.getProgress());
+                        setBetterMePro(currentProgress);
                     }
                 }
             });
