@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
@@ -93,7 +94,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
                         }
                         liveGetInfo.setShowHightFeedback(true);
                         pager = new LiveFeedBackPager(mContext, liveGetInfo.getId(), mFeedBackEntity, liveGetInfo,
-                                bottomContent, mHttpManager);
+                                mHttpManager);
                         pager.setCourseId(mVideoEntity.getCourseId());
                         pager.setOnPagerClose(onPagerClose);
                         pager.setFeedbackSelectInterface(feedBackTeacherInterface);
@@ -102,10 +103,9 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
 
     }
 
-    com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager.OnPagerClose onPagerClose = new com.xueersi
-            .parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager.OnPagerClose() {
+    LiveBasePager.OnPagerClose onPagerClose = new LiveBasePager.OnPagerClose() {
         @Override
-        public void onClose(com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager basePager) {
+        public void onClose(LiveBasePager basePager) {
             mRootView.removeView(basePager.getRootView());
         }
     };

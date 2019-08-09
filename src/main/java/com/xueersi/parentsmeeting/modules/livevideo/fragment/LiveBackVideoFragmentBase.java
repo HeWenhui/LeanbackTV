@@ -11,7 +11,6 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -54,6 +53,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 import com.xueersi.ui.dataload.DataLoadManager;
 
@@ -204,7 +204,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
         mIsLand.set(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
-        BaseApplication baseApplication = (BaseApplication) activity.getApplication();
+        BaseApplication baseApplication = BaseApplication.getInstance();
         baseApplication.addActivty(activity);
         //showDialog(savedInstanceState);
         video = "ijk";
@@ -580,8 +580,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
             video = "ijk";
             logger.d("onActivityCreated:frag=" + ((ViewGroup) mContentView.findViewById(R.id.rl_live_video_frag))
                     .getChildCount());
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
+            LiveMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     onSelect(savedInstanceState, video);

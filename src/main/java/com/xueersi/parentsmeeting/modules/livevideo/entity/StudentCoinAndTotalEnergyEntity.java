@@ -8,8 +8,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 public class StudentCoinAndTotalEnergyEntity {
 
     private long competitorEnergy;
+    /**自己组的能量*/
     private long myEnergy;
     private long stuLiveGold;
+    /**自己的能量*/
+    private int stuEnergy;
+
     public StudentCoinAndTotalEnergyEntity(){
 
     }
@@ -42,5 +46,13 @@ public class StudentCoinAndTotalEnergyEntity {
 
     public void setStuLiveGold(long stuLiveGold) {
         this.stuLiveGold = stuLiveGold;
+    }
+
+    public int getStuEnergy() {
+        return stuEnergy;
+    }
+
+    public void setStuEnergy(int stuEnergy) {
+        this.stuEnergy = stuEnergy;
     }
 }

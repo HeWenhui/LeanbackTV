@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,9 +17,8 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.config.AppConfig;
@@ -46,35 +43,36 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback.SuperSpeakerBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.intelligent_recoginition.IntelligentRecognitionBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5PlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherLiveBackBll;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import com.xueersi.ui.widget.CircleImageView;
 
@@ -83,6 +81,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +102,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     private RelativeLayout rlQuestionContentBottom;
     /** 互动题的布局 */
     private RelativeLayout rlQuestionContent;
+    private LiveViewAction liveViewAction;
     /** 更多课程广告的布局 */
     private RelativeLayout rlAdvanceContent;
     /** 初始进入播放器时的预加载界面 */
@@ -161,6 +161,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     /** 全身直播 头像 */
     CircleImageView civUserHeadImage;
     boolean isTutorVideo = false;
+    boolean isNetWorkEnable = false;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -169,7 +170,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         super.onVideoCreate(savedInstanceState);
         times++;
         createTime = System.currentTimeMillis();
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
         Intent intent = activity.getIntent();
@@ -201,7 +202,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
 
         if (mVideoEntity == null) {
-            CrashReport.postCatchedException(new Exception("" + activity.getIntent().getExtras()));
+            LiveCrashReport.postCatchedException(new Exception("" + activity.getIntent().getExtras()));
         }
         // 请求相应数据
         initData();
@@ -419,7 +420,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
         llUserHeadImage = mContentView.findViewById(R.id.ll_livevideo_en_stand_achive_user_head_imge);
         civUserHeadImage = mContentView.findViewById(R.id.iv_livevideo_en_stand_achive_user_head_imge);
-
+        liveViewAction = new LiveViewActionIml(activity, mContentView, rlQuestionContent);
     }
 
     /** 竖屏时填充视频列表布局 */
@@ -493,13 +494,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 @Override
                 public boolean onPreDraw() {
                     activity.getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
-                    if (AppBll.getInstance(activity).isNetWorkAlert()) {
+                    if (LiveAppBll.getInstance().isNetWorkAlert() || isNetWorkEnable) {
                         // 互动题播放地址
-                        AppBll.getInstance(activity.getApplication());
                         playNewVideo();
                     } else {
                         mIsShowNoWifiAlert = false;
-                        AppBll.getInstance(activity.getApplication());
                     }
                     return false;
                 }
@@ -521,7 +520,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         long before = System.currentTimeMillis();
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(rlQuestionContentBottom, rlQuestionContent, mIsLand);
+            businessBll.initViewF(liveViewAction, rlQuestionContentBottom, rlQuestionContent, mIsLand);
         }
 
 
@@ -568,24 +567,26 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     //添加功能模块
     protected void addBusiness(Activity activity) {
-        liveBackBll.addBusinessBll(new QuestionPlayBackBll(activity, liveBackBll));
-        RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
-        liveBackBll.addBusinessBll(redPackagePlayBackBll);
-        liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
-        liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
-        liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
+        ArrayList<BllConfigEntity> bllConfigEntities = AllBackBllConfig.getLiveBackBusiness();
+        for (int i = 0; i < bllConfigEntities.size(); i++) {
+            LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntities.get(i));
+            if (liveBaseBll != null) {
+                liveBackBll.addBusinessBll(liveBaseBll);
+            }
+        }
         //直播
         if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
             //理科
-            if (liveBackBll.getIsArts() == 0) {
+            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_SEC) {
                 initLiveRemarkBll();
                 liveBackBll.addBusinessBll(new SuperSpeakerBackBll(activity, liveBackBll));//语文半身直播回放走的理科
             } else {
-                if (liveBackBll.getIsArts() == 1) {
-//                    liveBackBll.addBusinessBll(new IntelligentRecognitionBackBll(activity, liveBackBll));
-                }
                 Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");
-                liveBackBll.addBusinessBll(new ArtsAnswerResultPlayBackBll(activity, liveBackBll));
+                BllConfigEntity bllConfigEntity = new BllConfigEntity("com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll");
+                LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntity);
+                if (liveBaseBll != null) {
+                    liveBackBll.addBusinessBll(liveBaseBll);
+                }
                 if (liveBackBll.getPattern() != 2) {
                     //回放聊天区加上MMD的皮肤
                     liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));
@@ -602,6 +603,35 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 liveBackBll.addBusinessBll(feedbackTeacherLiveBackBll);
             }
         }
+    }
+
+    protected LiveBackBaseBll creatBll(BllConfigEntity bllConfigEntity) {
+        String className = "";
+        try {
+            className = bllConfigEntity.className;
+            Class<?> c = Class.forName(className);
+            Class<? extends LiveBackBaseBll> clazz;
+            if (BackBusinessCreat.class.isAssignableFrom(c)) {
+                Class<? extends BackBusinessCreat> creatClazz = (Class<? extends BackBusinessCreat>) c;
+                BackBusinessCreat businessCreat = creatClazz.newInstance();
+                clazz = businessCreat.getClassName(activity.getIntent());
+                if (clazz == null) {
+                    return null;
+                }
+            } else if (LiveBackBaseBll.class.isAssignableFrom(c)) {
+                clazz = (Class<? extends LiveBackBaseBll>) c;
+            } else {
+                return null;
+            }
+            Constructor<? extends LiveBackBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBackBll.class});
+            LiveBackBaseBll liveBaseBll = constructor.newInstance(activity, liveBackBll);
+            logger.d("creatBll:business=" + className);
+            return liveBaseBll;
+        } catch (Exception e) {
+            logger.d("creatBll:business=" + className, e);
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        return null;
     }
 
     @Override
@@ -821,9 +851,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 return;
             }
             if (event.netWorkType == NetWorkHelper.MOBILE_STATE) {
-                if (AppBll.getInstance().getAppInfoEntity().isNotificationOnlyWIFI()) {
+                if (LiveAppBll.getInstance().isNotificationOnlyWIFI()) {
                     EventBus.getDefault().post(new AppEvent.OnlyWIFIEvent());
-                } else if (AppBll.getInstance().getAppInfoEntity().isNotificationMobileAlert()) {
+                } else if (LiveAppBll.getInstance().isNotificationMobileAlert()) {
                     EventBus.getDefault().post(new AppEvent.NowMobileEvent());
                 }
             } else if (event.netWorkType == NetWorkHelper.WIFI_STATE) {
@@ -873,8 +903,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             }
             final boolean finalPause = pause;
             logger.i("onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
+            LiveMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity
@@ -926,15 +955,15 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     public void onDestroy() {
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
         if (liveBackBll != null) {
-            liveBackBll.onDestory();
+            liveBackBll.onDestroy();
         }
         if (liveBackVideoBll != null) {
             liveBackVideoBll.onDestroy();
         }
-        LiveVideoConfig.isNewArts = false;
+        // LiveVideoConfig.isNewArts = false;
         ProxUtil.getProxUtil().clear(activity);
     }
 
@@ -944,8 +973,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             videoPlayStatus = MediaPlayer.VIDEO_TEACHER_TUTOR;
             mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER,
                     MediaPlayer.VIDEO_TEACHER_TUTOR, "");
-
-            startNewVideo();
+            isNetWorkEnable = true;
+            //为了让LiveBackVideoBll的onPlaybackComplete回调能完成。
+            LiveMainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    startNewVideo();
+                }
+            });
             return;
         }
         onUserBackPressed();
@@ -954,26 +989,17 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     @Override
     protected void onRefresh() {
         resultFailed = false;
-        if (AppBll.getInstance(activity).isNetWorkAlert()) {
+        if (LiveAppBll.getInstance().isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
             logger.d("onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
-            if (MediaPlayer.getIsNewIJK()) {
-                liveBackVideoBll.changeNextLine();
-            } else {
-                playNewVideo();
-            }
-
+            playNewVideo();
         } else {
             StringBuilder stringBuilder = new StringBuilder();
             int netWorkType = NetWorkHelper.getNetWorkState(activity, stringBuilder);
             if (netWorkType == NetWorkHelper.MOBILE_STATE && allowMobilePlayVideo) {
                 videoBackgroundRefresh.setVisibility(View.GONE);
                 logger.d("mobile status : onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
-                if (MediaPlayer.getIsNewIJK()) {
-                    liveBackVideoBll.changeNextLine();
-                } else {
-                    playNewVideo();
-                }
+                playNewVideo();
             } else {
                 logger.i("not mobile status,or not allowMobilePlayVideo");
             }
@@ -983,7 +1009,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 //            initView();
 //            initData();
 //        }
-        AppBll.getInstance(activity.getApplication());
     }
 
     protected void updateIcon() {

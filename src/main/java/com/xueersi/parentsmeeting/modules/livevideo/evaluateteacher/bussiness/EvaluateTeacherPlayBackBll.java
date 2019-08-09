@@ -51,7 +51,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
         if (liveGetInfo != null && 1 == mVideoEntity.getEvaluateIsOpen()) {
             mParser = new EvaluateResponseParser();
             mHttpManager = liveBackBll.getmHttpManager();
-            if (liveGetInfo.getIsArts() == 1) {
+            if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
                 logger.i("IsArts:" + liveGetInfo.getIsArts() + " IsSmallEnglish:" + liveGetInfo.getSmallEnglish());
                 if (liveGetInfo.getSmallEnglish()) {
                     evaluateTeacherPager = new SmallEnglishEvaluateTeacherPager(mContext, liveGetInfo);
@@ -59,7 +59,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
                     evaluateTeacherPager = new EvaluateTeacherPager(mContext, liveGetInfo);
                 }
                 getArtsEvaluateOption(liveGetInfo.getSmallEnglish());
-            } else if (liveGetInfo.getIsArts() == 0) {
+            } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
                 logger.i("IsArts:" + liveGetInfo.getIsArts() + " IsPrimaryScience:" + liveGetInfo.getIsPrimarySchool());
                 if (1 == liveGetInfo.getIsPrimarySchool()) {
                     evaluateTeacherPager = new PrimaryScienceEvaluateTeacherPager(mContext, liveGetInfo);
@@ -67,7 +67,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
                     evaluateTeacherPager = new EvaluateTeacherPager(mContext, liveGetInfo);
                 }
                 getSciecneEvaluateOption();
-            } else if (liveGetInfo.getIsArts() == 2) {
+            } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
                 logger.i("IsArts:" + liveGetInfo.getIsArts());
                 if (liveGetInfo.isPrimaryChinese()){
                     evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, liveGetInfo);
@@ -199,14 +199,14 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
             }
 
         };
-        if (liveGetInfo.getIsArts() == 1) {
+        if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
             mHttpManager.saveArtsEvaluationTeacher(liveGetInfo.getId(), mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
                     tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
-        } else if (liveGetInfo.getIsArts() == 0) {
+        } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
             mHttpManager.saveScienceEvaluationTeacher(liveGetInfo.getId(), mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId()
                     , teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
                     tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
-        } else if (liveGetInfo.getIsArts() == 2) {
+        } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
             mHttpManager.saveChsEvaluationTeacher(liveGetInfo.getId(), mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
                     tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
         }

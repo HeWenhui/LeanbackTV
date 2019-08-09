@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author lyqai
+ * @author linyuqiang
  * @date 2018/5/22
  */
 public class TalkConfHost {

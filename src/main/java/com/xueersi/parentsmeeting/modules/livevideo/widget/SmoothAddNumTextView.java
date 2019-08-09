@@ -156,9 +156,10 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
         }
     }
 
-      public void setTypeface() {
-        Typeface fontFace = FontCache.getTypeface(getContext(), "QanelasSoftDEMO-ExtraBold.otf");
-        if(fontFace!= null){
+    public void setTypeface() {
+//        Typeface fontFace = FontCache.getTypeface(getContext(), "QanelasSoftDEMO-ExtraBold.otf");
+        Typeface fontFace = FontCache.getTypeface(getContext(), "fangzhengcuyuan.ttf");
+        if (fontFace != null) {
             setTypeface(fontFace);
         }
     }

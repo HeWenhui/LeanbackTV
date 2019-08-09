@@ -20,8 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.event.AppEvent;
@@ -45,43 +44,44 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IConnectService;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SimpleLiveBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.ExpFeedbackDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.StudyResultDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.ExperienceIrcState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.ExperienceIrcState;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.ExpRollCallBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -93,8 +93,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -106,6 +106,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 
 public class ExperienceThreeScreenActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom.MediaChildViewClick, ViewTreeObserver.OnGlobalLayoutListener {
+    private String TAG = "ExperienceThreeScreenActivity";
 
     public static void intentTo(Activity context, Bundle bundle, String where, int requestCode) {
         Intent intent = new Intent(context, ExperienceThreeScreenActivity.class);
@@ -210,8 +211,12 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
     };
 
-    // 体验课相关日志的埋点
-    private final LiveAndBackDebug ums = new SimpleLiveBackDebug() {
+    private class ExperkDebug extends SimpleLiveBackDebug {
+
+        ExperkDebug() {
+            ProxUtil.getProxUtil().put(ExperienceThreeScreenActivity.this, LiveAndBackDebug.class, this);
+        }
+
         @Override
         public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
             UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
@@ -220,7 +225,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         @Override
         public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
             mData.put("appid", appID);
-            mData.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId() + "");
+            mData.put("userid", LiveAppUserInfo.getInstance().getStuId() + "");
             mData.put("usertype", "student");
             mData.put("teacherid", expLiveInfo.getCoachTeacherId() + "");
             mData.put("timestamp", System.currentTimeMillis() + "");
@@ -235,7 +240,10 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             }
             UmsAgentManager.umsAgentOtherBusiness(ExperienceThreeScreenActivity.this, appID, UmsConstants.uploadBehavior, mData);
         }
-    };
+    }
+
+    // 体验课相关日志的埋点
+    private final LiveAndBackDebug ums = new ExperkDebug();
 
     // IRC 回调处理
     private final IRCCallback mIRCcallback = new IRCCallback() {
@@ -562,8 +570,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     private RelativeLayout rlLiveMessageContent;
 
-    private RelativeLayout praiselistContent;
-
     private ImageView ivTeacherNotpresent;
 
     private ImageView ivLoading;
@@ -604,7 +610,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         StableLogHashMap logHashMap = new StableLogHashMap(logtype);
 
         logHashMap.put("appid", appID);
-        logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId() + "");
+        logHashMap.put("userid", LiveAppUserInfo.getInstance().getStuId() + "");
         logHashMap.put("usertype", "student");
         logHashMap.put("teacherid", expLiveInfo.getCoachTeacherId() + "");
         logHashMap.put("timestamp", System.currentTimeMillis() + "");
@@ -649,7 +655,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         onModeChanged();
 
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
 
         getHandler.postDelayed(liveModeTask, getModeInterval());
 
@@ -667,13 +673,13 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         getHandler.removeCallbacks(liveHeartTask);
         getHandler.removeCallbacks(playDelayTask);
 
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
 
         if (videoPlayState.isPlaying) {
             stopPlayer();
         }
 
-        liveBackBll.onDestory();
+        liveBackBll.onDestroy();
         mLiveMessagePager = null;
         mIRCMessage.setCallback(null);
 
@@ -989,15 +995,14 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         mGetInfo.setId(playBackEntity.getLiveId());
         mGetInfo.setLiveType(expLiveInfo.getLiveType());
-        mGetInfo.setStuId(UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        mGetInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
         mGetInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
 
-        String stuName = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName())
-                ? UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance()
-                .getMyUserInfoEntity().getRealName();
+        String stuName = TextUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())
+                ? LiveAppUserInfo.getInstance().getNickName() : LiveAppUserInfo.getInstance().getRealName();
         mGetInfo.setStuName(stuName);
-        mGetInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
-        mGetInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
+        mGetInfo.setNickname(LiveAppUserInfo.getInstance().getNickName());
+        mGetInfo.setHeadImgPath(LiveAppUserInfo.getInstance().getHeadImg());
 
         mGetInfo.getStudentLiveInfo().setSignStatus(expLiveInfo.getIsSignIn());
     }
@@ -1027,24 +1032,58 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         initlizeTalk();
 
-        liveBackBll.addBusinessBll(new QuestionExperienceBll(this, liveBackBll));
+        ArrayList<BllConfigEntity> bllConfigEntities = AllExperienceConfig.getExperienceBusiness();
+        for (int i = 0; i < bllConfigEntities.size(); i++) {
+            LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntities.get(i));
+            if (liveBaseBll != null) {
+                liveBackBll.addBusinessBll(liveBaseBll);
+            }
+        }
+
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(this, liveBackBll, playBackEntity.getChapterId()));
-        liveBackBll.addBusinessBll(new EnglishH5ExperienceBll(this, liveBackBll));
-        liveBackBll.addBusinessBll(new NBH5ExperienceBll(this, liveBackBll));
         expRollCallBll = new ExpRollCallBll(this, liveBackBll, mIRCMessage, expLiveInfo.getSignInUrl(), expLiveInfo.getExpLiveId(), expAutoLive.getTermId());
         liveBackBll.addBusinessBll(expRollCallBll);
 
         liveBackBll.onCreate();
 
         RelativeLayout rlQuestionContent = findViewById(R.id.rl_course_video_live_question_contents);
+        LiveViewAction liveViewAction = new LiveViewActionIml(this, null, rlQuestionContent);
         rlQuestionContent.setVisibility(View.VISIBLE);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
-
         for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(null, rlQuestionContent, new AtomicBoolean(mIsLand));
+            businessBll.initViewF(liveViewAction, null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
 
         expRollCallBll.initSignStatus(expLiveInfo.getIsSignIn());
+    }
+
+    protected LiveBackBaseBll creatBll(BllConfigEntity bllConfigEntity) {
+        String className = "";
+        try {
+            className = bllConfigEntity.className;
+            Class<?> c = Class.forName(className);
+            Class<? extends LiveBackBaseBll> clazz;
+            if (BackBusinessCreat.class.isAssignableFrom(c)) {
+                Class<? extends BackBusinessCreat> creatClazz = (Class<? extends BackBusinessCreat>) c;
+                BackBusinessCreat businessCreat = creatClazz.newInstance();
+                clazz = businessCreat.getClassName(getIntent());
+                if (clazz == null) {
+                    return null;
+                }
+            } else if (LiveBackBaseBll.class.isAssignableFrom(c)) {
+                clazz = (Class<? extends LiveBackBaseBll>) c;
+            } else {
+                return null;
+            }
+            Constructor<? extends LiveBackBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBackBll.class});
+            LiveBackBaseBll liveBaseBll = constructor.newInstance(this, liveBackBll);
+            logger.d("creatBll:business=" + className);
+            return liveBaseBll;
+        } catch (Exception e) {
+            logger.d("creatBll:business=" + className, e);
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        return null;
     }
 
     /**
@@ -1070,8 +1109,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
         ivTeacherNotpresent = findViewById(R.id.iv_course_video_teacher_notpresent);
 
-        praiselistContent = findViewById(R.id.rl_course_video_live_praiselist_content);
-        praiselistContent.setVisibility(View.VISIBLE);
         ivLoading = findViewById(R.id.iv_course_video_loading_bg);
         tvLoadingHint = findViewById(R.id.tv_course_video_loading_content);
 
@@ -1091,79 +1128,23 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         rlLiveMessageContent = new RelativeLayout(this);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlLiveMessageContent, params);
+        bottomContent.addView(rlLiveMessageContent, 0, params);
 
         String channel = IRC_CHANNEL_PREFIX + expChatId;
         String chatRoomUid = "s_" + "4" + "_" + expChatId + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
 
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
 
-        if (MediaPlayer.getIsNewIJK()) {
-            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
-        } else {
-            // 获取 聊天服务器地址  的接口地址
-            ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
-            TalkConfHost confHost = null;
-
-            if (chatCfgServerList != null && chatCfgServerList.size() > 0) {
-                for (int i = 0; i < chatCfgServerList.size(); i++) {
-                    confHost = new TalkConfHost();
-                    confHost.setHost(chatCfgServerList.get(i));
-                    talkConfHosts.add(confHost);
-                }
-            }
-
-            IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
-
-            //聊天连接调度失败日志
-            ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
-                @Override
-                public void getChatUrlFailure(String url, String errMsg, String ip) {
-                    Map<String, String> mData = new HashMap<>();
-                    mData.put("os", "Android");
-                    mData.put("logtype", "Error");
-                    mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
-                    mData.put("url", url);
-                    mData.put("ip", ip);
-                    mData.put("errmsg", errMsg);
-                    mData.put("liveid", playBackEntity.getLiveId() == null ? "" : playBackEntity.getLiveId());
-                    mData.put("orderid", playBackEntity.getChapterId());
-                    ums.umsAgentDebugSys(LiveVideoConfig.LIVE_CHAT_GSLB, mData);
-                }
-            });
-
-            mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, channel);
-            mIRCMessage.setIrcTalkConf(ircTalkConf);
-            //聊天服务器连接失败
-            mIRCMessage.setConnectService(new IConnectService() {
-                @Override
-                public void connectChatServiceError(String serverIp, String serverPort, String errMsg, String ip) {
-                    Map<String, String> mData = new HashMap<>();
-                    mData.put("os", "Android");
-                    mData.put("logtype", "Error");
-                    mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
-                    mData.put("serverip", serverIp);
-                    mData.put("serverport", serverPort);
-                    mData.put("errmsg", errMsg);
-                    mData.put("ip", ip);
-                    mData.put("liveid", playBackEntity.getLiveId() == null ? "" : playBackEntity.getLiveId());
-                    mData.put("orderid", playBackEntity.getChapterId());
-                    ums.umsAgentDebugSys(LiveVideoConfig.EXPERIENCE_MESSAGE_CONNECT_ERROR, mData);
-                }
-            });
-        }
-
+        mIRCMessage = new NewIRCMessage(this,  chatRoomUid, mGetInfo.getId(),"", channel);
 
         mExpIrcState = new ExperienceIrcState(mGetInfo, mGetInfo.getLiveTopic(), mIRCMessage, playBackEntity, mHttpManager);
 
-        QuestionBll questionBll = new QuestionBll(this, playBackEntity.getStuCourseId());
-        mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom, liveMessageLandEntities, null);
+        mLiveMessagePager = new LiveMessagePager(this, liveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager.setGetInfo(mGetInfo);
 
 
         // 关联聊天人数
         mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setMessageBll(liveMessageBll);
 
         // TODO: 2018/8/11 设置ircState
         //mLiveMessagePager.setLiveBll(mLiveBll);
@@ -1172,9 +1153,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         mLiveMessagePager.onModeChange(mExpIrcState.getMode());
         mLiveMessagePager.setIsRegister(true);
-
-        // 03.22 设置统计日志的公共参数
-        mLiveMessagePager.setLiveTermId(playBackEntity.getLiveId(), playBackEntity.getChapterId());
 
         // 隐藏锁屏按钮
         mLiveMessagePager.hideclock();
@@ -1390,7 +1368,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         try {
             data.put("type", XESCODE.ExpLive.XEP_BACK_FINISH);
-            data.put("stuid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+            data.put("stuid", LiveAppUserInfo.getInstance().getStuId());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1444,7 +1422,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         String planId = playBackEntity.getLiveId();
         String orderId = playBackEntity.getChapterId();
-        String userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        String userId = LiveAppUserInfo.getInstance().getStuId();
         expBusiness.getExperienceResult(planId, orderId, userId, callBack);
     }
 
@@ -1779,4 +1757,9 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         return expLiveInfo.getExpLiveQueryInterval() * 1000;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ProxUtil.getProxUtil().clear(this);
+    }
 }

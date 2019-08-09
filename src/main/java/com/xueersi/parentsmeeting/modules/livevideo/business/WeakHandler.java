@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import java.lang.ref.PhantomReference;
 import java.lang.ref.WeakReference;
 
 /**
@@ -13,7 +12,6 @@ import java.lang.ref.WeakReference;
  */
 public class WeakHandler extends Handler {
     private WeakReference<Handler.Callback> reference;
-    PhantomReference phantomReference;
 
     public WeakHandler(Handler.Callback callback) {
         reference = new WeakReference<Callback>(callback);

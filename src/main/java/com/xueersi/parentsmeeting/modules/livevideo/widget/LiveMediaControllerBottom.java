@@ -6,12 +6,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 
 import java.util.HashMap;
 
@@ -88,7 +89,7 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
                 hashMap.put("findid", "" + findid);
                 UmsAgentManager.umsAgentDebug(mContext, TAG + "_onhide", hashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
         if (switchFlowView != null) {

@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -269,7 +268,6 @@ public class LiveGetInfo {
     private String mulh5url;
     private String getCourseWareHtmlNew;
     private String getCourseWareHtmlZhongXueUrl;
-    private ScienceStaticConfig scienceStaticConfig;
     /**
      * 是否是高三理科
      */
@@ -1213,6 +1211,7 @@ public class LiveGetInfo {
          * 童音测评
          */
         private String learning_stage = "";
+        private int goldNum;
 
         public String getCourseId() {
             return courseId;
@@ -1308,6 +1307,14 @@ public class LiveGetInfo {
 
         public void setLearning_stage(String learning_stage) {
             this.learning_stage = learning_stage;
+        }
+
+        public int getGoldNum() {
+            return goldNum;
+        }
+
+        public void setGoldNum(int goldNum) {
+            this.goldNum = goldNum;
         }
     }
 
@@ -1471,14 +1478,6 @@ public class LiveGetInfo {
 
     public void setGetCourseWareHtmlZhongXueUrl(String getCourseWareHtmlZhongXueUrl) {
         this.getCourseWareHtmlZhongXueUrl = getCourseWareHtmlZhongXueUrl;
-    }
-
-    public ScienceStaticConfig getScienceStaticConfig() {
-        return scienceStaticConfig;
-    }
-
-    public void setScienceStaticConfig(ScienceStaticConfig science_static_config) {
-        this.scienceStaticConfig = science_static_config;
     }
 
     /** 直播间额外参数信息 */

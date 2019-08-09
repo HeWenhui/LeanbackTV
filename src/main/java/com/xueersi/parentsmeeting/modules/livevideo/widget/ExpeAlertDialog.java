@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +21,7 @@ public class ExpeAlertDialog extends BaseAlertDialog {
     TextView tv_livevideo_buycourse_info;
     Activity activity;
 
-    public ExpeAlertDialog(Context context, BaseApplication application, boolean isSystem, final String buyCourseUrl) {
+    public ExpeAlertDialog(Context context, Application application, boolean isSystem, final String buyCourseUrl) {
         super(context, application, isSystem);
         activity = (Activity) context;
         this.buyCourseUrl = buyCourseUrl;

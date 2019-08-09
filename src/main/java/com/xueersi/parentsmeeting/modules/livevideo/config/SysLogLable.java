@@ -21,6 +21,10 @@ public class SysLogLable {
     public static SysLogEntity receivedMessageOfNotic = new SysLogEntity(LiveBaseControllerIM, "receivedMessageOfNotic");
     /** 主讲辅导态切换 */
     public static SysLogEntity switchLiveMode = new SysLogEntity(LiveBaseControllerIM, "switchLiveMode");
+    /** 老师进入 */
+    public static SysLogEntity teacherJoin = new SysLogEntity(LiveBaseControllerIM, "teacherJoin");
+    /** 老师退出 */
+    public static SysLogEntity teacherQuit = new SysLogEntity(LiveBaseControllerIM, "teacherQuit");
 
     /** 去壳互动题 lable */
     private static String ShellingScienceWebViewLog = "ShellingScienceWebViewLog";

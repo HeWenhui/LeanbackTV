@@ -211,7 +211,7 @@ public class PreLoadDownLoaderManager {
 //            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
 //                logger.i(debugLog);
 //            }
-            logger.i("errorCode: " + errorCode);
+            logger.i(errorCode + "");
             if (realDownLoadListener != null) {
                 realDownLoadListener.onFail(errorCode);
             }

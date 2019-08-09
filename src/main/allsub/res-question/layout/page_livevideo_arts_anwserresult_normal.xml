@@ -1,0 +1,168 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CC000000"
+    android:clickable="true">
+
+    <ImageView
+        android:id="@id/iv_arts_answer_result_answer_btn"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="60dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/selector_live_arts_answer_result"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@id/rl_arts_answer_result_state"
+        android:layout_width="310dp"
+        android:layout_height="288dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+
+        <LinearLayout
+            android:id="@id/ll_arts_answer_result_gold_container"
+            android:layout_width="wrap_content"
+            android:layout_height="57dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="57dp"
+                android:layout_height="57dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/live_answer_award_gold" />
+
+            <TextView
+                android:id="@id/tv_arts_answer_result_gold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_vertical"
+                android:text="+10"
+                android:textColor="#FFDB2A"
+                android:textSize="28sp" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@id/tv_arts_answer_result_state"
+            android:layout_width="match_parent"
+            android:layout_height="155dp"
+            android:layout_above="@id/ll_arts_answer_result_gold_container"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="13dp"
+            android:background="@drawable/arts_answer_result_correct_bg"
+            android:gravity="center"
+            android:text="完美!完全正确!"
+            android:textSize="19sp" />
+
+        <ImageView
+            android:id="@id/iv_arts_answer_result_state_head"
+            android:layout_width="140dp"
+            android:layout_height="102dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/arts_answer_partcorrect_head" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/rl_arts_answer_result_resultdetail"
+        android:layout_width="385dp"
+        android:layout_height="310dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:visibility="visible">
+
+        <View
+            android:id="@id/v_arts_answer_result_detail_bg"
+            android:layout_width="match_parent"
+            android:layout_height="255dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/arts_answer_result_correct_bg" />
+
+        <ImageView
+            android:id="@id/iv_arts_answer_result_detail_head"
+            android:layout_width="105dp"
+            android:layout_height="77dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/arts_answer_partcorrect_head" />
+
+        <TextView
+            android:id="@id/tv_arts_answer_result_detail_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="81dp"
+            android:text="完美!完全正确!"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:id="@id/ll_arts_normal_answer_result_gold_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_arts_answer_result_detail_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_live_video_answer_result_pannel_gold_info"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="1dp"
+                android:src="@drawable/zhanduipk_fantastic_jinbi_pic"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@id/tv_arts_normal_answer_result_gold_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#FB8925"
+                android:textSize="14sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="370dp"
+            android:layout_height="114dp"
+            android:layout_below="@id/ll_arts_normal_answer_result_gold_info"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical">
+
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
+                android:id="@id/rcl_arts_answer_result_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                app:VerticalThumbDrawable="@drawable/arts_rcl_fastscorller_header_selector"
+                app:VerticalTrackDrawable="@drawable/rcl_fastscroller_tracker" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@id/iv_arts_answer_result_detail_close_btn"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_alignTop="@id/v_arts_answer_result_detail_bg"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/arts_answer_result_close" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
