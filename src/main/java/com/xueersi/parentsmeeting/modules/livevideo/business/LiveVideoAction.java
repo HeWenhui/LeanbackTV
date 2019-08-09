@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
@@ -74,6 +75,7 @@ public class LiveVideoAction implements VideoAction {
     protected int liveType;
     protected LiveGetInfo mGetInfo;
     protected LiveBll2 mLiveBll;
+    protected LiveAndBackDebug liveAndBackDebug;
     protected LogToFile mLogtf;
     /** 切换线路layout */
     private ConstraintLayout layoutSwitchFlow;
@@ -101,6 +103,7 @@ public class LiveVideoAction implements VideoAction {
     public LiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView) {
         this.activity = activity;
         this.mLiveBll = mLiveBll;
+        liveAndBackDebug = new ContextLiveAndBackDebug(activity);
         liveType = mLiveBll.getLiveType();
         this.mContentView = mContentView;
         rlFirstBackgroundView = mContentView.findViewById(R.id.rl_course_video_first_backgroud);
@@ -149,7 +152,7 @@ public class LiveVideoAction implements VideoAction {
 //        layoutParams.width = liveVideoPoint.x3 - liveVideoPoint.x2;
         layoutParams.rightMargin = liveVideoPoint.getRightMargin();
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        layoutSwitchFlow.setLayoutParams(layoutParams);
+        LayoutParamsUtil.setViewLayoutParams(layoutSwitchFlow, layoutParams);
     }
 
     public void onPlaySuccess() {
@@ -319,7 +322,7 @@ public class LiveVideoAction implements VideoAction {
                         mLogtf.d("playComplete:classbegin=" + status.isClassbegin());
                     }
                     //统计日志
-                    PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
+                    PlayErrorCodeLog.livePlayError(liveAndBackDebug, playErrorCode);
                 }
             }
         });
@@ -380,9 +383,9 @@ public class LiveVideoAction implements VideoAction {
                             int netWorkState = NetWorkHelper.getNetWorkState(activity);
                             if (netWorkState == NetWorkHelper.NO_NETWORK) {
                                 playErrorCode = PlayErrorCode.PLAY_NO_WIFI;
-                                tvLoadingHint.setText(PlayErrorCode.PLAY_NO_WIFI.getTip());
+                                ViewUtil.setText(tvLoadingHint, PlayErrorCode.PLAY_NO_WIFI.getTip());
                             } else {
-                                tvLoadingHint.setText("视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "]");
+                                ViewUtil.setText(tvLoadingHint, "视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "]");
                             }
 
                             LiveTopic.RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
@@ -390,21 +393,22 @@ public class LiveVideoAction implements VideoAction {
                                 mLogtf.d("onFail:classbegin=" + status.isClassbegin());
                             }
                             //统计日志
-                            PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
+                            PlayErrorCodeLog.livePlayError(liveAndBackDebug, playErrorCode);
                             break;
                         }
                         case MediaErrorInfo.PSDispatchFailed: {
                             logger.i("调度失败");
-                            tvLoadingHint.setText("视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "],正在重试...");
+                            ViewUtil.setText(tvLoadingHint, "视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "],正在重试...");
                             break;
                         }
                         case MediaErrorInfo.PSChannelNotExist: {
                             logger.i("PSChannelNotExist");
-                            tvLoadingHint.setText("视频播放失败[" + MediaErrorInfo.PSChannelNotExist + "],请耐心等待");
+                            String text = "视频播放失败[" + MediaErrorInfo.PSChannelNotExist + "],请耐心等待";
+                            ViewUtil.setText(tvLoadingHint, text);
                             break;
                         }
                         case MediaErrorInfo.PSServer403: {
-                            tvLoadingHint.setText("鉴权失败" + MediaErrorInfo.PSServer403 + "，正在重试...");
+                            ViewUtil.setText(tvLoadingHint, "鉴权失败" + MediaErrorInfo.PSServer403 + "，正在重试...");
                             break;
                         }
                         default: {
@@ -501,7 +505,7 @@ public class LiveVideoAction implements VideoAction {
                         mLogtf.d("onFail:classbegin=" + status.isClassbegin());
                     }
                     //统计日志
-                    PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
+                    PlayErrorCodeLog.livePlayError(liveAndBackDebug, playErrorCode);
                 }
             }
         });
@@ -528,7 +532,7 @@ public class LiveVideoAction implements VideoAction {
                         } else if (mGetInfo != null && mGetInfo.getSmallEnglish()) {//如果是小学英语
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_small_english_zw_dengdaida_bg_psnormal);
-                        }  else {
+                        } else {
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_zw_dengdaida_bg_normal);
                         }
@@ -717,7 +721,7 @@ public class LiveVideoAction implements VideoAction {
         }
         //统计日志
         if (playErrorCode != null) {
-            PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
+            PlayErrorCodeLog.livePlayError(liveAndBackDebug, playErrorCode);
         }
     }
 
@@ -748,7 +752,7 @@ public class LiveVideoAction implements VideoAction {
         mHandler.postDelayed(r, delayMillis);
     }
 
-    public void onDestory() {
+    public void onDestroy() {
         dwTeacherNotpresen = null;
     }
 

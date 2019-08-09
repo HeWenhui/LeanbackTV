@@ -8,6 +8,7 @@ import android.view.View;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
  * @version 1.0, 2018/10/22 下午3:59
  */
 
-public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBottom {
+public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBottom implements LiveUIStateReg {
 
     private String mode = LiveTopic.MODE_TRANING;
     /**

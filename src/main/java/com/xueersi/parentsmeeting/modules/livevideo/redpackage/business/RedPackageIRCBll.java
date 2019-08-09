@@ -1,10 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.redpackage.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -17,7 +15,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
@@ -25,10 +22,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChat
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
 public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     private RedPackageAction redPackageAction;
@@ -53,21 +49,21 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        if(LiveVideoConfig.isPrimary && redPackageAction instanceof PScienceRedPackageBll){
+    public void initView() {
+        if (LiveVideoConfig.isPrimary && redPackageAction instanceof PScienceRedPackageBll) {
             PScienceRedPackageBll redPackageBll = (PScienceRedPackageBll) redPackageAction;
-            redPackageBll.initView(bottomContent);
-        }else if(redPackageAction instanceof RedPackageBll) {
+            redPackageBll.initView(mRootView, getLiveViewAction());
+        } else if (redPackageAction instanceof RedPackageBll) {
             RedPackageBll redPackageBll = (RedPackageBll) redPackageAction;
-            redPackageBll.initView(bottomContent);
+            redPackageBll.initView(mRootView, getLiveViewAction());
         }
     }
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        if (mGetInfo.getPattern() == 2) {
-            RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, true, mLiveBll);
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
+            RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, true, contextLiveAndBackDebug);
             redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
                 @Override
                 public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {
@@ -95,14 +91,14 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             redPackageStandBll.setUserName(getInfo.getStandLiveName());
             redPackageStandBll.setHeadUrl(getInfo.getHeadImgPath());
             redPackageStandBll.setVSectionID(getInfo.getId());
-            redPackageStandBll.initView(mRootView);
+            redPackageStandBll.initView(mRootView, getLiveViewAction());
             redPackageAction = redPackageStandBll;
         } else {
             //
-            if(LiveVideoConfig.isPrimary && !LiveVideoConfig.isSmallChinese){
+            if (LiveVideoConfig.isPrimary && !LiveVideoConfig.isSmallChinese) {
                 PScienceRedPackageBll redPackageBll = new PScienceRedPackageBll(activity, mGetInfo, true);
                 redPackageBll.setVSectionID(mLiveId);
-                redPackageBll.initView(mRootView);
+                redPackageBll.initView(mRootView, getLiveViewAction());
                 redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
@@ -110,10 +106,10 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
                     }
                 });
                 redPackageAction = redPackageBll;
-            }else{
+            } else {
                 RedPackageBll redPackageBll = new RedPackageBll(activity, mGetInfo, true);
                 redPackageBll.setVSectionID(mLiveId);
-                redPackageBll.initView(mRootView);
+                redPackageBll.initView(mRootView, getLiveViewAction());
                 redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
@@ -126,9 +122,8 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     }
 
     public void sendReceiveGold(final int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("sendReceiveGold:enstuId=" + enstuId + ",operateId=" + operateId + ",liveId=" + liveId);
-        getHttpManager().sendReceiveGold(mLiveType, enstuId, operateId, liveId, new HttpCallBack() {
+        mLogtf.d("sendReceiveGold:operateId=" + operateId + ",liveId=" + liveId);
+        getHttpManager().sendReceiveGold(mLiveType, operateId, liveId, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

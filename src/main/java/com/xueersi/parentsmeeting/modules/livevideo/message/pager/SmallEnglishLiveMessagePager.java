@@ -53,7 +53,6 @@ import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.PermissionCallback;
@@ -67,6 +66,7 @@ import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -81,16 +81,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordChsI
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -318,7 +319,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 //        tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
 //        ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);
 
-        dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_small_english_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
 
         rlMessageContent = mView.findViewById(R.id.rl_livevideo_small_english_message_content2);
@@ -357,7 +357,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         params.width = liveVideoPoint.getRightMargin();
         params.topMargin = liveVideoPoint.y3;
-        logger.setLogMethod(false);
         logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
         setBack();
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
@@ -878,13 +877,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         if (!hasPermission) {
                             inspectMicPermission();
                         } else {
-                            mView.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    isRecogSpeeking = false;
-                                    startVoiceInput();
-                                }
-                            }, 300);
+                            isRecogSpeeking = false;
+                            startVoiceInput();
                         }
                     } else {
                         XESToastUtils.showToast(mContext, mSpeechFail);
@@ -970,22 +964,26 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         rlMessageVoiceContent.setVisibility(View.VISIBLE);
         vwvVoiceChatWave.setVisibility(View.VISIBLE);
         if (speechUtils != null) {
-            speechUtils.stop();
+            speechUtils.cancel();
         }
         tvMessageVoiceContent.setText(VOICE_RECOG_HINT);
         tvMessageVoiceCount.setText("");
-
-        if (mAudioRequest != null) {
-            mAudioRequest.request(new AudioRequest.OnAudioRequest() {
-                @Override
-                public void requestSuccess() {
-                    if (!isRecogSpeeking) {
-                        startEvaluator();
-                        isRecogSpeeking = true;
-                    }
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mAudioRequest != null) {
+                    mAudioRequest.request(new AudioRequest.OnAudioRequest() {
+                        @Override
+                        public void requestSuccess() {
+                            if (!isRecogSpeeking) {
+                                startEvaluator();
+                                isRecogSpeeking = true;
+                            }
+                        }
+                    });
                 }
-            });
-        }
+            }
+        }, 300);
 
 
     }
@@ -1034,7 +1032,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     private void setMessageLayout(LiveVideoPoint liveVideoPoint, boolean isKeyboardShow) {
         int margin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
-        int leftmargin = liveVideoPoint.x2 + SizeUtils.Dp2Px(mContext, 10);
         RelativeLayout.LayoutParams rmcLayoutParams = (RelativeLayout.LayoutParams) rlMessageContent
                 .getLayoutParams();
         if (isKeyboardShow) {
@@ -1043,12 +1040,15 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             rmcLayoutParams.setMargins(0, 0, margin, liveVideoPoint.y2);
         }
         rmcLayoutParams.height = SizeUtils.Dp2Px(mContext, 68);
-        rlMessageContent.setLayoutParams(rmcLayoutParams);
+        LayoutParamsUtil.setViewLayoutParams(rlMessageContent, rmcLayoutParams);
 
         RelativeLayout.LayoutParams repeatLayoutParams = (RelativeLayout.LayoutParams) btnMessageSwitch
                 .getLayoutParams();
-        repeatLayoutParams.setMargins(leftmargin, 0, 0, 0);
-        btnMessageSwitch.setLayoutParams(repeatLayoutParams);
+        int leftmargin = liveVideoPoint.x2 + SizeUtils.Dp2Px(mContext, 10);
+        if (repeatLayoutParams.leftMargin != leftmargin) {
+            repeatLayoutParams.leftMargin = leftmargin;
+            LayoutParamsUtil.setViewLayoutParams(btnMessageSwitch, repeatLayoutParams);
+        }
     }
 
     @Override
@@ -1080,7 +1080,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
             if (cbMessageClock != null) {
-                int rightMargin = liveVideoPoint.getRightMargin();
+                int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
                 params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
                 if (params.rightMargin != rightMargin) {
                     params.rightMargin = rightMargin;
@@ -1203,12 +1203,16 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initFlower(educationStage);
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    LiveIRCMessageBll.requestGoldTotal(mContext);
-                }
-            });
+            if (getInfoGoldNum == 0) {
+                liveThreadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        UserGoldTotal.requestGoldTotal(mContext);
+                    }
+                });
+            } else {
+                goldNum = "" + getInfoGoldNum;
+            }
         }
     }
 
@@ -1608,9 +1612,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         logger.e("=====>onMessage called");
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
@@ -1915,7 +1919,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         if (messageAdapter != null) {
                             messageAdapter.notifyDataSetChanged();
                         } else {
-                            UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + mContext + "," +
+                            UmsAgentManager.umsAgentException(ContextManager.getContext(), TAG + mContext + "," +
                                     sender + "," + type, e);
                         }
                         if (!isTouch) {
@@ -2247,55 +2251,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
             @Override
             public void onGuarantee(String permission, int position) {
-                mView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        isRecogSpeeking = false;
-                        startVoiceInput();
-                    }
-                }, 300);
+                isRecogSpeeking = false;
+                startVoiceInput();
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
-    }
-
-    LiveAndBackDebug mLiveBll;
-
-    @Override
-    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        if (mLiveBll != null) {
-            mLiveBll.umsAgentDebugSys(eventId, mData);
-        }
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugInter(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-
-    }
-
-    @Override
-    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
-
     }
 
     /**

@@ -4,35 +4,29 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IConnectService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -50,7 +44,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
@@ -183,56 +176,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
-        if (MediaPlayer.getIsNewIJK()){
-            mIRCMessage = new NewIRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, liveGetInfo, channel);
-        } else{
-            chatCfgServerList = mVideoEntity.getRoomChatCfgServerList();
-            // 获取 聊天服务器地址  的接口地址
-            ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
-            TalkConfHost confHost = null;
-            if (chatCfgServerList != null && chatCfgServerList.size() > 0) {
-                for (int i = 0; i < chatCfgServerList.size(); i++) {
-                    confHost = new TalkConfHost();
-                    confHost.setHost(chatCfgServerList.get(i));
-                    talkConfHosts.add(confHost);
-                }
-            }
-            IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, liveGetInfo, LiveVideoConfig.LIVE_TYPE_STAND_EXPERIENCE, mHttpManager,
-                    talkConfHosts);
-            //聊天连接调度失败日志
-            ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
-                @Override
-                public void getChatUrlFailure(String url, String errMsg,
-                                              String ip) {
-                    Map<String, String> map = new HashMap<>();
-                    map.put("logtype", "Error");
-                    map.put("os", "Android");
-                    map.put("url", url);
-                    map.put("ip", ip);
-//                map.put("",);
-                    UmsAgentManager.umsAgentDebug(mContext, LiveVideoConfig.LIVE_CHAT_GSLB, map);
-                }
-            });
-            mIRCMessage = new IRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, channel);
-            mIRCMessage.setIrcTalkConf(ircTalkConf);
-            //聊天服务器连接失败
-            mIRCMessage.setConnectService(new IConnectService() {
-                @Override
-                public void connectChatServiceError(String serverIp, String
-                        serverPort, String errMsg, String ip) {
-                    Map<String, String> map = new HashMap<>();
-                    map.put("logtype", "Error");
-                    map.put("os", "Android");
-                    map.put("serverport", serverPort);
-                    map.put("errmsg", errMsg);
-                    map.put("liveid", mVideoEntity.getLiveId());
-                    map.put("orderid", mVideoEntity.getChapterId());
-                    map.put("ip", ip);
-                    map.put("serverip", serverIp);
-                    UmsAgentManager.umsAgentDebug(mContext, LiveVideoConfig.EXPERIENCE_MESSAGE_CONNECT_ERROR, map);
-                }
-            });
-        }
+        mIRCMessage = new NewIRCMessage(mContext, chatRoomUid, liveGetInfo.getId(),"", channel);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
     }
@@ -323,7 +267,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                                      String message) {
             logger.i("=====>onPrivateMessage:isSelf=" + isSelf);
             if (isSelf && "T".equals(message)) {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         XESToastUtils.showToast(activity, "您的帐号已在其他设备登录，请重新进入直播间");
@@ -449,7 +393,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                     sendMessage = true;
                 } catch (Exception e) {
                     // logger.e( "understand", e);
-                    UmsAgentManager.umsAgentException(BaseApplication.getContext(), "livevideo_livebll_sendMessage", e);
+                    UmsAgentManager.umsAgentException(ContextManager.getContext(), "livevideo_livebll_sendMessage", e);
                     logToFile.e(TAG + ":sendMessage", e);
                 }
             }
@@ -500,8 +444,8 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (mIRCMessage != null) {
             mIRCMessage.setCallback(null);
             mIRCMessage.destory();

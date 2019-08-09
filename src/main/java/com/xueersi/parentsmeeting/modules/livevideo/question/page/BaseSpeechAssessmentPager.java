@@ -4,7 +4,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 
 import com.tal.speech.utils.SpeechUtils;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -16,7 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SetVolumeListener;
 
 /**
- * Created by lyqai on 2017/11/21.
+ * Created by linyuqiang on 2017/11/21.
  */
 
 public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
@@ -49,7 +49,7 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
                 stableLogHashMap.put("creattime", "" + creattime);
                 umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     };
@@ -73,7 +73,7 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
                 stableLogHashMap.put("creattime", "" + creattime);
                 umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             logger.d("onDestroy:setVolume:null");
         }
@@ -86,6 +86,7 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
     public abstract void jsExamSubmit();
 
     public abstract void stopPlayer();
+    public abstract boolean isNewArt();
 
     public void setIse(SpeechUtils mIse) {
         this.mIse = mIse;

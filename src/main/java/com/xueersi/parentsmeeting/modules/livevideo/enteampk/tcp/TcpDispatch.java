@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.tencent.bugly.crashreport.CrashReport;
-import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONObject;
@@ -55,7 +56,7 @@ public class TcpDispatch {
     private String xes_rfh;
     private String live_id;
     private String class_id;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler = LiveMainHandler.getMainHandler();
     private boolean isStop = false;
     private LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     private Map<Short, List<TcpMessageAction>> mMessageActionMap = new HashMap<>();
@@ -90,7 +91,7 @@ public class TcpDispatch {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
         String s = dateFormat.format(new Date());
         String[] ss = s.split(",");
-        logDir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + ss[0] + "/" + live_id + "-NL");
+        logDir = LiveCacheFile.geCacheFile(ContextManager.getContext(), "livelog/" + ss[0] + "/" + live_id + "-NL");
         if (!logDir.exists()) {
             logDir.mkdirs();
         }
@@ -173,7 +174,7 @@ public class TcpDispatch {
                 int operation = TcpConstants.LOGIN_OPERATION_SEND;
                 groupGameTcp.send(type, operation, bodyStr);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             for (int i = 0; i < onTcpConnects.size(); i++) {
                 onTcpConnects.get(i).onTcpConnect();
@@ -251,7 +252,7 @@ public class TcpDispatch {
                 logs2.putAll(logs);
                 UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, logs2);
             } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 
@@ -272,7 +273,7 @@ public class TcpDispatch {
          */
         private void uploadWonderMoment(final InetSocketAddress inetSocketAddress, final Exception e, final File saveFile, final boolean error) {
             logger.d("uploadWonderMoment:saveFile=" + saveFile);
-            XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(BaseApplication.getContext());
+            XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(ContextManager.getContext());
             CloudUploadEntity uploadEntity = new CloudUploadEntity();
             uploadEntity.setFilePath(saveFile.getPath());
             uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
@@ -304,7 +305,7 @@ public class TcpDispatch {
                         stableLogHashMap.put("exce", "" + e);
                         UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, stableLogHashMap.getData());
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
 
@@ -320,7 +321,7 @@ public class TcpDispatch {
                         stableLogHashMap.put("errorMsg", "" + result.getErrorMsg());
                         UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, stableLogHashMap.getData());
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             });

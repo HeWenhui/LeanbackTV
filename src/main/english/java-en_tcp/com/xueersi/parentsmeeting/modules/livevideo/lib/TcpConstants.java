@@ -52,6 +52,15 @@ public class TcpConstants {
     /** 消息类型，服务器clean up 恢复现场 */
     public final static int CLEAN_UP_SECN = 17;
 
+    /** 消息类型，what's missing */
+    public final static short WHAT_IS_MISSING_TYPE = 13;
+    /** 消息类型，客户端发what's missing 数据 */
+    public final static int WHAT_IS_MISSING_SEND = 16;
+    /** 消息类型，服务器端发送恢复场景的数据 */
+    public final static int WHAT_IS_MISSING_SECN = 17;
+    /** 消息类型，服务器端发送what's missing统计数据 */
+    public final static int WHAT_IS_MISSING_STATIS = 18;
+
     /** 消息类型，客户端发摄像头、麦克风转发数据 */
     public final static short AUDIO_TYPE = 11;
     /** 消息类型，客户端发摄像头、麦克风转发数据 */
@@ -63,4 +72,8 @@ public class TcpConstants {
     public final static short GROUP_GAME_TYPE = 12;
     /** 消息类型，客户端断线获取游戏离线数据包： */
     public final static int GROUP_GAME_SEND = 16;
+
+    public static boolean isTypeOfCannon(short type) {
+        return type == VOICE_CANNO_TYPE || type == WHAT_IS_MISSING_TYPE;
+    }
 }

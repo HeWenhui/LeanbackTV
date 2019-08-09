@@ -11,11 +11,13 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.StartInteractLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -30,7 +32,6 @@ public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAc
     protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
     private LiveGetInfo mLiveGetInfo;
     private Activity activity;
-    private RelativeLayout bottomContent;
     private EnAchievePager enAchievePager;
     private LiveAndBackDebug liveAndBackDebug;
     private LiveAchievementHttp liveAchievementHttp;
@@ -44,13 +45,12 @@ public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAc
         liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
     }
 
-    public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
-        this.bottomContent = bottomContent;
-        RelativeLayout relativeLayout = bottomContent.findViewById(R.id.rl_livevideo_star_content);
+    public void initView(LiveViewAction liveViewAction) {
+        RelativeLayout relativeLayout = liveViewAction.findViewById(R.id.rl_livevideo_star_content);
         relativeLayout.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams layoutParams = relativeLayout.getLayoutParams();
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        relativeLayout.setLayoutParams(layoutParams);
+        LayoutParamsUtil.setViewLayoutParams(relativeLayout,layoutParams);
         relativeLayout.setBackgroundColor(Color.TRANSPARENT);
         enAchievePager = new EnAchievePager(activity, relativeLayout, mLiveGetInfo);
         relativeLayout.addView(enAchievePager.getRootView());

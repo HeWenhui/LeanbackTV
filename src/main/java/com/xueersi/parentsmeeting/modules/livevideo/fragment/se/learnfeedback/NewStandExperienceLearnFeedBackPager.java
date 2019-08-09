@@ -9,12 +9,12 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 
 import com.xueersi.common.base.BasePager;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.GestureScrollEditText;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.ItemLearnFeedbackPageSelectLayout;
 
@@ -165,7 +165,7 @@ public class NewStandExperienceLearnFeedBackPager<T extends IStandExperienceLear
                     }
                 };
                 presenter.sendHttp(
-                        UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+                        LiveAppUserInfo.getInstance().getStuId(),
                         mVideoEntity.getLiveId(),
                         mVideoEntity.getSubjectId(),
                         mVideoEntity.getGradId(),

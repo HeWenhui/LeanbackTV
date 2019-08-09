@@ -2,10 +2,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.studyreport.business;
 
 import android.view.View;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
+
 /**
  * linyuqiang
  */
-public interface StudyReportAction {
+public interface StudyReportAction extends LiveProvide {
     /**
      * 接麦
      *

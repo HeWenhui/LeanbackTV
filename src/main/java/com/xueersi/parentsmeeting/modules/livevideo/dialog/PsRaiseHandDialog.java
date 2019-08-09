@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 
+import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.view.View;
@@ -21,7 +22,7 @@ public class PsRaiseHandDialog extends BaseAlertDialog {
     public final static int SUCCESS = 3;
     int count;
     public int status = WAIT;
-    public PsRaiseHandDialog(Context context, BaseApplication application) {
+    public PsRaiseHandDialog(Context context, Application application) {
         super(context, application, false);
     }
     private TextView tip;

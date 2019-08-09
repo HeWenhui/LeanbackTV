@@ -1,0 +1,14 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/rl_livevideo_course_item_video_nocamera"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_primary_item_empty_back"
+    android:visibility="gone">
+
+    <ImageView
+        android:id="@id/iv_livevideo_course_item_video_nocamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/bg_live_xuesheng_shipin_mid_carmer_normal" />
+</RelativeLayout>

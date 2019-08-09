@@ -12,7 +12,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 /**
- * Created by lyqai on 2017/9/26.
+ * Created by linyuqiang on 2017/9/26.
  */
 public class StrokeTextView extends TextView {
     private TextView borderText = null;///用于描边的TextView

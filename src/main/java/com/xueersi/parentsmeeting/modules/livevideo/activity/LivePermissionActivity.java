@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import com.xueersi.common.permission.PermissionActivity;
 
 /**
- * Created by lyqai on 2018/8/2.
+ * Created by linyuqiang on 2018/8/2.
  * 直播的权限
  */
 public class LivePermissionActivity extends PermissionActivity {

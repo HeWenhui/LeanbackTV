@@ -3,46 +3,44 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.xueersi.common.base.BaseActivity;
-import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.util.LoadCallback;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.dataload.DataLoadManager;
 
@@ -58,12 +56,19 @@ import java.util.List;
  * 直播中间的loading
  */
 public class LiveVideoLoadActivity extends BaseActivity {
+    String TAG = "LiveVideoLoadActivity";
     public static HashMap<String, LiveGetInfo> getInfos = new HashMap();
-    /**
-     * Activity创建次数
-     */
+    /** Activity创建次数 */
     public static int CREATE_TIMES = 0;
     DataLoadEntity mDataLoadEntity;
+    protected static ArrayList<LiveVideoLoadActivity> liveVideoLoadActivities = new ArrayList<>();
+    private static int statIndex = 0;
+    protected int index;
+
+    public LiveVideoLoadActivity() {
+        liveVideoLoadActivities.add(this);
+        index = statIndex++;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,25 +83,14 @@ public class LiveVideoLoadActivity extends BaseActivity {
             //距离进程创建的时间
             logHashMap.put("app_time", "" + (System.currentTimeMillis() - UmsConstants.PROCRESS_CREATE_TIME));
             UmsAgentManager.umsAgentDebug(this, LogConfig.LIVE_TOKEN_NULL, logHashMap.getData());
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            }, 700);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    System.exit(0);
-                }
-            }, 1000);
+            finishAndExit();
             return;
         }
         CREATE_TIMES++;
 
         mDataLoadEntity = new DataLoadEntity(this);
-        if (LiveVideoConfig.assetsDownloadTag) {
+        boolean loadAsserts = getIntent().getBooleanExtra("loadAsserts", false);
+        if (!loadAsserts && LiveVideoConfig.assetsDownloadTag) {
             loadAssertsResource();
         } else {
             mDataLoadEntity.beginLoading();
@@ -104,6 +98,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
             initData();
         }
     }
+
+    private boolean initData = false;
 
     /**
      * 加载assert 文件
@@ -124,6 +120,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
             @Override
             public void success() {
+                if (initData) {
+                    logger.e("loadAssertsResource:success", new Exception());
+                    LiveCrashReport.postCatchedException(TAG, new Exception());
+                    return;
+                }
+                initData = true;
                 initData();
                 //XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
             }
@@ -156,6 +158,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+        if (FileLogger.runActivity == this) {
+            FileLogger.runActivity = null;
+        }
+        liveVideoLoadActivities.remove(this);
     }
 
     private void performDownLoadPreLoad(LiveHttpManager mHttpManager, LiveGetInfo getInfo) {
@@ -181,7 +187,13 @@ public class LiveVideoLoadActivity extends BaseActivity {
     }
 
     private void initData() {
-
+        logger.d("initData:index=" + index + ",size=" + liveVideoLoadActivities.size());
+        LiveVideoLoadActivity activity = liveVideoLoadActivities.get(0);
+        if (activity != this) {
+            DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity.webDataSuccess());
+            finish();
+            return;
+        }
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
         final String vSectionID = intent.getStringExtra("vSectionID");
@@ -191,7 +203,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
         final LiveHttpManager httpManager = new LiveHttpManager(this);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-            httpManager.liveLectureGetInfo("", vSectionID, new HttpCallBack(mDataLoadEntity) {
+            httpManager.liveLectureGetInfo(vSectionID, new HttpCallBack(mDataLoadEntity) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);
@@ -203,13 +215,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         finish();
                         return;
                     }
-                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    String stuId = LiveAppUserInfo.getInstance().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-                    if (MediaPlayer.getIsNewIJK()) {
-                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                    } else {
-                        com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                    }
+                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                     finish();
                 }
 
@@ -222,7 +230,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                    finish();
+                    finishAndExit();
                 }
             });
         } else if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -231,7 +239,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             httpManager.addBodyParam("stuCouId", vStuCourseID);
             httpManager.addBodyParam("liveId", vSectionID);
             httpManager.addBodyParam("from", "" + from);
-            httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(mDataLoadEntity) {
+            httpManager.liveGetInfo(courseId, vSectionID, 0, new HttpCallBack(mDataLoadEntity) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);
@@ -250,7 +258,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         return;
                     }*/
 
-                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    String stuId = LiveAppUserInfo.getInstance().getStuId();
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
 //                    mGetInfo.setPattern(1);
                     bundle.putString("mode", mGetInfo.getMode());
@@ -270,7 +278,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putInt("useSkin", mGetInfo.getUseSkin());
                     bundle.putInt("isGoldMicrophone", mGetInfo.isUseGoldMicroPhone());
                     bundle.putInt("useSuperSpeakerShow", mGetInfo.getUseSuperSpeakerShow());
-                    if (mGetInfo.getIsArts() == 0) {
+                    if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
                     } else {
                         bundle.putInt("smallEnglish", mGetInfo.getSmallEnglish() ? 1 : 0);
@@ -278,8 +286,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                if (mGetInfo.getPattern() == 2) {
 //                    StandLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle, -1);
 //                } else {
-//                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo
-//                    (LiveVideoLoadActivity.this, bundle);
+//                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
 //                }
                     if (1 == mGetInfo.getIsEnglish()) {
                         gotoEnglish(bundle);
@@ -289,12 +296,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         list.add(PermissionConfig.PERMISSION_CODE_CAMERA);
                         gotoHalfBodyChinese(bundle, list);
                     } else {
-
-                        if (MediaPlayer.getIsNewIJK()) {
-                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        } else {
-                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        }
+                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         finish();
                     }
                 }
@@ -308,7 +310,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                    finish();
+                    finishAndExit();
                 }
             });
         }
@@ -321,8 +323,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 return true;
             }
         }
-        String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "",
-                ShareDataManager.SHAREDATA_USER);
+        String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
         if (liveIds.contains(",")) {
             String[] preLoadLiveId = liveIds.split(",");
             for (String tempPreLoadLiveId : preLoadLiveId) {
@@ -355,15 +356,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onGuarantee(String permission, int position) {
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(new Runnable() {
+                        LiveMainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (MediaPlayer.getIsNewIJK()) {
-                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                                } else {
-                                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                                }
+                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                                 finish();
                             }
                         });
@@ -371,11 +367,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 },
                 PermissionConfig.PERMISSION_CODE_AUDIO);
         if (have) {
-            if (MediaPlayer.getIsNewIJK()) {
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-            } else {
-                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-            }
+            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
             finish();
         }
     }
@@ -388,15 +380,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onFinish() {
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(new Runnable() {
+                        LiveMainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (MediaPlayer.getIsNewIJK()) {
-                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                                } else {
-                                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                                }
+                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                                 finish();
                             }
                         });
@@ -406,11 +393,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     public void onDeny(String permission, int position) {
                         logger.i("onDeny");
 //                        if (MediaPlayer.getIsNewIJK()) {
-//                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo
-//                            (LiveVideoLoadActivity.this, bundle);
+//                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
 //                        } else {
-//                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo
-//                            (LiveVideoLoadActivity.this, bundle);
+//                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
 //                        }
 //                        finish();
                     }
@@ -423,15 +408,25 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
         //魅族手机无法弹出权限弹窗
         if (have) {
-            if (MediaPlayer.getIsNewIJK()) {
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-            } else {
-                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-            }
+            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
             finish();
 
         }
+    }
 
+    private void finishAndExit() {
+        LiveMainHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 700);
+        LiveMainHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                System.exit(0);
+            }
+        }, 1000);
     }
 
     /**
@@ -448,24 +443,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         .SP_APP_DEVICE_NOTICE, false,
                 ShareDataManager.SHAREDATA_USER)) {
 
-            Intent intent;
-            if (MediaPlayer.getIsNewIJK()) {
-                intent = new Intent(context, DeviceDetectionActivity.class);
-            } else {
-                intent = new Intent(context,
-                        com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
-            }
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
             context.startActivity(intent);
             return;
         }
 
-        Intent intent;
-        if (MediaPlayer.getIsNewIJK()) {
-            intent = new Intent(context, LiveVideoLoadActivity.class);
-        } else {
-            intent = new Intent(context,
-                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.class);
-        }
+        Intent intent = new Intent(context, LiveVideoLoadActivity.class);
         intent.putExtras(bundle);
         context.startActivityForResult(intent, requestCode);
         context.overridePendingTransition(0, 0);
@@ -478,8 +461,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
      */
     private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo) {
         return liveGetInfo != null && liveGetInfo.getPattern()
-                == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
-                && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
+                == LiveVideoConfig.LIVE_TYPE_HALFBODY
+                && liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH;
     }
 
 }

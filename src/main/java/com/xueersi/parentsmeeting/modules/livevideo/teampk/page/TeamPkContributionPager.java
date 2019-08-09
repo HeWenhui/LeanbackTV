@@ -1,15 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -17,10 +13,10 @@ import android.widget.ImageView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkContribStarLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
@@ -102,7 +98,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
         pkPraiseLayout.setPriaseStateListener(new TeamPkPraiseLayout.PraiseStateListener() {
             @Override
             public void onFinish(int clickCount) {
-                TeamPkLog.sendContrbuteStarThumbCount(teamPkBll.getLiveBll(),teamPkBll.getNonce(),clickCount);
+                TeamPkLog.sendContrbuteStarThumbCount(teamPkBll.getLiveAndBackDebug(),teamPkBll.getNonce(),clickCount);
             }
         });
         return view;
@@ -311,8 +307,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
                 info.getEnergyIconInfo().setShow(true);
                 //绑定 旋转背景信息
                 //学生自己是贡献之星
-                info.getAnimBgInfo().setShow(starInfo.getStuId().equals(UserBll.getInstance().getMyUserInfoEntity()
-                        .getStuId()));
+                info.getAnimBgInfo().setShow(starInfo.getStuId().equals(LiveAppUserInfo.getInstance().getStuId()));
             }
         }
         AnimInfo info;

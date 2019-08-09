@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 
+import android.app.Application;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,7 @@ import com.xueersi.ui.dialog.BaseAlertDialog;
  * 投票锁屏对话框
  */
 public class VoteWaitDialog extends BaseAlertDialog {
-    public VoteWaitDialog(Context context, BaseApplication application, boolean isSystem) {
+    public VoteWaitDialog(Context context, Application application, boolean isSystem) {
         super(context, application, isSystem);
     }
 

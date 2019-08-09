@@ -7,7 +7,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/31.
+ * Created by linyuqiang on 2018/7/31.
  */
 
 public class PauseNotStopVideoIml implements PauseNotStopVideoInter {

@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
 
 public interface LiveAchievementHttp {

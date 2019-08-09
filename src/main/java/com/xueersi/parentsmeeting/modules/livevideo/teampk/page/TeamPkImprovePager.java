@@ -3,9 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -26,8 +23,7 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
@@ -41,7 +37,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkPraiseLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -101,7 +96,7 @@ public class TeamPkImprovePager extends TeamPkBasePager {
         teamPkPraiseLayout.setPriaseStateListener(new TeamPkPraiseLayout.PraiseStateListener() {
             @Override
             public void onFinish(int clickCount) {
-                TeamPkLog.sendPkStarThumbCount(mPkBll.getLiveBll(),"1",mPkBll.getNonce(),clickCount);
+                TeamPkLog.sendPkStarThumbCount(mPkBll.getLiveAndBackDebug(),"1",mPkBll.getNonce(),clickCount);
 
             }
         });
@@ -195,7 +190,7 @@ public class TeamPkImprovePager extends TeamPkBasePager {
             tvName.setText(data.getName());
             tvTeamName.setText(data.getTeamName());
             tvProgressScope.setText("排名+" + data.getProgressScope());
-            ImageLoader.with(BaseApplication.getContext()).load(data.getAvatarPath())
+            ImageLoader.with(ContextManager.getContext()).load(data.getAvatarPath())
                     .asBitmap(new SingleConfig.BitmapListener() {
                         @Override
                         public void onSuccess(Drawable drawable) {

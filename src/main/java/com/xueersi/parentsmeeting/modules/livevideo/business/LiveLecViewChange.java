@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.widget.RelativeLayout;
 
 /**
- * Created by lyqai on 2018/7/18.
+ * Created by linyuqiang on 2018/7/18.
  */
 
 public interface LiveLecViewChange {

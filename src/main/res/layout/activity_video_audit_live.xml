@@ -152,13 +152,6 @@
             android:layout_height="match_parent"
             android:visibility="gone"/>
 
-        <!-- 接麦老师视频界面位置 -->
-        <RelativeLayout
-            android:id="@id/rl_course_video_live_agora_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"></RelativeLayout>
-
     </RelativeLayout>
 
     <!-- 直播回放 互动题显示的界面位置 -->

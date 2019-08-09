@@ -10,9 +10,11 @@ import android.widget.RelativeLayout;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListPresenter;
@@ -46,10 +48,6 @@ public class PraiseListBll implements PraiseListView {
     });
     private int mListType = 0;
 
-    /**
-     * 直播底部布局
-     */
-    private RelativeLayout mRootView;
     /**
      * 表扬榜根布局
      */
@@ -113,18 +111,17 @@ public class PraiseListBll implements PraiseListView {
     }
 
     @Override
-    public void initView(final RelativeLayout bottomContent) {
+    public void initView(final LiveViewAction liveViewAction) {
         mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
-                mRootView = bottomContent;
                 //表扬榜
                 if (rlPraiseListContent != null) {
                     //设置主视图参数
                     RelativeLayout.LayoutParams mainParam = new RelativeLayout.LayoutParams(videoWidth, displayHeight);
                     mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
                     rlPraiseListContent.setLayoutParams(mainParam);
-                    bottomContent.addView(rlPraiseListContent);
+                    liveViewAction.addView(new LiveVideoLevel(1), rlPraiseListContent);
                 } else {
                     rlPraiseListContent = new RelativeLayout(activity);
                     rlPraiseListContent.setId(R.id.rl_livevideo_content_praiselist);
@@ -132,7 +129,7 @@ public class PraiseListBll implements PraiseListView {
                     RelativeLayout.LayoutParams mainParam = new RelativeLayout.LayoutParams(videoWidth, displayHeight);
                     mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
                     rlPraiseListContent.setLayoutParams(mainParam);
-                    bottomContent.addView(rlPraiseListContent);
+                    liveViewAction.addView(new LiveVideoLevel(1), rlPraiseListContent);
                 }
 //                test();
             }

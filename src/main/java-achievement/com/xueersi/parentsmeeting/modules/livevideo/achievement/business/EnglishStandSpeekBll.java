@@ -31,12 +31,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageSend;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONException;
@@ -70,7 +71,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
     /** 静态destory */
     static boolean isDestory2 = false;
     boolean isAudioStart = false;
-    RelativeLayout bottomContent;
+    private LiveViewAction liveViewAction;
     private ViewGroup myView;
     private LottieAnimationView starLottieAnimationView;
     private LottieAnimationView goldLottieAnimationView;
@@ -156,8 +157,8 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 //        lastSecond = (int) totalOpeningLength.duration;
     }
 
-    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, AtomicBoolean
-            audioRequest, RelativeLayout mContentView) {
+    public boolean initView(LiveViewAction liveViewAction, String mode, TalLanguage talLanguage, AtomicBoolean
+            audioRequest) {
         if (speakerRecognitioner != null) {
 
         } else {
@@ -181,11 +182,8 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                 this.talLanguage = talLanguage;
             }
         }
-        this.bottomContent = bottomContent;
-        myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
-        if (myView == null) {
-            myView = mContentView.findViewById(R.id.rl_livevideo_english_content);
-        }
+        this.liveViewAction = liveViewAction;
+        myView = liveViewAction.findViewById(R.id.rl_livevideo_english_content);
         myView.setVisibility(View.VISIBLE);
         final View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout
                 .layout_livevideo_stand_english_speek, myView, false);
@@ -630,17 +628,17 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
         logger.d("onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
         if (dbStart) {
             dbStart = false;
-            LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
+            LiveMessageSend liveMessageSend = ProxUtil.getProvide(activity, LiveMessageSend.class);
             if (sendDbDuration == 0) {
                 liveBll.setNotOpeningNum();
-                if (liveMessageBll != null) {
-                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                if (liveMessageSend != null) {
+                    liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                             "大声的说出来，老师很想听到你的声音哦~");
                 }
 
             } else {
-                if (lastdbDuration == 0 && liveMessageBll != null) {
-                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                if (lastdbDuration == 0 && liveMessageSend != null) {
+                    liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                             "没错，就是这样，继续坚持下去！");
                 }
             }
@@ -703,11 +701,10 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
             mData.put("answer", "" + answer);
             mData.put("duration", "" + sendDbDuration);
             liveAndBackDebug.umsAgentDebugSys(eventId, mData);
-            bottomContent.post(new Runnable() {
+            handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    final View view = LayoutInflater.from(activity).inflate(R.layout
-                            .layout_livevideo_english_speek_praise, bottomContent, false);
+                    final View view = liveViewAction.inflateView(R.layout.layout_livevideo_english_speek_praise);
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     lp.rightMargin = praiseWidth;
@@ -716,11 +713,11 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                     TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
                             .tv_livevideo_english_praise);
                     tv_livevideo_english_praise.setText("老师表扬了你！");
-                    bottomContent.addView(view, lp);
-                    bottomContent.postDelayed(new Runnable() {
+                    liveViewAction.addView(view, lp);
+                    handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            bottomContent.removeView(view);
+                            liveViewAction.removeView(view);
                         }
                     }, 1000);
                 }
@@ -737,11 +734,10 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
             mData.put("answer", "" + answer);
             mData.put("duration", "" + sendDbDuration);
             liveAndBackDebug.umsAgentDebugSys(eventId, mData);
-            bottomContent.post(new Runnable() {
+            handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    final View view = LayoutInflater.from(activity).inflate(R.layout
-                            .layout_livevideo_english_speek_praise, bottomContent, false);
+                    final View view = liveViewAction.inflateView(R.layout.layout_livevideo_english_speek_praise);
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     lp.rightMargin = praiseWidth;
@@ -750,11 +746,11 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                     TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
                             .tv_livevideo_english_praise);
                     tv_livevideo_english_praise.setText("大声说英语啦！");
-                    bottomContent.addView(view, lp);
-                    bottomContent.postDelayed(new Runnable() {
+                    liveViewAction.addView(view, lp);
+                    handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            bottomContent.removeView(view);
+                            liveViewAction.removeView(view);
                         }
                     }, 1000);
                 }
