@@ -66,9 +66,9 @@ public class NewIRCMessage implements IIRCMessage {
     Context mContext;
     File workSpaceDir = new File(context.getCacheDir(), "irc/workspace");
     private String currentMode;
-    /** 直播ID*/
+    /** 直播ID */
     private String liveId;
-    /** 班级ID*/
+    /** 班级ID */
     private String classId;
     private List<String> roomid;
     private PMDefs.LiveInfo liveInfo;
@@ -78,7 +78,7 @@ public class NewIRCMessage implements IIRCMessage {
     private Map<String, String> analysis;
     private UUID mSid = UUID.randomUUID();
 
-    public NewIRCMessage(Context context,  String nickname, String liveId,String classId, String... channel) {
+    public NewIRCMessage(Context context, String nickname, String liveId, String classId, String... channel) {
         this.mChannels = channel;
         this.mNickname = nickname;
         this.mContext = context;
@@ -86,7 +86,7 @@ public class NewIRCMessage implements IIRCMessage {
         this.classId = classId;
         mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
-        mLogtf.d("IRCMessage:channel=" + channel  + ",nickname=" + nickname);
+        mLogtf.d("IRCMessage:channel=" + channel + ",nickname=" + nickname);
     }
 
     /**
@@ -457,7 +457,7 @@ public class NewIRCMessage implements IIRCMessage {
         public void onRecvRoomMetaData(PMDefs.RoomMetaData roomMetaData) {
             //code 322-聊天室信息 323-聊天室信息返回结束
             logger.i("ircsdk room Meta data code: " + roomMetaData.code);
-            logger.i("ircsdk room Meta data : " + roomMetaData.content != null?roomMetaData.content:"");
+            logger.i("ircsdk room Meta data : " + roomMetaData.content != null ? roomMetaData.content : "");
             if (PMDefs.ResultCode.Result_RoomData == roomMetaData.code) {
                 logger.i("ircsdk room Meta data : " + roomMetaData.content);
                 String channel = roomMetaData.roomId;
@@ -548,7 +548,7 @@ public class NewIRCMessage implements IIRCMessage {
             logHashMap.put("roomTopic", "" + roomTopic.topic);
             UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
 
-            if (roomTopic.code == PMDefs.ResultCode.Result_RoomTopicEnd){
+            if (roomTopic.code == PMDefs.ResultCode.Result_RoomTopicEnd) {
                 return;
             }
             onTopic(channel, topic, date);
@@ -686,13 +686,13 @@ public class NewIRCMessage implements IIRCMessage {
                             if (sender.startsWith("t_") || sender.startsWith("f_")) {
                                 if (mChannels.length > 1) {
                                     if (LiveTopic.MODE_CLASS.equals(currentMode)) {
-                                        mIRCCallback.onMessage(target, name, login, hostname, msg);
+                                        mIRCCallback.onPrivateMessage(false, target, name, login, hostname, msg);
                                     }
                                     if (LiveTopic.MODE_TRANING.equals(currentMode)) {
-                                        mIRCCallback.onMessage(target, name, login, hostname, msg);
+                                        mIRCCallback.onPrivateMessage(false, target, name, login, hostname, msg);
                                     }
                                 } else {
-                                    mIRCCallback.onMessage(target, name, login, hostname, msg);
+                                    mIRCCallback.onPrivateMessage(false, target, name, login, hostname, msg);
                                 }
                             } else if (sender.startsWith("s_") || sender.startsWith("ws_")) {
                                 boolean isSelf = false;
@@ -786,7 +786,7 @@ public class NewIRCMessage implements IIRCMessage {
         }
         int infocode = mChatClient.setLiveInfo(liveInfo);
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
-        String psimId = LiveAppUserInfo.getInstance().getPsimId() ;
+        String psimId = LiveAppUserInfo.getInstance().getPsimId();
         String psimKey = LiveAppUserInfo.getInstance().getPsimPwd();
         int logincode = mChatClient.login(psimId, psimKey);
 
