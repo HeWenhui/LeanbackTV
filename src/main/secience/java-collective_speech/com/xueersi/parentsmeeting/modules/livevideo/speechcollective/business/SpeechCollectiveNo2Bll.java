@@ -7,10 +7,14 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
+import com.tal.speech.config.SpeechConfig;
+import com.tal.speech.speechrecognizer.EvaluatorConstant;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.permission.XesPermission;
@@ -38,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionC
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.share.business.practice.entity.Speech;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -65,7 +70,7 @@ public class SpeechCollectiveNo2Bll {
     private boolean hasShowTip = false;
     private Context context;
     private LogToFile mLogtf;
-    private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
+    private SpeechUtils mSpeechEvaluatorUtils;
     /** 语音识别出来的文字 */
     private String recognizeStr = "";
     private StringBuilder ansStr = new StringBuilder();
@@ -98,11 +103,15 @@ public class SpeechCollectiveNo2Bll {
     private LiveGetInfo liveGetInfo;
     TeacherPraiseEventReg teacherPraiseEventReg;
     long startTime;
+    private SpeechParamEntity param;
 
     public SpeechCollectiveNo2Bll(Context context) {
         this.context = context;
         mLogtf = new LogToFile(context, TAG);
-        mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
+        if (mSpeechEvaluatorUtils == null){
+            mSpeechEvaluatorUtils = SpeechUtils.getInstance(context.getApplicationContext());
+            mSpeechEvaluatorUtils.prepar();
+        }
         dir = LiveCacheFile.geCacheFile(context, "speechCollective");
         if (!dir.exists()) {
             dir.mkdirs();
@@ -286,7 +295,17 @@ public class SpeechCollectiveNo2Bll {
     private void startEvaluator() {
         isRecord.set(true);
         File saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startSpeechCollectRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE, evaluatorListener);
+        if (param == null){
+            param = new SpeechParamEntity();
+        }
+        param.setRecogType(SpeechConfig.SPEECH_DEFAULT_RECOGNIZE_ONLINE);
+        param.setPid(SpeechConfig.EXTRA_PID_CHINESE_BULLET);
+        param.setLocalSavePath(saveFile.getPath());
+        param.setMultRef(false);
+        param.setFrameCount("3200");
+        param.setRealtime(EvaluatorConstant.REAL_TIME_FEEDBACK_SPEECH);
+        mSpeechEvaluatorUtils.startRecog(param,evaluatorListener);
+//        mSpeechEvaluatorUtils.startSpeechCollectRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE, evaluatorListener);
     }
 
     private abstract class BaseNoVoice implements EvaluatorListener {

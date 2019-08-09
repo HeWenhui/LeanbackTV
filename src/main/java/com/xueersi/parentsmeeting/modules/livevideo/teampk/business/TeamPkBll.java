@@ -484,7 +484,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     }
 
     public void stopTeamSelect() {
-        rlTeamPkContent.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
@@ -630,7 +630,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 //从pk结果页面直接跳到 贡献之星
                 if (mFocusPager != null && mFocusPager instanceof TeamPkResultPager) {
                     ((TeamPkResultPager) mFocusPager).closePkResultPager();
-                    rlTeamPkContent.postDelayed(new Runnable() {
+                    postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPkBll.this);
@@ -645,7 +645,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 }
 
             } else if (type == CHEST_TYPE_STUDENT) {
-                rlTeamPkContent.postDelayed(new Runnable() {
+                postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPkBll.this);
@@ -658,7 +658,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             //由开宝箱直接切换到幸运之星页面
             if (type == CHEST_TYPE_CLASS) {
                 ((TeamPkAwardPager) mFocusPager).closeAwardPager();
-                rlTeamPkContent.postDelayed(new Runnable() {
+                postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPkBll.this);
@@ -764,7 +764,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     public void closeCurrentPager() {
         if (mFocusPager != null) {
             mFocusPager.onDestroy();
-            rlTeamPkContent.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     if (mFocusPager != null) {
@@ -1236,7 +1236,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 showAnswerQuestionAward(cacheEvent.getmGoldNum(), cacheEvent.getmEnergyNum(), event.getId());
                 //step  2 显示pk 结果
                 final LiveRoomH5CloseEvent finalCacheEvent = cacheEvent;
-                rlTeamPkContent.postDelayed(new Runnable() {
+                postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         getEnergyNumAndContributionStar(finalCacheEvent);

@@ -762,7 +762,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         logger.d("submitGroupGame -> onDataFail:" + failMsg);
                         isSubmit = false;
                         if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
-                            XESToastUtils.showToastAtCenter(mContext, failMsg);
+                            XESToastUtils.showToastAtCenter(failMsg);
                         }
                         onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo);
                     }
