@@ -29,6 +29,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -79,7 +80,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
     private final PraiseInteractionBll mPraiseInteractionBll;
 
-    private final LiveBll2 liveBll;
+    private final LiveAndBackDebug liveAndBackDebug;
 
     private final LiveGetInfo mGetInfo;
 
@@ -173,13 +174,12 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     StableLogHashMap giftHashMap = new StableLogHashMap("showeffectgiftviewcount");
 
 
-    public PraiseInteractionPager(Context context, int goldCount, PraiseInteractionBll praiseInteractionBll, LiveBll2
-            liveBll, LiveGetInfo getInfo) {
+    public PraiseInteractionPager(Context context, int goldCount, PraiseInteractionBll praiseInteractionBll, LiveAndBackDebug liveAndBackDebug, LiveGetInfo getInfo) {
         super(context);
         this.goldCount = goldCount;
         this.mGetInfo = getInfo;
         this.mPraiseInteractionBll = praiseInteractionBll;
-        this.liveBll = liveBll;
+        this.liveAndBackDebug = liveAndBackDebug;
         btnWidth = (int) context.getResources().getDimension(R.dimen.livevideo_praise_interac_praise_btn_width);
         btnMarginRight = (int) mContext.getResources().getDimension(R.dimen
                 .livevideo_praise_interac_praise_btn_margin_right);
@@ -437,9 +437,9 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         String eventId = "livescience_likeclick";
         StableLogHashMap logHashMap = new StableLogHashMap("likeclickcount");
         logHashMap.put("count", String.valueOf(praiseNumAmount));
-        liveBll.umsAgentDebugInter(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
 
-        liveBll.umsAgentDebugPv(eventId, giftHashMap.getData());
+        liveAndBackDebug.umsAgentDebugPv(eventId, giftHashMap.getData());
 
         startHidePraiseBtnAniamtion();
         praiseTimeList.clear();

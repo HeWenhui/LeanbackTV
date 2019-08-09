@@ -9,7 +9,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
- * Created by lyqai on 2018/3/21.
+ * Created by linyuqiang on 2018/3/21.
  */
 public class LiveStandMediaControllerTop extends BaseLiveMediaControllerTop {
     TextView tv_live_stand_title_time;

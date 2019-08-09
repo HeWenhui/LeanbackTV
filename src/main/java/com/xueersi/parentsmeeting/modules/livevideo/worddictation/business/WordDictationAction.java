@@ -10,5 +10,5 @@ public interface WordDictationAction {
 
     void onStop();
 
-    void onDestory();
+    void onDestroy();
 }

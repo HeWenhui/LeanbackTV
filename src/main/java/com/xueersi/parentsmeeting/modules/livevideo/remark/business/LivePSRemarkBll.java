@@ -19,7 +19,7 @@
 //import android.widget.RelativeLayout;
 //import android.widget.TextView;
 //
-//import com.tencent.bugly.crashreport.CrashReport;
+//import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 //import com.xueersi.common.base.AbstractBusinessDataCallBack;
 //import com.xueersi.common.config.AppConfig;
 //import com.xueersi.common.http.HttpCallBack;
@@ -577,7 +577,7 @@
 //        } catch (Exception e) {
 //            logToFile.e("reMark", e);
 //            e.printStackTrace();
-//            CrashReport.postCatchedException(e);
+//            LiveCrashReport.postCatchedException(e);
 //        }
 //
 //    }

@@ -1,0 +1,6 @@
+<!-- 接麦老师视频界面位置 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/rl_livevideo_agora_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true" />

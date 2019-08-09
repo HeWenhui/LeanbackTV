@@ -12,7 +12,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.DeviceDetectionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.DeviceDetectionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
 import com.xueersi.ui.dataload.DataErrorManager;
 import com.xueersi.ui.dataload.DataLoadEntity;

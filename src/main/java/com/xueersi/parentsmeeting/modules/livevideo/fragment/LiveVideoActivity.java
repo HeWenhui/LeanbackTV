@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,13 +9,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.halfbody.HalfBodyLiveVideoFragement;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 
 /**
  * 直播
@@ -54,7 +55,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
 
     @Override
     public void onDestroy() {
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
 //        System.exit(0);
     }
@@ -62,14 +63,34 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     @Override
     protected LiveVideoFragmentBase getFragment() {
         int pattern = getIntent().getIntExtra("pattern", 0);
-        if (pattern == 2) {
-            return new StandLiveVideoFragment();
-        } else if (pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+        if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+            try {
+                String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.StandLiveVideoFragment";
+                LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
+        } else if (pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
             //半身直播
-            return new HalfBodyLiveVideoFragement();
-        } else {
-            return new LiveVideoFragment();
+            try {
+                String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.halfbody.HalfBodyLiveVideoFragement";
+                LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
+        } else if (pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY_CLASS) {
+            //半身直播
+            try {
+                String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.PrimaryClassVideoFragment";
+                LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
         }
+        return new LiveVideoFragment();
     }
 
     @Override

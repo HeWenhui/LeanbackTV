@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.view.View;
 
-import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.ui.dialog.BaseAlertDialog;
 
 public class SwitchRouteSuccessDialog extends BaseAlertDialog {
@@ -13,7 +13,7 @@ public class SwitchRouteSuccessDialog extends BaseAlertDialog {
     private SwitchFlowRouteSuccessView mView;
 
     public SwitchRouteSuccessDialog(Context mContext) {
-        super(mContext, (Application) BaseApplication.getContext(), false);
+        super(mContext, (Application) ContextManager.getContext(), false);
     }
 
     @Override

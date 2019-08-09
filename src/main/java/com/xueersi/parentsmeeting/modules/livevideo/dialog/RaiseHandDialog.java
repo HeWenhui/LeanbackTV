@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 
+import android.app.Application;
 import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -36,7 +37,7 @@ public class RaiseHandDialog extends BaseAlertDialog {
     public int status = WAIT;
     int count;
 
-    public RaiseHandDialog(Context context, BaseApplication application) {
+    public RaiseHandDialog(Context context, Application application) {
         super(context, application, false);
     }
 

@@ -9,6 +9,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
@@ -45,7 +46,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     private LogToFile mLogtf;
     private long startTime;
     private ChatTipBll chatTipBll;
-    private RelativeLayout bottomContent;
+    private LiveViewAction liveViewAction;
     /** 举麦包含我 */
     private boolean containMe = false;
     /** 连麦状态 */
@@ -101,15 +102,15 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         ChatTipBll chatTipBll = new ChatTipBll(activity);
         chatTipBll.setVideoChatEvent(videoChatEvent);
         chatTipBll.setVideoChatHttp(videoChatHttp);
-        chatTipBll.setRootView(bottomContent);
+        chatTipBll.setRootView(liveViewAction);
         chatTipBll.setGetInfo(getInfo);
         chatTipBll.setMicType(micType);
         chatTipBll.setLinkmicid(linkmicid);
         this.chatTipBll = chatTipBll;
     }
 
-    public void initView(RelativeLayout bottomContent) {
-        this.bottomContent = bottomContent;
+    public void initView(LiveViewAction liveViewAction) {
+        this.liveViewAction = liveViewAction;
 //        videoChatPager = new VideoChatPager(activity);
 //        bottomContent.addView(videoChatPager.getRootView());
     }
