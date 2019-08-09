@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.tencent.bugly.crashreport.BuglyLog;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCall;
@@ -56,7 +56,7 @@ public abstract class LiveBackVideoActivityBase extends XesActivity {
             intent.putExtra("liveintent", getIntent().getExtras());
             startService(intent);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         BuglyLog.i(TAG, "onCreate");
     }
@@ -118,6 +118,9 @@ public abstract class LiveBackVideoActivityBase extends XesActivity {
         EventBus.getDefault().unregister(this);
         stopService(new Intent(this, LiveService.class));
 //        System.exit(0);
+        if (FileLogger.runActivity == this) {
+            FileLogger.runActivity = null;
+        }
     }
 
     @Override
@@ -147,13 +150,14 @@ public abstract class LiveBackVideoActivityBase extends XesActivity {
 
     /** 加载界面 */
     protected void loadView(int id) {
-        setContentView(id);
+//        setContentView(id);
         getWindow().setBackgroundDrawable(null);
         liveVideoFragmentBase = (LiveBackVideoFragmentBase) getFragmentManager().findFragmentByTag("liveVideo");
         if (liveVideoFragmentBase == null) {
             liveVideoFragmentBase = getFragment();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.rl_course_video_contentview, liveVideoFragmentBase, "liveVideo");
+            fragmentTransaction.add(android.R.id.content, liveVideoFragmentBase, "liveVideo");
+//            fragmentTransaction.add(R.id.rl_course_video_contentview, liveVideoFragmentBase, "liveVideo");
             fragmentTransaction.commit();
         } else {
             restoreFragment(liveVideoFragmentBase);

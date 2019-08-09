@@ -1,0 +1,135 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false">
+
+    <ImageView
+        android:id="@id/iv_teampk_team_select_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/livevideo_zhandui_beijing_img_disable" />
+
+    <ImageView
+        android:id="@id/iv_teampk_bgmask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/COLOR_99000000"
+        android:visibility="gone" />
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@id/lav_teampk_team_select"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView
+        android:id="@id/rcl_teampk_team"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:visibility="gone" />
+
+
+    <RelativeLayout
+        android:id="@id/rl_teampk_teaminfo_root"
+        android:layout_width="240dp"
+        android:layout_height="160dp"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone">
+
+        <!--队伍介绍-->
+        <RelativeLayout
+            android:id="@id/rl_teampk_team_introduce"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@id/tv_teampk_team_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="恭喜你成为“小神龙队”的一员！"
+                android:textColor="@color/COLOR_73510A"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.InputEffectTextView
+                android:id="@id/itv_teampk_team_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_teampk_team_name"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12dp" />
+
+            <RelativeLayout
+                android:id="@id/rl_teampk_rule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/itv_teampk_team_info"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@id/tv_teampk_team_ready"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="你准备好了吗?"
+                    android:textColor="@color/COLOR_73510A"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@id/iv_teampk_btn_ok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_teampk_team_ready"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/livevideo_alertview_beonit_bth_normal" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView
+        android:id="@id/rcl_teampk_teammember"
+        android:layout_width="400dp"
+        android:layout_height="180dp"
+        android:layout_centerHorizontal="true"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@id/iv_teampk_finish_team_select"
+        android:layout_width="100dp"
+        android:layout_height="38dp"
+        android:layout_below="@id/rcl_teampk_teammember"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/livevideo_list_closewindow_bth_normal"
+        android:visibility="gone" />
+
+
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView
+        android:id="@id/tv_teampk_team_select_timecoutdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="9dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+</RelativeLayout>

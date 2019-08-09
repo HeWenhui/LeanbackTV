@@ -72,19 +72,21 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessSysItem;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
@@ -233,7 +235,6 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
-        dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
         rlMessageContent = mView.findViewById(R.id.rl_livevideo_message_content2);
         etMessageContent = (EditText) mView.findViewById(R.id.et_livevideo_message_content);
@@ -689,7 +690,7 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                LiveIRCMessageBll.requestGoldTotal(mContext);
+                UserGoldTotal.requestGoldTotal(mContext);
             }
         });
         btMessageFlowers.setTag("0");
@@ -858,10 +859,9 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
         logger.i("initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mFlowerWindow = flowerWindow;
-        Handler handler = new Handler(Looper.getMainLooper());
         for (int i = 0; i < flowerEntities.size(); i++) {
             final int index = i;
-            handler.postDelayed(new Runnable() {
+            LiveMainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     final FlowerEntity entity = flowerEntities.get(index);
@@ -1091,9 +1091,9 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = getInfo.getMainTeacherInfo().getTeacherName();
-        } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = getInfo.getTeacherName();
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
@@ -1778,44 +1778,6 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
                 initBtMesOpenAnimation(true);
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
-
-    }
-
-    LiveAndBackDebug mLiveBll;
-
-    @Override
-    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugSys(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null) {
-            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
-        }
-        mLiveBll.umsAgentDebugInter(eventId, mData);
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-
-    }
-
-    @Override
-    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
-
-    }
-
-    @Override
-    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
 
     }
 

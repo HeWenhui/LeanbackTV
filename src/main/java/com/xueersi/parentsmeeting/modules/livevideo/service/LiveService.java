@@ -10,12 +10,14 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.FileLogger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
 import org.json.JSONArray;
@@ -74,7 +76,7 @@ public class LiveService extends Service {
                 //bugly 2555
                 runningAppProcessInfos = mActivityManager.getRunningAppProcesses();
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 stopSelf();
                 return;
             }
@@ -110,7 +112,7 @@ public class LiveService extends Service {
         super.onCreate();
         logger.d("onCreate");
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
-        alldir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/cache");
+        alldir = LiveCacheFile.geCacheFile(ContextManager.getContext(), "livelog/cache");
         if (!alldir.exists()) {
             alldir.mkdirs();
         }

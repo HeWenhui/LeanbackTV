@@ -5,9 +5,7 @@ import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
@@ -17,7 +15,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 /**
@@ -27,7 +24,7 @@ public class RedPackageExperienceBll extends LiveBackBaseBll {
     RedPackageAction redPackageAction;
     String termId;
 
-    public RedPackageExperienceBll(Activity activity, LiveBackBll liveBackBll,String termId) {
+    public RedPackageExperienceBll(Activity activity, LiveBackBll liveBackBll, String termId) {
         super(activity, liveBackBll);
         this.termId = termId;
     }
@@ -43,7 +40,7 @@ public class RedPackageExperienceBll extends LiveBackBaseBll {
         if (redPackageAction == null) {
             RedPackageBll redPackageBll = new RedPackageBll(activity, liveGetInfo, false);
             redPackageBll.setVSectionID(mVideoEntity.getSectionId());
-            redPackageBll.initView(mRootView);
+            redPackageBll.initView(mRootView, getLiveViewAction());
             redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
                 @Override
                 public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
@@ -82,7 +79,7 @@ public class RedPackageExperienceBll extends LiveBackBaseBll {
             callBack.onDataSucess(entity);
         } else {
             BaseBll.postDataLoadEvent(loadEntity.beginLoading());
-            getLivePlayRedPacket(loadEntity, mVideoEntity.getLiveId(),termId,"" + operateId, callBack);
+            getLivePlayRedPacket(loadEntity, mVideoEntity.getLiveId(), termId, "" + operateId, callBack);
         }
         XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.REDPACKET_LIVEPLAYBACK, MobEnumUtil
                         .REDPACKET_GRAB,
@@ -91,9 +88,8 @@ public class RedPackageExperienceBll extends LiveBackBaseBll {
 
     public void getRedPacket(final DataLoadEntity dataLoadEntity, final String liveId, final String operateId, final
     AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        getCourseHttpManager().getRedPacket(myUserInfoEntity.getEnstuId(), operateId, liveId,
+        getCourseHttpManager().getRedPacket(operateId, liveId,
                 new HttpCallBack(dataLoadEntity) {
 
                     @Override
@@ -118,9 +114,8 @@ public class RedPackageExperienceBll extends LiveBackBaseBll {
 
     public void getLivePlayRedPacket(final DataLoadEntity dataLoadEntity, final String liveId, final String termId, final String
             operateId, final AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        getCourseHttpManager().getLivePlayRedPackets(myUserInfoEntity.getEnstuId(), operateId, termId,liveId,
+        getCourseHttpManager().getLivePlayRedPackets(operateId, termId, liveId,
                 new HttpCallBack(dataLoadEntity) {
 
                     @Override

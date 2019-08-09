@@ -1,25 +1,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#F52b1d1a"
-              android:clickable="true"
-              android:orientation="vertical"
-              android:visibility="gone">
+    android:id="@id/ll_livevideo_rank_rootview_primary"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F52b1d1a"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:visibility="gone">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginLeft="3dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="2dp"
         android:orientation="horizontal">
 
         <RelativeLayout
             android:id="@id/rl_livevideo_rank_mygroup"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp">
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1">
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_livevideo_rank_mygroup"
@@ -27,14 +28,15 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="组内"
-                android:textColor="@color/COLOR_F13232"/>
+                android:textColor="@color/COLOR_F13232" />
+
             <View
                 android:id="@id/v_livevideo_rank_mygroup"
                 android:layout_width="56dp"
                 android:layout_height="2dp"
                 android:layout_below="@id/tv_livevideo_rank_mygroup"
                 android:layout_marginTop="12dp"
-                android:background="#D44920"/>
+                android:background="#D44920" />
 
         </RelativeLayout>
 
@@ -42,9 +44,9 @@
         <RelativeLayout
             android:id="@id/rl_livevideo_rank_groups"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:layout_weight="1">
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_livevideo_rank_groups"
@@ -52,7 +54,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="小组"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
+
             <View
                 android:id="@id/v_livevideo_rank_groups"
                 android:layout_width="56dp"
@@ -60,7 +63,7 @@
                 android:layout_below="@id/tv_livevideo_rank_groups"
                 android:layout_marginTop="12dp"
                 android:background="#D44920"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -68,10 +71,10 @@
         <RelativeLayout
             android:id="@id/rl_livevideo_rank_class"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:layout_weight="1">
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_livevideo_rank_class"
@@ -79,7 +82,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="班级"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
+
             <View
                 android:id="@id/v_livevideo_rank_class"
                 android:layout_width="56dp"
@@ -87,7 +91,7 @@
                 android:layout_below="@id/tv_livevideo_rank_class"
                 android:layout_marginTop="12dp"
                 android:background="#D44920"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -98,44 +102,44 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#241A17"/>
+        android:background="#241A17" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="17dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             style="@style/text_font11_ffffff_style"
             android:layout_width="32dp"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:gravity="center"
             android:includeFontPadding="false"
-            android:text="排名"/>
+            android:text="排名"
+            android:textSize="12sp" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_rank_subtitle_mid"
             style="@style/text_font11_ffffff_style"
             android:layout_width="32dp"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:includeFontPadding="false"
-            android:text="学员"/>
+            android:text="学员"
+            android:textSize="12sp" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             style="@style/text_font11_ffffff_style"
             android:layout_width="36dp"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:layout_alignParentRight="true"
             android:gravity="center"
             android:includeFontPadding="false"
-            android:text="正确率"/>
+            android:text="正确率"
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <ListView
@@ -145,5 +149,5 @@
         android:layout_height="match_parent"
         android:layout_marginTop="20dp"
         android:divider="@color/transparent"
-        android:dividerHeight="10dp"/>
+        android:dividerHeight="10dp" />
 </LinearLayout>

@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.IButtonOnClick;
@@ -347,7 +348,7 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
             imageView.setImageResource(defaultHeadImg);
             return;
         }
-        ImageLoader.with(BaseApplication.getContext()).asCircle().load(imgURL).error(defaultHeadImg)
+        ImageLoader.with(ContextManager.getContext()).asCircle().load(imgURL).error(defaultHeadImg)
                 .placeHolder(defaultHeadImg).into(imageView);
     }
 

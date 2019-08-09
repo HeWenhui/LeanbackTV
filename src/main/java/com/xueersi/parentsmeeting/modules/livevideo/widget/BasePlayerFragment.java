@@ -21,10 +21,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseActivity;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -42,10 +40,12 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -61,7 +61,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/8/3.
  * 直播和回放的基础控制
  */
-public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback {
+public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback, LiveProvide {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     BaseActivity activity;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
@@ -104,7 +104,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     /** 当前播放的视频地址 */
     protected Uri mUri;
     /** 同步锁 */
-    protected Object mOpenLock = new Object();
+    protected final Object mOpenLock = new Object();
     /** 准备打开播放文件 */
     protected static final int OPEN_FILE = 0;
     /** 初始化完播放器准备加载播放文件 */
@@ -359,9 +359,16 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return false;
     }
 
+    protected boolean handleMessage(Message msg) {
+        return false;
+    }
+
     Handler.Callback callback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            if (BasePlayerFragment.this.handleMessage(msg)) {
+                return true;
+            }
             switch (msg.what) {
                 case OPEN_FILE:
                     // 打开新的视频时长统计初始化
@@ -372,7 +379,10 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                 mOpened.set(true);
                                 vPlayer.setVPlayerListener(vPlayerServiceListener);
                                 if (vPlayer.isInitialized()) {
-                                    mUri = vPlayer.getUri();
+                                    Uri olduri = vPlayer.getUri();
+                                    logger.d("playNewVideo:olduri=" + olduri);
+                                    vPlayer.release();
+                                    vPlayer.releaseContext();
                                 }
 
                                 if (videoView != null) {
@@ -408,8 +418,8 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                 } else {
                                     String userName = "", userId = null;
                                     try {
-                                        userName = AppBll.getInstance().getAppInfoEntity().getChildName();
-                                        userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        userName = LiveAppUserInfo.getInstance().getChildName();
+                                        userId = LiveAppUserInfo.getInstance().getStuId();
                                         if (TextUtils.isEmpty(userName)) {
                                             userName = "";
                                         }
@@ -458,7 +468,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                                 UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
                                             }
                                         }
-                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                                        LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
                             }
@@ -835,7 +845,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                         setVolumeListener.onSuccess(true);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                    LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             } else {
                 try {
@@ -843,7 +853,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                         setVolumeListener.onSuccess(false);
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                    LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             }
         }

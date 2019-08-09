@@ -23,6 +23,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
@@ -453,7 +454,7 @@ public class LivePublicPraisePager extends BasePager {
         } catch (JSONException e) {
             isOk = false;
             isHave = false;
-            UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "onPraiseOrEncourage", e);
+            UmsAgentManager.umsAgentException(ContextManager.getContext(), TAG + "onPraiseOrEncourage", e);
         }
         if (!isOk) {
             if (!runs.isEmpty()) {

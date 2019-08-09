@@ -19,18 +19,21 @@ import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ActivityUtils;
+import com.xueersi.lib.framework.utils.ThreadMap;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.parentsmeeting.module.videoplayer.config.LogConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
+
+import java.util.HashMap;
 
 /**
- * @author lyqai
+ * @author linyuqiang
  * @date 2018/6/22
  */
 public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoView.SurfaceCallback,
@@ -43,10 +46,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     /** 是否显示控制栏 */
     protected boolean mIsShowMediaController = true;
     protected float mySpeed = 1.0f;
-
     private OnVideoCreate onVideoCreate;
-    /** 直播帧数统计 */
-    private LivePlayLog livePlayLog;
 
     /**
      * 在VideoFragment的onActivityCreated创建完成以后
@@ -254,16 +254,9 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         }
     }
 
-    public void setLivePlayLog(LivePlayLog livePlayLog) {
-        this.livePlayLog = livePlayLog;
-    }
-
     @Override
     public void onDestroy() {
         logger.d("onDestroy");
-        if (livePlayLog != null) {
-            livePlayLog.destory();
-        }
         // 统计退出
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONDESTROY);
         // 注销广播
@@ -395,11 +388,21 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     @Override
     public void setSpeed(float speed) {
         mySpeed = speed;
-        if (isInitialized())
-        // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
-        {
+        String uuid = "" + ThreadMap.getInstance().getKey("play_setspeed_uid");
+        HashMap<String, String> hmParams = new HashMap<>();
+        hmParams.put("logtype", "backsetspeed");
+        hmParams.put("speed", "" + speed);
+        hmParams.put("muri", "" + mUri);
+        hmParams.put("streamId", "" + streamId);
+        hmParams.put("uuid", "" + uuid);
+        if (isInitialized()) {
             vPlayer.setSpeed(speed);
+            hmParams.put("mInitialized", "true");
+        } else {
+            hmParams.put("mInitialized", "false");
+            ThreadMap.getInstance().addKey("play_setspeed_init", "1");
         }
+        UmsAgentManager.umsAgentDebug(activity, LogConfig.PLAY_SET_SPEED, hmParams);
     }
 
     @Override

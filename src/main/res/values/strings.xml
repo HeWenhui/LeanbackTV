@@ -20,4 +20,11 @@
     <string name="super_speaker_time_up_record_finish_tip_content">提交视频可获得金币哦</string>
     <string name="super_speaker_back_exit">退出后可重新进入录制</string>
     <string name="super_speaker_back_exit_cannot_record">退出后将无法在直播中参与录制</string>
+    <!--没有真实姓名-->
+    <string name="username_default">网校学员</string>
+    <string-array name="livevideo_notice_gaosan">
+        <item>网校公安局提醒你，请注意言辞！</item>
+        <item>警察叔叔还有30秒到达战场，请注意敏感词汇。</item>
+        <item>富强民主文明和谐自由平等公正法治……</item>
+    </string-array>
 </resources>

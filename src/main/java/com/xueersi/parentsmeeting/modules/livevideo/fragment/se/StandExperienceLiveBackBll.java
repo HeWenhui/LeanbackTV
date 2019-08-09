@@ -3,10 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.se;
 import android.app.Activity;
 import android.text.TextUtils;
 
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
@@ -15,10 +12,13 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.StandExperienceRecommondBll;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -33,7 +33,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     @Override
     public void scanQuestion(long position) {
         super.scanQuestion(position);
-        if (getExperience() && getPattern() == 2) {//全身直播体验课扫描开关聊天区，三分屏不走这里，有自己的逻辑
+        if (getExperience() && getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {//全身直播体验课扫描开关聊天区，三分屏不走这里，有自己的逻辑
             scanMessage(position);
         }
     }
@@ -62,33 +62,46 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
                     if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
                         if (openQue.peek() < closeQue.peek()) {
                             if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
-                                LiveBackBaseBll liveBackBaseBll = array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT);
-                                if (liveBackBaseBll != null) {
-                                    liveBackBaseBll.showQuestion(oldQuestionEntity, videoQuestionEntity, showQuestion);
-                                    logger.i(playPosition + " 2:进去了打开站立直播聊天区");
+                                ArrayList<LiveBackBaseBll> arrayList = array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT);
+                                if (arrayList != null) {
+                                    for (int i = 0; i < arrayList.size(); i++) {
+                                        LiveBackBaseBll liveBackBaseBll = arrayList.get(i);
+                                        if (liveBackBaseBll != null) {
+                                            liveBackBaseBll.showQuestion(oldQuestionEntity, videoQuestionEntity, showQuestion);
+                                            logger.i(playPosition + " 2:进去了打开站立直播聊天区");
+                                        }
+                                    }
                                 }
                                 break;
                             }
                         }
-
                     } else {
                         if (playPosition < openQue.peek()) {
-                            LiveBackBaseBll liveBackBaseBll = array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT);
-                            if (liveBackBaseBll != null) {
-                                liveBackBaseBll.showQuestion(oldQuestionEntity, videoQuestionEntity, showQuestion);
-                                logger.i(playPosition + " 1:进去了关闭站立直播聊天区");
+                            ArrayList<LiveBackBaseBll> arrayList = array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT);
+                            if (arrayList != null) {
+                                for (int i = 0; i < arrayList.size(); i++) {
+                                    LiveBackBaseBll liveBackBaseBll = arrayList.get(i);
+                                    if (liveBackBaseBll != null) {
+                                        liveBackBaseBll.showQuestion(oldQuestionEntity, videoQuestionEntity, showQuestion);
+                                        logger.i(playPosition + " 1:进去了关闭站立直播聊天区");
+                                    }
+                                }
                             }
                             break;
                         } else if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
                         } else {
-
-                            LiveBackBaseBll liveBackBaseBll = array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT);
-                            if (liveBackBaseBll != null) {
-                                liveBackBaseBll.showQuestion(oldQuestionEntity,
-                                        videoQuestionEntity, showQuestion);
-                                logger.i(playPosition + " 3:进去了关闭站立直播聊天区");
-                                openQue.poll();
-                                closeQue.poll();
+                            ArrayList<LiveBackBaseBll> arrayList = array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT);
+                            if (arrayList != null) {
+                                for (int i = 0; i < arrayList.size(); i++) {
+                                    LiveBackBaseBll liveBackBaseBll = arrayList.get(i);
+                                    if (liveBackBaseBll != null) {
+                                        liveBackBaseBll.showQuestion(oldQuestionEntity,
+                                                videoQuestionEntity, showQuestion);
+                                        logger.i(playPosition + " 3:进去了关闭站立直播聊天区");
+                                        openQue.poll();
+                                        closeQue.poll();
+                                    }
+                                }
                             }
                             break;
                         }
@@ -139,7 +152,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (getExperience() && getPattern() == 2) {//全身直播准备开关聊天区的queue
+        if (getExperience() && getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {//全身直播准备开关聊天区的queue
             initLiveMessageQueue();
         }
     }
@@ -200,9 +213,8 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      */
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uid", LiveAppUserInfo.getInstance().getStuId());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         mData.put("orderid", mVideoEntity.getChapterId());
@@ -223,9 +235,8 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 
     @Override
     public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uid", LiveAppUserInfo.getInstance().getStuId());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         mData.put("livetype", "" + 4);
@@ -241,9 +252,8 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 
     @Override
     public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
-        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        mData.put("uid", userInfoEntity.getStuId());
-        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("uid", LiveAppUserInfo.getInstance().getStuId());
+        mData.put("uname", LiveAppUserInfo.getInstance().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
         mData.put("livetype", "" + 4);

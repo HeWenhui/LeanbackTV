@@ -1,10 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.praiselist.business;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Rect;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -24,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsRraiseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ArtsPraiseHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.ArtsPraisePager;
@@ -43,7 +42,7 @@ import org.json.JSONObject;
 public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, TopicAction {
 
     private LiveBll2 mLiveBll;
-    private RelativeLayout rlPraiseContentView;
+    //    private RelativeLayout rlPraiseContentView;
     private ArtsPraisePager artsPraisePager;
     private LiveHttpManager mHttpManager;
     private LiveGetInfo mRoomInitData;
@@ -57,46 +56,19 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
     private VerifyCancelAlertDialog verifyCancelAlertDialog;
     private String mRankId;
 
-    public ArtsPraiseListBll(Context context, LiveBll2 liveBll) {
-        super((Activity) context, liveBll);
+    public ArtsPraiseListBll(Activity activity, LiveBll2 liveBll) {
+        super(activity, liveBll);
         mLiveBll = liveBll;
     }
 
-    public void attachToRootView() {
-        rlPraiseContentView = new RelativeLayout(mContext);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
-                LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        mRootView.addView(rlPraiseContentView, params);
-        registLayotListener();
-    }
-
-    private void registLayotListener() {
-
-        rlPraiseContentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
-                .OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                ViewGroup viewGroup = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
-                View videoView = viewGroup.findViewById(R.id.vv_course_video_video);
-                ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                setVideoLayout(lp.width, lp.height);
-            }
-        });
-    }
-
-    private void setVideoLayout(int width, int height) {
-        final View contentView = ((Activity) mContext).findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
-        if (width > 0 && artsPraisePager != null) {
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (artsPraisePager != null) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) artsPraisePager.getRootView()
                     .getLayoutParams();
-            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
-            wradio += (screenWidth - width) / 2;
-            if (wradio != params.rightMargin) {
-                params.rightMargin = wradio;
+            int rightMargin = liveVideoPoint.getRightMargin();
+            if (rightMargin != params.rightMargin) {
+                params.rightMargin = rightMargin;
                 LayoutParamsUtil.setViewLayoutParams(artsPraisePager.getRootView(), params);
             }
         }
@@ -104,14 +76,14 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
 
     private void addPager(ArtsRraiseEntity data) {
         upLoadLog("ArtsPraise", "_ArtsPraiseListBll_addPager");
+        if (artsPraisePager != null) {
+            removeView(artsPraisePager.getRootView());
+        }
         artsPraisePager = new ArtsPraisePager(mContext, this, data);
-        rlPraiseContentView.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        int rightMargin = getRightMargin();
-        params.rightMargin = rightMargin;
-        rlPraiseContentView.addView(artsPraisePager.getRootView(), params);
-
+        params.rightMargin = getRightMargin();;
+        addView(artsPraisePager.getRootView(), params);
     }
 
 
@@ -125,7 +97,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
         if (artsPraisePager != null && !rankId.equals(mRankId)) {
             mRankId = rankId;
             stopPraise();
-            mRootView.postDelayed(new Runnable() {
+            postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     getRankData(mRankId);
@@ -195,10 +167,10 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
      * 老师结束点赞
      */
     private void stopPraise() {
-        mRootView.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
-                onDestory();
+                onDestroy();
             }
         });
     }
@@ -231,14 +203,14 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
     public void sendPraiseNotice() {
         prasieBtnClickTime++;
         long timePasted = System.currentTimeMillis() - lastSendTime;
-        mRootView.removeCallbacks(clickTimeSendTask);
+        removeCallbacks(clickTimeSendTask);
         if (timePasted >= SEND_MSG_INTERVAL) {
             doSend();
         } else {
             if (prasieBtnClickTime > 0) {
                 long sendDelay = SEND_MSG_INTERVAL - timePasted;
                 sendDelay = sendDelay < 0 ? 0 : sendDelay;
-                mRootView.postDelayed(clickTimeSendTask, sendDelay);
+                postDelayed(clickTimeSendTask, sendDelay);
             }
         }
     }
@@ -262,7 +234,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
             jsonObject.put("type", "" + XESCODE.ARTS_SEND_PRAISE_NUM);
             jsonObject.put("id", "" + mGetInfo.getStuId());
             jsonObject.put("num", "" + praiseNum);
-            sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
+            sendNoticeToCoun(jsonObject);
         } catch (Exception e) {
             mLogtf.e("sendArtsPraiseNum", e);
         }
@@ -277,7 +249,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
     private void updatePraiseNum(final int praiseNum) {
         if (artsPraisePager != null) {
             //主线程更新UI
-            rlPraiseContentView.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     if (artsPraisePager != null) {
@@ -307,8 +279,8 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
      * @return
      */
     private int getRightMargin() {
-        int screenWidth = ScreenUtils.getScreenWidth();
-        return (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        return liveVideoPoint.getRightMargin();
     }
 
     @Override
@@ -326,25 +298,23 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         if (artsPraisePager != null) {
             artsPraisePager.onDestroy();
         }
         if (verifyCancelAlertDialog != null) {
             verifyCancelAlertDialog.cancelDialog();
         }
-        if(mRootView != null){
-            mRootView.removeCallbacks(clickTimeSendTask);
-        }
+        removeCallbacks(clickTimeSendTask);
     }
 
 
     public void closePager() {
-        if (rlPraiseContentView != null) {
-            mRootView.post(new Runnable() {
+        if (artsPraisePager != null) {
+            post(new Runnable() {
                 @Override
                 public void run() {
-                    rlPraiseContentView.removeAllViews();
+                    removeView(artsPraisePager.getRootView());
                 }
             });
         }
@@ -378,7 +348,6 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
             isAvailable = true;
             mHttpManager = getHttpManager();
             mRoomInitData = getInfo;
-            attachToRootView();
         }
     }
 

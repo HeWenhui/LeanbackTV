@@ -5,6 +5,7 @@ import android.content.Context;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("testId", testId);
-        sendPost(LiveVideoConfig.URL_ROLEPLAY_TESTINFOS, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_ROLEPLAY_TESTINFOS, params, requestCallBack);
     }
 
 
@@ -62,7 +63,7 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("testId", testId);
-        sendPost(LiveVideoConfig.URL_ROLEPLAY_TESTINFOS, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_ROLEPLAY_TESTINFOS, params, requestCallBack);
     }
 
     /**
@@ -79,7 +80,7 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("testId", testId);
-        sendPost(LiveVideoConfig.URL_ROLEPLAY_NEWARTS_TESTINFOS, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_ROLEPLAY_NEWARTS_TESTINFOS, params, requestCallBack);
     }
 
     /**
@@ -99,7 +100,7 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.addBodyParam("roler", roler);
         params.addBodyParam("data", answer);
         params.setWriteAndreadTimeOut(5);
-        sendPost(LiveVideoConfig.URL_ROLEPLAY_RESULT, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_ROLEPLAY_RESULT, params, requestCallBack);
     }
 
     /**
@@ -122,6 +123,6 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.addBodyParam("data", answer);
         params.setWriteAndreadTimeOut(5);
         setDefaultParameter(params);
-        sendPost(LiveVideoConfig.URL_ROLEPLAY_NEWARTS_RESULT, params, requestCallBack);
+        sendPost(LiveHttpConfig.URL_ROLEPLAY_NEWARTS_RESULT, params, requestCallBack);
     }
 }

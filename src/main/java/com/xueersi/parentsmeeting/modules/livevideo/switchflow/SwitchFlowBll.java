@@ -281,7 +281,7 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
     }
 
     @MainThread
-    private void initView() {
+    public void initView() {
         mPager = new SwitchFlowRoutePager(mContext, false);
         mPager.init();
     }
@@ -296,7 +296,7 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
         lp.width = liveVideoPoint.x4 - liveVideoPoint.x3;
         lp.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
 //        lp.rightMargin = liveVideoPoint.getRightMargin();
-        mRootView.addView(mPager.getRootView(), lp);
+        addView(mPager.getRootView(), lp);
 //        setViewLayout();
     }
 

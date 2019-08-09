@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
@@ -17,12 +16,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 
 /**
- * Created by lyqai on 2018/7/18.
+ * Created by linyuqiang on 2018/7/18.
  */
 public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdvertHttp {
     LecAdvertBll lecAdvertAction;
@@ -45,13 +43,13 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
         switch (type) {
             case XESCODE.LEC_ADVERT: {
                 if (lecAdvertAction == null) {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             lecAdvertAction = new LecAdvertBll(activity);
                             lecAdvertAction.setLecAdvertHttp(LecAdvertIRCBll.this);
                             lecAdvertAction.setLiveid(mLiveId);
-                            lecAdvertAction.initView(mRootView, mLiveBll.getmIsLand().get());
+                            lecAdvertAction.initView(getLiveViewAction(), mLiveBll.getmIsLand().get());
                             startAdvert(object);
                         }
                     });
@@ -123,9 +121,9 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+    public void initView() {
         if (lecAdvertAction != null) {
-            lecAdvertAction.initView(bottomContent, mIsLand.get());
+            lecAdvertAction.initView(getLiveViewAction(), mIsLand.get());
         }
         lecAdvertPopBll.setmIsLand(mIsLand);
     }
@@ -137,9 +135,9 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
     }
 
     @Override
-    public void onDestory() {
+    public void onDestroy() {
         if (lecAdvertPopBll != null) {
-            lecAdvertPopBll.onDestory();
+            lecAdvertPopBll.onDestroy();
         }
     }
 }

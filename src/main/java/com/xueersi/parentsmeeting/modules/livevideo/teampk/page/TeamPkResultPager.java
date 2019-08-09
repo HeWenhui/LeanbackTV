@@ -1,22 +1,16 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -29,8 +23,7 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -50,9 +43,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 战队 pk 结果页
@@ -309,7 +299,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
             ivPkState.setImageResource(R.drawable.live_teampk_state_draw);
         }
 
-        ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
+        ImageLoader.with(ContextManager.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
                 (new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
@@ -326,7 +316,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
                     }
                 });
 
-        ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg())
+        ImageLoader.with(ContextManager.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg())
                 .asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
@@ -341,9 +331,9 @@ public class TeamPkResultPager extends TeamPkBasePager {
 
                     }
                 });
-        ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getImg()).into
+        ImageLoader.with(ContextManager.getContext()).load(data.getMyTeamEngerInfo().getImg()).into
                 (ivMyTeamLogo);
-        ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getImg()).into
+        ImageLoader.with(ContextManager.getContext()).load(data.getCompetitorEngerInfo().getImg()).into
                 (ivOtherTeamLogo);
         tvMyTeacherName.setText(data.getMyTeamEngerInfo().getTeacherName());
         tvOtherTeacherName.setText(data.getCompetitorEngerInfo().getTeacherName());
@@ -396,7 +386,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
             ivPkState.setImageResource(R.drawable.live_teampk_state_draw);
         }
 
-        ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
+        ImageLoader.with(ContextManager.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
                 (new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
@@ -413,7 +403,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
                     }
                 });
 
-        ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg())
+        ImageLoader.with(ContextManager.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg())
                 .asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
@@ -429,9 +419,9 @@ public class TeamPkResultPager extends TeamPkBasePager {
 
                     }
                 });
-        ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getImg()).into
+        ImageLoader.with(ContextManager.getContext()).load(data.getMyTeamEngerInfo().getImg()).into
                 (ivMyTeamLogo);
-        ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getImg()).into
+        ImageLoader.with(ContextManager.getContext()).load(data.getCompetitorEngerInfo().getImg()).into
                 (ivOtherTeamLogo);
         tvMyTeacherName.setText(data.getMyTeamEngerInfo().getTeacherName());
         tvOtherTeacherName.setText(data.getCompetitorEngerInfo().getTeacherName());
@@ -509,7 +499,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
         }
 
         public void bindData(TeamEnergyAndContributionStarEntity.ContributionStar data) {
-            ImageLoader.with(BaseApplication.getContext()).load(data.getAvaterPath()).asBitmap(new SingleConfig
+            ImageLoader.with(ContextManager.getContext()).load(data.getAvaterPath()).asBitmap(new SingleConfig
                     .BitmapListener
                     () {
                 @Override
