@@ -38,32 +38,18 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     private String TAG = "AuditIRCMessage";
     protected Logger logger = LoggerFactory.getLogger(TAG);
     String eventid = LiveVideoConfig.LIVE_LISTEN;
-    //    private IRCConnection mConnection;
     private int mConnectCount = 0, mDisconnectCount = 0;
     private AuditIRCCallback mIRCCallback;
     private String mChannel;
     private String mNickname;
     private String childName;
     private UUID mSid = UUID.randomUUID();
-    /**
-     * 备用用户聊天服务配置列表
-     */
-    private List<NewTalkConfEntity> mNewTalkConf = new ArrayList<>();
-    private IRCTalkConf ircTalkConf;
-    /**
-     * 从上面的列表选择一个服务器
-     */
-    private int mSelectTalk = 0;
     private LogToFile mLogtf;
     /**
      * 播放器是不是销毁
      */
     private boolean mIsDestory = false;
     private Handler mHandler = LiveMainHandler.getMainHandler();
-    /**
-     * 网络类型
-     */
-    private int netWorkType;
     /**
      * 调度是不是在无网络下失败
      */
@@ -81,24 +67,27 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     ChatClient mChatClient;
     Context mContext;
     File workSpaceDir = new File(context.getCacheDir(), "irc/workspace");
-    private String currentMode;
-    LiveGetInfo mLiveInfo;
+    private String liveId;
+    private String classId;
     private List<String> roomid;
     private PMDefs.LiveInfo liveInfo;
     private boolean isConnected;
     private boolean isFirstLogin = true;
 
-    public NewAuditIRCMessage(Context context, LiveGetInfo liveInfo, int netWorkType, String channel, String login, String nickname, LiveAndBackDebug liveAndBackDebug) {
-        this.netWorkType = netWorkType;
+    public NewAuditIRCMessage(Context context, String nickname, String liveId, String classId, String channel) {
         this.mChannel = channel;
         this.mNickname = nickname;
-        this.liveAndBackDebug = liveAndBackDebug;
-        mLiveInfo = liveInfo;
+        this.liveId = liveId;
+        this.classId = classId;
         mContext = context;
         mLogtf = new LogToFile(TAG);
         mLogtf.clear();
-        mLogtf.d("AuditIRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
+        mLogtf.d("AuditIRCMessage:channel=" + channel + ",nickname=" + nickname);
         enterTime = System.currentTimeMillis();
+    }
+
+    public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
+        this.liveAndBackDebug = liveAndBackDebug;
     }
 
     /**
@@ -139,7 +128,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             StableLogHashMap logHashMap = defaultlog("login");
             logHashMap.put("loginCode", "" + loginResp.code);
             logHashMap.put("loginInfo", "" + loginResp.info);
-            logHashMap.put("connectCount", ""+mConnectCount);
+            logHashMap.put("connectCount", "" + mConnectCount);
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
         }
 
@@ -248,8 +237,6 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                                                 msg = "推流失败";
                                             } else if ("forbidden".equals(status)) {
                                                 msg = "摄像头已禁用";
-                                            } else if ("disconnect".equals(status)) {
-                                                msg = "未连接摄像头";
                                             } else if ("disconnect".equals(status)) {
                                                 msg = "未连接摄像头";
                                             } else if ("unsupported".equals(status)) {
@@ -411,7 +398,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         public void onRecvRoomMetaData(PMDefs.RoomMetaData roomMetaData) {
             //code 322-聊天室信息 323-聊天室信息返回结束
             logger.i("ircsdk room Meta data code: " + roomMetaData.code);
-            logger.i("ircsdk room Meta data : " + roomMetaData.content.toString());
+            logger.i("ircsdk room Meta data : " + roomMetaData.content);
             if (PMDefs.ResultCode.Result_RoomData == roomMetaData.code) {
                 String channel = roomMetaData.roomId;
                 String topic = "";
@@ -421,10 +408,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                 }
                 if (mIRCCallback != null) {
                     if (roomMetaData.content.containsKey("number")) {
-                        mIRCCallback.onChannelInfo(channel, Integer.parseInt(roomMetaData.content.get("number")), JsonUtil.toJson(topic));
+                        mIRCCallback.onChannelInfo(channel, Integer.parseInt(roomMetaData.content.get("number")), topic);
                     }
                     mLogtf.d("onTopic:channel=" + channel + ",topic=" + topic);
-                    mIRCCallback.onTopic(channel, topic, "", date, false, channel);
                 }
             }
         }
@@ -472,14 +458,16 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             String topic = roomTopic.topic;
             long date = 0;
             mLogtf.d("onTopic:channel=" + channel + ",topic=" + topic);
-            if (mIRCCallback != null) {
-                mIRCCallback.onTopic(channel, topic, "", date, false, channel);
-            }
             StableLogHashMap logHashMap = defaultlog("roomTopic");
             logHashMap.put("roomCode", "" + roomTopic.code);
             logHashMap.put("roomTopic", "" + roomTopic.topic);
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
-
+            if (PMDefs.ResultCode.Result_RoomTopicEnd == roomTopic.code){
+                return;
+            }
+            if (mIRCCallback != null) {
+                mIRCCallback.onTopic(channel, topic, "", date, false, channel);
+            }
         }
 
         /**
@@ -587,9 +575,10 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         mChatClient.getRoomManager().addListener(mRoomListener);
         mChatClient.getPeerManager().addListener(mPeerListener);
         String appid = LiveAppUserInfo.getInstance().getPsAppId();
+        String appkey = LiveAppUserInfo.getInstance().getPsAppClientKey();
         //irc sdk初始化  code: 0 成功 ，1 参数错误 ， 19 已初始化
-        int initcode = mChatClient.init(mContext.getApplicationContext(), appid, LiveAppUserInfo.getInstance().getPsAppClientKey(), workSpaceDir.getAbsolutePath());
-        logger.i("psAppId:" + appid + " PsAppClientKey:" + LiveAppUserInfo.getInstance().getPsAppClientKey() + " workspace:" + workSpaceDir.getAbsolutePath());
+        int initcode = mChatClient.init(mContext.getApplicationContext(), appid, appkey, workSpaceDir.getAbsolutePath());
+        logger.i("psAppId:" + appid + " PsAppClientKey:" + appkey + " workspace:" + workSpaceDir.getAbsolutePath());
         logger.i("irc sdk initcode: " + initcode);
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
@@ -599,14 +588,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         }else {
             liveInfo.realname = mNickname;
         }
-        liveInfo.liveId = mLiveInfo.getId();
+        liveInfo.liveId = liveId;
         if (LiveAppUserInfo.getInstance().getNickName() != null) {
             liveInfo.username = LiveAppUserInfo.getInstance().getNickName();
         } else {
             liveInfo.username = "p_" + mNickname;
         }
-        if (mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null) {
-            liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
+        if (classId != null) {
+            liveInfo.classId = classId;
         } else {
             liveInfo.classId = "";
         }
@@ -618,7 +607,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         }
         int infocode = mChatClient.setLiveInfo(liveInfo);
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
-        int logincode = mChatClient.login(LiveAppUserInfo.getInstance().getPsimId(), LiveAppUserInfo.getInstance().getPsimPwd());
+        String psimId = LiveAppUserInfo.getInstance().getPsimId();
+        String psimKey = LiveAppUserInfo.getInstance().getPsimPwd();
+        int logincode = mChatClient.login(psimId, psimKey);
         logger.i("irc sdk logincode:" + logincode);
         StableLogHashMap logHashMap = defaultlog("IRCMessage");
         logHashMap.put("initcode", "" + initcode);
@@ -627,9 +618,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("initLoginState", PMDefs.ResultCode.Result_Success == logincode ? "success" : "fail");
         logHashMap.put("nickname", mNickname);
         logHashMap.put("PsAppId", appid);
-        logHashMap.put("PsAppClientKey", LiveAppUserInfo.getInstance().getPsAppClientKey());
-        logHashMap.put("PsImId", LiveAppUserInfo.getInstance().getPsimId());
-        logHashMap.put("PsImPwd", LiveAppUserInfo.getInstance().getPsimPwd());
+        logHashMap.put("PsAppClientKey", appkey);
+        logHashMap.put("PsImId", psimId);
+        logHashMap.put("PsImPwd", psimKey);
         logHashMap.put("infocode",""+infocode);
         logHashMap.put("realname",liveInfo.realname);
         logHashMap.put("nickname",liveInfo.nickname);
@@ -642,7 +633,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("time", "" + System.currentTimeMillis());
         logHashMap.put("userid", LiveAppUserInfo.getInstance().getStuId());
         logHashMap.put("where", "NewIRCMessage");
-        logHashMap.put("liveId", mLiveInfo.getId());
+        logHashMap.put("liveId", liveId);
         liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
 
     }
@@ -703,11 +694,6 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         return "p_" + mNickname;
     }
 
-    @Override
-    public void setIrcTalkConf(IRCTalkConf ircTalkConf) {
-        this.ircTalkConf = ircTalkConf;
-    }
-
     /**
      * 发通知
      *
@@ -761,7 +747,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             mChatClient.getRoomManager().removeListener(mRoomListener);
             mChatClient.removeListener(mClientListener);
             StableLogHashMap logHashMap = defaultlog("unInit");
-            liveAndBackDebug.umsAgentDebugSys(eventid,logHashMap);
+            liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap);
         }
         mHandler.removeCallbacks(startVideoRun);
         mHandler.removeCallbacks(mStudyTimeoutRunnable);
@@ -785,9 +771,6 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (ircTalkConf != null) {
-            ircTalkConf.destory();
-        }
     }
 
     @Override
@@ -810,13 +793,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             mIRCCallback.onStudentLeave(true, stuPushStatus);
         }
     };
-    private StableLogHashMap defaultlog(String logType){
+
+    private StableLogHashMap defaultlog(String logType) {
         StableLogHashMap logMap = new StableLogHashMap(logType);
-        logMap.put("sid",mSid.toString());
+        logMap.put("sid", mSid.toString());
         logMap.put("nickname", mNickname);
         logMap.put("time", "" + System.currentTimeMillis());
         logMap.put("userid", LiveAppUserInfo.getInstance().getStuId());
-        logMap.put("liveId", mLiveInfo.getId());
+        logMap.put("liveId", liveId);
         return logMap;
     }
 

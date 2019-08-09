@@ -5,6 +5,7 @@ import android.content.Context;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -17,9 +18,11 @@ public class WrapOnH5ResultClose implements EnglishH5CoursewareBll.OnH5ResultClo
     EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose;
     VideoQuestionLiveEntity videoQuestionH5Entity;
     Context context;
+    private Exception exception;
 
     public WrapOnH5ResultClose(Context context) {
         this.context = context;
+        exception = new Exception("" + context.getClass().getSimpleName());
     }
 
     public void setOnH5ResultClose(EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose) {
@@ -39,6 +42,11 @@ public class WrapOnH5ResultClose implements EnglishH5CoursewareBll.OnH5ResultClo
             mediaPlayerControl.start();
         }
         LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
-        showQuestion.onHide(baseVideoQuestionEntity);
+        //回放应该不会崩溃的。莫名其妙。加个日志
+        if (showQuestion != null) {
+            showQuestion.onHide(baseVideoQuestionEntity);
+        } else {
+            LiveCrashReport.postCatchedException("WrapOnH5ResultClose", exception);
+        }
     }
 }
