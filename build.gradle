@@ -95,5 +95,5 @@ dependencies {
 
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.unity3d)
-
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.xutils)
 }
