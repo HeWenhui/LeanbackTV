@@ -74,7 +74,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        String token = UserBll.getInstance().getTalToken();
+        String token = LiveAppUserInfo.getInstance().getTalToken();
         //如果没有token，只能重新点击进入了
         if (StringUtils.isEmpty(token)) {
             XESToastUtils.showToast(this, "登录信息失效，重新登录");

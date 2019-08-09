@@ -246,7 +246,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (mInteractiveTeam != null) {
                 iid = mInteractiveTeam.getInteractive_team_id();
             }
-            tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), UserBll.getInstance().getTalToken(), mGetInfo.getId(), classInt + "", -1, pid, iid, "");
+            tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), LiveAppUserInfo.getInstance().getTalToken(), mGetInfo.getId(), classInt + "", -1, pid, iid, "");
             tcpDispatch.setOnTcpConnects(onTcpConnects);
             tcpDispatch.setAddresses(addresses);
             tcpDispatch.registTcpMessageAction(new TeamMessageAction());
