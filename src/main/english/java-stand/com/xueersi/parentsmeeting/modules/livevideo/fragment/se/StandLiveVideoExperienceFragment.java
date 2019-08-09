@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -390,7 +389,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             }
 
             @Override
-            public void setSpeed(float speed, String uuid) {
+            public void setSpeed(float speed) {
 
             }
 
