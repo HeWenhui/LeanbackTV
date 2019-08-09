@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 
 public interface IRCCallback {
 

@@ -1,9 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -13,15 +11,11 @@ import android.text.TextUtils;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -218,7 +212,7 @@ public class TeamPkContribStarLottieEffectInfo extends LottieEffectInfo {
             paint.setColor(textColor);
             paint.setTextSize(textSize);
             paint.setTextAlign(Paint.Align.LEFT);
-            Typeface fontFace = FontCache.getTypeface(BaseApplication.getContext(), "fangzhengcuyuan.ttf");
+            Typeface fontFace = FontCache.getTypeface(ContextManager.getContext(), "fangzhengcuyuan.ttf");
             if(fontFace != null){
                 paint.setTypeface(fontFace);
             }

@@ -1,11 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business;
 
 import android.app.Activity;
-import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -20,7 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechEnergyPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechEnergyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechPraisePager;
 
@@ -54,37 +52,12 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
         teacherPraiseBll.onLiveInited(getInfo);
     }
 
-    @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
-//        if (com.xueersi.common.config.AppConfig.DEBUG) {
-//            Button button = new Button(mContext);
-//            button.setText("测试");
-//            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//            mRootView.addView(button, lp);
-//            button.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    voiceId = "" + java.util.UUID.randomUUID();
-//                    showTeacherPraise();
-//                }
-//            });
-//            button.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    addEnergy = false;
-//                }
-//            }, 222);
-//        }
-    }
-
     /**
      * 显示 老师点赞
      */
     public void showTeacherPraise() {
         logger.d("showTeacherPraise:voiceId=" + voiceId);
-        mHandler.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 if (StringUtils.isEmpty(voiceId) || !show.containsKey(voiceId)) {
@@ -94,11 +67,11 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                         if (!addEnergy) {
                             addEnergy = true;
                             final SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(mContext);
-                            mRootView.addView(speechEnergyPager.getRootView());
+                            addView(speechEnergyPager.getRootView());
                             speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                                 @Override
                                 public void onClose(LiveBasePager basePager) {
-                                    mRootView.removeView(basePager.getRootView());
+                                    removeView(basePager.getRootView());
                                     LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
                                     TeachPraiseRusltulCloseEvent teachPraiseRusltulCloseEvent = new TeachPraiseRusltulCloseEvent(voiceId + "_1", false);
                                     teachPraiseRusltulCloseEvent.setStartPosition(speechEnergyPager.getEnergyPosition());
@@ -108,11 +81,11 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                         }
                     } else {
                         SpeechPraisePager speechPraisePager = new SpeechPraisePager(mContext, 1 == getInfo.getIsYouJiao());
-                        mRootView.addView(speechPraisePager.getRootView());
+                        addView(speechPraisePager.getRootView());
                         speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                             @Override
                             public void onClose(LiveBasePager basePager) {
-                                mRootView.removeView(basePager.getRootView());
+                                removeView(basePager.getRootView());
                                 LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
                             }
                         });
@@ -193,7 +166,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 break;
             default:
@@ -202,9 +175,9 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
-        teacherPraiseBll.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
+        teacherPraiseBll.onDestroy();
     }
 
     @Override

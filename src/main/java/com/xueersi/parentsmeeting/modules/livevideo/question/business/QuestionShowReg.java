@@ -1,10 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
+
 /**
- * Created by lyqai on 2018/7/12.
+ * Created by linyuqiang on 2018/7/12.
  */
 
-public interface QuestionShowReg {
+public interface QuestionShowReg extends LiveProvide {
     void registQuestionShow(QuestionShowAction questionShowAction);
 
     void unRegistQuestionShow(QuestionShowAction questionShowAction);

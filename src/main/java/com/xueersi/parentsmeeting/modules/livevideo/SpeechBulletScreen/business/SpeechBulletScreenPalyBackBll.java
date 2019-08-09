@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.view.Engl
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
         mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (liveGetInfo.getIsArts() == 0 || liveGetInfo.getIsArts() == 2) {
+                if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC || liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
                     mSpeechBulPlaybackView = new SpeechBulletScreenPlayBackPager(activity);
                 } else {
                     mSpeechBulPlaybackView = new EnglishSpeechBulletPlayBackPager(activity, liveGetInfo
@@ -92,7 +93,7 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
      */
     private void getVoiceBarrageMsg(String liveId, String stuCouId, final AbstractBusinessDataCallBack callBack) {
         logger.i("getVoiceBarrageMsg: liveId =" + liveId + "   stuCouId=" + stuCouId);
-        if (liveGetInfo.getIsArts() == 0 || liveGetInfo.getIsArts() == 2) {
+        if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC || liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
             //理科、语文回放弹幕
             getCourseHttpManager().getVoiceBarrageMsg(liveId, stuCouId, new HttpCallBack(false) {
                 @Override
@@ -110,7 +111,7 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
                     callBack.onDataFail(1, responseEntity.getErrorMsg());
                 }
             });
-        } else if (liveGetInfo.getIsArts() == 1) {
+        } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
             //英语回放弹幕
             String groupId = liveGetInfo.getId() + "-" + liveGetInfo.getStudentLiveInfo().getClassId() + "-" +
                     liveGetInfo.getStudentLiveInfo().getGroupId();
@@ -165,7 +166,7 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
      */
     private void calculateBarrageTime() {
         logger.i("calculateBarrageTime()");
-        if (liveGetInfo.getIsArts() == 0 || liveGetInfo.getIsArts() == 2) {
+        if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC || liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
             //理科、语文回放弹幕
             List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
             if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
@@ -199,7 +200,7 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
                     }
                 }
             }
-        } else if (liveGetInfo.getIsArts() == 1) {
+        } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
             for (int j = 0; j < barrageList.size(); j++) {
                 VoiceBarrageMsgEntity voiceBarrageMsgEntity = barrageList.get(j);
                 long startTime = (Long.parseLong(voiceBarrageMsgEntity.getVoiceId())) / 1000 - liveGetInfo.getsTime();

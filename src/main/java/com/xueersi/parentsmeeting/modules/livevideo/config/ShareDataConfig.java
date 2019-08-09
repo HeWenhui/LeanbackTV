@@ -18,5 +18,7 @@ public class ShareDataConfig {
     public final static String SP_SPEECH_COLLECTION = "sp_livevideo_collection";
     /** 兼容课件组2019年夏季课件尺寸问题， 2019.4.4新增  0 旧尺寸，1 新尺寸 */
     public final static String SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE = "sp_en_english_stand_summercours_ewaresize";
+    /** 直播-战队pk,文理 */
+    public static String LIVE_TEAMPK_INFO = "live_teampk_info";
 
 }

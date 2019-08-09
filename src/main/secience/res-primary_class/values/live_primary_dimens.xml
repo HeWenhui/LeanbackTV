@@ -1,0 +1,26 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <!-- 右边框距离图片左边距离 -->
+    <integer name="live_primary_right_left">1691</integer>
+    <!-- 右边框距离图片左边距离 -->
+    <integer name="live_primary_right_state_width">84</integer>
+    <!-- 右边框宽度 -->
+    <integer name="live_primary_right_width">289</integer>
+    <!-- 右边战队PK居上高度 -->
+    <integer name="live_primary_right_team_top">34</integer>
+    <!-- 右边框头像居上高度 -->
+    <integer name="live_primary_right_head_top">159</integer>
+    <!-- 右边框头像宽度 -->
+    <integer name="live_primary_right_head_width">296</integer>
+    <!-- 右边框头像间距 -->
+    <integer name="live_primary_right_head_gap">15</integer>
+    <!-- 右边框头像高度 -->
+    <integer name="live_primary_right_item_height">224</integer>
+
+    <!-- 右边框头像宽度，语文 -->
+    <integer name="live_primary_right_head_width_cn">295</integer>
+    <!-- 右边框头像间距，语文-->
+    <integer name="live_primary_right_head_gap_cn">13</integer>
+    <!-- 右边框头像高度，语文 -->
+    <integer name="live_primary_right_item_height_cn">225</integer>
+</resources>

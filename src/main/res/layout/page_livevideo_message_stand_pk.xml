@@ -170,12 +170,6 @@
                 android:src="@drawable/selector_live_stand_chat_close" />
         </RelativeLayout>
 
-        <master.flame.danmaku.danmaku.ui.widget.DanmakuView
-            android:id="@id/dv_livevideo_message_danmaku"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toLeftOf="@id/rl_livevideo_info" />
-
     </RelativeLayout>
 
     <RelativeLayout

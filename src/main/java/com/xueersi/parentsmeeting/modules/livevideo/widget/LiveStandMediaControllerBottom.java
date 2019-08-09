@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +11,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
@@ -17,13 +20,14 @@ import java.util.ArrayList;
 /**
  * 直播播放器控制栏底部区域
  */
-public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBottom {
+public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBottom implements LiveUIStateReg {
     String TAG = "LiveMediaControllerBottom";
     View tranLiveView;
     View mainLiveView;
     String mode = LiveTopic.MODE_TRANING;
     private Button btRaiseHands;
     ArrayList<LiveUIStateListener> onViewChanges = new ArrayList<>();
+    protected boolean isSmallEnglish;
 
     public LiveStandMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context, controller, player);
@@ -38,6 +42,8 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
     /** 播放器的布局界面 */
     @Override
     public View inflateLayout() {
+        Intent paramIntent = ((Activity) mContext).getIntent();
+        isSmallEnglish = paramIntent.getBooleanExtra("isSmallEnglish", false);
         View view;
 //        return LayoutInflater.from(mContext).inflate(R.layout.layout_livestand_mediacontroller_bottom, this);
         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -48,12 +54,16 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
             addView(view);
         } else {
             if (tranLiveView == null) {
-                tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this, false);
+                if (isSmallEnglish) {
+                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_english_switch_flow_bottom, this, false);
+                } else {
+                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this, false);
+                }
             }
             view = tranLiveView;
             addView(view);
         }
-        logger.d( "inflateLayout:mode=" + mode + ",mainLiveView=" + mainLiveView + ",tranLiveView=" + tranLiveView);
+        logger.d("inflateLayout:mode=" + mode + ",mainLiveView=" + mainLiveView + ",tranLiveView=" + tranLiveView);
         return view;
     }
 
@@ -79,7 +89,8 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
         }
     }
 
-    public void addOnViewChange(LiveUIStateListener listener) {
+    @Override
+    public void addLiveUIStateListener(LiveUIStateListener listener) {
         if (!onViewChanges.contains(listener)) {
             onViewChanges.add(listener);
         }

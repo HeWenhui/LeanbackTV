@@ -13,14 +13,16 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.airbnb.lottie.AssertUtil;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,7 +57,7 @@ public class FrameAnimation {
 
     private ImageView mImageView;
     private View mView;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler = LiveMainHandler.getMainHandler();
     private int[] mFrameRess;
     private String[] files;
     public String path;
@@ -652,7 +654,7 @@ public class FrameAnimation {
                 stableLogHashMap.put("path", "" + path);
                 UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
             FrameAnimation btframeAnimation1 = new FrameAnimation(iv, files, duration, isRepeat);
             btframeAnimation1.path = path;
@@ -667,7 +669,7 @@ public class FrameAnimation {
             stableLogHashMap.put("path", "" + path);
             UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return btframeAnimation1;
     }

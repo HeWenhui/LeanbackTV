@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 
 /**
  * 聊天房间事件
@@ -78,8 +78,8 @@ public interface RoomAction {
     void onFDOpenbarrage(boolean open, boolean b);
 
 
-    /** 语音聊天状态 */
-    void videoStatus(String status);
+    /** 语音聊天状态，弹幕分离，就不需要了*/
+//    void videoStatus(String status);
 
 
     /**

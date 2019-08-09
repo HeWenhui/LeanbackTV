@@ -9,7 +9,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 
 /**
- * Created by lyqai on 2018/4/5.
+ * Created by linyuqiang on 2018/4/5.
  */
 
 public class ReadyGoImageView extends ImageView {

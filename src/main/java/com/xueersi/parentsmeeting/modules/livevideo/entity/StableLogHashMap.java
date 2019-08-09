@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Created by lyqai on 2018/1/6.
+ * Created by linyuqiang on 2018/1/6.
  * 稳定性日志
  */
 public class StableLogHashMap {
@@ -22,6 +22,11 @@ public class StableLogHashMap {
 
     public StableLogHashMap put(String key, String value) {
         mData.put(key, value);
+        return this;
+    }
+
+    public StableLogHashMap putAnal(String key, String value) {
+        analysis.put(key, value);
         return this;
     }
 
@@ -126,5 +131,10 @@ public class StableLogHashMap {
 
     public Map<String, String> getAnalysis() {
         return analysis;
+    }
+
+    public void putAll(StableLogHashMap stableLogHashMap) {
+        mData.putAll(stableLogHashMap.getData());
+        analysis.putAll(stableLogHashMap.getAnalysis());
     }
 }
