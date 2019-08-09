@@ -75,7 +75,7 @@ public class WordDictationBll implements WordDictationAction {
                 XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
             }else {
                 // 没有作答记录，直接进入引导页
-                RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers, UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers, LiveAppUserInfo.getInstance().getStuId());
                 bundle.putSerializable("data", recognizeFlow);
                 bundle.putString("what","Launch");
                 XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
