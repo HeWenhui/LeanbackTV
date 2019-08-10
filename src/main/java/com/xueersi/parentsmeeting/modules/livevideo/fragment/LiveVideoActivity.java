@@ -92,7 +92,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
         }else{
             //测试大班整合
             try {
-                String fname = "com.xueersi.parentsmeeting.modules.livebusiness.core.LiveBusinessFragment";
+                String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessFragment";
                 LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
                 return fragmentBase;
             } catch (Exception e) {
