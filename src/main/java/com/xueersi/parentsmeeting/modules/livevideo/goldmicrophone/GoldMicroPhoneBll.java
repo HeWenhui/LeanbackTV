@@ -25,6 +25,7 @@ import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -402,7 +403,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     private void onLineRecord() {
 //        SpeechConfig.setStatus(SpeechConfig.SPEECH_CHS_MICROPHONE);
         if (mSpeechEvaluatorUtils == null) {
-            mSpeechEvaluatorUtils = SpeechUtils.getInstance(mBaseApplication);
+            mSpeechEvaluatorUtils = SpeechUtils.getInstance(ContextManager.getContext());
             mSpeechEvaluatorUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_CH );
         }
         File dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
