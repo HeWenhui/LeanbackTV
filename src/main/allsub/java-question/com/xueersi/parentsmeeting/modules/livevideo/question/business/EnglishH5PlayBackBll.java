@@ -315,28 +315,6 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         }
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
                                 (questionEntity, vCategory);
-                        if (videoQuestionLiveEntity.type.equals(EN_INTELLIGENT_EVALUTION)) {
-                            Bundle bundle = new Bundle();
-                            IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
-//                intelligentRecognitionRecord.setAnswerTime(questionEntity.get);
-                            intelligentRecognitionRecord.setStuId(liveGetInfo.getStuId());
-                            intelligentRecognitionRecord.setStuCouId(liveGetInfo.getStuCouId());
-                            intelligentRecognitionRecord.setLiveId(liveGetInfo.getId());
-                            intelligentRecognitionRecord.setMaterialId(videoQuestionLiveEntity.id);
-//                            intelligentRecognitionRecord.setContent(videoQuestionLiveEntity.speechContent);
-//                JSONArray jsonArray = data.optJSONArray("id");
-//                if (jsonArray != null && jsonArray.length() > 0) {
-//                            intelligentRecognitionRecord.setMaterialId(questionEntity.getvQuestionID());
-//                }
-                            intelligentRecognitionRecord.setIsPlayBack("1");
-//                            if (liveGetInfo.getStudentLiveInfo() != null) {
-//                                intelligentRecognitionRecord.setClassId(liveGetInfo.getStudentLiveInfo().getClassId());
-//                                intelligentRecognitionRecord.setTeamId(liveGetInfo.getStudentLiveInfo().getTeamId());
-//                            }
-                            bundle.putParcelable(PROCESS_RECORD_SIGN, intelligentRecognitionRecord);
-                            XueErSiRouter.startModule(activity, "/english/intelligent_recognition", bundle);
-                            return;
-                        }
                         if (ptTypeFilters.contains(videoQuestionLiveEntity.type) && !"1".equals(videoQuestionLiveEntity
                                 .getIsVoice())) {
                             Loger.e("EnglishH5back", "====> return h5back");
@@ -357,7 +335,31 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         showQuestion.onHide(questionEntity);
                     }
                 });
-                verifyCancelAlertDialog.showDialog();
+                if (questionEntity.getvQuestionType().equals(EN_INTELLIGENT_EVALUTION)) {
+                    if (mediaPlayerControl == null) {
+                        mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
+                    }
+                    if (mediaPlayerControl != null) {
+                        mediaPlayerControl.start();
+                    }
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
+                            (questionEntity, vCategory);
+                    if (videoQuestionLiveEntity.type.equals(EN_INTELLIGENT_EVALUTION)) {
+                        Bundle bundle = new Bundle();
+                        IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
+//                intelligentRecognitionRecord.setAnswerTime(questionEntity.get);
+                        intelligentRecognitionRecord.setStuId(liveGetInfo.getStuId());
+                        intelligentRecognitionRecord.setStuCouId(liveGetInfo.getStuCouId());
+                        intelligentRecognitionRecord.setLiveId(liveGetInfo.getId());
+                        intelligentRecognitionRecord.setMaterialId(videoQuestionLiveEntity.id);
+                        intelligentRecognitionRecord.setIsPlayBack("1");
+                        bundle.putParcelable(PROCESS_RECORD_SIGN, intelligentRecognitionRecord);
+                        XueErSiRouter.startModule(activity, "/english/intelligent_recognition", bundle);
+                        return;
+                    }
+                } else {
+                    verifyCancelAlertDialog.showDialog();
+                }
             }
             break;
             default:

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -140,7 +139,7 @@ public class LivePlaybackMediaController extends MediaController2 {
             float screenDensity = ScreenUtils.getScreenDensity();
             MarginLayoutParams rlKeytipLp = (MarginLayoutParams) rlKeytip.getLayoutParams();
             rlKeytip.setLayoutParams(rlKeytipLp);
-            logger.i( "setVideoQuestions:pointWidth=" + pointWidth + ",rlKeytip=" + rlKeytip.getWidth()
+            logger.i("setVideoQuestions:pointWidth=" + pointWidth + ",rlKeytip=" + rlKeytip.getWidth()
                     + ",duration=" + duration + ",bitmap=" + bitmap.getWidth());
             int index = 1;
             LayoutInflater inflater = activity.getLayoutInflater();
@@ -183,7 +182,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                 long pos = 1000000L * insretTime / (duration);//按SeekBar的算法，算出比例
                 lp.leftMargin = (int) ((pointWidth * pos / 1000) - width / 2 + 3 * screenDensity);//位置显示居中，3 *
                 // screenDensity是SeekBar居左
-                logger.i( "setVideoQuestions:" + videoQuestionEntity.getvCategory()
+                logger.i("setVideoQuestions:" + videoQuestionEntity.getvCategory()
                         + ",insretTime=" + TimeUtils.generateTime(insretTime * 1000) + ",pos=" + pos
                         + ",leftMargin=" + lp.leftMargin);
                 //rlClick.setBackgroundColor(0x99000000);
@@ -251,11 +250,11 @@ public class LivePlaybackMediaController extends MediaController2 {
             } else {
                 textView.setText("互动课件");
             }
-        } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()
-        || LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == videoQuestionEntity.getvCategory()){
+        } else if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()
+                || LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == videoQuestionEntity.getvCategory()) {
             String type = videoQuestionEntity.getvQuestionType();
-           // Log.e("PreSchoolTrace","=======>LivePlaybackMediaCtr:type="+type);
-            switch (type){
+            // Log.e("PreSchoolTrace","=======>LivePlaybackMediaCtr:type="+type);
+            switch (type) {
                 case "1":
                 case "6":
                     textView.setText("互动题");
@@ -279,9 +278,9 @@ public class LivePlaybackMediaController extends MediaController2 {
             }
         } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == videoQuestionEntity.getvCategory()) {
             textView.setText("购课");
-        } else if(LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == videoQuestionEntity.getvCategory() || LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()){
+        } else if (LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == videoQuestionEntity.getvCategory() || LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()) {
             String type = videoQuestionEntity.getvQuestionType();
-            switch (type){
+            switch (type) {
                 case "1":
                 case "2":
                     textView.setText("互动题");
@@ -303,6 +302,9 @@ public class LivePlaybackMediaController extends MediaController2 {
                 case "18":
                 case "19":
                     textView.setText("语音答题");
+                    break;
+                case "30":
+                    textView.setText("智能测评");
                     break;
                 default:
                     textView.setText("互动课件");
@@ -329,8 +331,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                 int loction[] = new int[2];
                 rlKeyPoints.getLocationInWindow(loction);//rlKeytip的宽度是全屏，rlKeyPoints在中间
                 contentView.getViewTreeObserver().removeOnPreDrawListener(this);
-                RelativeLayout rlPointTop = (RelativeLayout) contentView.findViewById(R.id.rl_liveplayback_point_top)
-                        ;//上面的提示
+                RelativeLayout rlPointTop = (RelativeLayout) contentView.findViewById(R.id.rl_liveplayback_point_top);//上面的提示
                 ImageView ivArrow = (ImageView) contentView.findViewById(R.id.iv_liveplayback_point_arrow);//下面的箭头
                 int pointWidth = rlKeyPoints.getWidth();
                 float screenDensity = ScreenUtils.getScreenDensity();
@@ -340,7 +341,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivArrow.getLayoutParams();
                     lp.leftMargin = (int) ((pointWidth * pos / 1000) - ivArrow.getWidth() / 2 + 3 * screenDensity +
                             loction[0]);//位置显示居中，3 * screenDensity是SeekBar居左
-                    logger.i( "showTip:category=" + videoQuestionEntity.getvCategory()
+                    logger.i("showTip:category=" + videoQuestionEntity.getvCategory()
                             + ",insretTime=" + TimeUtils.generateTime(insretTime * 1000)
                             + ",pointWidth=" + pointWidth + ",leftMargin=" + lp.leftMargin + ",getWidth=" + ivPlay
                             .getWidth());
@@ -350,7 +351,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlPointTop.getLayoutParams();
                     int leftMargin = (int) ((pointWidth * pos / 1000) - rlPointTop.getWidth() / 2 + 3 * screenDensity
                             + loction[0]);//位置显示居中，3 * screenDensity是SeekBar居左
-                    logger.i( "showTip:leftMargin=" + leftMargin + ",getWidth=" + rlPointTop.getWidth());
+                    logger.i("showTip:leftMargin=" + leftMargin + ",getWidth=" + rlPointTop.getWidth());
                     if (leftMargin <= 0) {//目前调整SeekBar，字数少，不会出现
                         leftMargin = 12;
                     } else {

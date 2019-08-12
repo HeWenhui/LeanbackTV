@@ -392,7 +392,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                         }
                     }
                     if (h5CoursewarePager != null) {
-                        if (h5CoursewarePager.getUrl().equals(videoQuestionLiveEntity.getUrl())) {
+                        if (h5CoursewarePager.getUrl() != null && h5CoursewarePager.getUrl().equals(videoQuestionLiveEntity.getUrl())) {
                             logToFile.i("onH5Courseware:url.equals:" + h5CoursewarePager.getUrl());
                             return;
                         } else {
