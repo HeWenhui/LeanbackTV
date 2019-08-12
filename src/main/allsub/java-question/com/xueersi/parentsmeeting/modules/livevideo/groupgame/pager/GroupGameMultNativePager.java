@@ -1984,6 +1984,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         vidooCannonEntity.teamMemberEntity.setEnergy(MAX_ENERGY);
                     } else {
                         vidooCannonEntity.teamMemberEntity.setEnergy(rightNum);
+                        if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
+                                .equals(detailInfo.type)){
+                            vidooCannonEntity.teamMemberEntity.setEnergy(rightNum*2);
+                        }
                     }
                 } else {
                     int oldGold = vidooCannonEntity.teamMemberEntity.gold;
@@ -2854,7 +2858,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                         public void run() {
                                             if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
                                                     .equals(detailInfo.type)) {
-                                                    voiceCannonOnMessage.coursewareDoingLoad(currentAnswerIndex+1);
+                                                voiceCannonOnMessage.coursewareDoingLoad(currentAnswerIndex+1);
                                             }else {
                                                 voiceCannonOnMessage.coursewareDoingLoad(currentAnswerIndex);
                                             }
