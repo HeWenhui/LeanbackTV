@@ -49,6 +49,8 @@ import com.xueersi.ui.widget.CircleImageView;
 
 import net.grandcentrix.tray.core.ItemNotFoundException;
 
+import java.util.Random;
+
 public class EnStandAchievePager extends LiveBasePager {
     private RelativeLayout parent;
     private LiveGetInfo mLiveGetInfo;
@@ -649,14 +651,9 @@ public class EnStandAchievePager extends LiveBasePager {
         lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
         lp.topMargin = cbAchiveTitle.getHeight() * 144 / 189;
-        if (ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)){
-            lp.rightMargin = SizeUtils.Dp2Px(mContext,30);
-            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        } else {
-            lp.leftMargin = SizeUtils.Dp2Px(mContext, 30);
-        }
-        final ViewGroup viewGroup = (ViewGroup) mView;
+        final ViewGroup viewGroup = (ViewGroup) rlAchieveContent;
         viewGroup.addView(lottieAnimationView, lp);
         lottieAnimationView.playAnimation();
         lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
