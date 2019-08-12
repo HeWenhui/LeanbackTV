@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -8,6 +9,7 @@ import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -259,7 +261,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
             intelligentRecognitionRecord.setTeamId(liveGetInfo.getStudentLiveInfo().getTeamId());
         }
         bundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
-        XueErSiRouter.startModule(context, "/english/intelligent_recognition", bundle);
+        XueErSiRouter.startModuleForResult((Activity) context, "/english/intelligent_recognition", XESCODE.ARTS_SEND_QUESTION, bundle);
     }
 
     /**

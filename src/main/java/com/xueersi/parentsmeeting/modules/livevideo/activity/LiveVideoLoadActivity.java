@@ -3,17 +3,17 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.LoadFileCallBack;
@@ -23,10 +23,10 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.FileLogger;
+import com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -189,6 +189,24 @@ public class LiveVideoLoadActivity extends BaseActivity {
     }
 
     private void initData() {
+//        if (AppConfig.DEBUG) {
+//            Bundle newBundle = new Bundle();
+//            IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
+////            intelligentRecognitionRecord.setAnswers("1000");
+//            intelligentRecognitionRecord.setAnswerTime("121322");
+//            intelligentRecognitionRecord.setContent("whose soccer ball is it?");
+//            intelligentRecognitionRecord.setLiveId("584955");
+//            intelligentRecognitionRecord.setStuId("37899");
+//            intelligentRecognitionRecord.setStuCouId("1111");
+//            intelligentRecognitionRecord.setMaterialId("21642");
+//            intelligentRecognitionRecord.setIsPlayBack("0");
+//            newBundle.putParcelable("intelligentRecognitionRecord", intelligentRecognitionRecord);
+//            XueErSiRouter.startModule(this, "/english/intelligent_recognition", newBundle);
+////            XueErSiRouter.startModule(this, "/english/intelligent_recognition", newBundle);
+////            startActivity(new Intent(this, IntelligentRecognitionActivity.class));
+//            finish();
+//            return;
+//        }
         logger.d("initData:index=" + index + ",size=" + liveVideoLoadActivities.size());
         LiveVideoLoadActivity activity = liveVideoLoadActivities.get(0);
         if (activity != this) {
@@ -219,7 +237,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     }
                     String stuId = LiveAppUserInfo.getInstance().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                     finish();
                 }
 
@@ -385,7 +403,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         LiveMainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                                 finish();
                             }
                         });

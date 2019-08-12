@@ -11,11 +11,14 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
  * 直播
@@ -150,5 +153,16 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
         super.finish(result);
         UmsAgentManager.umsAgentDebug(this, TAG + "finish", "finish(result):" + Log.getStackTraceString(new Exception()));
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == XESCODE.ARTS_SEND_QUESTION && resultCode == 30) {
+            UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+            if (updateAchievement != null) {
+                updateAchievement.getStuGoldCount("upDateGold", UpdateAchievement.GET_TYPE_QUE);
+            }
+        }
     }
 }
