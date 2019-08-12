@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 
@@ -177,7 +178,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 logger.i( "完成播放");
                 mIsPlaying = false;
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                LiveMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
@@ -195,7 +196,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 super.onStop(dataSource, manager);
                 logger.i( "停止播放");
                 mIsPlaying = false;
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                LiveMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
@@ -211,7 +212,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
             public void onPreparing(Object dataSource, AudioPlayerManager manager) {
                 logger.i( "准备播放");
                 mIsPlaying = true;
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                LiveMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
@@ -226,7 +227,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
             public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
                 super.onError(msg, dataSource, manager);
                 mIsPlaying = false;
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                LiveMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.

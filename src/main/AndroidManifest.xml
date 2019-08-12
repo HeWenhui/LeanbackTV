@@ -117,7 +117,15 @@
             android:process=":livevideo"
             android:screenOrientation="portrait"
             android:theme="@style/style_live_compat"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden">
+            <intent-filter>
+                <action android:name="com.xueersi.parentsmeeting.action.livevideo" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="dispatcher"
+                android:value="com.xueersi.parentsmeeting.modules.livevideo.dispatcher.LiveVideoDispatcher" />
+        </activity>
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferActivity"
             android:process=":livevideo"

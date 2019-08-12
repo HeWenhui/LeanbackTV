@@ -28,7 +28,6 @@ import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
@@ -41,7 +40,6 @@ import com.xueersi.common.entity.BaseVideoQuestionEntity;
 
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 
 import com.xueersi.common.permission.XesPermission;
@@ -197,6 +195,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 }
             }
         }
+        mLogtf.addCommon("testid", mDetail.getvQuestionID());
         mLogtf.d("VoiceAnswerPager:answer=" + answer);
         initListener();
         initData();

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +67,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.understand.Stand
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.StandLiveVideoExperienceMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -389,7 +389,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             }
 
             @Override
-            public void setSpeed(float speed, String uuid) {
+            public void setSpeed(float speed) {
 
             }
 
@@ -1170,8 +1170,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             }
             final boolean finalPause = pause;
             logger.i("onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
+            LiveMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity

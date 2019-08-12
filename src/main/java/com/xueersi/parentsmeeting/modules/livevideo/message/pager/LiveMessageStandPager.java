@@ -89,6 +89,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOther
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessSysItem;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
@@ -766,7 +767,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
         if (mSpeechUtils == null) {
             mSpeechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
-            mSpeechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
         }
         mParam = new SpeechParamEntity();
         mSpeechUtils.prepar(new SpeechEvaluatorUtils.OnFileSuccess() {
@@ -960,10 +960,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         logger.i("initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mFlowerWindow = flowerWindow;
-        Handler handler = new Handler(Looper.getMainLooper());
         for (int i = 0; i < flowerEntities.size(); i++) {
             final int index = i;
-            handler.postDelayed(new Runnable() {
+            LiveMainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     final FlowerEntity entity = flowerEntities.get(index);
@@ -1932,7 +1931,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             mAudioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
-                    startEvaluator();
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startEvaluator();
+                        }
+                    },300);
                 }
             });
         }

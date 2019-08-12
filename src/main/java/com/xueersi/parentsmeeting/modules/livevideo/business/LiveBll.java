@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallAction;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.json.JSONException;
@@ -57,7 +58,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState {
     public final int mLiveType;
     private LiveGetInfo mGetInfo;
     private final LiveTopic mLiveTopic = new LiveTopic();
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     private LogToFile mLogtf;
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle;

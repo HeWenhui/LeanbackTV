@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -68,6 +66,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -696,8 +695,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     @Override
-    public void setSpeed(float speed, String uuid) {
-        super.setSpeed(speed, uuid);
+    public void setSpeed(float speed) {
+        super.setSpeed(speed);
         String key = "null";
         if (mVideoEntity != null) {
             if ("LivePlayBackActivity".equals(where)) {//直播辅导
@@ -904,8 +903,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             }
             final boolean finalPause = pause;
             logger.i("onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
+            LiveMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity
@@ -977,8 +975,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                     MediaPlayer.VIDEO_TEACHER_TUTOR, "");
             isNetWorkEnable = true;
             //为了让LiveBackVideoBll的onPlaybackComplete回调能完成。
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
+            LiveMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     startNewVideo();

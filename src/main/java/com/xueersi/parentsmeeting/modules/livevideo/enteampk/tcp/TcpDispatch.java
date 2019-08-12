@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONObject;
@@ -55,7 +56,7 @@ public class TcpDispatch {
     private String xes_rfh;
     private String live_id;
     private String class_id;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler = LiveMainHandler.getMainHandler();
     private boolean isStop = false;
     private LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     private Map<Short, List<TcpMessageAction>> mMessageActionMap = new HashMap<>();

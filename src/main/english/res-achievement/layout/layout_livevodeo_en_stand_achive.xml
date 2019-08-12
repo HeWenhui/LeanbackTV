@@ -189,7 +189,7 @@
             android:layout_width="152dp"
             android:layout_marginLeft="13dp"
             android:layout_marginRight="13dp"
-            android:layout_height="wrap_content"
+            android:layout_height="63dp"
             android:background="@drawable/selector_live_en_stand_achive_open"
             android:button="@null"
             android:checked="false" />

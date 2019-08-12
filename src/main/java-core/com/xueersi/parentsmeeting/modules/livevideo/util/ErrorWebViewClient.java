@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.util;
 
+import android.os.Looper;
+
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceError;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
@@ -42,7 +44,16 @@ public class ErrorWebViewClient extends WebViewClient {
     public void onLoadResource(WebView webView, String s) {
         //第一次加载的就是课件地址
         if (loadUrl == null) {
-            loadUrl = s;
+            if (Looper.myLooper() != Looper.getMainLooper()) {
+                try {
+                    loadUrl = webView.getUrl();
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(TAG, e);
+                }
+            }
+            if (loadUrl == null) {
+                loadUrl = s;
+            }
         }
         super.onLoadResource(webView, s);
     }

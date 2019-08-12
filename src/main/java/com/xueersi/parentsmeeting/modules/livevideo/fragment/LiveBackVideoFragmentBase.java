@@ -11,7 +11,6 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -54,6 +53,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 import com.xueersi.ui.dataload.DataLoadManager;
 
@@ -156,7 +156,6 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     /** 播放器java崩溃 */
     public static final int VIDEO_CRASH = 1200;
     protected float mySpeed = 1.0f;
-    protected String uuid = "";
     /** 同步锁 */
     private Object mOpenLock = new Object();
     /** 准备打开播放文件 */
@@ -509,9 +508,9 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
-        public void setSpeed(float speed, String uuid) {
-            super.setSpeed(speed, uuid);
-            liveBackVideoFragment.setSpeed(speed, uuid);
+        public void setSpeed(float speed) {
+            super.setSpeed(speed);
+            liveBackVideoFragment.setSpeed(speed);
         }
 
         @Override
@@ -581,8 +580,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
             video = "ijk";
             logger.d("onActivityCreated:frag=" + ((ViewGroup) mContentView.findViewById(R.id.rl_live_video_frag))
                     .getChildCount());
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
+            LiveMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     onSelect(savedInstanceState, video);
@@ -773,9 +771,8 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         }
     }
 
-    protected void setSpeed(float speed, String uuid) {
+    protected void setSpeed(float speed) {
         mySpeed = speed;
-        this.uuid = uuid;
     }
 
     protected abstract void seekTo(long pos);

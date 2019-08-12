@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 
@@ -73,7 +74,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     public final int mLiveType;
     private LiveGetInfo mGetInfo;
     private final LiveTopic mLiveTopic = new LiveTopic();
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     private LogToFile mLogtf;
     /** 主讲教师 */
     private Teacher mMainTeacher;
@@ -599,8 +600,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         String nickname = mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
 
-        mIRCMessage = new NewAuditIRCMessage(mContext, mGetInfo, netWorkType, channel, mGetInfo.getStuName(), nickname, this);
-
+        mIRCMessage = new NewAuditIRCMessage(mContext, nickname, mGetInfo.getId(),mGetInfo.getStudentLiveInfo().getClassId(), channel);
+        ((NewAuditIRCMessage) mIRCMessage).setLiveAndBackDebug(this);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
         // logger.d( s);

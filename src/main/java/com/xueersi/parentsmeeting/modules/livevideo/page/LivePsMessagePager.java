@@ -748,7 +748,20 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         mFlowerEntities.add(new FlowerEntity(FLOWERS_SMALL, flowsDrawTips[0], "小心心", 10));
         mFlowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "暖心茉莉茶", 50));
         mFlowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
+        logger.i("initFlower:time1=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
         flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_primary_flower, null);
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ImageView iv_livevideo_primarygiftbg = flowerContentView.findViewById(R.id.iv_livevideo_primarygiftbg);
+                Drawable drawable = mView.getResources().getDrawable(R.drawable.primarygiftbg);
+                logger.d("initPrimaryFlower:width=" + drawable.getMinimumWidth() + ",height=" + drawable.getMinimumHeight() + ",density=" + ScreenUtils.getScreenDensity());
+                iv_livevideo_primarygiftbg.setBackgroundDrawable(drawable);
+            }
+        }, 500);
+        logger.i("initFlower:time2=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
         PopupWindow flowerWindow = new PopupWindow(flowerContentView, dp2px(liveVideoActivity, 478), dp2px(liveVideoActivity, 347), false);
         flowerWindow.setBackgroundDrawable(new BitmapDrawable());
         flowerWindow.setOutsideTouchable(true);
@@ -762,10 +775,10 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         });
         tvMessageGold = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold);
         tvMessageGoldLable = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold_lable);
-        logger.i("initFlower:time1=" + (System.currentTimeMillis() - before));
+        logger.i("initFlower:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mFlowerWindow = flowerWindow;
-        logger.i("initFlower:time2=" + (System.currentTimeMillis() - before));
+        logger.i("initFlower:time5=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         Button flowerSend = flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend);
         mIce = flowerContentView.findViewById(R.id.iv_present_ice);
@@ -852,7 +865,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         });
 //        flowerWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
 //        flowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        logger.i("initFlower:time3=" + (System.currentTimeMillis() - before));
+        logger.i("initFlower:time6=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 

@@ -8,8 +8,6 @@ public interface IAuditIRCMessage{
 
     String getNickname();
 
-    void setIrcTalkConf(IRCTalkConf ircTalkConf);
-
     void sendNotice(String target, String notice);
 
     void sendMessage(String target, String message);

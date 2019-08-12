@@ -120,6 +120,7 @@ public class LiveLog implements LiveOnLineLogs {
             LiveCrashReport.postCatchedException(new LiveException(TAG, err));
         }
         logHashMap.put("liveeventid", "" + LogConfig.LIVE_DEBUG_MESSAGE);
+        logHashMap.put("eventid", "" + eventid);
         logHashMap.put("tag", "" + TAG);
         logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);
@@ -176,6 +177,7 @@ public class LiveLog implements LiveOnLineLogs {
             LiveCrashReport.postCatchedException(new LiveException(TAG, err));
         }
         logHashMap.put("liveeventid", "" + LogConfig.LIVE_DEBUG_MESSAGE);
+        logHashMap.put("eventid", "" + eventid);
         logHashMap.put("tag", "" + TAG);
         logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.chpk.page.SoundEffectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.EnglishH5Entity;
@@ -502,17 +503,22 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      * 关闭当前页面
      */
     public void closeCurrentPager() {
-        if (mFocusPager != null) {
-            rlTeamPkContent.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mFocusPager != null) {
-                        rlTeamPkContent.removeView(mFocusPager.getRootView());
-                        mFocusPager = null;
-                    }
+        rlTeamPkContent.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mFocusPager == null) {
+                    return;
                 }
-            });
-        }
+
+                if (mFocusPager instanceof SoundEffectPager) {
+                    SoundEffectPager soundPager = (SoundEffectPager) mFocusPager;
+                    soundPager.releaseSoundRes();
+                }
+
+                rlTeamPkContent.removeView(mFocusPager.getRootView());
+                mFocusPager = null;
+            }
+        });
     }
 
     /**

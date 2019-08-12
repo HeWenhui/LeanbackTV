@@ -56,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswer
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -81,7 +82,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
     private String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     private String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private Context context;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler = LiveMainHandler.getMainHandler();
     /** 互动题作答成功的布局列表 */
     private ArrayList<View> resultViews = new ArrayList<>();
     BaseEnglishH5CoursewarePager h5CoursewarePager;
@@ -548,9 +549,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                 }
             }
         };
-        if (h5CoursewarePager instanceof LiveBackBaseEnglishH5CoursewareCreat) {
-            ((LiveBackBaseEnglishH5CoursewareCreat) h5CoursewarePager).setWrapOnH5ResultClose(new WrapOnH5ResultClose(context));
-        }
         h5CoursewarePager = baseEnglishH5CoursewareCreat.creat(context, videoQuestionH5Entity, onH5ResultClose,
                 mVSectionID);
         h5CoursewarePager.setEnglishH5CoursewareBll(this);

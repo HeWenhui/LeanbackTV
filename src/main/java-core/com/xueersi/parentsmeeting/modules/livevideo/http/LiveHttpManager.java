@@ -93,6 +93,12 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         return liveVideoSAConfig;
     }
 
+    public void sendPost(final String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
+        long before = System.currentTimeMillis();
+        super.sendPost(url, httpRequestParams, httpCallBack);
+        logger.d("sendPost:time=" + (System.currentTimeMillis() - before) + ",url=" + url);
+    }
+
     /**
      * 播放器数据初始化
      *

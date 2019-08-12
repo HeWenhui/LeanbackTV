@@ -60,10 +60,10 @@ import io.reactivex.functions.Predicate;
  * 战队 pk 结果页
  *
  * @author yuanwei
- * <p>
- * created  at 2018/11/14 11:31
+ *         <p>
+ *         created  at 2018/11/14 11:31
  */
-public class PkTeamResultPager extends BasePager {
+public class PkTeamResultPager extends SoundEffectPager {
     private static final String TAG = "TeamPkResultPager";
 
     private final ChinesePkBll mTeamPkBll;
@@ -514,7 +514,11 @@ public class PkTeamResultPager extends BasePager {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        closePkResultPager();
+
+        if (soundPoolHelper != null) {
+            soundPoolHelper.release();
+            soundPoolHelper = null;
+        }
     }
 
 
@@ -601,7 +605,7 @@ public class PkTeamResultPager extends BasePager {
 
         try {
             lottieEffectView.setVisibility(View.VISIBLE);
-            lottieEffectView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext),"chinesePk_vsteam");
+            lottieEffectView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "chinesePk_vsteam");
             lottieEffectView.setImageAssetDelegate(new ImageAssetDelegate() {
                 @Override
                 public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
@@ -788,7 +792,6 @@ public class PkTeamResultPager extends BasePager {
             mView.post(new Runnable() {
                 @Override
                 public void run() {
-                    releaseSoundRes();
                     mTeamPkBll.closeCurrentPager();
                 }
             });
@@ -797,12 +800,12 @@ public class PkTeamResultPager extends BasePager {
         }
     }
 
-    private void releaseSoundRes() {
-
+    @Override
+    public void releaseSoundRes() {
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
+            soundPoolHelper = null;
         }
-
     }
 
     private class PkAnimListener extends AnimatorListenerAdapter {

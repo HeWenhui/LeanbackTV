@@ -38,7 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
  *         <p>
  *         created  at 2018/11/14 11:31
  */
-public class PkAnswerResultPager extends BasePager {
+public class PkAnswerResultPager extends SoundEffectPager {
 
     /**
      * 默认音量大小
@@ -406,6 +406,15 @@ public class PkAnswerResultPager extends BasePager {
 
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
+            soundPoolHelper = null;
+        }
+    }
+
+    @Override
+    public void releaseSoundRes() {
+        if (soundPoolHelper != null) {
+            soundPoolHelper.release();
+            soundPoolHelper = null;
         }
     }
 

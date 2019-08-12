@@ -10,6 +10,8 @@ public interface LiveViewAction {
 
     void addView(LiveVideoLevel level, View child);
 
+    void addView(View child, int width, int height);
+
     void removeView(View child);
 
     void addView(View child, ViewGroup.LayoutParams params);

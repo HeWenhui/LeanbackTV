@@ -59,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.page.AgoraVideoChatPager;
@@ -96,7 +97,7 @@ public class VideoChatBll implements VideoChatAction {
     private VideoChatInter videoChatInter;
     //添加声网
     private RelativeLayout rl_livevideo_agora_content;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     private LiveViewAction liveViewAction;
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
     /** 麦克风权限 */
