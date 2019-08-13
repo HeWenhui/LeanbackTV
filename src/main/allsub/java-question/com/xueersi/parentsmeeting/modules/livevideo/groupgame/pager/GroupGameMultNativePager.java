@@ -1330,6 +1330,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     private void startSpeechRecognize() {
+        if(TextUtils.isEmpty(speechContent))
+            return;
         File dir = LiveCacheFile.geCacheFile(mContext, "groupgamemul");
         //只有第一次删除
         if (saveVideoFile == null) {
@@ -2775,6 +2777,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     case TcpConstants.VOICE_CANNO_STATIS: {
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
+                            String live_id = jsonObject.optString("live_id");
+                            if(!TextUtils.equals(liveGetInfo.getId(),live_id))
+                                return;
                             String test_id = jsonObject.optString("test_id");
                             if (submit || !detailInfo.id.equals(test_id)) {
                                 return;
@@ -2956,6 +2961,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     case TcpConstants.VOICE_CANNO_SCENE: {
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
+                            String live_id = jsonObject.optString("live_id");
+                            if(!TextUtils.equals(liveGetInfo.getId(),live_id))
+                                return;
                             String test_id = jsonObject.optString("test_id");
                             if (submit || !detailInfo.id.equals(test_id)) {
                                 return;
@@ -3129,6 +3137,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     case TcpConstants.CLEAN_UP_REC: {
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
+                            String live_id = jsonObject.optString("live_id");
+                            if(!TextUtils.equals(liveGetInfo.getId(),live_id))
+                                return;
                             String test_id = jsonObject.optString("test_id");
                             if (submit || !detailInfo.id.equals(test_id)) {
                                 return;
@@ -3197,6 +3208,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     case TcpConstants.CLEAN_UP_SECN: {
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
+                            String live_id = jsonObject.optString("live_id");
+                            if(!TextUtils.equals(liveGetInfo.getId(),live_id))
+                                return;
                             String test_id = jsonObject.optString("test_id");
                             if (submit || !detailInfo.id.equals(test_id)) {
                                 return;
