@@ -62,7 +62,7 @@ def static getEngSource(Object set) {
     set.res.srcDirs += ['src/main/res-en_teampk']
     set.java.srcDirs += ['src/main/java-achievement']
     set.res.srcDirs += ['src/main/english/res-achievement']
-    set.assets.srcDirs += ['src/main/english/assets']
+//    set.assets.srcDirs += ['src/main/english/assets']
     //全身
     set.java.srcDirs += ['src/main/english/java-stand']
     set.res.srcDirs += ['src/main/english/res-stand']
