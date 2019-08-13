@@ -649,6 +649,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     rlMessageTextContent.setVisibility(View.GONE);
                     btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_keyborad);
                     isVoice = true;
+                    liveMediaControllerBottom.onHide();
                 } else {
                     liveMediaControllerBottom.onChildViewClick(v);
                     btnMessageSwitch.setVisibility(View.GONE);
