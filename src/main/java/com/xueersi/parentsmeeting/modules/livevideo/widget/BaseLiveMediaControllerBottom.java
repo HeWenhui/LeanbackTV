@@ -239,7 +239,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-//                BaseLiveMediaControllerBottom.this.setVisibility(GONE);
+                BaseLiveMediaControllerBottom.this.setVisibility(GONE);
             }
         });
         animator.start();
