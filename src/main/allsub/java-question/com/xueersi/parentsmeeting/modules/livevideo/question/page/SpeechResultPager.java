@@ -91,7 +91,7 @@ public class SpeechResultPager extends LiveBasePager {
             //单人的金币能量位置靠下
             if (isSingle) {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view1.getLayoutParams();
-                lp.topMargin = SizeUtils.Dp2Px(mContext, 11);
+                lp.topMargin = SizeUtils.Dp2Px(mContext, 0);
                 view1.setLayoutParams(lp);
             }
         } else {
@@ -109,7 +109,7 @@ public class SpeechResultPager extends LiveBasePager {
             //单人的金币能量位置靠下
             if (isSingle) {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view1.getLayoutParams();
-                lp.topMargin = SizeUtils.Dp2Px(mContext, 11);
+                lp.topMargin = SizeUtils.Dp2Px(mContext, 0);
                 view1.setLayoutParams(lp);
             }
         }
@@ -143,8 +143,8 @@ public class SpeechResultPager extends LiveBasePager {
             StuSegmentEntity stuSegmentEntity = ProxUtil.getProxUtil().get(mContext, BetterMeContract
                     .BetterMePresenter.class).getStuSegmentEntity();
             if (stuSegmentEntity != null) {
-                int segmentType = Integer.valueOf(stuSegmentEntity.getSegmentType());
-                int star = Integer.valueOf(stuSegmentEntity.getStar());
+                int segmentType = stuSegmentEntity.getSegmentType();
+                int star = stuSegmentEntity.getStar();
                 BetterMeUtil.addSegment(ivUserSegment, segmentType, star);
             }
         }
@@ -155,11 +155,8 @@ public class SpeechResultPager extends LiveBasePager {
             vSpeechResultLine.setVisibility(View.GONE);
             //单人的分数比布局的靠下一点
             RelativeLayout.LayoutParams contentLp = (RelativeLayout.LayoutParams) rlSpeechResultContent.getLayoutParams();
-            contentLp.topMargin = SizeUtils.Dp2Px(mContext, 107);
+            contentLp.topMargin = SizeUtils.Dp2Px(mContext, 112);
             rlSpeechResultContent.setLayoutParams(contentLp);
-            RelativeLayout.LayoutParams scoreLp = (RelativeLayout.LayoutParams) tvSpeechResultScore.getLayoutParams();
-            scoreLp.topMargin = SizeUtils.Dp2Px(mContext, 15);
-            tvSpeechResultScore.setLayoutParams(scoreLp);
         } else {
             //多人的
             ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;

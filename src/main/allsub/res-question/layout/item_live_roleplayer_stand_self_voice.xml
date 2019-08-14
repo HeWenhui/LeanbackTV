@@ -23,7 +23,6 @@
 
 
             <RelativeLayout
-                android:layout_marginTop="-8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_live_roleplayer_message_counttime"
@@ -73,11 +72,12 @@
 
 
         <LinearLayout
+            android:layout_marginTop="13dp"
             android:id="@id/rl_live_roleplayer_message_voice_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginRight="70dp"
+            android:layout_marginRight="77dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/selector_live_stand_roleplayer_self_item_bubble"
             android:clickable="true"
@@ -107,11 +107,10 @@
                 android:id="@id/iv_live_roleplayer_message_voice_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/bg_chat_voice_to_playing_img" />
+                android:background="@drawable/animlst_livevideo_roleplayer_self_voice_white_anim" />
 
         </LinearLayout>
 

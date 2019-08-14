@@ -20,7 +20,6 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:layout_marginTop="-8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -56,10 +55,11 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="13dp"
             android:id="@id/rl_live_roleplayer_message_voice_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
+            android:layout_marginLeft="77dp"
             android:background="@drawable/selector_live_roleplayer_other_item_bubble"
             android:minHeight="32dp"
             android:minWidth="120dp"
@@ -100,7 +100,7 @@
             android:layout_width="65dp"
             android:layout_height="70dp"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="-10dp"
+            android:layout_marginTop="3dp"
             android:layout_toEndOf="@+id/rl_live_roleplayer_message_voice_main"
             android:layout_toRightOf="@+id/rl_live_roleplayer_message_voice_main">
 

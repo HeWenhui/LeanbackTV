@@ -26,7 +26,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="110dp"
+            android:layout_marginTop="105dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -209,26 +209,28 @@
             android:layout_width="118dp"
             android:layout_height="39dp"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="-2dp"
             android:src="@drawable/selector_livevideo_betterme_completetarget_great" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="-4dp"
             android:orientation="horizontal">
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@+id/tv_livevideo_betterme_completetarget_countdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="10s "
-                android:textColor="#ffff7a1d"
+                android:textColor="#ff8c8080"
                 android:textSize="10dp" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="后关闭"
                 android:textColor="#ff8c8080"
                 android:textSize="10dp" />

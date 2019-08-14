@@ -19,10 +19,10 @@
         android:layout_width="564dp"
         android:layout_height="375dp"
         android:layout_gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
         android:gravity="center_horizontal"
-        android:paddingTop="40dp">
+        android:orientation="vertical"
+        android:paddingTop="40dp"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="162dp"
@@ -33,7 +33,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="42dp"
+            android:layout_marginTop="37dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -63,18 +63,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="23dp"
-                    tools:text="开口时长"
                     android:textColor="#ff756565"
-                    android:textSize="11dp" />
+                    android:textSize="11dp"
+                    tools:text="开口时长" />
 
                 <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:id="@+id/tv_livevideo_betterme_receivetarget_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    tools:text="00:58"
                     android:textColor="#fffe6600"
-                    android:textSize="19dp" />
+                    android:textSize="19dp"
+                    tools:text="00:58" />
             </LinearLayout>
 
             <LinearLayout
@@ -85,10 +85,10 @@
                 android:orientation="vertical">
 
                 <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@+id/tv_livevideo_betterme_receivetarget_level_up"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:id="@+id/tv_livevideo_betterme_receivetarget_level_up"
                     android:drawableRight="@drawable/app_xiaomubiao_shellwindow_benchangxiaomubiao_icon_nor"
                     android:drawablePadding="6dp"
                     android:text="段位升级"
@@ -116,9 +116,9 @@
                             android:id="@+id/tv_livevideo_betterme_receivetarget_current_level"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="倔强青铜2级"
                             android:textColor="#ff756565"
-                            android:textSize="11dp" />
+                            android:textSize="11dp"
+                            tools:text="倔强青铜2级" />
 
                         <ImageView
                             android:id="@+id/iv_livevideo_betterme_receivetarget_current_level"
@@ -148,9 +148,9 @@
                             android:id="@+id/tv_livevideo_betterme_receivetarget_next_level"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="倔强青铜3级"
                             android:textColor="#ff8c8080"
-                            android:textSize="11dp" />
+                            android:textSize="11dp"
+                            tools:text="倔强青铜3级" />
 
                         <ImageView
                             android:id="@+id/iv_livevideo_betterme_receivetarget_next_level"
@@ -167,9 +167,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-4dp"
-                    tools:text="还需完成3场目标可升级"
                     android:textColor="#ff756565"
-                    android:textSize="11dp" />
+                    android:textSize="11dp"
+                    tools:text="还需完成3场目标可升级" />
 
             </LinearLayout>
 
@@ -179,28 +179,30 @@
         <ImageView
             android:id="@+id/iv_livevideo_betterme_receivetarget_ready"
             android:layout_width="118dp"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="-2dp"
             android:src="@drawable/selector_livevideo_betterme_receivetarget_ready" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="-6dp"
             android:orientation="horizontal">
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@+id/tv_livevideo_betterme_receivetarget_countdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="10s "
-                android:textColor="#ffff7a1d"
+                android:textColor="#ff8c8080"
                 android:textSize="10dp" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="后关闭"
                 android:textColor="#ff8c8080"
                 android:textSize="10dp" />
