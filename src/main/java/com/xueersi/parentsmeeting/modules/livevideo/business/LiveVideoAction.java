@@ -60,8 +60,8 @@ public class LiveVideoAction implements VideoAction {
     protected ImageView ivTeacherNotpresent;
     /** 老师不在直播间背景图 */
     protected Drawable dwTeacherNotpresen;
-    PlayErrorCode lastPlayErrorCode;
-    RelativeLayout mContentView;
+    protected PlayErrorCode lastPlayErrorCode;
+    protected RelativeLayout mContentView;
     protected TextView tvLoadingHint;
     /** 缓冲提示 */
     private ImageView ivLoading;
