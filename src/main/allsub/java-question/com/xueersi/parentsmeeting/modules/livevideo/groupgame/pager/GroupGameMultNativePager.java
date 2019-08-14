@@ -390,7 +390,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     public int getNextPageNum(int pageNum,Boolean isDelay) {
         ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
-        List<Integer> lists = new ArrayList<Integer>();
+        final List<Integer> lists = new ArrayList<Integer>();
         for (int i = 0; i < entities.size(); i++) {
             TeamMemberEntity teamMemberEntity = entities.get(i);
             lists.add(teamMemberEntity.id);
@@ -404,7 +404,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             }
         }
 
-        int nextNum = gameOrderList.get(pageNum % gameOrderList.size());
+        final int nextNum = gameOrderList.get(pageNum % gameOrderList.size());
         final CourseGroupMyItem courseGroupItem = (CourseGroupMyItem) courseGroupItemHashMap.get("" + stuid);
         if (lists.get(nextNum - 1) == stuid) {
             if(isDelay){
@@ -413,11 +413,25 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     public void run() {
                         startSpeechRecognize();
                         courseGroupItem.muteLocalAudio(false);
+                        Set<String> itemKeySet = courseGroupItemHashMap.keySet();
+                        for (String userId : itemKeySet) {
+                            BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
+                            if (!userId.equals("" + stuid)) {
+                                baseCourseGroupItem.updateAudioView(false);
+                            }
+                        }
                     }
                 }, 3 * 1000);
             }else {
                 startSpeechRecognize();
                 courseGroupItem.muteLocalAudio(false);
+                Set<String> itemKeySet = courseGroupItemHashMap.keySet();
+                for (String userId : itemKeySet) {
+                    BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
+                    if (!userId.equals("" + stuid)) {
+                        baseCourseGroupItem.updateAudioView(false);
+                    }
+                }
             }
             logger.d("uploadScore :"+stuid+" --自己 = " +nextNum +"--"+speechContent);
             return 3;
@@ -430,10 +444,32 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     @Override
                     public void run() {
                         courseGroupItem.muteLocalAudio(true);
+                        Set<String> itemKeySet = courseGroupItemHashMap.keySet();
+                        for (String userId : itemKeySet) {
+                            BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
+                            if (!userId.equals("" + stuid)) {
+                                if (TextUtils.equals(String.valueOf(lists.get(nextNum - 1)),userId)) {
+                                    baseCourseGroupItem.updateAudioView(true);
+                                }else {
+                                    baseCourseGroupItem.updateAudioView(false);
+                                }
+                            }
+                        }
                     }
                 }, 3 * 1000);
             }else {
                 courseGroupItem.muteLocalAudio(true);
+                Set<String> itemKeySet = courseGroupItemHashMap.keySet();
+                for (String userId : itemKeySet) {
+                    BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
+                    if (!userId.equals("" + stuid)) {
+                        if (TextUtils.equals(String.valueOf(lists.get(nextNum - 1)),userId)) {
+                            baseCourseGroupItem.updateAudioView(true);
+                        }else {
+                            baseCourseGroupItem.updateAudioView(false);
+                        }
+                    }
+                }
             }
             logger.d("uploadScore :"+stuid+" --别人 = " +nextNum +"--"+speechContent);
             if(entities.size()<3){

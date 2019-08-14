@@ -329,7 +329,15 @@ public class GroupGameTcp {
                         sendMessageHandler.postDelayed(pingRunnable, heartTime);
                     }
                 } else if (type == TcpConstants.REPLAY_TYPE) {
-                    if (operation == TcpConstants.HEAD_OPERATION_REC || operation == TcpConstants.REPLAY_REC) {
+                    if (operation == TcpConstants.REPLAY_REC) {
+                        mainHandler.removeCallbacks(pingTimeOut);
+                        mainHandler.removeCallbacks(pingRunnable);
+                        pingTimeOut.seq = seq;
+                        pingTimeOut.operation = operation;
+                        mainHandler.postDelayed(pingRunnable, heartTime);
+                    }
+                }else if (type == TcpConstants.HEAD_TYPE){
+                    if (operation == TcpConstants.HEAD_OPERATION_REC ) {
                         mainHandler.removeCallbacks(pingTimeOut);
                         mainHandler.removeCallbacks(pingRunnable);
                         pingTimeOut.seq = seq;

@@ -81,11 +81,11 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             }
         });
         if (entities.size() == 1) {
-            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_one/";
+            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_one_v2/";
         } else if (entities.size() == 2) {
-            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_two/";
+            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_two_v2/";
         } else if (entities.size() == 3) {
-            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_three/";
+            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_three_v2/";
         }
         for (int i = 0; i < entities.size(); i++) {
             TeamMemberEntity entity = entities.get(i);

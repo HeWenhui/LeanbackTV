@@ -112,6 +112,16 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
         tvCourseItemFire.setText("" + entity.getEnergy());
     }
 
+
+    public void updateAudioView(Boolean enable){
+        if (enable) {
+            ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
+        }else {
+            ivCourseItemAudio.setImageResource(AUDIO_RES[0]);
+        }
+        ivCourseItemAudio.setEnabled(enable);
+    }
+
     public void onVolumeUpdate(int volume) {
 
     }

@@ -960,6 +960,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         private double coursewareEndAnimationTime = 0;
 
         HotAirBallonAction() {
+        }
+
+        private void initGameTime(){
             //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1.5秒再开始倒计时和收音
             if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
                 coursewareStartAnimationTime = mAnswersList.size() + 1;
@@ -1017,6 +1020,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void onLoadComplete() {
+                initGameTime();
             try {
                 JSONObject resultData = new JSONObject();
                 resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
