@@ -216,6 +216,7 @@ public class NewCourseCache {
     private int reload = 0;
 
     public void reload() {
+        urlindex = 0;
         reload++;
     }
 
