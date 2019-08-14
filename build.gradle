@@ -29,7 +29,8 @@ def static getSecSource(Object set) {
     set.java.srcDirs += ['src/main/secience/java-teacher_praise']
 //  set.java.srcDirs += ['src/main/secience/java-teacher_praise_old']
     set.res.srcDirs += ['src/main/secience/res-teacher_praise']
-    set.assets.srcDirs += ['src/main/secience/assets']
+    //通过下载
+//    set.assets.srcDirs += ['src/main/secience/assets']
     //小班体验
 //    set.java.srcDirs += ['src/main/secience/java-primary_class_old']
     set.java.srcDirs += ['src/main/secience/java-primary_class']
@@ -61,7 +62,7 @@ def static getEngSource(Object set) {
     set.res.srcDirs += ['src/main/res-en_teampk']
     set.java.srcDirs += ['src/main/java-achievement']
     set.res.srcDirs += ['src/main/english/res-achievement']
-    set.assets.srcDirs += ['src/main/english/assets']
+//    set.assets.srcDirs += ['src/main/english/assets']
     //全身
     set.java.srcDirs += ['src/main/english/java-stand']
     set.res.srcDirs += ['src/main/english/res-stand']

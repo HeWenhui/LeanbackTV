@@ -1338,6 +1338,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             @Override
             public void onClick(View view) {
                 addJs = false;
+                newCourseCache.reload();
                 wvSubjectWeb.reload();
             }
         });

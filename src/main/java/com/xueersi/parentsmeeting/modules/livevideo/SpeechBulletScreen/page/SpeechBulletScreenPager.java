@@ -44,6 +44,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -251,7 +252,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
             }
         }, 100);
         if (mSpeechEvaluatorUtils == null) {
-            mSpeechEvaluatorUtils = SpeechUtils.getInstance(mBaseApplication);
+            mSpeechEvaluatorUtils = SpeechUtils.getInstance(ContextManager.getContext());
             mSpeechEvaluatorUtils.prepar();
         }
 //        if (mSpeechUtils == null) {
