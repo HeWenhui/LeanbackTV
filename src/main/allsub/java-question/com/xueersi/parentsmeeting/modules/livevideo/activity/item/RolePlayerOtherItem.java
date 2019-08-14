@@ -248,6 +248,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
         super.updateViews(entity, position, objTag);
         mPosition = position;
         updateUserHeadImage(civUserHead, entity.getRolePlayer().getHeadImg()); // 绑定用户头像
+        civUserHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 0));
 
         int segmentType = (entity.getRolePlayer().getSegment_type());
         int star = entity.getRolePlayer().getStar();

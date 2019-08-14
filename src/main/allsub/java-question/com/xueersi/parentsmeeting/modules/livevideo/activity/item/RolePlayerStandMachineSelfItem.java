@@ -265,8 +265,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
             imgUrl = LiveAppUserInfo.getInstance().getHeadImg();
         }
         updateUserHeadImage(civUserHead, imgUrl);
-        civUserHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 0));
-        civUserHead.setBorderColor(Color.WHITE);
+        civUserHead.setBorderColor(Color.parseColor("#00000000"));
 
         if (ProxUtil.getProxUtil().get(mContext, BetterMeContract.BetterMePresenter.class) != null) {
             StuSegmentEntity stuSegmentEntity = ProxUtil.getProxUtil().get(mContext, BetterMeContract
@@ -309,7 +308,6 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 }
                 tvCountTime.setText(entity.getMaxReadTime() + "");
 
-                civUserHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
                 civUserHead.setFinishBorderColor(Color.parseColor("#C8E7D4"));
                 civUserHead.setUnFinishBorderColor(Color.parseColor("#F2658D"));
                 civUserHead.startCountDown(entity.getMaxReadTime() * 1000, entity.getEndReadTime() * 1000, new
@@ -318,7 +316,6 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                             public void countTime(long time) {
                                 tvCountTime.setText(time + "");
                                 if (time <= 3) {
-
                                     tvCountTime.setVisibility(View.VISIBLE);
                                 }
                                 //logger.i( mPosition + " / " + time);
