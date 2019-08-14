@@ -3,8 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
@@ -18,10 +16,12 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
@@ -2050,6 +2050,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
         info.setIsGroupGameCourseWare(data.optInt("isGroupGameCourseWare", -1));
         info.setSummerCourseWareSize(data.optString("summerCourseWareSize"));
+        info.setBolockChinese(data.optInt("blockChinese", 2));
         UmsAgentTrayPreference.getInstance().put(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, info.getSummerCourseWareSize());
         return info;
     }

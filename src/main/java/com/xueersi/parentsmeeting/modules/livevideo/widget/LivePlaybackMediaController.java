@@ -304,7 +304,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                     textView.setText("语音答题");
                     break;
                 case "30":
-                    textView.setText("智能测评");
+                    textView.setText("智能语音");
                     break;
                 default:
                     textView.setText("互动课件");

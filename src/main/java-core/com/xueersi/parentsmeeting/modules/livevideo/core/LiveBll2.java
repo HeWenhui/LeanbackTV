@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 
 import com.xueersi.common.base.BaseBll;
@@ -509,9 +508,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
-            mIRCMessage = new NewIRCMessage(mBaseActivity,  nickname, mGetInfo.getId(),mGetInfo.getStudentLiveInfo().getClassId(), channel);
+            mIRCMessage = new NewIRCMessage(mBaseActivity, nickname, mGetInfo.getId(), mGetInfo.getStudentLiveInfo().getClassId(), channel);
         } else {
-            mIRCMessage = new NewIRCMessage(mBaseActivity,  nickname, mGetInfo.getId(),mGetInfo.getStudentLiveInfo().getClassId(), channel, eChannel);
+            mIRCMessage = new NewIRCMessage(mBaseActivity, nickname, mGetInfo.getId(), mGetInfo.getStudentLiveInfo().getClassId(), channel, eChannel);
         }
         //mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, (TextUtils.isEmpty(eChannel)|| LiveTopic.MODE_CLASS.equals(getMode()))?channel:channel,eChannel);
         if (mGetInfo != null && mGetInfo.ePlanInfo != null) {
@@ -540,6 +539,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
+                    mGetInfo.setBlockChinese(info.getBolockChinese() == 1);
                     mGetInfo.setArtsExtLiveInfo(info);
                     List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
                     for (LiveBaseBll businessBll : businessBllTemps) {
