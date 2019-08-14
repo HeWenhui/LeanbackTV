@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.OnPointClick;
 
 import org.json.JSONObject;
 
@@ -54,7 +55,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by linyuqiang on 2018/7/17.
  */
-public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick {
+public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointClick {
     protected String TAG = "LiveBackBll";
     protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
     protected Activity activity;

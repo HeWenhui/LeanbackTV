@@ -48,7 +48,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             }else{
                 // TODO: 2019/8/8 大班整合测试代码
                 try {
-                    String fname = "com.xueersi.parentsmeeting.modules.livebusiness.core.LiveBusinessBackFragment";
+                    String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessBackFragment";
                     LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
                     return fragmentBase;
                 } catch (Exception e) {
