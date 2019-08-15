@@ -183,13 +183,13 @@ public class LiveQueConfig {
     public static boolean isGroupGame(String type) {
         if (EN_COURSE_TYPE_VOICE_CANNON.equals(type) || EN_COURSE_TYPE_CLEANING_UP.equals(type)
                 || EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type) || EN_COURSE_TYPE_WHAT_IS_MISSING.equals(type)
-                ||EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(type)|| EN_COURSE_TYPE_SOLITAIRE.equals(type)|| EN_COURSE_TYPE_GET_IT.equals(type)) {
+                ||EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(type)|| EN_COURSE_TYPE_SOLITAIRE.equals(type)) {
             return true;
         }
         return false;
     }
     public static boolean isTypeOfCannon(String type) {
-        if (EN_COURSE_TYPE_VOICE_CANNON.equals(type) || EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type) || EN_COURSE_TYPE_WHAT_IS_MISSING.equals(type) || EN_COURSE_TYPE_SOLITAIRE.equals(type)|| EN_COURSE_TYPE_GET_IT.equals(type)) {
+        if (EN_COURSE_TYPE_VOICE_CANNON.equals(type) || EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type) || EN_COURSE_TYPE_WHAT_IS_MISSING.equals(type) || EN_COURSE_TYPE_SOLITAIRE.equals(type)) {
             return true;
         }
         return false;
