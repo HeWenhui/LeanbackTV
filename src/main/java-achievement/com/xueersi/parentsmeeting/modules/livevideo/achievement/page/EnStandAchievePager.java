@@ -198,7 +198,7 @@ public class EnStandAchievePager extends LiveBasePager {
         } else {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
             LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
-            layoutParams.leftMargin =   videoPoint.screenWidth - videoPoint.x4+SizeUtils.Dp2Px(activity,10);
+            //layoutParams.leftMargin =   videoPoint.screenWidth - videoPoint.x4+SizeUtils.Dp2Px(activity,10);
 
             layoutParams.topMargin = SizeUtils.Dp2Px(activity,8);
             layoutParams.width = SizeUtils.Dp2Px(activity,177);
@@ -408,22 +408,12 @@ public class EnStandAchievePager extends LiveBasePager {
         };
 
         lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
-        int desinWidth = SizeUtils.Dp2Px(mContext,135);
-        int desinHeight = SizeUtils.Dp2Px(mContext,50);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(desinWidth,desinHeight);
-        lp.topMargin = SizeUtils.Dp2Px(mContext,45);
-        RelativeLayout.LayoutParams anchorLayoutPrams = (RelativeLayout.LayoutParams)cbAchiveTitle.getLayoutParams();
-        if (ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)){
-            int offSetX = rlAchieveContent.getPaddingRight()+(cbAchiveTitle.getMeasuredWidth() - desinWidth)/2;
-            offSetX += anchorLayoutPrams!= null?anchorLayoutPrams.rightMargin:0;
-            lp.rightMargin = offSetX;
-            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        } else {
-            int offSetX = rlAchieveContent.getPaddingLeft()+ (cbAchiveTitle.getMeasuredWidth() - desinWidth)/2;
-            offSetX += anchorLayoutPrams!= null?anchorLayoutPrams.leftMargin:0;
-            lp.leftMargin = offSetX;
-        }
-        rlAchieveContent.addView(lottieAnimationView, lp);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        lp.topMargin = cbAchiveTitle.getHeight() * 144 / 189;
+        final ViewGroup viewGroup = (ViewGroup) rlAchieveContent;
+        viewGroup.addView(lottieAnimationView, lp);
         lottieAnimationView.playAnimation();
         lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
             long before;
@@ -435,7 +425,7 @@ public class EnStandAchievePager extends LiveBasePager {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                rlAchieveContent.removeView(lottieAnimationView);
+                viewGroup.removeView(lottieAnimationView);
                 mLogtf.d("onGetStar:onAnimationEnd=" + (System.currentTimeMillis() - before));
             }
 
