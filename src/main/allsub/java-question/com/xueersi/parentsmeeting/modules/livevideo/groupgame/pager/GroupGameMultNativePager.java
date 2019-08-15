@@ -737,7 +737,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         resultData.put("pageNum", pageNum);
                         if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
                                 .equals(detailInfo.type)){
-                            resultData.put("nextStudentNum", getNextPageNum(0,false));
+                            resultData.put("nextStudentNum", getNextPageNum(pageNum,false));
                             JSONArray answerInfoData = new JSONArray();
                             for (int i = 0; i < answerInfo.size(); i++) {
                                 answerInfoData.put(answerInfo.get(i));
