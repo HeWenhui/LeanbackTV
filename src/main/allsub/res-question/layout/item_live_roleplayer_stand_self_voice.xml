@@ -37,8 +37,8 @@
                     />
                 <com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView
                     android:id="@id/civ_live_roleplayer_message_user_head"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
                     android:layout_centerInParent="true"
                     android:focusable="false"
                     android:src="@drawable/ic_default_head_square"
