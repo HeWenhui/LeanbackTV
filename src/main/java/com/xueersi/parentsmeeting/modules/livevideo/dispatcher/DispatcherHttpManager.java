@@ -35,6 +35,7 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("isGetPlanInfo", "" + isGetPlanInfo);
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+        params.setWriteAndreadTimeOut(20);
         sendPost(ShareBusinessConfig.URL_STUDY_GET_LIVE_COURSE_TEST_INFO_FOR_PLAYBACK, params, requestCallBack);
     }
 
