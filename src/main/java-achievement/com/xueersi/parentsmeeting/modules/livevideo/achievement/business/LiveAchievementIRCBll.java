@@ -200,6 +200,15 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             }
                         }
                     });
+                    long interval = sTime * 1000 - System.currentTimeMillis();
+                    boolean allow = true;
+                    if (!LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) ||
+                            interval <= 60 * 1000) {
+                        allow = false;
+                    }
+                    if (allow) {
+                        speakerRecognitioner.check();
+                    }
                     startAchievement();
                 }
             } else {

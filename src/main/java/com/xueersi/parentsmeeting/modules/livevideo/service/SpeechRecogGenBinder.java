@@ -53,7 +53,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     private boolean isStart = false;
     private int index = 0;
     private boolean destory = false;
-    private boolean enroll = false;
+    private int enroll = 0;
     private Context context;
     //    private SpeakerPredict speakerPredict;
     private SpeakerRecognitionerInterface speakerRecognitionerInterface;
@@ -113,10 +113,10 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     }
 
     private void enrollIvector() {
-        if (enroll) {
+        enroll++;
+        if (enroll != 2) {
             return;
         }
-        enroll = true;
         pingPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -177,7 +177,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     public void check(ISpeechRecognitnCall iSpeechRecognitnCall) {
         this.iSpeechRecognitnCall = iSpeechRecognitnCall;
         logger.d("check:loadSo=" + loadSo);
-        enroll = false;
+        enroll = 0;
         checkResoure();
     }
 
