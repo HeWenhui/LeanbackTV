@@ -231,7 +231,7 @@ public class TeamPkLeadPager extends LiveBasePager {
 //            });
 //        }
         showRank();
-        final TextView tv_livevideo_en_teampk_rank_start_close = rlTeampkLeadBottom.findViewById(R.id.tv_livevideo_en_teampk_rank_start_close);
+        final TextView tv_livevideo_en_teampk_rank_start_close = mView.findViewById(R.id.tv_livevideo_en_teampk_rank_start_close);
         final AtomicInteger integer = new AtomicInteger(closeDelay / 1000);
         int countDelay = 1000;
         if (type == TEAM_TYPE_2 && win >= 0) {

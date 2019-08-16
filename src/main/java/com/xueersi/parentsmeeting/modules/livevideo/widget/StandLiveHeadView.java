@@ -50,7 +50,7 @@ public class StandLiveHeadView extends LottieAnimationView {
 
     public StandLiveHeadView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        logToFile = new LogToFile(context,TAG);
+        logToFile = new LogToFile(context, TAG);
     }
 
     public LiveMessageEntity getEntity() {
@@ -78,7 +78,7 @@ public class StandLiveHeadView extends LottieAnimationView {
     public void setComposition(@NonNull LottieComposition composition) {
         super.setComposition(composition);
         if (entity == null) {
-           return;
+            return;
         }
         if (isSystem) {
             updateHeadSys();
@@ -101,7 +101,8 @@ public class StandLiveHeadView extends LottieAnimationView {
             updateHead(headBitmap);
         }
         final String headUrl = entity.getHeadUrl();
-        ImageLoader.with(ContextManager.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+        ImageLoader.with(ContextManager.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig
+                .BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
                 if (("" + headUrl).equals(entity.getHeadUrl())) {
@@ -116,7 +117,7 @@ public class StandLiveHeadView extends LottieAnimationView {
 
             @Override
             public void onFail() {
-                logger.e( "onFail");
+                logger.e("onFail");
             }
         });
     }
@@ -174,17 +175,22 @@ public class StandLiveHeadView extends LottieAnimationView {
     /**
      * 更新段位徽章
      */
-    private void updateSegment(){
+    private void updateSegment() {
         Bitmap bitmap;
         try {
             ImageView imageView = new ImageView(getContext());
-            BetterMeUtil.addSegment(imageView, entity.getSegmentType(), entity.getStar());
+            if (isSystem) {
+                imageView.setImageResource(R.drawable.app_livevideo_enteampk_system_img_nor);
+            } else {
+                BetterMeUtil.addSegment(imageView, entity.getSegmentType(), entity.getStar());
+            }
             Bitmap segmentBitmap = BitmapFactory.decodeStream(AssertUtil.open
                     ("live_stand/head_segment/images/img_1.png"));
             bitmap = Bitmap.createBitmap(segmentBitmap.getWidth(), segmentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(segmentBitmap.getWidth(), View.MeasureSpec.EXACTLY);
-            int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(segmentBitmap.getHeight(), View.MeasureSpec.EXACTLY);
+            int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(segmentBitmap.getHeight(), View.MeasureSpec
+                    .EXACTLY);
             imageView.measure(widthMeasureSpec, heightMeasureSpec);
             imageView.layout(0, 0, segmentBitmap.getWidth(), segmentBitmap.getHeight());
             imageView.draw(canvas);
