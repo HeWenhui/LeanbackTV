@@ -769,7 +769,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     post(new Runnable() {
                         @Override
                         public void run() {
-                            if (relativeLayout.getVisibility() == View.VISIBLE) {
+                            if (relativeLayout != null && relativeLayout.getVisibility() == View.VISIBLE) {
                                 relativeLayout.startAnimation(mAnimSlideOut);
                             }
                         }

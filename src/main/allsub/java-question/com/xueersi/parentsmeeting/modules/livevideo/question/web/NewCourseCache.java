@@ -59,6 +59,7 @@ public class NewCourseCache {
     /** 初高中连对，取本地图片 */
     private String zhongXueKeJian = "ZhongXueKeJian";
     OnHttpCode onHttpCode;
+    private String courseUrl;
     private ArrayList<InterceptRequest> interceptRequests = new ArrayList<>();
     private String liveId;
     private String testid;
@@ -166,6 +167,7 @@ public class NewCourseCache {
     }
 
     public WebResourceResponse interceptIndexRequest(WebView view, String url) {
+        courseUrl = url;
         File file = getCourseWareFile(url);
         InputStream inputStream = null;
         if (file != null) {
@@ -210,7 +212,13 @@ public class NewCourseCache {
         return file;
     }
 
-    int urlindex = 0;
+    private int urlindex = 0;
+    private int reload = 0;
+
+    public void reload() {
+        urlindex = 0;
+        reload++;
+    }
 
     public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
         File file = null;
@@ -252,8 +260,10 @@ public class NewCourseCache {
         if (file.exists()) {
             try {
                 StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequest");
+                stableLogHashMap.put("courseurl", "" + courseUrl);
                 stableLogHashMap.put("url", s);
                 stableLogHashMap.put("urlindex", "" + (urlindex++));
+                stableLogHashMap.put("reload", "" + reload);
                 stableLogHashMap.put("liveId", liveId);
                 stableLogHashMap.put("testid", testid);
                 stableLogHashMap.put("ispreload", "true");
@@ -281,8 +291,10 @@ public class NewCourseCache {
         } else {
             try {
                 StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequest");
+                stableLogHashMap.put("courseurl", "" + courseUrl);
                 stableLogHashMap.put("url", s);
                 stableLogHashMap.put("urlindex", "" + (urlindex++));
+                stableLogHashMap.put("reload", "" + reload);
                 stableLogHashMap.put("liveId", liveId);
                 stableLogHashMap.put("testid", testid);
                 stableLogHashMap.put("ispreload", "false");

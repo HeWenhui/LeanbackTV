@@ -443,6 +443,7 @@ public class EnStandAchievePager extends LiveBasePager {
         } else {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
             LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+            //layoutParams.leftMargin =   videoPoint.screenWidth - videoPoint.x4+SizeUtils.Dp2Px(activity,10);
 
             layoutParams.topMargin = SizeUtils.Dp2Px(activity,8);
             layoutParams.width = SizeUtils.Dp2Px(activity,177);

@@ -46,7 +46,7 @@ public class LogConfig {
     /** 直播IRC的onMessage */
     public static String LIVE_IRC_ONMESSAGE = "live_irc_message";
     /** 新课件缓存 */
-    public static String LIVE_NEWCOURSE_CACHE = "live_newcourse_cache";
+    public static String LIVE_NEWCOURSE_CACHE = "live_newcourse_cache_v2";
     /** 直播声网上传 */
     public static String LIVE_AGORA_UPLOAD = "live_agora_upload";
     /** 直播业务加载时间 */
