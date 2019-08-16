@@ -1475,6 +1475,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     @Override
     protected void onProgressChanged(WebView view, int newProgress) {
+        newCourseCache.onProgressChanged(newProgress);
         preLoad.onProgressChanged(view, newProgress);
     }
 
