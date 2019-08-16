@@ -380,7 +380,7 @@ public class EnStandAchievePager extends LiveBasePager {
         } else {
             target = "目标" + target;
         }
-        message.append("当前").append(current);
+        message.append(current);
         if (isIncrease || isDecrease) {
             showBetterMeBubble(message.toString(), target, isIncrease, isDecrease);
         }
