@@ -12,12 +12,14 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
@@ -29,6 +31,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.ui.dataload.DataLoadEntity;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.InetAddress;
 import java.util.HashMap;
@@ -52,20 +56,22 @@ public class DispatcherBll extends BaseBll {
 
 
     public void deductStuGold(final VideoSectionEntity sectionEntity, final String stuCouId) {
-        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
+        final DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
         dispatcherHttpManager.deductStuGold(myUserInfoEntity.getEnstuId(), stuCouId, sectionEntity.getvCoursseID(),
-                sectionEntity.getvSectionID(), 0, new HttpCallBack(dataLoadEntity) {
+                sectionEntity.getvSectionID(), 0, new HttpCallBack() {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         VideoResultEntity entity = dispatcherHttpResponseParser
                                 .deductStuGoldParser(sectionEntity.getvSectionID(), stuCouId, responseEntity);
                         if (entity != null && entity.getIsArts() == 1) {
-                            artscoursewarenewpoint(sectionEntity, stuCouId, entity);
+                            artscoursewarenewpoint(sectionEntity, stuCouId, entity, dataLoadEntity);
                         } else {
+                            EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity
+                                    .webDataSuccess()));
                             intentToPlayBack(sectionEntity, entity);
                         }
                     }
@@ -73,20 +79,24 @@ public class DispatcherBll extends BaseBll {
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         logger.i("onPmFailure");
+                        EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataError
+                                (ContextManager
+                                        .getContext().getResources().getString(com.xueersi.parentsmeeting.base.R.string.net_request_error))));
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         logger.i("onPmError");
+                        EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataError
+                                (responseEntity.getErrorMsg())));
                     }
                 });
     }
 
 
-    public void artscoursewarenewpoint(final VideoSectionEntity sectionEntity, final String stuCouId, final VideoResultEntity entitys) {
-        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
-        postDataLoadEvent(dataLoadEntity.beginLoading());
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+    public void artscoursewarenewpoint(final VideoSectionEntity sectionEntity, final String stuCouId, final VideoResultEntity entitys, DataLoadEntity dataLoadEntity) {
+//        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
+//        postDataLoadEvent(dataLoadEntity.beginLoading());
         // 网络加载数据
         dispatcherHttpManager.artscoursewarenewpoint(sectionEntity.getvSectionID(), new HttpCallBack(dataLoadEntity) {
 
