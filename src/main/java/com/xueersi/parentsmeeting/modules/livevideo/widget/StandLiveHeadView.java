@@ -130,7 +130,7 @@ public class StandLiveHeadView extends LottieAnimationView {
         Bitmap bitmap;
         try {
             NoPaddingTextview textView = new NoPaddingTextview(getContext());
-            Bitmap nameBitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/head_segment/images/img_2.png"));
+            Bitmap nameBitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/img_2.png"));
             bitmap = Bitmap.createBitmap(nameBitmap.getWidth(), nameBitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             textView.setGravity(Gravity.CENTER_VERTICAL);
@@ -163,7 +163,7 @@ public class StandLiveHeadView extends LottieAnimationView {
     private void updateHead(Bitmap headBitmap) {
         try {
             Bitmap priviousHeadBitmap = BitmapFactory.decodeStream(AssertUtil.open
-                    ("live_stand/head_segment/images/img_0.png"));
+                    ("live_stand/chat_head/images/img_0.png"));
             headBitmap = Bitmap.createScaledBitmap(headBitmap, priviousHeadBitmap.getWidth(), priviousHeadBitmap
                     .getHeight(), true);
         } catch (IOException e) {
@@ -185,7 +185,7 @@ public class StandLiveHeadView extends LottieAnimationView {
                 BetterMeUtil.addSegment(imageView, entity.getSegmentType(), entity.getStar());
             }
             Bitmap segmentBitmap = BitmapFactory.decodeStream(AssertUtil.open
-                    ("live_stand/head_segment/images/img_1.png"));
+                    ("live_stand/chat_head/images/img_1.png"));
             bitmap = Bitmap.createBitmap(segmentBitmap.getWidth(), segmentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(segmentBitmap.getWidth(), View.MeasureSpec.EXACTLY);
@@ -208,31 +208,31 @@ public class StandLiveHeadView extends LottieAnimationView {
         try {
             switch (entity.getSegmentType()) {
                 case 1:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/head_segment/images/tail_qingtong" +
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_qingtong" +
                             ".png"));
                     break;
                 case 2:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/head_segment/images/tail_baiyin" +
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_baiyin" +
                             ".png"));
                     break;
                 case 3:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/head_segment/images/tail_huangjin" +
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_huangjin" +
                             ".png"));
                     break;
                 case 4:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/head_segment/images/tail_baijin" +
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_baijin" +
                             ".png"));
                     break;
                 case 5:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/head_segment/images/tail_zuanshi" +
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_zuanshi" +
                             ".png"));
                     break;
                 case 6:
                     bitmap = BitmapFactory.decodeStream(AssertUtil.open
-                            ("live_stand/head_segment/images/tail_zuiqiangxueba.png"));
+                            ("live_stand/chat_head/images/tail_zuiqiangxueba.png"));
                     break;
                 default:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/head_segment/images/tail_huangjin" +
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_huangjin" +
                             ".png"));
             }
         } catch (IOException e) {

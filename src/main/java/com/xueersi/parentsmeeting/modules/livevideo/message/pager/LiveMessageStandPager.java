@@ -838,7 +838,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         }
 
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5) {
-            String fileName = "live_stand/head_segment/data.json";
+            String fileName = "live_stand/chat_head/data.json";
 
             @Override
             public Object getItemViewType(LiveMessageEntity liveMessageEntity) {
@@ -1461,7 +1461,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             @Override
             public void run() {
                 final SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
-                                .chatSendContentDeal(text), mContext, messageSize);
+                        .chatSendContentDeal(text), mContext, messageSize);
                 mView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -1527,13 +1527,18 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         super.setVideoLayout(liveVideoPoint);
-        if (liveStandMessageContent == null) {
-            return;
+        if (liveStandMessageContent != null) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) liveStandMessageContent
+                    .getLayoutParams();
+            layoutParams.leftMargin = liveVideoPoint.x2;
+            liveStandMessageContent.setLayoutParams(layoutParams);
         }
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) liveStandMessageContent
-                .getLayoutParams();
-        layoutParams.leftMargin = liveVideoPoint.x2;
-        liveStandMessageContent.setLayoutParams(layoutParams);
+        if (btMesOpen != null) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) btMesOpen
+                    .getLayoutParams();
+            layoutParams.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+            btMesOpen.setLayoutParams(layoutParams);
+        }
     }
 
     /*添加聊天信息，超过120，移除60个*/
@@ -1936,7 +1941,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         public void run() {
                             startEvaluator();
                         }
-                    },300);
+                    }, 300);
                 }
             });
         }

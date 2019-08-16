@@ -87,7 +87,7 @@ public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEnt
                     return;
                 }
                 mComposition = composition;
-                standLiveHeadView.setImageAssetsFolder("live_stand/head_segment/images");
+                standLiveHeadView.setImageAssetsFolder("live_stand/chat/images");
                 standLiveHeadView.setComposition(composition);
             }
         });
