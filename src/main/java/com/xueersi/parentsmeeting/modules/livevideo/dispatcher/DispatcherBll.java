@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveTransferHttpManager;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,11 +47,13 @@ import static com.xueersi.parentsmeeting.modules.livevideo.dispatcher.Dispatcher
 public class DispatcherBll extends BaseBll {
 
     private DispatcherHttpManager dispatcherHttpManager;
+    private LiveTransferHttpManager liveTransferHttpManager;
     private DispatcherHttpResponseParser dispatcherHttpResponseParser;
 
     public DispatcherBll(Context context) {
         super(context);
         dispatcherHttpManager = new DispatcherHttpManager(context);
+        liveTransferHttpManager = new LiveTransferHttpManager(mContext);
         dispatcherHttpResponseParser = new DispatcherHttpResponseParser();
     }
 
@@ -58,9 +61,8 @@ public class DispatcherBll extends BaseBll {
     public void deductStuGold(final VideoSectionEntity sectionEntity, final String stuCouId) {
         final DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        dispatcherHttpManager.deductStuGold(myUserInfoEntity.getEnstuId(), stuCouId, sectionEntity.getvCoursseID(),
+        liveTransferHttpManager.deductStuGold(stuCouId, sectionEntity.getvCoursseID(),
                 sectionEntity.getvSectionID(), 0, new HttpCallBack() {
 
                     @Override
@@ -98,7 +100,7 @@ public class DispatcherBll extends BaseBll {
 //        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
 //        postDataLoadEvent(dataLoadEntity.beginLoading());
         // 网络加载数据
-        dispatcherHttpManager.artscoursewarenewpoint(sectionEntity.getvSectionID(), new HttpCallBack(dataLoadEntity) {
+        liveTransferHttpManager.artscoursewarenewpoint(sectionEntity.getvSectionID(), new HttpCallBack(dataLoadEntity) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -224,7 +226,6 @@ public class DispatcherBll extends BaseBll {
     public void deductStuGolds(final VideoSectionEntity sectionEntity, final String liveId, final String termId) {
         DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
         dispatcherHttpManager.deductStuGolds(liveId, termId,
                 new HttpCallBack(dataLoadEntity) {
