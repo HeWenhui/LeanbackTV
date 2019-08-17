@@ -132,7 +132,7 @@ public class LiveVideoAction implements VideoAction {
         }
     }
 
-    private void switchFlowViewChangeBtn() {
+    protected void switchFlowViewChangeBtn() {
         Drawable drawable = activity.getResources().getDrawable(R.drawable.selector_livevideo_primary_science_retry_btn);
         if (LiveVideoConfig.isSmallChinese) {
             drawable = activity.getResources().getDrawable(R.drawable.selector_livevideo_primary_chs_retry_btn);
