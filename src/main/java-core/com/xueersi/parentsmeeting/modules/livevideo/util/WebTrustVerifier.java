@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.util;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 
 import javax.net.ssl.HostnameVerifier;
@@ -39,7 +39,7 @@ public class WebTrustVerifier {
             HttpsURLConnection.setDefaultHostnameVerifier(hv);
         } catch (Throwable e) {
             e.printStackTrace();
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 

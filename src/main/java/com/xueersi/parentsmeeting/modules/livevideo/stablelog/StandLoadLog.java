@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
@@ -31,7 +32,7 @@ public class StandLoadLog {
             type = 3;
         }
         logHashMap.put("type", "" + type);
-        UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, logHashMap.getData());
+        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), eventId, logHashMap.getData());
     }
 
     public static void zipFileFailSuc(long startTime, File saveFile) {
@@ -39,13 +40,13 @@ public class StandLoadLog {
         logHashMap.put("time", "" + (System.currentTimeMillis() - startTime));
         logHashMap.put("savefilename", "" + saveFile);
         logHashMap.put("savefilelength", "" + saveFile.length());
-        UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, logHashMap.getData());
+        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), eventId, logHashMap.getData());
     }
 
     public static void zipFileFailErr(long startTime, Exception e) {
         StableLogHashMap logHashMap = new StableLogHashMap("zipfileerror");
         logHashMap.put("time", "" + (System.currentTimeMillis() - startTime));
         logHashMap.put("exception", "" + Log.getStackTraceString(e));
-        UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, logHashMap.getData());
+        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), eventId, logHashMap.getData());
     }
 }

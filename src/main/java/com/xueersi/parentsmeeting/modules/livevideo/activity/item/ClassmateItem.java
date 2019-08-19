@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
@@ -52,7 +52,7 @@ public class ClassmateItem implements AdapterItemInterface<ClassmateEntity> {
                         .ic_default_head_square)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
 
-        ImageLoader.with(BaseApplication.getContext()).load(entity.getImg())
+        ImageLoader.with(ContextManager.getContext()).load(entity.getImg())
                 .placeHolder(R.drawable.ic_default_head_square)
                 .error(R.drawable.ic_default_head_square).into(ivClassmateHead);
     }

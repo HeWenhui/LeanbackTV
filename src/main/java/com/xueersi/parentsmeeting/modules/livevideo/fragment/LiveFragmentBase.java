@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
@@ -30,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -44,6 +44,7 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -52,7 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/5/7.
  * 直播的一些公共方法
  */
-public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements VideoAction {
+public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements VideoAction, LivePlayAction {
     private String TAG = "LiveFragmentBase";
     /** 播放器同步 */
     protected static final Object mIjkLock = BasePlayerFragment.mIjkLock;
@@ -92,7 +93,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         liveType = activity.getIntent().getIntExtra("type", 0);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
         boolean init = initData();
         if (!init) {
             onUserBackPressed();
@@ -134,7 +135,43 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         mContentView = (RelativeLayout) super.onCreateView(inflater, container, savedInstanceState);
         initView();
+//        testLayout();
         return mContentView;
+    }
+
+    //遍历所有布局，找到错误的
+    private void testLayout() {
+        mContentView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View view) {
+                RelativeLayout relativeLayout = new RelativeLayout(activity);
+                mContentView.addView(relativeLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                Class clazz = R.layout.class;
+                Field[] fields = clazz.getDeclaredFields();
+                for (int i = 0; i < fields.length; i++) {
+                    Field filed = fields[i];
+                    String name = filed.getName();
+                    try {
+                        int layout = (int) filed.get(null);
+                        boolean attachtoroot = true;
+                        if ("abc_search_view".equals(name)) {
+                            attachtoroot = false;
+                        }
+                        View inflateView = LayoutInflater.from(activity).inflate(layout, relativeLayout, attachtoroot);
+                        logger.d("testLayout:i=" + i + ",name=" + name + ",view=" + inflateView);
+                    } catch (Exception e) {
+                        logger.e("testLayout:i=" + i + ",name=" + name, e);
+                    }
+                }
+                logger.d("testLayout:count=" + relativeLayout.getChildCount());
+                relativeLayout.removeAllViews();
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+
+            }
+        });
     }
 
     @Override
@@ -386,8 +423,6 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     protected abstract boolean initData();
 
-    public abstract void rePlay(boolean modechange);
-
     /**
      * PS重播
      *
@@ -403,9 +438,6 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     public abstract void changeLine(int pos);
 
     public abstract void changeNextLine();
-
-    /** 切换到当前线路，用于接麦 */
-    public abstract void changeNowLine();
 
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
@@ -535,6 +567,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
      * 播放完成时调用
      */
     private void playComplete() {
+        mLogtf.d("playComplete");
         if (liveVideoAction != null) {
             liveVideoAction.playComplete();
         }
@@ -673,17 +706,18 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             userOnline.stop();
         }
         if (mLiveBll != null) {
-            mLiveBll.onDestory();
+            mLiveBll.onDestroy();
         }
-        liveVideoAction.onDestory();
+        liveVideoAction.onDestroy();
         liveVideoAction = null;
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 ProxUtil.getProxUtil().clear(activity);
-                LiveThreadPoolExecutor.destory();
+                //如果跳多个直播，会finish几个。所以不能释放
+//                LiveThreadPoolExecutor.destory();
             }
         });
         LiveVideoConfig.isSmallChinese = false;

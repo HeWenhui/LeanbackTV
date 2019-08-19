@@ -13,7 +13,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceVideoBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import org.json.JSONArray;
@@ -28,33 +30,27 @@ import java.util.ArrayList;
  * 类似的还有{@link StandExperienceVideoBll}
  */
 public class LiveBackVideoBll {
-    Logger logger;
-    Activity activity;
+    private String TAG = "LiveBackVideoBll";
+    private Logger logger = LiveLoggerFactory.getLogger(TAG);
+    private Activity activity;
     /** 视频节对象 */
-    VideoLivePlayBackEntity mVideoEntity;
-    LiveBackPlayerFragment liveBackPlayVideoFragment;
+    private VideoLivePlayBackEntity mVideoEntity;
+    private LiveBackPlayerFragment liveBackPlayVideoFragment;
     /** 节名称 */
     private String mSectionName;
-    static int index = 0;
-    ArrayList<String> mWebPaths = new ArrayList<>();
+    private static int index = 0;
+    private ArrayList<String> mWebPaths = new ArrayList<>();
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
-    String mUri = "";
+    private String mUri = "";
     /** 进度缓存的追加KEY值 */
     protected String mShareKey = "LiveBack";
-    /** 直播帧数统计 */
-    private LivePlayLog livePlayLog;
-    boolean playbackComplete = false;
-    boolean islocal;
+    private boolean playbackComplete = false;
+    private boolean islocal;
 
     public LiveBackVideoBll(Activity activity, boolean islocal) {
         this.activity = activity;
         this.islocal = islocal;
-        logger = LoggerFactory.getLogger("LiveBackVideoBll");
-        if (islocal) {
-            return;
-        }
-        livePlayLog = new LivePlayLog(activity, false);
     }
 
     public void setSectionName(String mSectionName) {
@@ -63,27 +59,24 @@ public class LiveBackVideoBll {
 
     public void setvPlayer(PlayerService vPlayer) {
         this.vPlayer = vPlayer;
-        if (livePlayLog != null) {
-            livePlayLog.setvPlayer(vPlayer);
-        }
     }
 
     public void setVideoEntity(VideoLivePlayBackEntity mVideoEntity) {
         this.mVideoEntity = mVideoEntity;
-        if (livePlayLog != null) {
-            livePlayLog.setChannelname(mVideoEntity.getLiveId());
-        }
+        String hostPath = "";
         try {
-            String hostPath = mVideoEntity.getHostPath();
-            String videoPathNoHost = mVideoEntity.getVideoPathNoHost();
-            JSONArray jsonArray = new JSONArray(hostPath);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String url = jsonArray.getString(i) + videoPathNoHost;
-                mWebPaths.add(url);
+            hostPath = mVideoEntity.getHostPath();
+            if (hostPath != null) {
+                String videoPathNoHost = mVideoEntity.getVideoPathNoHost();
+                JSONArray jsonArray = new JSONArray(hostPath);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    String url = jsonArray.getString(i) + videoPathNoHost;
+                    mWebPaths.add(url);
+                }
+                logger.d("setVideoEntity:hostPath=" + hostPath + ",videoPathNoHost=" + videoPathNoHost + ",mWebPaths=" + mWebPaths.size());
             }
-            logger.d("setVideoEntity:hostPath=" + hostPath + ",videoPathNoHost=" + videoPathNoHost + ",mWebPaths=" + mWebPaths.size());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.d("setVideoEntity:hostPath=" + hostPath, e);
         }
         mUri = mVideoEntity.getVideoPath();
         if (mWebPaths.isEmpty()) {
@@ -94,15 +87,9 @@ public class LiveBackVideoBll {
     }
 
     public void onResume() {
-        if (livePlayLog != null) {
-            livePlayLog.onReplay();
-        }
     }
 
     public void onPause(long dur) {
-        if (livePlayLog != null) {
-            livePlayLog.onPause(dur);
-        }
     }
 
     public void onDestroy() {
@@ -110,14 +97,10 @@ public class LiveBackVideoBll {
     }
 
     public void seekTo(long pos) {
-        if (livePlayLog != null) {
-            livePlayLog.seekTo(pos);
-        }
     }
 
     public void setLiveBackPlayVideoFragment(LiveBackPlayerFragment liveBackPlayVideoFragment) {
         this.liveBackPlayVideoFragment = liveBackPlayVideoFragment;
-        liveBackPlayVideoFragment.setLivePlayLog(livePlayLog);
     }
 
     /**
@@ -125,6 +108,28 @@ public class LiveBackVideoBll {
      */
     public void changeLine(int pos) {
         liveBackPlayVideoFragment.changePlayLive(pos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+    }
+
+    /** 切换到下一条线路 */
+    public void changeNextLine() {
+        this.nowPos++;
+        //当前线路小于总线路数
+        if (this.nowPos < totalRouteNum) {
+            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        } else {
+            if (totalRouteNum != 0) {
+                this.nowPos = 0;
+                changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            } else {
+                playNewVideo();
+            }
+        }
+    }
+
+    private void changePlayLive(int pos, int protol) {
+        if (liveBackPlayVideoFragment != null) {
+            liveBackPlayVideoFragment.changePlayLive(pos, protol);
+        }
     }
 
     /**
@@ -163,7 +168,15 @@ public class LiveBackVideoBll {
             return;
         }
         if (vPlayer != null && mUri != null) {
-            ShareDataManager.getInstance().put(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart,
+            String videoPath;
+            String url = mVideoEntity.getVideoPath();
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+            logger.d("savePosition:videoPath=" + videoPath + ",fromStart=" + fromStart);
+            ShareDataManager.getInstance().put(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart,
                     ShareDataManager.SHAREDATA_USER);
         }
     }
@@ -180,11 +193,14 @@ public class LiveBackVideoBll {
             } else {
                 videoPath = url;
             }
-            return ShareDataManager.getInstance().getLong(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
+            long pos = ShareDataManager.getInstance().getLong(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
                     ShareDataManager.SHAREDATA_USER);
+            logger.d("getStartPosition:videoPath=" + videoPath + ",pos=" + pos);
+            return pos;
         } catch (Exception e) {
             // 有一定不知明原因造成取出的播放点位int转long型失败,故加上这个值确保可以正常观看
             e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG, e);
             return 0L;
         }
         // return mStartPos;
@@ -195,11 +211,11 @@ public class LiveBackVideoBll {
             boolean isInitialized = vPlayer.isInitialized();
             vPlayer.stop();
             liveBackPlayVideoFragment.resultFailed(0, 0);
-            if (isInitialized && livePlayLog != null) {
-                livePlayLog.onOpenFailed(0, AvformatOpenInputError.ENETDOWN.getNum());
-            }
         }
     }
+
+    private int nowPos = 0;
+    private int totalRouteNum = 0;
 
     public VPlayerCallBack.VPlayerListener getPlayListener() {
         return mPlayListener;
@@ -208,21 +224,22 @@ public class LiveBackVideoBll {
     private VPlayerCallBack.VPlayerListener mPlayListener = new VPlayerCallBack.SimpleVPlayerListener() {
 
         @Override
+        public void getPSServerList(int cur, int total, boolean modeChange) {
+            super.getPSServerList(cur, total, modeChange);
+            nowPos = cur;
+            totalRouteNum = total;
+        }
+
+        @Override
         public void onOpenFailed(int arg1, int arg2) {
             logger.d("onOpenFailed:index=" + index + ",arg2=" + arg2);
             super.onOpenFailed(arg1, arg2);
-            if (livePlayLog != null) {
-                livePlayLog.onOpenFailed(arg1, arg2);
-            }
         }
 
         @Override
         public void onOpenStart() {
             logger.d("onOpenStart");
             super.onOpenStart();
-            if (livePlayLog != null) {
-                livePlayLog.onOpenStart();
-            }
             playbackComplete = false;
         }
 
@@ -231,25 +248,16 @@ public class LiveBackVideoBll {
             logger.d("onOpenSuccess:index=" + index);
             index--;
             super.onOpenSuccess();
-            if (livePlayLog != null) {
-                livePlayLog.onOpenSuccess();
-            }
         }
 
         @Override
         public void onSeekComplete() {
             super.onSeekComplete();
-            if (livePlayLog != null) {
-                livePlayLog.onSeekComplete();
-            }
         }
 
         @Override
         public void onPlaybackComplete() {
             super.onPlaybackComplete();
-            if (livePlayLog != null) {
-                livePlayLog.onPlaybackComplete();
-            }
             savePosition(0);
             playbackComplete = true;
         }
@@ -257,9 +265,6 @@ public class LiveBackVideoBll {
         @Override
         public void onPlayError() {
             super.onPlayError();
-            if (livePlayLog != null) {
-                livePlayLog.onPlayError();
-            }
         }
     };
 

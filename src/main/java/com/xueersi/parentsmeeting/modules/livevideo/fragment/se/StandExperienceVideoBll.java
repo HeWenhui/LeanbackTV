@@ -15,7 +15,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import java.util.ArrayList;
@@ -49,21 +48,12 @@ public class StandExperienceVideoBll {
      * 进度缓存的追加KEY值
      */
     protected String mShareKey = "LiveBack";
-    /**
-     * 直播帧数统计
-     */
-    private LivePlayLog livePlayLog;
     boolean playbackComplete = false;
     boolean islocal;
 
     public StandExperienceVideoBll(Activity activity, boolean islocal) {
         this.activity = activity;
         this.islocal = islocal;
-
-        if (islocal) {
-            return;
-        }
-        livePlayLog = new LivePlayLog(activity, false);
     }
 
     public void setSectionName(String mSectionName) {
@@ -72,9 +62,6 @@ public class StandExperienceVideoBll {
 
     public void setvPlayer(PlayerService vPlayer) {
         this.vPlayer = vPlayer;
-        if (livePlayLog != null) {
-            livePlayLog.setvPlayer(vPlayer);
-        }
     }
 
     /**
@@ -84,9 +71,6 @@ public class StandExperienceVideoBll {
      */
     public void setVideoEntity(VideoLivePlayBackEntity mVideoEntity) {
         this.mVideoEntity = mVideoEntity;
-        if (livePlayLog != null) {
-            livePlayLog.setChannelname(mVideoEntity.getLiveId());
-        }
 //        try {
 //            String hostPath = mVideoEntity.getHostPath();
 //            String videoPathNoHost = mVideoEntity.getVideoPathNoHost();
@@ -115,15 +99,9 @@ public class StandExperienceVideoBll {
     }
 
     public void onResume() {
-        if (livePlayLog != null) {
-            livePlayLog.onReplay();
-        }
     }
 
     public void onPause(long dur) {
-        if (livePlayLog != null) {
-            livePlayLog.onPause(dur);
-        }
     }
 
     public void onDestroy() {
@@ -131,14 +109,10 @@ public class StandExperienceVideoBll {
     }
 
     public void seekTo(long pos) {
-        if (livePlayLog != null) {
-            livePlayLog.seekTo(pos);
-        }
     }
 
     public void setLiveBackPlayVideoFragment(LiveBackPlayerFragment liveBackPlayVideoFragment) {
         this.liveBackPlayVideoFragment = liveBackPlayVideoFragment;
-        liveBackPlayVideoFragment.setLivePlayLog(livePlayLog);
     }
 
     /**
@@ -147,6 +121,8 @@ public class StandExperienceVideoBll {
     public void changePlayLine() {
         if (routTotal != 0) {
             liveBackPlayVideoFragment.changePlayLive((curRoute++) % routTotal, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        }else{
+            playNewVideo();
         }
     }
 
@@ -212,9 +188,6 @@ public class StandExperienceVideoBll {
             boolean isInitialized = vPlayer.isInitialized();
             vPlayer.stop();
             liveBackPlayVideoFragment.resultFailed(0, 0);
-            if (isInitialized && livePlayLog != null) {
-                livePlayLog.onOpenFailed(0, AvformatOpenInputError.ENETDOWN.getNum());
-            }
         }
     }
 
@@ -246,18 +219,12 @@ public class StandExperienceVideoBll {
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             logger.d("onOpenFailed:index=" + index + ",arg2=" + arg2);
-            if (livePlayLog != null) {
-                livePlayLog.onOpenFailed(arg1, arg2);
-            }
         }
 
         @Override
         public void onOpenStart() {
             logger.d("onOpenStart");
             super.onOpenStart();
-            if (livePlayLog != null) {
-                livePlayLog.onOpenStart();
-            }
             playbackComplete = false;
         }
 
@@ -266,25 +233,16 @@ public class StandExperienceVideoBll {
             logger.d("onOpenSuccess:index=" + index);
             index--;
             super.onOpenSuccess();
-            if (livePlayLog != null) {
-                livePlayLog.onOpenSuccess();
-            }
         }
 
         @Override
         public void onSeekComplete() {
             super.onSeekComplete();
-            if (livePlayLog != null) {
-                livePlayLog.onSeekComplete();
-            }
         }
 
         @Override
         public void onPlaybackComplete() {
             super.onPlaybackComplete();
-            if (livePlayLog != null) {
-                livePlayLog.onPlaybackComplete();
-            }
             savePosition(0);
             playbackComplete = true;
         }
@@ -292,9 +250,6 @@ public class StandExperienceVideoBll {
         @Override
         public void onPlayError() {
             super.onPlayError();
-            if (livePlayLog != null) {
-                livePlayLog.onPlayError();
-            }
         }
     };
 

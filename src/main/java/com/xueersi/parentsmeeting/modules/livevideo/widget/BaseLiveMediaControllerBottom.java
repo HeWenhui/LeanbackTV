@@ -1,5 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerBottomInter
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -35,9 +39,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     protected LiveMediaController controller;
     protected Context mContext;
     /** 顶部动画向下出现 */
-    private Animation mAnimSlideInTop;
+//    private Animation mAnimSlideInTop;
     /** 顶部动画向上隐藏 */
-    private Animation mAnimSlideOutTop;
+//    private Animation mAnimSlideOutTop;
     /** 聊天，默认开启 */
     private Button btMesOpen;
     /** 聊天常用语 */
@@ -81,26 +85,26 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     protected void initResources() {
         inflateLayout();
         findViewItems();
-        mAnimSlideInTop = AnimationUtils.loadAnimation(mContext, R.anim.anim_mediactrl_slide_in_top);
-        mAnimSlideOutTop = AnimationUtils.loadAnimation(mContext, R.anim.anim_mediactrl_slide_out_top);
-        mAnimSlideInTop.setFillAfter(true);
-        mAnimSlideOutTop.setFillAfter(true);
-
-        mAnimSlideOutTop.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                BaseLiveMediaControllerBottom.this.setVisibility(GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+//        mAnimSlideInTop = AnimationUtils.loadAnimation(mContext, R.anim.anim_mediactrl_slide_in_top);
+//        mAnimSlideOutTop = AnimationUtils.loadAnimation(mContext, R.anim.anim_mediactrl_slide_out_top);
+//        mAnimSlideInTop.setFillAfter(true);
+//        mAnimSlideOutTop.setFillAfter(true);
+//
+//        mAnimSlideOutTop.setAnimationListener(new Animation.AnimationListener() {
+//            @Override
+//            public void onAnimationStart(Animation animation) {
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                BaseLiveMediaControllerBottom.this.setVisibility(GONE);
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animation animation) {
+//
+//            }
+//        });
     }
 
     /** 播放器的布局界面 */
@@ -194,8 +198,6 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     }
 
 
-
-
     /** 切换播放和暂停的样式 */
     @Override
     public void updatePausePlay(boolean isPlaying) {
@@ -205,15 +207,42 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     @Override
     public void onShow() {
         setVisibility(View.VISIBLE);
-        startAnimation(mAnimSlideInTop);
+//        startAnimation(mAnimSlideInTop);
+        inAnim();
     }
 
     @Override
     public void onHide() {
-        startAnimation(mAnimSlideOutTop);
+//        startAnimation(mAnimSlideOutTop);
+        outAnim();
         if (llMarkPopMenu != null) {
             llMarkPopMenu.setVisibility(GONE);
         }
+    }
+
+    long duration = 300;
+
+    private void inAnim() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(this, "translationY", getHeight(), 0.0f);
+        animator.setDuration(duration);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+            }
+        });
+        animator.start();
+    }
+
+    private void outAnim() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(this, "translationY", 0.0f, getHeight());
+        animator.setDuration(duration);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                BaseLiveMediaControllerBottom.this.setVisibility(GONE);
+            }
+        });
+        animator.start();
     }
 
     public void setController(LiveMediaController controller) {
@@ -226,14 +255,14 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         }
     }
 
-    public interface RegMediaChildViewClick {
+    public interface RegMediaChildViewClick extends LiveProvide {
         void regMediaViewClick(MediaChildViewClick mediaChildViewClick);
 
         void remMediaViewClick(MediaChildViewClick mediaChildViewClick);
     }
 
     public interface MediaChildViewClick {
-       public void onMediaViewClick(View child);
+        public void onMediaViewClick(View child);
     }
 
     public LiveMediaController getController() {

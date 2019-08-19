@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -33,12 +34,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 
 public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAction {
-
-    RelativeLayout bottomContent;
     PraisePager praisePager;
     boolean isTopic = false;
     String likeId = "";
     boolean isCloase = true;
+
     public PraiseTutorBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
@@ -48,8 +48,8 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
         // 模式切换为主讲，关闭表扬榜
         if (praisePager != null && LiveTopic.MODE_CLASS.equals(mode)) {
             praisePager.closePraisePager();
-        } else if (LiveTopic.MODE_CLASS.equals(oldMode) && LiveTopic.MODE_TRANING.equals(mode)){
-            if (!TextUtils.isEmpty(getLikeId()) && !isCloase()){
+        } else if (LiveTopic.MODE_CLASS.equals(oldMode) && LiveTopic.MODE_TRANING.equals(mode)) {
+            if (!TextUtils.isEmpty(getLikeId()) && !isCloase()) {
                 getPraiseTutorData(getLikeId());
             }
         }
@@ -62,7 +62,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        UmsAgentManager.umsAgentDebug(mContext,"tutor_practice_notice","type:" + type  + "sourceNic:"+sourceNick + "target:" + target + "data:" + data.toString());
+        UmsAgentManager.umsAgentDebug(mContext, "tutor_practice_notice", "type:" + type + "sourceNic:" + sourceNick + "target:" + target + "data:" + data.toString());
         switch (type) {
             // 开启和发布榜单
             case XESCODE.TUTOR_ROOM_PRAISE_OPEN:
@@ -130,14 +130,8 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
-        this.bottomContent = bottomContent;
-    }
-
-    @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        Loger.d( "tutor_practice_onTopic", "liveTopic" + liveTopic + "/jsonObject"
+        Loger.d("tutor_practice_onTopic", "liveTopic" + liveTopic + "/jsonObject"
                 + "modeChange" + modeChange + "jsonObject:" + jsonObject.toString());
 //        if(LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
 //
@@ -147,7 +141,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             JSONObject room2Json = jsonObject.optJSONObject("room_2");
             if (room2Json != null) {
                 JSONObject praiseListJson = room2Json.optJSONObject("praiseList");
-                if(isTopic() || praiseListJson == null){
+                if (isTopic() || praiseListJson == null) {
                     return;
                 }
                 setTopic(true);
@@ -174,8 +168,8 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 PraiseEntity entity = getHttpResponseParser().parseTutorPraiseEntity(responseEntity);
-                praisePager = new PraisePager(mContext, entity, listener,bottomContent);
-                praisePager.showPraisePager(bottomContent);
+                praisePager = new PraisePager(mContext, entity, listener, mRootView);
+                praisePager.showPraisePager(mRootView);
                 StableLogHashMap logHashMap = new StableLogHashMap("list_receive");
                 logHashMap.put("list_number", entity.getPraiseType() + "");
                 umsAgentDebugPv(PraiseConfig.UMS_PRACTICE_TUTOR, logHashMap.getData());
@@ -184,7 +178,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("getLikeList => onPmFailure: error = " + error + ", msg=" + msg);
-                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
                 vcDialog.setVerifyBtnListener(new View.OnClickListener() {
@@ -199,7 +193,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("getLikeList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
                 //  showToast("" + responseEntity.getErrorMsg());
-                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, ContextManager.getApplication(), false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
                 vcDialog.setVerifyBtnListener(new View.OnClickListener() {
@@ -220,7 +214,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             jsonObject.put("likes", likes + "");
             jsonObject.put("stuId", mGetInfo.getStuId());
             jsonObject.put("stuName", mGetInfo.getStuName());
-            sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
+            sendNoticeToCoun(jsonObject);
         } catch (Exception e) {
             mLogtf.e("sendLikeNum", e);
         }
@@ -239,7 +233,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void onPracticeClose() {
-          //  setCloase(true);
+            //  setCloase(true);
         }
 
     };

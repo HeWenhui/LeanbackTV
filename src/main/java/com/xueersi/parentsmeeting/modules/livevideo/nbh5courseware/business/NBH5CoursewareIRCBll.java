@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -14,10 +13,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 
 import org.json.JSONObject;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
- * Created by lyqai on 2018/7/6.
+ * Created by linyuqiang on 2018/7/6.
  * nb实验网页
  */
 public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
@@ -30,7 +27,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
     @Override
     public void onTopic(LiveTopic liveTopic, final JSONObject jsonObject, boolean modeChange) {
         if (jsonObject.has("h5_Experiment")) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     initNbAction();
@@ -72,7 +69,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
     public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
         switch (type) {
             case XESCODE.H5_START: {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         initNbAction();
@@ -88,7 +85,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
             }
             break;
             case XESCODE.H5_STOP: {
-                mHandler.post(new Runnable() {
+                post(new Runnable() {
                     @Override
                     public void run() {
                         initNbAction();
@@ -134,17 +131,17 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+    public void initView() {
         if (h5CoursewareAction != null) {
-            h5CoursewareAction.initView(bottomContent);
+            h5CoursewareAction.initView(mRootView);
         }
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if(h5CoursewareAction != null){
-            h5CoursewareAction.onDestory();
+            h5CoursewareAction.onDestroy();
         }
     }
 

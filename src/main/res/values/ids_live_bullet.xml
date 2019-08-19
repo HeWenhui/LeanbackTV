@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="dv_livevideo_bullet_screen" type="id" />
+    <item name="dv_livevideo_bullet_playback" type="id" />
+</resources>

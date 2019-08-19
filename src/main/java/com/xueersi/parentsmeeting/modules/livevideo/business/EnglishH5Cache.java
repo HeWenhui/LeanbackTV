@@ -25,7 +25,9 @@ import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsMoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
@@ -246,7 +248,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         JSONObject infoObj = infoArray.getJSONObject(i);
                         String id = infoObj.getString("id");
                         String courseware_type = infoObj.getString("type");
-                        String play_url = "https://live.xueersi.com/Live/coursewareH5/" + liveId + "/" + id + "/" + courseware_type
+                        String play_url = LiveHttpConfig.LIVE_HOST + "/Live/coursewareH5/" + liveId + "/" + id + "/" + courseware_type
                                 + "/123456";
                         logger.d("getCourseWareUrl:onPmSuccess:play_url=" + play_url);
 //                        urls.add(play_url);
@@ -291,13 +293,13 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         }
         boolean isNewPreLoad = ((Activity) context).getIntent().getBooleanExtra("newCourse", false);
         // 一次多发的接口调用
-        if (LiveVideoConfig.isScience || mGetInfo != null && mGetInfo.getIsArts() == 0) {
+        if (LiveVideoConfig.isScience || mGetInfo != null && mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
             if (!isNewPreLoad) {
                 ScienceMulPreDownLoad(todayLiveCacheDir);
             }
             // TODO 理科小学
 //            scienceStatic();
-        } else if (mGetInfo != null && mGetInfo.getIsArts() == 2) {
+        } else if (mGetInfo != null && mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
             //语文一题多发
             if (!isNewPreLoad) {
                 chineseMulPreDownLoad(todayLiveCacheDir);
@@ -389,6 +391,12 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         logger.d("onDownloadFailed(mUrls):url=" + url);
 //                        XESToastUtils.showToast(context, "下载文科资源包失败");
                     }
+
+                    @Override
+                    protected void onDownloadFailed(Exception e) {
+                        logger.d("onDownloadFailed " + e.getMessage());
+                        super.onDownloadFailed(e);
+                    }
                 });
             } else {
                 logger.d("fileIsExists(mtexts):fileName=" + url);
@@ -470,6 +478,12 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                             protected void onDownloadFailed() {
                                 logger.d("onDownloadFailed(mtexts zip):fileName=" + fileName);
 //                            XESToastUtils.showToast(context, "下载字体包失败");
+                            }
+
+                            @Override
+                            protected void onDownloadFailed(Exception e) {
+                                logger.d("onDownloadFailed " + e);
+                                super.onDownloadFailed(e);
                             }
                         });
                     } else {

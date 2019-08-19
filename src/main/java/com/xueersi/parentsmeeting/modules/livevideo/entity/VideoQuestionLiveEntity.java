@@ -91,6 +91,7 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private String subjectiveItem2AIUrl;
     /** 辅导态 */
     private boolean isTUtor = false;
+
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
     }

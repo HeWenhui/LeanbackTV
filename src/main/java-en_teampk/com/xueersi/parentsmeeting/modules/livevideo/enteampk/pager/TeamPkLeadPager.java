@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEn
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.item.TeamMemberStarItem;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,7 +98,7 @@ public class TeamPkLeadPager extends LiveBasePager {
             view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_4_3);
             bottomLayoutParams.height = SizeUtils.Dp2Px(mContext, 153);
         }
-        rlTeampkLeadBottom.setLayoutParams(bottomLayoutParams);
+        LayoutParamsUtil.setViewLayoutParams(rlTeampkLeadBottom, bottomLayoutParams);
         pgTeampkLead = view.findViewById(R.id.pg_livevideo_en_teampk_lead);
         rlTeampkLeadLeft = view.findViewById(R.id.rl_livevideo_en_teampk_lead_left);
         rlTeampkLeadRight = view.findViewById(R.id.rl_livevideo_en_teampk_lead_right);

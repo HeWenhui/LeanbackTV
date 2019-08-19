@@ -100,7 +100,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         if (liveRemarkBll != null) {
-            mHandler.post(new Runnable() {
+            post(new Runnable() {
                 @Override
                 public void run() {
                     liveRemarkBll.setVideoReady(false);
@@ -128,7 +128,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                     if (liveTextureView == null) {
                         ViewStub viewStub = (ViewStub) activity.findViewById(R.id.vs_course_video_video_texture);
                         if (viewStub == null) {
-                            viewStub = mContentView.findViewById(R.id.vs_course_video_video_texture);
+                            viewStub = findViewById(R.id.vs_course_video_video_texture);
                         }
                         if (viewStub == null) {
                             liveTextureView = activity.findViewById(R.id.ltv_course_video_video_texture);
@@ -141,7 +141,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                         }
                     }
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-                    liveRemarkBll.setLiveAndBackDebug(mLiveBll);
+                    liveRemarkBll.setLiveAndBackDebug(contextLiveAndBackDebug);
                     liveRemarkBll.setHttpManager(getHttpManager());
                     liveRemarkBll.setSysTimeOffset(mLiveBll.getSysTimeOffset());
                     mLogtf.i("setlivebll____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()

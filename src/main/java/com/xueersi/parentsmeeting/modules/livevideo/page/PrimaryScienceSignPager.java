@@ -85,7 +85,7 @@ public class PrimaryScienceSignPager extends BasePager {
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        // rollCallAction.stopRollCall();
+                        rollCallBll.stopRollCall();
                         String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "网络异常" : responseEntity.getErrorMsg();
                         Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
                     }

@@ -9,7 +9,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 /**
- * Created by lyqai on 2018/1/11.
+ * Created by linyuqiang on 2018/1/11.
  */
 
 public class SpeechFeedBackPager extends BasePager {

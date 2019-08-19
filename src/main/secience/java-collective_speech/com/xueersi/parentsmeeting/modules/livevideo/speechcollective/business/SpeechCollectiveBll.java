@@ -16,9 +16,10 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageSend;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechCollectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -56,7 +57,7 @@ public class SpeechCollectiveBll implements com.xueersi.parentsmeeting.modules.l
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     private AcousticEchoCanceler m_canceler = null;
 
-    protected android.os.Handler mHandler = new android.os.Handler(Looper.getMainLooper());
+    protected android.os.Handler mHandler = LiveMainHandler.getMainHandler();
 
     public SpeechCollectiveBll(Activity activity) {
         this.activity = activity;
@@ -105,9 +106,9 @@ public class SpeechCollectiveBll implements com.xueersi.parentsmeeting.modules.l
             return;
         }
 
-        LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
-        if (liveMessageBll != null) {
-            liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+        LiveMessageSend liveMessageSend = ProxUtil.getProvide(activity, LiveMessageSend.class);
+        if (liveMessageSend != null) {
+            liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                     "老师开启了集体发言");
 
         }
@@ -189,9 +190,9 @@ public class SpeechCollectiveBll implements com.xueersi.parentsmeeting.modules.l
         if (!isStart) {
             return;
         }
-        LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
-        if (liveMessageBll != null) {
-            liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+        LiveMessageSend liveMessageSend = ProxUtil.getProvide(activity, LiveMessageSend.class);
+        if (liveMessageSend != null) {
+            liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                     "老师关闭了集体发言");
 
         }

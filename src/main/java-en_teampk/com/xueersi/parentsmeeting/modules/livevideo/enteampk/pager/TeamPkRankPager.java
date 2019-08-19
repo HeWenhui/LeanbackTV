@@ -112,7 +112,12 @@ public class TeamPkRankPager extends LiveBasePager {
                         logger.d("select:index=" + index);
                         if (onTeamSelect != null) {
                             isFinish = true;
-                            onTeamSelect.onTeamSelect(pkTeamEntity);
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    onTeamSelect.onTeamSelect(pkTeamEntity);
+                                }
+                            }, 1000);
                         }
                         return;
                     }

@@ -11,11 +11,12 @@ import android.util.Log;
 import com.tal.speech.speechrecognigen.ISpeechRecognitnCall;
 import com.tal.speech.speechrecognigen.ISpeechRecognitnGen;
 import com.tal.speech.speechrecognizer.PCMFormat;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.entity.MyUserInfoEntity;
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.crashreport.BuglyLog;
 import com.xueersi.common.util.LoadSoCallBack;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 
@@ -52,6 +53,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     private boolean isStart = false;
     private int index = 0;
     private boolean destory = false;
+//    private int enroll = 0;
     private Context context;
     //    private SpeakerPredict speakerPredict;
     private SpeakerRecognitionerInterface speakerRecognitionerInterface;
@@ -95,37 +97,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
 
             @Override
             public void success() {
-                pingPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (destory) {
-                            return;
-                        }
-                        speakerRecognitionerInterface = SpeakerRecognitionerInterface.getInstance();
-                        boolean result = speakerRecognitionerInterface.init();
-                        logger.d("init:result=" + result + ",isStart=" + isStart);
-                        if (result) {
-                            byte[] pcmdata = new byte[10];
-                            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-                            int enrollIvector = speakerRecognitionerInterface.
-                                    enrollIvector(pcmdata, pcmdata.length, index++, stuId, false);
-                            logger.d("init:stuId=" + stuId + ",enrollIvector=" + enrollIvector);
-                            if (iSpeechRecognitnCall != null) {
-                                try {
-                                    iSpeechRecognitnCall.enrollIvector(enrollIvector);
-                                } catch (RemoteException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            if (enrollIvector == 0) {
-                                loadSo = true;
-                                if (isStart) {
-                                    startSpeech();
-                                }
-                            }
-                        }
-                    }
-                });
+                enrollIvector();
             }
 
             @Override
@@ -136,6 +108,44 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
             @Override
             public void fail(int errorCode, String errorMsg) {
                 logger.d("checkResoureDownload:errorCode=" + errorCode + ",errorMsg=" + errorMsg);
+            }
+        });
+    }
+
+    private void enrollIvector() {
+//        enroll++;
+//        if (enroll != 2) {
+//            return;
+//        }
+        pingPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (destory) {
+                    return;
+                }
+                speakerRecognitionerInterface = SpeakerRecognitionerInterface.getInstance();
+                boolean result = speakerRecognitionerInterface.init();
+                BuglyLog.i(TAG, "init:result=" + result + ",isStart=" + isStart + ",thread=" + Thread.currentThread());
+                if (result) {
+                    byte[] pcmdata = new byte[10];
+                    String stuId = LiveAppUserInfo.getInstance().getStuId();
+                    int enrollIvector = speakerRecognitionerInterface.
+                            enrollIvector(pcmdata, pcmdata.length, index++, stuId, false);
+                    logger.d("init:stuId=" + stuId + ",enrollIvector=" + enrollIvector);
+                    if (iSpeechRecognitnCall != null) {
+                        try {
+                            iSpeechRecognitnCall.enrollIvector(enrollIvector);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (enrollIvector == 0) {
+                        loadSo = true;
+                        if (isStart) {
+                            startSpeech();
+                        }
+                    }
+                }
             }
         });
     }
@@ -167,6 +177,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     public void check(ISpeechRecognitnCall iSpeechRecognitnCall) {
         this.iSpeechRecognitnCall = iSpeechRecognitnCall;
         logger.d("check:loadSo=" + loadSo);
+//        enroll = 0;
         checkResoure();
     }
 
@@ -192,8 +203,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
                     Log.d(TAG, "start:destory=" + destory + ",isStart=" + isStart);
                     return;
                 }
-                MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-                String stuId = userInfoEntity.getStuId();
+                String stuId = LiveAppUserInfo.getInstance().getStuId();
                 if (mAudioRecord == null) {
                     try {
                         initAudioRecorder();
@@ -257,7 +267,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     }
 
     private void stop() {
-        logger.d("stop");
+        BuglyLog.i(TAG, "stop");
         isStart = false;
         if (mAudioRecord != null) {
             try {
@@ -272,7 +282,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
 
     @Override
     public void release() throws RemoteException {
-        logger.d("release");
+        BuglyLog.i(TAG, "release");
         //目前没有锁的必要了
         synchronized (lock) {
             destory = true;
