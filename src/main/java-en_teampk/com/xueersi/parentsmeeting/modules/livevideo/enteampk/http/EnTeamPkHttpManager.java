@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.http;
 
+import com.google.gson.JsonObject;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -11,6 +12,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkHttp
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import org.json.JSONObject;
@@ -128,6 +131,39 @@ public class EnTeamPkHttpManager {
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
                 callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    /**
+     * 小组互动 - 上报小组互动互动信息
+     */
+    public void reportOperateGroupGame(final short type, final int operation, final JSONObject bodyJson, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        JSONObject httpjson = new JSONObject();
+        try {
+            httpjson.put("ver", TcpConstants.ver);
+            httpjson.put("type",  type);
+            httpjson.put("op",  operation);
+            httpjson.put("seq",  0);
+            httpjson.put("timestamp",  System.currentTimeMillis());
+            httpjson.put("body",bodyJson);
+        }catch (Exception e){
+
+        }
+        httpRequestParams.setJson(httpjson.toString());
+        logger.d("reportOperateGroupGame:" + httpjson.toString());
+        liveHttpManager.baseSendPostNoBusinessJson(LiveQueHttpConfig.LIVE_GROUPGAME_REPORT+"?hkey="+bodyJson.opt("live_id")+"-"+bodyJson.opt("class_id")+"-"+bodyJson.opt("pk_team_id"), httpRequestParams,new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                logger.d("reportOperateGroupGame=fail");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                logger.d("reportOperateGroupGame=success");
             }
         });
     }

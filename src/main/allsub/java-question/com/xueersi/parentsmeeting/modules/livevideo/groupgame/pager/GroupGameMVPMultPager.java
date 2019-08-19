@@ -81,11 +81,11 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             }
         });
         if (entities.size() == 1) {
-            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_one/";
+            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_one_v2/";
         } else if (entities.size() == 2) {
-            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_two/";
+            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_two_v2/";
         } else if (entities.size() == 3) {
-            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_three/";
+            LOTTIE_RES_ASSETS_ROOTDIR = "group_game_three_v2/";
         }
         for (int i = 0; i < entities.size(); i++) {
             TeamMemberEntity entity = entities.get(i);
@@ -206,16 +206,16 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                if (lottieImageAsset.getId().equals("image_3")) {
+                if (lottieImageAsset.getId().equals("image_4")) {
                     return creatGoldBitmap(teamMemberEntityOne.gold, lottieImageAsset.getFileName());
                 }
-                if (lottieImageAsset.getId().equals("image_4")) {
+                if (lottieImageAsset.getId().equals("image_5")) {
                     return creatFireBitmap(teamMemberEntityOne.energy, lottieImageAsset.getFileName());
                 }
-                if (lottieImageAsset.getId().equals("image_8")) {
+                if (lottieImageAsset.getId().equals("image_9")) {
                     return creatNameBitmap(teamMemberEntityOne.name, lottieImageAsset.getFileName());
                 }
-                if (lottieImageAsset.getId().equals("image_0")) {
+                if (lottieImageAsset.getId().equals("image_1")) {
                     Bitmap headBitmap = headBitHashMap.get(lottieImageAsset.getId());
                     if (headBitmap != null) {
                         return headBitmap;
@@ -232,7 +232,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         };
         mLottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         mLottieAnimationView.playAnimation();
-        setHead(teamMemberEntityOne.headurl, "image_0");
+        setHead(teamMemberEntityOne.headurl, "image_1");
     }
 
     private void startLottieAnimationTwo() {

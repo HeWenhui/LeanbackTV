@@ -409,6 +409,28 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         return rtcEngine.muteLocalAudioStream(muted);
     }
 
+    public void muteLocalAudio(final boolean muted) {
+        mLogtf.d("muteLocalAudio:muted=" + muted);
+        final RtcEngine rtcEngine = workerThread.getRtcEngine();
+        if (rtcEngine != null) {
+            workerThread.execute(new Runnable() {
+                @Override
+                public void run() {
+                    muteLocalAudioStream(rtcEngine, muted);
+                }
+            });
+        }
+        if (muted) {
+            ivCourseItemAudio.setImageResource(AUDIO_RES[0]);
+            ivCourseItemAudio.setEnabled(false);
+        } else {
+            ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
+            ivCourseItemAudio.setEnabled(true);
+            final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
+            createOpen(animationView);
+        }
+    }
+
     @Override
     public void onDestroy() {
         if (bitmap6 != null) {
