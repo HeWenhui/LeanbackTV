@@ -433,7 +433,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     }
                 }
             }
-            logger.d("uploadScore :"+stuid+" --自己 = " +nextNum +"--"+speechContent);
             return 3;
         } else {
             if (mIse != null) {
@@ -471,7 +470,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     }
                 }
             }
-            logger.d("uploadScore :"+stuid+" --别人 = " +nextNum +"--"+speechContent);
             if(entities.size()<3){
                 return 2;
             }
@@ -2512,7 +2510,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data) {
         try {
-            logger.d("uploadScore :"+stuid+" --jsonData = " + type.toString()+"--"+speechContent);
             JSONObject liveinfo = new JSONObject();
             liveinfo.put("liveid", liveId);
             liveinfo.put("userid", stuid);
@@ -2529,7 +2526,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private void postMessage(JSONObject jsonData) {
         try {
-            logger.d("uploadScore :"+stuid+" --jsonData = " + jsonData.toString()+"--"+speechContent);
             JSONObject liveinfo = new JSONObject();
             liveinfo.put("liveid", liveId);
             liveinfo.put("userid", stuid);

@@ -426,6 +426,8 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         } else {
             ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
             ivCourseItemAudio.setEnabled(true);
+            final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
+            createOpen(animationView);
         }
     }
 
