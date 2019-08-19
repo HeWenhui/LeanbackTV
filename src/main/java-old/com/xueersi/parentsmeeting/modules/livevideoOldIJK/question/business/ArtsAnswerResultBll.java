@@ -55,7 +55,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResult
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ArtsPSEAnswerResultPager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.VoteAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.SpeechResultPager;
