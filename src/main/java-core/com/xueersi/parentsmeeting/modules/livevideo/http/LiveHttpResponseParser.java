@@ -2696,8 +2696,18 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             BetterMeEnergyBonusEntity energyBonusEntity = new BetterMeEnergyBonusEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
 
+            String myTeamKey;
+            String opTeamKey;
+            if (jsonObject.getJSONObject("total").getJSONObject("a").getInt("isSelfPKTeam") == 1) {
+                myTeamKey = "a";
+                opTeamKey = "b";
+            } else {
+                myTeamKey = "b";
+                opTeamKey = "a";
+            }
+
             JSONObject stuInfo = jsonObject.getJSONObject("stuInfo");
-            JSONArray myTeam = stuInfo.getJSONArray("a");
+            JSONArray myTeam = stuInfo.getJSONArray(myTeamKey);
             if (myTeam != null) {
                 for (int i = 0; i < myTeam.length(); i++) {
                     JSONObject member = myTeam.getJSONObject(i);
@@ -2710,7 +2720,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
             }
 
-            JSONArray opTeam = stuInfo.getJSONArray("b");
+            JSONArray opTeam = stuInfo.getJSONArray(opTeamKey);
             if (opTeam != null) {
                 for (int i = 0; i < opTeam.length(); i++) {
                     JSONObject member = opTeam.getJSONObject(i);
@@ -2724,12 +2734,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
 
             JSONObject total = jsonObject.getJSONObject("total");
-            JSONObject a = total.getJSONObject("a");
+            JSONObject a = total.getJSONObject(myTeamKey);
             energyBonusEntity.setMyTeamId(a.getInt("PkHeadTeamId"));
             energyBonusEntity.setMyTeamTotal(a.getInt("total"));
             energyBonusEntity.setMyTeamBetterMeTotal(a.getInt("betterMeTotal"));
 
-            JSONObject b = total.getJSONObject("b");
+            JSONObject b = total.getJSONObject(opTeamKey);
             energyBonusEntity.setOpTeamId(b.getInt("PkHeadTeamId"));
             energyBonusEntity.setOpTeamTotal(b.getInt("total"));
             energyBonusEntity.setOpTeamBetterMeTotal(b.getInt("betterMeTotal"));
