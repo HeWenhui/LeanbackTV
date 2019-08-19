@@ -281,6 +281,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onClick(View view) {
                 addJs = false;
+                newCourseCache.reload();
                 rlGroupGameSingle.setVisibility(View.GONE);
                 mWaveView.stop();
                 wvSubjectWeb.reload();

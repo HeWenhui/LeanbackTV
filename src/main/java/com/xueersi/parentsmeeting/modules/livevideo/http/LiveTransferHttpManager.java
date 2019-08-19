@@ -29,7 +29,7 @@ public class LiveTransferHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("isGetPlanInfo", "" + isGetPlanInfo);
         params.addBodyParam("sessid", LiveAppUserInfo.getInstance().getSessionId());
-//        params.setWriteAndreadTimeOut(20);
+        params.setWriteAndreadTimeOut(20);
         sendPost(ShareBusinessConfig.URL_STUDY_GET_LIVE_COURSE_TEST_INFO_FOR_PLAYBACK, params, requestCallBack);
     }
 
@@ -43,6 +43,7 @@ public class LiveTransferHttpManager extends BaseHttpBusiness {
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
+        params.setWriteAndreadTimeOut(20);
         sendPost(LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/playback/getEvent", params, requestCallBack);
     }
 

@@ -1220,6 +1220,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     protected void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
+        newCourseCache.onProgressChanged(newProgress);
         if (!loadResult) {
             preLoad.onProgressChanged(view, newProgress);
             if (newProgress == 100) {
