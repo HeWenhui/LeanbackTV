@@ -317,7 +317,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setLiveTime(data.getString("liveTime"));
             getInfo.setsTime(data.optLong("stime"));
             getInfo.seteTime(data.optLong("etime"));
-            getInfo.setNowTime(data.getDouble("nowTime"));
+            getInfo.setNowTime(data.getLong("nowTime"));
             //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));\
             if (data.has("isAllowTeamPk")) {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
