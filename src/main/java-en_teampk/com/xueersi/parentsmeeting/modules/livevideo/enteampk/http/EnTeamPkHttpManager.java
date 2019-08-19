@@ -52,6 +52,49 @@ public class EnTeamPkHttpManager {
         liveHttpManager.sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_InteractiveInfo + "?unique_id=" + unique_id, params, requestCallBack);
     }
 
+    public void dispatch(String userId, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.addBodyParam("stu_id", userId);
+//        liveHttpManager.sendGet(EnTeamPkHttpConfig.dispatch, httpRequestParams, new HttpCallBack() {
+//            @Override
+//            public void onPmSuccess(ResponseEntity responseEntity) {
+//                ArrayList<InetSocketAddress> addresses = enTeamPkResponseParser.parseTcpDispatch(responseEntity);
+//                callBack.onDataSucess(addresses);
+//            }
+//
+//            @Override
+//            public void onPmError(ResponseEntity responseEntity) {
+//                super.onPmError(responseEntity);
+//                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+//            }
+//
+//            @Override
+//            public void onPmFailure(Throwable error, String msg) {
+//                super.onPmFailure(error, msg);
+//                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+//            }
+//        });
+        liveHttpManager.sendGetNoBusiness(EnTeamPkHttpConfig.dispatch, httpRequestParams, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    String res = response.body().string();
+                    ResponseEntity responseEntity = new ResponseEntity();
+                    responseEntity.setJsonObject(new JSONObject(res));
+                    ArrayList<InetSocketAddress> addresses = enTeamPkResponseParser.parseTcpDispatch(responseEntity);
+                    callBack.onDataSucess(addresses);
+                } catch (Exception e) {
+                    callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, e.getMessage());
+                }
+            }
+        });
+    }
+
     public InteractiveTeam parseInteractiveTeam(String userId, JSONObject jsonObject) {
         InteractiveTeam interactiveTeam = enTeamPkResponseParser.parseInteractiveTeam(userId, jsonObject);
         return interactiveTeam;
