@@ -440,7 +440,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
         liveAndBackDebugIml.onGetInfo(getInfo, appID);
-        sysTimeOffset = (long) mGetInfo.getNowTime() - System.currentTimeMillis() / 1000;
+        sysTimeOffset =  mGetInfo.getNowTime() - System.currentTimeMillis() / 1000;
         mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mGetInfo.setMode(mLiveTopic.getMode());
         long enterTime = 0;

@@ -155,7 +155,7 @@ public class LiveGetInfo {
     /**
      * 当前时间
      */
-    private double nowTime;
+    private long nowTime;
     private List<TestInfoEntity> testInfo = new ArrayList<TestInfoEntity>();
     private ArrayList<TalkConfHost> newTalkConfHosts;
     /**
@@ -667,7 +667,7 @@ public class LiveGetInfo {
         this.liveTime = liveTime;
     }
 
-    public void setNowTime(double nowTime) {
+    public void setNowTime(long nowTime) {
         this.nowTime = nowTime;
     }
 
@@ -853,7 +853,7 @@ public class LiveGetInfo {
         this.eTime = eTime;
     }
 
-    public double getNowTime() {
+    public Long getNowTime() {
         return nowTime;
     }
 
