@@ -52,6 +52,13 @@ public class LiveQueHttpConfig {
     /** 辅导 提交试题 */
     public static String LIVE_GET_COURSEWARE_SUBMIT_TESTS = LiveHttpConfig.LIVE_HOST_SCIENCE + "/Tutorship/submitCourseWareTest";
     /** 辅导 获取课件结果 */
+
+    /** 投票查询是否已作答 */
+    public static String LIVE_IS_SUBMIT_COURSEWARE_VOTE = LiveHttpConfig.HTTP_APP_VOTE_HOST + "/vote/stuCheckCommit";
+    /** 投票提交投票 */
+    public static String LIVE_SUBMIT_COURSEWARE_VOTE = LiveHttpConfig.HTTP_APP_VOTE_HOST + "/vote/stuCommitVote";
+    /** 投票学生点击折叠次数统计 */
+    public static String LIVE_SUBMIT_COURSEWARE_VOTE_FOLD_COUNT = LiveHttpConfig.HTTP_APP_VOTE_HOST + "/vote/stuCommitFold";
     public static String LIVE_GET_COURSEWARE_TUTOR_RESULT = LiveHttpConfig.LIVE_HOST_SCIENCE + "/Tutorship/getStuTestResult";
 
     /** 辅导 加载课件 */

@@ -2418,6 +2418,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             int delayTime = 1000;
             if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(gameType)) {
                 delayTime = (int) (GroupGameConfig.WHATIS_MISSING_COURSEWARE_END_ANMITION_TIME * 1000);
+            }else if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(gameType)) {
+                delayTime = (int) (GroupGameConfig.SOLITAIRE_END_ANMITION_TIME * 1000);
             }
             if (delay) {
                 mainHandler.postDelayed(new Runnable() {

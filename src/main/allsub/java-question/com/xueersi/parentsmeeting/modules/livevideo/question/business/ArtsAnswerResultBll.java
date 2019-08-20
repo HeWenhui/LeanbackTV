@@ -26,6 +26,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.alibaba.fastjson.JSON;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
@@ -53,9 +55,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoteAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
@@ -149,6 +153,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private LiveSoundPool mLiveSoundPool;
     private RelativeLayout mRlResult;
 
+    private String testId;
     /**
      * @param context
      * @param liveBll
@@ -615,6 +620,16 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         closeAnswerResult(false);
     }
 
+    @Override
+    public void onUpdateVoteFoldCount(String count) {
+        getHttpManager().voteFoldCountCommit(count, testId, mGetInfo.getMainTeacherId(), mGetInfo.getTeacherId(), mGetInfo.getStuId(), mGetInfo.getStudentLiveInfo().getClassId(), new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("voteFoldCountCommit:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+            }
+        });
+    }
+
     /**
      * 表扬答题全对
      */
@@ -843,17 +858,29 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 mArtsAnswerResultEvent = null;
                 if ("off".equals(status)) {
                     if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
-                        post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!close && mRlResult != null) {
-                                    removeView(mRlResult);
-                                }
+                        if (data.optInt("ptype") == 21) {
+                            if (mDsipalyer != null) {
+                                mDsipalyer.remindSubmit();
                             }
-                        });
-                        EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));
+                        } else {
+                            post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!close && mRlResult != null) {
+                                        removeView(mRlResult);
+                                    }
+                                }
+                            });
+                            EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));
+                        }
                     } else {
-                        closeAnswerResult(true);
+                        if (data.optInt("ptype") == 21) {
+                            if (mDsipalyer != null) {
+                                mDsipalyer.remindSubmit();
+                            }
+                        } else {
+                            closeAnswerResult(true);
+                        }
                     }
                 } else if ("on".equals(status)) {
                     forceSumbmit = false;
@@ -927,6 +954,45 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mArtsAnswerResultEvent = event;
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()
                     || ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK == event.getType()) {
+                VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
+                if (detailInfo != null)
+                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
+                        final AnswerResultStateListener answerResultStateListener = event.getAnswerResultStateListener();
+                        if (answerResultStateListener != null) {
+                            mDsipalyer = new VoteAnswerResultPager(mContext, event.getDataStr(), mGetInfo.getPattern(), new AnswerResultStateListener() {
+                                @Override
+                                public void onCompeletShow() {
+                                    answerResultStateListener.onCompeletShow();
+                                    ArtsAnswerResultBll.this.onCompeletShow();
+                                }
+
+                                @Override
+                                public void onAutoClose(BasePager basePager) {
+                                    answerResultStateListener.onAutoClose(basePager);
+                                    ArtsAnswerResultBll.this.onAutoClose(basePager);
+                                }
+
+                                @Override
+                                public void onCloseByUser() {
+                                    answerResultStateListener.onCloseByUser();
+                                    ArtsAnswerResultBll.this.onCloseByUser();
+                                }
+
+                                @Override
+                                public void onUpdateVoteFoldCount(String count) {
+                                    answerResultStateListener.onUpdateVoteFoldCount(count);
+                                    ArtsAnswerResultBll.this.onUpdateVoteFoldCount(count);
+                                }
+                            });
+                        } else {
+                            mDsipalyer = new VoteAnswerResultPager(mContext, event.getDataStr(), mGetInfo.getPattern(), this);
+                        }
+                        testId = detailInfo.id;
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                                (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                        addView(mDsipalyer.getRootLayout(), layoutParams);
+                        return;
+                    }
                 boolean resultFromVoice = event.getType() == ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK;
                 onAnswerResult(event, event.getDataStr(), resultFromVoice);
                 StringBuilder stringBuilder = new StringBuilder();

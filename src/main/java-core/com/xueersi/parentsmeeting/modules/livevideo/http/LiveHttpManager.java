@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
@@ -2132,5 +2133,22 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("courseId", courseId);
         params.addBodyParam("isPlayBack", isPlayBack);
         sendPost(LiveHttpConfig.URL_LIVE_COURSE_GETEVALUATE, params, httpCallBack);
+    }
+
+    /**
+     * 投票统计折叠次数
+     *
+     * @param requestCallBack
+     */
+    public void voteFoldCountCommit(String foldCount, String testId, String mainTeacherId, String teacherId, String stuId, String classId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("foldCount", foldCount);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("teacherId", mainTeacherId);
+        params.addBodyParam("counselorId", teacherId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("classId", classId);
+        setDefaultParameter(params);
+        sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOTE_FOLD_COUNT, params, requestCallBack);
     }
 }

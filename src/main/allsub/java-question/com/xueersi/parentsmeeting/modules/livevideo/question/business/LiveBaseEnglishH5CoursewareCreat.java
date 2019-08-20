@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.log.logger.Logger;
@@ -218,6 +219,11 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                     if (LiveQueConfig.isGroupGame(type)) {
                         BaseEnglishH5CoursewarePager h5CoursewarePager = createGame(context, videoQuestionH5Entity, onH5ResultClose);
                         return h5CoursewarePager;
+                    }else if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, type)) {
+                        CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, "0", isArts, false);
+                        coursewareNativePager.setLivePagerBack(livePagerBack);
+                        return coursewareNativePager;
                     }
                 }
             }

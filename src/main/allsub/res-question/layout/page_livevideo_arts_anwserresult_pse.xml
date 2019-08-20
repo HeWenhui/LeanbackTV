@@ -15,7 +15,7 @@
         android:text="你要快快提交哦~"
         android:textColor="#F46832"
         android:textSize="20sp"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@id/lv_arts_answer_state_pse"
