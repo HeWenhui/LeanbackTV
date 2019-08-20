@@ -15,19 +15,32 @@ public class LecVideoActivity extends LiveVideoActivity {
 
     @Override
     protected LiveVideoFragmentBase getFragment() {
-        //测试大班整合
-        try {
-            // TODO: 2019-08-19 判断是否是大班整合 讲座：
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessFragment";
-            LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
-            return fragmentBase;
-        } catch (Exception e) {
 
+        if(isBigLive()){
+            try {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessFragment";
+                LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e) {
+
+            }
+        }else{
+            lectureLiveVideoFragment = new LectureLiveVideoFragment();
         }
-        lectureLiveVideoFragment = new LectureLiveVideoFragment();
+
         return lectureLiveVideoFragment;
     }
+
+
+
+    private  boolean isBigLive(){
+        // TODO: 2019-08-20 返回是不是大班整合
+        boolean result = getIntent().getBooleanExtra("isBigLive",false);
+        return true;
+    }
+
+
 
     @Override
     protected void onNewIntent(Intent intent) {

@@ -203,6 +203,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
         final int liveType = bundle.getInt("type", 0);
         final int from = intent.getIntExtra("", 0);
 
+
         Log.e("ckTrac", "====>RoomInit_000000:liveType=" + liveType);
         final LiveHttpManager httpManager = new LiveHttpManager(this);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
@@ -365,6 +366,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
      */
     private boolean isBigLiveRoom() {
         // TODO: 2019-08-19 判断是否是整合直播间
+        boolean isBigLive = getIntent().getBooleanExtra("isBigLive", false);
+
         return true;
     }
 
