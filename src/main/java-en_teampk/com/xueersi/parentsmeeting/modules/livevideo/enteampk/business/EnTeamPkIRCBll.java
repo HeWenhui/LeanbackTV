@@ -387,7 +387,17 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mLogtf.d("reportStuInfo:nick_name=" + nick_name + ",mode=" + mGetInfo.getMode());
                     LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
                     StuSegmentEntity stuSegmentEntity = mGetInfo.getBetterMe().getStuSegment();
-                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStandLiveName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, "" + stuSegmentEntity.getSegmentType(), stuSegmentEntity.getSegment(), "" + stuSegmentEntity.getStar(), "" + stuSegmentEntity.getSumCount(), new HttpCallBack(false) {
+                    String segmentType = "";
+                    String segment = "";
+                    String star = "";
+                    String sumCount = "";
+                    if (stuSegmentEntity != null) {
+                        segmentType = "" + stuSegmentEntity.getSegmentType();
+                        segment = stuSegmentEntity.getSegment();
+                        star = "" + stuSegmentEntity.getStar();
+                        sumCount = "" + stuSegmentEntity.getSumCount();
+                    }
+                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStandLiveName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, segmentType, segment, star, sumCount, new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
                             logger.d("reportStuInfo:onPmSuccess" + responseEntity.getJsonObject());
