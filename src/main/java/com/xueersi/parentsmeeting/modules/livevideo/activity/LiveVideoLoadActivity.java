@@ -3,8 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -27,7 +25,6 @@ import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -210,12 +207,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
         final LiveHttpManager httpManager = new LiveHttpManager(this);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             //大班整合-讲座
-            if (isIntegratedLiveRoom()) {
+            if (isBigLiveRoom()) {
                 int planId = Integer.parseInt(vSectionID);
                 httpManager.liveIntegratedGetInfo(planId,liveType,0, new HttpCallBack(mDataLoadEntity) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
-                        Log.e("ckTrac","========>LiveVideoActivity:onPmSuccess+"+responseEntity.getJsonObject().toString());
+                        //Log.e("ckTrac","========>LiveVideoActivity:onPmSuccess+"+responseEntity.getJsonObject().toString());
                         LiveBusinessResponseParser mHttpResponseParser = new LiveBusinessResponseParser();
                         JSONObject object = (JSONObject) responseEntity.getJsonObject();
                         LiveTopic mLiveTopic = new LiveTopic();
@@ -366,10 +363,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
      * 是否是整合直播间
      * @return
      */
-    private boolean isIntegratedLiveRoom() {
-
+    private boolean isBigLiveRoom() {
         // TODO: 2019-08-19 判断是否是整合直播间
-        
         return true;
     }
 
