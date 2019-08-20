@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -1525,5 +1526,117 @@ public class LiveGetInfo {
 
     public void setShowHightFeedback(boolean showHightFeedback) {
         this.showHightFeedback = showHightFeedback;
+    }
+    /*************************************************大班整合新增相关字段****************************************************************/
+
+    /**磐石id**/
+    private String psId;
+    /**磐石密码**/
+    private String psPwd;
+
+
+    /**主讲流名称**/
+    private String mainTeacherVieo;
+
+    /**辅导流名称**/
+    private String counselorTeacherVideo;
+
+    /**irc 昵称**/
+    private String ircNick;
+    /**irc 房间**/
+    private List<String> ircRoomList;
+
+    /**业务接口配置**/
+    private HashMap<String,String> urlMap;
+
+    /**云平台appId**/
+    private String psAppId;
+    /**云平台 appkey**/
+    private String psAppKey;
+
+    /**是否是大班整合直播**/
+    private boolean bigLive;
+
+
+    public String getMainTeacherVieo() {
+        return mainTeacherVieo;
+    }
+
+    public void setMainTeacherVieo(String mainTeacherVieo) {
+        this.mainTeacherVieo = mainTeacherVieo;
+    }
+
+    public String getCounselorTeacherVideo() {
+        return counselorTeacherVideo;
+    }
+
+    public void setCounselorTeacherVideo(String counselorTeacherVideo) {
+        this.counselorTeacherVideo = counselorTeacherVideo;
+    }
+
+    public String getIrcNick() {
+        return ircNick;
+    }
+
+    public void setIrcNick(String ircNick) {
+        this.ircNick = ircNick;
+    }
+
+    public List<String> getIrcRoomList() {
+        return ircRoomList;
+    }
+
+    public void setIrcRoomList(List<String> ircRoomList) {
+        this.ircRoomList = ircRoomList;
+    }
+
+    public HashMap<String, String> getUrlMap() {
+        return urlMap;
+    }
+
+    public void setUrlMap(HashMap<String, String> urlMap) {
+        this.urlMap = urlMap;
+    }
+
+    public String getPsAppId() {
+        return psAppId;
+    }
+
+    public void setPsAppId(String psAppId) {
+        this.psAppId = psAppId;
+    }
+
+    public String getPsAppKey() {
+        return psAppKey;
+    }
+
+    public void setPsAppKey(String psAppKey) {
+        this.psAppKey = psAppKey;
+    }
+
+    public void setPsId(String psId) {
+        this.psId = psId;
+    }
+
+    public String getPsId() {
+        return psId;
+    }
+
+
+    public void setPsPwd(String psPwd) {
+        this.psPwd = psPwd;
+    }
+
+    public String getPsPwd() {
+        return psPwd;
+    }
+
+
+    public void setBigLive(boolean bigLive) {
+        this.bigLive = bigLive;
+    }
+
+    public boolean isBigLive() {
+        return bigLive;
     }
 }

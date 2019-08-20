@@ -3,9 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 
 /**
  * Created by linyuqiang on 2018/7/18.
@@ -18,6 +17,8 @@ public class LecVideoActivity extends LiveVideoActivity {
     protected LiveVideoFragmentBase getFragment() {
         //测试大班整合
         try {
+            // TODO: 2019-08-19 判断是否是大班整合 讲座：
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessFragment";
             LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
             return fragmentBase;

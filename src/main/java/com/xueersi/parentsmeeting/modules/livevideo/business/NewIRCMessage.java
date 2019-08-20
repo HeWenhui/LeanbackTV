@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.tal100.chatsdk.ChatClient;
 import com.tal100.chatsdk.IChatClientListener;
@@ -131,8 +132,8 @@ public class NewIRCMessage implements IIRCMessage {
                     roomid = new ArrayList<>();
                 }
                 for (int i = 0; i < mChannels.length; i++) {
-                    roomid.add("#" + mChannels[i]);
-                    logger.i("#" + mChannels[i]);
+                    roomid.add(mChannels[i]);
+                    logger.i( mChannels[i]);
                 }
                 mChatClient.getRoomManager().joinChatRooms(roomid);
             } else if (PMDefs.ResultCode.Result_NicknameAlreadyExist == loginResp.code) {
@@ -501,7 +502,7 @@ public class NewIRCMessage implements IIRCMessage {
                         if (currentMode == null) {
                             mIRCCallback.onUserList(roomUserList.roomId, users);
                         } else {
-                            if (LiveTopic.MODE_CLASS.equals(currentMode) && ("#" + mChannels[0]).equals(roomUserList.roomId)) {
+                            if (LiveTopic.MODE_CLASS.equals(currentMode) && (mChannels[0]).equals(roomUserList.roomId)) {
                                 StringBuilder sb = new StringBuilder();
                                 for (User user : users) {
                                     sb.append(user.getNick());
@@ -511,7 +512,7 @@ public class NewIRCMessage implements IIRCMessage {
                                 mIRCCallback.onUserList(roomUserList.roomId, users);
                             }
 
-                            if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length > 1 && ("#" + mChannels[1]).equals(roomUserList.roomId)) {
+                            if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length > 1 && ( mChannels[1]).equals(roomUserList.roomId)) {
                                 StringBuilder sb = new StringBuilder();
                                 for (User user : users) {
                                     sb.append(user.getNick());
@@ -661,10 +662,10 @@ public class NewIRCMessage implements IIRCMessage {
                                 mIRCCallback.onNotice(sender, "", "", target, text, channel);
                             } else {
                                 if (mChannels.length > 1) {
-                                    if (("#" + mChannels[0]).equals(roomChatMessage.toRoomId)) {
+                                    if ((mChannels[0]).equals(roomChatMessage.toRoomId)) {
                                         mIRCCallback.onNotice(sender, "", "", target, text, channel);
                                     }
-                                    if (("#" + mChannels[1]).equals(roomChatMessage.toRoomId)) {
+                                    if ((mChannels[1]).equals(roomChatMessage.toRoomId)) {
                                         mIRCCallback.onNotice(sender, "", "", target, text, channel);
                                     }
                                 }
@@ -820,10 +821,10 @@ public class NewIRCMessage implements IIRCMessage {
             if (mChannels.length <= 1) {
                 mIRCCallback.onTopic(channel, topic, "", date, false, channel);
             } else {
-                if (("#" + mChannels[0]).equals(channel)) {
+                if (mChannels[0].equals(channel)) {
                     mIRCCallback.onTopic(channel, topic, "", date, false, channel);
                 }
-                if (("#" + mChannels[1]).equals(channel)) {
+                if (mChannels[1].equals(channel)) {
                     mIRCCallback.onTopic(channel, topic, "", date, false, channel);
                 }
             }
@@ -866,15 +867,15 @@ public class NewIRCMessage implements IIRCMessage {
         if (mChannels.length > 1 && currentMode != null) {
             if (LiveTopic.MODE_TRANING.equals(currentMode)) {
 //                mChatClient.getRoomManager().sendRoomMessage()
-                roomid.add("#" + mChannels[1]);
+                roomid.add(mChannels[1]);
                 mChatClient.getRoomManager().sendRoomMessage(roomid, notice, MSG_PRIORITY_NOTICE);
             }
             if (LiveTopic.MODE_CLASS.equals(currentMode)) {
-                roomid.add("#" + mChannels[0]);
+                roomid.add(mChannels[0]);
                 mChatClient.getRoomManager().sendRoomMessage(roomid, notice, MSG_PRIORITY_NOTICE);
             }
         } else {
-            roomid.add("#" + mChannels[0]);
+            roomid.add(mChannels[0]);
             mChatClient.getRoomManager().sendRoomMessage(roomid, notice, MSG_PRIORITY_NOTICE);
         }
     }
@@ -923,7 +924,7 @@ public class NewIRCMessage implements IIRCMessage {
         if (mChannels.length > 1 && currentMode != null) {
             if (LiveTopic.MODE_TRANING.equals(currentMode)) {
 //                mConnection.sendMessage("#" + mChannels[1], message);
-                roomid.add("#" + mChannels[1]);
+                roomid.add(mChannels[1]);
                 mChatClient.getRoomManager().sendRoomMessage(roomid, message, PMDefs.MessagePriority.MSG_PRIORITY_PRI);
                 //Loger.d("____bug 22  channel: "+mChannels[1] +"  message:  "+message);
             }
@@ -931,13 +932,13 @@ public class NewIRCMessage implements IIRCMessage {
             if (LiveTopic.MODE_CLASS.equals(currentMode)) {
                 //Loger.d("____bug 23  channel: "+mChannels[0] +"  message:  "+message);
 //                mConnection.sendMessage("#" + mChannels[0], message);
-                roomid.add("#" + mChannels[0]);
+                roomid.add(mChannels[0]);
                 mChatClient.getRoomManager().sendRoomMessage(roomid, message, PMDefs.MessagePriority.MSG_PRIORITY_PRI);
             }
         } else {
             // Loger.d("____bug 24  channel: "+mChannels[0] +"  message:  "+message);
 //            mConnection.sendMessage("#" + mChannels[0], message);
-            roomid.add("#" + mChannels[0]);
+            roomid.add(mChannels[0]);
             mChatClient.getRoomManager().sendRoomMessage(roomid, message, PMDefs.MessagePriority.MSG_PRIORITY_PRI);
         }
 //        mChatClient.getRoomManager().sendRoomMessage(roomid, message, 1);

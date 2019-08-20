@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.alibaba.android.arouter.utils.TextUtils;
 import com.alibaba.fastjson.JSON;
@@ -17,6 +18,7 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveIntegratedCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
@@ -63,6 +65,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         liveVideoSAConfigInner = liveVideoSAConfig.inner;
     }
 
+    @Override
     public LiveVideoSAConfig.Inner getLiveVideoSAConfigInner() {
         return liveVideoSAConfigInner;
     }
@@ -84,6 +87,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         }
     }
 
+    @Override
     public void sendPostDefault(String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
         setDefaultParameter(httpRequestParams);
         sendPost(url, httpRequestParams, httpCallBack);
@@ -93,6 +97,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         return liveVideoSAConfig;
     }
 
+    @Override
     public void sendPost(final String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
         long before = System.currentTimeMillis();
         super.sendPost(url, httpRequestParams, httpCallBack);
@@ -140,6 +145,23 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("liveId", liveId);
         sendPost(LiveVideoConfig.URL_LIVE_LECTURE_GET_INFO, params, requestCallBack);
     }
+
+
+    /**
+     * 大班整合直播间-直播信息接口
+     * @param planId  场次id
+     * @param bizId 直播类型：1 直播,2:讲座
+     * @param stuCould 学生课程id
+     */
+    public void liveIntegratedGetInfo(String planId,String bizId,String stuCould,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("planId",planId);
+        params.addBodyParam("bizId",bizId);
+        params.addBodyParam("stuCouId",stuCould);
+        Log.e("ckTrac","=========>liveIntegratedGetInfo:"+planId+":"+bizId+":"+stuCould);
+        sendJsonPost(LiveIntegratedCfg.LIVE_ENTER,params,requestCallBack);
+    }
+
 
     int getTimes = 1;
 
