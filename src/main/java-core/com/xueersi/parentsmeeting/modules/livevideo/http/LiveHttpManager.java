@@ -93,6 +93,11 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         sendPost(url, httpRequestParams, httpCallBack);
     }
 
+    public void sendJsonPostDefault(String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
+        setDefaultParameter(httpRequestParams);
+        sendJsonPost(url, httpRequestParams, httpCallBack);
+    }
+
     public LiveVideoSAConfig getLiveVideoSAConfig() {
         return liveVideoSAConfig;
     }
@@ -2070,9 +2075,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     /**
      * app摄像头开启状态
      *
-     * @param liveId       场次id
-     * @param stuId        学生id
-     * @param testId       互动题所属题目Id
+     * @param liveId 场次id
+     * @param stuId  学生id
+     * @param testId 互动题所属题目Id
      */
     public void sendSuperSpeakerCameraStatus(String liveId, String stuId, String testId, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
