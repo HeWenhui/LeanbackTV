@@ -94,19 +94,24 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                 liveGetInfo.seteTime(planInfoJsonObj.optLong("etime"));
 
                 //解析学科id
-                String subjectIds = planInfoJsonObj.optString("subjectIds");
-                String[] arrSubjIds = subjectIds.split(",");
-                liveGetInfo.setSubjectIds(arrSubjIds);
+                if(planInfoJsonObj.has("subjectIds")){
+                    String subjectIds = planInfoJsonObj.optString("subjectIds");
+                    String[] arrSubjIds = subjectIds.split(",");
+                    liveGetInfo.setSubjectIds(arrSubjIds);
+                }
 
                 // 解析直播课所属年级
-                // TODO: 2019-08-19  确认年级id解析
-               /* String gradsIdStr = planInfoJsonObj.optString("gradeIds");
+                String gradsIdStr = planInfoJsonObj.optString("gradeIds");
                 if(gradsIdStr != null && gradsIdStr.length() > 0){
                     String[]gradeIds = gradsIdStr.split(",");
                     if(gradeIds != null && gradeIds.length > 0){
-                        liveGetInfo.setGrade(gradeIds[0]);
+                        try {
+                            liveGetInfo.setGrade(Integer.parseInt(gradeIds[0]));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                }*/
+                }
 
             }
 
