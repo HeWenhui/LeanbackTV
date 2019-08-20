@@ -154,6 +154,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private RelativeLayout mRlResult;
 
     private String testId;
+    private static final int VOTE_TYPE = 21;
     /**
      * @param context
      * @param liveBll
@@ -858,7 +859,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 mArtsAnswerResultEvent = null;
                 if ("off".equals(status)) {
                     if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
-                        if (data.optInt("ptype") == 21) {
+                        if (data.optInt("ptype") == VOTE_TYPE) {
                             if (mDsipalyer != null) {
                                 mDsipalyer.remindSubmit();
                             }
@@ -874,7 +875,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));
                         }
                     } else {
-                        if (data.optInt("ptype") == 21) {
+                        if (data.optInt("ptype") == VOTE_TYPE) {
                             if (mDsipalyer != null) {
                                 mDsipalyer.remindSubmit();
                             }
