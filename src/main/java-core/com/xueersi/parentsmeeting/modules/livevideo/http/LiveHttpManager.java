@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLiveEnterParam;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
@@ -158,13 +159,17 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param bizId 直播类型：1 直播,2:讲座
      * @param stuCould 学生课程id
      */
-    public void liveIntegratedGetInfo(String planId,String bizId,String stuCould,HttpCallBack requestCallBack){
-        HttpRequestParams params = new HttpRequestParams();
+    public void liveIntegratedGetInfo(int planId,int bizId,int stuCould,HttpCallBack requestCallBack){
+      /*  HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("planId",planId);
         params.addBodyParam("bizId",bizId);
-        params.addBodyParam("stuCouId",stuCould);
+        params.addBodyParam("stuCouId",stuCould);*/
         Log.e("ckTrac","=========>liveIntegratedGetInfo:"+planId+":"+bizId+":"+stuCould);
-        sendJsonPost(LiveIntegratedCfg.LIVE_ENTER,params,requestCallBack);
+        BigLiveEnterParam param = new BigLiveEnterParam();
+        param.setBizId(bizId);
+        param.setPlanId(planId);
+        param.setStuCouId(stuCould);
+        sendJsonPost(LiveIntegratedCfg.LIVE_ENTER,param,requestCallBack);
     }
 
 

@@ -211,7 +211,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             //大班整合-讲座
             if (isIntegratedLiveRoom()) {
-                httpManager.liveIntegratedGetInfo(vSectionID,"2","", new HttpCallBack(mDataLoadEntity) {
+                int planId = Integer.parseInt(vSectionID);
+                httpManager.liveIntegratedGetInfo(planId,liveType,0, new HttpCallBack(mDataLoadEntity) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         Log.e("ckTrac","========>LiveVideoActivity:onPmSuccess+"+responseEntity.getJsonObject().toString());
