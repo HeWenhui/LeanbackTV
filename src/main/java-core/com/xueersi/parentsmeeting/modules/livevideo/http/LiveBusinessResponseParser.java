@@ -6,6 +6,7 @@ import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
@@ -49,6 +50,10 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                 liveGetInfo.setNickname(stuInfoJsonObj.optString("nickName", ""));
                 liveGetInfo.setEn_name(stuInfoJsonObj.optString("englishName", ""));
                 liveGetInfo.setStuSex(stuInfoJsonObj.optString("sex"));
+                //liveGetInfo.setStuId(stuInfoJsonObj.optString("id"));
+
+                liveGetInfo.setUname(LiveAppUserInfo.getInstance().getChildName());
+                liveGetInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
 
                 if (stuInfoJsonObj.has("psim")) {
                     JSONObject psImObject = stuInfoJsonObj.getJSONObject("psim");
@@ -132,6 +137,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                 mainTeacherInfo.setTeacherId(teacherInfoJsonObj.optString("id"));
                 mainTeacherInfo.setTeacherName(teacherInfoJsonObj.optString("name"));
                 mainTeacherInfo.setTeacherImg(teacherInfoJsonObj.optString("avatar"));
+                liveGetInfo.setMainTeacherId(teacherInfoJsonObj.optString("id"));
             }
 
 
@@ -181,7 +187,6 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                 }
 
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();
