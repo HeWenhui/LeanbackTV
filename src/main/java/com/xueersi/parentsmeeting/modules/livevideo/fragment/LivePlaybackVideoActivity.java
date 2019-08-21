@@ -30,7 +30,9 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
     protected LiveBackVideoFragmentBase getFragment() {
         String where = getIntent().getStringExtra("where");
 
+        //讲座回放
         if ("PublicLiveDetailActivity".equals(where)) {
+            //判断是否是大班整合
             if(isBigLive()){
                 try {
                     String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessBackFragment";
@@ -44,23 +46,14 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             }
 
         }
-        int pattern = getIntent().getIntExtra("pattern", 0);
 
+
+        int pattern = getIntent().getIntExtra("pattern", 0);
         isExperience = getIntent().getBooleanExtra("isExperience", false);
         if (!isExperience) {
             if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
-//                return new StandBackVideoFragment();
                 try {
                     String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.StandBackVideoFragment";
-                    LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
-                    return fragmentBase;
-                } catch (Exception e) {
-                    LiveCrashReport.postCatchedException(TAG, e);
-                }
-            }else{
-                // TODO: 2019/8/8 大班整合测试代码
-                try {
-                    String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessBackFragment";
                     LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
                     return fragmentBase;
                 } catch (Exception e) {
@@ -74,11 +67,14 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         return fragmentBase;
     }
 
+    /**
+     * 判断是否是大班整合
+     * @return
+     */
     private boolean isBigLive() {
-
-        // TODO: 2019-08-20 返回是否是大班整合 回放
-        boolean result = getIntent().getBooleanExtra("isBigLive",false);
-        return true;
+        Bundle bundle = getIntent().getExtras();
+        boolean  result = bundle != null && bundle.getBoolean("isBigLive");
+        return result;
     }
 
     @Override
@@ -134,6 +130,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
                     hashMap.put("logtype", "recorded");
                 } else if (serializable.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_LECTURE) {
                     hashMap.put("logtype", "lecplayback");
+                    hashMap.put("isBigLive",bundle.getBoolean("isBigLive")+"");
                 } else {
                     hashMap.put("logtype", "liveplayback");
                 }
