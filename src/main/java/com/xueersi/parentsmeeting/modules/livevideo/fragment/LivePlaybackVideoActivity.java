@@ -67,6 +67,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         return fragmentBase;
     }
 
+
     /**
      * 判断是否是大班整合
      * @return
