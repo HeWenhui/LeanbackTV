@@ -756,6 +756,9 @@ public class NewIRCMessage implements IIRCMessage {
         mChatClient.getPeerManager().addListener(mPeerListener);
         String appid = LiveAppUserInfo.getInstance().getPsAppId();
         String appkey = LiveAppUserInfo.getInstance().getPsAppClientKey();
+
+        Log.e("ckTrac","======>newIrc_msg_psid:"+appid+":"+appkey);
+
         //irc sdk初始化  code: 0 成功 ，1 参数错误 ， 19 已初始化
         int initcode = mChatClient.init(mContext.getApplicationContext(), appid, appkey, workSpaceDir.getAbsolutePath());
         logger.i("irc sdk initcode: " + initcode);
@@ -789,6 +792,10 @@ public class NewIRCMessage implements IIRCMessage {
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
         String psimId = LiveAppUserInfo.getInstance().getPsimId();
         String psimKey = LiveAppUserInfo.getInstance().getPsimPwd();
+
+
+        Log.e("ckTrac","======>newIrc_msg_psimId:"+psimId+":"+psimKey);
+
         int logincode = mChatClient.login(psimId, psimKey);
 
         Map<String, String> logHashMap = defaultlog();

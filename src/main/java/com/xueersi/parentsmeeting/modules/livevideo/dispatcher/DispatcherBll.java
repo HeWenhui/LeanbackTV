@@ -83,7 +83,8 @@ public class DispatcherBll extends BaseBll {
     }
 
 
-    public void artscoursewarenewpoint(final VideoSectionEntity sectionEntity, final String stuCouId, final VideoResultEntity entitys) {
+    public void artscoursewarenewpoint(final VideoSectionEntity sectionEntity, final String stuCouId,
+                                       final VideoResultEntity entitys) {
         DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
@@ -93,7 +94,8 @@ public class DispatcherBll extends BaseBll {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 Loger.e("Duncan", "responseEntity:" + responseEntity);
-                VideoResultEntity entity = dispatcherHttpResponseParser.parseNewArtsEvent(stuCouId, sectionEntity.getvSectionID(), entitys, responseEntity);
+                VideoResultEntity entity = dispatcherHttpResponseParser.parseNewArtsEvent(stuCouId,
+                        sectionEntity.getvSectionID(), entitys, responseEntity);
                 intentToPlayBack(sectionEntity, entity);
             }
 
@@ -321,16 +323,19 @@ public class DispatcherBll extends BaseBll {
                                 bundle.putSerializable("expAutoLive", expAutoLive);
 
                                 bundle.putSerializable("entity", entity.getAutoLive());
-                                LiveVideoEnter.intentToLiveBackExperience((Activity) mContext, bundle, mContext.getClass().getSimpleName());
+                                LiveVideoEnter.intentToLiveBackExperience((Activity) mContext, bundle,
+                                        mContext.getClass().getSimpleName());
                             } else if (entity.isExpSciAi()) {
                                 LiveVideoEnter.intentToAIExperience((Activity) mContext, bundle,
                                         mContext.getClass().getSimpleName());
                             } else {
-                                LiveVideoEnter.intentToExperience((Activity) mContext, bundle, mContext.getClass().getSimpleName());
+                                LiveVideoEnter.intentToExperience((Activity) mContext, bundle,
+                                        mContext.getClass().getSimpleName());
                             }
 
                         } else if (videoEntity.getPattern() == 2) {//全身直播体验课
-                            LiveVideoEnter.intentToStandExperience((Activity) mContext, bundle, mContext.getClass().getSimpleName());
+                            LiveVideoEnter.intentToStandExperience((Activity) mContext, bundle,
+                                    mContext.getClass().getSimpleName());
                         } else if (videoEntity.getPattern() == 6) {//半身直播体验课
                             LiveVideoEnter.intentToHalfBodyExperience((Activity) mContext, bundle,
                                     mContext.getClass().getSimpleName());
@@ -435,12 +440,16 @@ public class DispatcherBll extends BaseBll {
                 });
     }
 
-    public void getPublic(final String courseName, final String courseId, final String teacherId, final String gotoClassTime, final AbstractBusinessDataCallBack callBack) {
+    public void getPublic(final String courseName, final String courseId, final String teacherId,
+                          final String gotoClassTime,
+                          final AbstractBusinessDataCallBack callBack) {
         DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
-        dispatcherHttpManager.publicLiveCourseQuestion(courseId, teacherId, gotoClassTime, new HttpCallBack(dataLoadEntity) {
+        dispatcherHttpManager.publicLiveCourseQuestion(courseId, teacherId, gotoClassTime,
+                new HttpCallBack(dataLoadEntity) {
             public void onPmSuccess(ResponseEntity responseEntity) {
-                PublicEntity publicLiveCourseEntity = dispatcherHttpResponseParser.publicLiveCourseQuestionParser(responseEntity);
+                PublicEntity publicLiveCourseEntity =
+                        dispatcherHttpResponseParser.publicLiveCourseQuestionParser(responseEntity);
                 if (publicLiveCourseEntity != null) {
                     publicLiveCourseEntity.setCourseId(courseId);
                     publicLiveCourseEntity.setCourseName(courseName);
@@ -453,4 +462,46 @@ public class DispatcherBll extends BaseBll {
             }
         });
     }
+
+
+    /**
+     * 大班整合讲座-回放入口
+     *
+     * @param planId
+     * @param bizeId
+     * @param stuCouId
+     */
+    public void getBigLivePublic(String planId, String bizeId, String
+            stuCouId,AbstractBusinessDataCallBack callBack) {
+
+        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
+        postDataLoadEvent(dataLoadEntity.beginLoading());
+
+        int iPlanId = Integer.parseInt(planId);
+        int iBizeId = Integer.parseInt(bizeId);
+        int iStuCouId = Integer.parseInt(stuCouId);
+
+        dispatcherHttpManager.publicBigLiveCourseQuestion(iPlanId, iBizeId, iStuCouId,
+                new HttpCallBack(dataLoadEntity) {
+            public void onPmSuccess(ResponseEntity responseEntity) {
+
+
+                /*PublicEntity publicLiveCourseEntity = dispatcherHttpResponseParser.publicLiveCourseQuestionParser
+                (responseEntity);
+                if (publicLiveCourseEntity != null) {
+                    publicLiveCourseEntity.setCourseId(courseId);
+                    publicLiveCourseEntity.setCourseName(courseName);
+                    publicLiveCourseEntity.setTeacherId(teacherId);
+                    if (!TextUtils.isEmpty(gotoClassTime) && TextUtils.isDigitsOnly(gotoClassTime)) {
+                        publicLiveCourseEntity.setGotoClassTime(Long.parseLong(gotoClassTime));
+                    }
+                }
+                callBack.onDataSucess(publicLiveCourseEntity);
+                */
+
+            }
+        });
+    }
+
+
 }

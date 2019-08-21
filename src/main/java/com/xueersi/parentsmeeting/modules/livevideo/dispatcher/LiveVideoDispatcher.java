@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
@@ -56,6 +57,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     String teacherId;
     String gotoClassTime;
     private DispatcherBll dispatcherBll;
+    private boolean isBigLive;
 
     public interface LiveNewStatus {
         int LIVE_UNBEGIN = 1;//待开始
@@ -70,6 +72,9 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
     @Override
     public void dispatch(Activity srcActivity, Bundle bundle, int requestCode) {
+
+        Log.e("ckTrac","========>dispatch:999999:"+bundle.containsKey(ParamKey.EXTRAKEY_JSONPARAM));
+
         if (bundle == null) {
             return;
         }
@@ -96,6 +101,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 type = jsonObject.optInt("variety");
                 teacherId = jsonObject.optString("teacherId");
                 gotoClassTime = jsonObject.optString("stime");
+                //是否是大班整合
+                isBigLive = jsonObject.optBoolean("isBigLive",false);
+
+
                 if (type == TYPE_LIVE) {
                     startLive();
                 } else if (type == TYPE_RECORD) {
@@ -198,16 +207,43 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             AppBll.getInstance(activity);
             startLivePlayActivity(liveId);
         } else {
-            dispatcherBll.getPublic(chapterName, planId, teacherId, gotoClassTime, new AbstractBusinessDataCallBack() {
-                @Override
-                public void onDataSucess(Object... objData) {
-                    PublicEntity publicEntity = (PublicEntity) objData[0];
-                    if (publicEntity != null) {
-                        playLivePlayBackVideo(publicEntity);
+
+            Log.e("ckTrac","========>startLecture:999999");
+            if(isBigLive()){
+
+                dispatcherBll.getBigLivePublic(planId,"2","", new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+
+
+
                     }
-                }
-            });
+                });
+
+
+            }else {
+                dispatcherBll.getPublic(chapterName, planId, teacherId, gotoClassTime, new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        PublicEntity publicEntity = (PublicEntity) objData[0];
+                        if (publicEntity != null) {
+                            playLivePlayBackVideo(publicEntity);
+                        }
+                    }
+                });
+            }
+
         }
+    }
+
+    /**
+     * 是否是大班整合 直播
+     * @return
+     */
+    private boolean isBigLive() {
+        // TODO: 2019-08-20 返回是否是大班整合直播回放
+        boolean result = isBigLive;
+        return true;
     }
 
 

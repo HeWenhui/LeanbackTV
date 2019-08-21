@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -139,6 +140,8 @@ public class LiveGetPlayServer {
                 }
             }
         }
+
+        Log.e("ckTrac","=======>liveGetPlayServer:"+mGetInfo.getChannelname());
 
         if (mGetPlayServerCancle != null) {
             mGetPlayServerCancle.cancel();

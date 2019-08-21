@@ -10,10 +10,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
 public interface LiveIntegratedCfg {
 
     /**整合直播间 域名**/
-    String HTTP_HOST = "http://student.live.xueersi.com";
+    String HTTP_HOST = "https://studentlive.xueersi.com";
 
     /**进入直播间 接口**/
     String LIVE_ENTER =HTTP_HOST+"/v1/student/classroom/plan/enter";
+
+    /**进入回放 接口**/
+    String LIVE_PLAY_BACK_ENTER = HTTP_HOST+"/v1/student/classroom/playback/enter";
 
 
 }

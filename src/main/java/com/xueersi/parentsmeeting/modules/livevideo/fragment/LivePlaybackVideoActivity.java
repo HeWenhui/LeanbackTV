@@ -29,8 +29,20 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
     @Override
     protected LiveBackVideoFragmentBase getFragment() {
         String where = getIntent().getStringExtra("where");
+
         if ("PublicLiveDetailActivity".equals(where)) {
-            return new LecBackVideoFragment();
+            if(isBigLive()){
+                try {
+                    String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessBackFragment";
+                    LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
+                    return fragmentBase;
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(TAG, e);
+                }
+            }else{
+                return new LecBackVideoFragment();
+            }
+
         }
         int pattern = getIntent().getIntExtra("pattern", 0);
 
@@ -60,6 +72,13 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandLiveVideoExperienceFragment";
         LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
         return fragmentBase;
+    }
+
+    private boolean isBigLive() {
+
+        // TODO: 2019-08-20 返回是否是大班整合 回放
+        boolean result = getIntent().getBooleanExtra("isBigLive",false);
+        return true;
     }
 
     @Override
