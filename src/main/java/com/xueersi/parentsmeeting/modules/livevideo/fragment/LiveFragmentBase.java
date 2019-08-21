@@ -203,6 +203,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     protected void onUserBackPressed() {
         if (mLiveBll == null) {
             super.onUserBackPressed();
+            return;
         }
         boolean userBackPressed = mLiveBll.onUserBackPressed();
         if (!userBackPressed) {
