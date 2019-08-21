@@ -34,11 +34,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.widget.VoteView;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
@@ -128,7 +128,6 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         resultData = result;
         this.mStateListener = stateListener;
         this.pattern = pattern;
-        logger.e("voteresultData:" + result);
         initData();
     }
 
@@ -380,7 +379,6 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
                         params = new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH), SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT));
                     }
                     int offset = (int) ((1.0f - scale) * SizeUtils.Dp2Px(resultAnimeView.getContext(), 35f));
-//                    logger.e( "====>showOnScale:" + scale+"--"+scaleX+"--"+scaleY+"--"+offset);
                     params.rightMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 125f) * scale) - offset;
                     params.topMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 55f) / scale) + offset;
                     params.addRule(RelativeLayout.ALIGN_TOP, R.id.lv_arts_answer_result_pse);
@@ -404,7 +402,6 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
                     layoutParams.addRule(RelativeLayout.ALIGN_TOP, R.id.lv_arts_answer_result_pse);
                     layoutParams.addRule(RelativeLayout.ALIGN_RIGHT, R.id.lv_arts_answer_result_pse);
                     LayoutParamsUtil.setViewLayoutParams(tvClose, layoutParams);
-//                    logger.e( "====>showOnClose:" + params.rightMargin+"--"+params.topMargin+"--"+layoutParams.rightMargin+"--"+layoutParams.topMargin);
                     if (isforce != 1 || isPlayBack) {
                         remindSubmit();
                     }
@@ -685,7 +682,6 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         public void onMessage(short type, int operation, String msg) {
             if (type == TcpConstants.VOTE_TYPE) {
                 analysisVoteData(msg);
-                logger.e("voteresultData1:" + msg);
             }
         }
 

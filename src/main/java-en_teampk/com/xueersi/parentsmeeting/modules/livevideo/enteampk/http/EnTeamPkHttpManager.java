@@ -2,11 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.http;
 
 import com.google.gson.JsonObject;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
@@ -154,7 +156,13 @@ public class EnTeamPkHttpManager {
         }
         httpRequestParams.setJson(httpjson.toString());
         logger.d("reportOperateGroupGame:" + httpjson.toString());
-        liveHttpManager.baseSendPostNoBusinessJson(LiveQueHttpConfig.LIVE_GROUPGAME_REPORT+"?hkey="+bodyJson.opt("live_id")+"-"+bodyJson.opt("class_id")+"-"+bodyJson.opt("pk_team_id"), httpRequestParams,new Callback() {
+        String url = "";
+        if (AppConfig.DEBUG) {
+            url = LiveVideoConfig.APP_GROUP_GAME_TCP_HOST_DEBUG + LiveQueHttpConfig.LIVE_GROUPGAME_REPORT + "?hkey=" + bodyJson.opt("live_id") + "-" + bodyJson.opt("class_id") + "-" + bodyJson.opt("pk_team_id");
+        } else {
+            url = LiveVideoConfig.APP_GROUP_GAME_TCP_HOST + LiveQueHttpConfig.LIVE_GROUPGAME_REPORT + "?hkey=" + bodyJson.opt("live_id") + "-" + bodyJson.opt("class_id") + "-" + bodyJson.opt("pk_team_id");
+        }
+        liveHttpManager.baseSendPostNoBusinessJson(url, httpRequestParams,new Callback() {
 
             @Override
             public void onFailure(Call call, IOException e) {
