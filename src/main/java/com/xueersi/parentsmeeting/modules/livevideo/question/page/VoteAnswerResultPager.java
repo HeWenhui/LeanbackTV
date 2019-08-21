@@ -34,11 +34,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.widget.VoteView;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
@@ -105,11 +105,11 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
     ViewPager viewPager;
     VotePagerAdapter votePagerAdapter;
     private List<HashMap> mData;
-    LinearLayout ll_livevideo_vote_dian;
-    ImageView iv_livevideo_vote_dian_one;
-    ImageView iv_livevideo_vote_dian_two;
-    ImageView iv_livevideo_vote_left;
-    ImageView iv_livevideo_vote_right;
+    LinearLayout llLiveVideoVoteDian;
+    ImageView ivLiveVideoVoteDianOne;
+    ImageView ivLiveVideoVoteDianTwo;
+    ImageView ivLiveVideoVoteLeft;
+    ImageView ivLiveVideoVoteRight;
     /**
      * 金币数量
      */
@@ -128,7 +128,6 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         resultData = result;
         this.mStateListener = stateListener;
         this.pattern = pattern;
-        logger.e("voteresultData:" + result);
         initData();
     }
 
@@ -142,18 +141,18 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         llRewardInfo = view.findViewById(R.id.ll_arts_answer_reslult_reward_info);
         tvGoldCount = view.findViewById(R.id.tv_live_speech_result_mygold);
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        ll_livevideo_vote_dian = (LinearLayout) view.findViewById(R.id.ll_livevideo_vote_dian);
-        iv_livevideo_vote_dian_one = (ImageView) view.findViewById(R.id.iv_livevideo_vote_dian_one);
-        iv_livevideo_vote_dian_two = (ImageView) view.findViewById(R.id.iv_livevideo_vote_dian_two);
-        iv_livevideo_vote_left = (ImageView) view.findViewById(R.id.iv_livevideo_vote_left);
-        iv_livevideo_vote_right = (ImageView) view.findViewById(R.id.iv_livevideo_vote_right);
-        iv_livevideo_vote_left.setOnClickListener(new View.OnClickListener() {
+        llLiveVideoVoteDian = (LinearLayout) view.findViewById(R.id.ll_livevideo_vote_dian);
+        ivLiveVideoVoteDianOne = (ImageView) view.findViewById(R.id.iv_livevideo_vote_dian_one);
+        ivLiveVideoVoteDianTwo = (ImageView) view.findViewById(R.id.iv_livevideo_vote_dian_two);
+        ivLiveVideoVoteLeft = (ImageView) view.findViewById(R.id.iv_livevideo_vote_left);
+        ivLiveVideoVoteRight = (ImageView) view.findViewById(R.id.iv_livevideo_vote_right);
+        ivLiveVideoVoteLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewPager.setCurrentItem(0);
             }
         });
-        iv_livevideo_vote_right.setOnClickListener(new View.OnClickListener() {
+        ivLiveVideoVoteRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewPager.setCurrentItem(1);
@@ -200,20 +199,20 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
     private void changeView(int position) {
         switch (position) {
             case 0:
-                iv_livevideo_vote_dian_one.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_tu));
-                iv_livevideo_vote_dian_two.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_ao));
-                iv_livevideo_vote_left.setEnabled(false);
-                iv_livevideo_vote_left.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_left_diss));
-                iv_livevideo_vote_right.setEnabled(true);
-                iv_livevideo_vote_right.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_right_click));
+                ivLiveVideoVoteDianOne.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_tu));
+                ivLiveVideoVoteDianTwo.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_ao));
+                ivLiveVideoVoteLeft.setEnabled(false);
+                ivLiveVideoVoteLeft.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_left_diss));
+                ivLiveVideoVoteRight.setEnabled(true);
+                ivLiveVideoVoteRight.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_right_click));
                 break;
             case 1:
-                iv_livevideo_vote_dian_one.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_ao));
-                iv_livevideo_vote_dian_two.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_tu));
-                iv_livevideo_vote_left.setEnabled(true);
-                iv_livevideo_vote_left.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_left_click));
-                iv_livevideo_vote_right.setEnabled(false);
-                iv_livevideo_vote_right.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_right_diss));
+                ivLiveVideoVoteDianOne.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_ao));
+                ivLiveVideoVoteDianTwo.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_dian_tu));
+                ivLiveVideoVoteLeft.setEnabled(true);
+                ivLiveVideoVoteLeft.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_left_click));
+                ivLiveVideoVoteRight.setEnabled(false);
+                ivLiveVideoVoteRight.setImageDrawable(mContext.getResources().getDrawable(R.drawable.livevideo_vote_right_diss));
                 break;
         }
     }
@@ -380,7 +379,6 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
                         params = new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH), SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT));
                     }
                     int offset = (int) ((1.0f - scale) * SizeUtils.Dp2Px(resultAnimeView.getContext(), 35f));
-//                    logger.e( "====>showOnScale:" + scale+"--"+scaleX+"--"+scaleY+"--"+offset);
                     params.rightMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 125f) * scale) - offset;
                     params.topMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 55f) / scale) + offset;
                     params.addRule(RelativeLayout.ALIGN_TOP, R.id.lv_arts_answer_result_pse);
@@ -404,7 +402,6 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
                     layoutParams.addRule(RelativeLayout.ALIGN_TOP, R.id.lv_arts_answer_result_pse);
                     layoutParams.addRule(RelativeLayout.ALIGN_RIGHT, R.id.lv_arts_answer_result_pse);
                     LayoutParamsUtil.setViewLayoutParams(tvClose, layoutParams);
-//                    logger.e( "====>showOnClose:" + params.rightMargin+"--"+params.topMargin+"--"+layoutParams.rightMargin+"--"+layoutParams.topMargin);
                     if (isforce != 1 || isPlayBack) {
                         remindSubmit();
                     }
@@ -500,9 +497,9 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 mData.clear();
                 mData.add(map);
             } else {
-                ll_livevideo_vote_dian.setVisibility(View.VISIBLE);
-                iv_livevideo_vote_left.setVisibility(View.VISIBLE);
-                iv_livevideo_vote_right.setVisibility(View.VISIBLE);
+                llLiveVideoVoteDian.setVisibility(View.VISIBLE);
+                ivLiveVideoVoteLeft.setVisibility(View.VISIBLE);
+                ivLiveVideoVoteRight.setVisibility(View.VISIBLE);
                 LinkedHashMap<String, Integer> map1 = new LinkedHashMap<String, Integer>();
                 LinkedHashMap<String, Integer> map2 = new LinkedHashMap<String, Integer>();
                 for (int i = 0; i < optionTitleArray.length(); i++) {
@@ -685,7 +682,6 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         public void onMessage(short type, int operation, String msg) {
             if (type == TcpConstants.VOTE_TYPE) {
                 analysisVoteData(msg);
-                logger.e("voteresultData1:" + msg);
             }
         }
 

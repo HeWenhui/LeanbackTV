@@ -1846,7 +1846,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         @Override
                         public void onTcpConnect() {
                             sendTest("onTcpConnect");
-                            logger.d("receiveTCP : onTcpConnect:type="+Arrays.toString( answerInfo.toArray()));
                         }
                     });
                 }
@@ -2840,13 +2839,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 for (int allAns = 0; allAns < answerList.size(); allAns++) {
                                     GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(allAns);
                                     if (answer.getId() == word_id) {
-                                        vidooCannonEntity.rightNum++;
                                         //一个单词一个能量
                                         if (vidooCannonEntity.teamMemberEntity.getEnergy() < MAX_ENERGY) {
                                             if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
                                                     .equals(detailInfo.type)){
-                                                vidooCannonEntity.teamMemberEntity.setEnergy(vidooCannonEntity.teamMemberEntity.getEnergy() + 2);
+                                                    if (current_word == currentAnswerIndex){
+                                                        vidooCannonEntity.rightNum++;
+                                                        vidooCannonEntity.teamMemberEntity.setEnergy(vidooCannonEntity.teamMemberEntity.getEnergy() + 2);
+                                                        answerInfo.add(true);
+                                                    }
                                             }else {
+                                                vidooCannonEntity.rightNum++;
                                                 vidooCannonEntity.teamMemberEntity.setEnergy(vidooCannonEntity.teamMemberEntity.getEnergy() + 1);
                                             }
                                         }
@@ -2955,8 +2958,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                     jsonData.put("score", score);
                                                     if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
                                                             .equals(detailInfo.type)){
-                                                        answerInfo.add(true);
-                                                        jsonData.put("nextStudentNum",  getNextPageNum(currentAnswerIndex,true));
+                                                            jsonData.put("nextStudentNum",  getNextPageNum(currentAnswerIndex,true));
                                                     } else {
                                                         jsonData.put("studentNum", finalStudentNum);
                                                     }

@@ -30,7 +30,9 @@ public class LiveVideoConfig {
     public static String APP_ARTS_HTTP_HOST = "https://app.arts.xueersi.com";
     /** 文科的接口域名 */
     public static String APP_ARTS_WXEN_HTTP_HOST = "https://wxen.arts.xueersi.com";
-
+    /** 小组互动TCP上传的接口域名 */
+    public static String APP_GROUP_GAME_TCP_HOST = "https://groupgame.xueersi.com";
+    public static String APP_GROUP_GAME_TCP_HOST_DEBUG = "http://groupgame.xueersi.com";
     /** 视频宽度 */
     public static final float VIDEO_WIDTH = 1280f;
     /** 视频高度 */

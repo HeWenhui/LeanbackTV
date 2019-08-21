@@ -18,7 +18,6 @@ public class LiveHttpConfig {
 
     public static String HTTP_LIVE_CHINESE_HOST = "https://live.chs.xueersi.com";
     public static String HTTP_APP_ENGLISH_HOST = AppConfig.HTTP_HOST_ARTS;
-    public static String HTTP_APP_VOTE_HOST = "http://wxen.arts.xueersi.com";
     /** 文科新域名 */
     public static String chsCoursewareH5 = HTTP_LIVE_CHINESE_HOST + "/Live/coursewareH5/";
     /** 文科新域名 */
