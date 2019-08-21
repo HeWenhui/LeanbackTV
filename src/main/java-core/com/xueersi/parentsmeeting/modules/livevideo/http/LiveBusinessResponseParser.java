@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.util.Log;
 
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -46,14 +48,13 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
             //解析学生-基础信息
             if (data.has("stuInfo")) {
                 JSONObject stuInfoJsonObj = data.getJSONObject("stuInfo");
-                liveGetInfo.setStuName(stuInfoJsonObj.optString("userName", ""));
+                liveGetInfo.setUname(stuInfoJsonObj.optString("userName", ""));
                 liveGetInfo.setNickname(stuInfoJsonObj.optString("nickName", ""));
+                liveGetInfo.setStuName(stuInfoJsonObj.optString("realName"));
                 liveGetInfo.setEn_name(stuInfoJsonObj.optString("englishName", ""));
                 liveGetInfo.setStuSex(stuInfoJsonObj.optString("sex"));
-                //liveGetInfo.setStuId(stuInfoJsonObj.optString("id"));
-
-                liveGetInfo.setUname(LiveAppUserInfo.getInstance().getChildName());
-                liveGetInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
+                liveGetInfo.setStuId(stuInfoJsonObj.optString("id"));
+                liveGetInfo.setStuImg(stuInfoJsonObj.optString("avatar"));
 
                 if (stuInfoJsonObj.has("psim")) {
                     JSONObject psImObject = stuInfoJsonObj.getJSONObject("psim");
