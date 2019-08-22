@@ -141,6 +141,7 @@ public class NewIRCMessage implements IIRCMessage {
                 mChatClient.logout("Nickname is already in use");
                 if (mNickname.startsWith("s")) {
                     target = "w" + mNickname;
+                    LiveAppUserInfo.getInstance().setIrcNick(target);
                 } else if (mNickname.startsWith("ws")) {
                     target = mNickname.substring(1);
                 }

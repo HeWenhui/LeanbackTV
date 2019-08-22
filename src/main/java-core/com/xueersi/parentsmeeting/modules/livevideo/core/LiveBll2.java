@@ -523,6 +523,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         //缓存磐石 psimId ，psimpwd
         LiveAppUserInfo.getInstance().setPsimId(getInfo.getPsId());
         LiveAppUserInfo.getInstance().setPsimPwd(getInfo.getPsPwd());
+        //设置ircNIck
+        LiveAppUserInfo.getInstance().setIrcNick(getInfo.getIrcNick());
 
 
         //房间号默认取第一个
