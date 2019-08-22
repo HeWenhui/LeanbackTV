@@ -94,7 +94,7 @@ public class CourseWareParse {
         return null;
     }
 
-    public ChineseAISubjectResultEntity paresChiAIStuTestResult(ResponseEntity responseEntity){
+    public ChineseAISubjectResultEntity paresChiAIStuTestResult(ResponseEntity responseEntity) {
         ChineseAISubjectResultEntity resultEntity = new ChineseAISubjectResultEntity();
         try {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
@@ -165,7 +165,7 @@ public class CourseWareParse {
      * @param responseEntity
      * @return
      */
-    public GroupGameTestInfosEntity parseGroupGameTestInfo(ResponseEntity responseEntity) {
+    public GroupGameTestInfosEntity parseGroupGameTestInfo(ResponseEntity responseEntity, String type) {
         try {
             GroupGameTestInfosEntity groupGameTestInfos = new GroupGameTestInfosEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
@@ -185,7 +185,9 @@ public class CourseWareParse {
                 testinfo.setTotalTime(testObj.getInt("totalTime"));
                 testinfo.setStemLength(testObj.getInt("stemLength"));
                 testinfo.setGameModel(testObj.optInt("gameModel", LiveQueConfig.GAME_MODEL_1));
-                testinfo.setGameOrder(testObj.getString("gameOrder"));
+                if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(type)) {
+                    testinfo.setGameOrder(testObj.optString("gameOrder"));
+                }
                 List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = new ArrayList<>();
                 JSONArray answers = testObj.getJSONArray("answers");
                 for (int j = 0; j < answers.length(); j++) {
@@ -203,6 +205,7 @@ public class CourseWareParse {
             return groupGameTestInfos;
         } catch (JSONException e) {
             e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseGroupGameTestInfo", e.getMessage());
         }
         return null;
     }
@@ -244,6 +247,7 @@ public class CourseWareParse {
             return groupGameTestInfos;
         } catch (JSONException e) {
             e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseCleanUpTestInfo", e.getMessage());
         }
         return null;
     }
