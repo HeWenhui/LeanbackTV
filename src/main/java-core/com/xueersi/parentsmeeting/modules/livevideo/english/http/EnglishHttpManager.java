@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.http.EnTeamPkResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.lib.GroupGameTcp;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
@@ -90,7 +91,7 @@ public class EnglishHttpManager {
             httpjson.put("ver", TcpConstants.ver);
             httpjson.put("type", type);
             httpjson.put("op", operation);
-            httpjson.put("seq", 0);
+            httpjson.put("seq", GroupGameTcp.seq++);
             httpjson.put("timestamp", System.currentTimeMillis());
             httpjson.put("body", bodyJson);
         } catch (Exception e) {
