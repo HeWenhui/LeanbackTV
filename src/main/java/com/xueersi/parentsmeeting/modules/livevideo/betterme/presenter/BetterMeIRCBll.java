@@ -27,6 +27,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Random;
+
 /**
  * 英语小目标 presenter层
  *
@@ -62,7 +64,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super(context, liveBll);
         mBetterMeView = new BetterMeViewImpl(mContext);
         mBetterMeView.setPresenter(this);
-        putInstance(BetterMeContract.BetterMePresenter.class,this);
+        putInstance(BetterMeContract.BetterMePresenter.class, this);
     }
 
     @Override
@@ -97,7 +99,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             case XESCODE.EXAM_STOP:
                 onQuestionEnd();
                 break;
-            case XESCODE.MODECHANGE:{
+            case XESCODE.MODECHANGE: {
                 //如果辅导老师没有发小目标，主讲老师切流
                 if (!teamPKStatus && LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
                     getBetterMe(FROM_MODE_CHANGE);
@@ -130,12 +132,15 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimType) || BetterMeConfig
                 .TYPE_PARTICIPATERATE.equals(aimType)) {
+            Random r = new Random();
+            int s = r.nextInt(3);
+            s += 5;
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     updateBetterMe(true);
                 }
-            }, 5000);
+            }, s * 1000);
         }
     }
 
@@ -228,8 +233,8 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             public void onPmError(ResponseEntity responseEntity) {
                 logger.i("getBetterMe:onPmError():error=" + responseEntity.getErrorMsg());
                 super.onPmError(responseEntity);
-                BetterMeExit.EnglishTeamPK.startPK(mContext,showPk);
-        }
+                BetterMeExit.EnglishTeamPK.startPK(mContext, showPk);
+            }
         });
     }
 
