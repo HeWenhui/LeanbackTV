@@ -353,7 +353,7 @@ public class CourseWareHttpManager {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     Boolean isSubmit = jsonObject.optBoolean("isSubmit");
                     if (isSubmit) {
-                        callBack.onDataSucess(responseEntity.getJsonObject(),true);
+                        callBack.onDataSucess(responseEntity.getJsonObject(), true);
                     } else {
                         submitH5Vote(userAnswer, testId, classId, stuId, isPlayBack, isforce, callBack);
                     }
@@ -402,7 +402,7 @@ public class CourseWareHttpManager {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("submitH5Vote:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
-                callBack.onDataSucess(responseEntity.getJsonObject(),false);
+                callBack.onDataSucess(responseEntity.getJsonObject(), false);
             }
 
             @Override
@@ -440,7 +440,7 @@ public class CourseWareHttpManager {
                 if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(type)) {
                     entity = courseWareParse.parseCleanUpTestInfo(responseEntity);
                 } else {
-                    entity = courseWareParse.parseGroupGameTestInfo(responseEntity);
+                    entity = courseWareParse.parseGroupGameTestInfo(responseEntity, type);
                 }
                 if (entity != null) {
                     callBack.onDataSucess(entity);

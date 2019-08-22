@@ -119,7 +119,7 @@ public class GroupGameTestInfosEntity {
         private int gameModel;
 
         /**
-         * 答题顺序
+         * 答题顺序，接龙使用
          */
         private String gameOrder;
         /**
