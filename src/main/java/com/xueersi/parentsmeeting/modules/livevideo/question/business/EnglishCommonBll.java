@@ -98,7 +98,7 @@ public class EnglishCommonBll extends LiveBaseBll {
 
                 @Override
                 public void send(short type, int operation, JSONObject bodyJson, AbstractBusinessDataCallBack callBack) {
-
+                    getEnglishHttpManager().reportOperateGroupGame(type, operation, bodyJson, callBack);
                 }
 
                 @Override

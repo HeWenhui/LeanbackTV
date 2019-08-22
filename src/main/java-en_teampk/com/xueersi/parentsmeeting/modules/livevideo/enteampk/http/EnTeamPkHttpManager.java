@@ -94,42 +94,4 @@ public class EnTeamPkHttpManager {
         });
     }
 
-    /**
-     * 小组互动 - 上报小组互动互动信息
-     */
-    public void reportOperateGroupGame(final short type, final int operation, final JSONObject bodyJson, final AbstractBusinessDataCallBack callBack) {
-        HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
-        JSONObject httpjson = new JSONObject();
-        try {
-            httpjson.put("ver", TcpConstants.ver);
-            httpjson.put("type",  type);
-            httpjson.put("op",  operation);
-            httpjson.put("seq",  0);
-            httpjson.put("timestamp",  System.currentTimeMillis());
-            httpjson.put("body",bodyJson);
-        }catch (Exception e){
-
-        }
-        httpRequestParams.setJson(httpjson.toString());
-        logger.d("reportOperateGroupGame:" + httpjson.toString());
-        String url = "";
-        if (AppConfig.DEBUG) {
-            url = LiveVideoConfig.APP_GROUP_GAME_TCP_HOST_DEBUG + LiveQueHttpConfig.LIVE_GROUPGAME_REPORT + "?hkey=" + bodyJson.opt("live_id") + "-" + bodyJson.opt("class_id") + "-" + bodyJson.opt("pk_team_id");
-        } else {
-            url = LiveVideoConfig.APP_GROUP_GAME_TCP_HOST + LiveQueHttpConfig.LIVE_GROUPGAME_REPORT + "?hkey=" + bodyJson.opt("live_id") + "-" + bodyJson.opt("class_id") + "-" + bodyJson.opt("pk_team_id");
-        }
-        liveHttpManager.baseSendPostNoBusinessJson(url, httpRequestParams,new Callback() {
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                logger.d("reportOperateGroupGame=fail");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                logger.d("reportOperateGroupGame=success");
-            }
-        });
-    }
 }
