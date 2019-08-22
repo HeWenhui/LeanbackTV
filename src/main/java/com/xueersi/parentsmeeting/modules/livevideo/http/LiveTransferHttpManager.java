@@ -43,6 +43,7 @@ public class LiveTransferHttpManager extends BaseHttpBusiness {
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
+        params.setWriteAndreadTimeOut(20);
         sendPost(LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/playback/getEvent", params, requestCallBack);
     }
 

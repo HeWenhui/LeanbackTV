@@ -141,6 +141,11 @@ public class ChsAnswerResultBackBll extends LiveBackBaseBll implements AnswerRes
         closeAnswerResult(false);
     }
 
+    @Override
+    public void onUpdateVoteFoldCount(String count) {
+
+    }
+
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onAnswerResult(ChsAnswerResultEvent event) {
         if (ChsAnswerResultEvent.TYPE_AI_CHINESE_ANSWERRESULT == event.getmType()) {

@@ -74,6 +74,7 @@ public class AllBllConfig {
     };
     private static String[] engClassPath = {
             //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishCommonBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBll",
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",

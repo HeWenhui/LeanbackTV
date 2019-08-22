@@ -1,0 +1,129 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CC000000">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@id/lv_arts_answer_state_pse"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <RelativeLayout
+        android:id="@id/rl_arts_pse_answer_result_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@id/lv_arts_answer_result_pse"
+            android:layout_width="640dp"
+            android:layout_height="360dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter" />
+
+        <LinearLayout
+            android:id="@id/ll_arts_answer_reslult_reward_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/lv_arts_answer_result_pse"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="83dp"
+            android:background="@drawable/bg_livevideo_vote_jiangli"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@id/iv_live_speech_result_mygold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="13dp"
+                android:layout_marginTop="2dp"
+                android:src="@drawable/zhanduipk_fantastic_jinbi_pic" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_live_speech_result_mygold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="+0"
+                android:textColor="#FF824B"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="300dp"
+            android:layout_height="130dp"
+            android:layout_below="@id/ll_arts_answer_reslult_reward_info"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"></android.support.v4.view.ViewPager>
+
+        <ImageView
+            android:id="@+id/iv_livevideo_vote_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/viewpager"
+            android:src="@drawable/livevideo_vote_left_diss"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_vote_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/viewpager"
+            android:src="@drawable/livevideo_vote_right_click"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ll_livevideo_vote_dian"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/viewpager"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_livevideo_vote_dian_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/livevideo_vote_dian_tu" />
+
+            <ImageView
+                android:id="@+id/iv_livevideo_vote_dian_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/livevideo_vote_dian_ao" />
+        </LinearLayout>
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_arts_answer_result_pse_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/lv_arts_answer_result_pse"
+            android:layout_alignTop="@+id/lv_arts_answer_result_pse"
+            android:text=""
+            android:textColor="#ff8C8080"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@id/iv_arts_answer_result_answer_btn"
+        android:layout_width="108dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/selector_live_artspse_answer_result"
+        android:visibility="gone" />
+
+</RelativeLayout>

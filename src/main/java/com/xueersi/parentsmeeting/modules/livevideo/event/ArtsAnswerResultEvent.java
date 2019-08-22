@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.event;
 
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 
 /**
@@ -14,7 +15,7 @@ public class ArtsAnswerResultEvent {
     /** h5 js回调待会的原始数据 */
     private String dataStr;
     SpeechResultEntity speechResultEntity;
-
+    AnswerResultStateListener answerResultStateListener;
     private String testId;
     private int isRight;
     /** 1-强制收题，0-自己提交*/
@@ -44,7 +45,8 @@ public class ArtsAnswerResultEvent {
     /** 本地上传语音答题 填空选择 */
     public static final int TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK = 5;
 
-
+    /** 投票结束通知 */
+    public static final int TYPE_H5_VOTE_RESULT = 6;
     /**
      * @param dataStr 结果数据   type 为1时  dataStr 为答案原始数据  type为2时  为试题id
      * @param type    答题结果类型
@@ -78,6 +80,13 @@ public class ArtsAnswerResultEvent {
         return testId;
     }
 
+    public void setAnswerResultStateListener(AnswerResultStateListener answerResultStateListener) {
+        this.answerResultStateListener = answerResultStateListener;
+    }
+
+    public AnswerResultStateListener getAnswerResultStateListener() {
+        return answerResultStateListener;
+    }
 
     public void setIsRight(int isRight) {
         this.isRight = isRight;

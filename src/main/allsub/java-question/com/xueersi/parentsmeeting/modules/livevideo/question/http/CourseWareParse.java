@@ -185,6 +185,7 @@ public class CourseWareParse {
                 testinfo.setTotalTime(testObj.getInt("totalTime"));
                 testinfo.setStemLength(testObj.getInt("stemLength"));
                 testinfo.setGameModel(testObj.optInt("gameModel", LiveQueConfig.GAME_MODEL_1));
+                testinfo.setGameOrder(testObj.getString("gameOrder"));
                 List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = new ArrayList<>();
                 JSONArray answers = testObj.getJSONArray("answers");
                 for (int j = 0; j < answers.length(); j++) {
