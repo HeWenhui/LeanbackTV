@@ -320,4 +320,7 @@ public interface XESCODE {
     }
     /** 大班整合 送礼物*/
     int LIVE_BUSINESS_SEND_GIFT = 106;
+    /** 大班整合 感谢学生*/
+    int LIVE_BUSINESS_GIFT_THANK_STUDENT = 10110;
+
 }
