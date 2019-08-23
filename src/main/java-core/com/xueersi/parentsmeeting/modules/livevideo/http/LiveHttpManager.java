@@ -159,12 +159,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param bizId 直播类型：1 直播,2:讲座
      * @param stuCould 学生课程id
      */
-    public void liveIntegratedGetInfo(int planId,int bizId,int stuCould,HttpCallBack requestCallBack){
-      /*  HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("planId",planId);
-        params.addBodyParam("bizId",bizId);
-        params.addBodyParam("stuCouId",stuCould);*/
-        Log.e("ckTrac","=========>liveIntegratedGetInfo:"+planId+":"+bizId+":"+stuCould);
+    public void bigLiveEnter(int planId, int bizId, int stuCould, HttpCallBack requestCallBack){
         BigLiveEnterParam param = new BigLiveEnterParam();
         param.setBizId(bizId);
         param.setPlanId(planId);
