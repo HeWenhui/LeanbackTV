@@ -32,6 +32,7 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
     int addTimes;
     /**增量*/
     int increment;
+    private String mPreFix = "";
 
     public SmoothAddNumTextView(Context context) {
         this(context, null);
@@ -85,6 +86,13 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
         }
     }
 
+    /**
+     * 设置显示文案前缀
+     * @param s
+     */
+    public void setPreFix(String s) {
+        mPreFix = s;
+    }
 
 
     class IncrementTask implements Runnable {
@@ -114,11 +122,11 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
             }
             if (currentNum <= endNum) {
                 isRunning = true;
-                SmoothAddNumTextView.this.setText(currentNum + "");
+                SmoothAddNumTextView.this.setText(mPreFix+currentNum + "");
                 currentNum += increment;
                 SmoothAddNumTextView.this.postDelayed(this, timeGap);
             } else {
-                SmoothAddNumTextView.this.setText(endNum + "");
+                SmoothAddNumTextView.this.setText(mPreFix+endNum + "");
                 isRunning = false;
             }
         }
@@ -126,7 +134,7 @@ public class SmoothAddNumTextView extends android.support.v7.widget.AppCompatTex
         public void cancel() {
             canceled = true;
             currentNum = endNum;
-            SmoothAddNumTextView.this.setText(endNum + "");
+            SmoothAddNumTextView.this.setText(mPreFix+endNum + "");
         }
 
         public boolean isRunning() {
