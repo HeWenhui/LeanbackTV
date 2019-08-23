@@ -684,6 +684,10 @@ public class NewIRCMessage implements IIRCMessage {
                         //  如果是专属老师
                         if (mIRCCallback != null) {
                             if (sender.startsWith("t_") || sender.startsWith("f_")) {
+                                //不确定其他有没有问题。中学点赞判断
+                                if (XESCODE.PRAISE_CLASS_NUM == msgJosn.optInt("type")) {
+                                    msg = text;
+                                }
                                 if (mChannels.length > 1) {
                                     if (LiveTopic.MODE_CLASS.equals(currentMode)) {
                                         mIRCCallback.onPrivateMessage(false, target, name, login, hostname, msg);
