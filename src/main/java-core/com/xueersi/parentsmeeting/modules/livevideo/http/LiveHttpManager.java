@@ -160,6 +160,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param stuCould 学生课程id
      */
     public void bigLiveEnter(int planId, int bizId, int stuCould, HttpCallBack requestCallBack){
+
         BigLiveEnterParam param = new BigLiveEnterParam();
         param.setBizId(bizId);
         param.setPlanId(planId);

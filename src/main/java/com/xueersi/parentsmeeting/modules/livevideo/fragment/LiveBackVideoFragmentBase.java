@@ -806,7 +806,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     }
 
     /** 将当前播放视频的进度缓存 */
-    private void savePosition() {
+    protected void savePosition() {
         // savePosition((float) (vPlayer.getCurrentPosition() / (double)
         // vPlayer.getDuration()));
         // savePosition(vPlayer.getCurrentPosition());

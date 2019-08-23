@@ -210,7 +210,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             //大班整合-讲座
             if (isBigLiveRoom()) {
                 int planId = Integer.parseInt(vSectionID);
-                httpManager.liveIntegratedGetInfo(planId,liveType,0, new HttpCallBack(mDataLoadEntity) {
+                httpManager.bigLiveEnter(planId,liveType,0, new HttpCallBack(mDataLoadEntity) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         //Log.e("ckTrac","========>LiveVideoActivity:onPmSuccess+"+responseEntity.getJsonObject().toString());
