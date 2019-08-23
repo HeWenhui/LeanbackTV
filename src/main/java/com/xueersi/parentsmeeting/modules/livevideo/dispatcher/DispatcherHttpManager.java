@@ -80,7 +80,7 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
      * @param stuCouId
      * @param requestCallBack
      */
-    public void publicBigLiveCourseQuestion(int planId,int bizId,int stuCouId,HttpCallBack requestCallBack){
+    public void publicBigLivePlayBackEnter(int planId, int bizId, int stuCouId, HttpCallBack requestCallBack){
 
         BigLiveEnterParam param = new BigLiveEnterParam();
         param.setBizId(bizId);
