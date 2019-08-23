@@ -204,7 +204,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
         final int from = intent.getIntExtra("", 0);
 
 
-        Log.e("ckTrac", "====>RoomInit_000000:liveType=" + liveType);
         final LiveHttpManager httpManager = new LiveHttpManager(this);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             //大班整合-讲座
@@ -213,7 +212,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 httpManager.bigLiveEnter(planId,liveType,0, new HttpCallBack(mDataLoadEntity) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
-                        //Log.e("ckTrac","========>LiveVideoActivity:onPmSuccess+"+responseEntity.getJsonObject().toString());
                         LiveBusinessResponseParser mHttpResponseParser = new LiveBusinessResponseParser();
                         JSONObject object = (JSONObject) responseEntity.getJsonObject();
                         LiveTopic mLiveTopic = new LiveTopic();
@@ -339,7 +337,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         list.add(PermissionConfig.PERMISSION_CODE_CAMERA);
                         gotoHalfBodyChinese(bundle, list);
                     } else {
-                        Log.e("ckTrac", "====>RoomInit_11111111:");
                         com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         finish();
                     }
@@ -365,8 +362,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
      * @return
      */
     private boolean isBigLiveRoom() {
-        boolean isBigLive = getIntent().getBooleanExtra("isBigLive", false);
-
+        Bundle bundle = getIntent().getExtras();
+        boolean isBigLive =  bundle!= null && bundle.getBoolean("isBigLive", false);
         return isBigLive;
     }
 

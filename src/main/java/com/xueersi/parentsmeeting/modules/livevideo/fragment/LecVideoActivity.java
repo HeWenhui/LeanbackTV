@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  * Created by linyuqiang on 2018/7/18.
@@ -37,7 +38,8 @@ public class LecVideoActivity extends LiveVideoActivity {
      * @return
      */
     private  boolean isBigLive(){
-        boolean result = getIntent().getBooleanExtra("isBigLive",false);
+        Bundle bundle = getIntent().getExtras();
+        boolean result = bundle!= null && bundle.getBoolean("isBigLive",false);
         return result;
     }
 
