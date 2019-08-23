@@ -365,10 +365,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
      * @return
      */
     private boolean isBigLiveRoom() {
-        // TODO: 2019-08-19 判断是否是整合直播间
         boolean isBigLive = getIntent().getBooleanExtra("isBigLive", false);
 
-        return true;
+        return isBigLive;
     }
 
     //新课件灰测
