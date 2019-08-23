@@ -93,7 +93,7 @@
     <!--涟漪控件属性-->
     <declare-styleable name="RingView">
         <attr name="cColor" format="color" />
-        <attr name="cSpeed" format="integer" />
+        <attr name="cSpeed" format="float" />
         <attr name="cDensity" format="integer" />
         <attr name="cIsFill" format="boolean" />
         <attr name="cIsAlpha" format="boolean" />
