@@ -32,14 +32,14 @@ public class LecVideoActivity extends LiveVideoActivity {
         return lectureLiveVideoFragment;
     }
 
-
-
+    /**
+     * 判断是否 是大班整合直播间
+     * @return
+     */
     private  boolean isBigLive(){
-        // TODO: 2019-08-20 返回是不是大班整合
         boolean result = getIntent().getBooleanExtra("isBigLive",false);
-        return true;
+        return result;
     }
-
 
 
     @Override
