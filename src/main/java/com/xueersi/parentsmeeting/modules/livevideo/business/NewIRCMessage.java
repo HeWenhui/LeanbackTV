@@ -758,7 +758,6 @@ public class NewIRCMessage implements IIRCMessage {
         String appid = LiveAppUserInfo.getInstance().getPsAppId();
         String appkey = LiveAppUserInfo.getInstance().getPsAppClientKey();
 
-        Log.e("ckTrac","======>newIrc_msg_psid:"+appid+":"+appkey);
 
         //irc sdk初始化  code: 0 成功 ，1 参数错误 ， 19 已初始化
         int initcode = mChatClient.init(mContext.getApplicationContext(), appid, appkey, workSpaceDir.getAbsolutePath());
@@ -794,8 +793,6 @@ public class NewIRCMessage implements IIRCMessage {
         String psimId = LiveAppUserInfo.getInstance().getPsimId();
         String psimKey = LiveAppUserInfo.getInstance().getPsimPwd();
 
-
-        Log.e("ckTrac","======>newIrc_msg_psimId:"+psimId+":"+psimKey);
 
         int logincode = mChatClient.login(psimId, psimKey);
 
