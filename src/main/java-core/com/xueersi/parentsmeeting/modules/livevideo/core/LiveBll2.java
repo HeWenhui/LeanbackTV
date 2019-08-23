@@ -2,9 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -40,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveBusinessResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
@@ -52,9 +51,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -428,16 +425,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     mLogtf.d("getInfo:onPmSuccess" + responseEntity.getJsonObject());
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                    if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-                        if (object.optInt("isAllow", 1) == 0) {
-                            if (mVideoAction != null) {
-                                mVideoAction.onLiveDontAllow(object.optString("refuseReason"));
-                            }
-                            return;
-                        }
-                    }
-                    LiveGetInfo getInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, mLiveType, mForm);
-                    onGetInfoSuccess(getInfo);
+                    LiveBusinessResponseParser mHttpResponseParser = new LiveBusinessResponseParser();
+                    LiveGetInfo liveGetInfo = mHttpResponseParser.parseLiveEnter(object,mLiveTopic,mLiveType,mForm);
+                    onGetInfoSuccess(liveGetInfo);
                 }
 
                 @Override
@@ -446,7 +436,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     onLiveFailure("初始化失败", new Runnable() {
                         @Override
                         public void run() {
-                            getInfo(null);
+                            getBigLiveInfo(null);
                         }
                     });
                 }
@@ -456,16 +446,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     mLogtf.d("getInfo:onPmError=" + responseEntity.getErrorMsg());
                 }
             };
-            // 直播
-            if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-                mHttpManager.liveGetInfo(mCourseId, mLiveId, 0, callBack);
-            }
-            // 录播
-            else if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
-                mHttpManager.liveTutorialGetInfo(mLiveId, callBack);
-            } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-                mHttpManager.liveLectureGetInfo(mLiveId, callBack);
-            }
+
+            int iPlanId = Integer.parseInt(mLiveId);
+            int iStuCouId = Integer.parseInt(mStuCouId);
+
+            mHttpManager.bigLiveEnter(iPlanId,mLiveType,iStuCouId,callBack);
         } else {
             onGetInfoSuccess(getInfo);
         }
