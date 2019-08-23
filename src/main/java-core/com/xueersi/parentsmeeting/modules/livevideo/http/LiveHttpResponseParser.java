@@ -828,13 +828,15 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         try {
-            JSONArray disableSpeakingArray = liveTopicJson.getJSONArray("disable_speaking");
-            List<String> disableSpeaking = new ArrayList<>();
-            for (int i = 0; i < disableSpeakingArray.length(); i++) {
-                JSONObject object = disableSpeakingArray.getJSONObject(i);
-                disableSpeaking.add(object.getString("id"));
+            if (liveTopicJson.has("disable_speaking")) {
+                JSONArray disableSpeakingArray = liveTopicJson.getJSONArray("disable_speaking");
+                List<String> disableSpeaking = new ArrayList<>();
+                for (int i = 0; i < disableSpeakingArray.length(); i++) {
+                    JSONObject object = disableSpeakingArray.getJSONObject(i);
+                    disableSpeaking.add(object.getString("id"));
+                }
+                liveTopic.setDisableSpeaking(disableSpeaking);
             }
-            liveTopic.setDisableSpeaking(disableSpeaking);
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parseLiveTopic", e.getMessage());
             logger.e("parseLiveTopic", e);
