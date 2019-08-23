@@ -168,7 +168,6 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                     for (int i = 0; i < ircRooms.length(); i++) {
                         ircRoomList.add(ircRooms.getString(i));
                     }
-                    Log.e("ckTrac","=========>parseinfo_set irc rooms");
                     liveGetInfo.setIrcRoomList(ircRoomList);
                 }
 
