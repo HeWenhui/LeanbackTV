@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import java.net.InetAddress;
@@ -472,7 +473,7 @@ public class DispatcherBll extends BaseBll {
      * @param stuCouId
      */
     public void getBigLivePublic(String planId, String bizeId, String
-            stuCouId,AbstractBusinessDataCallBack callBack) {
+            stuCouId, final AbstractBusinessDataCallBack callBack) {
 
         DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
@@ -481,23 +482,18 @@ public class DispatcherBll extends BaseBll {
         int iBizeId = Integer.parseInt(bizeId);
         int iStuCouId = Integer.parseInt(stuCouId);
 
-        dispatcherHttpManager.publicBigLiveCourseQuestion(iPlanId, iBizeId, iStuCouId,
+        dispatcherHttpManager.publicBigLivePlayBackEnter(iPlanId, iBizeId, iStuCouId,
                 new HttpCallBack(dataLoadEntity) {
             public void onPmSuccess(ResponseEntity responseEntity) {
 
+                BigLivePlayBackEntity bigLivePlayBackEntity = dispatcherHttpResponseParser
+                        .praseBigLiveEnterPlayBack(responseEntity);
 
-                /*PublicEntity publicLiveCourseEntity = dispatcherHttpResponseParser.publicLiveCourseQuestionParser
-                (responseEntity);
-                if (publicLiveCourseEntity != null) {
-                    publicLiveCourseEntity.setCourseId(courseId);
-                    publicLiveCourseEntity.setCourseName(courseName);
-                    publicLiveCourseEntity.setTeacherId(teacherId);
-                    if (!TextUtils.isEmpty(gotoClassTime) && TextUtils.isDigitsOnly(gotoClassTime)) {
-                        publicLiveCourseEntity.setGotoClassTime(Long.parseLong(gotoClassTime));
-                    }
+                if(bigLivePlayBackEntity != null){
+                    callBack.onDataSucess(bigLivePlayBackEntity);
+                }else{
+                    callBack.onDataFail(0,"数据解析失败");
                 }
-                callBack.onDataSucess(publicLiveCourseEntity);
-                */
 
             }
         });

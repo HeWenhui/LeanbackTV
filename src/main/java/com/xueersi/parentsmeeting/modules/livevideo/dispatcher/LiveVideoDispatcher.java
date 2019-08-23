@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 
 import org.json.JSONObject;
 
@@ -57,6 +58,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     String teacherId;
     String gotoClassTime;
     private DispatcherBll dispatcherBll;
+    /**是否是大班整合回放**/
     private boolean isBigLive;
 
     public interface LiveNewStatus {
@@ -207,16 +209,15 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             AppBll.getInstance(activity);
             startLivePlayActivity(liveId);
         } else {
-
             Log.e("ckTrac","========>startLecture:999999");
             if(isBigLive()){
-
-                dispatcherBll.getBigLivePublic(planId,"2","", new AbstractBusinessDataCallBack() {
+                dispatcherBll.getBigLivePublic(planId,"2","0", new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
-
-
-
+                        BigLivePlayBackEntity entity = (BigLivePlayBackEntity) objData[0];
+                        if(entity != null){
+                            enterBigLivePlayBack(entity);
+                        }
                     }
                 });
 
@@ -236,14 +237,16 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         }
     }
 
+
+
+
     /**
      * 是否是大班整合 直播
      * @return
      */
     private boolean isBigLive() {
-        // TODO: 2019-08-20 返回是否是大班整合直播回放
         boolean result = isBigLive;
-        return true;
+        return result;
     }
 
 
@@ -263,6 +266,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         videoEntity.setvLivePlayBackType(LocalCourseConfig.LIVETYPE_LECTURE);
         videoEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LECTURE + "-" + publicLiveCourseEntity.getCourseId() +
                 "-" + publicLiveCourseEntity.getTeacherId());
+
         videoEntity.setLstVideoQuestion(publicLiveCourseEntity.getLstVideoQuestion());
         videoEntity.setvCourseSendPlayVideoTime(publicLiveCourseEntity.getSendPlayVideoTime());
         videoEntity.setGotoClassTime(publicLiveCourseEntity.getGotoClassTime());
@@ -277,6 +281,38 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         } else {
             LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
         }
+    }
+
+
+
+
+    /**
+     * 进度大班整合 回放
+     * @param entity
+     */
+    private void enterBigLivePlayBack(BigLivePlayBackEntity entity) {
+
+        ShareDataManager dataManager = ShareDataManager.getInstance();
+        VideoLivePlayBackEntity videoEntity = new VideoLivePlayBackEntity();
+        videoEntity.setCourseId(entity.getPlanInfo().getId());
+        videoEntity.setCourseName(entity.getPlanInfo().getName());
+        videoEntity.setPlayVideoId(entity.getPlanInfo().getId());
+        videoEntity.setPlayVideoName(entity.getPlanInfo().getName());
+        videoEntity.setVideoPath(entity.getConfigs().getVideoFile());
+        videoEntity.setvCourseSendPlayVideoTime(dataManager.getInt(LocalCourseConfig.SENDPLAYVIDEOTIME, 180,
+                SHAREDATA_USER));
+        videoEntity.setVideoCacheKey(entity.getConfigs().getVideoPath());
+
+        videoEntity.setLiveId(entity.getPlanInfo().getId());
+        videoEntity.setvLivePlayBackType(LocalCourseConfig.LIVETYPE_LECTURE);
+        videoEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LECTURE + "-" + entity.getPlanInfo().getId()+
+                "-" + entity.getMainTeacher().getId());
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("videoliveplayback", videoEntity);
+        bundle.putInt("type",2);
+        bundle.putBoolean("isBigLive",true);
+        LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
+
     }
 
 
