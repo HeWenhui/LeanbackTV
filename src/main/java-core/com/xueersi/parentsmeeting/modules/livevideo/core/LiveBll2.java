@@ -415,6 +415,65 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
     }
 
+
+    /**
+     * 获取大班整合直播间数据
+     * @param getInfo
+     */
+    public void getBigLiveInfo(LiveGetInfo getInfo){
+
+        if (getInfo == null) {
+            HttpCallBack callBack = new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    mLogtf.d("getInfo:onPmSuccess" + responseEntity.getJsonObject());
+                    JSONObject object = (JSONObject) responseEntity.getJsonObject();
+                    if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
+                        if (object.optInt("isAllow", 1) == 0) {
+                            if (mVideoAction != null) {
+                                mVideoAction.onLiveDontAllow(object.optString("refuseReason"));
+                            }
+                            return;
+                        }
+                    }
+                    LiveGetInfo getInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, mLiveType, mForm);
+                    onGetInfoSuccess(getInfo);
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mLogtf.d("getInfo:onPmFailure=" + msg);
+                    onLiveFailure("初始化失败", new Runnable() {
+                        @Override
+                        public void run() {
+                            getInfo(null);
+                        }
+                    });
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mLogtf.d("getInfo:onPmError=" + responseEntity.getErrorMsg());
+                }
+            };
+            // 直播
+            if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+                mHttpManager.liveGetInfo(mCourseId, mLiveId, 0, callBack);
+            }
+            // 录播
+            else if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
+                mHttpManager.liveTutorialGetInfo(mLiveId, callBack);
+            } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
+                mHttpManager.liveLectureGetInfo(mLiveId, callBack);
+            }
+        } else {
+            onGetInfoSuccess(getInfo);
+        }
+
+    }
+
+
+
     /**
      * 获取getInfo成功
      */
