@@ -141,7 +141,6 @@ public class LiveGetPlayServer {
             }
         }
 
-        Log.e("ckTrac","=======>liveGetPlayServer:"+mGetInfo.getChannelname());
 
         if (mGetPlayServerCancle != null) {
             mGetPlayServerCancle.cancel();
