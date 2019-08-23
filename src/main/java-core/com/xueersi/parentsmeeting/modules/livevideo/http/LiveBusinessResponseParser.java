@@ -55,7 +55,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                 liveGetInfo.setStuSex(stuInfoJsonObj.optString("sex"));
                 liveGetInfo.setStuId(stuInfoJsonObj.optString("id"));
                 liveGetInfo.setStuImg(stuInfoJsonObj.optString("avatar"));
-
+                liveGetInfo.setGoldCount(stuInfoJsonObj.optInt("goldNum"));
                 if (stuInfoJsonObj.has("psim")) {
                     JSONObject psImObject = stuInfoJsonObj.getJSONObject("psim");
                     liveGetInfo.setPsId(psImObject.optString("psId"));
