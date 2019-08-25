@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.CountDownTimer;
+import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -272,6 +273,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     private long mRecogtestEndTime;
     private boolean isTipShow = false;
     private ShareDataManager mSdm;
+    /** 是否阻塞中文的layout */
+    private ConstraintLayout blockChineseLayout;
 
     public SmallEnglishLiveMessagePager(Context context) {
         super(context);
@@ -341,6 +344,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         tvMessageCount = mView.findViewById(R.id.tv_livevideo_small_english_message_count);
 
         switchFSPanelLinearLayout = mView.findViewById(R.id.rl_livevideo_small_english_message_panelroot);
+
+        blockChineseLayout = mView.findViewById(R.id.layout_livevideo_small_english_block_chinese);
 //        ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
 //        int screenWidth = ScreenUtils.getScreenWidth();
 //        int screenHeight = ScreenUtils.getScreenHeight();
@@ -937,9 +942,13 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
 
         etMessageContent.addTextChangedListener(new TextWatcher() {
+            private int selectionEnd;
+            private int lengthBefore;
+
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                selectionEnd = etMessageContent.getSelectionEnd();
+                lengthBefore = charSequence.length();
             }
 
             @Override
@@ -951,13 +960,54 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     btMessageSend.setEnabled(true);
                     btMessageSend.setBackgroundResource(R.drawable.selector_livevideo_small_english_chat_send);
                 }
+
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                String str = editable.toString();
+                String repickStr = str.replaceAll("[\u4e00-\u9fa5]", "");
+                if (!repickStr.equals(str)) {
+                    int selectionAdditon = repickStr.length() - lengthBefore;
+                    blockChineseLayout.setVisibility(View.VISIBLE);
+                    mView.removeCallbacks(setTipsGoneRunnable);
+                    mView.postDelayed(setTipsGoneRunnable, 2000);
+                    etMessageContent.removeTextChangedListener(this);
+                    editable.replace(0, editable.length(), repickStr);
+                    etMessageContent.setSelection(selectionEnd + selectionAdditon);
+                    etMessageContent.addTextChangedListener(this);
+                }
+                if (StringUtils.isSpace(repickStr)) {
+                    setBtnDisenable(btMessageSend);
+                } else {
+                    btMessageSend.setEnabled(true);
+                    btMessageSend.setAlpha(1.0f);
+                    btMessageSend.setTextColor(Color.WHITE);
+                }
+//                tvSpeechbulCount.setText(getSpannableText(repickStr.length(), false));
             }
         });
+    }
+
+    private Runnable setTipsGoneRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (blockChineseLayout != null && blockChineseLayout.getVisibility() != View.GONE) {
+                blockChineseLayout.setVisibility(View.GONE);
+            }
+        }
+    };
+
+    /**
+     * 置灰按钮
+     */
+    private void setBtnDisenable(TextView view) {
+        view.setEnabled(false);
+        if (getInfo.getSmallEnglish()) {
+            view.setAlpha(0.6f);
+        } else {
+            view.setTextColor(Color.parseColor("#73FFFFFF"));
+        }
     }
 
     private void startVoiceInput() {

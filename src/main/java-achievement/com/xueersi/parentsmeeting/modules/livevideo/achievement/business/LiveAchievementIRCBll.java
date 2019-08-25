@@ -27,7 +27,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnPkTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -123,7 +122,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             }
             putInstance(UpdateAchievement.class, new UpdateAchievement() {
                 @Override
-                public void getStuGoldCount(Object method, int type) {
+                public void getStuGoldCount(Object method, final int type) {
                     mLogtf.d("getStuGoldCount:method=" + method + ",type=" + type);
                     if (1 == englishPk.canUsePK) {
                         if (type != UpdateAchievement.GET_TYPE_RED && type != UpdateAchievement.GET_TYPE_TEAM) {
@@ -161,6 +160,26 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (starAction instanceof EnPkInteractAction) {
                         EnPkInteractAction enPkInteractAction = (EnPkInteractAction) starAction;
                         enPkInteractAction.updateEnpk(enTeamPkRankEntity);
+                    }
+                }
+
+                @Override
+                public void updateGoldCount(Object method, int type, int goldCount, int starCount) {
+                    if (type == UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION) {
+                        StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
+                        starAndGoldEntity.setGoldCount(goldCount);
+                        starAndGoldEntity.setStarCount(starCount);
+                        starAndGoldEntity.setPkEnergy(new StarAndGoldEntity.PkEnergy());
+                        mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
+                        mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
+                        StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+                        LiveGetInfo.EnPkEnergy enpkEnergy = mGetInfo.getEnpkEnergy();
+                        enpkEnergy.me = pkEnergy.me;
+                        enpkEnergy.myTeam = pkEnergy.myTeam;
+                        enpkEnergy.opTeam = pkEnergy.opTeam;
+                        if (starAction != null) {
+                            starAction.onGetStar(starAndGoldEntity);
+                        }
                     }
                 }
             });

@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 
 /**
  * 直播
@@ -158,10 +159,16 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        logger.w("回调activityResult  requestCode:" + requestCode + " resultCode:" + resultCode);
         if (requestCode == XESCODE.ARTS_SEND_QUESTION && resultCode == 30) {
             UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.getStuGoldCount("upDateGold", UpdateAchievement.GET_TYPE_QUE);
+                updateAchievement.updateGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION, data.getIntExtra("gold", 0), 0);
+            }
+            VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
+            if (reg != null) {
+                logger.i("停止播放");
+                reg.playVideo();
             }
         }
     }

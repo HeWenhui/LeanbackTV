@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5Cours
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeakChineseCoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 
 import static com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.utils.IntelligentConstants.PROCESS_RECORD_SIGN;
 
@@ -243,6 +244,12 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
         return h5CoursewarePager;
     }
 
+    /**
+     * 跳转到英语智能测评
+     *
+     * @param context
+     * @param videoQuestionH5Entity
+     */
     private void gotoIntelligentEvaluation(Context context, VideoQuestionLiveEntity videoQuestionH5Entity) {
         //英语智能测评
         Bundle bundle = new Bundle();
@@ -263,6 +270,11 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
             intelligentRecognitionRecord.setTeamId(liveGetInfo.getStudentLiveInfo().getTeamId());
         }
         bundle.putParcelable(PROCESS_RECORD_SIGN, intelligentRecognitionRecord);
+        VPlayerListenerReg reg = ProxUtil.getProxUtil().get(context, VPlayerListenerReg.class);
+        if (reg != null) {
+            logger.i("停止播放");
+            reg.release();
+        }
         XueErSiRouter.startModuleForResult((Activity) context, "/english/intelligent_recognition", XESCODE.ARTS_SEND_QUESTION, bundle);
     }
 

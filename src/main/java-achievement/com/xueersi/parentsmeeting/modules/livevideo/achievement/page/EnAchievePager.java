@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -30,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveTy
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType2LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType3LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -379,6 +379,11 @@ public class EnAchievePager extends LiveBasePager {
         energyCount = starAndGoldEntity.getPkEnergy().me;
         goldCount = starAndGoldEntity.getGoldCount();
         starCount = starAndGoldEntity.getStarCount();
+    }
+
+    /** 添加金币和星星 */
+    public void addGold() {
+
     }
 
     public void onStarAdd(int star, float x, float y) {

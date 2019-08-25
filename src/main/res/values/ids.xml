@@ -866,7 +866,6 @@
     <item name="bt_livevideo_worddictation_close" type="id" />
 
 
-
     <!--文科答题结果页-->
     <item name="tv_arts_answer_result_state" type="id" />
     <item name="rl_arts_answer_result_state" type="id" />
@@ -895,7 +894,6 @@
     <item name="tvw_arts_answer_result_answer_state" type="id" />
 
     <item name="iv_arts_answer_result_item_muti_icon" type="id" />
-
 
 
     <item name="lv_arts_answer_state_pse" type="id" />
@@ -1478,5 +1476,6 @@
 
     <item name="rl_pager_live_teacher_feedback_tutor_head_image" type="id" />
     <item name="ll_pager_live_teacher_feedback_submit_sucess" type="id" />
-
+    <item name="layout_livevideo_small_english_block_chinese" type="id" />
+    <item name="iv_livevideo_small_english_block_chinese_background" type="id" />
 </resources>
