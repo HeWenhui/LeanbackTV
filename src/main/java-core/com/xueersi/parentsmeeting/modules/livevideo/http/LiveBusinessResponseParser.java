@@ -1,18 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
-import android.util.Log;
-
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -201,5 +200,18 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
     }
 
 
+
+    public LiveTopic parseBigLiveTopic(LiveTopic oldLiveTopic, JSONObject liveTopicJson, int type) throws JSONException{
+
+        LiveTopic liveTopic = new LiveTopic();
+        // 整合一期 讲座 只有 主讲态
+        if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
+            liveTopic.setMode(LiveTopic.MODE_CLASS);
+        }else{
+            //直播解析主辅导态
+            liveTopic.setMode(liveTopicJson.getString("mode"));
+        }
+        return liveTopic;
+    }
 
 }
