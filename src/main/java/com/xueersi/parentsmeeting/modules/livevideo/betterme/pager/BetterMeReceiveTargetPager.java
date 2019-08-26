@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
@@ -44,7 +45,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
     /**
      * 段位升级
      */
-    private TextView tvReceiveTarLevelUp;
+    private RelativeLayout rlReceiveTarLevelUp;
     /**
      * 当前段位
      */
@@ -100,7 +101,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
         tvCompletetarCountdown = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_countdown);
         tvReceiveTarType = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_type);
         tvReceiveTarValue = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_value);
-        tvReceiveTarLevelUp = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_level_up);
+        rlReceiveTarLevelUp = view.findViewById(R.id.rl_livevideo_betterme_receivetarget_level_up);
         tvReceiveTarCurrentLevel = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_current_level);
         tvReceiveTarNextLevel = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_next_level);
         tvReceiveTarUpdateTips = view.findViewById(R.id.tv_livevideo_betterme_receivetarget_update_tips);
@@ -243,7 +244,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
 
     @Override
     public void initListener() {
-        tvReceiveTarLevelUp.setOnClickListener(new View.OnClickListener() {
+        rlReceiveTarLevelUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBettePagerClose.onShow(BetterMeViewImpl.PAGER_LEVEL_DISPLAY);

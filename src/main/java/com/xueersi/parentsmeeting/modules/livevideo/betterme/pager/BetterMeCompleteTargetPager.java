@@ -63,7 +63,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
      * 图标 - 箭头
      */
     private ImageView ivArrow;
-    private TextView ivLevelIndroduction;
+    private RelativeLayout rlLevelUp;
     /**
      * 下一段位布局
      */
@@ -96,7 +96,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         ivGreat = view.findViewById(R.id.iv_livevideo_betterme_completetarget_great);
         tvCountdown = view.findViewById(R.id.tv_livevideo_betterme_completetarget_countdown);
         ivArrow = view.findViewById(R.id.iv_livevideo_betterme_completetarget_arrow);
-        ivLevelIndroduction = view.findViewById(R.id.tv_livevideo_betterme_completetarget_level_introduction);
+        rlLevelUp = view.findViewById(R.id.rl_livevideo_betterme_completetarget_level_up);
         llNextLevel = view.findViewById(R.id.ll_livevideo_betterme_completetarget_next_level);
         tvLevelUpgraded = view.findViewById(R.id.tv_livevideo_betterme_completetarget_level_upgraded);
         pgComeletetar = view.findViewById(R.id.pg_livevideo_better_completetar);
@@ -287,7 +287,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
                 mOnpagerClose.onClose(BetterMeCompleteTargetPager.this);
             }
         });
-        ivLevelIndroduction.setOnClickListener(new View.OnClickListener() {
+        rlLevelUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mOnpagerClose.onShow(BetterMeViewImpl.PAGER_LEVEL_DISPLAY);

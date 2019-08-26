@@ -111,21 +111,35 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                    android:id="@+id/tv_livevideo_betterme_completetarget_level_introduction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:drawableRight="@drawable/app_xiaomubiao_shellwindow_benchangxiaomubiao_icon_nor"
-                    android:drawablePadding="6dp"
-                    android:text="段位升级"
-                    android:textColor="#ffe65c00"
-                    android:textSize="13dp" />
+                <RelativeLayout
+                    android:id="@+id/rl_livevideo_betterme_completetarget_level_up"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content">
+
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                        android:id="@+id/tv_livevideo_betterme_completetarget_level_up"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="段位升级"
+                        android:textColor="#ffe65c00"
+                        android:textSize="13dp" />
+
+                    <ImageView
+                        android:layout_width="11dp"
+                        android:layout_height="11dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="6dp"
+                        android:layout_toRightOf="@+id/tv_livevideo_betterme_completetarget_level_up"
+                        android:background="@drawable/app_xiaomubiao_shellwindow_benchangxiaomubiao_icon_nor" />
+
+                </RelativeLayout>
 
                 <ImageView
                     android:layout_width="132dp"
                     android:layout_height="2dp"
-                    android:layout_marginTop="8dp"
                     android:background="@drawable/app_xiaomubiao_shellwindow_gongxiwancheng_line_pic" />
 
                 <LinearLayout

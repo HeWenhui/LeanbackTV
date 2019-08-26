@@ -11,13 +11,13 @@
         android:id="@+id/animation_view"
         android:layout_width="564dp"
         android:layout_height="375dp"
-        android:scaleType="centerCrop"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:scaleType="centerCrop" />
 
     <RelativeLayout
+        android:id="@+id/rl_livevideo_betterme_level_content"
         android:layout_width="564dp"
         android:layout_height="375dp"
-        android:id="@+id/rl_livevideo_betterme_level_content"
         android:layout_gravity="center"
         android:visibility="gone">
 
@@ -27,7 +27,7 @@
             android:layout_gravity="center"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingTop="80dp">
+            android:paddingTop="85dp">
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:layout_width="wrap_content"
@@ -35,12 +35,12 @@
                 android:gravity="center"
                 android:text="段位展示"
                 android:textColor="#ffe65c00"
-                android:textSize="20dp" />
+                android:textSize="18dp" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="4dp"
                 android:gravity="center"
                 android:text="段位徽章会在直播间头像上显示"
                 android:textColor="#ff8c8080"
@@ -50,7 +50,7 @@
                 android:id="@+id/vp_livevideo_betterme_introduction"
                 android:layout_width="316dp"
                 android:layout_height="142dp"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="7dp">
 
             </android.support.v4.view.ViewPager>
 
@@ -58,7 +58,7 @@
                 android:id="@+id/dot_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:gravity="center"
                 android:orientation="horizontal" />
 
