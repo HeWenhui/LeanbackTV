@@ -1134,4 +1134,21 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         return playBackEntity;
     }
 
+    /**
+     * 直播灰度场次确认
+     * @param responseEntity
+     * @return
+     */
+    public int parserPublicResult(ResponseEntity responseEntity) {
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        if (jsonObject != null) {
+            try {
+                return jsonObject.optInt("status");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
+    }
+
 }

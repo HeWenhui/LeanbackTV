@@ -507,36 +507,31 @@ public class DispatcherBll extends BaseBll {
      * @param liveId
      * @param callBack
      */
-    public void publicLiveIsGrayLecture(final String liveId, final boolean isLive , final boolean isIntentTo, final AbstractBusinessDataCallBack callBack,DataLoadEntity dataLoadEntity) {
-        if (dataLoadEntity!=null) {
-            dataLoadEntity = new DataLoadEntity(mContext);
+    public void publicLiveIsGrayLecture(final String liveId , final boolean isIntentTo,
+                                        final AbstractBusinessDataCallBack callBack) {
+            DataLoadEntity   dataLoadEntity = new DataLoadEntity(mContext);
             postDataLoadEvent(dataLoadEntity.beginLoading());
-            postDataLoadEvent(dataLoadEntity.webDataError());
 
-        }
         //请求查询数据
         dispatcherHttpManager.publicLiveIsGrayLecture( liveId,
                 new HttpCallBack(dataLoadEntity) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         PublicLiveGrayEntity entity = new PublicLiveGrayEntity();
-                      //  int status =  mPublicLiveCourseHttpResponseParser.parserPublicResult(responseEntity);
-                       // entity.setStatus(status);
+                        int status =  dispatcherHttpResponseParser.parserPublicResult(responseEntity);
+                        entity.setStatus(status);
                         entity.setIntentTo(isIntentTo);
-                        entity.setLive(isLive);
                         callBack.onDataSucess(entity);
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         callBack.onDataFail(-1,msg);
-
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         callBack.onDataFail(-1,responseEntity.getErrorMsg());
-
                     }
                 });
 
