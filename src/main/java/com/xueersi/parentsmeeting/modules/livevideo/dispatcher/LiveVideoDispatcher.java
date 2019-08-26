@@ -315,6 +315,11 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         videoEntity.setPlayVideoId(entity.getPlanInfo().getId());
         videoEntity.setPlayVideoName(entity.getPlanInfo().getName());
         videoEntity.setVideoPath(entity.getConfigs().getVideoFile());
+        if(entity.getPlanInfo() != null){
+            videoEntity.setsTime(entity.getPlanInfo().getsTime());
+            videoEntity.seteTime(entity.getPlanInfo().geteTIme());
+        }
+
         videoEntity.setvCourseSendPlayVideoTime(dataManager.getInt(LocalCourseConfig.SENDPLAYVIDEOTIME, 180,
                 SHAREDATA_USER));
         videoEntity.setVideoCacheKey(entity.getConfigs().getVideoPath());
