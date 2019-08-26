@@ -132,5 +132,10 @@ public class CloudEngineEventHandler {
                 handler.onRemoteVideoStateChanged(uid, state);
             }
         }
+
+        @Override
+        public void onOnceLastMileQuality(RTCEngine.RTC_LASTMILE_QUALITY lastmileQuality) {
+
+        }
     };
 }
