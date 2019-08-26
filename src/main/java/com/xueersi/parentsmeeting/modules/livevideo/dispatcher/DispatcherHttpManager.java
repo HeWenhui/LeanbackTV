@@ -89,4 +89,17 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
         sendJsonPost(LiveIntegratedCfg.LIVE_PLAY_BACK_ENTER,param,requestCallBack);
     }
 
+    /**
+     * 是否大班场次
+     * @param liveId
+     * @param requestCallBack
+     */
+    public void publicLiveIsGrayLecture(String liveId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+//        params.addBodyParam("enstuId", enstuId);
+        params.addBodyParam("liveId", liveId);
+        sendPost(DispatcherConfig.URL_BIGLIVE_BIG_LIVE_BUSINESS_TEST, params, requestCallBack);
+    }
+
 }

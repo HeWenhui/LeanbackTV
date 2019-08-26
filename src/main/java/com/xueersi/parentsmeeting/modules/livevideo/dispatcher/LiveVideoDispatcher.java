@@ -192,6 +192,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 LiveVideoBusinessConfig.ENTER_FROM_2);
     }
 
+
+
     private void startLecture() {
         boolean isLive = rstatus == 1;
         if (isLive) {
