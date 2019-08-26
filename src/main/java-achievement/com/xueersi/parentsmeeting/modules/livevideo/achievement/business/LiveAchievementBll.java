@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity.ENGLISH_INTELLIGENT_RECOGNITION;
+
 /**
  * Created by linyuqiang on 2017/7/20.
  * 本场成就
@@ -534,7 +536,13 @@ public class LiveAchievementBll implements StarInteractAction {
             allAnimationStar = onReceiveStat(AnimationType_STAR, starCountAdd, "");
         }
         starCount = starAndGoldEntity.getStarCount();
-        final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+        final int goldCountAdd;
+        if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
+            goldCountAdd = starAndGoldEntity.getGoldCount();
+        } else {
+            goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+        }
+
         if (goldCountAdd > 0) {
             if (allAnimationStar == null) {
                 onReceiveStat(AnimationType_GOLD, goldCountAdd, "");

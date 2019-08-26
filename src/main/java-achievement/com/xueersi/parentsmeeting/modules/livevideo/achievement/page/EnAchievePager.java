@@ -40,6 +40,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity.ENGLISH_INTELLIGENT_RECOGNITION;
+
 public class EnAchievePager extends LiveBasePager {
     private RelativeLayout parent;
     private LiveGetInfo mLiveGetInfo;
@@ -263,6 +265,10 @@ public class EnAchievePager extends LiveBasePager {
     }
 
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
+        if (starAndGoldEntity == null) {
+            return;
+        }
+
         tvAchiveNumStar.setText("" + starAndGoldEntity.getStarCount());
         tvAchiveNumGold.setText("" + starAndGoldEntity.getGoldCount());
         StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
@@ -286,9 +292,16 @@ public class EnAchievePager extends LiveBasePager {
         }
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
         if (rl_livevideo_info != null && !cbAchiveTitle.isChecked()) {
-            final int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
-            final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
-            final int startCountAdd = starAndGoldEntity.getStarCount() - starCount;
+            int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
+            int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+            int startCountAdd = starAndGoldEntity.getStarCount() - starCount;
+            if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
+                goldCountAdd = starAndGoldEntity.getGoldCount();
+            } else {
+                energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
+                goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+                startCountAdd = starAndGoldEntity.getStarCount() - starCount;
+            }
             mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",startCountAdd=" + startCountAdd);
             String LOTTIE_RES_ASSETS_ROOTDIR;
             String bubbleResPath;
@@ -379,6 +392,7 @@ public class EnAchievePager extends LiveBasePager {
         energyCount = starAndGoldEntity.getPkEnergy().me;
         goldCount = starAndGoldEntity.getGoldCount();
         starCount = starAndGoldEntity.getStarCount();
+
     }
 
     /** 添加金币和星星 */

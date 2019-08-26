@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -46,7 +44,7 @@ import com.xueersi.ui.widget.CircleImageView;
 
 import net.grandcentrix.tray.core.ItemNotFoundException;
 
-import java.util.Random;
+import static com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity.ENGLISH_INTELLIGENT_RECOGNITION;
 
 public class EnStandAchievePager extends LiveBasePager {
     private RelativeLayout parent;
@@ -77,6 +75,7 @@ public class EnStandAchievePager extends LiveBasePager {
     RelativeLayout rlAchieveContent;
     ArtsExtLiveInfo mExtLiveInfo;
     String LAYOUT_SUMMER_SIZE = "0";
+
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
@@ -87,7 +86,7 @@ public class EnStandAchievePager extends LiveBasePager {
         energyCount = enpkEnergy.me;
         activity = (Activity) context;
         try {
-            LAYOUT_SUMMER_SIZE =  UmsAgentTrayPreference.getInstance().getString(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE);
+            LAYOUT_SUMMER_SIZE = UmsAgentTrayPreference.getInstance().getString(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE);
         } catch (ItemNotFoundException e) {
             e.printStackTrace();
         }
@@ -169,18 +168,18 @@ public class EnStandAchievePager extends LiveBasePager {
     /**
      * 设置贡献之星
      */
-    public void setRlAchieveContent(ArtsExtLiveInfo extLiveInfo){
+    public void setRlAchieveContent(ArtsExtLiveInfo extLiveInfo) {
         mExtLiveInfo = extLiveInfo;
-        if (mExtLiveInfo != null ){
+        if (mExtLiveInfo != null) {
             LAYOUT_SUMMER_SIZE = mExtLiveInfo.getSummerCourseWareSize();
         }
-        if(ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)) {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
+        if (ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlAchieveContent.getLayoutParams();
             LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
-            layoutParams.rightMargin = SizeUtils.Dp2Px(activity,10);
-            layoutParams.leftMargin  = 0;
-            layoutParams.topMargin = SizeUtils.Dp2Px(activity,8);
-            layoutParams.width = SizeUtils.Dp2Px(activity,177);
+            layoutParams.rightMargin = SizeUtils.Dp2Px(activity, 10);
+            layoutParams.leftMargin = 0;
+            layoutParams.topMargin = SizeUtils.Dp2Px(activity, 8);
+            layoutParams.width = SizeUtils.Dp2Px(activity, 177);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
             rlAchieveContent.setLayoutParams(layoutParams);
@@ -193,15 +192,14 @@ public class EnStandAchievePager extends LiveBasePager {
             //   cbAchiveTitle.setLayoutParams(cbParams);
 
 
-
             llImageContent.setVisibility(View.GONE);
         } else {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlAchieveContent.getLayoutParams();
             LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
-            layoutParams.leftMargin =   videoPoint.screenWidth - videoPoint.x4+SizeUtils.Dp2Px(activity,10);
+            layoutParams.leftMargin = videoPoint.screenWidth - videoPoint.x4 + SizeUtils.Dp2Px(activity, 10);
 
-            layoutParams.topMargin = SizeUtils.Dp2Px(activity,8);
-            layoutParams.width = SizeUtils.Dp2Px(activity,177);
+            layoutParams.topMargin = SizeUtils.Dp2Px(activity, 8);
+            layoutParams.width = SizeUtils.Dp2Px(activity, 177);
 
             layoutParams.rightMargin = 0;
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -220,12 +218,12 @@ public class EnStandAchievePager extends LiveBasePager {
         }
     }
 
-    /**设置头像*/
-    private void setUserHeadImage(){
+    /** 设置头像 */
+    private void setUserHeadImage() {
         String img = mLiveGetInfo.getStuImg();
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)llImageContent.getLayoutParams();
-        layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth -  LiveVideoPoint.getInstance().x4 + SizeUtils.Dp2Px(activity,10);
-        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) llImageContent.getLayoutParams();
+        layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x4 + SizeUtils.Dp2Px(activity, 10);
+        layoutParams.topMargin = SizeUtils.Dp2Px(mContext, 10);
         llImageContent.setLayoutParams(layoutParams);
         ImageLoader.with(activity).load(img).into(civUserImage);
     }
@@ -336,7 +334,13 @@ public class EnStandAchievePager extends LiveBasePager {
             setEngPro(progress);
         }
         final int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
-        final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+
+        final int goldCountAdd;
+        if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
+            goldCountAdd = starAndGoldEntity.getGoldCount();
+        } else {
+            goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+        }
         energyCount = starAndGoldEntity.getPkEnergy().me;
         goldCount = starAndGoldEntity.getGoldCount();
         mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",visibility=" +
@@ -408,19 +412,19 @@ public class EnStandAchievePager extends LiveBasePager {
         };
 
         lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
-        int desinWidth = SizeUtils.Dp2Px(mContext,135);
-        int desinHeight = SizeUtils.Dp2Px(mContext,50);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(desinWidth,desinHeight);
-        lp.topMargin = SizeUtils.Dp2Px(mContext,45);
-        RelativeLayout.LayoutParams anchorLayoutPrams = (RelativeLayout.LayoutParams)cbAchiveTitle.getLayoutParams();
-        if (ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)){
-            int offSetX = rlAchieveContent.getPaddingRight()+(cbAchiveTitle.getMeasuredWidth() - desinWidth)/2;
-            offSetX += anchorLayoutPrams!= null?anchorLayoutPrams.rightMargin:0;
+        int desinWidth = SizeUtils.Dp2Px(mContext, 135);
+        int desinHeight = SizeUtils.Dp2Px(mContext, 50);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(desinWidth, desinHeight);
+        lp.topMargin = SizeUtils.Dp2Px(mContext, 45);
+        RelativeLayout.LayoutParams anchorLayoutPrams = (RelativeLayout.LayoutParams) cbAchiveTitle.getLayoutParams();
+        if (ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)) {
+            int offSetX = rlAchieveContent.getPaddingRight() + (cbAchiveTitle.getMeasuredWidth() - desinWidth) / 2;
+            offSetX += anchorLayoutPrams != null ? anchorLayoutPrams.rightMargin : 0;
             lp.rightMargin = offSetX;
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         } else {
-            int offSetX = rlAchieveContent.getPaddingLeft()+ (cbAchiveTitle.getMeasuredWidth() - desinWidth)/2;
-            offSetX += anchorLayoutPrams!= null?anchorLayoutPrams.leftMargin:0;
+            int offSetX = rlAchieveContent.getPaddingLeft() + (cbAchiveTitle.getMeasuredWidth() - desinWidth) / 2;
+            offSetX += anchorLayoutPrams != null ? anchorLayoutPrams.leftMargin : 0;
             lp.leftMargin = offSetX;
         }
         rlAchieveContent.addView(lottieAnimationView, lp);

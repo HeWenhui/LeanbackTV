@@ -48,6 +48,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity.ENGLISH_INTELLIGENT_RECOGNITION;
+
 /**
  * Created by linyuqiang on 2018/7/5.
  * 本场成就和语音能量条
@@ -83,6 +85,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             });
         }
     }
+
+    /** 上一次战队pk得到的金币数量 */
+    private int lastGold = 0;
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
@@ -138,7 +143,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                                     StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
                                             (responseEntity);
-                                    mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
+                                    mGetInfo.setGoldCount(lastGold = starAndGoldEntity.getGoldCount());
                                     mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
                                     StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
                                     LiveGetInfo.EnPkEnergy enpkEnergy = mGetInfo.getEnpkEnergy();
@@ -167,7 +172,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 public void updateGoldCount(Object method, int type, int goldCount, int starCount) {
                     if (type == UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION) {
                         StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
-                        starAndGoldEntity.setGoldCount(goldCount);
+                        starAndGoldEntity.setGoldCount(lastGold + goldCount);
                         starAndGoldEntity.setStarCount(starCount);
                         starAndGoldEntity.setPkEnergy(new StarAndGoldEntity.PkEnergy());
                         mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
@@ -177,6 +182,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         enpkEnergy.me = pkEnergy.me;
                         enpkEnergy.myTeam = pkEnergy.myTeam;
                         enpkEnergy.opTeam = pkEnergy.opTeam;
+                        starAndGoldEntity.setCatagery(ENGLISH_INTELLIGENT_RECOGNITION);
                         if (starAction != null) {
                             starAction.onGetStar(starAndGoldEntity);
                         }

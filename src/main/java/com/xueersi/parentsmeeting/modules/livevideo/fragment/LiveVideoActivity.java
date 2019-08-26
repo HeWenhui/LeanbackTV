@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -163,7 +164,16 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
         if (requestCode == XESCODE.ARTS_SEND_QUESTION && resultCode == 30) {
             UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.updateGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION, data.getIntExtra("gold", 0), 0);
+                int gold = 0;
+                try {
+                    String sGoldCount = data.getStringExtra("gold");
+                    if (TextUtils.isEmpty(sGoldCount)) {
+                        gold = Integer.valueOf(sGoldCount);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                updateAchievement.updateGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION, gold, 0);
             }
             VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
             if (reg != null) {
