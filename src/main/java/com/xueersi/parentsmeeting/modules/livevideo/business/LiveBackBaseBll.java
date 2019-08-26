@@ -46,12 +46,14 @@ public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
     protected final int mLiveType;
     protected LiveVideoPoint liveVideoPoint;
     private LiveViewAction liveViewAction;
+    protected LiveAndBackDebug contextLiveAndBackDebug;
 
     public LiveBackBaseBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity);
         this.activity = activity;
         this.liveBackBll = liveBackBll;
         mLiveType = liveBackBll.getLiveType();
+        contextLiveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
     }
 
     public final void onCreateF(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String,
