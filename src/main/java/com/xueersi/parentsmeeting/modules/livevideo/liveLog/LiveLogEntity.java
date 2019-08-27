@@ -14,7 +14,7 @@ import com.xueersi.lib.framework.utils.AppUtils;
 public class LiveLogEntity {
 
 
-    public int state=0; //0:正常  1：异常
+    public int state = 0; //0:正常  1：异常
 
     public String uid = CommonUtil.getUserIdentifier(XueErSiRunningEnvironment.sAppContext); //用户ID
 
@@ -29,17 +29,17 @@ public class LiveLogEntity {
 
 
     public String network_type = DeviceInfo.getNetworkTypeWIFI2G3G();  //网络类型 （无网，4G, wifi）
-    public String dns=""; //网络DNS
-    public String local_ip=ApmBill.getHostIP(); //本地IP
-    public String network_ip=""; //外网IP，日志接受方填充
+    public String dns = ""; //网络DNS
+    public String local_ip = ApmBill.getHostIP(); //本地IP
+    public String network_ip = ""; //外网IP，日志接受方填充
 
     public String mac = DeviceInfo.getWifiMac();    //wifi mac 地址
 
-    public String cpu_modle=ApmBill.getCPUType();            //CPU架构
-    public String cpu= ApmBill.getCPURateDesc();             //CPU使用百分比
+    public String cpu_modle = ApmBill.getCPUType();            //CPU架构
+    public String cpu = ApmBill.getCPURateDesc();             //CPU使用百分比
 
-    public String mem=ApmBill.getUseMemory()+"";              //内存使用状况
-    public String mem_total=ApmBill.getMemory()+"";           //内存总容量
+    public String mem = ApmBill.getUseMemory() + "";              //内存使用状况
+    public String mem_total = ApmBill.getMemory() + "";           //内存总容量
 
 
     //---------------------------------------------------------------------------------------
@@ -56,6 +56,27 @@ public class LiveLogEntity {
     public int speakerDeviceInfo = 1;     //扬声器    1：可用   2：不可用
     public int videoDeviceInfo = 1;       //摄像头    1：可用   2：不可用
 
+    //----------------------------------------------------------------------------------------
+
+    public String psId;  //磐石ID
+
+    public String arch = ApmBill.getCPUType(); //CPU架构
+
+    public String ram = ApmBill.getMemory() + ""; //内存
+
+    public String ts = DeviceInfo.getDeviceTime(); //时间
+
+    public String cip; //用户出口ip
+
+    public String lip; //  ？
+
+    public String ver = "1.0.0"; //版本
+
+    public String dev = DeviceInfo.getDeviceName();
+
+    public String net = DeviceInfo.getNetworkTypeWIFI2G3G();  //网络类型 （无网，4G, wifi;
+
+    public String appId = "1001637";
 
 }
 
