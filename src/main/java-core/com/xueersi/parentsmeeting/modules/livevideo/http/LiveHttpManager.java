@@ -17,6 +17,8 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveIntegratedCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
@@ -2161,4 +2163,15 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("isPlayBack", isPlayBack);
         sendPost(LiveHttpConfig.URL_LIVE_COURSE_GETEVALUATE, params, httpCallBack);
     }
+
+    /**
+     * 获取直播Plugin配置信息
+     *
+     * @param requestCallBack
+     */
+    public void getLivePluginConfigInfo(LivePluginRequestParam param, HttpCallBack requestCallBack) {
+
+        sendJsonPost(LivePluginHttpConfig.URL_MODULE_INIT, param, requestCallBack);
+    }
+
 }

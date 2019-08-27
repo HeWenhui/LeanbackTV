@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
@@ -12,6 +13,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -29,6 +31,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginGrayConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -47,16 +52,22 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
+import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import okhttp3.Call;
+
+import static com.xueersi.common.sharedata.ShareDataManager.SHAREDATA_NOT_CLEAR;
 
 /**
  * 直播间管理类
@@ -1546,4 +1557,72 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     public void testNotice(String notice) {
         mIRCcallback.onNotice("", "", "", "", notice, "");
     }
+
+
+    /**
+     * 设置直播Plugin配置信息
+     *
+     * @param liveModuleConfigInfo
+     */
+    public synchronized void setLiveModuleConfigInfo(LiveModuleConfigInfo liveModuleConfigInfo,LivePluginRequestParam param) {
+
+        mShareDataManager.put(LivePluginGrayConfig.LIVE_PLUGIN_CONFIG_INFO+getPluginKey(param),
+                JsonUtil.objectToJson(liveModuleConfigInfo), SHAREDATA_NOT_CLEAR, true);
+    }
+
+    public String getPluginKey(LivePluginRequestParam param){
+        return "_"+param.bizId+"_"+param.planId+"_"+param.isPlayback;
+    }
+
+
+    /**
+     * 获取直播plugin配置信息
+     *
+     * @param callBack
+     */
+    public void getLivePluingConfigInfo(LivePluginRequestParam param, final AbstractBusinessDataCallBack callBack) {
+
+
+        mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.d("getLivePluingConfigInfo"+responseEntity.getJsonObject().toString());
+                if (responseEntity != null) {
+                    LiveModuleConfigInfo info = null;
+
+                    JSONObject json = (JSONObject) responseEntity.getJsonObject();
+                    String jsonString = (String) responseEntity.getJsonObject().toString();
+                    if (json != null) {
+                        info = (LiveModuleConfigInfo) JsonUtil.jsonToObject(jsonString, LiveModuleConfigInfo.class);
+
+                    }
+                    if (!isEmpty(info)) {
+                        callBack.onDataSucess(info);
+                    }
+                }
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                //super.onPmFailure(error, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                //super.onPmError(responseEntity);
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                //super.onFailure(call, e);
+            }
+
+        });
+    }
+
+
+
+
+
+
 }
