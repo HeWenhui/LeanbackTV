@@ -1062,8 +1062,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 planInfo.setType(planInfoJsonObj.optString("type"));
                 planInfo.setMode(planInfoJsonObj.optString("mode"));
                 planInfo.setPattern(planInfoJsonObj.optString("pattern"));
-                planInfo.setsTime(planInfoJsonObj.optString("stime"));
-                planInfo.seteTIme(planInfoJsonObj.optString("etime"));
+                planInfo.setsTime(planInfoJsonObj.optLong("stime"));
+                planInfo.seteTIme(planInfoJsonObj.optLong("etime"));
                 String subjectIdsStr = planInfoJsonObj.optString("subjectIds");
                 if(!StringUtils.isEmpty(subjectIdsStr)){
                     String[]ids = subjectIdsStr.split(",");
