@@ -8,6 +8,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.entity;
  */
 public class BetterMeLevelEntity {
     /**
+     * 段位等级
+     */
+    private int levelColor;
+    /**
      * 段位名称
      */
     private String levelName;
@@ -23,6 +27,14 @@ public class BetterMeLevelEntity {
      * 升级文案
      */
     private String upLeveldescription;
+
+    public int getLevelColor() {
+        return levelColor;
+    }
+
+    public void setLevelColor(int levelColor) {
+        this.levelColor = levelColor;
+    }
 
     public String getLevelName() {
         return levelName;

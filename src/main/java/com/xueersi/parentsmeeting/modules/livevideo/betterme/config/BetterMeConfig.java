@@ -117,6 +117,18 @@ public class BetterMeConfig {
     };
 
     /**
+     * 段位字体颜色
+     */
+    public static String[] LEVEL_TEXT_COLORS = new String[]{
+            "#FF5BB383",
+            "#FF8691A3",
+            "#FFF68704",
+            "#FF5376DF",
+            "#FF0093C2",
+            "#FFFF5180"
+    };
+
+    /**
      * 最强学霸1-6星星
      */
     public static int[] ZUIQIANGXUEBA_STAR_IMAGE_RES = new int[]{

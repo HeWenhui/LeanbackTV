@@ -35,7 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
  * created  at 2018/12/10
  */
 public class BetterMeCompleteTargetPager extends LiveBasePager {
-    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_better_me/result/";
+    private static String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result/result_part_correct/";
     private OnBettePagerClose mOnpagerClose;
     /**
      * 按钮 - 太棒啦
@@ -114,6 +114,9 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
 
     @Override
     public void initData() {
+        if (!mStuAimResultEntity.isDoneAim()) {
+            LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result/result_error/";
+        }
         String reult = mStuAimResultEntity.getRealTimeVal();
         String target = mStuAimResultEntity.getAimValue();
         //目标类型
@@ -236,18 +239,34 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                if ("img_0.png".equals(lottieImageAsset.getFileName())) {
-                    return null;
+                if(mStuAimResultEntity.isDoneAim()){
+                    if ("img_1.png".equals(lottieImageAsset.getFileName())) {
+                        return null;
+                    }
+                    if ("img_2.png".equals(lottieImageAsset.getFileName())) {
+                        return lottieEffectInfo.fetchBitmapFromAssets(
+                                mLottieAnimationView,
+                                titleImage,
+                                lottieImageAsset.getId(),
+                                lottieImageAsset.getWidth(),
+                                lottieImageAsset.getHeight(),
+                                mContext);
+                    }
+                }else{
+                    if ("img_4.png".equals(lottieImageAsset.getFileName())) {
+                        return null;
+                    }
+                    if ("img_5.png".equals(lottieImageAsset.getFileName())) {
+                        return lottieEffectInfo.fetchBitmapFromAssets(
+                                mLottieAnimationView,
+                                titleImage,
+                                lottieImageAsset.getId(),
+                                lottieImageAsset.getWidth(),
+                                lottieImageAsset.getHeight(),
+                                mContext);
+                    }
                 }
-                if ("img_3.png".equals(lottieImageAsset.getFileName())) {
-                    return lottieEffectInfo.fetchBitmapFromAssets(
-                            mLottieAnimationView,
-                            titleImage,
-                            lottieImageAsset.getId(),
-                            lottieImageAsset.getWidth(),
-                            lottieImageAsset.getHeight(),
-                            mContext);
-                }
+
                 return lottieEffectInfo.fetchBitmapFromAssets(
                         mLottieAnimationView,
                         lottieImageAsset.getFileName(),
@@ -349,7 +368,7 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         }
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvTips.getLayoutParams();
-        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 127) / 100;
+        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 123) / 100;
         tvTips.setLayoutParams(layoutParams);
 
         if (progress == 0) {
@@ -357,8 +376,8 @@ public class BetterMeCompleteTargetPager extends LiveBasePager {
         } else if (progress == 100) {
             pgComeletetar.setProgress(100);
         } else {
-            int a = (6 * 100) / 133;
-            int b = progress * 127 / (133);
+            int a = (10 * 100) / 133;
+            int b = progress * 123 / (133);
             pgComeletetar.setProgress(a + b);
         }
     }

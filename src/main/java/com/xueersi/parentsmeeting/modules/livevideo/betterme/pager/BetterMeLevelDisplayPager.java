@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.pager;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -84,6 +85,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
     public void initData() {
         for (int i = 0; i < BetterMeConfig.LEVEL_NUMBER; i++) {
             BetterMeLevelEntity levelEntity = new BetterMeLevelEntity();
+            levelEntity.setLevelColor(Color.parseColor(BetterMeConfig.LEVEL_TEXT_COLORS[i]));
             levelEntity.setLevelName(BetterMeConfig.LEVEL_NAMES[i]);
             levelEntity.setLevelDrawableRes(BetterMeConfig.LEVEL_IMAGE_RES_ALLSTAR[i]);
             levelEntity.setUpStardescription(BetterMeConfig.LEVEL_UPSTAR_DESCRIPTIONS[i]);
@@ -199,6 +201,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
 
             BetterMeLevelEntity levelEntityLeft = mLevelList.get(position * 2);
             tvLevelNameLeft.setText(levelEntityLeft.getLevelName());
+            tvLevelNameLeft.setTextColor(levelEntityLeft.getLevelColor());
             ivLevelImgLeft.setImageResource(levelEntityLeft.getLevelDrawableRes());
             tvUpStarDecribtionLeft.setText(levelEntityLeft.getUpStardescription());
             tvUpLevelDecribtionLeft.setText(levelEntityLeft.getUpLeveldescription());
@@ -206,6 +209,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
             if ((position * 2 + 1) < mLevelList.size()) {
                 BetterMeLevelEntity levelEntityRight = mLevelList.get(position * 2 + 1);
                 tvLevelNameRight.setText(levelEntityRight.getLevelName());
+                tvLevelNameRight.setTextColor(levelEntityRight.getLevelColor());
                 ivLevelImgRight.setImageResource(levelEntityRight.getLevelDrawableRes());
                 tvUpStarDecribtionRight.setText(levelEntityRight.getUpStardescription());
                 tvUpLevelDecribtionRight.setText(levelEntityRight.getUpLeveldescription());

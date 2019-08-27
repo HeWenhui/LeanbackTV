@@ -82,7 +82,7 @@ public class EnAchievePager extends LiveBasePager {
     private int WIDTH_PROGRESS_BAR_AIM_VIEWGROUP = 165;
     private int WIDTH_SOLID_PROGRESS_BAR_AIM = 137;
     private int currentProgress = 0;
-    private String curentValue;
+    private String currentValue;
 
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -458,7 +458,7 @@ public class EnAchievePager extends LiveBasePager {
         if (isShowBubble) {
             receiveBetterMeBubble(betterMeEntity);
         }
-        curentValue = "0";
+        currentValue = "0";
     }
 
     /**
@@ -492,7 +492,7 @@ public class EnAchievePager extends LiveBasePager {
         if (aimRealTimeValEntity.isDoneAim()) {
             tvAchiveAimValue.setText("已完成目标");
             pgAchiveAim.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
-                    .app_livevideo_enteampk_xiaomubiao_progressbar_finish));
+                    .app_livevideo_enteampk_xiaomubiao_progressbar_finish_achieve));
 
         } else {
             tvAchiveAimValue.setText("目标" + target);
@@ -507,7 +507,7 @@ public class EnAchievePager extends LiveBasePager {
         if (isShowBubble) {
             updateBetterMeBubble(aimRealTimeValEntity);
         }
-        this.curentValue = aimRealTimeValEntity.getRealTimeVal();
+        this.currentValue = aimRealTimeValEntity.getRealTimeVal();
     }
 
     /**
@@ -577,9 +577,9 @@ public class EnAchievePager extends LiveBasePager {
         //当前完成率是上升还是下降
         boolean isIncrease = false;
         boolean isDecrease = false;
-        if (curentValue != null) {
+        if (currentValue != null) {
             double doubleCurrent = (Double.valueOf(current));
-            double doublePrevious = (Double.valueOf(curentValue));
+            double doublePrevious = (Double.valueOf(currentValue));
             isIncrease = doubleCurrent > doublePrevious;
             isDecrease = doubleCurrent < doublePrevious;
         }

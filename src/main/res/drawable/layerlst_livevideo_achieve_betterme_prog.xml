@@ -10,7 +10,7 @@
     <item
         android:id="@android:id/progress">
         <scale
-            android:drawable="@drawable/app_livevideo_enteampk_xiaomubiao_progressbar_nor"
+            android:drawable="@drawable/app_livevideo_enteampk_xiaomubiao_progressbar_nor_achieve"
             android:scaleWidth="100%" />
     </item>
 </layer-list>

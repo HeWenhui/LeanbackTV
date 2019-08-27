@@ -52,7 +52,7 @@
 
                 <RelativeLayout
                     android:id="@+id/rl_livevideo_betterme_completetarget_aim"
-                    android:layout_width="158dp"
+                    android:layout_width="154dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="26dp">
 
@@ -87,7 +87,7 @@
                         android:max="100"
                         android:paddingLeft="0dp"
                         android:paddingRight="0dp"
-                        android:progress="47" />
+                        android:progress="0" />
 
                     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                         android:id="@+id/tv_livevideo_betterme_aimtips"
