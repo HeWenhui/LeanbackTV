@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>
  * 播放视频相关逻辑处理在{@link com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll}中
  */
-public class LiveVideoAction implements VideoAction {
+public class LiveVideoAction implements LiveVideoStateListener {
     private final String TAG = getClass().getSimpleName();
     Logger logger = LoggerFactory.getLogger(TAG);
     protected WeakHandler mHandler = new WeakHandler(null);
