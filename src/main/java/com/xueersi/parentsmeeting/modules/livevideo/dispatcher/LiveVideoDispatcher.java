@@ -61,7 +61,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     private DispatcherBll dispatcherBll;
     /**是否是大班整合回放**/
     private boolean isBigLive;
-
+    /**是否是大班 灰度状态 **/
+    private int big_live_type = -1;
     public interface LiveNewStatus {
         int LIVE_UNBEGIN = 1;//待开始
         int LIVE_LIVING = 2;//进行中
@@ -71,8 +72,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     }
 
     private Activity activity;
-
-
+    DataLoadEntity  dataLoadEntity;
     @Override
     public void dispatch(Activity srcActivity, Bundle bundle, int requestCode) {
 
@@ -93,6 +93,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
             try {
                 JSONObject jsonObject = new JSONObject(paramsJson);
+
                 status = jsonObject.optInt("status");
                 rstatus = jsonObject.optInt("rstatus");
                 vStuCourseId = jsonObject.optString("stuCouId");
@@ -104,9 +105,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 type = jsonObject.optInt("variety");
                 teacherId = jsonObject.optString("teacherId");
                 gotoClassTime = jsonObject.optString("stime");
-                //是否是大班整合
+                // 是否是大班整合
                 isBigLive = jsonObject.optBoolean("isBigLive",false);
-
+                // 大班灰度状态
+                big_live_type =  jsonObject.optInt("bigLiveStatus",big_live_type);
 
                 if (type == TYPE_LIVE) {
                     startLive();
@@ -222,7 +224,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                             enterBigLivePlayBack(entity);
                         }
                     }
-                });
+                },dataLoadEntity);
 
 
             }else {
@@ -234,7 +236,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                             playLivePlayBackVideo(publicEntity);
                         }
                     }
-                });
+                },dataLoadEntity);
             }
 
         }
@@ -246,7 +248,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             PublicLiveGrayEntity mPublicLiveGrayEntity = (PublicLiveGrayEntity)objData[0];
             startLecture(mPublicLiveGrayEntity.getStatus()==DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE);
         }
-
         @Override
         public void onDataFail(int errStatus, String failMsg) {
             super.onDataFail(errStatus, failMsg);
@@ -261,7 +262,14 @@ public class LiveVideoDispatcher extends AbsDispatcher {
      */
     private boolean isBigLive() {
         boolean result = isBigLive;
-        dispatcherBll.publicLiveIsGrayLecture(planId,true, publicGrayControlCallBack);
+        if(big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE) {
+            startLecture(true);
+        } else if(big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_COMMON){
+            startLecture(false);
+        } else if (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_DEFALUT){
+            dataLoadEntity = new DataLoadEntity(activity);
+            dispatcherBll.publicLiveIsGrayLecture(planId,true, publicGrayControlCallBack,dataLoadEntity);
+        }
         return result;
     }
 
