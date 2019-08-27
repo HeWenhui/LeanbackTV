@@ -17,8 +17,12 @@ public class DispatcherConfig {
 
     public final static String URL_PUBLIC_LIVE_COURSE_QUESTION = AppConfig.HTTP_HOST + "/LiveLecture/getTestInfoForPlayBack";
 
-    /** 大班整合 直播灰测检测**/
+    /** 大班整合 直播灰测检测 **/
     public final static String URL_BIGLIVE_BIG_LIVE_BUSINESS_TEST = AppConfig.HTTP_HOST_LECTUREPIE+"/app/isGrayLecture";
+    /** 大班整合 直播灰测默认 **/
+    public static  final int PUBLIC_GRAY_CONTROL_DEFALUT = -1;
+    /** 大班整合 直播灰测普通直播 **/
+    public static  final int PUBLIC_GRAY_CONTROL_COMMON = 0;
     /** 大班整合 直播灰测大班整合 **/
     public static  final int PUBLIC_GRAY_CONTROL_BIG_LIVE = 1;
 
