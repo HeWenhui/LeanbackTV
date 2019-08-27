@@ -18,7 +18,6 @@ public interface LiveVideoStateListener extends VideoAction {
      */
     void setFirstParam(LiveVideoPoint liveVideoPoint);
 
-
     /**
      *
      * @param visibility
