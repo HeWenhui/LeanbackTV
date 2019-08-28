@@ -488,6 +488,22 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         return true;
     }
 
+    public boolean dispatchTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean teacherModeChanged) {
+        if (mTopicActions == null || mTopicActions.isEmpty()) {
+            return false;
+        }
+
+        for (TopicAction mTopicAction : mTopicActions) {
+            try {
+                mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+        }
+
+        return true;
+    }
+
     /**
      * 获取getInfo成功
      */
@@ -920,7 +936,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         break;
                 }
                 //////////////////////
-                if (!dispatchNotice(sourceNick,target,object,mtype)) {
+                if (!dispatchNotice(sourceNick, target, object, mtype)) {
 
                     if (UselessNotice.isUsed(mtype)) {
                         try {
@@ -1001,16 +1017,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                     mGetInfo.setMode(liveTopic.getMode());
                 }
-                if (mTopicActions != null && mTopicActions.size() > 0) {
-                    for (TopicAction mTopicAction : mTopicActions) {
-                        try {
-                            mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
-                        } catch (Exception e) {
-                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-                        }
 
-                    }
-                }
+                dispatchTopic(liveTopic, jsonObject, teacherModeChanged);
+
                 mLiveTopic.copy(liveTopic);
             } catch (Exception e) {
                 try {
