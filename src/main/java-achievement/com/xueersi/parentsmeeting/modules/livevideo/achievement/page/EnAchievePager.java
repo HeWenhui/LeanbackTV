@@ -40,8 +40,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
-import static com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity.ENGLISH_INTELLIGENT_RECOGNITION;
-
 public class EnAchievePager extends LiveBasePager {
     private RelativeLayout parent;
     private LiveGetInfo mLiveGetInfo;
@@ -268,9 +266,15 @@ public class EnAchievePager extends LiveBasePager {
         if (starAndGoldEntity == null) {
             return;
         }
-
+//        if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
+//            int showStarCount = starAndGoldEntity.getStarCount();
+//            int showGoldCount = starAndGoldEntity.getGoldCount();
+//            tvAchiveNumStar.setText("" + showStarCount);
+//            tvAchiveNumGold.setText("" + showGoldCount);
+//        } else {
         tvAchiveNumStar.setText("" + starAndGoldEntity.getStarCount());
         tvAchiveNumGold.setText("" + starAndGoldEntity.getGoldCount());
+//        }
         StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
         tvAchiveNumFire.setText("" + pkEnergy.me);
         //本场成就设置进度
@@ -295,13 +299,14 @@ public class EnAchievePager extends LiveBasePager {
             int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
             int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
             int startCountAdd = starAndGoldEntity.getStarCount() - starCount;
-            if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
-                goldCountAdd = starAndGoldEntity.getGoldCount();
-            } else {
-                energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
-                goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
-                startCountAdd = starAndGoldEntity.getStarCount() - starCount;
-            }
+//            if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
+//                goldCountAdd = starAndGoldEntity.getGoldCount();
+//                startCountAdd = starAndGoldEntity.getStarCount();
+//            } else {
+//            energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
+//            goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+//            startCountAdd = starAndGoldEntity.getStarCount() - starCount;
+//            }
             mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",startCountAdd=" + startCountAdd);
             String LOTTIE_RES_ASSETS_ROOTDIR;
             String bubbleResPath;
@@ -390,8 +395,13 @@ public class EnAchievePager extends LiveBasePager {
             tvAchiveNumGold.setText("" + starAndGoldEntity.getGoldCount());
         }
         energyCount = starAndGoldEntity.getPkEnergy().me;
+//        if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
+//            goldCount += starAndGoldEntity.getGoldCount();
+//            starCount += starAndGoldEntity.getStarCount();
+//        } else {
         goldCount = starAndGoldEntity.getGoldCount();
         starCount = starAndGoldEntity.getStarCount();
+//        }
 
     }
 

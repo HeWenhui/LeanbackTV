@@ -48,8 +48,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 
-import static com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity.ENGLISH_INTELLIGENT_RECOGNITION;
-
 /**
  * Created by linyuqiang on 2018/7/5.
  * 本场成就和语音能量条
@@ -171,21 +169,44 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 @Override
                 public void updateGoldCount(Object method, int type, int goldCount, int starCount) {
                     if (type == UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION) {
-                        StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
-                        starAndGoldEntity.setGoldCount(lastGold + goldCount);
-                        starAndGoldEntity.setStarCount(starCount);
-                        starAndGoldEntity.setPkEnergy(new StarAndGoldEntity.PkEnergy());
-                        mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
-                        mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
-                        StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
-                        LiveGetInfo.EnPkEnergy enpkEnergy = mGetInfo.getEnpkEnergy();
-                        enpkEnergy.me = pkEnergy.me;
-                        enpkEnergy.myTeam = pkEnergy.myTeam;
-                        enpkEnergy.opTeam = pkEnergy.opTeam;
-                        starAndGoldEntity.setCatagery(ENGLISH_INTELLIGENT_RECOGNITION);
-                        if (starAction != null) {
-                            starAction.onGetStar(starAndGoldEntity);
-                        }
+                        postDelayedIfNotFinish(new Runnable() {
+                            @Override
+                            public void run() {
+                                String liveid = mGetInfo.getId();
+                                getHttpManager().getStuGoldCount(liveid, new HttpCallBack() {
+                                    @Override
+                                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                        StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
+                                                (responseEntity);
+                                        mGetInfo.setGoldCount(lastGold = starAndGoldEntity.getGoldCount());
+                                        mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
+                                        StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+                                        LiveGetInfo.EnPkEnergy enpkEnergy = mGetInfo.getEnpkEnergy();
+                                        enpkEnergy.me = pkEnergy.me;
+                                        enpkEnergy.myTeam = pkEnergy.myTeam;
+                                        enpkEnergy.opTeam = pkEnergy.opTeam;
+                                        if (starAction != null) {
+                                            starAction.onGetStar(starAndGoldEntity);
+                                        }
+                                    }
+                                });
+                            }
+                        }, 500);
+//                        StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
+//                        starAndGoldEntity.setGoldCount(goldCount);
+//                        starAndGoldEntity.setStarCount(starCount);
+//                        starAndGoldEntity.setPkEnergy(new StarAndGoldEntity.PkEnergy());
+//                        mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
+//                        mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
+//                        StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+//                        LiveGetInfo.EnPkEnergy enpkEnergy = mGetInfo.getEnpkEnergy();
+//                        enpkEnergy.me = pkEnergy.me;
+//                        enpkEnergy.myTeam = pkEnergy.myTeam;
+//                        enpkEnergy.opTeam = pkEnergy.opTeam;
+//                        starAndGoldEntity.setCatagery(ENGLISH_INTELLIGENT_RECOGNITION);
+//                        if (starAction != null) {
+//                            starAction.onGetStar(starAndGoldEntity);
+//                        }
                     }
                 }
             });

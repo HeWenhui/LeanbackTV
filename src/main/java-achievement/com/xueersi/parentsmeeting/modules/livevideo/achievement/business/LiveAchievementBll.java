@@ -530,17 +530,27 @@ public class LiveAchievementBll implements StarInteractAction {
 
     @Override
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
-        int starCountAdd = starAndGoldEntity.getStarCount() - starCount;
+        int starCountAdd = 0;
+//        if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
+//            starCountAdd = starAndGoldEntity.getStarCount();
+//            starCount += starAndGoldEntity.getStarCount();
+//        } else {
+        starCountAdd = starAndGoldEntity.getStarCount() - starCount;
+        starCount = starAndGoldEntity.getStarCount();
+//        }
         AllAnimation allAnimationStar = null;
-        if (starCountAdd > 0) {
+        //显示
+        if (starCountAdd > 0 && starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
             allAnimationStar = onReceiveStat(AnimationType_STAR, starCountAdd, "");
         }
-        starCount = starAndGoldEntity.getStarCount();
+
         final int goldCountAdd;
         if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
             goldCountAdd = starAndGoldEntity.getGoldCount();
+            goldCount += starAndGoldEntity.getGoldCount();
         } else {
             goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+            goldCount = starAndGoldEntity.getGoldCount();
         }
 
         if (goldCountAdd > 0) {
@@ -555,7 +565,7 @@ public class LiveAchievementBll implements StarInteractAction {
                 });
             }
         }
-        goldCount = starAndGoldEntity.getGoldCount();
+
         if (starCount < 10) {
             tvStarInteractCountHind.setText(isSmallEnglish ? "0" + starCount : "×0" + starCount);
         } else {

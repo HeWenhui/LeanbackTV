@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
         android:layout_marginBottom="15dp"
-        android:text="只能输入英文文哦"
+        android:text="@string/english_block_chinese_text_tips"
         android:textColor="@color/COLOR_FF7200"
         android:textSize="12dp"
         app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_small_english_block_chinese_background"

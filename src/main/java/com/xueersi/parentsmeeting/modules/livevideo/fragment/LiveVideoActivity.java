@@ -164,16 +164,18 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
         if (requestCode == XESCODE.ARTS_SEND_QUESTION && resultCode == 30) {
             UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
             if (updateAchievement != null) {
-                int gold = 0;
+                int gold = 0, star = 0;
                 try {
                     String sGoldCount = data.getStringExtra("gold");
-                    if (TextUtils.isEmpty(sGoldCount)) {
+                    String sStarCount = data.getStringExtra("star");
+                    if (!TextUtils.isEmpty(sGoldCount)) {
                         gold = Integer.valueOf(sGoldCount);
+                        star = Integer.valueOf(sStarCount);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                updateAchievement.updateGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION, gold, 0);
+                updateAchievement.updateGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION, gold, star);
             }
             VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
             if (reg != null) {

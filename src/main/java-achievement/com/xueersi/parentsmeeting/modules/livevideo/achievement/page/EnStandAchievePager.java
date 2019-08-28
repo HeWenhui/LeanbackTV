@@ -44,8 +44,6 @@ import com.xueersi.ui.widget.CircleImageView;
 
 import net.grandcentrix.tray.core.ItemNotFoundException;
 
-import static com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity.ENGLISH_INTELLIGENT_RECOGNITION;
-
 public class EnStandAchievePager extends LiveBasePager {
     private RelativeLayout parent;
     private LiveGetInfo mLiveGetInfo;
@@ -309,8 +307,15 @@ public class EnStandAchievePager extends LiveBasePager {
 
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
         tvAchiveNumFire.setText("" + starAndGoldEntity.getPkEnergy().me);
+//        if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
+//            int showGoldCount = starAndGoldEntity.getStarCount();
+//            int showStarCount = starAndGoldEntity.getGoldCount();
+//            tvAchiveNumStar.setText("" + showStarCount);
+//            tvAchiveNumGold.setText("" + showGoldCount);
+//        } else {
         tvAchiveNumStar.setText("" + starAndGoldEntity.getStarCount());
         tvAchiveNumGold.setText("" + starAndGoldEntity.getGoldCount());
+//        }
         StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
         if (pkEnergy.myTeam > myTotal) {
             myTotal = pkEnergy.myTeam;
@@ -336,13 +341,15 @@ public class EnStandAchievePager extends LiveBasePager {
         final int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
 
         final int goldCountAdd;
-        if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
-            goldCountAdd = starAndGoldEntity.getGoldCount();
-        } else {
-            goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
-        }
-        energyCount = starAndGoldEntity.getPkEnergy().me;
+//        if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
+//            goldCountAdd = starAndGoldEntity.getGoldCount();
+//            goldCount += starAndGoldEntity.getGoldCount();
+//        } else {
+        goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
         goldCount = starAndGoldEntity.getGoldCount();
+//        }
+        energyCount = starAndGoldEntity.getPkEnergy().me;
+
         mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",visibility=" +
                 rlAchiveStandBg.getVisibility());
         if (rlAchiveStandBg.getVisibility() == View.VISIBLE) {
