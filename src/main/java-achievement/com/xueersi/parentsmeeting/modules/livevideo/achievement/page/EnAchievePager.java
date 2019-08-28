@@ -48,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 public class EnAchievePager extends LiveBasePager {
     private RelativeLayout parent;
     private LiveGetInfo mLiveGetInfo;
+    private RelativeLayout rlAchieveTitle;
     private CheckBox cbAchiveTitle;
     private RelativeLayout rlAchiveBack;
     private RelativeLayout rlAchiveContent;
@@ -101,6 +102,7 @@ public class EnAchievePager extends LiveBasePager {
     @Override
     public View initView() {
         mView = LayoutInflater.from(mContext).inflate(R.layout.layout_livevodeo_en_achive, parent, false);
+        rlAchieveTitle = mView.findViewById(R.id.rl_livevideo_en_achive_title);
         cbAchiveTitle = mView.findViewById(R.id.cb_livevideo_en_achive_title);
         rlAchiveBack = mView.findViewById(R.id.rl_livevideo_en_achive_back);
         rlAchiveContent = mView.findViewById(R.id.rl_livevideo_en_achive_content);
@@ -233,6 +235,12 @@ public class EnAchievePager extends LiveBasePager {
     @Override
     public void initListener() {
         super.initListener();
+        rlAchieveTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cbAchiveTitle.performClick();
+            }
+        });
         cbAchiveTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

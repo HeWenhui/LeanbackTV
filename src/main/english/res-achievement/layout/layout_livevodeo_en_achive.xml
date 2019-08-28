@@ -11,27 +11,35 @@
 
         <RelativeLayout
             android:id="@id/rl_livevideo_en_achive_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@id/iv_livevideo_en_achive_title"
-                android:layout_width="48dp"
-                android:layout_height="12dp"
-                android:layout_marginTop="7dp"
-                android:src="@drawable/app_livevideo_enteampk_benchangchengjiu_title_pic_nor" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
 
-            <CheckBox
-                android:id="@id/cb_livevideo_en_achive_title"
-                android:layout_width="17dp"
-                android:layout_height="17dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/iv_livevideo_en_achive_title"
-                android:background="@drawable/selector_live_en_achive_open"
-                android:button="@null"
-                android:checked="false" />
+                <ImageView
+                    android:id="@id/iv_livevideo_en_achive_title"
+                    android:layout_width="48dp"
+                    android:layout_height="12dp"
+                    android:layout_marginTop="7dp"
+                    android:src="@drawable/app_livevideo_enteampk_benchangchengjiu_title_pic_nor" />
+
+                <CheckBox
+                    android:id="@id/cb_livevideo_en_achive_title"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_toRightOf="@id/iv_livevideo_en_achive_title"
+                    android:background="@drawable/selector_live_en_achive_open"
+                    android:button="@null"
+                    android:checked="false" />
+            </RelativeLayout>
+
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -39,7 +47,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_livevideo_en_achive_title"
-            android:layout_marginTop="4dp"
             android:visibility="gone">
 
             <RelativeLayout
