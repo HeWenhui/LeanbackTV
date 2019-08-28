@@ -457,9 +457,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     mLogtf.d("getInfo:onPmError=" + responseEntity.getErrorMsg());
                 }
             };
-
-            int iPlanId = Integer.parseInt(mLiveId);
-            int iStuCouId = Integer.parseInt(mStuCouId);
+            int iPlanId = 0;
+            int iStuCouId = -1;
+            try {
+                 iPlanId = Integer.parseInt(mLiveId);
+                 iStuCouId = Integer.parseInt(mStuCouId);
+            }catch (Exception e){
+                  e.printStackTrace();
+            }
 
             mHttpManager.bigLiveEnter(iPlanId,mLiveType,iStuCouId,callBack);
         } else {
