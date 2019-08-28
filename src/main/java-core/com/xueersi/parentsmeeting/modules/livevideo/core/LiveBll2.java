@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveBusinessResponsePar
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.liveLog.LiveLogBill;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
@@ -456,9 +457,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     mLogtf.d("getInfo:onPmError=" + responseEntity.getErrorMsg());
                 }
             };
-
-            int iPlanId = Integer.parseInt(mLiveId);
-            int iStuCouId = Integer.parseInt(mStuCouId);
+            int iPlanId = 0;
+            int iStuCouId = -1;
+            try {
+                 iPlanId = Integer.parseInt(mLiveId);
+                 iStuCouId = Integer.parseInt(mStuCouId);
+            }catch (Exception e){
+                  e.printStackTrace();
+            }
 
             mHttpManager.bigLiveEnter(iPlanId,mLiveType,iStuCouId,callBack);
         } else {
@@ -493,6 +499,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      */
 
     private void initBigLiveRoom(LiveGetInfo getInfo) {
+        LiveLogBill.getInstance().initLiveLog();//初始化
+        LiveLogBill.getInstance().setLiveId("live_1"); //设置直播ID
+        LiveLogBill.getInstance().startLog();
+
         // 添加网络请求公共参数
         if(mHttpManager != null){
             mHttpManager.addHeaderParams("switch-grade",getInfo.getGrade()+"");
@@ -1417,6 +1427,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * activity  onDestroy
      */
     public void onDestroy() {
+        LiveLogBill.getInstance().stopLog();
         mState = LiveActivityState.INITIALIZING;
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onDestroy();

@@ -206,7 +206,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         BigLiveEnterParam param = new BigLiveEnterParam();
         param.setBizId(bizId);
         param.setPlanId(planId);
-        param.setStuCouId(stuCould);
+        if(stuCould > 0){
+            param.setStuCouId(stuCould);
+        }
         sendJsonPost(LiveIntegratedCfg.LIVE_ENTER,param,requestCallBack);
     }
 
