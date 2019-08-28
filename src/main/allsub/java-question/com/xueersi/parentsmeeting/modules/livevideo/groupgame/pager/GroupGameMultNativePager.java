@@ -3123,6 +3123,18 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             if (current_word > currentAnswerIndex) {
                                 currentAnswerIndex = current_word;
                             }
+                            if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
+                                    .equals(detailInfo.type)) {
+                                answerInfo.clear();
+                                for (int i = 0; i < currentAnswerIndex + 1; i++) {
+                                    if (wordCount.containsKey(String.valueOf(i))) {
+                                        answerInfo.add(i, true);
+                                    } else {
+                                        if (i != currentAnswerIndex)
+                                            answerInfo.add(i, false);
+                                    }
+                                }
+                            }
                             //删除之前的试题
                             for (int i = 0; i < Math.min(currentAnswerIndex, answerList.size()) - 1; i++) {
                                 GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(i);
