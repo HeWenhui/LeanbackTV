@@ -503,6 +503,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             //Log.e("ckTrac","====>LiveBll2_initBigLiveRoom:"+ AppBll.getInstance().getLiveSessionId());
         }
 
+
         if(liveLog != null){
             liveLog.setGetInfo(mGetInfo);
         }
