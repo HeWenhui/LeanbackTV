@@ -210,6 +210,10 @@ public class CloudWorkerThreadPool {
 //                });
 //                mRtcEngine.enableLastmileTest();
 //            }
+            if (onLastmileQuality != null) {
+                mEngineEventHandler.setOnLastmileQuality(onLastmileQuality);
+                mRtcEngine.enableLastmileProbeTest();
+            }
         }
         return mRtcEngine;
     }
@@ -330,6 +334,15 @@ public class CloudWorkerThreadPool {
             ensureRtcEngineReadyLock();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    public void disableLastmileTest() {
+        if (onLastmileQuality != null) {
+            onLastmileQuality.onQuit();
+            onLastmileQuality = null;
+        }
+        if (mRtcEngine != null) {
+            mRtcEngine.disableLastmileProbeTest();
         }
     }
 
