@@ -61,7 +61,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignLeft="@+id/pg_livevideo_better_completetar"
-                        android:layout_marginLeft="3dp"
+                        android:layout_marginLeft="5dp"
                         android:textColor="#ff756565"
                         android:textSize="9dp"
                         tools:text="正确率" />
@@ -71,7 +71,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignRight="@+id/pg_livevideo_better_completetar"
-                        android:layout_marginRight="3dp"
+                        android:layout_marginRight="5dp"
                         android:textColor="#ff756565"
                         android:textSize="9dp"
                         tools:text="目标80%" />

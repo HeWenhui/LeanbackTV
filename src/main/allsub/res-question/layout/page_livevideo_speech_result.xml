@@ -155,7 +155,7 @@
             android:layout_width="252dp"
             android:layout_height="2dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="225dp"
+            android:layout_marginTop="232dp"
             android:background="@drawable/zhanduipk_fantastic_huomiao_line" />
 
         <android.support.v7.widget.RecyclerView
@@ -172,12 +172,12 @@
             android:id="@id/tv_arts_answer_result_pse_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="86dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="52dp"
+            android:layout_marginRight="116dp"
             android:textColor="#ff8c8080"
             android:textSize="10sp"
-            tools:text="5s 后关闭"
+            tools:text="5s后关闭"
             android:visibility="gone" />
 
     </RelativeLayout>

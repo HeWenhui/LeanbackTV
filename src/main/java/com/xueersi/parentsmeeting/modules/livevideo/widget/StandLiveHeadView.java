@@ -135,12 +135,9 @@ public class StandLiveHeadView extends LottieAnimationView {
             Canvas canvas = new Canvas(bitmap);
             textView.setGravity(Gravity.CENTER_VERTICAL);
             textView.setText(shortName);
-            textView.setTextSize(nameBitmap.getHeight() * 9.8f / 10f / ScreenUtils.getScreenDensity());
-            if (isMine) {
-                textView.setTextColor(Color.WHITE);
-            } else {
-                textView.setTextColor(0xffA56202);
-            }
+            textView.setTextSize(nameBitmap.getHeight() / ScreenUtils.getScreenDensity());
+            textView.setTextColor(Color.WHITE);
+            textView.setShadowLayer(3, 1, 1, Color.parseColor("#66010101"));
             int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(nameBitmap.getWidth(), View.MeasureSpec.EXACTLY);
             int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(nameBitmap.getHeight(), View.MeasureSpec.EXACTLY);
             textView.measure(widthMeasureSpec, heightMeasureSpec);

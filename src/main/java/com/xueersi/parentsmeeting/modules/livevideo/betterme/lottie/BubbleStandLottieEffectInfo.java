@@ -94,7 +94,7 @@ public class BubbleStandLottieEffectInfo extends LottieEffectInfo {
             textView.setText(message);
             float size = height * 12f / 37f / ScreenUtils.getScreenDensity();
             textView.setTextSize(size);
-            textView.setPadding(0, (int) (height * 16f / 37f), 0, 0);
+            textView.setPadding(0, (int) (height * 15f / 37f), 0, 0);
             int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
             int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
             textView.measure(widthMeasureSpec, heightMeasureSpec);
