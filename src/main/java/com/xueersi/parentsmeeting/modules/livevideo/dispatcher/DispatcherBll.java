@@ -12,6 +12,7 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.LogerTag;
@@ -30,6 +31,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 import com.xueersi.ui.dataload.DataLoadEntity;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.InetAddress;
 import java.util.HashMap;
@@ -443,8 +446,10 @@ public class DispatcherBll extends BaseBll {
 
     public void getPublic(final String courseName, final String courseId, final String teacherId,
                           final String gotoClassTime,
-                          final AbstractBusinessDataCallBack callBack) {
-        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
+                          final AbstractBusinessDataCallBack callBack,DataLoadEntity dataLoadEntity) {
+        if (dataLoadEntity == null) {
+            dataLoadEntity = new DataLoadEntity(mContext);
+        }
         postDataLoadEvent(dataLoadEntity.beginLoading());
         dispatcherHttpManager.publicLiveCourseQuestion(courseId, teacherId, gotoClassTime,
                 new HttpCallBack(dataLoadEntity) {
@@ -465,6 +470,9 @@ public class DispatcherBll extends BaseBll {
     }
 
 
+
+
+
     /**
      * 大班整合讲座-回放入口
      *
@@ -473,9 +481,10 @@ public class DispatcherBll extends BaseBll {
      * @param stuCouId
      */
     public void getBigLivePublic(String planId, String bizeId, String
-            stuCouId, final AbstractBusinessDataCallBack callBack) {
-
-        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
+            stuCouId, final AbstractBusinessDataCallBack callBack,DataLoadEntity dataLoadEntity) {
+        if(dataLoadEntity ==null) {
+            dataLoadEntity = new DataLoadEntity(mContext);
+        }
         postDataLoadEvent(dataLoadEntity.beginLoading());
 
         int iPlanId = Integer.parseInt(planId);
@@ -499,5 +508,41 @@ public class DispatcherBll extends BaseBll {
         });
     }
 
+    /**
+     * 直播灰度场次
+     * @param liveId
+     * @param callBack
+     */
+    public void publicLiveIsGrayLecture(final String liveId , final boolean isLive,
+                                        final AbstractBusinessDataCallBack callBack,final DataLoadEntity   dataLoadEntity) {
+            postDataLoadEvent(dataLoadEntity.beginLoading());
+        //请求查询数据
+        dispatcherHttpManager.publicLiveIsGrayLecture( liveId,
+                new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        PublicLiveGrayEntity entity = new PublicLiveGrayEntity();
+                        int status =  dispatcherHttpResponseParser.parserPublicResult(responseEntity);
+                        entity.setStatus(status);
+                        entity.setLive(isLive);
+                        callBack.onDataSucess(entity);
+                        if(isLive) {
+                            EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataSuccess()));
+                        }
+                    }
 
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        callBack.onDataFail(-1,msg);
+                            EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataSuccess()));
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        callBack.onDataFail(-1,responseEntity.getErrorMsg());
+                            EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataSuccess()));
+                    }
+                });
+
+    }
 }

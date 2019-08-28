@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
@@ -65,7 +66,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     protected LiveGetInfo mGetInfo;
     protected int from = 0;
     public static final String ENTER_ROOM_FROM = "from";
-    protected LiveVideoAction liveVideoAction;
+    protected LiveVideoStateListener liveVideoAction;
     protected LogToFile mLogtf;
     protected LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
     protected long startTime = System.currentTimeMillis();

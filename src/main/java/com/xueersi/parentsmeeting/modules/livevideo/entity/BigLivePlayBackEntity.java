@@ -271,8 +271,8 @@ public class BigLivePlayBackEntity extends BaseEntity {
         private String type;
         private String mode;
         private String pattern;
-        private String sTime;
-        private String eTIme;
+        private long sTime;
+        private long eTIme;
         private List<String> subjectIds;
         private List<String> gradeIds;
 
@@ -316,19 +316,19 @@ public class BigLivePlayBackEntity extends BaseEntity {
             this.pattern = pattern;
         }
 
-        public String getsTime() {
+        public long getsTime() {
             return sTime;
         }
 
-        public void setsTime(String sTime) {
+        public void setsTime(long sTime) {
             this.sTime = sTime;
         }
 
-        public String geteTIme() {
+        public long geteTIme() {
             return eTIme;
         }
 
-        public void seteTIme(String eTIme) {
+        public void seteTIme(long eTIme) {
             this.eTIme = eTIme;
         }
 

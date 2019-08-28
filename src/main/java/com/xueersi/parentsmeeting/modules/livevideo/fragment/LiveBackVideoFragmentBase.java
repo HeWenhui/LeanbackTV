@@ -75,7 +75,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     /** 布局默认资源 */
     protected int mLayoutVideo = R.layout.liveback_video_fragment;
     /** 播放器可刷新布局 */
-    protected int mLayoutBackgroundRefresh = R.layout.layout_video_resfresh;
+    public int mLayoutBackgroundRefresh = R.layout.layout_video_resfresh;
     protected LiveBackPlayerFragment liveBackPlayVideoFragment;
     /** 所在的Activity是否已经onCreated */
     protected boolean mCreated = false;
@@ -101,22 +101,22 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     /** 播放器界面的模式 */
     private int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
     /** 放播放器的 io.vov.vitamio.widget.CenterLayout */
-    private View viewRoot;
+    public View viewRoot;
     /** 播放器的VideoView com.xueersi.parentsmeeting.player.media.VideoView */
     protected VideoView videoView;
     protected LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
     /** 播放器父布局 */
     protected RelativeLayout rlContent;
     /** 加载中动画Loading */
-    private View videoLoadingLayout;
+    public View videoLoadingLayout;
     /** 播放器播放失败时的提供可刷新操作的背景 */
     protected View videoBackgroundRefresh;
     /** 重新刷新 */
-    private Button btnVideoRefresh;
+    protected Button btnVideoRefresh;
     /** 刷新页面的回退按钮 */
-    private ImageView ivBack;
+    public ImageView ivBack;
     /** 加载中动画的加载文字 */
-    private TextView tvVideoLoadingText;
+    public TextView tvVideoLoadingText;
     /** 当前播放的视频地址 */
     protected Uri mUri;
     /** 播放器的控制对象 */
@@ -425,9 +425,9 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         View view = inflater.inflate(id, mContentView, false);
         mContentView.removeAllViews();
         mContentView.addView(view);
-        viewRoot = view.findViewById(com.xueersi.parentsmeeting.module.player.R.id.cl_course_video_root);// 播放器所在的io
+        viewRoot = view.findViewById(R.id.cl_course_video_root);// 播放器所在的io
         // .vov.vitamio.widget.CenterLayout
-        rlContent = (RelativeLayout) view.findViewById(com.xueersi.parentsmeeting.module.player.R.id
+        rlContent = (RelativeLayout) view.findViewById(R.id
                 .rl_course_video_content);
         videoBackgroundRefresh = LayoutInflater.from(activity).inflate(mLayoutBackgroundRefresh, rlContent, false);
         // 失败时播放器显示的背景
@@ -570,7 +570,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     }
 
 
-    LiveOnVideoCreate videoCreate = new LiveOnVideoCreate();
+   public LiveOnVideoCreate videoCreate = new LiveOnVideoCreate();
 
     class LiveOnVideoCreate implements LiveBackPlayerFragment.OnVideoCreate {
         Bundle savedInstanceState;
@@ -892,7 +892,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     }
 
     /** 播放异常刷新界面 */
-    OnClickListener btnRefreshListener = new OnClickListener() {
+   public OnClickListener btnRefreshListener = new OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -901,7 +901,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     };
 
     /** 刷新界面上返回按钮 */
-    OnClickListener ivRefreshBackListener = new OnClickListener() {
+   public OnClickListener ivRefreshBackListener = new OnClickListener() {
 
         @Override
         public void onClick(View v) {

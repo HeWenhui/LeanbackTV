@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
+import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.json.JSONObject;
 
@@ -60,7 +61,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     private DispatcherBll dispatcherBll;
     /**是否是大班整合回放**/
     private boolean isBigLive;
-
+    /**是否是大班 灰度状态 **/
+    private int big_live_type = -1;
     public interface LiveNewStatus {
         int LIVE_UNBEGIN = 1;//待开始
         int LIVE_LIVING = 2;//进行中
@@ -70,8 +72,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     }
 
     private Activity activity;
-
-
+    DataLoadEntity  dataLoadEntity;
     @Override
     public void dispatch(Activity srcActivity, Bundle bundle, int requestCode) {
 
@@ -92,6 +93,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
             try {
                 JSONObject jsonObject = new JSONObject(paramsJson);
+
                 status = jsonObject.optInt("status");
                 rstatus = jsonObject.optInt("rstatus");
                 vStuCourseId = jsonObject.optString("stuCouId");
@@ -103,9 +105,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 type = jsonObject.optInt("variety");
                 teacherId = jsonObject.optString("teacherId");
                 gotoClassTime = jsonObject.optString("stime");
-                //是否是大班整合
+                // 是否是大班整合
                 isBigLive = jsonObject.optBoolean("isBigLive",false);
-
+                // 大班灰度状态
+                big_live_type =  jsonObject.optInt("bigLiveStatus",big_live_type);
 
                 if (type == TYPE_LIVE) {
                     startLive();
@@ -116,7 +119,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 } else if (type == TYPE_AUDIT) {
                     startAudit();
                 } else if (type == TYPE_LECTURE) {
-                    startLecture();
+                    isBigLive();
                 } else if (type == TYPE_HEART) {
                     startHeart();
                 } else if (type == TYPE_EXAM) {
@@ -192,14 +195,16 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 LiveVideoBusinessConfig.ENTER_FROM_2);
     }
 
-    private void startLecture() {
+
+
+    private void startLecture(final boolean isBigLive) {
         boolean isLive = rstatus == 1;
         if (isLive) {
             final String liveId = planId;
             if (!AppBll.getInstance(activity).canSeeVideo(new AppBll.OnSelectListener() {
                 public void onSelect(boolean goon) {
                     if (goon) {
-                        startLivePlayActivity(liveId);
+                        startLivePlayActivity(liveId,isBigLive);
                     }
                 }
             })) {
@@ -207,10 +212,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 return;
             }
             AppBll.getInstance(activity);
-            startLivePlayActivity(liveId);
+            startLivePlayActivity(liveId,isBigLive);
         } else {
             Log.e("ckTrac","========>startLecture:999999");
-            if(isBigLive()){
+            if(isBigLive){
                 dispatcherBll.getBigLivePublic(planId,"2","0", new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
@@ -219,7 +224,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                             enterBigLivePlayBack(entity);
                         }
                     }
-                });
+                },dataLoadEntity);
 
 
             }else {
@@ -231,13 +236,24 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                             playLivePlayBackVideo(publicEntity);
                         }
                     }
-                });
+                },dataLoadEntity);
             }
 
         }
     }
 
-
+    AbstractBusinessDataCallBack  publicGrayControlCallBack = new AbstractBusinessDataCallBack() {
+        @Override
+        public void onDataSucess(Object... objData) {
+            PublicLiveGrayEntity mPublicLiveGrayEntity = (PublicLiveGrayEntity)objData[0];
+            startLecture(mPublicLiveGrayEntity.getStatus()==DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE);
+        }
+        @Override
+        public void onDataFail(int errStatus, String failMsg) {
+            super.onDataFail(errStatus, failMsg);
+            XESToastUtils.showToast(activity,failMsg);
+        }
+    };
 
 
     /**
@@ -246,6 +262,14 @@ public class LiveVideoDispatcher extends AbsDispatcher {
      */
     private boolean isBigLive() {
         boolean result = isBigLive;
+        if(big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE) {
+            startLecture(true);
+        } else if(big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_COMMON){
+            startLecture(false);
+        } else if (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_DEFALUT){
+            dataLoadEntity = new DataLoadEntity(activity);
+            dispatcherBll.publicLiveIsGrayLecture(planId,true, publicGrayControlCallBack,dataLoadEntity);
+        }
         return result;
     }
 
@@ -299,6 +323,11 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         videoEntity.setPlayVideoId(entity.getPlanInfo().getId());
         videoEntity.setPlayVideoName(entity.getPlanInfo().getName());
         videoEntity.setVideoPath(entity.getConfigs().getVideoFile());
+        if(entity.getPlanInfo() != null){
+            videoEntity.setsTime(entity.getPlanInfo().getsTime());
+            videoEntity.seteTime(entity.getPlanInfo().geteTIme());
+        }
+
         videoEntity.setvCourseSendPlayVideoTime(dataManager.getInt(LocalCourseConfig.SENDPLAYVIDEOTIME, 180,
                 SHAREDATA_USER));
         videoEntity.setVideoCacheKey(entity.getConfigs().getVideoPath());
@@ -316,9 +345,14 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     }
 
 
-    private void startLivePlayActivity(String sectionId) {
-        LiveVideoEnter.intentToLiveVideoActivityLecture(activity, sectionId, LiveVideoBusinessConfig
-                .ENTER_FROM_22);
+    private void startLivePlayActivity(String sectionId,boolean isBigLive) {
+        if(isBigLive) {
+            LiveVideoEnter.intentToLiveVideoActivityLecture(activity, sectionId, LiveVideoBusinessConfig
+                    .ENTER_FROM_22,isBigLive);
+        } else {
+            LiveVideoEnter.intentToLiveVideoActivityLecture(activity, sectionId, LiveVideoBusinessConfig
+                    .ENTER_FROM_22);
+        }
     }
 
     private void startHeart() {

@@ -1062,8 +1062,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 planInfo.setType(planInfoJsonObj.optString("type"));
                 planInfo.setMode(planInfoJsonObj.optString("mode"));
                 planInfo.setPattern(planInfoJsonObj.optString("pattern"));
-                planInfo.setsTime(planInfoJsonObj.optString("stime"));
-                planInfo.seteTIme(planInfoJsonObj.optString("etime"));
+                planInfo.setsTime(planInfoJsonObj.optLong("stime"));
+                planInfo.seteTIme(planInfoJsonObj.optLong("etime"));
                 String subjectIdsStr = planInfoJsonObj.optString("subjectIds");
                 if(!StringUtils.isEmpty(subjectIdsStr)){
                     String[]ids = subjectIdsStr.split(",");
@@ -1132,6 +1132,23 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             MobAgent.httpResponseParserError(TAG, "praseBigLiveEnterPlayBack", e.getMessage());
         }
         return playBackEntity;
+    }
+
+    /**
+     * 直播灰度场次确认
+     * @param responseEntity
+     * @return
+     */
+    public int parserPublicResult(ResponseEntity responseEntity) {
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        if (jsonObject != null) {
+            try {
+                return jsonObject.optInt("status");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
     }
 
 }
