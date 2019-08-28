@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 public class BllConfigEntity {
     public String className;
     public String intent;
-    public int businessId;
+    public int moudleId;
 
     public BllConfigEntity(String className) {
         this.className = className;
@@ -13,8 +13,8 @@ public class BllConfigEntity {
         this.className = className;
         this.intent = intent;
     }
-    public BllConfigEntity(String className, int businessId) {
+    public BllConfigEntity(String className, int moudleId) {
         this.className = className;
-        this.businessId = businessId;
+        this.moudleId = moudleId;
     }
 }

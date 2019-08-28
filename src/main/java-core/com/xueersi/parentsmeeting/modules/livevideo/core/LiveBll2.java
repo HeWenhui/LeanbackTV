@@ -475,6 +475,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             mHttpManager.bigLiveEnter(iPlanId,mLiveType,iStuCouId,callBack);
         } else {
             onGetInfoSuccess(getInfo);
+
         }
 
     }
@@ -494,7 +495,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
 
         if(getInfo.isBigLive()){
+
             initBigLiveRoom(getInfo);
+
         }else{
             initLiveRoom(getInfo);
         }
@@ -540,29 +543,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             mVideoAction.onLiveInit(mGetInfo);
         }
 
-
-
-         // 通知业务类 直播间初始数据获取成功
-        List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
-        ArrayList<LiveBllLog.BusinessTime> businessTimes = new ArrayList<>();
-        long before = System.currentTimeMillis();
-        for (LiveBaseBll businessBll : businessBllTemps) {
-            try {
-                businessBll.onLiveInited(getInfo);
-                long time = (System.currentTimeMillis() - before);
-                if (time > 10) {
-                    LiveBllLog.BusinessTime businessTime = new LiveBllLog.BusinessTime(businessBll.getClass().getSimpleName(), time);
-                    businessTimes.add(businessTime);
-                }
-                before = System.currentTimeMillis();
-            } catch (Exception e) {
-                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-                logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
-            }
-        }
-        LiveBllLog.onGetInfoEnd(getInfo, businessTimes);
-        businessBllTemps.clear();
-
+        addCommonData(getInfo);
         //链接IRC
         String channel = "";
         String eChannel = "";
@@ -617,6 +598,33 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         liveVideoBll.onLiveInit(getInfo, mLiveTopic);
         mShareDataManager.put(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, getInfo.getClientLog(), ShareDataManager.SHAREDATA_NOT_CLEAR);
 
+    }
+
+    public void  addCommonData(LiveGetInfo getInfo){
+        // 通知业务类 直播间初始数据获取成功
+        List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
+        ArrayList<LiveBllLog.BusinessTime> businessTimes = new ArrayList<>();
+        long before = System.currentTimeMillis();
+        for (LiveBaseBll businessBll : businessBllTemps) {
+            logger.d("grayControl__initmoudle_data"+businessBll.getClass().getSimpleName());
+            if(businessBll.getBusinessMoudleId()!=-1) {
+                continue;
+            }
+            try {
+                businessBll.onLiveInited(getInfo);
+                long time = (System.currentTimeMillis() - before);
+                if (time > 10) {
+                    LiveBllLog.BusinessTime businessTime = new LiveBllLog.BusinessTime(businessBll.getClass().getSimpleName(), time);
+                    businessTimes.add(businessTime);
+                }
+                before = System.currentTimeMillis();
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
+            }
+        }
+        LiveBllLog.onGetInfoEnd(getInfo, businessTimes);
+        businessBllTemps.clear();
     }
 
     /**

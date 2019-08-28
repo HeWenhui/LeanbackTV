@@ -56,6 +56,8 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     private boolean mDestroyed;
     protected LiveViewAction liveViewAction;
 
+    protected int businessMoudleId = -1;
+
     public LiveBaseBll(Activity context, LiveBll2 liveBll) {
         super(context);
         this.activity = context;
@@ -86,6 +88,10 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
         return contextLiveAndBackDebug;
     }
 
+
+    public View getContentView(){
+        return mRootView;
+    }
     /**
      * 获取网络请求对象
      */
@@ -394,5 +400,13 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
 
     public void removeCallbacks(Runnable action) {
         mHandler.removeCallbacks(action);
+    }
+
+    public void setBusinessMoudleId(int businessMoudleId) {
+        this.businessMoudleId = businessMoudleId;
+    }
+
+    public int getBusinessMoudleId() {
+        return businessMoudleId;
     }
 }
