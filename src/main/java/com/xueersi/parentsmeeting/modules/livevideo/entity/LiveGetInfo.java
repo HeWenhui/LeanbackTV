@@ -194,6 +194,11 @@ public class LiveGetInfo {
     /**
      * 聊天中老师连接是否可以点击
      */
+
+    /**直播入口接口 返回session ID**/
+    public String sessionId;
+
+
     private int urlClick;
     private boolean allowLinkMic;
     /** 2018新接麦 */
@@ -741,6 +746,16 @@ public class LiveGetInfo {
         }
         return uname;
     }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
 
     public String getEn_name() {
         return en_name;

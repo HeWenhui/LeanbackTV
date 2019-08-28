@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.xueersi.common.base.BaseBll;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -102,8 +103,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     private String mStuCouId;
     private int mForm;
     private LiveHttpResponseParser mHttpResponseParser;
-
-
 
     /**
      * 网络类型
@@ -492,7 +491,18 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     /**
      * 初始化大班整合直播间
      */
+
     private void initBigLiveRoom(LiveGetInfo getInfo) {
+        // 添加网络请求公共参数
+        if(mHttpManager != null){
+            mHttpManager.addHeaderParams("switch-grade",getInfo.getGrade()+"");
+            String subjectId = (getInfo.getSubjectIds()!= null && getInfo.getSubjectIds().length >0)? getInfo.getSubjectIds()[0]:"";
+            mHttpManager.addHeaderParams("switch-subject",subjectId);
+            mHttpManager.addHeaderParams("bizId",mLiveType+"");
+            mHttpManager.addHeaderParams("SESSIONID", AppBll.getInstance().getLiveSessionId());
+            //Log.e("ckTrac","====>LiveBll2_initBigLiveRoom:"+ AppBll.getInstance().getLiveSessionId());
+        }
+
 
         if(liveLog != null){
             liveLog.setGetInfo(mGetInfo);

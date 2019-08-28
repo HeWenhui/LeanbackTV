@@ -112,7 +112,6 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                         }
                     }
                 }
-
             }
 
 
