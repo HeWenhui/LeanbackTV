@@ -1,10 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginGrayConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author linyuqiang 视频初始化
@@ -309,6 +313,8 @@ public class LiveGetInfo {
     /** 语文AI主观题AI接口 */
     private String subjectiveItem2AIUrl;
 
+    /** 直播key */
+    private String livePluginKey;
     /**
      * 是否是幼教
      */
@@ -334,6 +340,9 @@ public class LiveGetInfo {
     private VideoConfigEntity videoConfigEntity;
 
     private boolean showHightFeedback;
+
+    /** 灰度控制开关控制*/
+    LiveModuleConfigInfo liveModuleConfigInfo;
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -1638,5 +1647,102 @@ public class LiveGetInfo {
 
     public boolean isBigLive() {
         return bigLive;
+    }
+
+    public String getLivePluginKey() {
+        return livePluginKey;
+    }
+
+    public void setLivePluginKey(String livePluginKey) {
+        this.livePluginKey = livePluginKey;
+    }
+
+    public LiveModuleConfigInfo getLiveModuleConfigInfo() {
+        return liveModuleConfigInfo;
+    }
+
+    public void setLiveModuleConfigInfo(LiveModuleConfigInfo liveModuleConfigInfo) {
+        this.liveModuleConfigInfo = liveModuleConfigInfo;
+    }
+
+
+    /**
+     * 根据moduleId 查找 Plugin
+     *
+     * @param moduleId
+     * @return
+     */
+    public LivePlugin getLivePluginByModuleId(int moduleId) {
+        LivePlugin plugin = null;
+        LiveModuleConfigInfo info = getLiveModuleConfigInfo();
+        if (info != null && info.plugins != null) {
+            List<LivePlugin> plugins = info.plugins;
+            for (int i = 0; i < plugins.size(); i++) {
+                if (moduleId == plugins.get(i).moduleId) {
+                    plugin = plugins.get(i);
+                    break;
+                }
+            }
+        }
+
+        return plugin;
+    }
+
+
+    /**
+     * 根据pluginName 查找 Plugin
+     *
+     * @param pluginName
+     * @return
+     */
+    public LivePlugin getLivePluginByPluginName(String pluginName) {
+        LivePlugin plugin = null;
+        LiveModuleConfigInfo info = getLiveModuleConfigInfo();
+        if (info != null && info.plugins != null) {
+            List<LivePlugin> plugins = info.plugins;
+            for (int i = 0; i < plugins.size(); i++) {
+                if (pluginName.equals(plugins.get(i).pluginName)) {
+                    plugin = plugins.get(i);
+                    break;
+                }
+            }
+        }
+        return plugin;
+    }
+
+
+    /**
+     *
+     * 根据moudlid key 返回属性
+     * @param moudleId
+     * @param key
+     * @return
+     */
+    public String getProperties(int moudleId,String key){
+        LivePlugin plugin = getLivePluginByModuleId(LivePluginGrayConfig.MOUDLE_GIFT);
+        if(plugin!=null) {
+            Map<String,String > maplist = plugin.properties;
+            if(maplist!=null) {
+                return maplist.get(key);
+            }
+        }
+        return "";
+    }
+
+
+
+    /**
+     *
+     * 根据moudlid 功能是否打开
+     * @param moudleId
+     * @param key
+     * @return
+     */
+    public boolean isMoudleAllowed(int moudleId){
+        LivePlugin plugin =  getLivePluginByModuleId(LivePluginGrayConfig.MOUDLE_GIFT);
+        if(plugin!=null) {
+            return plugin.isAllowed;
+        }
+        return false;
     }
 }

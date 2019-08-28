@@ -51,7 +51,6 @@ public class LiveBusinessPluginManager extends BaseBll {
 
     private LiveBusinessPluginManager(Context context) {
         super(context);
-        getLiveModuleConfigInfo();
     }
 
 
