@@ -323,6 +323,14 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         videoEntity.setPlayVideoId(entity.getPlanInfo().getId());
         videoEntity.setPlayVideoName(entity.getPlanInfo().getName());
         videoEntity.setVideoPath(entity.getConfigs().getVideoFile());
+
+        if(entity.getPlanInfo().getSubjectIds() != null && entity.getPlanInfo().getSubjectIds().size() > 0){
+            videoEntity.setSubjectId(entity.getPlanInfo().getSubjectIds().get(0));
+        }
+        if(entity.getPlanInfo().getGradeIds() != null && entity.getPlanInfo().getGradeIds().size() >0){
+            videoEntity.setGradId(entity.getPlanInfo().getGradeIds().get(0));
+        }
+        videoEntity.setBigLive(true);
         if(entity.getPlanInfo() != null){
             videoEntity.setsTime(entity.getPlanInfo().getsTime());
             videoEntity.seteTime(entity.getPlanInfo().geteTIme());

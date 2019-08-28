@@ -13,6 +13,7 @@ import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.lib.framework.utils.DeviceUtils;
+import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
@@ -54,6 +55,10 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     String TAG = "LiveHttpManager";
     private final Logger logger = LoggerFactory.getLogger(TAG);
     HashMap<String, String> defaultKey = new HashMap<>();
+    /**header 参数**/
+    HashMap<String,String> defaultHeaderParams = new HashMap<>();
+
+
     LiveVideoSAConfig.Inner liveVideoSAConfigInner;
     private LiveVideoSAConfig liveVideoSAConfig;
 
@@ -94,9 +99,45 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         sendPost(url, httpRequestParams, httpCallBack);
     }
 
+    @Override
     public void sendJsonPostDefault(String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
         setDefaultParameter(httpRequestParams);
+        setDefaultHeaderParams(httpRequestParams);
         sendJsonPost(url, httpRequestParams, httpCallBack);
+    }
+
+    @Override
+    public void sendJsonPost(final String url, final Object paramObject, HttpCallBack httpCallBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.setJson(JsonUtil.toJson(paramObject));
+        sendJsonPostDefault(url,httpRequestParams,httpCallBack);
+    }
+
+    /**
+     * 添加header 参数
+     * @param key
+     * @param value
+     */
+    public void addHeaderParams(String key,String value){
+        defaultHeaderParams.put(key, value);
+    }
+    /**
+     * 添加header 头信息
+     * @param httpRequestParams
+     */
+    private void setDefaultHeaderParams(HttpRequestParams httpRequestParams) {
+
+        if(defaultHeaderParams != null && defaultHeaderParams.size() > 0 ){
+            for (String key : defaultHeaderParams.keySet()) {
+                Map<String, String> headerParams = httpRequestParams.getHeaderParams();
+                //不顶掉已经有的参数，比如战队pk teamId
+                if (headerParams != null && headerParams.containsKey(key)) {
+                    continue;
+                }
+                String value = defaultHeaderParams.get(key);
+                httpRequestParams.addHeaderParam(key,value);
+            }
+        }
     }
 
     public LiveVideoSAConfig getLiveVideoSAConfig() {
@@ -109,6 +150,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         super.sendPost(url, httpRequestParams, httpCallBack);
         logger.d("sendPost:time=" + (System.currentTimeMillis() - before) + ",url=" + url);
     }
+
 
     /**
      * 播放器数据初始化
