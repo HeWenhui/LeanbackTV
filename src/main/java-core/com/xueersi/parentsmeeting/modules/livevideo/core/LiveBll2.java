@@ -607,7 +607,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         long before = System.currentTimeMillis();
         for (LiveBaseBll businessBll : businessBllTemps) {
             logger.d("grayControl__initmoudle_data"+businessBll.getClass().getSimpleName());
-            if(businessBll.getBusinessMoudleId()!=-1) {
+            if(businessBll.getBusinessMoudleId()==-1) {
                 continue;
             }
             try {
