@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.lottie;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,6 +111,7 @@ public class RisingBubbleLottieEffectInfo extends LottieEffectInfo {
                 @Override
                 public void onSuccess(Drawable drawable) {
                     head.setImageDrawable(drawable);
+                    canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
                     view.draw(canvas);
                     mLottieView.updateBitmap(bitmapId, Bitmap.createScaledBitmap(bitmap, width, height, true));
                 }

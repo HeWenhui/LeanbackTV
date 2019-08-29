@@ -7,17 +7,19 @@
     android:orientation="vertical">
 
     <com.xueersi.ui.widget.CircleImageView
-        android:src="@drawable/app_livevideo_enteampk_boy_bg_img_nor"
         android:id="@+id/iv_item_livevideo_betterme_energy_head"
         android:layout_width="26dp"
         android:layout_height="26dp"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:src="@drawable/app_livevideo_enteampk_boy_bg_img_nor" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_item_livevideo_betterme_energy_name"
-        android:layout_width="wrap_content"
+        android:layout_width="55dp"
         android:layout_height="wrap_content"
-        android:text="欧阳丽丽"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
         android:textColor="@color/white"
         android:textSize="11dp" />
 
@@ -35,7 +37,6 @@
             android:id="@+id/tv_item_livevideo_betterme_energy_fire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+56"
             android:textColor="#FFFFDF95"
             android:textSize="14dp"
             app:layout_constraintLeft_toLeftOf="parent"
