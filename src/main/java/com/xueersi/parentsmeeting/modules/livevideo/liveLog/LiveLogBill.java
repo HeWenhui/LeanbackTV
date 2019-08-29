@@ -9,6 +9,7 @@ import com.hwl.log.xrsLog.UpdateParamInterface;
 import com.hwl.log.xrsLog.XrsLogPublicParam;
 import com.xueersi.common.base.XueErSiRunningEnvironment;
 import com.xueersi.common.logerhelper.LogBill;
+import com.xueersi.common.logerhelper.matrix.ApmBill;
 import com.xueersi.lib.framework.utils.AppUtils;
 
 import java.io.File;
@@ -129,16 +130,54 @@ public class LiveLogBill {
 
 
     /**
-     * 开启直播监控日志
+     * 开启直播监控日志(轮循)
      */
     public void startLog() {
         LiveLog.startLog();
     }
 
     /**
-     * 关闭直播监控日志
+     * 关闭直播监控日志(轮循)
      */
     public void stopLog() {
         LiveLog.stopLog();
+    }
+
+    /**
+     * 打开app 采集日志
+     */
+    public void openAppLiveLog(){
+        LiveLogEntity log = new LiveLogEntity();
+        if (LiveLogBill.param != null) {
+            log.live_id = LiveLogBill.param.live_id;
+        }
+        LiveLog.log(log);
+        LiveLog.sendLog();
+
+    }
+
+    /**
+     * 打开直播日志
+     */
+    public void openLiveLog(){
+        LiveLogEntity log = new LiveLogEntity();
+        if (LiveLogBill.param != null) {
+            log.live_id = LiveLogBill.param.live_id;
+        }
+        LiveLog.log(log);
+        LiveLog.sendLog();
+    }
+
+    /**
+     * 直播卡顿log
+     */
+    public void  liveANRLog(){
+
+        LiveLogEntity log = new LiveLogEntity();
+        if (LiveLogBill.param != null) {
+            log.live_id = LiveLogBill.param.live_id;
+        }
+        LiveLog.log(log);
+        LiveLog.sendLog();
     }
 }
