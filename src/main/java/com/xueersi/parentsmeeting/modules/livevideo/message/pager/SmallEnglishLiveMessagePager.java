@@ -855,6 +855,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                                 .INPUT_METHOD_SERVICE);
                                 mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
                                 switchFSPanelLinearLayout.setVisibility(View.GONE);
+                                if (blockChineseLayout != null) {
+                                    blockChineseLayout.setVisibility(View.GONE);
+                                }
                                 rlMessageTextContent.setVisibility(View.GONE);
                                 btnMessageStartVoice.performClick();
                                 btnMessageSwitch.setBackgroundResource(R.drawable
@@ -965,24 +968,26 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String str = editable.toString();
-                String repickStr = str.replaceAll("[\u4e00-\u9fa5]", "");
-                if (!repickStr.equals(str)) {
-                    int selectionAdditon = repickStr.length() - lengthBefore;
-                    blockChineseLayout.setVisibility(View.VISIBLE);
-                    mView.removeCallbacks(setTipsGoneRunnable);
-                    mView.postDelayed(setTipsGoneRunnable, 2000);
-                    etMessageContent.removeTextChangedListener(this);
-                    editable.replace(0, editable.length(), repickStr);
-                    etMessageContent.setSelection(selectionEnd + selectionAdditon);
-                    etMessageContent.addTextChangedListener(this);
-                }
-                if (StringUtils.isSpace(repickStr)) {
-                    setBtnDisenable(btMessageSend);
-                } else {
-                    btMessageSend.setEnabled(true);
-                    btMessageSend.setAlpha(1.0f);
-                    btMessageSend.setTextColor(Color.WHITE);
+                if (getInfo.getBlockChinese()) {
+                    String str = editable.toString();
+                    String repickStr = str.replaceAll("[\u4e00-\u9fa5]", "");
+                    if (!repickStr.equals(str)) {
+                        int selectionAdditon = repickStr.length() - lengthBefore;
+                        blockChineseLayout.setVisibility(View.VISIBLE);
+                        mView.removeCallbacks(setTipsGoneRunnable);
+                        mView.postDelayed(setTipsGoneRunnable, 2000);
+                        etMessageContent.removeTextChangedListener(this);
+                        editable.replace(0, editable.length(), repickStr);
+                        etMessageContent.setSelection(selectionEnd + selectionAdditon);
+                        etMessageContent.addTextChangedListener(this);
+                    }
+                    if (StringUtils.isSpace(repickStr)) {
+                        setBtnDisenable(btMessageSend);
+                    } else {
+                        btMessageSend.setEnabled(true);
+                        btMessageSend.setAlpha(1.0f);
+                        btMessageSend.setTextColor(Color.WHITE);
+                    }
                 }
 //                tvSpeechbulCount.setText(getSpannableText(repickStr.length(), false));
             }
@@ -1056,6 +1061,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             vwvVoiceChatWave.setVisibility(View.GONE);
         }
         switchFSPanelLinearLayout.setVisibility(View.GONE);
+        if (blockChineseLayout != null) {
+            blockChineseLayout.setVisibility(View.GONE);
+        }
     }
 
 
@@ -1932,6 +1940,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                     .INPUT_METHOD_SERVICE);
                     mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
                     switchFSPanelLinearLayout.setVisibility(View.GONE);
+                    if (blockChineseLayout != null) {
+                        blockChineseLayout.setVisibility(View.GONE);
+                    }
                 } else {
                     btnMessageStartVoice.setEnabled(true);
                 }

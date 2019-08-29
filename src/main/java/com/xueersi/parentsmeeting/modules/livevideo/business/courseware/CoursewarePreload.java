@@ -380,7 +380,8 @@ public class CoursewarePreload {
         return totalList;
     }
 
-    private void execDownLoad(List<CoursewareInfoEntity.LiveCourseware> liveCoursewares, List<String> cdns, List<String> ips, List<String> resources) {
+    private void execDownLoad(List<CoursewareInfoEntity.LiveCourseware> liveCoursewares,
+                              List<String> cdns, List<String> ips, List<String> resources) {
         //直播资源列表
         //cdns列表
         if (cdns == null || cdns.size() == 0) {
@@ -658,7 +659,8 @@ public class CoursewarePreload {
      * @param ips
      * @param cdns
      */
-    private void downloadResources(List<String> resourseInfos, List<String> cdns, final List<String> ips) {
+    private void downloadResources(List<String> resourseInfos, List<String> cdns,
+                                   final List<String> ips) {
         final File mPublicCacheout = new File(cacheFile, mPublicCacheoutName);
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();

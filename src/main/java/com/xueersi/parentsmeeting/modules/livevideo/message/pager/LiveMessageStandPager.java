@@ -588,18 +588,19 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String str = editable.toString();
-                String repickStr = str.replaceAll("[\u4e00-\u9fa5]", "");
-                if (!repickStr.equals(str)) {
-                    int selectionAdditon = repickStr.length() - lengthBefore;
-                    blockChineseLayout.setVisibility(View.VISIBLE);
-                    mView.removeCallbacks(setTipsGoneRunnable);
-                    mView.postDelayed(setTipsGoneRunnable, 2000);
-                    etMessageContent.removeTextChangedListener(this);
-                    editable.replace(0, editable.length(), repickStr);
-                    etMessageContent.setSelection(selectionEnd + selectionAdditon);
-                    etMessageContent.addTextChangedListener(this);
-                }
+                if (getInfo.getBlockChinese()) {
+                    String str = editable.toString();
+                    String repickStr = str.replaceAll("[\u4e00-\u9fa5]", "");
+                    if (!repickStr.equals(str)) {
+                        int selectionAdditon = repickStr.length() - lengthBefore;
+                        blockChineseLayout.setVisibility(View.VISIBLE);
+                        mView.removeCallbacks(setTipsGoneRunnable);
+                        mView.postDelayed(setTipsGoneRunnable, 2000);
+                        etMessageContent.removeTextChangedListener(this);
+                        editable.replace(0, editable.length(), repickStr);
+                        etMessageContent.setSelection(selectionEnd + selectionAdditon);
+                        etMessageContent.addTextChangedListener(this);
+                    }
 //                if (StringUtils.isSpace(repickStr)) {
 //                    setBtnDisenable(btMessageSend);
 //                } else {
@@ -607,6 +608,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 //                    btMessageSend.setAlpha(1.0f);
 //                    btMessageSend.setTextColor(Color.WHITE);
 //                }
+                }
             }
         });
         btMessageFlowers.setOnClickListener(new View.OnClickListener() {
@@ -1100,6 +1102,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 @Override
                 public void run() {
                     switchFSPanelLinearLayout.setVisibility(View.GONE);
+                    if (blockChineseLayout != null) {
+                        blockChineseLayout.setVisibility(View.GONE);
+                    }
                 }
             }, 10);
         }
@@ -1895,6 +1900,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 @Override
                 public void run() {
                     switchFSPanelLinearLayout.setVisibility(View.GONE);
+                    if (blockChineseLayout != null) {
+                        blockChineseLayout.setVisibility(View.GONE);
+                    }
                 }
             }, 10);
         }
