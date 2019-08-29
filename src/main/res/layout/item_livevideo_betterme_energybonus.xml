@@ -11,7 +11,7 @@
         android:id="@+id/iv_item_livevideo_betterme_energy_head"
         android:layout_width="26dp"
         android:layout_height="26dp"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="8dp" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_item_livevideo_betterme_energy_name"

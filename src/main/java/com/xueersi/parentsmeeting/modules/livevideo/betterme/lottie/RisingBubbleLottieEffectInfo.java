@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -88,7 +89,8 @@ public class RisingBubbleLottieEffectInfo extends LottieEffectInfo {
         final Bitmap bitmap;
         try {
             final View view = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_betterme_energybonus, null);
-            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(SizeUtils.Dp2Px(mContext, 72), SizeUtils.Dp2Px(mContext, 72), Bitmap.Config
+                    .ARGB_8888);
             final Canvas canvas = new Canvas(bitmap);
             final ImageView head = view.findViewById(R.id.iv_item_livevideo_betterme_energy_head);
             TextView name = view.findViewById(R.id.tv_item_livevideo_betterme_energy_name);
@@ -96,10 +98,10 @@ public class RisingBubbleLottieEffectInfo extends LottieEffectInfo {
             name.setText(teamMemberEntity.name);
             fire.setText("+" + teamMemberEntity.getEnergy());
 
-            int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
-            int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+            int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(SizeUtils.Dp2Px(mContext, 72), View.MeasureSpec.EXACTLY);
+            int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(SizeUtils.Dp2Px(mContext, 72), View.MeasureSpec.EXACTLY);
             view.measure(widthMeasureSpec, heightMeasureSpec);
-            view.layout(0, 0, width, height);
+            view.layout(0, 0, SizeUtils.Dp2Px(mContext, 72), SizeUtils.Dp2Px(mContext, 72));
             view.draw(canvas);
 
             ImageLoader.with(ContextManager.getContext()).load(teamMemberEntity.headurl).asCircle().asBitmap(new SingleConfig
@@ -108,7 +110,7 @@ public class RisingBubbleLottieEffectInfo extends LottieEffectInfo {
                 public void onSuccess(Drawable drawable) {
                     head.setImageDrawable(drawable);
                     view.draw(canvas);
-                    mLottieView.updateBitmap(bitmapId, bitmap);
+                    mLottieView.updateBitmap(bitmapId, Bitmap.createScaledBitmap(bitmap, width, height, true));
                 }
 
                 @Override
@@ -116,7 +118,7 @@ public class RisingBubbleLottieEffectInfo extends LottieEffectInfo {
 
                 }
             });
-            return bitmap;
+            return Bitmap.createScaledBitmap(bitmap, width, height, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
