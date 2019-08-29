@@ -14,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class LiveAndBackDebugIml implements LiveAndBackDebug, LiveDebugGetInfo {
+public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo {
     private Context mContext;
     private int mLiveType;
     private LiveGetInfo mGetInfo;
@@ -22,7 +22,7 @@ public class LiveAndBackDebugIml implements LiveAndBackDebug, LiveDebugGetInfo {
     private String mLiveId;
     private String mCourseId;
 
-    public LiveAndBackDebugIml(Context mContext, int liveType, String liveId, String courseId) {
+    public LiveDebugBigClassIml(Context mContext, int liveType, String liveId, String courseId) {
         this.mContext = mContext;
         mLiveType = liveType;
         mLiveId = liveId;
@@ -37,47 +37,47 @@ public class LiveAndBackDebugIml implements LiveAndBackDebug, LiveDebugGetInfo {
 
     ///日志上传相关
     @Override
-    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
+    public void umsAgentDebugSys(String eventtype, Map<String, String> mData) {
         if (mGetInfo == null) {
             return;
         }
-        setLogParam(eventId, mData);
-        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
+        setLogParam(eventtype, mData);
+        UmsAgentManager.umsAgentDebug(mContext, appID, eventtype, mData);
     }
 
     @Override
-    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
+    public void umsAgentDebugInter(String eventtype, Map<String, String> mData) {
         if (mGetInfo == null) {
             return;
         }
-        setLogParam(eventId, mData);
+        setLogParam(eventtype, mData);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
     }
 
     @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+    public void umsAgentDebugPv(String eventtype, Map<String, String> mData) {
         if (mGetInfo == null) {
             return;
         }
-        setLogParam(eventId, mData);
+        setLogParam(eventtype, mData);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
     }
 
     @Override
-    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+    public void umsAgentDebugSys(String eventtype, StableLogHashMap stableLogHashMap) {
         Map<String, String> mData = stableLogHashMap.getData();
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        mData.put("eventid", "" + eventId);
+        mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadSystem, mData, analysis);
     }
 
     @Override
-    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+    public void umsAgentDebugInter(String eventtype, StableLogHashMap stableLogHashMap) {
         Map<String, String> mData = stableLogHashMap.getData();
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        mData.put("eventid", "" + eventId);
+        mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData, analysis);
@@ -88,10 +88,10 @@ public class LiveAndBackDebugIml implements LiveAndBackDebug, LiveDebugGetInfo {
     }
 
     @Override
-    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+    public void umsAgentDebugPv(String eventtype, StableLogHashMap stableLogHashMap) {
         Map<String, String> mData = stableLogHashMap.getData();
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        mData.put("eventid", "" + eventId);
+        mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
@@ -100,10 +100,10 @@ public class LiveAndBackDebugIml implements LiveAndBackDebug, LiveDebugGetInfo {
     /**
      * 上传log 添加 公共参数
      *
-     * @param eventId
+     * @param eventtype
      * @param mData
      */
-    private void setLogParam(String eventId, Map<String, String> mData) {
+    private void setLogParam(String eventtype, Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getUname());
         LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -124,7 +124,7 @@ public class LiveAndBackDebugIml implements LiveAndBackDebug, LiveDebugGetInfo {
         mData.put("ip", "" + IpAddressUtil.USER_IP);
         mData.put("liveid", mLiveId);
         mData.put("livetype", "" + mLiveType);
-        mData.put("eventid", "" + eventId);
+        mData.put("eventtype", "" + eventtype);
         mData.put("clits", "" + System.currentTimeMillis());
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
     }
