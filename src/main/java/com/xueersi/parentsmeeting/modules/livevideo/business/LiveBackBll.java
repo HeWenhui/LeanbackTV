@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -350,6 +351,20 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         liveGetInfo.setsTime(mVideoEntity.getsTime());
         liveGetInfo.seteTime(mVideoEntity.geteTime());
 
+        liveGetInfo.setBigLive(mVideoEntity.isBigLive());
+
+        try {
+            String[] subjectIds = new String[]{mVideoEntity.getSubjectId()};
+            liveGetInfo.setSubjectIds(subjectIds);
+           String gradeIdStr =  mVideoEntity.getGradId();
+           if(!TextUtils.isEmpty(gradeIdStr)){
+               liveGetInfo.setGrade(Integer.parseInt(gradeIdStr));
+           }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
         if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getEnglishName())) {
             liveGetInfo.setEn_name(LiveAppUserInfo.getInstance().getEnglishName());
         }
@@ -406,6 +421,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         if (liveLog != null) {
             liveLog.setGetInfo(liveGetInfo);
         }
+
+        addHttpDefaultParams(liveGetInfo);
+
         String clientLog = mShareDataManager.getString(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, LiveHttpConfig
                 .URL_LIVE_ON_LOAD_LOGS, ShareDataManager.SHAREDATA_NOT_CLEAR);
         liveGetInfo.setClientLog(clientLog);
@@ -416,6 +434,22 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
         templiveBackBaseBlls.clear();
+    }
+
+    /**
+     * 大班整合添加 header 公共参数
+     * @param liveGetInfo
+     */
+    private void addHttpDefaultParams(LiveGetInfo liveGetInfo) {
+
+        Log.e("ckTrac","=====>LiveBackBll_addHttpDefaultParams:"+liveGetInfo.isBigLive());
+        if(liveGetInfo != null && mHttpManager != null && liveGetInfo.isBigLive()){
+            mHttpManager.addHeaderParams("switch-grade",liveGetInfo.getGrade()+"");
+            String subjectId = (liveGetInfo.getSubjectIds()!= null && liveGetInfo.getSubjectIds().length >0)? liveGetInfo.getSubjectIds()[0]:"";
+            mHttpManager.addHeaderParams("switch-subject",subjectId);
+            mHttpManager.addHeaderParams("bizId",mLiveType+"");
+        }
+
     }
 
     public ArrayList<LiveBackBaseBll> getLiveBackBaseBlls() {
