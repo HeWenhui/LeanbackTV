@@ -6,6 +6,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.JsonUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseBll;
@@ -429,12 +435,21 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         liveGetInfo.setClientLog(clientLog);
         liveUidRx.setLiveGetInfo(liveGetInfo);
         liveUidRx.onCreate();
+        addCommonData(true);
+    }
+
+    public void addCommonData(boolean isBase){
         ArrayList<LiveBackBaseBll> templiveBackBaseBlls = new ArrayList<>(liveBackBaseBlls);
         for (LiveBackBaseBll liveBackBaseBll : templiveBackBaseBlls) {
-            liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
+            if(liveBackBaseBll.getPluginId()==-1 && !isBase) {
+                continue;
+            }
+            liveBackBaseBll.onCreateF(mVideoEntity, mGetInfo, businessShareParamMap);
         }
         templiveBackBaseBlls.clear();
     }
+
+
 
     /**
      * 大班整合添加 header 公共参数
@@ -1031,5 +1046,27 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
      */
     public LiveGetInfo getRommInitData() {
         return mGetInfo;
+    }
+
+    public void getGrayControl(LivePluginRequestParam param, final AbstractBusinessDataCallBack requestCallBack){
+        mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.d("getLivePluingConfigInfo"+responseEntity.getJsonObject().toString());
+                if (responseEntity != null) {
+
+                    JSONObject json = (JSONObject) responseEntity.getJsonObject();
+                    String jsonString = (String) responseEntity.getJsonObject().toString();
+                    if (json != null) {
+                        LiveModuleConfigInfo  mLiveModuleConfigInfo = (LiveModuleConfigInfo) JsonUtil.jsonToObject(jsonString, LiveModuleConfigInfo.class);
+                        mGetInfo.setLiveModuleConfigInfo(mLiveModuleConfigInfo);
+                        if (!isEmpty(mLiveModuleConfigInfo)) {
+                            requestCallBack.onDataSucess(mLiveModuleConfigInfo);
+                        }
+                    }
+
+                }
+            }
+        });
     }
 }

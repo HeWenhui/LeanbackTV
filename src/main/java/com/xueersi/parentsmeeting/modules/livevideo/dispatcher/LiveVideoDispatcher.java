@@ -90,7 +90,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 XESToastUtils.showToast(activity, "数据异常");
                 return;
             }
-
+            paramsJson = "{\"bigLiveStatus\":1,\"planId\":\"13327\",\"variety\":3,\"teacherId\":\"3702\"," +
+                    "\"planName\":\"推拉流0828\",\"gotoClassTime\":0,\"rstatus\":0}";
             try {
                 JSONObject jsonObject = new JSONObject(paramsJson);
 

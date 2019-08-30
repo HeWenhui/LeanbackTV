@@ -2,14 +2,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
@@ -56,7 +54,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     private boolean mDestroyed;
     protected LiveViewAction liveViewAction;
 
-    protected int businessMoudleId = -1;
+    protected int pluginId = -1;
 
     public LiveBaseBll(Activity context, LiveBll2 liveBll) {
         super(context);
@@ -402,11 +400,11 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
         mHandler.removeCallbacks(action);
     }
 
-    public void setBusinessMoudleId(int businessMoudleId) {
-        this.businessMoudleId = businessMoudleId;
+    public void setPluginId(int pluginId) {
+        this.pluginId = pluginId;
     }
 
-    public int getBusinessMoudleId() {
-        return businessMoudleId;
+    public int getPluginId() {
+        return pluginId;
     }
 }

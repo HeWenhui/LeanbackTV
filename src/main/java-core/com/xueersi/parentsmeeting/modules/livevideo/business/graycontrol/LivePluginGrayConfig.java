@@ -7,6 +7,8 @@ public class LivePluginGrayConfig {
      */
     public static final String LIVE_PLUGIN_CONFIG_INFO = "live_business_plugin_config_info";
 
+    /** 基础	 */
+    public static final int MOUDLE_BASE =-1;
     /** 签到	 */
     public static final int MOUDLE_SIGN = 1;
     /** 红包 */

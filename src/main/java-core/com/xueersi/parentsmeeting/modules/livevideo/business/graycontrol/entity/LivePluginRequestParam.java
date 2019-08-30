@@ -16,5 +16,5 @@ public class LivePluginRequestParam {
      * 业务Id : 2讲座3 直播
      */
     public int bizId;
-    public  int isPlayback = 0;
+    public  int isPlayback;
 }

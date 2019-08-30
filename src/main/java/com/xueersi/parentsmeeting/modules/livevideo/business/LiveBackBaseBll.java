@@ -14,6 +14,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginGrayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -47,6 +48,8 @@ public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
     protected LiveVideoPoint liveVideoPoint;
     private LiveViewAction liveViewAction;
     protected LiveAndBackDebug contextLiveAndBackDebug;
+    /** 业务ID */
+    protected int pluginId = LivePluginGrayConfig.MOUDLE_BASE;
 
     public LiveBackBaseBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity);
@@ -218,5 +221,13 @@ public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
 
     public void removeCallbacks(Runnable action) {
         mHandler.removeCallbacks(action);
+    }
+
+    public int getPluginId() {
+        return pluginId;
+    }
+
+    public void setPluginId(int pluginId) {
+        this.pluginId = pluginId;
     }
 }
