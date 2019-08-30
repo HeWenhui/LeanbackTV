@@ -7,10 +7,9 @@ public class LivePluginGrayConfig {
      */
     public static final String LIVE_PLUGIN_CONFIG_INFO = "live_business_plugin_config_info";
 
-
     /** 签到	 */
     public static final int MOUDLE_SIGN = 1;
-    /** 礼物 */
+    /** 红包 */
     public static final int MOUDLE_LUCY = 2;
     /** 自传互动题 */
     public static final int MOUDLE_TEST = 3;
@@ -20,6 +19,6 @@ public class LivePluginGrayConfig {
     public static final int MOUDLE_VOTE = 5;
     /** 礼物 */
     public static final int MOUDLE_GIFT = 6;
-    /** 礼物 */
+    /** 弹幕 */
     public static final int MOUDLE_BARRAYAGE = 7;
 }
