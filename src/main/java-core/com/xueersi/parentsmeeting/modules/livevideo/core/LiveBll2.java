@@ -647,8 +647,16 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         LiveBllLog.onGetInfoEnd(getInfo, businessTimes);
         businessBllTemps.clear();
         if (!isBase && mIRCcallback != null ) {
-            if(mIRCcallback!=null) {
-                mIRCcallback.onTopic(lastChannel, lastTopic, lastSetBy, lastDate, lastChanged, lastChannelId);
+            logger.e("mTopicActions___channel=" + mTopicActions.size());
+            if (mIRCcallback!= null) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mIRCcallback.onTopic(lastChannel, lastTopic, lastSetBy, lastDate, lastChanged, lastChannelId);
+
+                    }
+                }, 1000);
             }
         }
     }
@@ -1121,21 +1129,22 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed,
                             String channelId) {
             sendTopic(channel,topicstr,setBy,date,changed,channelId);
+
+            if (lastTopicstr.equals(topicstr) && TextUtils.isEmpty(lastTopic)) {
+                mLogtf.i("onTopic(equals):topicstr=" + topicstr);
+                return;
+            }
             lastTopic = topicstr;
             lastChannel = channel;
             lastSetBy = setBy;
             lastDate = date;
             lastChanged = changed;
             lastChannelId = channelId;
+            sendTopic(channel,topicstr,setBy,date,changed,channelId);
         }
 
         public void sendTopic(String channel, String topicstr, String setBy, long date, boolean changed,
                               String channelId){
-
-            if (lastTopicstr.equals(topicstr)) {
-                mLogtf.i("onTopic(equals):topicstr=" + topicstr);
-                return;
-            }
             logger.e("======>onTopic:" + topicstr);
             Log.e("ckTrac","========>LiveBll2 onTopic:"+topicstr);
             if (TextUtils.isEmpty(topicstr)) {
@@ -1188,6 +1197,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 if (mTopicActions != null && mTopicActions.size() > 0) {
                     for (TopicAction mTopicAction : mTopicActions) {
                         try {
+                            Loger.d("mTopicActions___channel: "+mTopicAction.getClass().getSimpleName());
                             mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
                         } catch (Exception e) {
                             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
@@ -1675,13 +1685,13 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * @param moduleId
      * @return
      */
-    public LivePlugin getLivePluginByModuleId(int moduleId) {
+    public LivePlugin getLivePluginByModuleId(int pluginId) {
         LivePlugin plugin = null;
         LiveModuleConfigInfo info = mLiveModuleConfigInfo;
         if (info != null && info.plugins != null) {
             List<LivePlugin> plugins = info.plugins;
             for (int i = 0; i < plugins.size(); i++) {
-                if (moduleId == plugins.get(i).moduleId) {
+                if (pluginId == plugins.get(i).pluginId) {
                     plugin = plugins.get(i);
                     break;
                 }
@@ -1721,7 +1731,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * @param key
      * @return
      */
-    public String getProperties(int moudleId,String key){
+    public String getProperties(int pluginId,String key){
         LivePlugin plugin = getLivePluginByModuleId(LivePluginGrayConfig.MOUDLE_GIFT);
         if(plugin!=null) {
             Map<String,String > maplist = plugin.properties;
@@ -1741,7 +1751,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * @param key
      * @return
      */
-    public boolean isMoudleAllowed(int moudleId){
+    public boolean isMoudleAllowed(int pluginId){
         LivePlugin plugin =  getLivePluginByModuleId(LivePluginGrayConfig.MOUDLE_GIFT);
         if(plugin!=null) {
             return plugin.isAllowed;
