@@ -1,14 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginGrayConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author linyuqiang 视频初始化
@@ -324,6 +320,16 @@ public class LiveGetInfo {
      * 是否是幼教
      */
     private boolean preschool;
+
+
+    /**大班整合灰控接口**/
+    private String initModuleUrl;
+
+    /**聊天信息接口**/
+    private String getChatRecordUrl;
+    /**扫点信息接口**/
+    private String getMetadataUrl;
+
 
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
@@ -1151,6 +1157,22 @@ public class LiveGetInfo {
         return preschool;
     }
 
+    public String getGetChatRecordUrl() {
+        return getChatRecordUrl;
+    }
+
+    public void setGetChatRecordUrl(String getChatRecordUrl) {
+        this.getChatRecordUrl = getChatRecordUrl;
+    }
+
+    public String getGetMetadataUrl() {
+        return getMetadataUrl;
+    }
+
+    public void setGetMetadataUrl(String getMetadataUrl) {
+        this.getMetadataUrl = getMetadataUrl;
+    }
+
     public static class MainTeacherInfo {
         String teacherId;//"teacherId":"1434",
         String teacherName; //"teacherName":"小琪老师",
@@ -1614,13 +1636,6 @@ public class LiveGetInfo {
         this.ircRoomList = ircRoomList;
     }
 
-    public HashMap<String, String> getUrlMap() {
-        return urlMap;
-    }
-
-    public void setUrlMap(HashMap<String, String> urlMap) {
-        this.urlMap = urlMap;
-    }
 
     public String getPsAppId() {
         return psAppId;
@@ -1759,5 +1774,13 @@ public class LiveGetInfo {
             return plugin.isAllowed;
         }
         return false;
+    }
+
+    public void setInitModuleUrl(String initModuleUrl) {
+        this.initModuleUrl = initModuleUrl;
+    }
+
+    public String getInitModuleUrl() {
+        return initModuleUrl;
     }
 }

@@ -215,7 +215,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             AppBll.getInstance(activity);
             startLivePlayActivity(liveId,isBigLive);
         } else {
-            Log.e("ckTrac","========>startLecture:999999");
             if(isBigLive){
                 dispatcherBll.getBigLivePublic(planId,"2","0", new AbstractBusinessDataCallBack() {
                     @Override
@@ -226,7 +225,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                         }
                     }
                 },dataLoadEntity);
-
 
             }else {
                 dispatcherBll.getPublic(chapterName, planId, teacherId, gotoClassTime, new AbstractBusinessDataCallBack() {
@@ -323,7 +321,13 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         videoEntity.setCourseName(entity.getPlanInfo().getName());
         videoEntity.setPlayVideoId(entity.getPlanInfo().getId());
         videoEntity.setPlayVideoName(entity.getPlanInfo().getName());
-        videoEntity.setVideoPath(entity.getConfigs().getVideoFile());
+
+        if(entity.getConfigs() != null){
+            videoEntity.setVideoPath(entity.getConfigs().getVideoFile());
+            videoEntity.setGetChatRecordUrl(entity.getConfigs().getGetChatRecordUrl());
+            videoEntity.setGetMetadataUrl(entity.getConfigs().getGetMetadataUrl());
+            videoEntity.setInitModuleUrl(entity.getConfigs().getInitModuleUrl());
+        }
 
         if(entity.getPlanInfo().getSubjectIds() != null && entity.getPlanInfo().getSubjectIds().size() > 0){
             videoEntity.setSubjectId(entity.getPlanInfo().getSubjectIds().get(0));
