@@ -319,6 +319,16 @@ public class LiveGetInfo {
      */
     private boolean preschool;
 
+
+    /**大班整合灰控接口**/
+    private String initModuleUrl;
+
+    /**聊天信息接口**/
+    private String getChatRecordUrl;
+    /**扫点信息接口**/
+    private String getMetadataUrl;
+
+
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
     }
@@ -1142,6 +1152,22 @@ public class LiveGetInfo {
         return preschool;
     }
 
+    public String getGetChatRecordUrl() {
+        return getChatRecordUrl;
+    }
+
+    public void setGetChatRecordUrl(String getChatRecordUrl) {
+        this.getChatRecordUrl = getChatRecordUrl;
+    }
+
+    public String getGetMetadataUrl() {
+        return getMetadataUrl;
+    }
+
+    public void setGetMetadataUrl(String getMetadataUrl) {
+        this.getMetadataUrl = getMetadataUrl;
+    }
+
     public static class MainTeacherInfo {
         String teacherId;//"teacherId":"1434",
         String teacherName; //"teacherName":"小琪老师",
@@ -1561,8 +1587,6 @@ public class LiveGetInfo {
     /**irc 房间**/
     private List<String> ircRoomList;
 
-    /**业务接口配置**/
-    private HashMap<String,String> urlMap;
 
     /**云平台appId**/
     private String psAppId;
@@ -1605,13 +1629,6 @@ public class LiveGetInfo {
         this.ircRoomList = ircRoomList;
     }
 
-    public HashMap<String, String> getUrlMap() {
-        return urlMap;
-    }
-
-    public void setUrlMap(HashMap<String, String> urlMap) {
-        this.urlMap = urlMap;
-    }
 
     public String getPsAppId() {
         return psAppId;
@@ -1653,5 +1670,13 @@ public class LiveGetInfo {
 
     public boolean isBigLive() {
         return bigLive;
+    }
+
+    public void setInitModuleUrl(String initModuleUrl) {
+        this.initModuleUrl = initModuleUrl;
+    }
+
+    public String getInitModuleUrl() {
+        return initModuleUrl;
     }
 }

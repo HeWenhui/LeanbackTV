@@ -1123,6 +1123,13 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 configs.setAppId(configsJsonObj.optString("appId"));
                 configs.setAppKey(configsJsonObj.optString("appKey"));
                 configs.setVideoFile(configsJsonObj.optString("videoFile"));
+                JSONObject urlsJsonObj = configsJsonObj.optJSONObject("urls");
+                //解析回放 相关接口信息
+                if(urlsJsonObj != null){
+                    configs.setGetChatRecordUrl(urlsJsonObj.optString("getChatRecordUrl"));
+                    configs.setGetMetadataUrl(urlsJsonObj.optString("getMetadataUrl"));
+                    configs.setInitModuleUrl(urlsJsonObj.optString("initModuleUrl"));
+                }
                 playBackEntity.setConfigs(configs);
             }
 

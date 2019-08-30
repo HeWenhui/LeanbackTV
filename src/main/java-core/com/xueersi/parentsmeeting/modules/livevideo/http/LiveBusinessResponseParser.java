@@ -181,12 +181,11 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                     liveGetInfo.setFollowType(followTypeEntity);
                 }
 
+                //解析配置接口
                 if(cfgJsonObj.has("urls")){
                     JSONObject urlJsonObj = cfgJsonObj.getJSONObject("urls");
                     String url = urlJsonObj.optString("initModuleUrl");
-                    HashMap<String,String> urlMaps = new HashMap<>();
-                    urlMaps.put("initModuleUrl",url);
-                    liveGetInfo.setUrlMap(urlMaps);
+                    liveGetInfo.setInitModuleUrl(url);
                 }
 
             }
