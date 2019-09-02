@@ -2,12 +2,14 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/app_livevideo_enteampk_xiaomubiao_progressbar_bg"></item>
+        android:drawable="@drawable/app_livevideo_enteampk_xiaomubiao_progressbar_bg">
+    </item>
     <!--<item-->
     <!--android:id="@android:id/progress"-->
     <!--android:drawable="@drawable/app_livevideo_enteampk_xiaomubiao_progressbar_img_nor">-->
     <!--</item>-->
-    <item android:id="@android:id/progress">
+    <item
+        android:id="@android:id/progress">
         <scale
             android:drawable="@drawable/app_livevideo_enteampk_xiaomubiao_progressbar_nor"
             android:scaleWidth="100%" />

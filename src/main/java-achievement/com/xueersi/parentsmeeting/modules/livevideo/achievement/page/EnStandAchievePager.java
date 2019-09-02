@@ -308,7 +308,7 @@ public class EnStandAchievePager extends LiveBasePager {
         }
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
-        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 145) / 100;
+        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, 147) / 100;
         tvAchiveAimTips.setLayoutParams(layoutParams);
 
         if (progress == 0) {
@@ -316,8 +316,8 @@ public class EnStandAchievePager extends LiveBasePager {
         } else if (progress == 100) {
             pgAchiveAim.setProgress(100);
         } else {
-            int a = (8 * 100) / 153;
-            int b = progress * 145 / (153);
+            int a = (6 * 100) / 153;
+            int b = progress * 147 / (153);
             pgAchiveAim.setProgress(a + b);
         }
     }

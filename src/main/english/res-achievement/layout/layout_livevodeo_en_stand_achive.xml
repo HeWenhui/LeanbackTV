@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rl_livevideo_en_achive_stand_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_width="175dp"
+                    android:layout_width="177dp"
                     android:layout_marginTop="8dp"
                     android:visibility="gone">
 
@@ -149,7 +149,7 @@
                         android:max="100"
                         android:paddingLeft="0dp"
                         android:paddingRight="0dp"
-                        android:progress="50" />
+                        android:progress="0" />
 
                     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                         android:id="@+id/tv_livevideo_en_achive_aimtips"
