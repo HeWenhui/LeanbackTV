@@ -140,6 +140,21 @@ public class LiveLog {
         timer_log.schedule(task_log, 2000, tt * 1000);
     }
 
+    /**
+     * 默认设置
+     */
+    public static void defaultLog() {
+
+        LiveLogEntity log = new LiveLogEntity();
+        if (LiveLogBill.param != null) {
+            log.live_id = LiveLogBill.param.live_id;
+        }
+        ApmBill.GetNetIp(LiveLogBill.url);
+        log(log);
+        sendLog();
+    }
+
+
     public static Map<String, Long> getAllFilesInfo() {
         return getLoganInstance().getAllFilesInfo();
     }

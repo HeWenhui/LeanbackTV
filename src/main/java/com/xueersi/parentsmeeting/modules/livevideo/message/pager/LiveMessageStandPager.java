@@ -88,6 +88,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageCo
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessSysItem;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
@@ -861,10 +862,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             }
         };
 
-        lvMessage.setVerticalFadingEdgeEnabled(false);
+//        lvMessage.setVerticalFadingEdgeEnabled(false);
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
         lp.topMargin = ScreenUtils.getScreenHeight() / 3;
-        lvMessage.setLayoutParams(lp);
+        LayoutParamsUtil.setViewLayoutParams(lvMessage, lp);
         lvMessage.setAdapter(messageAdapter);
 //        mView.post(new Runnable() {
 //            @Override
@@ -909,6 +910,17 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
                 get(liveVideoActivity, AudioRequest.class);
         logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
+//        LiveVideoPoint.getInstance().addVideoSizeChangeAndCall(mContext, new LiveVideoPoint.VideoSizeChange() {
+//            @Override
+//            public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
+//                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
+//                int leftMargin = liveVideoPoint.x2 + 10;
+//                if (lp.leftMargin != leftMargin) {
+//                    lp.leftMargin = leftMargin;
+//                    LayoutParamsUtil.setViewLayoutParams(rlInfo, lp);
+//                }
+//            }
+//        });
         setVideoLayout(LiveVideoPoint.getInstance());
     }
 
