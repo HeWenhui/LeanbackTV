@@ -14,6 +14,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RoomAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
@@ -56,6 +57,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         KeyboardUtil.OnKeyboardShowingListener {
     private String TAG = "LiveMessageBll";
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private LogToFile logToFile;
     /**
      * 消息
      */
@@ -108,6 +110,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         ProxUtil.getProxUtil().put(activity, LiveMessageSend.class, this);
         ProxUtil.getProxUtil().put(activity, KeyBordAction.class, this);
         ProxUtil.getProxUtil().put(activity, KeyboardShowingReg.class, this);
+        logToFile = new LogToFile(activity, TAG);
     }
 
     public void setLiveBll(IRCState mLiveBll) {
@@ -409,7 +412,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            }
             if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                 LiveMessagePager liveMessagePager =
-                        new LiveMessagePager(activity,  baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                        new LiveMessagePager(activity, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = liveMessagePager;
             } else {
                 long before = System.currentTimeMillis();
@@ -506,12 +509,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 this.users.add(user.getNick());
             }
         }
+        logToFile.d("onUserList:users=" + users.length + ",new=" + this.users.size());
   /*      StringBuilder sb = new StringBuilder();
         for (User user : users){
             sb.append(user.getNick()+"__");
         }
         Loger.d("___join: userList: size "+users.length+"___content : "+sb.toString());*/
-        peopleCount.set(users.length, new Exception());
+        peopleCount.set(this.users.size(), new Exception());
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onUserList(channel, users);
         }
@@ -601,6 +605,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onJoin(target, sender, login, hostname);
             }
+        } else {
+            logToFile.d("onJoin(!contains):sender=" + sender);
         }
     }
 
@@ -613,9 +619,11 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         if (users.contains(sourceNick)) {
             peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             users.remove(sourceNick);
-        }
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
+            if (mLiveMessagePager != null) {
+                mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
+            }
+        } else {
+            logToFile.d("onQuit(!contains):sender=" + sourceNick);
         }
     }
 
