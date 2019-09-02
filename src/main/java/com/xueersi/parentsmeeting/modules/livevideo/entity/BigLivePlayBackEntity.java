@@ -435,6 +435,13 @@ public class BigLivePlayBackEntity extends BaseEntity {
       private String videoFile;
       private String videoPath;
 
+        /**聊天信息接口**/
+        private String getChatRecordUrl;
+        /**扫点信息接口**/
+        private String getMetadataUrl;
+        /**灰控接口**/
+        private String initModuleUrl;
+
         public String getAppId() {
             return appId;
         }
@@ -465,6 +472,31 @@ public class BigLivePlayBackEntity extends BaseEntity {
 
         public void setVideoPath(String videoPath) {
             this.videoPath = videoPath;
+        }
+
+
+        public void setGetChatRecordUrl(String getChatRecordUrl) {
+            this.getChatRecordUrl = getChatRecordUrl;
+        }
+
+        public String getGetChatRecordUrl() {
+            return getChatRecordUrl;
+        }
+
+        public void setGetMetadataUrl(String getMetadataUrl) {
+            this.getMetadataUrl = getMetadataUrl;
+        }
+
+        public String getGetMetadataUrl() {
+            return getMetadataUrl;
+        }
+
+        public void setInitModuleUrl(String initModuleUrl) {
+            this.initModuleUrl = initModuleUrl;
+        }
+
+        public String getInitModuleUrl() {
+            return initModuleUrl;
         }
     }
 

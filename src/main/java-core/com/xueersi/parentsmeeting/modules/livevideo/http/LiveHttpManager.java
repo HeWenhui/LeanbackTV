@@ -126,7 +126,6 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param httpRequestParams
      */
     private void setDefaultHeaderParams(HttpRequestParams httpRequestParams) {
-
         if(defaultHeaderParams != null && defaultHeaderParams.size() > 0 ){
             for (String key : defaultHeaderParams.keySet()) {
                 Map<String, String> headerParams = httpRequestParams.getHeaderParams();

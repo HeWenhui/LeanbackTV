@@ -350,9 +350,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
 
         liveGetInfo.setsTime(mVideoEntity.getsTime());
         liveGetInfo.seteTime(mVideoEntity.geteTime());
-
         liveGetInfo.setBigLive(mVideoEntity.isBigLive());
 
+        liveGetInfo.setInitModuleUrl(mVideoEntity.getInitModuleUrl());
+        liveGetInfo.setGetChatRecordUrl(mVideoEntity.getGetChatRecordUrl());
+        liveGetInfo.setGetMetadataUrl(mVideoEntity.getGetMetadataUrl());
+      /*  Log.e("ckTrac","=======>liveBackBll_onCreate:"+liveGetInfo.getInitModuleUrl()
+                +":"+liveGetInfo.getGetChatRecordUrl()+":"+liveGetInfo.getGetMetadataUrl());*/
         try {
             String[] subjectIds = new String[]{mVideoEntity.getSubjectId()};
             liveGetInfo.setSubjectIds(subjectIds);
