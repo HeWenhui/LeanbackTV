@@ -1753,7 +1753,7 @@ public class LiveGetInfo {
      * @return
      */
     public String getProperties(int moudleId,String key){
-        LivePlugin plugin = getLivePluginByModuleId(LivePluginGrayConfig.MOUDLE_GIFT);
+        LivePlugin plugin = getLivePluginByModuleId(moudleId);
         if(plugin!=null) {
             Map<String,String > maplist = plugin.properties;
             if(maplist!=null) {
@@ -1773,7 +1773,7 @@ public class LiveGetInfo {
      * @return
      */
     public boolean isMoudleAllowed(int moudleId){
-        LivePlugin plugin =  getLivePluginByModuleId(LivePluginGrayConfig.MOUDLE_GIFT);
+        LivePlugin plugin =  getLivePluginByModuleId(moudleId);
         if(plugin!=null) {
             return plugin.isAllowed;
         }
