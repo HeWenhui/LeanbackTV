@@ -172,15 +172,19 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
 
                 @Override
-                public void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity,boolean isShowBubble) {
+                public void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity, boolean isShowBubble) {
                     logger.d("onUpdateBetterMe");
-                    betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity,isShowBubble);
+                    if (betterMeInteractAction != null) {
+                        betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity, isShowBubble);
+                    }
                 }
 
                 @Override
                 public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isShowBubble) {
                     logger.d(" onReceiveBetterMe");
-                    betterMeInteractAction.onReceiveBetterMe(betterMeEntity, isShowBubble);
+                    if (betterMeInteractAction != null) {
+                        betterMeInteractAction.onReceiveBetterMe(betterMeEntity, isShowBubble);
+                    }
                 }
             });
             boolean voiceRecognSwitchOn = mShareDataManager.getBoolean(ShareBusinessConfig.SP_VOICE_RECOGNI_SWITCH,
@@ -334,7 +338,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             }
             if (LiveAchievementIRCBll.this.starAction == null) {
                 if (1 == smallEnglish) {
-                    LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType, mGetInfo, true);
+                    LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType,
+                            mGetInfo, true);
 //                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
                     liveAchievementEngBll.initView(getLiveViewAction());
@@ -362,7 +367,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), null, audioRequest);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), null,
+                            audioRequest);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -402,7 +408,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), null, audioRequest);
                     LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekBll;
                 } else {
-                    LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType, mGetInfo, true);
+                    LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType,
+                            mGetInfo, true);
 //                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
                     liveAchievementEngBll.initView(getLiveViewAction());
@@ -433,7 +440,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage,
+                            audioRequest);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -456,7 +464,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage,
+                            audioRequest);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -508,7 +517,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 if (speakerRecognitioner != null) {
                     englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                 }
-                boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest);
+                boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage,
+                        audioRequest);
                 if (initView) {
                     englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                     englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -890,7 +900,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     public int[] getNoticeFilter() {
         return new int[]{XESCODE.ROOM_STAR_OPEN, XESCODE.ROOM_STAR_SEND_T,
                 XESCODE.ROOM_STAR_CLOSE, XESCODE.XCR_ROOM_DB_START, XESCODE.XCR_ROOM_DB_CLOSE,
-                XESCODE.XCR_ROOM_DB_PRAISE, XESCODE.XCR_ROOM_DB_REMIND, XESCODE.ARTS_STOP_QUESTION, XESCODE.ARTS_H5_COURSEWARE};
+                XESCODE.XCR_ROOM_DB_PRAISE, XESCODE.XCR_ROOM_DB_REMIND, XESCODE.ARTS_STOP_QUESTION, XESCODE
+                .ARTS_H5_COURSEWARE};
     }
 
     public void onSendMsg(String msg) {
