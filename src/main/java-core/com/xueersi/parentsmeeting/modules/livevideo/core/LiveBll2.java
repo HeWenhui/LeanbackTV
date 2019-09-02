@@ -593,27 +593,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
 
 
-        // 通知业务类 直播间初始数据获取成功
-        List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
-        ArrayList<LiveBllLog.BusinessTime> businessTimes = new ArrayList<>();
-        long before = System.currentTimeMillis();
-        for (LiveBaseBll businessBll : businessBllTemps) {
-            try {
-                businessBll.onLiveInited(getInfo);
-                long time = (System.currentTimeMillis() - before);
-                if (time > 10) {
-                    LiveBllLog.BusinessTime businessTime = new LiveBllLog.BusinessTime(businessBll.getClass().getSimpleName(), time);
-                    businessTimes.add(businessTime);
-                }
-                before = System.currentTimeMillis();
-            } catch (Exception e) {
-                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-                logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
-            }
-        }
-        LiveBllLog.onGetInfoEnd(getInfo, businessTimes);
-        businessBllTemps.clear();
-
         addCommonData(getInfo,true);
         //链接IRC
         String channel = "";
