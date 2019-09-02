@@ -540,9 +540,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      */
 
     private void initBigLiveRoom(LiveGetInfo getInfo) {
-        LiveLogBill.getInstance().initLiveLog();//初始化
-        LiveLogBill.getInstance().setLiveId("live_1"); //设置直播ID
-        LiveLogBill.getInstance().startLog();
+
 
         // 添加网络请求公共参数
         if (mHttpManager != null) {
