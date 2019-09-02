@@ -7,10 +7,11 @@ import android.util.AttributeSet;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 
 /**
- * Created by lyqai on 2017/8/2.
+ * Created by linyuqiang on 2017/8/2.
  */
 
 public class LiveVideoView extends VideoView {
+    VideoLayoutInter videoLayoutInter;
 
     public LiveVideoView(Context context) {
         super(context);
@@ -20,7 +21,25 @@ public class LiveVideoView extends VideoView {
         super(context, attrs);
     }
 
-//    public void setVideoLayout(int layout, float userRatio, int videoWidth, int videoHeight, float videoRatio) {
+    @Override
+    public void setVideoLayout(int layout, float userRatio, int videoWidth, int videoHeight, float videoRatio) {
+        if (videoLayoutInter != null) {
+            boolean Inter = videoLayoutInter.setVideoLayout(layout, userRatio, videoWidth, videoHeight, videoRatio);
+            if (Inter) {
+                return;
+            }
+        }
+        super.setVideoLayout(layout, userRatio, videoWidth, videoHeight, videoRatio);
+    }
+
+    public void setVideoLayoutInter(VideoLayoutInter videoLayoutInter) {
+        this.videoLayoutInter = videoLayoutInter;
+    }
+
+    public interface VideoLayoutInter {
+        boolean setVideoLayout(int layout, float userRatio, int videoWidth, int videoHeight, float videoRatio);
+    }
+    //    public void setVideoLayout(int layout, float userRatio, int videoWidth, int videoHeight, float videoRatio) {
 //        mVideoMode = layout;
 //        setSurfaceLayout(userRatio, videoWidth, videoHeight, videoRatio);
 //    }

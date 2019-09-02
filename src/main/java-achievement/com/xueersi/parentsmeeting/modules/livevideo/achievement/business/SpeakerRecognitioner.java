@@ -10,7 +10,7 @@ import android.os.RemoteException;
 
 import com.tal.speech.speechrecognigen.ISpeechRecognitnCall;
 import com.tal.speech.speechrecognigen.ISpeechRecognitnGen;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -46,7 +46,7 @@ public class SpeakerRecognitioner {
             intent.setAction("START_SPEECH_GEN");
             context.bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 
@@ -63,7 +63,7 @@ public class SpeakerRecognitioner {
                     e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             } else {
                 if (isStart) {
@@ -73,7 +73,7 @@ public class SpeakerRecognitioner {
                         e.printStackTrace();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 } else {
                     try {
@@ -82,8 +82,12 @@ public class SpeakerRecognitioner {
                         e.printStackTrace();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
+                }
+                if (check) {
+                    check = false;
+                    check();
                 }
             }
         }
@@ -120,6 +124,8 @@ public class SpeakerRecognitioner {
         this.speakerEnrollIvector = speakerEnrollIvector;
     }
 
+    private boolean check = false;
+
     public void check() {
         if (iSpeechRecognitnGen != null) {
             try {
@@ -128,8 +134,10 @@ public class SpeakerRecognitioner {
                 e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
+        } else {
+            check = true;
         }
     }
 
@@ -145,7 +153,7 @@ public class SpeakerRecognitioner {
                 e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -160,7 +168,7 @@ public class SpeakerRecognitioner {
                 e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -174,7 +182,7 @@ public class SpeakerRecognitioner {
                 e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
         context.unbindService(serviceConnection);

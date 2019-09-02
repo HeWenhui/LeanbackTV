@@ -18,6 +18,15 @@ public class TeamPkBasePager extends BasePager {
         super(context);
     }
 
+    /***
+     * 构造函数
+     *
+     * @param context   上下文对象
+     * @param isNewView 是否初始化布局
+     */
+    public TeamPkBasePager(Context context, boolean isNewView) {
+        super(context,isNewView);
+    }
 
     @Override
     public View initView() {

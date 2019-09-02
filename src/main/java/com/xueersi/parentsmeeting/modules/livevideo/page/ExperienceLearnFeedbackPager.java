@@ -12,12 +12,12 @@ import android.widget.ImageButton;
 import android.widget.RadioGroup;
 
 import com.xueersi.common.base.BasePager;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -144,8 +144,7 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                     e.printStackTrace();
                 }
                 if (lectureLivePlayBackBll != null) {
-                    lectureLivePlayBackBll.sendExperienceFeedback(UserBll.getInstance().getMyUserInfoEntity()
-                                    .getStuId(), mVideoEntity.getLiveId()
+                    lectureLivePlayBackBll.sendExperienceFeedback(LiveAppUserInfo.getInstance().getStuId(), mVideoEntity.getLiveId()
                             , mVideoEntity.getSubjectId(), mVideoEntity.getGradId(), mVideoEntity.getChapterId(),
                             etSuggest.getText().toString(), jsonArray, new
                                     HttpCallBack() {

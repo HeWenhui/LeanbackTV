@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="50%"
+        android:textColor="#8A8080"
+        android:textSize="14sp" />
+
+    <ProgressBar
+        android:id="@+id/pb_bar"
+        android:layout_width="14dp"
+        android:layout_height="91dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:indeterminateOnly="false"
+        android:layout_marginTop="2dp"
+        android:max="100"
+        android:progressDrawable="@drawable/shape_live_votesubject_prog_max" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="A"
+        android:layout_marginTop="2dp"
+        android:textColor="#706665"
+        android:textSize="16sp" />
+</LinearLayout>

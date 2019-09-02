@@ -101,6 +101,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager implements Sp
         overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
         overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
         mDanmakuView = new DanmakuView(mContext);
+        mDanmakuView.setId(R.id.dv_livevideo_bullet_screen);
         mDanmakuContext = DanmakuContext.create();
         mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3)
                 .setDuplicateMergingEnabled(false)
@@ -220,15 +221,20 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager implements Sp
         }
     };
 
+    private int delay = 50;
+
     @Override
     public void addDanmaku(final String name, final String msg, final String headImgUrl, final boolean isGuest) {
+        delay *= 2;
         if (mDanmakuContext == null || mDanmakuView == null || !mDanmakuView.isPrepared()) {
             mWeakHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    addDanmaku(name, msg, headImgUrl, isGuest);
+                    if (isAttach()) {
+                        addDanmaku(name, msg, headImgUrl, isGuest);
+                    }
                 }
-            }, 100);
+            }, delay);
             return;
         }
         //如果长时间没有弹幕，可能会休眠

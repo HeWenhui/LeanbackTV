@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseCacheData;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
@@ -30,6 +29,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -54,9 +54,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AuditVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodyAuditClassBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
@@ -196,7 +196,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         // 设置不可自动横竖屏
         setAutoOrientation(false);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        AppBll.getInstance().registerAppEvent(this);
+        LiveAppBll.getInstance().registerAppEvent(this);
         boolean init = initData();
         if (!init) {
             onUserBackPressed();
@@ -435,7 +435,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Override
     protected void onVideoCreateEnd() {
-        mLiveBll.setLivePlayLog(livePlayLog);
         mLiveBll.getInfo();
     }
 
@@ -477,7 +476,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     @Override
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
-        findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+        View view = findViewById(R.id.probar_course_video_loading_tip_progress);
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -740,9 +742,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         videoCachedDuration = vPlayer.getVideoCachedDuration();
                         mHandler.postDelayed(getVideoCachedDurationRun, 30000);
                         mLogtf.d("videoCachedDuration=" + videoCachedDuration);
-                        if (videoCachedDuration > 10000) {
-                            mLiveBll.streamReport(AuditClassLiveBll.MegId.MEGID_12130, mGetInfo.getChannelname(), -1);
-                        }
                     }
                 });
                 //logger.i( "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
@@ -757,12 +756,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
         @Override
         public void run() {
-            long openTime = System.currentTimeMillis() - openStartTime;
-            if (openTime > 40000) {
-                mLiveBll.streamReport(AuditClassLiveBll.MegId.MEGID_12107, mGetInfo.getChannelname(), openTime);
-            } else {
-                mLiveBll.streamReport(AuditClassLiveBll.MegId.MEGID_12137, mGetInfo.getChannelname(), openTime);
-            }
             mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
             mLiveBll.repair(true);
 //            mLiveBll.liveGetPlayServer(false);
@@ -1022,7 +1015,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * @return
      */
     private boolean isHalfBodyLive() {
-        return mGetInfo != null && mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY;
+        return mGetInfo != null && mGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY;
     }
 
     /***
@@ -1283,7 +1276,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         if (startRemote.get()) {
             return;
         }
-        livePlayLog.onReplay();
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo().isExpe()) {
                 tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
@@ -1330,7 +1322,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             url = rtmpUrl + "/" + mGetInfo.getChannelname();
             msg += "mServer=null";
             mLiveBll.setPlayserverEntity(null);
-            livePlayLog.setLastPlayserverEntity(null);
         } else {
             List<PlayserverEntity> playservers = mServer.getPlayserver();
             msg += "playservers=" + playservers.size();
@@ -1416,7 +1407,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             }
             lastPlayserverEntity = entity;
             mLiveBll.setPlayserverEntity(entity);
-            livePlayLog.setLastPlayserverEntity(entity);
             if (useFlv) {
                 url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
             } else {
@@ -1762,7 +1752,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.NowMobileEvent event) {
         if (mIsShowMobileAlert) {
-            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(this, mBaseApplication, false,
+            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(this, ContextManager.getApplication(), false,
                     VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
             cancelDialog.setCancelBtnListener(new View.OnClickListener() {
                 @Override
@@ -1813,7 +1803,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 ProxUtil.getProxUtil().clear(AuditClassLiveActivity.this);
             }
         }.start();
-        AppBll.getInstance().unRegisterAppEvent(this);
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
 
         if (xv_livevideo_student != null) {
             xv_livevideo_student.onDestroy();

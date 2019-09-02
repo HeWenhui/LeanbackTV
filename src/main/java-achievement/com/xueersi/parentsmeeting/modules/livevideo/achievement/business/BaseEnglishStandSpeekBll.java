@@ -1,10 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.xueersi.common.base.BaseApplication;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 
 /**
  * Created by linyuqiang on 2018/7/29.
@@ -14,6 +18,7 @@ public class BaseEnglishStandSpeekBll implements SpeakerRecognitioner.SpeakerPre
     protected static boolean loadSuccess = false;
     private static Logger logger = LiveLoggerFactory.getLogger("BaseEnglishStandSpeekBll");
     protected SpeakerRecognitioner speakerRecognitioner;
+    protected Handler handler = LiveMainHandler.getMainHandler();
 
     public void setSpeakerRecognitioner(SpeakerRecognitioner speakerRecognitioner) {
         this.speakerRecognitioner = speakerRecognitioner;

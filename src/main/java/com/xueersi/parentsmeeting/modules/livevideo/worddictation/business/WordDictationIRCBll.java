@@ -30,6 +30,17 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
     public WordDictationIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         logToFile = new LogToFile(context, TAG);
+//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Bundle bundle = new Bundle();
+//                String answer = "[\"twenty\",\"thirty\",\"forty\",\"fifty\",\"sisty\",\"twenty\",\"thirty\",\"forty\",\"fifty\",\"sisty\"]";
+//                RecognizeFlow recognizeFlow = new RecognizeFlow("1111", "1313", "", "3021", answer);
+//                bundle.putSerializable("data", recognizeFlow);
+//                bundle.putString("what","MiddleLaunch");
+//                XueErSiRouter.startModule(activity, "/dictation/MiddleLaunch", bundle);
+//            }
+//        },5000);
     }
 
     @Override
@@ -39,7 +50,7 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
                 JSONObject status = jsonObject.getJSONObject("room_2");
                 if (status.has("wordStatisticInfo")) {
                     JSONObject jsonWordStatisticInfo = status.getJSONObject("wordStatisticInfo");
-                    WordStatisticInfo wordStatisticInfo = new WordStatisticInfo();
+                    final WordStatisticInfo wordStatisticInfo = new WordStatisticInfo();
                     int state = jsonWordStatisticInfo.getInt("state");
                     wordStatisticInfo.state = state;
                     if (state == 1) {
@@ -56,7 +67,14 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
                                 wordDictationBll.setGetInfo(mGetInfo);
                                 wordDictationAction = wordDictationBll;
                             }
-                            wordDictationAction.onStart(wordStatisticInfo);
+                            post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (wordDictationAction != null) {
+                                        wordDictationAction.onStart(wordStatisticInfo);
+                                    }
+                                }
+                            });
                         }
                     } else {
                         if (isOpen) {
@@ -74,12 +92,6 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
-
-    }
-
-    @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
         if (LiveTopic.MODE_CLASS.equals(mode) && wordDictationAction != null) {
@@ -93,7 +105,7 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
         switch (type) {
             case XESCODE.ARTS_WORD_DICTATION:
                 try {
-                    WordStatisticInfo wordStatisticInfo = new WordStatisticInfo();
+                    final WordStatisticInfo wordStatisticInfo = new WordStatisticInfo();
                     int state = data.optInt("state", 0);
                     wordStatisticInfo.state = state;
                     if (state == 1) {
@@ -111,7 +123,14 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
                                 wordDictationBll.setGetInfo(mGetInfo);
                                 wordDictationAction = wordDictationBll;
                             }
-                            wordDictationAction.onStart(wordStatisticInfo);
+                            post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (wordDictationAction != null) {
+                                        wordDictationAction.onStart(wordStatisticInfo);
+                                    }
+                                }
+                            });
                         }
                     } else {
                         if (isOpen) {
@@ -134,10 +153,10 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (wordDictationAction != null) {
-            wordDictationAction.onDestory();
+            wordDictationAction.onDestroy();
         }
     }
 }

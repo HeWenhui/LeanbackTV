@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +11,11 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
- * Created by lyqai on 2018/7/10.
+ * Created by linyuqiang on 2018/7/10.
  * 直播的10个点
  */
 public class LiveVideoPoint {
@@ -39,6 +43,7 @@ public class LiveVideoPoint {
     public int videoHeight;
     public int headHeight;
     public int msgHeight;
+    HashMap<Context, ArrayList<VideoSizeChange>> contextArrayListHashMap = new HashMap<>();
 
     private LiveVideoPoint() {
 
@@ -96,6 +101,12 @@ public class LiveVideoPoint {
         liveVideoPoint.y4 = liveVideoPoint.y2 + lp.height;
         liveVideoPoint.screenHeight = screenHeight;
         liveVideoPoint.toString();
+        ArrayList<VideoSizeChange> videoSizeChanges = liveVideoPoint.contextArrayListHashMap.get(activity);
+        if (videoSizeChanges != null) {
+            for (VideoSizeChange videoSizeChange : videoSizeChanges) {
+                videoSizeChange.videoSizeChange(liveVideoPoint);
+            }
+        }
         return true;
     }
 
@@ -118,6 +129,30 @@ public class LiveVideoPoint {
             newWidth = (int) ((float) screenHeight * (float) bitmapW / (float) bitmapH);
         }
         return new int[]{newWidth, newHeight};
+    }
+
+    /** 添加布局变化 */
+    public void addVideoSizeChange(Context context, VideoSizeChange videoSizeChange) {
+        ArrayList<VideoSizeChange> videoSizeChanges = contextArrayListHashMap.get(context);
+        if (videoSizeChanges == null) {
+            videoSizeChanges = new ArrayList<>();
+            contextArrayListHashMap.put(context, videoSizeChanges);
+        }
+        videoSizeChanges.add(videoSizeChange);
+    }
+
+    /** 添加布局变化,并立即回调 */
+    public void addVideoSizeChangeAndCall(Context context, VideoSizeChange videoSizeChange) {
+        addVideoSizeChange(context, videoSizeChange);
+        videoSizeChange.videoSizeChange(this);
+    }
+
+    public void clear(Context context) {
+        ArrayList<VideoSizeChange> videoSizeChanges = contextArrayListHashMap.get(context);
+        if (videoSizeChanges != null) {
+            videoSizeChanges.clear();
+            contextArrayListHashMap.remove(context);
+        }
     }
 
     public interface VideoSizeChange {

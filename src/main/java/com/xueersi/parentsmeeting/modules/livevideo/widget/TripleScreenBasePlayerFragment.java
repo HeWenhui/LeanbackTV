@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,18 +17,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import java.io.IOException;
@@ -132,9 +130,12 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
         ivLoading.setBackground(loadingDrawable);
     }
 
-    Handler.Callback callback = new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
+    /** 重写切流 */
+    private boolean overrideHandler = false;
+
+    @Override
+    protected boolean handleMessage(Message msg) {
+        if (overrideHandler) {
             switch (msg.what) {
                 case OPEN_FILE:
                     // 打开新的视频时长统计初始化
@@ -145,7 +146,11 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                 mOpened.set(true);
                                 vPlayer.setVPlayerListener(vPlayerServiceListener);
                                 if (vPlayer.isInitialized()) {
-                                    mUri = vPlayer.getUri();
+                                    //这个地方可能会播放错误的地址，参照TripleScreenBasePlayerFragment
+                                    Uri olduri = vPlayer.getUri();
+                                    logger.d("playNewVideo:olduri=" + olduri);
+                                    vPlayer.release();
+                                    vPlayer.releaseContext();
                                 }
 
                                 if (videoView != null) {
@@ -182,8 +187,8 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                     String userName = null;
                                     String userId = null;
                                     try {
-                                        userName = AppBll.getInstance().getAppInfoEntity().getChildName();
-                                        userId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                        userName = LiveAppUserInfo.getInstance().getChildName();
+                                        userId = LiveAppUserInfo.getInstance().getStuId();
                                         if (TextUtils.isEmpty(userName)) {
                                             userName = "";
                                         }
@@ -228,46 +233,14 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                             }
                                         }
                                         e.printStackTrace();
-                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                                        LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
                                 initCallBack();
                             }
                         }
                     }
-                    break;
-                case OPEN_START:
-                    // 统计播放器初始化成功
-                    XesMobAgent.userMarkVideoInit();
-                    // 播放器初始化完毕准备开始加载指定视频
-                    tvVideoLoadingText.setText(R.string.video_layout_loading);
-                    onPlayOpenStart();
-                    setVideoLoadingLayoutVisibility(View.VISIBLE);
-                    break;
-                case OPEN_SUCCESS:
-                    // 统计播放开始
-                    XesMobAgent.userMarkVideoPlay();
-                    // 视频加载成功开始初始化一些播放参数，并开始播放和加载控制栏
-                    loadVPlayerPrefs();
-                    onPlayOpenSuccess();
-                    setVideoLoadingLayoutVisibility(View.GONE);
-                    setVideoLayout();
-                    vPlayer.start();
-                    showLongMediaController();
-                    break;
-                case OPEN_FAILED:
-                    // 视频打开失败
-                    int arg1 = msg.arg1, arg2 = msg.arg2;
-                    resultFailed(arg1, arg2);
-                    break;
-                case STOP_PLAYER:
-                    // 暂停播放
-                    stopPlayer();
-                    break;
-                case SEEK_COMPLETE:
-                    // seek完成
-                    onSeekComplete();
-                    break;
+                    return true;
                 case BUFFER_START:
                     // 网络视频缓冲开始
                     if (!isFirstShow) {
@@ -302,57 +275,11 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                         }
                     }
                     vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
-                    break;
-                case BUFFER_PROGRESS:
-                    // 视频缓冲中进行进度更新
-                    if (!vPlayer.isBuffering() || vPlayer.getBufferProgress() >= 100) {
-                        setVideoLoadingLayoutVisibility(View.GONE);
-                    } else {
-                        // 视频缓冲中进行进度更新,tvVideoLoadingText.getVisibility()==View.GONE
-//                        tvVideoLoadingText.setText(getString(R.string.video_layout_buffering_progress,
-//                                vPlayer.getBufferProgress()));
-                        vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
-                    }
-                    break;
-                case BUFFER_COMPLETE:
-                    // 缓冲完毕
-                    setVideoLoadingLayoutVisibility(View.GONE);
-                    vPlayerHandler.removeMessages(BUFFER_PROGRESS);
-                    break;
-                case CLOSE_START:
-                    // 开始退出播放
-                    tvVideoLoadingText.setText(R.string.closing_file);
-                    setVideoLoadingLayoutVisibility(View.VISIBLE);
-                    break;
-                case CLOSE_COMPLETE:
-                    // 播放器退出完毕，设置相应Boolean值
-                    mCloseComplete = true;
-                    break;
-                case ON_PLAYING_POSITION:
-                    // 播放中获取实时的进度
-                    long[] arrPosition = (long[]) msg.obj;
-                    if (arrPosition != null && arrPosition.length == 2) {
-                        playingPosition(arrPosition[0], arrPosition[1]);
-                    }
-                    break;
-                case HW_FAILED:
-                    // 硬解码失败,尝试使用软解码初始化播放器
-                    if (videoView != null) {
-                        videoView.setVisibility(View.GONE);
-                        videoView.setVisibility(View.VISIBLE);
-                        videoView.initialize(activity, TripleScreenBasePlayerFragment.this, false);
-                    }
-                    break;
-                case LOAD_PREFS:
-                    // 初始化一些播放器的配置参数
-                    loadVPlayerPrefs();
-                    break;
-                default:
-                    break;
+                    return true;
             }
-            return true;
         }
-    };
+        return super.handleMessage(msg);
+    }
 
     /** 重写回调 */
     private void initCallBack() {
@@ -360,10 +287,8 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
     }
 
     /** 重写这个Handler.CallBack */
-    public void overrideHandlerCallBack() {
-        if (LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary || isSmallEnglish) {
-            vPlayerHandler = new WeakHandler(callback);
-        }
+    public void overrideHandlerCallBack(boolean overrideHandler) {
+        this.overrideHandler = overrideHandler;
     }
 
     @Override

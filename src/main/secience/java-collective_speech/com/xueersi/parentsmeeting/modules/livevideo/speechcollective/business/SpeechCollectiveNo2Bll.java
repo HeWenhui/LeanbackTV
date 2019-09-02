@@ -7,11 +7,15 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
+import com.tal.speech.config.SpeechConfig;
+import com.tal.speech.speechrecognizer.EvaluatorConstant;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.tal.speech.utils.SpeechUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
@@ -29,14 +33,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulClos
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.UpdatePkState;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageSend;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.SpeechCollectiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog.SpeechStartDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechCollectiveNo2Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.share.business.practice.entity.Speech;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -64,7 +70,7 @@ public class SpeechCollectiveNo2Bll {
     private boolean hasShowTip = false;
     private Context context;
     private LogToFile mLogtf;
-    private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
+    private SpeechUtils mSpeechEvaluatorUtils;
     /** 语音识别出来的文字 */
     private String recognizeStr = "";
     private StringBuilder ansStr = new StringBuilder();
@@ -91,17 +97,21 @@ public class SpeechCollectiveNo2Bll {
      */
     private String devicestatus = "0";
     SpeechCollectiveView speechCollectiveView;
-    Handler handler = new Handler(Looper.getMainLooper());
+    Handler handler = LiveMainHandler.getMainHandler();
     SpeechCollectiveHttp collectiveHttp;
     private SpeechStartDialog speechStartDialog;
     private LiveGetInfo liveGetInfo;
     TeacherPraiseEventReg teacherPraiseEventReg;
     long startTime;
+    private SpeechParamEntity param;
 
     public SpeechCollectiveNo2Bll(Context context) {
         this.context = context;
         mLogtf = new LogToFile(context, TAG);
-        mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
+        if (mSpeechEvaluatorUtils == null){
+            mSpeechEvaluatorUtils = SpeechUtils.getInstance(context.getApplicationContext());
+            mSpeechEvaluatorUtils.prepar();
+        }
         dir = LiveCacheFile.geCacheFile(context, "speechCollective");
         if (!dir.exists()) {
             dir.mkdirs();
@@ -147,7 +157,7 @@ public class SpeechCollectiveNo2Bll {
             mLogtf.addCommon("from", from);
             mLogtf.d("start:voiceId=" + voiceId + ",from=" + from + ",method=" + method);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         try {
             String string = ShareDataManager.getInstance().getString(ShareDataConfig.SP_SPEECH_COLLECTION, "{}", ShareDataManager.SHAREDATA_USER);
@@ -164,7 +174,7 @@ public class SpeechCollectiveNo2Bll {
             }
         } catch (Exception e) {
             ShareDataManager.getInstance().put(ShareDataConfig.SP_SPEECH_COLLECTION, "{}", ShareDataManager.SHAREDATA_USER);
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         addSysTip(true);
         if (teacherPraiseEventReg != null) {
@@ -204,17 +214,10 @@ public class SpeechCollectiveNo2Bll {
         }
         String message = teacherType + "老师" + status + "了集体发言";
 
-        LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(context, LiveMessageBll.class);
-        if (liveMessageBll != null) {
-            liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+        LiveMessageSend liveMessageSend = ProxUtil.getProvide(context, LiveMessageSend.class);
+        if (liveMessageSend != null) {
+            liveMessageSend.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                     message);
-        } else {
-            com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBll liveMessageBllOld =
-                    ProxUtil.getProxUtil().get(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBll.class);
-            if (liveMessageBllOld != null) {
-                liveMessageBllOld.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
-                        message);
-            }
         }
     }
 
@@ -266,7 +269,7 @@ public class SpeechCollectiveNo2Bll {
                     jsonObject.put("voiceId", voiceId);
                     ShareDataManager.getInstance().put(ShareDataConfig.SP_SPEECH_COLLECTION, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });
@@ -292,7 +295,17 @@ public class SpeechCollectiveNo2Bll {
     private void startEvaluator() {
         isRecord.set(true);
         File saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startSpeechCollectRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE, evaluatorListener);
+        if (param == null){
+            param = new SpeechParamEntity();
+        }
+        param.setRecogType(SpeechConfig.SPEECH_DEFAULT_RECOGNIZE_ONLINE);
+        param.setPid(SpeechConfig.EXTRA_PID_CHINESE_BULLET);
+        param.setLocalSavePath(saveFile.getPath());
+        param.setMultRef(false);
+        param.setFrameCount("3200");
+        param.setRealtime(EvaluatorConstant.REAL_TIME_FEEDBACK_SPEECH);
+        mSpeechEvaluatorUtils.startRecog(param,evaluatorListener);
+//        mSpeechEvaluatorUtils.startSpeechCollectRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE, evaluatorListener);
     }
 
     private abstract class BaseNoVoice implements EvaluatorListener {
@@ -396,7 +409,7 @@ public class SpeechCollectiveNo2Bll {
             jsonObject.put("voiceId", voiceId);
             ShareDataManager.getInstance().put(ShareDataConfig.SP_SPEECH_COLLECTION, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
         } catch (Exception e) {
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         stop("onTeacherLevel");
     }

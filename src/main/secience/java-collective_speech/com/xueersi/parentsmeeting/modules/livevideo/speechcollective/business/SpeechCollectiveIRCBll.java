@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business;
 
 import android.app.Activity;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -11,7 +11,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
@@ -19,7 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.http.SpeechCollectiveHttpManager;
 
 import org.json.JSONObject;
@@ -106,14 +106,14 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        if (sourceNick.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+        if (sourceNick.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
                 if (speechCollectiveBll != null) {
                     speechCollectiveBll.onTeacherLevel();
                     speechCollectiveBll = null;
                 }
             }
-        } else if (sourceNick.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+        } else if (sourceNick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             if (LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
                 if (speechCollectiveBll != null) {
                     speechCollectiveBll.onTeacherLevel();
@@ -159,7 +159,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                 mLiveBll.sendMessage(jsonObject);
             } catch (Exception e) {
                 logger.e("sendSpeechMsg:", e);
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -211,7 +211,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                     return;
                 }
                 if (speechCollectiveBll != null) {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             if (speechCollectiveBll != null) {
@@ -220,7 +220,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         }
                     });
                 } else {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             //如果是退出直播间再进来，不弹出倒计时和灰色收音球
@@ -245,7 +245,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                     return;
                 }
                 if (speechCollectiveBll != null) {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             if (speechCollectiveBll != null) {
@@ -254,7 +254,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         }
                     });
                 } else {
-                    mHandler.post(new Runnable() {
+                    post(new Runnable() {
                         @Override
                         public void run() {
                             //如果是退出直播间再进来，不弹出倒计时和灰色收音球
@@ -284,7 +284,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                CrashReport.postCatchedException(new LiveException(TAG, e));
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -311,14 +311,14 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                     final String form = object.getString("from");
                     if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode()) && "t".equals(form)) {
                         if (speechCollectiveBll != null) {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     onStaus(form, status, voiceID);
                                 }
                             });
                         } else {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     if ("on".equals(status)) {
@@ -330,14 +330,14 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         }
                     } else if (LiveTopic.MODE_TRANING.equals(mLiveBll.getMode()) && "f".equals(form)) {
                         if (speechCollectiveBll != null) {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     onStaus(form, status, voiceID);
                                 }
                             });
                         } else {
-                            mHandler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     if ("on".equals(status)) {
@@ -349,7 +349,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 break;
             }
@@ -386,10 +386,10 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         if (speechCollectiveBll != null) {
-            speechCollectiveBll.stop("onDestory");
+            speechCollectiveBll.stop("onDestroy");
             speechCollectiveBll = null;
         }
     }

@@ -5,9 +5,7 @@ import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
@@ -19,8 +17,10 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageStandBll;
 import com.xueersi.ui.dataload.DataLoadEntity;
@@ -52,24 +52,15 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
         if (redPackageAction == null) {
-            if (pattern == 2) {
-                String showName = "";
-                String headUrl = "";
-                MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
-                if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
-                    showName = mMyInfo.getEnglishName();
-                } else if (!StringUtils.isEmpty(mMyInfo.getRealName())) {
-                    showName = mMyInfo.getRealName();
-                } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
-                    showName = mMyInfo.getNickName();
-                }
-                headUrl = mMyInfo.getHeadImg();
+            if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+                String showName = LiveAppUserInfo.getInstance().getStandShowName();
+                String headUrl = LiveAppUserInfo.getInstance().getHeadImg();
                 RedPackageStandBll redPackageStandBll;
                 redPackageStandBll = new RedPackageStandBll(activity, false, liveBackBll);
                 redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
                 redPackageStandBll.setUserName(showName);
                 redPackageStandBll.setHeadUrl(headUrl);
-                redPackageStandBll.initView(mRootView);
+                redPackageStandBll.initView(mRootView, getLiveViewAction());
                 redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
                     @Override
                     public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {
@@ -88,9 +79,8 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
 
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
-                        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                         // 网络加载数据
-                        getCourseHttpManager().getLivePlayRedPackets(myUserInfoEntity.getEnstuId(), String.valueOf(operateId), mVideoEntity.getChapterId(), liveId,//);
+                        getCourseHttpManager().getLivePlayRedPackets(String.valueOf(operateId), mVideoEntity.getChapterId(), liveId,//);
 
 //                        getCourseHttpManager().getLivePlayRedPacket(myUserInfoEntity.getEnstuId(), "" + operateId, liveId,
                                 new HttpCallBack(false) {
@@ -121,7 +111,7 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
             } else {
                 RedPackageBll redPackageBll = new RedPackageBll(activity, liveGetInfo, false);
                 redPackageBll.setVSectionID(mVideoEntity.getSectionId());
-                redPackageBll.initView(mRootView);
+                redPackageBll.initView(mRootView, getLiveViewAction());
                 redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
@@ -166,9 +156,8 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
     }
 
     public void getRedPacket(final DataLoadEntity dataLoadEntity, final String liveId, final String operateId, final AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        getCourseHttpManager().getRedPacket(myUserInfoEntity.getEnstuId(), operateId, liveId,
+        getCourseHttpManager().getRedPacket(operateId, liveId,
                 new HttpCallBack(dataLoadEntity) {
 
                     @Override
@@ -192,9 +181,8 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
     }
 
     public void getLivePlayRedPackets(final DataLoadEntity dataLoadEntity, final String liveId, final String operateId, final AbstractBusinessDataCallBack callBack) {
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        getCourseHttpManager().getLivePlayRedPackets(myUserInfoEntity.getEnstuId(), operateId, mVideoEntity.getChapterId(), liveId,
+        getCourseHttpManager().getLivePlayRedPackets(operateId, mVideoEntity.getChapterId(), liveId,
                 new HttpCallBack(dataLoadEntity) {
 
                     @Override

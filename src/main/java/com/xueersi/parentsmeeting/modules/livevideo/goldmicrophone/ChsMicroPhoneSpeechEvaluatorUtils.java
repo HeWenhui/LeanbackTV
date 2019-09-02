@@ -22,7 +22,7 @@
 //import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 //import com.tal.speech.speechrecognizer.TalSpeech;
 //import com.tal.speech.utils.SpeechUtils;
-//import com.tencent.bugly.crashreport.CrashReport;
+//import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 //import com.xueersi.common.business.AppBll;
 //import com.xueersi.common.business.UserBll;
 //import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -839,7 +839,7 @@
 //            speech.setParameter(EvaluatorConstant.EXTRA_PID, "1300307");
 //            speech.setParameter(EvaluatorConstant.EXTRA_MULT_REF, "0");
 //            speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localPath);
-//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId
+//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId
 //                    ());
 //            speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, "b");
 //            startEvaluator(speech, listener, null);
@@ -862,7 +862,7 @@
 //            speech.setParameter(EvaluatorConstant.EXTRA_PID, "1300307");
 //            speech.setParameter(EvaluatorConstant.EXTRA_MULT_REF, "0");
 //            speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localPath);
-//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId
+//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId
 //                    ());
 //            speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, "b");
 //            startEvaluator(speech, listener, null, isChsMicrophone);
@@ -883,7 +883,7 @@
 //            speech.setParameter(EvaluatorConstant.EXTRA_PID, "1103813");
 //            speech.setParameter(EvaluatorConstant.EXTRA_MULT_REF, "0");
 //            speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localPath);
-//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId
+//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId
 //                    ());
 //            speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, "b");
 //            startEvaluator(speech, listener, null);
@@ -905,7 +905,7 @@
 //            speech.setParameter(EvaluatorConstant.EXTRA_POST_PROCESS, "0");
 //            speech.setParameter(EvaluatorConstant.EXTRA_MULT_REF, "0");
 //            speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localPath);
-//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId
+//            speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId
 //                    ());
 //            speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, "b");
 //            startEvaluator(speech, listener, null);
@@ -988,7 +988,7 @@
 //        speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, strEvaluator);
 //        speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localSavePath);
 //        speech.setParameter(EvaluatorConstant.EXTRA_HEAD_COMPRESS, compress);
-//        speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId());
+//        speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId());
 //        speech.setParameter(EvaluatorConstant.EXTRA_LEARN_STAGE, "");
 //        startEvaluator(speech, listener, strEvaluator);
 //    }
@@ -1068,7 +1068,7 @@
 //        speech.setParameter(EvaluatorConstant.EXTRA_ASSESS_REF, strEvaluator);
 //        speech.setParameter(EvaluatorConstant.EXTRA_AUDIO_PATH, localSavePath);
 //        speech.setParameter(EvaluatorConstant.EXTRA_HEAD_COMPRESS, compress);
-//        speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, UserBll.getInstance().getMyUserInfoEntity().getStuId());
+//        speech.setParameter(EvaluatorConstant.EXTRA_USER_ID, LiveAppUserInfo.getInstance().getStuId());
 //        speech.setParameter(EvaluatorConstant.EXTRA_LEARN_STAGE, "");
 //        startEvaluator(speech, listener, strEvaluator);
 //    }
@@ -1319,7 +1319,7 @@
 //        } catch (IOException e) {
 //            //为了统计错误
 //            logger.e("startEvaluator", e);
-//            CrashReport.postCatchedException(e);
+//            LiveCrashReport.postCatchedException(e);
 //        }
 //    }
 //
@@ -1365,7 +1365,7 @@
 //        } catch (IOException e) {
 //            //为了统计错误
 //            logger.e("startEvaluator", e);
-//            CrashReport.postCatchedException(e);
+//            LiveCrashReport.postCatchedException(e);
 //        }
 //    }
 //

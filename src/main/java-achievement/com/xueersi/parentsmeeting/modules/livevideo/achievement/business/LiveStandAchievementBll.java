@@ -19,6 +19,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
@@ -72,7 +73,6 @@ public class LiveStandAchievementBll implements StarInteractAction {
     private int goldCount;
     boolean mIsLand;
     int topMargin;
-    RelativeLayout bottomContent;
     /**
      * 右侧星星和金币数字动画消失
      */
@@ -161,8 +161,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
         this.liveAndBackDebug = liveAndBackDebug;
     }
 
-    public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
-        this.bottomContent = bottomContent;
+    public void initView(LiveViewAction liveViewAction) {
 //        if (myView != null) {
 //            ViewGroup group = (ViewGroup) myView.getParent();
 //            if (group != null) {
@@ -177,19 +176,16 @@ public class LiveStandAchievementBll implements StarInteractAction {
 //            return;
 //        }
 //        myView = activity.getLayoutInflater().inflate(R.layout.item_livevideo_stat, bottomContent, false);
-        myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_star_content);
-        if (myView == null) {
-            myView = mContentView.findViewById(R.id.rl_livevideo_star_content);
-        }
+        myView = liveViewAction.findViewById(R.id.rl_livevideo_star_content);
         myView.setVisibility(View.VISIBLE);
         View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_stand_stat_gold, myView, false);
         myView.addView(layout_livevideo_stat_gold);
-        lottieAnimationView = activity.findViewById(R.id.lav_livevideo_chievement);
+        lottieAnimationView = liveViewAction.findViewById(R.id.lav_livevideo_chievement);
 //        tvStarCount = myView.findViewById(R.id.tv_livevideo_star_count);
 
 //        if (tvStarCount == null) {
-        tvStarCount = activity.findViewById(R.id.tv_livevideo_star_count);
-        tvGoldCount = activity.findViewById(R.id.tv_livevideo_gold_count);
+        tvStarCount = liveViewAction.findViewById(R.id.tv_livevideo_star_count);
+        tvGoldCount = liveViewAction.findViewById(R.id.tv_livevideo_gold_count);
 //        }
 
 
@@ -210,12 +206,12 @@ public class LiveStandAchievementBll implements StarInteractAction {
 //        } else {
 //            myView.setVisibility(View.INVISIBLE);
 //        }
-        flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly, bottomContent, false);
+        flyStat = liveViewAction.inflateView(R.layout.item_livevideo_stat_fly);
         flyStat.setVisibility(View.INVISIBLE);
-        bottomContent.addView(flyStat);
-        flyLight = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly_light, bottomContent, false);
+        liveViewAction.addView(flyStat);
+        flyLight = liveViewAction.inflateView(R.layout.item_livevideo_stat_fly_light);
         flyLight.setVisibility(View.INVISIBLE);
-        bottomContent.addView(flyLight);
+        liveViewAction.addView(flyLight);
         mStarCountAnimSlideOut = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_text_out);
         mStarLightAnimRotate = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_light_rotate);
     }

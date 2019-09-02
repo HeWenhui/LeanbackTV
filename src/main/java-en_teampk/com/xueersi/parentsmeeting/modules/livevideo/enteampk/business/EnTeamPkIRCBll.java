@@ -1,12 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.business;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.ViewTreeObserver;
-import android.widget.RelativeLayout;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
@@ -17,7 +16,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -34,19 +35,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.event.ClassEndEvent
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.http.EnTeamPkHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpDispatch;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpRunnable;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -56,7 +55,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -92,6 +90,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private boolean destory = false;
     private InteractiveTeam mInteractiveTeam;
     private ArrayList<TeamMemberEntity> entities = new ArrayList<>();
+    private TeamMessageAction teamMessageAction;
 
     public EnTeamPkIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -114,7 +113,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         unique_id = mGetInfo.getId() + "_" + mGetInfo.getStudentLiveInfo().getClassId();
         logger.d("onLiveInited:unique_id=" + unique_id);
         EnTeamPkBll teamPkBll = new EnTeamPkBll(activity, mGetInfo.getId());
-        teamPkBll.setRootView(mRootView);
+        teamPkBll.setRootView(getLiveViewAction());
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
         enTeamPkAction = teamPkBll;
         teamPkBll.onLiveInited(getInfo);
@@ -145,7 +144,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             } catch (Exception e) {
                 pkTeamEntity = null;
-                CrashReport.postCatchedException(e);
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
@@ -182,7 +181,21 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     LiveEventBus.getDefault(mContext).register(classEndRec);
                 }
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+        }
+        boolean hasAddTop = teamPkBll.isHasAddTop();
+        if (hasAddTop && englishPk.hasGroup == EnglishPk.HAS_GROUP_TRAN) {
+            poseEvent();
+        }
+    }
+
+    private void registTcp() {
+        TcpMessageReg tcpMessageReg = ProxUtil.getProxUtil().get(mContext, TcpMessageReg.class);
+        if (tcpMessageReg != null) {
+            if (teamMessageAction == null) {
+                teamMessageAction = new TeamMessageAction();
+                tcpMessageReg.registTcpMessageAction(teamMessageAction);
             }
         }
     }
@@ -193,70 +206,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         int isGroupGmaeCourseWare = artsExtLiveInfo.getIsGroupGameCourseWare();
         logger.d("onArtsExtLiveInited:isGroupGmaeCourseWare=" + isGroupGmaeCourseWare);
         if (isGroupGmaeCourseWare == 1) {
-            getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
-                AbstractBusinessDataCallBack callBack;
-                int time = 1;
-
-                @Override
-                public void onDataSucess(Object... objData) {
-                    ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
-                    mLogtf.d("dispatch:size=" + addresses.size());
-                    if (addresses.size() > 0) {
-                        connect("onArtsExtLiveInited", addresses);
-                    }
-                }
-
-                @Override
-                public void onDataFail(int errStatus, String failMsg) {
-                    super.onDataFail(errStatus, failMsg);
-                    mLogtf.d("dispatch:time=" + time + ",failMsg=" + failMsg);
-                    callBack = this;
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!destory) {
-                                getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), callBack);
-                            }
-                        }
-                    }, ++time * 1000);
-                }
-            });
+            registTcp();
             if (pkTeamEntity != null) {
                 startTeam("onArtsExtLiveInited");
             }
-        }
-    }
-
-    @Override
-    public void initView(final RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
-    }
-
-    private synchronized void connect(String method, ArrayList<InetSocketAddress> addresses) {
-        if (tcpDispatch == null) {
-            if (destory) {
-                mLogtf.d("connect:destory:method=" + method);
-                return;
-            }
-            int pid = -1;
-            if (pkTeamEntity != null) {
-                pid = pkTeamEntity.getPkTeamId();
-            }
-            int iid = -1;
-            if (mInteractiveTeam != null) {
-                iid = mInteractiveTeam.getInteractive_team_id();
-            }
-            tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), AppBll.getInstance().getUserRfh(), mGetInfo.getId(), classInt + "", -1, pid, iid, "");
-            tcpDispatch.setOnTcpConnects(onTcpConnects);
-            tcpDispatch.setAddresses(addresses);
-            tcpDispatch.registTcpMessageAction(new TeamMessageAction());
-            while (!tcpRun.isEmpty()) {
-                TcpRunnable runnable = tcpRun.remove(0);
-                mLogtf.d("connect:run=" + runnable.getName());
-                runnable.run();
-            }
-        } else {
-            mLogtf.d("connect:method=" + method);
         }
     }
 
@@ -288,7 +241,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         if (delayMillis < 0) {
                             runnable.run();
                         } else {
-                            mHandler.postDelayed(runnable, delayMillis);
+                            postDelayed(runnable, delayMillis);
                         }
                     }
                     logger.d("onQuestionShow:delayMillis=" + delayMillis);
@@ -310,7 +263,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM, jsonObject.toString(), ShareDataManager.SHAREDATA_USER);
         } catch (JSONException e) {
             mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
-            CrashReport.postCatchedException(e);
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 
@@ -417,7 +370,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mLogtf.d("reportStuInfo:mode=" + mode);
             if (mode.equals("1")) {//主讲模式。等irc连接2秒
                 reportStuInfoRun = runnable;
-                mHandler.postDelayed(new Runnable() {
+                postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Runnable freportStuInfoRun = reportStuInfoRun;
@@ -596,37 +549,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (artsExtLiveInfo != null) {
                 int isGroupGmaeCourseWare = artsExtLiveInfo.getIsGroupGameCourseWare();
                 if (isGroupGmaeCourseWare == 1) {
+                    registTcp();
                     startTeam("parsegetSelfTeamInfo1");
                 }
             } else if (mInteractiveTeam != null) {
-                getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
-                    AbstractBusinessDataCallBack callBack;
-                    int time = 1;
-
-                    @Override
-                    public void onDataSucess(Object... objData) {
-                        ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
-                        mLogtf.d("dispatch:size=" + addresses.size());
-                        if (addresses.size() > 0) {
-                            connect("parsegetSelfTeamInfo", addresses);
-                        }
-                    }
-
-                    @Override
-                    public void onDataFail(int errStatus, String failMsg) {
-                        super.onDataFail(errStatus, failMsg);
-                        mLogtf.d("dispatch:time=" + time + ",failMsg=" + failMsg);
-                        callBack = this;
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!destory) {
-                                    getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), callBack);
-                                }
-                            }
-                        }, ++time * 1000);
-                    }
-                });
                 startTeam("parsegetSelfTeamInfo2");
             }
         }
@@ -698,80 +624,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             });
         }
-        if (tcpMessageReg == null) {
-            tcpMessageReg = new TcpMessageReg() {
-
-                @Override
-                public void onConnect(OnTcpConnect onTcpConnect) {
-                    if (tcpDispatch != null) {
-                        onTcpConnect.onTcpConnect();
-                    }
-                    onTcpConnects.add(onTcpConnect);
-                }
-
-                @Override
-                public void send(final short type, final int operation, final String bodyStr) {
-                    if (tcpDispatch != null) {
-                        tcpDispatch.send(type, operation, bodyStr);
-                    } else {
-                        tcpRun.add(new TcpRunnable("send1") {
-                            @Override
-                            public void run() {
-                                if (tcpDispatch != null) {
-                                    tcpDispatch.send(type, operation, bodyStr);
-                                }
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void send(final short type, final int operation, final String bodyStr, final SendCallBack sendCallBack) {
-                    if (tcpDispatch != null) {
-                        tcpDispatch.send(type, operation, bodyStr, sendCallBack);
-                    } else {
-                        tcpRun.add(new TcpRunnable("send2") {
-                            @Override
-                            public void run() {
-                                if (tcpDispatch != null) {
-                                    tcpDispatch.send(type, operation, bodyStr, sendCallBack);
-                                }
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void registTcpMessageAction(final TcpMessageAction tcpMessageAction) {
-                    if (tcpDispatch != null) {
-                        tcpDispatch.registTcpMessageAction(tcpMessageAction);
-                    } else {
-                        tcpRun.add(new TcpRunnable("registTcpMessageAction") {
-                            @Override
-                            public void run() {
-                                if (tcpDispatch != null) {
-                                    tcpDispatch.registTcpMessageAction(tcpMessageAction);
-                                }
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void unregistTcpMessageAction(TcpMessageAction tcpMessageAction) {
-                    if (tcpDispatch != null) {
-                        tcpDispatch.unregistTcpMessageAction(tcpMessageAction);
-                    }
-                }
-
-            };
-            ProxUtil.getProxUtil().put(mContext, TcpMessageReg.class, tcpMessageReg);
-        }
     }
 
     private GetStuActiveTeam getStuActiveTeam = null;
-    private TcpMessageReg tcpMessageReg;
-    private ArrayList<TcpMessageReg.OnTcpConnect> onTcpConnects = new ArrayList<>();
 
     private class TeamMessageAction implements TcpMessageAction {
         @Override
@@ -792,7 +647,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             saveTeamInter(msg);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                             mLogtf.e("onMessage(TEAM_TYPE)" + e.getMessage(), e);
                         }
                     }
@@ -821,7 +676,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
         } catch (Exception e) {
             mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 
@@ -834,7 +689,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
         } catch (Exception e) {
             mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
-            CrashReport.postCatchedException(new LiveException(TAG, e));
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 
@@ -887,7 +742,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void poseEvent() {
-        mHandler.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
@@ -930,7 +785,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         }
                     } catch (Exception e) {
                         logger.d("XCR_ROOM_TEAMPK_GO", e);
-                        CrashReport.postCatchedException(e);
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
                 break;
@@ -978,7 +833,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         }
                     } catch (Exception e) {
                         mLogtf.e("CLASSBEGIN", e);
-                        CrashReport.postCatchedException(e);
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
                 break;
@@ -1067,7 +922,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         logger.d("onCourseEnd:isShow=" + mIsShow);
         stopQuestTime = System.currentTimeMillis();
         if (!mIsShow) {
-            mHandler.postDelayed(runnable, maxdelayMillis);
+            postDelayed(runnable, maxdelayMillis);
         } else {
             stopRunnable = runnable;
         }
@@ -1085,41 +940,42 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         String teamId = "" + pkTeamEntity.getPkTeamId();
                         final String testId = old.id;
                         mLogtf.d("onQuestionEnd:testId=" + testId + ",teamId=" + teamId);
-                        getHttpManager().updataEnglishPkByTestId(teamId, testId, new HttpCallBack(false) {
-                            @Override
-                            public void onPmSuccess(ResponseEntity responseEntity) {
-                                logger.d("onQuestionEnd:onPmSuccess" + responseEntity.getJsonObject());
-                                EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity, mGetInfo.getStuId());
-                                if (pkTeamEntity != null && enTeamPkRankEntity != null) {
-                                    ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
-                                    for (int i = 0; i < myTeamEntitys.size(); i++) {
-                                        TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
-                                        if (teamMemberEntity.isMy) {
-                                            myTeamEntitys.remove(i);
-                                            myTeamEntitys.add(0, teamMemberEntity);
-                                            break;
+                        if (!TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, old.type))
+                            getHttpManager().updataEnglishPkByTestId(teamId, testId, new HttpCallBack(false) {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) {
+                                    logger.d("onQuestionEnd:onPmSuccess" + responseEntity.getJsonObject());
+                                    EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity, mGetInfo.getStuId());
+                                    if (pkTeamEntity != null && enTeamPkRankEntity != null) {
+                                        ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
+                                        for (int i = 0; i < myTeamEntitys.size(); i++) {
+                                            TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
+                                            if (teamMemberEntity.isMy) {
+                                                myTeamEntitys.remove(i);
+                                                myTeamEntitys.add(0, teamMemberEntity);
+                                                break;
+                                            }
+                                        }
+                                        enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
+                                        updateEnpk(enTeamPkRankEntity);
+                                        if (enTeamPkAction != null) {
+                                            enTeamPkAction.onRankLead(enTeamPkRankEntity, testId, TeamPkLeadPager.TEAM_TYPE_1);
                                         }
                                     }
-                                    enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
-                                    updateEnpk(enTeamPkRankEntity);
-                                    if (enTeamPkAction != null) {
-                                        enTeamPkAction.onRankLead(enTeamPkRankEntity, testId, TeamPkLeadPager.TEAM_TYPE_1);
-                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onPmError(ResponseEntity responseEntity) {
-                                super.onPmError(responseEntity);
-                                mLogtf.d("onQuestionEnd:onPmError:testId=" + testId + "," + responseEntity.getErrorMsg());
-                            }
+                                @Override
+                                public void onPmError(ResponseEntity responseEntity) {
+                                    super.onPmError(responseEntity);
+                                    mLogtf.d("onQuestionEnd:onPmError:testId=" + testId + "," + responseEntity.getErrorMsg());
+                                }
 
-                            @Override
-                            public void onPmFailure(Throwable error, String msg) {
-                                super.onPmFailure(error, msg);
-                                logger.e("onQuestionEnd:onPmFailure" + msg, error);
-                            }
-                        });
+                                @Override
+                                public void onPmFailure(Throwable error, String msg) {
+                                    super.onPmFailure(error, msg);
+                                    logger.e("onQuestionEnd:onPmFailure" + msg, error);
+                                }
+                            });
                     }
                 }
             }
@@ -1127,7 +983,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         logger.d("onQuestionEnd:isShow=" + mIsShow);
         stopQuestTime = System.currentTimeMillis();
         if (!mIsShow) {
-            mHandler.postDelayed(runnable, maxdelayMillis);
+            postDelayed(runnable, maxdelayMillis);
         } else {
             stopRunnable = runnable;
         }
@@ -1253,8 +1109,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void onDestory() {
-        super.onDestory();
+    public void onDestroy() {
+        super.onDestroy();
         destory = true;
         if (classEndReg != null) {
             classEndReg.destory();
@@ -1266,7 +1122,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (enTeamPkAction != null) {
             enTeamPkAction.destory();
         }
-        onTcpConnects.clear();
         if (tcpDispatch != null) {
             tcpDispatch.stop();
             tcpDispatch = null;

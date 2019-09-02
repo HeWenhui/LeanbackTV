@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -49,8 +48,7 @@ public class AuditClassRoomBll extends BaseBll {
      * @param dataLoadEntity
      */
     public void getLiveCourseUserScoreDetail(String liveId, String stuCouId, final AbstractBusinessDataCallBack auditClassRoomRequestCallBack, final DataLoadEntity dataLoadEntity) {
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mAuditClassRoomHttpManager.getLiveCourseUserScoreDetail(enstuId, liveId, stuCouId, new HttpCallBack(dataLoadEntity) {
+        mAuditClassRoomHttpManager.getLiveCourseUserScoreDetail(liveId, stuCouId, new HttpCallBack(dataLoadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 AuditClassRoomEntity entity = mAudtiClassRoomHttpResponseParser.parserAuditClassRoomUserScore(responseEntity);
@@ -76,8 +74,7 @@ public class AuditClassRoomBll extends BaseBll {
      * @param auditClassRoomRequestCallBack
      */
     public void getHasLiveCourse(final Handler handler, final long delayMillis, final String roomId, final AbstractBusinessDataCallBack auditClassRoomRequestCallBack) {
-        final String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mAuditClassRoomHttpManager.getHasLiveCourse(enstuId, roomId, new HttpCallBack(false) {
+        mAuditClassRoomHttpManager.getHasLiveCourse(roomId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 LiveCourseEntity liveCourseEntity = mAudtiClassRoomHttpResponseParser.parserHasAuditClassRoom(responseEntity);

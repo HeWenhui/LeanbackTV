@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ShadowTextView">
+        <!--进度条高度-->
+        <attr name="shadow_shadowColor" format="color"></attr>
+        <!--滑动头图片资源引用-->
+        <attr name="shadow_shadowDx" format="float"></attr>
+        <attr name="shadow_shadowDy" format="float"></attr>
+        <!--边线颜色-->
+        <attr name="shadow_shadowRadius" format="float" />
+
+    </declare-styleable>
+</resources>

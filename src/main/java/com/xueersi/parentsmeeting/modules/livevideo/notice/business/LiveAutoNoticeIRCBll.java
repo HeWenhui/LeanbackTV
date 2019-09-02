@@ -8,7 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
 
 public class LiveAutoNoticeIRCBll extends LiveBaseBll {
@@ -35,7 +35,7 @@ public class LiveAutoNoticeIRCBll extends LiveBaseBll {
             liveAutoNoticeBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
             liveAutoNoticeBll.setTeacherImg(mGetInfo.getTeacherIMG());
             liveAutoNoticeBll.setTeacherName(mGetInfo.getTeacherName());
-            liveAutoNoticeBll.setLiveBll(mLiveBll);
+            liveAutoNoticeBll.setLiveBll(contextLiveAndBackDebug);
             liveAutoNoticeBll.setHttpManager(mLiveBll.getHttpManager());
             liveAutoNoticeBll.setLiveId(mLiveId);
             mLiveAutoNoticeBll = liveAutoNoticeBll;

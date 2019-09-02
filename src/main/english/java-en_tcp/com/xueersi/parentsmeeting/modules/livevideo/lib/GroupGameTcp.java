@@ -6,7 +6,8 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.SparseArray;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +26,7 @@ import java.util.HashMap;
 public class GroupGameTcp {
     private static int CREATE_TIMES = 0;
     private String TAG = "GroupGameTcp" + CREATE_TIMES++;
-    private Logger log = LiveLoggerFactory.getLogger(TAG);
+    private Logger log = LiveTcpLoggerFactory.getLogger(TAG);
     private ReceiveMegCallBack receiveMegCallBack;
     /** 测试用，从本地文件读 */
     private boolean readSave = false;
@@ -35,7 +36,7 @@ public class GroupGameTcp {
     private InetSocketAddress inetSocketAddress;
     private Socket socket;
     /** 消息序号 */
-    private static int seq = 0;
+    public static int seq = 0;
     /** ping 超时 */
     private long pingTime = 10000;
     /** 心跳间隔 */
@@ -44,7 +45,7 @@ public class GroupGameTcp {
     private PingRunnable pingRunnable = new PingRunnable();
     private WriteThread writeThread;
     private Handler sendMessageHandler;
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
+    private Handler mainHandler = LiveMainHandler.getMainHandler();
     private boolean isStop = false;
     private SparseArray<SendCallBack> callBackSparseArray = new SparseArray<>();
 
@@ -163,7 +164,7 @@ public class GroupGameTcp {
     }
 
     class WriteThread extends HandlerThread {
-        Logger log = LiveLoggerFactory.getLogger(TAG + ":WriteThread");
+        Logger log = LiveTcpLoggerFactory.getLogger(TAG + ":WriteThread");
         OutputStream outputStream;
 
         WriteThread(OutputStream outputStream) {
@@ -218,7 +219,7 @@ public class GroupGameTcp {
                             logs.put("times", "" + (CREATE_TIMES - 1));
                             receiveMegCallBack.onLog(inetSocketAddress, logs);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(new TcpException(TAG, e));
+                            LiveCrashReport.postCatchedException(new TcpException(TAG, e));
                         }
                     }
                 }
@@ -302,7 +303,7 @@ public class GroupGameTcp {
     }
 
     class ReadThread implements Runnable {
-        Logger log = LiveLoggerFactory.getLogger(TAG + ":ReadThread");
+        Logger log = LiveTcpLoggerFactory.getLogger(TAG + ":ReadThread");
         WriteThread writeThread;
         InputStream inputStream;
         // 每包最小长度
@@ -404,7 +405,7 @@ public class GroupGameTcp {
                             }
                         }
                     } catch (Exception e) {
-                        CrashReport.postCatchedException(new TcpException("testBuffer", e));
+                        LiveCrashReport.postCatchedException(new TcpException("testBuffer", e));
                     }
                 }
                 while (!isStop && (length = inputStream.read(readBuffer)) != -1) {
@@ -567,7 +568,7 @@ public class GroupGameTcp {
             } catch (Exception e) {
                 e.printStackTrace();
                 endEx = e;
-                CrashReport.postCatchedException(new TcpException("testBuffer", e));
+                LiveCrashReport.postCatchedException(new TcpException("testBuffer", e));
                 if (saveFile != null) {
                     if (receiveMegCallBack != null) {
                         receiveMegCallBack.onReadException(inetSocketAddress, e, saveFile);
