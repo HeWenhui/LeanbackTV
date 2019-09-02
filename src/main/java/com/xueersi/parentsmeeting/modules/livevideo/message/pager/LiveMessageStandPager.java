@@ -76,6 +76,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -85,6 +86,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageCo
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessSysItem;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
@@ -845,13 +847,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                     });
                 }
             }
-        }
+        };
 
-        ;
-        lvMessage.setVerticalFadingEdgeEnabled(false);
+//        lvMessage.setVerticalFadingEdgeEnabled(false);
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
         lp.topMargin = ScreenUtils.getScreenHeight() / 3;
-        lvMessage.setLayoutParams(lp);
+        LayoutParamsUtil.setViewLayoutParams(lvMessage, lp);
         lvMessage.setAdapter(messageAdapter);
 //        mView.post(new Runnable() {
 //            @Override
@@ -896,6 +897,17 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
                 get(liveVideoActivity, AudioRequest.class);
         logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
+//        LiveVideoPoint.getInstance().addVideoSizeChangeAndCall(mContext, new LiveVideoPoint.VideoSizeChange() {
+//            @Override
+//            public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
+//                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
+//                int leftMargin = liveVideoPoint.x2 + 10;
+//                if (lp.leftMargin != leftMargin) {
+//                    lp.leftMargin = leftMargin;
+//                    LayoutParamsUtil.setViewLayoutParams(rlInfo, lp);
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -1200,7 +1212,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
                         addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"), jsonObject.optString("path",""));
+                                .getString("msg"), jsonObject.optString("path", ""));
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
@@ -1864,7 +1876,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         public void run() {
                             startEvaluator();
                         }
-                    },300);
+                    }, 300);
                 }
             });
         }
