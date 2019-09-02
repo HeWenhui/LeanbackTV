@@ -548,12 +548,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
 
-        if (mGetInfo.getStat() == 1) {
+        //大班整合 无此字段
+       /* if (mGetInfo.getStat() == 1) {
             if (mVideoAction != null) {
                 mVideoAction.onTeacherNotPresent(true);
+                Log.e("ckTrac","==>LiveBll2_roomInit_onTeacherNotPresent");
             }
             mLogtf.d("onGetInfoSuccess:onTeacherNotPresent");
-        }
+        }*/
 
 
         String s = "onGetInfoSuccess:enterTime=" + enterTime + ",stat=" + mGetInfo.getStat();
@@ -1496,6 +1498,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      */
     private boolean isPresent(String mode) {
         boolean isPresent = true;
+        Log.e("ckTrac","=====>LiveBll2_isPresent_0000:"+mIRCMessage.onUserList());
         if (mIRCMessage != null && mIRCMessage.onUserList()) {
             isPresent = teacherAction.isPresent(mode);
         }
