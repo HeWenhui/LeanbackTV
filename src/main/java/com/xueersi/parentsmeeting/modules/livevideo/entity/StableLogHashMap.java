@@ -106,6 +106,16 @@ public class StableLogHashMap {
     }
 
     /**
+     *
+     * @param extradata  扩展字段
+     * @return
+     */
+    public StableLogHashMap addExtraData(String extradata){
+        mData.put("extradata",extradata);
+        return this;
+    }
+
+    /**
      * 创建随机值
      *
      * @return
@@ -124,7 +134,6 @@ public class StableLogHashMap {
         mData.put("stable", stable);
         return this;
     }
-
     public Map<String, String> getData() {
         return mData;
     }
