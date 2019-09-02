@@ -1,0 +1,109 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="130dp"
+        android:layout_height="142dp"
+        android:background="@drawable/app_xiaomubiao_shellwindow_duanwei_img_bg"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_level_name_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:textColor="#ff5bb383"
+            android:textSize="13dp"
+            tools:text="倔强青铜" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_betterme_level_img_left"
+            android:layout_width="100dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="-4dp"
+            tools:src="@drawable/app_xiaomubiao_qingtong" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_upstar_describtion_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-17dp"
+            android:gravity="center"
+            android:textColor="#ffe65c00"
+            android:textSize="10dp"
+            tools:text="每完成3次目标升1星" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_uplevel_describtion_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:gravity="center"
+            android:textColor="#ffffedb1"
+            android:textSize="10dp"
+            tools:text="满3星升级" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="14dp"
+        android:layout_height="13dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:background="@drawable/app_xiaomubiao_shellwindow_jiantou_img" />
+
+    <LinearLayout
+        android:layout_width="130dp"
+        android:layout_height="142dp"
+        android:background="@drawable/app_xiaomubiao_shellwindow_duanwei_img_bg"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_level_name_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:textColor="#ff8691a3"
+            android:textSize="13dp"
+            tools:text="勤奋白银" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_betterme_level_img_right"
+            android:layout_width="100dp"
+            android:layout_height="92dp"
+            android:layout_marginTop="-4dp"
+            tools:src="@drawable/app_xiaomubiao_baiyin" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_upstar_describtion_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-17dp"
+            android:gravity="center"
+            android:textColor="#ffe65c00"
+            android:textSize="10dp"
+            tools:text="每完成4次目标升1星" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_uplevel_describtion_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:gravity="center"
+            android:textColor="#ffffedb1"
+            android:textSize="10dp"
+            tools:text="满3星升级" />
+
+    </LinearLayout>
+
+</LinearLayout>

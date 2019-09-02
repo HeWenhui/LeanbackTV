@@ -11,27 +11,35 @@
 
         <RelativeLayout
             android:id="@id/rl_livevideo_en_achive_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@id/iv_livevideo_en_achive_title"
-                android:layout_width="48dp"
-                android:layout_height="12dp"
-                android:layout_marginTop="7dp"
-                android:src="@drawable/app_livevideo_enteampk_benchangchengjiu_title_pic_nor" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
 
-            <CheckBox
-                android:id="@id/cb_livevideo_en_achive_title"
-                android:layout_width="17dp"
-                android:layout_height="17dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/iv_livevideo_en_achive_title"
-                android:background="@drawable/selector_live_en_achive_open"
-                android:button="@null"
-                android:checked="false" />
+                <ImageView
+                    android:id="@id/iv_livevideo_en_achive_title"
+                    android:layout_width="48dp"
+                    android:layout_height="12dp"
+                    android:layout_marginTop="7dp"
+                    android:src="@drawable/app_livevideo_enteampk_benchangchengjiu_title_pic_nor" />
+
+                <CheckBox
+                    android:id="@id/cb_livevideo_en_achive_title"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_toRightOf="@id/iv_livevideo_en_achive_title"
+                    android:background="@drawable/selector_live_en_achive_open"
+                    android:button="@null"
+                    android:checked="false" />
+            </RelativeLayout>
+
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -39,7 +47,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_livevideo_en_achive_title"
-            android:layout_marginTop="9dp"
             android:visibility="gone">
 
             <RelativeLayout
@@ -112,6 +119,7 @@
             </RelativeLayout>
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/tv_livevideo_en_achive_aim_empty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rl_livevideo_en_achive_content_num"
@@ -120,6 +128,63 @@
                 android:text="@string/livevideo_enpk_notarget"
                 android:textColor="@color/COLOR_FF449CEE"
                 android:textSize="9sp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_livevideo_en_achive_aim_content"
+                android:layout_width="165dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rl_livevideo_en_achive_content_num"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
+
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@+id/tv_livevideo_en_achive_aimtype"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/pg_livevideo_en_achive_aim"
+                    android:layout_marginLeft="3dp"
+                    android:text="正确率"
+                    android:textColor="@color/COLOR_FF449CEE"
+                    android:textSize="9dp" />
+
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@+id/tv_livevideo_en_achive_aimvalue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@+id/pg_livevideo_en_achive_aim"
+                    android:layout_marginRight="3dp"
+                    android:text="目标80%"
+                    android:textColor="@color/COLOR_FF449CEE"
+                    android:textSize="9dp" />
+
+                <ProgressBar
+                    android:id="@+id/pg_livevideo_en_achive_aim"
+                    style="@style/ProgressBar_live_achive_betterme"
+                    android:layout_width="143dp"
+                    android:layout_height="13dp"
+                    android:layout_below="@+id/tv_livevideo_en_achive_aimtype"
+                    android:layout_centerHorizontal="true"
+                    android:max="100"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="0dp"
+                    android:progress="50" />
+
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@+id/tv_livevideo_en_achive_aimtips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/pg_livevideo_en_achive_aim"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="-2dp"
+                    android:background="@drawable/livevideo_enteampk_xiaomubiao_tips_bg_nor"
+                    android:gravity="center"
+                    android:paddingTop="3dp"
+                    android:textColor="@color/white"
+                    android:textSize="9dp" />
+
+            </RelativeLayout>
+
         </RelativeLayout>
 
     </RelativeLayout>

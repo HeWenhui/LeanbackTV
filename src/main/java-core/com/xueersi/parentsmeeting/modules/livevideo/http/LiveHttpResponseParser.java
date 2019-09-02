@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnergyBonusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
@@ -15,6 +16,10 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
@@ -274,6 +279,22 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             enpkEnergy.me = pkEnergyObj.optInt("me");
             enpkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
             enpkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
+        }
+
+        //英语小目标
+        LiveGetInfo.BetterMe betterMe = getInfo.getBetterMe();
+        betterMe.setArriveLate("1".equals(data.optString("isArriveLate")));
+        betterMe.setUseBetterMe("1".equals(data.optString("isUseBetterMe")));
+        try {
+            StuSegmentEntity stuSegmentEntity = new StuSegmentEntity();
+            stuSegmentEntity.setSegment(data.getString("segment"));
+            stuSegmentEntity.setSegmentType(data.getInt("segmentType"));
+            stuSegmentEntity.setStar(data.getInt("star"));
+            stuSegmentEntity.setAimNumber(data.getInt("aimNumber"));
+            stuSegmentEntity.setSumCount(data.getInt("sumCount"));
+            betterMe.setStuSegment(stuSegmentEntity);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -2102,6 +2123,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                     teamMemberEntity.name = jsonObject1.optString("stu_name");
                     teamMemberEntity.headurl = jsonObject1.optString("stu_head");
+                    teamMemberEntity.setSegmentType(jsonObject1.optInt("segment_type"));
+                    teamMemberEntity.setStar(jsonObject1.optInt("star"));
                     aTeamMemberEntity.add(teamMemberEntity);
                 }
             }
@@ -2120,6 +2143,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     teamMemberEntity.name = jsonObject1.optString("stu_name");
                     teamMemberEntity.headurl = jsonObject1.optString("stu_head");
                     teamMemberEntity.setNick_name(jsonObject1.optString("nick_name"));
+                    teamMemberEntity.setSegmentType(jsonObject1.optInt("segment_type"));
+                    teamMemberEntity.setStar(jsonObject1.optInt("star"));
                     bTeamMemberEntity.add(teamMemberEntity);
                 }
             }
@@ -2159,6 +2184,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     teamMemberEntity.headurl = top3Obj.optString("head");
                     teamMemberEntity.gold = top3Obj.optInt("gold");
                     teamMemberEntity.energy = top3Obj.optInt("energy");
+                    teamMemberEntity.setSegmentType(top3Obj.optInt("segmentType"));
+                    teamMemberEntity.setStar(top3Obj.optInt("star"));
                     memberEntities.add(teamMemberEntity);
                 }
             }
@@ -2566,5 +2593,163 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             contentEntity.setPraiseStyle(style);
             contentEntityList.add(contentEntity);
         }
+    }
+
+    /**
+     * 英语小目标 - 解析学生段位信息
+     *
+     * @param responseEntity
+     * @return
+     */
+    public StuSegmentEntity parseStuSegmentInfo(ResponseEntity responseEntity) {
+        try {
+            StuSegmentEntity stuSegmentEntity = new StuSegmentEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            stuSegmentEntity.setAimNumber(jsonObject.getInt("aimNumber"));
+            stuSegmentEntity.setSegment(jsonObject.getString("segment"));
+            stuSegmentEntity.setSegmentType(jsonObject.getInt("segmentType"));
+            stuSegmentEntity.setStar(jsonObject.getInt("star"));
+            stuSegmentEntity.setSumCount(jsonObject.getInt("sumCount"));
+            return  stuSegmentEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 英语小目标 - 解析学生这节课小目标
+     *
+     * @param responseEntity
+     * @return
+     */
+    public BetterMeEntity parseBetterMeInfo(ResponseEntity responseEntity) {
+        try {
+            BetterMeEntity betterMeEntity = new BetterMeEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            betterMeEntity.setAimType(jsonObject.getString("aimType"));
+            betterMeEntity.setAimValue(jsonObject.getString("aimValue"));
+            betterMeEntity.setFirstReceive("1".equals(jsonObject.optString("isFirstReceive","0")));
+            return  betterMeEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 英语小目标 - 解析实时学生目标完成度
+     *
+     * @param responseEntity
+     * @return
+     */
+    public AimRealTimeValEntity parseAimRealTimeValInfo(ResponseEntity responseEntity) {
+        try {
+            AimRealTimeValEntity aimRealTimeValEntity = new AimRealTimeValEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            aimRealTimeValEntity.setDoneAim("1".equals(jsonObject.getString("isDoneAim")));
+            aimRealTimeValEntity.setType(jsonObject.getString("aimType"));
+            aimRealTimeValEntity.setRealTimeVal(jsonObject.getString("realTimeVal"));
+            aimRealTimeValEntity.setAimValue(jsonObject.getString("aimValue"));
+            return  aimRealTimeValEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 英语小目标 - 解析小目标结果
+     *
+     * @param responseEntity
+     * @return
+     */
+    public StuAimResultEntity parseStuAimResultInfo(ResponseEntity responseEntity) {
+        try {
+            StuAimResultEntity stuAimResultEntity = new StuAimResultEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            stuAimResultEntity.setUpGrade("1".equals(jsonObject.getString("isUpGrade")));
+            stuAimResultEntity.setSegment(jsonObject.getString("segment"));
+            stuAimResultEntity.setSegmentType(jsonObject.getInt("segmentType"));
+            stuAimResultEntity.setAimNumber(jsonObject.getInt("aimNumber"));
+            stuAimResultEntity.setStar(jsonObject.getInt("star"));
+            stuAimResultEntity.setDoneAim("1".equals(jsonObject.getString("isDoneAim")));
+            stuAimResultEntity.setAimType(jsonObject.getString("aimType"));
+            stuAimResultEntity.setRealTimeVal(jsonObject.getString("realTimeVal"));
+            stuAimResultEntity.setAimValue(jsonObject.getString("aimValue"));
+            return  stuAimResultEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**
+     * 英语小目标 - 小目标战队PK中间页
+     *
+     * @param responseEntity
+     * @return
+     */
+    public BetterMeEnergyBonusEntity parseBetterMeAndPkMiddlePage(ResponseEntity responseEntity) {
+        try {
+            BetterMeEnergyBonusEntity energyBonusEntity = new BetterMeEnergyBonusEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+
+            String myTeamKey;
+            String opTeamKey;
+            if (jsonObject.getJSONObject("total").getJSONObject("a").getInt("isSelfPKTeam") == 1) {
+                myTeamKey = "a";
+                opTeamKey = "b";
+            } else {
+                myTeamKey = "b";
+                opTeamKey = "a";
+            }
+
+            JSONObject stuInfo = jsonObject.getJSONObject("stuInfo");
+            JSONArray myTeam = stuInfo.getJSONArray(myTeamKey);
+            if (myTeam != null) {
+                for (int i = 0; i < myTeam.length(); i++) {
+                    JSONObject member = myTeam.getJSONObject(i);
+                    TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                    teamMemberEntity.id = member.optInt("stuId");
+                    teamMemberEntity.name = member.optString("name");
+                    teamMemberEntity.headurl = member.optString("head");
+                    teamMemberEntity.setEnergy(member.optInt("energy"));
+                    energyBonusEntity.getMyTeamMemberList().add(teamMemberEntity);
+                }
+            }
+
+            JSONArray opTeam = stuInfo.getJSONArray(opTeamKey);
+            if (opTeam != null) {
+                for (int i = 0; i < opTeam.length(); i++) {
+                    JSONObject member = opTeam.getJSONObject(i);
+                    TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                    teamMemberEntity.id = member.optInt("stuId");
+                    teamMemberEntity.name = member.optString("name");
+                    teamMemberEntity.headurl = member.optString("head");
+                    teamMemberEntity.setEnergy(member.optInt("energy"));
+                    energyBonusEntity.getOpTeamBMemberList().add(teamMemberEntity);
+                }
+            }
+
+            JSONObject total = jsonObject.getJSONObject("total");
+            JSONObject a = total.getJSONObject(myTeamKey);
+            energyBonusEntity.setMyTeamId(a.getInt("PkHeadTeamId"));
+            energyBonusEntity.setMyTeamTotal(a.getInt("total"));
+            energyBonusEntity.setMyTeamBetterMeTotal(a.getInt("betterMeTotal"));
+
+            JSONObject b = total.getJSONObject(opTeamKey);
+            energyBonusEntity.setOpTeamId(b.getInt("PkHeadTeamId"));
+            energyBonusEntity.setOpTeamTotal(b.getInt("total"));
+            energyBonusEntity.setOpTeamBetterMeTotal(b.getInt("betterMeTotal"));
+
+            return energyBonusEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseBetterMeAndPkMiddlePage", e.getMessage());
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        return null;
     }
 }

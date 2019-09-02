@@ -48,7 +48,7 @@ public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEnt
     @Override
     public void initViews(View root) {
         logger.d( "initViews");
-        tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
+        tvMessageItem = root.findViewById(R.id.tv_livevideo_message_item);
         tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
         standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
         standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
@@ -59,8 +59,7 @@ public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEnt
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                Log.d(TAG, "onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
-//                                standLiveHeadView.setProgress(1.0f);
+                logger.d("onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
             }
 
             @Override
@@ -80,7 +79,7 @@ public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEnt
         LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                Log.d(TAG, "onCompositionLoaded:composition=" + composition);
+                logger.d("onCompositionLoaded:composition=" + composition);
                 if (composition == null) {
                     return;
                 }
@@ -88,7 +87,7 @@ public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEnt
                     return;
                 }
                 mComposition = composition;
-                standLiveHeadView.setImageAssetsFolder("live_stand/lottie/head");
+                standLiveHeadView.setImageAssetsFolder("live_stand/chat/images");
                 standLiveHeadView.setComposition(composition);
             }
         });
@@ -101,18 +100,12 @@ public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEnt
 
     @Override
     public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
-        String sender = entity.getSender();
         tvMessageItem.setAutoLinkMask(0);
         tvMessageItem.setText(entity.getText());
-        boolean deng = standLiveHeadView.getEntity() == entity;
-//                            if (deng) {
-//                                return;
-//                            }
-        logger.d( "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
-        standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
-//                        entity.setHeadUrl(getInfo.getHeadImgPath());
-        standLiveHeadView.setName(entity.getSender());
-        standLiveHeadView.setHeadSys();
+         standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
+        standLiveHeadView.setSystem(true);
+        standLiveHeadView.setEntity(entity);
+        entity.setStandLiveHeadView(standLiveHeadView);
         if (!entity.isPlayAnimation()) {
             entity.setPlayAnimation(true);
             standLiveHeadView.postDelayed(new Runnable() {
@@ -124,8 +117,5 @@ public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEnt
         } else {
             standLiveHeadView.setProgress(1.0f);
         }
-        entity.setStandLiveHeadView(standLiveHeadView);
-        standLiveHeadView.setEntity(entity);
     }
-
 }

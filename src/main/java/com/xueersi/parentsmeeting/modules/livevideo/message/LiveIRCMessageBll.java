@@ -1157,6 +1157,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
                     jsonObject.put("version", "" + mGetInfo.getHeadImgVersion());
                     jsonObject.put("msg", msg);
+                    if (mGetInfo.getBetterMe().getStuSegment() != null) {
+                        jsonObject.put("segment", mGetInfo.getBetterMe().getStuSegment().getSegment());
+                        jsonObject.put("segmentType", mGetInfo.getBetterMe().getStuSegment().getSegmentType());
+                        jsonObject.put("star", mGetInfo.getBetterMe().getStuSegment().getStar());
+                    }
                     if (haveTeam) {
                         LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                         String teamId = studentLiveInfo.getTeamId();

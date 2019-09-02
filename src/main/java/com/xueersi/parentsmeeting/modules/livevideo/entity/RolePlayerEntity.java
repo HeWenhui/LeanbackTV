@@ -300,7 +300,18 @@ public class RolePlayerEntity {
          * 结果页显示的星星个数
          */
         private int resultStar;
-
+        /**
+         * 段位名称
+         */
+        private String segment;
+        /**
+         * 段位等级
+         */
+        private int segment_type;
+        /**
+         * 段位星星
+         */
+        private int star;
 
         public String getNickName() {
             return nickName;
@@ -390,7 +401,29 @@ public class RolePlayerEntity {
             return resultStar;
         }
 
+        public String getSegment() {
+            return segment;
+        }
 
+        public void setSegment(String segment) {
+            this.segment = segment;
+        }
+
+        public int getSegment_type() {
+            return segment_type;
+        }
+
+        public void setSegment_type(int segment_type) {
+            this.segment_type = segment_type;
+        }
+
+        public int getStar() {
+            return star;
+        }
+
+        public void setStar(int star) {
+            this.star = star;
+        }
     }
     public class StuComparator implements Comparator<RolePlayerHead>{
 

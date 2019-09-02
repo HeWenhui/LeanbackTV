@@ -10,6 +10,8 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
  * Created by linyuqiang on 2018/11/6.
  * 小英本场成就
  */
-public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAction {
+public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAction ,BetterMeInteractAction{
     private String TAG = "LiveAchievementEngBll";
     protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
     private LiveGetInfo mLiveGetInfo;
@@ -176,6 +178,20 @@ public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAc
     public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
         if (enAchievePager != null) {
             enAchievePager.updateEnpk(enTeamPkRankEntity);
+        }
+    }
+
+    @Override
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity, boolean isShowBubble) {
+        if (enAchievePager != null) {
+            enAchievePager.onBetterMeUpdate(aimRealTimeValEntity, isShowBubble);
+        }
+    }
+
+    @Override
+    public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isShowBubble) {
+        if (enAchievePager != null) {
+            enAchievePager.onReceiveBetterMe(betterMeEntity, isShowBubble);
         }
     }
 }

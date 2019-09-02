@@ -641,8 +641,8 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         try {
             lvReadList.setAdapter(mRolePlayerAdapter);
             lvReadList.setVisibility(View.VISIBLE);
-            lvReadList.setDividerHeight(SizeUtils.Dp2Px
-                    (mContext, 5));
+//            lvReadList.setDividerHeight(SizeUtils.Dp2Px
+//                    (mContext, 5));
             vHead = new View(mContext);
             //修改类型转换异常
             ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px
@@ -1080,6 +1080,8 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                     speechResultMember.name = head1.getNickName();
                     speechResultMember.score = head1.getSpeechScore();
                     speechResultMember.headUrl = head1.getHeadImg();
+                    speechResultMember.segmentType = head1.getSegment_type();
+                    speechResultMember.star = head1.getStar();
                     speechResultMembers.add(speechResultMember);
                 }
                 SpeechResultPager resultPager = new SpeechResultPager(mContext, group, speechResultEntity, mLiveGetInfo);

@@ -273,7 +273,6 @@ public interface XESCODE {
     /** 文科语音弹幕  表扬消息 */
     int XCR_ROOM_VOICEBARRAGEPRAISE = 1007;
 
-
     /**
      * 文科新课件平台 对接notice 指令
      */
