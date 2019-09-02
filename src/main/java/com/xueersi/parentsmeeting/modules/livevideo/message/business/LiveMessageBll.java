@@ -111,6 +111,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         ProxUtil.getProxUtil().put(activity, KeyBordAction.class, this);
         ProxUtil.getProxUtil().put(activity, KeyboardShowingReg.class, this);
         logToFile = new LogToFile(activity, TAG);
+        peopleCount.setContext(activity);
     }
 
     public void setLiveBll(IRCState mLiveBll) {

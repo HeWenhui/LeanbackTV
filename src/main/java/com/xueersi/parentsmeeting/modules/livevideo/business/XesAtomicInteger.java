@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.content.Context;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -14,6 +16,10 @@ public class XesAtomicInteger {
     public XesAtomicInteger(int count) {
         atomicInteger = new AtomicInteger(count);
         logToFile = new LogToFile(TAG);
+    }
+
+    public void setContext(Context context) {
+        logToFile = new LogToFile(context, TAG);
     }
 
     /**
@@ -31,8 +37,8 @@ public class XesAtomicInteger {
      * @param newValue the new value
      */
     public final void set(int newValue, Exception e) {
-        if (newValue == 0) {
-            logToFile.e("set:newValue=0", e);
+        if (newValue <= 0) {
+            logToFile.e("set:newValue=" + newValue, e);
         }
         atomicInteger.set(newValue);
     }
