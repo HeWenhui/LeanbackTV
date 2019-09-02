@@ -246,8 +246,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     @Override
     public void setGetInfo(LiveGetInfo getInfo) {
         super.setGetInfo(getInfo);
-        segmentType = getInfo.getBetterMe().getStuSegment().getSegmentType();
-        star = getInfo.getBetterMe().getStuSegment().getStar();
+        if (getInfo.getBetterMe().getStuSegment() != null) {
+            segmentType = getInfo.getBetterMe().getStuSegment().getSegmentType();
+            star = getInfo.getBetterMe().getStuSegment().getStar();
+        }
     }
 
     @Override
