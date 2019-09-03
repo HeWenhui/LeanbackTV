@@ -59,7 +59,7 @@ public class LiveVideoActivityBase extends XesActivity {
         }
         BuglyLog.i(TAG, "onCreate");
         LiveLogBill.getInstance().initLiveLog();
-        LiveLogBill.getInstance().setLiveId(getIntent().getStringExtra("vStuCourseID"));
+        LiveLogBill.getInstance().setLiveId(getIntent().getStringExtra("vSectionID"));
         LiveLogBill.getInstance().openLiveLog();
 //        FloatWindowManager.addView(this,new Button(this),2);
     }

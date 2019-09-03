@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -209,7 +208,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             //大班整合-讲座
             if (isBigLiveRoom()) {
                 int planId = Integer.parseInt(vSectionID);
-                httpManager.bigLiveEnter(planId,liveType,0, new HttpCallBack(mDataLoadEntity) {
+                httpManager.bigLiveEnter(planId, liveType, 0, new HttpCallBack(mDataLoadEntity) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         LiveBusinessResponseParser mHttpResponseParser = new LiveBusinessResponseParser();
@@ -359,11 +358,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
     /**
      * 是否是整合直播间
+     *
      * @return
      */
     private boolean isBigLiveRoom() {
         Bundle bundle = getIntent().getExtras();
-        boolean isBigLive =  bundle!= null && bundle.getBoolean("isBigLive", false);
+        boolean isBigLive = bundle != null && bundle.getBoolean("isBigLive", false);
         return isBigLive;
     }
 
