@@ -9,6 +9,7 @@ import com.hwl.log.xrsLog.XrsLog;
 import com.hwl.logan.SendLogRunnable;
 import com.xueersi.common.logerhelper.XesLogEntity;
 import com.xueersi.common.logerhelper.bury.XrsLogParser;
+import com.xueersi.lib.framework.utils.JsonUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +49,8 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
     private static String LOGFILEPATH_LOGIN = "/storage/emulated/0/Android/data/com.xueersi.parentsmeeting/files/bury_v1";
     private static final String TAG = "LiveLogSendLogRunnable";
 
-    private String mUploadLogUrl_sys = "http://appdj.xesimg.com/1001637/sys.gif";
+    //private String mUploadLogUrl_sys = "http://appdj.xesimg.com/1001637/sys.gif";
+    private String mUploadLogUrl_sys = "https://log.xescdn.com/log";
     private static Gson gson = new Gson();
     private XrsLogParser mXrsLogParser;
 
@@ -125,6 +127,15 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
         try {
 
             //系统日志
+            if (new File(LOGFILEPATH + -1 + ".txt").exists()) {
+                Log.e(TAG, "日志-------requset--(-1)------------------");
+                FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + -1 + ".txt"));
+                boolean backData1 = doXrsPostRequest(mUploadLogUrl_sys, fileStream1, getActionHeader());
+                new File(LOGFILEPATH + -1 + ".txt").delete();
+                isSuccess = backData1;
+            }
+
+            //直播日志
             if (new File(LOGFILEPATH + -1 + ".txt").exists()) {
                 Log.e(TAG, "日志-------requset--(-1)------------------");
                 FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + -1 + ".txt"));
@@ -563,7 +574,14 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
             int type = entity.f;
             Object name = entity.c;
             try {
-                writeSysToFile(entity, lineLog);
+
+                if (type == 7) {
+                    String buryString = gson.toJson(name);
+                    LiveLogEntity liveLog = gson.fromJson(buryString, LiveLogEntity.class);
+                    writeLiveLogToFile(liveLog, JsonUtil.toJson(liveLog));
+                }
+
+                //writeSysToFile(entity, lineLog);
             } catch (Exception e) {
                 Log.e(TAG, "Exception lineLogqq:" + lineLog);
                 //CrashReport.postCatchedException(new BuryException("Exception:" + lineLog, e));
@@ -592,6 +610,15 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
 
     }
 
+    /**
+     * 按照日志类型，分别写入各自类型文件
+     */
+    private void writeLiveLogToFile(LiveLogEntity liveLog, String log) {
+        Log.e(TAG, "liveLog:" + log);
+        String fileName = "-1" + ".txt";
+        writeTxtToFile(log, LOGFILEPATH, fileName);
+
+    }
 
     public String fileName() {
         return "";
