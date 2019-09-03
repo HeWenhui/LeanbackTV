@@ -1027,17 +1027,17 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         logger.i("理科的room2里面才有openbarrage字段 ");
 
                         if (mRoomAction != null) {
-                            if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode())) {
+                            if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
                                 logger.i("mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage() =  " + mLiveTopic
                                         .getCoachRoomstatus().isZJLKOpenbarrage());
                                 //理科的主讲！！！！！！！mLiveTopic.getCoachRoomstatus()
-                                mRoomAction.onOpenbarrage(mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage(), false);
+                                mRoomAction.onOpenbarrage(liveTopic.getCoachRoomstatus().isZJLKOpenbarrage(), false);
                                 mRoomAction.onDisable(forbidSendMsg, false);
                             } else {
                                 logger.i("mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage() =  " + mLiveTopic
                                         .getCoachRoomstatus().isFDLKOpenbarrage());
                                 //辅导
-                                mRoomAction.onFDOpenbarrage(mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage(), false);
+                                mRoomAction.onFDOpenbarrage(liveTopic.getCoachRoomstatus().isFDLKOpenbarrage(), false);
                                 mRoomAction.onDisable(forbidSendMsg, false);
                             }
 
@@ -1048,7 +1048,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         if (mRoomAction != null) {
                             logger.i("mLiveTopic.getMainRoomstatus().isOpenbarrage() =  " + mLiveTopic
                                     .getMainRoomstatus().isOpenbarrage());
-                            mRoomAction.onOpenbarrage(mLiveTopic.getMainRoomstatus().isOpenbarrage(), false);
+                            mRoomAction.onOpenbarrage(liveTopic.getMainRoomstatus().isOpenbarrage(), false);
                             mRoomAction.onDisable(forbidSendMsg, false);
                         }
                     }
