@@ -14,6 +14,7 @@ import com.xueersi.common.route.module.moduleInterface.AbsDispatcher;
 import com.xueersi.common.route.module.startParam.ParamKey;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
@@ -353,6 +354,9 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         videoEntity.setvLivePlayBackType(LocalCourseConfig.LIVETYPE_LECTURE);
         videoEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LECTURE + "-" + entity.getPlanInfo().getId()+
                 "-" + entity.getMainTeacher().getId());
+        //大班整合默认 走新ijk
+        MediaPlayer.setIsNewIJK(true);
+
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type",2);
