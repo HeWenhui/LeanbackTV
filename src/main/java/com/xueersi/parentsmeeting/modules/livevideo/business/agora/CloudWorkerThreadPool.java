@@ -171,10 +171,15 @@ public class CloudWorkerThreadPool {
         if (mRtcEngine == null) {
             mRtcEngine = new RTCEngine(mContext, mEngineEventHandler.rtcEngineEventListener);
             int init = mRtcEngine.initWithToken(token);
-            if (init != 0) {
+             if (init != 0) {
                 mRtcEngine = null;
                 onEngineCreate.onEngineCreate(null, null);
                 return null;
+            }
+            if (onLastmileQuality != null) {
+                mEngineEventHandler.setOnLastmileQuality(onLastmileQuality);
+                mRtcEngine.enableLastmileProbeTest();
+                return mRtcEngine;
             }
             mRtcEngine.enableVideo();
             mRtcEngine.enableLocalVideo(enableLocalVideo);
@@ -210,10 +215,7 @@ public class CloudWorkerThreadPool {
 //                });
 //                mRtcEngine.enableLastmileTest();
 //            }
-            if (onLastmileQuality != null) {
-                mEngineEventHandler.setOnLastmileQuality(onLastmileQuality);
-                mRtcEngine.enableLastmileProbeTest();
-            }
+
         }
         return mRtcEngine;
     }
@@ -343,6 +345,8 @@ public class CloudWorkerThreadPool {
         }
         if (mRtcEngine != null) {
             mRtcEngine.disableLastmileProbeTest();
+            leaveChannel();
+            exit();
         }
     }
 
