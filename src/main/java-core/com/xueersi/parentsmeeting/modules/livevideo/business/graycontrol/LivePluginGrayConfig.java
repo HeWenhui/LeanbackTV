@@ -23,4 +23,7 @@ public class LivePluginGrayConfig {
     public static final int MOUDLE_GIFT = 6;
     /** 弹幕 */
     public static final int MOUDLE_BARRAYAGE = 7;
+    /** 在线时长 */
+    public static final int MOUDLE_LECTURE_DURATION = 8;
+
 }
