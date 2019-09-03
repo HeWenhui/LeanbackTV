@@ -1198,7 +1198,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             if (responseEntity.getJsonObject() instanceof JSONObject) {
                                 try {
                                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                                    if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
+                                    if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC || mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
                                         sendFlowerMessage(jsonObject.getInt("type"), formWhichTeacher);
                                     } else {
                                         sendFlowerMessage(jsonObject.getInt("type"));
