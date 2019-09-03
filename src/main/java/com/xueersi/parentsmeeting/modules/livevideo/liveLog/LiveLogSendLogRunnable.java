@@ -102,9 +102,9 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
         map.put("client", "android");
 
 
-        map.put("X-Log-TimeStamp", "1557054130000");
-        map.put("X-Log-Sign", "2f8238e4839b20b97b4292d7bab9d172");
-        map.put("X-Log-Appid", "1001637");
+       // map.put("X-Log-TimeStamp", "1557054130000");
+       // map.put("X-Log-Sign", "2f8238e4839b20b97b4292d7bab9d172");
+       // map.put("X-Log-Appid", "1001637");
 
         return map;
     }
