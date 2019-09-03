@@ -83,7 +83,7 @@ public class LiveLogEntity {
 
     public String appId = "1001637";   //日志Id
 
-    public String agent;
+    public String agent="android-"+appVer;
 
     public String pri="2";  //日志业务类型
 
