@@ -136,6 +136,23 @@ public class LiveAppUserInfo {
     }
 
     /**
+     * 获取名字
+     *
+     * @return
+     */
+    public String getShowName() {
+        String showName = "";
+       if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())) {
+            showName = LiveAppUserInfo.getInstance().getRealName();
+        } else if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getNickName())) {
+            showName = LiveAppUserInfo.getInstance().getNickName();
+        } else {
+           showName = getUsernameDefault();
+       }
+        return showName;
+    }
+
+    /**
      * 设置磐石key
      *
      * @param psAppKey

@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -44,10 +43,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.liveLog.LiveLogBill;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.io.IOException;
@@ -510,6 +511,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                     break;
                 case BUFFER_START:
                     // 网络视频缓冲开始
+                    LiveLogBill.getInstance().liveANRLog();
                     setVideoLoadingLayoutVisibility(View.VISIBLE);
                     vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
                     break;

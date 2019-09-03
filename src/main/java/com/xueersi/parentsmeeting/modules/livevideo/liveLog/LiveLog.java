@@ -41,7 +41,7 @@ public class LiveLog {
         public void run() {
             LiveLogEntity log = new LiveLogEntity();
             if (LiveLogBill.param != null) {
-                log.live_id = LiveLogBill.param.live_id;
+                log.liveid = LiveLogBill.param.liveid;
             }
             ApmBill.GetNetIp(LiveLogBill.url);
             log(log);
@@ -139,6 +139,21 @@ public class LiveLog {
         timer.schedule(task, 5000, tt * 1000);
         timer_log.schedule(task_log, 2000, tt * 1000);
     }
+
+    /**
+     * 默认设置
+     */
+    public static void defaultLog() {
+
+        LiveLogEntity log = new LiveLogEntity();
+        if (LiveLogBill.param != null) {
+            log.liveid = LiveLogBill.param.liveid;
+        }
+        ApmBill.GetNetIp(LiveLogBill.url);
+        log(log);
+        sendLog();
+    }
+
 
     public static Map<String, Long> getAllFilesInfo() {
         return getLoganInstance().getAllFilesInfo();
