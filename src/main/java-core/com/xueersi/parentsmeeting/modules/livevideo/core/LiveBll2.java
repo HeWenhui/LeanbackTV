@@ -1557,10 +1557,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      */
     private boolean isPresent(String mode) {
         boolean isPresent = true;
-        Log.e("ckTrac","=====>LiveBll2_isPresent_0000:"+mIRCMessage.onUserList());
         if (mIRCMessage != null && mIRCMessage.onUserList()) {
             isPresent = teacherAction.isPresent(mode);
         }
+        Log.e("ckTrac","=====>LiveBll2_isPresent_0000:"+mIRCMessage.onUserList()+":"+isPresent);
         return isPresent;
     }
 

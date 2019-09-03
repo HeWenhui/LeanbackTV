@@ -4,6 +4,7 @@ import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -40,6 +41,8 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
 
         LiveGetInfo liveGetInfo = null;
         try {
+
+            MediaPlayer.setIsNewIJK(true);
             liveGetInfo =  new LiveGetInfo(topic);
             liveGetInfo.setNowTime(data.optLong("nowTime"));
             //设置标志，大班直播间
