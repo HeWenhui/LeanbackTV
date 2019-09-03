@@ -136,8 +136,8 @@ public class LiveLog {
     }
 
     public static void startLog() {
-        timer.schedule(task, 5000, tt * 1000);
-        timer_log.schedule(task_log, 2000, tt * 1000);
+//        timer.schedule(task, 5000, tt * 1000);
+//        timer_log.schedule(task_log, 2000, tt * 1000);
     }
 
     public static Map<String, Long> getAllFilesInfo() {
