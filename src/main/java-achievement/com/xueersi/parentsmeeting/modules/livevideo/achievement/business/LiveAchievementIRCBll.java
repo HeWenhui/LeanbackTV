@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessage
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -827,12 +828,34 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         }
     }
 
+    //上一个互动题的实体
+    private VideoQuestionLiveEntity lastVideoQuestionLiveEntity;
+
+    private boolean isEnglishIntelligentEvaluation = false;
+
     private class AchieveQuestionShowAction implements QuestionShowAction {
 
         @Override
         public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
+            //英语智能测评需要特殊判断
+            if (!isShow && lastVideoQuestionLiveEntity != null
+                    && LiveQueConfig.EN_INTELLIGENT_EVALUTION.equals(lastVideoQuestionLiveEntity.type)) {
+                return;
+            }
+//            if (isShow && videoQuestionLiveEntity != null &&
+//                    (LiveQueConfig.EN_INTELLIGENT_EVALUTION.equals(videoQuestionLiveEntity.type))) {
+//                isEnglishIntelligentEvaluation = true;
+//            } else if (!isShow && isEnglishIntelligentEvaluation) {
+//                isEnglishIntelligentEvaluation = false;
+//                return;
+//            } else {
+            //如果没有收到英语智能测评的收题指令
+//                isEnglishIntelligentEvaluation = false;
+//            }
             if (!isShow) {
                 updateAchievement("onQuestionShow");
+            } else {
+                lastVideoQuestionLiveEntity = videoQuestionLiveEntity;
             }
         }
 
