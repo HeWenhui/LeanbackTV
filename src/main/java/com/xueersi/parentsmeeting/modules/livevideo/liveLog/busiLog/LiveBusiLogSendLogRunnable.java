@@ -3,11 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.hwl.bury.BuryEntity;
 import com.hwl.logan.SendLogRunnable;
 import com.xueersi.common.logerhelper.XesLogEntity;
-import com.xueersi.common.logerhelper.bury.XrsLogParser;
-import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.string.MD5Utils;
 
 import java.io.BufferedReader;
@@ -15,7 +12,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,9 +41,14 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
     private static String LOGFILEPATH_LOGIN = "/storage/emulated/0/Android/data/com.xueersi.parentsmeeting/files/log_v1";
     private static final String TAG = "LiveBusiLog";
 
-    private String mUploadLogUrl_sys = "http://appdj.xesimg.com/1001637/sys.gif";
     private static Gson gson = new Gson();
-    private XrsLogParser mXrsLogParser;
+
+
+    private String mUploadLogUrl_sys = "https://appdj.xesimg.com/1001829/sys.gif";
+    private String mUploadLogUrl_pv = "https://appdj.xesimg.com/1001829/pv.gif";
+    private String mUploadLogUrl_click = "https://appdj.xesimg.com/1001829/click.gif";
+    private String mUploadLogUrl_show = "https://appdj.xesimg.com/1001829/show.gif";
+    private String mUploadLogUrl_launch = "https://appdj.xesimg.com/1001829/launch.gif";
 
 
     public static void setPath(String path) {
@@ -63,16 +64,27 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
     @Override
     public void sendLog(File logFile) {
 
-        boolean success = doSendLogFilesByAction(logFile);
-        Log.e("上传日志测试", "日志上传测试结果：" + success);
+        File file = null;
+        if (logFile.getName().contains("bury.copy")) {
+            file = logFile;
+        } else {
+            file = logFile;
+        }
+
+        if (file == null) {
+            return;
+        }
+        boolean success = doSendLogFilesByAction(file);
+        Log.d(TAG, "日志上传测试结果：" + success);
         finish();
         if (logFile.getName().contains(".copy")) {
-
             logFile.delete();
-            Log.e(TAG, "本地日志删除！" + "logFile：" + logFile.getAbsolutePath());
-
+            file.delete();
+            //Log.d(TAG, "本地日志删除：" + "logFile：" + logFile.getAbsolutePath());
             if (logFile.exists()) {
-                Log.d(TAG, "本地日志未删除成功！");
+                Log.d(TAG, "本地日志删除失败！");
+            } else {
+                Log.d(TAG, "本地日志删除成功！");
             }
             deleteDir(LOGFILEPATH_LOGIN);
         }
@@ -86,9 +98,9 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
         map.put("client", "android");
 
 
-        String appID = "1001637";
+        String appID = "1001829";
         long currentStamp = System.currentTimeMillis();
-        String appKey = "ac8b3e12510326755d90a290d6527d57";
+        String appKey = "05cabf2fa971160fbedf6bc5954d1cc3";
         String sign = MD5Utils.disgest(appID + "&" + currentStamp + (appKey == null ? "" : appKey));
 
         map.put("X-Log-TimeStamp", currentStamp + "");
@@ -108,19 +120,53 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
             Log.e(TAG, "loginFile is exit");
         }
 
-        deleteDir(LOGFILEPATH);
+        deleteDir(LOGFILEPATH);//清空临时文件夹
         String log = getFileContent(logFile);
         Log.e(TAG, "all_Log------------------:" + log);
         boolean isSuccess = false;
         try {
 
-            //日志
+            //业务日志
             if (new File(LOGFILEPATH + -1 + ".txt").exists()) {
                 Log.e(TAG, "日志-------requset--(-1)------------------");
                 FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + -1 + ".txt"));
                 boolean backData1 = doXrsPostRequest(mUploadLogUrl_sys, fileStream1, getActionHeader());
                 new File(LOGFILEPATH + -1 + ".txt").delete();
                 isSuccess = backData1;
+            }
+
+            //pv
+            if (new File(LOGFILEPATH + 0 + ".txt").exists()) {
+                //Log.e(TAG, "页面日志-------requset--1------------------");
+                FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + 0 + ".txt"));
+                boolean backData1 = doXrsPostRequest(mUploadLogUrl_pv, fileStream1, getActionHeader());
+                new File(LOGFILEPATH + 0 + ".txt").delete();
+                isSuccess = backData1;
+            }
+
+            //click
+            if (new File(LOGFILEPATH + 1 + ".txt").exists()) {
+                //Log.e(TAG, "click日志-------requset--2------------------");
+                FileInputStream fileStream2 = new FileInputStream(new File(LOGFILEPATH + 1 + ".txt"));
+                boolean backData2 = doXrsPostRequest(mUploadLogUrl_click, fileStream2, getActionHeader());
+                new File(LOGFILEPATH + 1 + ".txt").delete();
+                isSuccess = backData2;
+            }
+            //show
+            if (new File(LOGFILEPATH + 2 + ".txt").exists()) {
+                //Log.e(TAG, "show日志-------requset--3------------------");
+                FileInputStream fileStream3 = new FileInputStream(new File(LOGFILEPATH + 2 + ".txt"));
+                boolean backData3 = doXrsPostRequest(mUploadLogUrl_show, fileStream3, getActionHeader());
+                new File(LOGFILEPATH + 2 + ".txt").delete();
+                isSuccess = backData3;
+            }
+            //launch
+            if (new File(LOGFILEPATH + 3 + ".txt").exists()) {
+                //Log.e(TAG, "launch日志-------requset--4-----------------");
+                FileInputStream fileStream4 = new FileInputStream(new File(LOGFILEPATH + 3 + ".txt"));
+                boolean backData4 = doXrsPostRequest(mUploadLogUrl_launch, fileStream4, getActionHeader());
+                new File(LOGFILEPATH + 3 + ".txt").delete();
+                isSuccess = backData4;
             }
 
 
@@ -213,8 +259,6 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
     }
 
 
-
-
     //生成文件
 
     private File makeFilePath(String filePath, String fileName) {
@@ -269,8 +313,6 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
     }
 
 
-
-
     //读取指定目录下的所有TXT文件的文件内容
     private String getFileContent(File file) {
 
@@ -306,36 +348,6 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
     }
 
 
-    //读取指定目录下的所有TXT文件的文件内容
-    private String getFileContent_2(File file) {
-
-        String content = "";
-        if (!file.isDirectory()) {  //检查此路径名的文件是否是一个目录(文件夹)
-            if (file.getName().endsWith("txt") || file.getName().endsWith(".copy")) {//文件格式为""文件
-                try {
-                    InputStream instream = new FileInputStream(file);
-                    if (instream != null) {
-                        InputStreamReader inputreader
-                                = new InputStreamReader(instream, "UTF-8");
-                        BufferedReader buffreader = new BufferedReader(inputreader);
-                        String line = "";
-                        //分行读取
-                        while ((line = buffreader.readLine()) != null) {
-
-                            content += line + "\n";
-                        }
-                        instream.close();//关闭输入流
-                    }
-                } catch (FileNotFoundException e) {
-                    Log.d(TAG, "The File doesn't not exist.");
-                } catch (IOException e) {
-                    Log.d(TAG, e.getMessage());
-                }
-            }
-        }
-        return content;
-    }
-
     /**
      * 分别将日志传入不同的日志文件
      *
@@ -347,9 +359,14 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
         try {
             XesLogEntity entity = new Gson().fromJson(lineLog, XesLogEntity.class);
             int type = entity.f;
+            Object data = entity.c;
             try {
-                String data=JsonUtil.objectToJson(entity.c);
-                writeSysToFile(data);
+                if (type == 0) {
+                    String buryString = gson.toJson(data);
+                    LiveBusiLogEntity bury = gson.fromJson(buryString, LiveBusiLogEntity.class);
+                    writeToFile(bury, buryString);
+
+                }
             } catch (Exception e) {
                 Log.e(TAG, "Exception lineLogqq:" + lineLog);
                 //CrashReport.postCatchedException(new BuryException("Exception:" + lineLog, e));
@@ -369,16 +386,6 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
     }
 
 
-    /**
-     * 按照日志类型，分别写入各自类型文件
-     */
-    private void writeSysToFile(String log) {
-        String fileName = "-1" + ".txt";
-        writeTxtToFile(log, LOGFILEPATH, fileName);
-
-    }
-
-
     public String fileName() {
         return "";
     }
@@ -386,8 +393,10 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
     /**
      * 按照日志类型，分别写入各自类型文件
      */
-    private void writeToFile(BuryEntity bury, String log) {
-        String fileName = bury.t + ".txt";
+    private void writeToFile(LiveBusiLogEntity bury, String log) {
+        String fileName = bury.logType + ".txt";
+
+        Log.e(TAG, "livebusiLogInfo:" + log);
         writeTxtToFile(log, LOGFILEPATH, fileName);
 
     }

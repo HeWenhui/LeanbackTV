@@ -27,6 +27,10 @@ public class LiveBusiLog {
     public static Timer timer = new Timer();
     public static TimerTask task = new TimerTask() {
         public void run() {
+
+            LiveBusiLogEntity entity=new LiveBusiLogEntity();
+            entity.logType=0;
+            log(entity);
             sendLog();
         }
     };
@@ -47,6 +51,10 @@ public class LiveBusiLog {
         getLoganInstance().wObject(log, type);
     }
 
+    public static void log(LiveBusiLogEntity entity) {
+        getLoganInstance().wObject(entity, 0);
+    }
+
     public static void flushLog() {
         getLoganInstance().f();
     }
@@ -57,15 +65,15 @@ public class LiveBusiLog {
         ++processIndex;
     }
 
-    public static void init(LogConfig logConfig, SendLogRunnable sendLogRunnable, int loopTime){
-    LoganConfig config = (new LoganConfig.Builder()).setCachePath(logConfig.mCachePath).
-            setPath(logConfig.mPathPath).setEncryptKey16("0123456789012345".getBytes())
+    public static void init(LogConfig logConfig, SendLogRunnable sendLogRunnable, int loopTime) {
+        LoganConfig config = (new LoganConfig.Builder()).setCachePath(logConfig.mCachePath).
+                setPath(logConfig.mPathPath).setEncryptKey16("0123456789012345".getBytes())
                 .setEncryptIV16("0123456789012345".getBytes()).setDay(logConfig.mDay).
-                    setMaxFile(logConfig.mMaxFile).setMinSDCard(logConfig.mMinSDCard).build();
+                        setMaxFile(logConfig.mMaxFile).setMinSDCard(logConfig.mMinSDCard).build();
         getLoganInstance().init(config);
         ++processIndex;
         mSendLogRunnable = sendLogRunnable;
-        tt=loopTime;
+        tt = loopTime;
     }
 
     public static void setParam(XrsLogPublicParam publicParam) {
@@ -84,7 +92,7 @@ public class LiveBusiLog {
         return param;
     }
 
-    public static void SendLogRunnable(SendLogRunnable sendLogRunnabl) {
+    public static void sendLogRunnable(SendLogRunnable sendLogRunnabl) {
         mSendLogRunnable = sendLogRunnabl;
     }
 

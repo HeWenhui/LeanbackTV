@@ -114,7 +114,7 @@ public class LiveLogBill {
     }
 
     /**
-     * 开始直播监控日志
+     * 直播监控日志
      */
     public void initLiveLog() {
 
@@ -151,7 +151,7 @@ public class LiveLogBill {
 
 
     /**
-     * 直播监控日志
+     * 直播业务日志
      */
     public void initLiveBisLog() {
 
