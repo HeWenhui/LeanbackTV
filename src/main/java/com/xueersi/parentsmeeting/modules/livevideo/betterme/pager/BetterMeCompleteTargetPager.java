@@ -35,7 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
  * created  at 2018/12/10
  */
 public class BetterMeCompleteTargetPager extends LiveBasePager {
-    private static String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result/result_part_correct/";
+    private String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result/result_part_correct/";
     private OnBettePagerClose mOnpagerClose;
     /**
      * 按钮 - 太棒啦
