@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.AllLiveBasePagerIml;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveDebugBigClassIml;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
@@ -135,13 +136,20 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
      * 是否是体验课
      */
     private Boolean isExperience;
-
+    LiveDebugBigClassIml liveAndBackDebugIml;
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity);
         logger.setLogMethod(false);
         this.activity = activity;
         this.mVideoEntity = mVideoEntity;
-        ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, this);
+        if(mVideoEntity.isBigLive()) {
+            liveAndBackDebugIml  = new LiveDebugBigClassIml(activity, mLiveType, mVideoEntity.getLiveId(), mVideoEntity.getCourseId());
+
+            ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, liveAndBackDebugIml);
+
+        } else {
+            ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, this);
+        }
         Intent intent = activity.getIntent();
         isArts = intent.getIntExtra("isArts", 0);
         islocal = intent.getBooleanExtra("islocal", false);
@@ -241,6 +249,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                 }
             }
         }
+
         liveLog = new LiveLog(activity, mLiveType, mVideoEntity.getLiveId(), getPrefix());
         ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, liveLog);
         logToFile = new LogToFile(activity, TAG);
@@ -332,6 +341,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
     public void onCreate() {
         LiveGetInfo liveGetInfo = new LiveGetInfo(null);
         mGetInfo = liveGetInfo;
+        if(liveAndBackDebugIml!=null) {
+            liveAndBackDebugIml.onGetInfo(mGetInfo,UmsConstants.LIVE_BUSINESS_APP_ID);
+        }
         liveGetInfo.setId(mVideoEntity.getLiveId());
         liveGetInfo.setUname(LiveAppUserInfo.getInstance().getChildName());
         liveGetInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
@@ -440,6 +452,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         liveUidRx.setLiveGetInfo(liveGetInfo);
         liveUidRx.onCreate();
         addCommonData(true);
+
     }
 
     public void addCommonData(boolean isBase){

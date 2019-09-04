@@ -8,8 +8,8 @@ import java.util.Map;
 public class LiveBusiLogEntity {
 
 
-    String businessAppId;
-    int logType;  //-1:sys 0:pv  1：click  2:show  3:launch
-    Map<String, String> mData;
+    public  String businessAppId;
+    public int logType;  //-1:sys 0:pv  1：click  2:show  3:launch
+    public Map<String, String> mData;
 
 }
