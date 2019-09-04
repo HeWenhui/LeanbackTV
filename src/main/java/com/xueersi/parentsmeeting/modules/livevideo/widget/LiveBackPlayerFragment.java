@@ -24,6 +24,7 @@ import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.videoplayer.config.LogConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.IPlayBackMediaCtr;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -40,7 +41,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         BackMediaPlayerControl {
 
     /** 播放器的控制对象 */
-    protected MediaController2 mMediaController;
+    protected IPlayBackMediaCtr mMediaController;
     /** 是否完成了一系列的系统广播 */
     private boolean mReceiverRegistered = false;
     /** 是否显示控制栏 */
@@ -127,7 +128,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         }
     }
 
-    public void setMediaController(MediaController2 mediaController) {
+    public void setMediaController(IPlayBackMediaCtr mediaController) {
         this.mMediaController = mediaController;
         mMediaController.setFileName(mDisplayName);
     }
