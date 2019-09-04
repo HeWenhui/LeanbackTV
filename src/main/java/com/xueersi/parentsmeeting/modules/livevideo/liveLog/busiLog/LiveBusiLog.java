@@ -28,9 +28,9 @@ public class LiveBusiLog {
     public static TimerTask task = new TimerTask() {
         public void run() {
 
-            LiveBusiLogEntity entity=new LiveBusiLogEntity();
-            entity.logType=0;
-            log(entity);
+//            LiveBusiLogEntity entity=new LiveBusiLogEntity();
+//            entity.logType=0;
+//            log(entity);
             sendLog();
         }
     };

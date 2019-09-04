@@ -31,7 +31,7 @@ import java.util.Map;
 public class LiveLogBill {
 
 
-    private static final String LOG_LIVE_LOG_NAME = "log_live_v1";
+    private static final String LOG_LIVE_LOG_NAME = "log_live_apm_v1";
 
     private static final String LOG_LIVE_BUSI_LOG_NAME = "log_live_busi_v1";
 
