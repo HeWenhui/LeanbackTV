@@ -17,6 +17,8 @@ import com.xueersi.common.logerhelper.LogBill;
 import com.xueersi.common.logerhelper.network.PingInfo;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.ListUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog.LiveBusiLog;
+import com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog.LiveBusiLogSendLogRunnable;
 
 import java.io.File;
 import java.util.HashMap;
@@ -30,6 +32,8 @@ public class LiveLogBill {
 
 
     private static final String LOG_LIVE_LOG_NAME = "log_live_v1";
+
+    private static final String LOG_LIVE_BUSI_LOG_NAME = "log_live_busi_v1";
 
     public Context context;
     private static LiveLogBill mInstance;
@@ -142,6 +146,42 @@ public class LiveLogBill {
         });
 
         mLiveRemoteConfigInfo = AppBll.getAppBillInstance().getAppRemoteConfig(context).liveRemoteConfigInfo;
+    }
+
+
+
+    /**
+     * 直播监控日志
+     */
+    public void initLiveBisLog() {
+
+        LiveBusiLogSendLogRunnable logSendLogRunnable = new LiveBusiLogSendLogRunnable();
+        logSendLogRunnable.setPath(XueErSiRunningEnvironment.sAppContext.getFilesDir().getAbsolutePath()
+                + File.separator + LOG_LIVE_BUSI_LOG_NAME + android.os.Process.myPid());
+
+        LogConfig apmConfig = new LogConfig.Builder()
+                .setCachePath(XueErSiRunningEnvironment.sAppContext.getFilesDir().getAbsolutePath()
+                        + File.separator + "LOG_LIVE_BUSI_LOG_NAME" + File.separator + android.os.Process.myPid())
+                .setPath(XueErSiRunningEnvironment.sAppContext.getFilesDir().getAbsolutePath()
+                        + File.separator + LOG_LIVE_BUSI_LOG_NAME + android.os.Process.myPid())
+                .setEncryptKey16("0123456789012345".getBytes())
+                .setEncryptIV16("0123456789012345".getBytes())
+                .setDay(5)
+                .setMaxFile(10)
+                .setMinSDCard(10)
+                .build();
+
+        LiveBusiLog.init(apmConfig, logSendLogRunnable,5);
+        LiveBusiLog.setUpParamInterface(new UpdateParamInterface() {
+            @Override
+            public XrsLogPublicParam getXrsLogPublicParam() {
+
+                BuryPublicParam buryPublicParam = new BuryPublicParam();
+                buryPublicParam.ver = AppUtils.getAppVersionName(XueErSiRunningEnvironment.sAppContext);
+                return buryPublicParam;
+            }
+        });
+        LiveBusiLog.startLog();
     }
 
 
