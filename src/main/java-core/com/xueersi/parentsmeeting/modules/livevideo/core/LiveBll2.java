@@ -558,13 +558,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
 
         if (liveLog != null) {
+
             liveLog.setGetInfo(mGetInfo);
         }
         liveUidRx.setLiveGetInfo(getInfo);
         getInfo.setStuCouId(mStuCouId);
 
         //todo 以下字段待确认
-        appID = UmsConstants.LIVE_APP_ID;
+        appID = UmsConstants.LIVE_BUSINESS_APP_ID;
         liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         if (liveAndBackDebugIml instanceof LiveDebugGetInfo) {
             LiveDebugGetInfo liveDebugGetInfo = (LiveDebugGetInfo) liveAndBackDebugIml;

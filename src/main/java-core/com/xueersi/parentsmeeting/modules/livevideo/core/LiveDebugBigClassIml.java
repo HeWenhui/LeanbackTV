@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
 
+import com.hwl.log.xrsLog.XrsLog;
+import com.hwl.log.xrsNetworkLog.XrsNetLog;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
@@ -51,7 +53,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
             return;
         }
         setLogParam(eventtype, mData);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.typePv, mData);
     }
 
     @Override
@@ -60,7 +62,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
             return;
         }
         setLogParam(eventtype, mData);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.typeShow, mData);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
         mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData, analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.typePv, mData, analysis);
     }
 
     private String getMode() {
@@ -94,7 +96,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
         mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.typeShow, mData, analysis);
     }
 
     /**
