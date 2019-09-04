@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.module.videoplayer.media.IPlayBackMediaCtr;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -120,7 +121,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     /** 当前播放的视频地址 */
     protected Uri mUri;
     /** 播放器的控制对象 */
-    protected MediaController2 mMediaController;
+    protected IPlayBackMediaCtr mMediaController;
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
     /** onPause状态不暂停视频 */
