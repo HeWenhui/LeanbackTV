@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.module.videoplayer.media.IPlayBackMediaCtr;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -104,7 +105,7 @@ public class LiveRemarkBll {
     private LinearLayout llPoints;
     private RelativeLayout rlMask;
     private CommonAdapter mAdapter;
-    private MediaController2 mController;
+    private IPlayBackMediaCtr mController;
     private AbstractBusinessDataCallBack mCallBack;
     private OnItemClick onItemClick;
     private String liveId;
@@ -498,7 +499,7 @@ public class LiveRemarkBll {
         }
     }
 
-    public void setController(MediaController2 controller) {
+    public void setController(IPlayBackMediaCtr controller) {
         mController = controller;
     }
 
