@@ -142,12 +142,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         logger.setLogMethod(false);
         this.activity = activity;
         this.mVideoEntity = mVideoEntity;
-        if(mVideoEntity.isBigLive()) {
-            liveAndBackDebugIml  = new LiveDebugBigClassIml(activity, mLiveType, mVideoEntity.getLiveId(), mVideoEntity.getCourseId());
-
-            ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, liveAndBackDebugIml);
-
-        } else {
+        if(!mVideoEntity.isBigLive()) {
             ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, this);
         }
         Intent intent = activity.getIntent();
@@ -249,7 +244,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                 }
             }
         }
+        if(mVideoEntity.isBigLive()) {
+            liveAndBackDebugIml  = new LiveDebugBigClassIml(activity, mLiveType, mVideoEntity.getLiveId(), mVideoEntity.getCourseId());
 
+            ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, liveAndBackDebugIml);
+
+        }
         liveLog = new LiveLog(activity, mLiveType, mVideoEntity.getLiveId(), getPrefix());
         ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, liveLog);
         logToFile = new LogToFile(activity, TAG);
