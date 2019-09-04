@@ -8,8 +8,10 @@ import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.route.module.moduleInterface.AbsDispatcher;
 import com.xueersi.common.route.module.startParam.ParamKey;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -20,6 +22,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.json.JSONObject;
@@ -345,7 +348,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             videoEntity.setsTime(entity.getPlanInfo().getsTime());
             videoEntity.seteTime(entity.getPlanInfo().geteTIme());
         }
-
         videoEntity.setvCourseSendPlayVideoTime(dataManager.getInt(LocalCourseConfig.SENDPLAYVIDEOTIME, 180,
                 SHAREDATA_USER));
         videoEntity.setVideoCacheKey(entity.getConfigs().getVideoPath());
@@ -356,14 +358,47 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 "-" + entity.getMainTeacher().getId());
         //大班整合默认 走新ijk
         MediaPlayer.setIsNewIJK(true);
-
+        updatePsInfo(entity);
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type",2);
         bundle.putBoolean("isBigLive",true);
         LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
-
     }
+
+
+    /**
+     * 更新用户信息中的磐石信息
+     **/
+    private void updatePsInfo(BigLivePlayBackEntity entity) {
+        try {
+            if (entity != null) {
+                //更新UserBll 中磐石信息
+                MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                if(entity.getStuInfo() != null){
+                    if (!TextUtils.isEmpty(entity.getStuInfo().getPsImId())) {
+                        myUserInfoEntity.setPsimId(entity.getStuInfo().getPsImId());
+                    }
+                    if (!TextUtils.isEmpty(entity.getStuInfo().getPsImPwd())) {
+                        myUserInfoEntity.setPsimPwd(entity.getStuInfo().getPsImPwd());
+                    }
+                }
+
+                if(entity.getConfigs() != null){
+                    if (!TextUtils.isEmpty(entity.getConfigs().getAppId())) {
+                        myUserInfoEntity.setPsAppId(entity.getConfigs().getAppId());
+                    }
+                    if (!TextUtils.isEmpty(entity.getConfigs().getAppKey())) {
+                        myUserInfoEntity.setPsAppClientKey(entity.getConfigs().getAppKey());
+                    }
+                }
+                UserBll.getInstance().saveMyUserInfo(myUserInfoEntity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     private void startLivePlayActivity(String sectionId,boolean isBigLive) {

@@ -38,6 +38,9 @@ public class LiveLogBill {
     static MyUserInfoEntity myUserInfoEntity;
 
     public static LiveRemoteConfigInfo mLiveRemoteConfigInfo;
+    private Thread thread = new Thread();
+    private boolean isRunning; //日志在上报中
+    private int anrCount;//当前触发次数
 
     public static LiveLogBill getInstance() {
         if (mInstance == null) {
@@ -65,7 +68,7 @@ public class LiveLogBill {
 
     private LiveLogBill(Context context) {
         this.context = context;
-
+        isRunning = false;
     }
 
     /**
@@ -146,14 +149,14 @@ public class LiveLogBill {
      * 开启直播监控日志(轮循)
      */
     public void startLog() {
-        LiveLog.startLog();
+        // LiveLog.startLog();
     }
 
     /**
      * 关闭直播监控日志(轮循)
      */
     public void stopLog() {
-        LiveLog.stopLog();
+        // LiveLog.stopLog();
     }
 
     /**
@@ -161,35 +164,40 @@ public class LiveLogBill {
      */
     public void openAppLiveLog() {
 
-        LiveLogEntity log = new LiveLogEntity();
-        log.pri = "2";
-        if (myUserInfoEntity != null) {
-            log.psId = myUserInfoEntity.getPsimId();
-        }
-        if (myUserInfoEntity == null) {
-            myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        }
-        if (myUserInfoEntity != null) {
-            log.psId = myUserInfoEntity.getPsimId();
-        }
-        List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
-        if (!ListUtil.isEmpty(domainList)) {
-            PingInfo info = NetUtil.ping(domainList.get(0));
-            Pridata pridata = new Pridata();
-            pridata.ping = new HashMap<String, PingInfo>();
-            pridata.ping.put(domainList.get(0), info);
-            log.pridata = pridata;
 
-            if (LiveLogBill.param != null) {
-                log.liveid = LiveLogBill.param.liveid;
-            }
+        livebaseLog("2");
 
-            Map<String, String> pingMap = new HashMap<String, String>();
-            pingMap.put(info.host, info.ip);
-            pridata.dnsinfo = pingMap;
-        }
-        LiveLog.log(log);
-        LiveLog.sendLog();
+//        if (mLiveRemoteConfigInfo.liveANRLogTag != 0) {
+//            return;
+//        }
+//
+//        LiveLogEntity log = new LiveLogEntity();
+//        log.pri = "2";
+//        if (myUserInfoEntity != null) {
+//            log.psId = myUserInfoEntity.getPsimId();
+//        }
+//        if (LiveLogBill.param != null) {
+//            log.liveid = LiveLogBill.param.liveid;
+//        }
+//        if (myUserInfoEntity == null) {
+//            myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        }
+//        List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
+//        Pridata pridata = new Pridata();
+//        pridata.ping = new HashMap<String, PingInfo>();
+//        Map<String, String> pingMap = new HashMap<String, String>();
+//        if (!ListUtil.isEmpty(domainList)) {
+//            for (int i = 0; i < domainList.size(); i++) {
+//                PingInfo info = NetUtil.ping(domainList.get(i));
+//                pridata.ping.put(domainList.get(i), info);
+//                pingMap.put(info.host, info.ip);
+//            }
+//
+//            log.pridata = pridata;
+//            pridata.dnsinfo = pingMap;
+//        }
+//        LiveLog.log(log);
+//        LiveLog.sendLog();
 
     }
 
@@ -198,37 +206,42 @@ public class LiveLogBill {
      */
     public void openLiveLog() {
 
-        LiveLogEntity log = new LiveLogEntity();
-        log.pri = "2";
-        if (myUserInfoEntity != null) {
-            log.psId = myUserInfoEntity.getPsimId();
-        }
-        if (myUserInfoEntity == null) {
-            myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        }
-        if (myUserInfoEntity != null) {
-            log.psId = myUserInfoEntity.getPsimId();
-        }
-        List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
+        livebaseLog("2");
 
-        if (!ListUtil.isEmpty(domainList)) {
-            PingInfo info = NetUtil.ping(domainList.get(0));
-            Pridata pridata = new Pridata();
-            pridata.ping = new HashMap<String, PingInfo>();
-            pridata.ping.put(domainList.get(0), info);
-            log.pridata = pridata;
 
-            if (LiveLogBill.param != null) {
-                log.liveid = LiveLogBill.param.liveid;
-            }
-
-            Map<String, String> pingMap = new HashMap<String, String>();
-            pingMap.put(info.host, info.ip);
-            pridata.dnsinfo = pingMap;
-        }
-
-        LiveLog.log(log);
-        LiveLog.sendLog();
+//        if (mLiveRemoteConfigInfo.liveANRLogTag != 0) {
+//            return;
+//        }
+//
+//        LiveLogEntity log = new LiveLogEntity();
+//        log.pri = "2";
+//        if (LiveLogBill.param != null) {
+//            log.liveid = LiveLogBill.param.liveid;
+//        }
+//        if (myUserInfoEntity != null) {
+//            log.psId = myUserInfoEntity.getPsimId();
+//        }
+//        if (myUserInfoEntity == null) {
+//            myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        }
+//        List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
+//        Pridata pridata = new Pridata();
+//        pridata.ping = new HashMap<String, PingInfo>();
+//        Map<String, String> pingMap = new HashMap<String, String>();
+//        if (!ListUtil.isEmpty(domainList)) {
+//            for (int i = 0; i < domainList.size(); i++) {
+//                PingInfo info = NetUtil.ping(domainList.get(i));
+//                pridata.ping.put(domainList.get(i), info);
+//                pingMap.put(info.host, info.ip);
+//            }
+//
+//            log.pridata = pridata;
+//            pridata.dnsinfo = pingMap;
+//        }
+//
+//
+//        LiveLog.log(log);
+//        LiveLog.sendLog();
     }
 
     /**
@@ -236,34 +249,98 @@ public class LiveLogBill {
      */
     public void liveANRLog() {
 
-        LiveLogEntity log = new LiveLogEntity();
-        if (LiveLogBill.param != null) {
-            log.liveid = LiveLogBill.param.liveid;
-        }
-        if (myUserInfoEntity == null) {
-            myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        }
-        if (myUserInfoEntity != null) {
-            log.psId = myUserInfoEntity.getPsimId();
-        }
-        log.pri = "3";
-        List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
-        if (!ListUtil.isEmpty(domainList)) {
-            PingInfo info = NetUtil.ping(domainList.get(0));
-            Pridata pridata = new Pridata();
-            pridata.ping = new HashMap<String, PingInfo>();
-            pridata.ping.put(domainList.get(0), info);
-            log.pridata = pridata;
 
-            if (LiveLogBill.param != null) {
-                log.liveid = LiveLogBill.param.liveid;
+        livebaseLog("3");
+
+
+//        if (mLiveRemoteConfigInfo.liveANRLogTag != 0) {
+//            return;
+//        }
+//
+//        LiveLogEntity log = new LiveLogEntity();
+//        log.pri = "3";
+//        if (LiveLogBill.param != null) {
+//            log.liveid = LiveLogBill.param.liveid;
+//        }
+//        if (myUserInfoEntity == null) {
+//            myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        }
+//        if (myUserInfoEntity != null) {
+//            log.psId = myUserInfoEntity.getPsimId();
+//        }
+//        List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
+//        Pridata pridata = new Pridata();
+//        pridata.ping = new HashMap<String, PingInfo>();
+//        Map<String, String> pingMap = new HashMap<String, String>();
+//        if (!ListUtil.isEmpty(domainList)) {
+//            for (int i = 0; i < domainList.size(); i++) {
+//                PingInfo info = NetUtil.ping(domainList.get(i));
+//                pridata.ping.put(domainList.get(i), info);
+//                pingMap.put(info.host, info.ip);
+//            }
+//            log.pridata = pridata;
+//            pridata.dnsinfo = pingMap;
+//        }
+//        LiveLog.log(log);
+//        LiveLog.sendLog();
+
+    }
+
+
+    /**
+     * 直播卡顿log
+     */
+    private void livebaseLog(final String type) {
+
+        if (mLiveRemoteConfigInfo.liveANRLogTag != 0 || isRunning) {
+            return;
+        }
+
+        if ("3".equals(type)) {
+
+            anrCount++;
+            if (anrCount >= mLiveRemoteConfigInfo.liveANRLogPuhNum) {
+                anrCount = 0;
+            } else {
+                return;
             }
-
-            Map<String, String> pingMap = new HashMap<String, String>();
-            pingMap.put(info.host, info.ip);
-            pridata.dnsinfo = pingMap;
         }
-        LiveLog.log(log);
-        LiveLog.sendLog();
+
+        new Thread() {
+            @Override
+            public void run() {
+
+                isRunning = true;
+                LiveLogEntity log = new LiveLogEntity();
+                log.pri = type;
+                if (LiveLogBill.param != null) {
+                    log.liveid = LiveLogBill.param.liveid;
+                }
+                if (myUserInfoEntity == null) {
+                    myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                }
+                if (myUserInfoEntity != null) {
+                    log.psId = myUserInfoEntity.getPsimId();
+                }
+                List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
+                Pridata pridata = new Pridata();
+                pridata.ping = new HashMap<String, PingInfo>();
+                Map<String, String> pingMap = new HashMap<String, String>();
+                if (!ListUtil.isEmpty(domainList)) {
+                    for (int i = 0; i < domainList.size(); i++) {
+                        PingInfo info = NetUtil.ping(domainList.get(i));
+                        pridata.ping.put(domainList.get(i), info);
+                        pingMap.put(info.host, info.ip);
+                    }
+                    log.pridata = pridata;
+                    pridata.dnsinfo = pingMap;
+                }
+                LiveLog.log(log);
+                LiveLog.sendLog();
+                isRunning = false;
+
+            }
+        }.start();
+
     }
 }

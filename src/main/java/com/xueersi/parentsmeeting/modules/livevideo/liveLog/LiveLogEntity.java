@@ -17,7 +17,7 @@ import com.xueersi.lib.framework.utils.AppUtils;
 public class LiveLogEntity {
 
 
-    public int state = 0; //0:正常  1：异常
+    public int state = 0;    //0:正常  1：异常
     public int role = 0;    //角色  0：学生 1：老师
     public String version = AppUtils.getAppVersionName(XueErSiRunningEnvironment.sAppContext);  //app版本
     public String time = DeviceInfo.getDeviceTime();    //时间
@@ -83,7 +83,7 @@ public class LiveLogEntity {
 
     public String appId = "1001637";   //日志Id
 
-    public String agent;
+    public String agent="android-"+AppUtils.getAppVersionName(XueErSiRunningEnvironment.sAppContext);
 
     public String pri="2";  //日志业务类型
 

@@ -39,11 +39,11 @@ public class LiveLog {
     public static Timer timer_log = new Timer();
     public static TimerTask task_log = new TimerTask() {
         public void run() {
+
             LiveLogEntity log = new LiveLogEntity();
             if (LiveLogBill.param != null) {
                 log.liveid = LiveLogBill.param.liveid;
             }
-            ApmBill.GetNetIp(LiveLogBill.url);
             log(log);
 
         }
