@@ -106,6 +106,16 @@ public class StableLogHashMap {
     }
 
     /**
+     * 互动id
+     *
+     * @param interactionId
+     * @return
+     */
+    public StableLogHashMap addInteractionId(String interactionId) {
+        mData.put("interactionId", interactionId);
+        return this;
+    }
+    /**
      *
      * @param extradata  扩展字段
      * @return
