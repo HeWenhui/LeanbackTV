@@ -17,4 +17,6 @@ public class LivePluginRequestParam {
      */
     public int bizId;
     public  int isPlayback;
+
+    public String url;
 }
