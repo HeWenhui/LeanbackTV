@@ -1,8 +1,9 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
+package com.xueersi.parentsmeeting.modules.livevideo.business.newpreload;
 
 import android.text.TextUtils;
 
 import com.alibaba.android.arouter.thread.DefaultPoolExecutor;
+import com.xueersi.common.network.download.DownLoadInfo;
 import com.xueersi.common.network.download.DownloadListener;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 
@@ -48,7 +49,17 @@ public class LiveVideoDownLoadUtils {
 
         final ZipExtractorTask zipExtractorTask;
 
-        LiveVideoDownLoadFile(Builder builder) {
+        /**
+         * 下载类型
+         */
+        final DownLoadInfo.DownloadType mDownloadType;
+
+        /**
+         * host
+         */
+        final String mHost;
+
+        private LiveVideoDownLoadFile(Builder builder) {
             this.url = builder.url;
             inDir = builder.inDir;
             this.inFile = inDir;
@@ -86,6 +97,72 @@ public class LiveVideoDownLoadUtils {
             } else {
                 this.zipExtractorTask = null;
             }
+            this.mHost = builder.mHost;
+            if (builder.mDownloadType != null) {
+                this.mDownloadType = builder.mDownloadType;
+            } else {
+                this.mDownloadType = DownLoadInfo.DownloadType.FILE;
+            }
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public File getInDir() {
+            return inDir;
+        }
+
+        public File getInFile() {
+            return inFile;
+        }
+
+        public String getInDirPath() {
+            return inDirPath;
+        }
+
+        public String getInFilePath() {
+            return inFilePath;
+        }
+
+        public int getDeleteOldFileCategary() {
+            return deleteOldFileCategary;
+        }
+
+        public Executor getExecutor() {
+            return executor;
+        }
+
+        public File getOutFileDir() {
+            return outFileDir;
+        }
+
+        public String getMd5() {
+            return md5;
+        }
+
+        public String getOnlyKey() {
+            return onlyKey;
+        }
+
+        public int getUrgent() {
+            return urgent;
+        }
+
+        public DownloadListener getDownloadListener() {
+            return downloadListener;
+        }
+
+        public ZipExtractorTask getZipExtractorTask() {
+            return zipExtractorTask;
+        }
+
+        public DownLoadInfo.DownloadType getmDownloadType() {
+            return mDownloadType;
+        }
+
+        public String getmHost() {
+            return mHost;
         }
 
         //不删除文件
@@ -128,6 +205,31 @@ public class LiveVideoDownLoadUtils {
             DownloadListener downloadListener;
 
             ZipExtractorTask zipExtractorTask;
+
+            /**
+             * 下载类型
+             */
+            private DownLoadInfo.DownloadType mDownloadType;
+
+            /**
+             * host
+             */
+            private String mHost;
+
+            public Builder setZipExtractorTask(ZipExtractorTask zipExtractorTask) {
+                this.zipExtractorTask = zipExtractorTask;
+                return this;
+            }
+
+            public Builder setmDownloadType(DownLoadInfo.DownloadType mDownloadType) {
+                this.mDownloadType = mDownloadType;
+                return this;
+            }
+
+            public Builder setmHost(String mHost) {
+                this.mHost = mHost;
+                return this;
+            }
 
             public Builder setUrl(String url) {
                 this.url = url;
