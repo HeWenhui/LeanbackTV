@@ -993,7 +993,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 int mtype = object.getInt("type");
                 com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
 
-                Log.e("ckTrac", "========>LiveBll2 onNotice:" + mtype + ":" + object.toString());
                 ///////播放器相关/////////
                 switch (mtype) {
                     case XESCODE.MODECHANGE:
@@ -1216,7 +1215,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         public void sendTopic(String channel, String topicstr, String setBy, long date, boolean changed,
                               String channelId) {
             logger.e("======>onTopic:" + topicstr);
-            Log.e("ckTrac", "========>LiveBll2 onTopic:" + topicstr);
             if (TextUtils.isEmpty(topicstr)) {
                 return;
             }
@@ -1600,7 +1598,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         if (mIRCMessage != null && mIRCMessage.onUserList()) {
             isPresent = teacherAction.isPresent(mode);
         }
-        Log.e("ckTrac", "=====>LiveBll2_isPresent_0000:" + mIRCMessage.onUserList() + ":" + isPresent);
         return isPresent;
     }
 
