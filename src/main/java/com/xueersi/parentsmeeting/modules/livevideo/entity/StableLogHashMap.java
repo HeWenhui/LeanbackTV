@@ -112,7 +112,7 @@ public class StableLogHashMap {
      * @return
      */
     public StableLogHashMap addInteractionId(String interactionId) {
-        mData.put("interactionId", interactionId);
+        mData.put("interactionid", interactionId);
         return this;
     }
     /**
