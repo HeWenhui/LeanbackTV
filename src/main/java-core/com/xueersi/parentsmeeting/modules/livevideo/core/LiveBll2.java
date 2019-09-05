@@ -526,7 +526,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * 获取getInfo成功
      */
     private void onGetInfoSuccess(LiveGetInfo getInfo) {
-        logger.e("=======>onGetInfoSuccess");
 
         this.mGetInfo = getInfo;
         if (this.mGetInfo == null) {
@@ -556,15 +555,12 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             mHttpManager.addHeaderParams("SESSIONID", AppBll.getInstance().getLiveSessionId());
             //Log.e("ckTrac","====>LiveBll2_initBigLiveRoom:"+ AppBll.getInstance().getLiveSessionId());
         }
-
         if (liveLog != null) {
-
             liveLog.setGetInfo(mGetInfo);
         }
         liveUidRx.setLiveGetInfo(getInfo);
         getInfo.setStuCouId(mStuCouId);
 
-        //todo 以下字段待确认
         appID = UmsConstants.LIVE_BUSINESS_APP_ID;
         liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         if (liveAndBackDebugIml instanceof LiveDebugGetInfo) {
@@ -582,16 +578,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
 
-        //大班整合 无此字段
-       /* if (mGetInfo.getStat() == 1) {
-            if (mVideoAction != null) {
-                mVideoAction.onTeacherNotPresent(true);
-                Log.e("ckTrac","==>LiveBll2_roomInit_onTeacherNotPresent");
-            }
-            mLogtf.d("onGetInfoSuccess:onTeacherNotPresent");
-        }*/
-
-
         String s = "onGetInfoSuccess:enterTime=" + enterTime + ",stat=" + mGetInfo.getStat();
         if (mVideoAction != null) {
             mVideoAction.onLiveInit(mGetInfo);
@@ -602,7 +588,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         //链接IRC
         String channel = "";
         String eChannel = "";
-
 
         //http 添加公共参数()
         LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = this.mGetInfo.getStudentLiveInfo();
@@ -649,7 +634,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         mIRCcallback = new BigLiveIRCCallBackImp();
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
-        logger.e("=======>mIRCMessage.create()");
         mLogtf.d(s);
         liveVideoBll.onLiveInit(getInfo, mLiveTopic);
         mShareDataManager.put(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, getInfo.getClientLog(), SHAREDATA_NOT_CLEAR);
