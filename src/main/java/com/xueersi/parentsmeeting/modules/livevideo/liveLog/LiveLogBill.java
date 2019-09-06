@@ -15,6 +15,7 @@ import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.NetUtil;
 import com.xueersi.common.logerhelper.LogBill;
 import com.xueersi.common.logerhelper.network.PingInfo;
+import com.xueersi.lib.analytics.umsagent.DeviceInfo;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.ListUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog.LiveBusiLog;
@@ -205,7 +206,7 @@ public class LiveLogBill {
     public void openAppLiveLog() {
 
 
-        livebaseLog("2");
+        livebaseLog(2);
 
 //        if (mLiveRemoteConfigInfo.liveANRLogTag != 0) {
 //            return;
@@ -246,7 +247,7 @@ public class LiveLogBill {
      */
     public void openLiveLog() {
 
-        livebaseLog("2");
+        livebaseLog(2);
 
 
 //        if (mLiveRemoteConfigInfo.liveANRLogTag != 0) {
@@ -290,7 +291,7 @@ public class LiveLogBill {
     public void liveANRLog() {
 
 
-        livebaseLog("3");
+        livebaseLog(3);
 
 
 //        if (mLiveRemoteConfigInfo.liveANRLogTag != 0) {
@@ -330,13 +331,13 @@ public class LiveLogBill {
     /**
      * 直播卡顿log
      */
-    private void livebaseLog(final String type) {
+    private void livebaseLog(final int type) {
 
         if (mLiveRemoteConfigInfo.liveANRLogTag != 0 || isRunning) {
             return;
         }
 
-        if ("3".equals(type)) {
+        if (type==3) {
 
             anrCount++;
             if (anrCount >= mLiveRemoteConfigInfo.liveANRLogPuhNum) {
@@ -362,6 +363,12 @@ public class LiveLogBill {
                 if (myUserInfoEntity != null) {
                     log.psId = myUserInfoEntity.getPsimId();
                 }
+
+                if( "wifi".equals(DeviceInfo.getNetworkTypeWIFI2G3G())){
+                    log.net=5;
+                }else{
+                    log.net=9;
+                }
                 List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
                 Pridata pridata = new Pridata();
                 pridata.ping = new HashMap<String, PingInfo>();
@@ -370,7 +377,7 @@ public class LiveLogBill {
                     for (int i = 0; i < domainList.size(); i++) {
                         PingInfo info = NetUtil.ping(domainList.get(i));
                         pridata.ping.put(domainList.get(i), info);
-                        pingMap.put(info.host, info.ip);
+                        pingMap.put(domainList.get(i), info.ip);
                     }
                     log.pridata = pridata;
                     pridata.dnsinfo = pingMap;

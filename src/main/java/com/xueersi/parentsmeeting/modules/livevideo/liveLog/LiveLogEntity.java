@@ -59,38 +59,36 @@ public class LiveLogEntity {
 
     public String psId;  //磐石ID
 
-    //public String arch = ApmBill.getCPUType(); //CPU型号
-
     public String arch = CpuManager.getCpuName(); //CPU型号
 
-    public String ram = ApmBill.getMemory() + ""; //内存
+    public float ram = ApmBill.getMemory(); //内存
 
-    public String ts = DeviceInfo.getDeviceTime(); //时间
+    public long ts = System.currentTimeMillis(); //时间
 
-    public String ver = "1.0.0"; //版本
+    public int ver = 1; //版本
 
     public String appVer = AppUtils.getAppVersionName(XueErSiRunningEnvironment.sAppContext);  //app版本
 
     public String cip=""; //用户出口ip
 
-    public String mem = ApmBill.getUseMemory() + "";        //内存使用状况，单位KB
+    public float mem = ApmBill.getUseMemory();        //内存使用状况，单位KB
 
-    public String cpu = ApmBill.getCPURateDesc();             //CPU使用百分比
+    public double cpu = ApmBill.getCPURate();             //CPU使用百分比
 
-    public String net = DeviceInfo.getNetworkTypeWIFI2G3G();  //网络类型 （无网，4G, wifi,3G,lte)
+    public int net =5;  //网络类型 （无网，4G, wifi,3G,lte)  5:wifi 9:蜂窝
 
     public String lip=ApmBill.getHostIP(); //本地ip
 
-    public String appId = "1001637";   //日志Id
+    public String appId = "xes20001";   //日志Id
 
     public String agent="android-"+AppUtils.getAppVersionName(XueErSiRunningEnvironment.sAppContext);
 
-    public String pri="2";  //日志业务类型
+    public int pri=2;  //日志业务类型
 
     public String tid=  MurmurHashBase64.hashUnsigned(System.currentTimeMillis() + Math.random()+
             AppBll.getInstance().getAppInfoEntity().getAppUUID()).toBigInteger().toString(16);   //唯一日志Id ，tradeId
 
-    public String serv="2000";
+    public int serv=2000;
 
     public String dev = DeviceInfo.getDeviceName();
 

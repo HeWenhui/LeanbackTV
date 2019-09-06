@@ -10,6 +10,7 @@ import com.hwl.logan.SendLogRunnable;
 import com.xueersi.common.logerhelper.XesLogEntity;
 import com.xueersi.common.logerhelper.bury.XrsLogParser;
 import com.xueersi.lib.framework.utils.JsonUtil;
+import com.xueersi.lib.framework.utils.string.MD5Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,10 +50,18 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
     private static String LOGFILEPATH_LOGIN = "/storage/emulated/0/Android/data/com.xueersi.parentsmeeting/files/bury_v1";
     private static final String TAG = "LiveLogSendLogRunnable";
 
-    //private String mUploadLogUrl_sys = "http://appdj.xesimg.com/1001637/sys.gif";
-    private String mUploadLogUrl_sys = "https://log.xescdn.com/log";
+
+    //private String mUploadLogUrl_sys = "https://log.xescdn.com/log";
+
+    private static String  appIDINfo="1001906";
+    private static String  appIDKey="7885d19724b91fcf30600bf23c5e82a1";
+    private String mUploadLogUrl_sys = "https://appdj.xesimg.com/1001906/sys.gif";
+
+
+
     private static Gson gson = new Gson();
     private XrsLogParser mXrsLogParser;
+
 
 
     public static void setPath(String path) {
@@ -101,10 +110,15 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
         map.put("Content-Type", "binary/octet-stream"); //二进制上传
         map.put("client", "android");
 
+        String appID = appIDINfo;
+        long currentStamp = System.currentTimeMillis();
+        String appKey = appIDKey;
+        String sign = MD5Utils.disgest(appID + "&" + currentStamp + (appKey == null ? "" : appKey));
 
-       // map.put("X-Log-TimeStamp", "1557054130000");
-       // map.put("X-Log-Sign", "2f8238e4839b20b97b4292d7bab9d172");
-       // map.put("X-Log-Appid", "1001637");
+        map.put("X-Log-TimeStamp", currentStamp + "");
+        map.put("X-Log-Sign", sign);
+        map.put("X-Log-Appid", appID);
+
 
         return map;
     }
