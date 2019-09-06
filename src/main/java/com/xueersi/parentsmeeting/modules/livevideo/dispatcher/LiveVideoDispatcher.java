@@ -236,10 +236,9 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", 2);
         if ("720P".equals(publicLiveCourseEntity.getRadioType())) {
-            LiveVideoEnter.intentToLectureLivePlayBackVideo(activity, bundle, activity.getClass()
-                    .getSimpleName());
+            LiveVideoEnter.intentToLectureLivePlayBackVideo(activity, bundle, "PublicLiveDetailActivity");
         } else {
-            LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
+            LiveVideoEnter.intentTo(activity, bundle, "PublicLiveDetailActivity");
         }
     }
 
