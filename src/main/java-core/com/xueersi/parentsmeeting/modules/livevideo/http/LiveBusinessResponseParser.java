@@ -105,6 +105,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
 
                 // 解析直播课所属年级
                 String gradsIdStr = planInfoJsonObj.optString("gradeIds");
+                liveGetInfo.setGradeIds(gradsIdStr);
                 if(gradsIdStr != null && gradsIdStr.length() > 0){
                     String[]gradeIds = gradsIdStr.split(",");
                     if(gradeIds != null && gradeIds.length > 0){

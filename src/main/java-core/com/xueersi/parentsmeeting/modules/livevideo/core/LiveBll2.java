@@ -157,6 +157,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     long lastDate = 0;
     boolean lastChanged;
     String lastChannelId;
+    AbstractBusinessDataCallBack grayControl;
 
     /**
      * 直播的
@@ -535,6 +536,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
         if (getInfo.isBigLive()) {
             initBigLiveRoom(getInfo);
+            grayBusinessControl();
         } else {
             initLiveRoom(getInfo);
         }
@@ -1686,6 +1688,19 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
 
+    public void grayBusinessControl(){
+        if(grayControl !=null && mGetInfo !=null) {
+            LivePluginRequestParam param = new LivePluginRequestParam();
+            param.bizId = 2;
+            if (!TextUtils.isEmpty(mGetInfo.getId())) {
+                param.planId = Integer.valueOf(mGetInfo.getId());
+            }
+            param.url = mGetInfo.getInitModuleUrl();
+            getLivePluingConfigInfo(param, grayControl);
+        }
+    }
+
+
     /**
      * 获取直播plugin配置信息
      *
@@ -1809,5 +1824,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             return plugin.isAllowed;
         }
         return false;
+    }
+
+    public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl ){
+        this.grayControl = grayControl;
     }
 }
