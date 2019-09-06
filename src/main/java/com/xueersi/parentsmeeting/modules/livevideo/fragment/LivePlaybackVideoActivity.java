@@ -30,6 +30,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
     protected LiveBackVideoFragmentBase getFragment() {
         String where = getIntent().getStringExtra("where");
         Log.e("ckTrac", "=======>LiveBackVideoFragment_getFragment:" + where + ":" + isBigLive());
+
         if (isBigLive()) {
             try {
                 String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessBackFragment";
