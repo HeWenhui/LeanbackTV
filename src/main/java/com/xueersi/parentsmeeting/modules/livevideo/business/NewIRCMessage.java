@@ -484,10 +484,10 @@ public class NewIRCMessage implements IIRCMessage {
         public void onRecvRoomUserList(PMDefs.RoomUserList roomUserList) {
             // 353-聊天室昵称列表 366-聊天室昵称列表结束
             logger.i("ircsdk room user code: " + roomUserList.code);
-            logger.i("ircsdk room user list size: " + roomUserList.userList.size());
+            logger.i("ircsdk room user list size: " + roomUserList.userList);
             if (PMDefs.ResultCode.Result_RoomUserList == roomUserList.code) {
                 onUserList = true;
-                String s = "___bug  onUserList:channel=" + roomUserList.roomId + ",users=" + roomUserList.userList.size();
+                String s = "___bug  onUserList:channel=" + roomUserList.roomId + ",users=" + roomUserList.userList;
                 if (roomUserList.userList != null && roomUserList.userList.size() > 0) {
                     User[] users = new User[roomUserList.userList.size()];
                     PMDefs.PsIdEntity userEntity;

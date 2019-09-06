@@ -17,6 +17,10 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -37,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessage
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -56,6 +61,7 @@ import okhttp3.Call;
 public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, LiveAchievementHttp,
         EnglishSpeekHttp, AudioRequest {
     private StarInteractAction starAction;
+    private BetterMeInteractAction betterMeInteractAction;
     private EnglishSpeekAction englishSpeekAction;
     private AtomicBoolean audioRequest = new AtomicBoolean(false);
     private EnglishSpeekMode englishSpeekMode;
@@ -153,6 +159,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             });
                         }
                     }, 500);
+
                 }
 
                 @Override
@@ -161,6 +168,22 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (starAction instanceof EnPkInteractAction) {
                         EnPkInteractAction enPkInteractAction = (EnPkInteractAction) starAction;
                         enPkInteractAction.updateEnpk(enTeamPkRankEntity);
+                    }
+                }
+
+                @Override
+                public void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity, boolean isShowBubble) {
+                    logger.d("onUpdateBetterMe");
+                    if (betterMeInteractAction != null) {
+                        betterMeInteractAction.onBetterMeUpdate(aimRealTimeValEntity, isShowBubble);
+                    }
+                }
+
+                @Override
+                public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isShowBubble) {
+                    logger.d(" onReceiveBetterMe");
+                    if (betterMeInteractAction != null) {
+                        betterMeInteractAction.onReceiveBetterMe(betterMeEntity, isShowBubble);
                     }
                 }
             });
@@ -315,12 +338,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             }
             if (LiveAchievementIRCBll.this.starAction == null) {
                 if (1 == smallEnglish) {
-                    LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType, mGetInfo, true);
+                    LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType,
+                            mGetInfo, true);
 //                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
                     liveAchievementEngBll.initView(getLiveViewAction());
                     liveAchievementEngBll.setLiveAchievementHttp(LiveAchievementIRCBll.this);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
+                    LiveAchievementIRCBll.this.betterMeInteractAction = liveAchievementEngBll;
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
@@ -342,7 +367,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), null, audioRequest);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), null,
+                            audioRequest);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -373,6 +399,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
                     liveAchievementEngStandBll.initView(getLiveViewAction());
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngStandBll;
+                    LiveAchievementIRCBll.this.betterMeInteractAction = liveAchievementEngStandBll;
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
@@ -381,12 +408,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), null, audioRequest);
                     LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekBll;
                 } else {
-                    LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType, mGetInfo, true);
+                    LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType,
+                            mGetInfo, true);
 //                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
                     liveAchievementEngBll.initView(getLiveViewAction());
                     liveAchievementEngBll.setLiveAchievementHttp(LiveAchievementIRCBll.this);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
+                    LiveAchievementIRCBll.this.betterMeInteractAction = liveAchievementEngBll;
                     LiveAchievementIRCBll.this.englishSpeekAction = null;
                 }
             } else {
@@ -411,7 +440,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage,
+                            audioRequest);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -434,7 +464,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     if (speakerRecognitioner != null) {
                         englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest);
+                    boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage,
+                            audioRequest);
                     if (initView) {
                         englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                         englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -486,7 +517,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 if (speakerRecognitioner != null) {
                     englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                 }
-                boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage, audioRequest);
+                boolean initView = englishSpeekBll.initView(getLiveViewAction(), mGetInfo.getMode(), talLanguage,
+                        audioRequest);
                 if (initView) {
                     englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                     englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -597,12 +629,34 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        //更新小目标开口时长
+                        String aimType = null;
+                        if (mGetInfo.getBetterMe().getTarget() != null) {
+                            aimType = mGetInfo.getBetterMe().getTarget().getAimType();
+                        } else if (mGetInfo.getBetterMe().getCurrent() != null) {
+                            aimType = mGetInfo.getBetterMe().getCurrent().getType();
+                        }
+                        if (BetterMeConfig.TYPE_TALKTIME.equals(aimType)) {
+                            BetterMeContract.BetterMePresenter betterMePresenter = ProxUtil.getProxUtil().get
+                                    (mContext, BetterMeContract.BetterMePresenter.class);
+                            if (betterMePresenter != null) {
+                                betterMePresenter.updateBetterMe(true);
+                            }
+                        }
                         logger.d("setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
                         if (starAction != null) {
                             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                            int star = jsonObject.getInt("star");
-                            if (star > 0) {
-                                starAction.onStarAdd(star, x, y);
+                            if (jsonObject.has("star")) {
+                                int star = jsonObject.getInt("star");
+                                if (star > 0) {
+                                    starAction.onStarAdd(star, x, y);
+                                }
+                            } else if (jsonObject.has("data")) {
+                                //服务端可能返回data两层嵌套
+                                int star = jsonObject.getJSONObject("data").getInt("star");
+                                if (star > 0) {
+                                    starAction.onStarAdd(star, x, y);
+                                }
                             }
                         }
                     }
@@ -846,7 +900,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     public int[] getNoticeFilter() {
         return new int[]{XESCODE.ROOM_STAR_OPEN, XESCODE.ROOM_STAR_SEND_T,
                 XESCODE.ROOM_STAR_CLOSE, XESCODE.XCR_ROOM_DB_START, XESCODE.XCR_ROOM_DB_CLOSE,
-                XESCODE.XCR_ROOM_DB_PRAISE, XESCODE.XCR_ROOM_DB_REMIND, XESCODE.ARTS_STOP_QUESTION, XESCODE.ARTS_H5_COURSEWARE};
+                XESCODE.XCR_ROOM_DB_PRAISE, XESCODE.XCR_ROOM_DB_REMIND, XESCODE.ARTS_STOP_QUESTION, XESCODE
+                .ARTS_H5_COURSEWARE};
     }
 
     public void onSendMsg(String msg) {
@@ -890,5 +945,4 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             handler.sendEmptyMessageDelayed(1, 2000);
         }
     }
-
 }

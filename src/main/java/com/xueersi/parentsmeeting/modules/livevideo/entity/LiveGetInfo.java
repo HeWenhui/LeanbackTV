@@ -1,6 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -220,6 +223,7 @@ public class LiveGetInfo {
      */
     private String mode = LiveTopic.MODE_TRANING;
     private TotalOpeningLength totalOpeningLength;
+    private BetterMe betterMe = new BetterMe();
     private EnglishPk englishPk = new EnglishPk();
     private EnPkEnergy enpkEnergy = new EnPkEnergy();
     /**
@@ -1034,6 +1038,14 @@ public class LiveGetInfo {
         this.totalOpeningLength = totalOpeningLength;
     }
 
+    public BetterMe getBetterMe() {
+        return betterMe;
+    }
+
+    public void setBetterMe(BetterMe betterMe) {
+        this.betterMe = betterMe;
+    }
+
     public EnglishPk getEnglishPk() {
         return englishPk;
     }
@@ -1496,6 +1508,57 @@ public class LiveGetInfo {
         public String eTeacherId;
         public String eClassId;
         public String fakePlanId;
+    }
+
+    public static class BetterMe {
+        private boolean isArriveLate;
+        private boolean isUseBetterMe;
+        //段位信息
+        private StuSegmentEntity stuSegment;
+        //本场小目标
+        private BetterMeEntity target;
+        //小目标实时完成值
+        private AimRealTimeValEntity current;
+
+        public boolean isArriveLate() {
+            return isArriveLate;
+        }
+
+        public void setArriveLate(boolean arriveLate) {
+            isArriveLate = arriveLate;
+        }
+
+        public boolean isUseBetterMe() {
+            return isUseBetterMe;
+        }
+
+        public void setUseBetterMe(boolean useBetterMe) {
+            isUseBetterMe = useBetterMe;
+        }
+
+        public StuSegmentEntity getStuSegment() {
+            return stuSegment;
+        }
+
+        public void setStuSegment(StuSegmentEntity stuSegment) {
+            this.stuSegment = stuSegment;
+        }
+
+        public BetterMeEntity getTarget() {
+            return target;
+        }
+
+        public void setTarget(BetterMeEntity target) {
+            this.target = target;
+        }
+
+        public AimRealTimeValEntity getCurrent() {
+            return current;
+        }
+
+        public void setCurrent(AimRealTimeValEntity current) {
+            this.current = current;
+        }
     }
 
     /**
