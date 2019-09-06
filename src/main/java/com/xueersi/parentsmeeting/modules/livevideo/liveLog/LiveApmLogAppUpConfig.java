@@ -11,8 +11,9 @@ public class LiveApmLogAppUpConfig implements AppUpBusiConfigInterface {
 
     @Override
     public void init() {
-        LiveLogBill.getInstance().initLiveLog();
-        LiveLogBill.getInstance().openAppLiveLog();
+        LiveLogBill.getInstance().initLiveLog(); //初始化直播日志
+        LiveLogBill.getInstance().openAppLiveLog();//
+        LiveLogBill.getInstance().initLiveBisLog();//初始化直播业务日志
     }
 
     @Override

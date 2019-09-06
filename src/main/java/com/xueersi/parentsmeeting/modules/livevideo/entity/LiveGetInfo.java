@@ -273,6 +273,8 @@ public class LiveGetInfo {
     private String educationStage;
     /** 直播课年级 */
     private int grade;
+    private String gradeIds;
+
     /** 一发多题的动态接口 */
     private String mulpreload;
     private String mulh5url;
@@ -358,6 +360,8 @@ public class LiveGetInfo {
 
     /** 灰度控制开关控制*/
     LiveModuleConfigInfo liveModuleConfigInfo;
+
+
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -1786,5 +1790,13 @@ public class LiveGetInfo {
 
     public String getInitModuleUrl() {
         return initModuleUrl;
+    }
+
+    public String getGradeIds() {
+        return gradeIds;
+    }
+
+    public void setGradeIds(String gradeIds) {
+        this.gradeIds = gradeIds;
     }
 }

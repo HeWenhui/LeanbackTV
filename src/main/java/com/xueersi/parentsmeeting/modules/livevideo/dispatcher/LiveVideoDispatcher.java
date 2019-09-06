@@ -63,8 +63,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     String teacherId;
     String gotoClassTime;
     private DispatcherBll dispatcherBll;
-    /**是否是大班整合回放**/
-    private boolean isBigLive;
     /**是否是大班 灰度状态 **/
     private int big_live_type = -1;
     public interface LiveNewStatus {
@@ -109,8 +107,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 type = jsonObject.optInt("variety");
                 teacherId = jsonObject.optString("teacherId");
                 gotoClassTime = jsonObject.optString("stime");
-                // 是否是大班整合
-                isBigLive = jsonObject.optBoolean("isBigLive",false);
                 // 大班灰度状态
                 big_live_type =  jsonObject.optInt("bigLiveStatus",big_live_type);
 
@@ -123,7 +119,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 } else if (type == TYPE_AUDIT) {
                     startAudit();
                 } else if (type == TYPE_LECTURE) {
-                    isBigLive();
+                    enterLecture();
                 } else if (type == TYPE_HEART) {
                     startHeart();
                 } else if (type == TYPE_EXAM) {
@@ -259,11 +255,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
 
     /**
-     * 是否是大班整合 直播
+     * 讲座，直播/回放 入口
      * @return
      */
-    private boolean isBigLive() {
-        boolean result = isBigLive;
+    private void enterLecture() {
         if(big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE) {
             startLecture(true);
         } else if(big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_COMMON){
@@ -272,7 +267,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             dataLoadEntity = new DataLoadEntity(activity);
             dispatcherBll.publicLiveIsGrayLecture(planId,true, publicGrayControlCallBack,dataLoadEntity);
         }
-        return result;
     }
 
 
@@ -302,10 +296,11 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", 2);
         if ("720P".equals(publicLiveCourseEntity.getRadioType())) {
-            LiveVideoEnter.intentToLectureLivePlayBackVideo(activity, bundle, activity.getClass()
-                    .getSimpleName());
+            LiveVideoEnter.intentToLectureLivePlayBackVideo(activity, bundle, activity.getClass().getSimpleName());
         } else {
-            LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
+           // LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
+            // FIXME: 2019/9/6  线上bug 直播间有字符串比较逻辑 此次需写死 ：PublicLiveDetailActivity
+             LiveVideoEnter.intentTo(activity, bundle, "PublicLiveDetailActivity");
         }
     }
 
@@ -363,7 +358,9 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type",2);
         bundle.putBoolean("isBigLive",true);
-        LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
+        // FIXME: 2019/9/6  PublicLiveDetailActivity
+        //LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
+         LiveVideoEnter.intentTo(activity, bundle, "PublicLiveDetailActivity");
     }
 
 

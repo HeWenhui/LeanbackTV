@@ -2213,8 +2213,11 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param requestCallBack
      */
     public void getLivePluginConfigInfo(LivePluginRequestParam param, HttpCallBack requestCallBack) {
-
-        sendJsonPost(LivePluginHttpConfig.URL_MODULE_INIT, param, requestCallBack);
+        String url = param.url;
+        if (TextUtils.isEmpty(url)) {
+            url = LivePluginHttpConfig.URL_MODULE_INIT;
+        }
+        sendJsonPost(url, param, requestCallBack);
     }
 
 }
