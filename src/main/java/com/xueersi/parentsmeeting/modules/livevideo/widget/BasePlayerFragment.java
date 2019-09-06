@@ -302,6 +302,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
      */
     protected void onUserBackPressed() {
         activity.onBackPressed();
+        vPlayer.psExit();
 //        activity.finish(LiveVideoConfig.VIDEO_CANCLE);
     }
 
@@ -1354,13 +1355,5 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 //        if (liveGetPlayServer != null) {
 //            liveGetPlayServer.onNetWorkChange(netWorkType);
 //        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(vPlayer!=null){
-            vPlayer.psExit();
-        }
     }
 }
