@@ -25,7 +25,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferAc
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.liveLog.LiveLogBill;
 
 import org.json.JSONObject;
 
@@ -459,9 +458,6 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentTo(final Activity context, final Bundle bundle, final String where) {
-
-
-        LiveLogBill.getInstance().openAppLiveLog();
 
         int pattern = bundle.getInt("pattern", 1);
         if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
