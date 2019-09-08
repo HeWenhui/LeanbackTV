@@ -79,7 +79,7 @@ public class LiveLogEntity {
 
     public String lip=ApmBill.getHostIP(); //本地ip
 
-    public String appId = "xes20001";   //日志Id
+    public String appId = "1001906";   //日志Id
 
     public String agent="android-"+AppUtils.getAppVersionName(XueErSiRunningEnvironment.sAppContext);
 
