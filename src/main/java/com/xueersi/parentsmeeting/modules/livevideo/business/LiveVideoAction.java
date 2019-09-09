@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>
  * 播放视频相关逻辑处理在{@link com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll}中
  */
-public class LiveVideoAction implements VideoAction {
+public class LiveVideoAction implements LiveVideoStateListener {
     private final String TAG = getClass().getSimpleName();
     Logger logger = LoggerFactory.getLogger(TAG);
     protected WeakHandler mHandler = new WeakHandler(null);
@@ -60,8 +60,8 @@ public class LiveVideoAction implements VideoAction {
     protected ImageView ivTeacherNotpresent;
     /** 老师不在直播间背景图 */
     protected Drawable dwTeacherNotpresen;
-    PlayErrorCode lastPlayErrorCode;
-    RelativeLayout mContentView;
+    protected PlayErrorCode lastPlayErrorCode;
+    protected RelativeLayout mContentView;
     protected TextView tvLoadingHint;
     /** 缓冲提示 */
     private ImageView ivLoading;
@@ -132,7 +132,7 @@ public class LiveVideoAction implements VideoAction {
         }
     }
 
-    private void switchFlowViewChangeBtn() {
+    protected void switchFlowViewChangeBtn() {
         Drawable drawable = activity.getResources().getDrawable(R.drawable.selector_livevideo_primary_science_retry_btn);
         if (LiveVideoConfig.isSmallChinese) {
             drawable = activity.getResources().getDrawable(R.drawable.selector_livevideo_primary_chs_retry_btn);

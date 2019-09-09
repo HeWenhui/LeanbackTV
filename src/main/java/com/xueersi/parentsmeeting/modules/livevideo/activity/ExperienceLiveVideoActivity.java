@@ -219,7 +219,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
      */
 //    private boolean isNewIRC = false;
     private IIRCMessage mIRCMessage;
-    private final String IRC_CHANNEL_PREFIX = "4L";
+    private final String IRC_CHANNEL_PREFIX = "#4L";
 
 
     /**

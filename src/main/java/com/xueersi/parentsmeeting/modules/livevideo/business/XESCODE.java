@@ -18,6 +18,7 @@ public interface XESCODE {
     int CLASSBEGIN = 105;
     /** 懂了吗老师 */
     int UNDERSTANDT = 106;
+
 //    int UNDERSTANDT = 133;
     /** 懂了吗学生 */
     int UNDERSTANDS = 107;
@@ -316,4 +317,9 @@ public interface XESCODE {
         int XEP_MODE_CHANGE = 500;
         int XEP_BACK_FINISH = 501;
     }
+    /** 大班整合 送礼物*/
+    int LIVE_BUSINESS_SEND_GIFT = 106;
+    /** 大班整合 感谢学生*/
+    int LIVE_BUSINESS_GIFT_THANK_STUDENT = 10110;
+
 }

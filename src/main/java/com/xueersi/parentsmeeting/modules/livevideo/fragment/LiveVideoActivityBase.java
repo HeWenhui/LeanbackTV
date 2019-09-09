@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.liveLog.LiveLogBill;
 import com.xueersi.parentsmeeting.modules.livevideo.service.LiveService;
 import com.xueersi.ui.dataload.DataLoadManager;
 
@@ -57,6 +58,9 @@ public class LiveVideoActivityBase extends XesActivity {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         BuglyLog.i(TAG, "onCreate");
+        LiveLogBill.getInstance().initLiveLog();
+        LiveLogBill.getInstance().setLiveId(getIntent().getStringExtra("vSectionID"));
+        LiveLogBill.getInstance().openLiveLog();
 //        FloatWindowManager.addView(this,new Button(this),2);
     }
 

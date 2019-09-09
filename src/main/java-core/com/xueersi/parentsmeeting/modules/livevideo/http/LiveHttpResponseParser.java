@@ -338,7 +338,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setLiveTime(data.getString("liveTime"));
             getInfo.setsTime(data.optLong("stime"));
             getInfo.seteTime(data.optLong("etime"));
-            getInfo.setNowTime(data.getDouble("nowTime"));
+            getInfo.setNowTime(data.getLong("nowTime"));
             //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));\
             if (data.has("isAllowTeamPk")) {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
@@ -849,13 +849,15 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         try {
-            JSONArray disableSpeakingArray = liveTopicJson.getJSONArray("disable_speaking");
-            List<String> disableSpeaking = new ArrayList<>();
-            for (int i = 0; i < disableSpeakingArray.length(); i++) {
-                JSONObject object = disableSpeakingArray.getJSONObject(i);
-                disableSpeaking.add(object.getString("id"));
+            if (liveTopicJson.has("disable_speaking")) {
+                JSONArray disableSpeakingArray = liveTopicJson.getJSONArray("disable_speaking");
+                List<String> disableSpeaking = new ArrayList<>();
+                for (int i = 0; i < disableSpeakingArray.length(); i++) {
+                    JSONObject object = disableSpeakingArray.getJSONObject(i);
+                    disableSpeaking.add(object.getString("id"));
+                }
+                liveTopic.setDisableSpeaking(disableSpeaking);
             }
-            liveTopic.setDisableSpeaking(disableSpeaking);
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parseLiveTopic", e.getMessage());
             logger.e("parseLiveTopic", e);

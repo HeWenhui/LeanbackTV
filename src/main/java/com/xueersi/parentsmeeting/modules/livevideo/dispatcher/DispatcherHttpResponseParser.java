@@ -14,6 +14,7 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpLiveInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
@@ -22,6 +23,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSpeedEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -988,5 +990,172 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         return publicLiveCourseEntity;
     }
 
+
+
+    /**
+     * 解析大班整合回放
+     *
+     * @param responseEntity
+     * @param publicLiveCourseEntity
+     */
+    public BigLivePlayBackEntity praseBigLiveEnterPlayBack(ResponseEntity responseEntity) {
+        BigLivePlayBackEntity playBackEntity = null;
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            playBackEntity = new BigLivePlayBackEntity();
+            playBackEntity.setNowTime(data.optLong("nowTime"));
+            //解析学生基础信息
+            if(data.has("stuInfo")){
+                JSONObject stuInfoJsonObj = data.optJSONObject("stuInfo");
+                BigLivePlayBackEntity.StuInfo stuInfo = new BigLivePlayBackEntity.StuInfo();
+                stuInfo.setId(stuInfoJsonObj.optString("id"));
+                stuInfo.setUserName(stuInfoJsonObj.optString("userName"));
+                stuInfo.setNickName(stuInfoJsonObj.optString("nickName"));
+                stuInfo.setRealName(stuInfoJsonObj.optString("realName"));
+                stuInfo.setEnglishName(stuInfoJsonObj.optString("englishName"));
+                stuInfo.setSex(stuInfoJsonObj.optInt("sex"));
+                stuInfo.setGradeName(stuInfoJsonObj.optString("gradeName"));
+                stuInfo.setGradeId(stuInfoJsonObj.optInt("gradeId"));
+                stuInfo.setAvatar(stuInfoJsonObj.optString("avatar"));
+                stuInfo.setGoldNum(stuInfoJsonObj.optLong("goldNum"));
+                if(stuInfoJsonObj.has("psim")){
+                    JSONObject psImJsonObj = stuInfoJsonObj.optJSONObject("psim");
+                    stuInfo.setPsImId(psImJsonObj.optString("psId"));
+                    stuInfo.setPsImPwd(psImJsonObj.optString("psPwd"));
+                }
+                playBackEntity.setStuInfo(stuInfo);
+            }
+
+            //解析学生场次信息
+            if(data.has("stuLiveInfo")){
+
+                JSONObject stuLiveInfoJsonObj = data.getJSONObject("stuLiveInfo");
+                BigLivePlayBackEntity.StuLiveInfo stuLiveInfo = new BigLivePlayBackEntity.StuLiveInfo();
+                stuLiveInfo.setClassId(stuLiveInfoJsonObj.optString("classId"));
+                stuLiveInfo.setTeamId(stuLiveInfoJsonObj.optString("teamId"));
+                playBackEntity.setStuLiveInfo(stuLiveInfo);
+            }
+
+            if(data.has("teamStuIds")){
+                JSONArray teamStudIdsJsonArray = data.getJSONArray("teamStuIds");
+                if(teamStudIdsJsonArray.length() > 0){
+                    List<String> teamStuIdList = new ArrayList<>();
+                    for (int i = 0; i < teamStudIdsJsonArray.length(); i++) {
+                        teamStuIdList.add(teamStudIdsJsonArray.getString(i));
+                    }
+                    if(playBackEntity.getStuLiveInfo() != null){
+                        playBackEntity.getStuLiveInfo().setTeamStudIds(teamStuIdList);
+                    }else{
+                        BigLivePlayBackEntity.StuLiveInfo stuLiveInfo = new BigLivePlayBackEntity.StuLiveInfo();
+                        stuLiveInfo.setTeamStudIds(teamStuIdList);
+                        playBackEntity.setStuLiveInfo(stuLiveInfo);
+                    }
+                }
+            }
+
+            //解析课程场次信息
+            if(data.has("planInfo")){
+                JSONObject planInfoJsonObj = data.getJSONObject("planInfo");
+                BigLivePlayBackEntity.PlanInfo planInfo = new BigLivePlayBackEntity.PlanInfo();
+                planInfo.setId(planInfoJsonObj.optString("id"));
+                planInfo.setName(planInfoJsonObj.optString("name"));
+                planInfo.setType(planInfoJsonObj.optString("type"));
+                planInfo.setMode(planInfoJsonObj.optString("mode"));
+                planInfo.setPattern(planInfoJsonObj.optString("pattern"));
+                planInfo.setsTime(planInfoJsonObj.optLong("stime"));
+                planInfo.seteTIme(planInfoJsonObj.optLong("etime"));
+                String subjectIdsStr = planInfoJsonObj.optString("subjectIds");
+                if(!StringUtils.isEmpty(subjectIdsStr)){
+                    String[]ids = subjectIdsStr.split(",");
+                    if(ids.length > 0){
+                        planInfo.setSubjectIds(Arrays.asList(ids));
+                    }
+                }
+
+                String gradeIdsStr = planInfoJsonObj.optString("gradeIds");
+                if(!StringUtils.isEmpty(gradeIdsStr)){
+                    String []ids = gradeIdsStr.split(",");
+                    if(ids.length > 0){
+                        planInfo.setGradeIds(Arrays.asList(ids));
+                    }
+                }
+                playBackEntity.setPlanInfo(planInfo);
+            }
+
+
+            //解析主讲老师信息
+            if(data.has("teacherInfo")){
+                JSONObject teacherInfoJsonObj = data.getJSONObject("teacherInfo");
+                BigLivePlayBackEntity.TeacherInfo teacherInfo = new BigLivePlayBackEntity.TeacherInfo();
+                teacherInfo.setId(teacherInfoJsonObj.optString("id"));
+                teacherInfo.setName(teacherInfoJsonObj.optString("name"));
+                teacherInfo.setType(teacherInfoJsonObj.optString("type"));
+                teacherInfo.setNickName(teacherInfoJsonObj.optString("nickName"));
+                teacherInfo.setSex(teacherInfoJsonObj.optString("sex"));
+                teacherInfo.setAvatar(teacherInfoJsonObj.optString("avatar"));
+                teacherInfo.setAreaName(teacherInfoJsonObj.optString("areaName"));
+                teacherInfo.setBranchName(teacherInfoJsonObj.optString("branchName"));
+
+                playBackEntity.setMainTeacher(teacherInfo);
+            }
+
+            // 解析辅导老师信息
+            if(data.has("counselorInfo")){
+                JSONObject counselorInfoJsonObj = data.getJSONObject("counselorInfo");
+                BigLivePlayBackEntity.TeacherInfo teacherInfo = new BigLivePlayBackEntity.TeacherInfo();
+
+                teacherInfo.setId(counselorInfoJsonObj.optString("id"));
+                teacherInfo.setName(counselorInfoJsonObj.optString("name"));
+                teacherInfo.setType(counselorInfoJsonObj.optString("type"));
+                teacherInfo.setNickName(counselorInfoJsonObj.optString("nickName"));
+                teacherInfo.setSex(counselorInfoJsonObj.optString("sex"));
+                teacherInfo.setAvatar(counselorInfoJsonObj.optString("avatar"));
+                teacherInfo.setAreaName(counselorInfoJsonObj.optString("areaName"));
+                teacherInfo.setBranchName(counselorInfoJsonObj.optString("branchName"));
+
+                playBackEntity.setCounselorTeacher(teacherInfo);
+            }
+
+            // 解析配置信息
+            if(data.has("configs")){
+                JSONObject configsJsonObj = data.getJSONObject("configs");
+                BigLivePlayBackEntity.Configs configs = new BigLivePlayBackEntity.Configs();
+                configs.setAppId(configsJsonObj.optString("appId"));
+                configs.setAppKey(configsJsonObj.optString("appKey"));
+                configs.setVideoFile(configsJsonObj.optString("videoFile"));
+                JSONObject urlsJsonObj = configsJsonObj.optJSONObject("urls");
+                //解析回放 相关接口信息
+                if(urlsJsonObj != null){
+                    configs.setGetChatRecordUrl(urlsJsonObj.optString("getChatRecordUrl"));
+                    configs.setGetMetadataUrl(urlsJsonObj.optString("getMetadataUrl"));
+                    configs.setInitModuleUrl(urlsJsonObj.optString("initModuleUrl"));
+                }
+                playBackEntity.setConfigs(configs);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "praseBigLiveEnterPlayBack", e.getMessage());
+        }
+        return playBackEntity;
+    }
+
+    /**
+     * 直播灰度场次确认
+     * @param responseEntity
+     * @return
+     */
+    public int parserPublicResult(ResponseEntity responseEntity) {
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        if (jsonObject != null) {
+            try {
+                return jsonObject.optInt("status");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
+    }
 
 }
