@@ -11,7 +11,7 @@ import java.util.Map;
 public class Pridata {
 
 
-    public NetSpeed netspeed; //网速
+    public NetSpeed netspeed=new NetSpeed(); //网速
 
     public Map<String, String> dnsinfo; //网络DNS;
 
