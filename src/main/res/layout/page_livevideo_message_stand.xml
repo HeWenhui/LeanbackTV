@@ -15,7 +15,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="25dp">
+                android:layout_height="25dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@id/tv_livevideo_message_count"
@@ -48,7 +49,8 @@
                 android:paddingRight="4dp"
                 android:paddingBottom="15dp"
                 android:scrollbars="none"
-                android:stackFromBottom="true" />
+                android:stackFromBottom="true"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
@@ -69,7 +71,8 @@
             <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout
                 android:id="@id/rl_livevideo_message_panelroot"
                 android:layout_width="fill_parent"
-                android:layout_height="@dimen/panel_height">
+                android:layout_height="@dimen/panel_height"
+                android:visibility="gone">
 
                 <include
                     android:id="@id/layout_chat_expression"
@@ -106,7 +109,8 @@
             android:layout_toLeftOf="@id/bt_livevideo_message_voice_open"
             android:layout_toRightOf="@id/rl_livevideo_info"
             android:gravity="center"
-            android:paddingBottom="15dp">
+            android:paddingBottom="15dp"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:id="@+id/rl_livevideo_message_back"
@@ -121,7 +125,8 @@
                 android:layout_alignTop="@id/rl_livevideo_message_back"
                 android:layout_alignBottom="@id/rl_livevideo_message_back"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@id/tv_livevideo_voicechat_word_count"
@@ -167,7 +172,8 @@
                     android:layout_centerHorizontal="true"
                     android:text=""
                     android:textColor="#FF7DE0FE"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:visibility="gone"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -178,7 +184,8 @@
                 android:layout_alignTop="@id/rl_livevideo_message_back"
                 android:layout_alignEnd="@id/rl_livevideo_message_back"
                 android:layout_alignBottom="@id/rl_livevideo_message_back"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
 
                 <Button
                     android:id="@id/bt_livevideo_message_send"
