@@ -147,36 +147,15 @@ public class LiveVideoEnter {
             return false;
         }
 
-        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
-            @Override
-            public void start() {
-
-            }
-
-            @Override
-            public void success() {
-
-                final Bundle bundle = new Bundle();
-                bundle.putString("courseId", courseId);
-                bundle.putString("vStuCourseID", vStuCourseID);
-                bundle.putString("vSectionID", vSectionID);
-                bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
-                bundle.putBoolean("loadAsserts", true);
-                bundle.putInt(ENTER_ROOM_FROM, from);
-                LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-            }
-
-            @Override
-            public void progress(float progress, int type) {
-
-            }
-
-            @Override
-            public void fail(int errorCode, String errorMsg) {
-
-            }
-        });
-
+        //这样只有一个loading
+        final Bundle bundle = new Bundle();
+        bundle.putString("courseId", courseId);
+        bundle.putString("vStuCourseID", vStuCourseID);
+        bundle.putString("vSectionID", vSectionID);
+        bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
+        bundle.putBoolean("loadAsserts", false);
+        bundle.putInt(ENTER_ROOM_FROM, from);
+        LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
 
         return true;
     }
