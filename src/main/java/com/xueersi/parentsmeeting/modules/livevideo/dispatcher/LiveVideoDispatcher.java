@@ -77,9 +77,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     DataLoadEntity  dataLoadEntity;
     @Override
     public void dispatch(Activity srcActivity, Bundle bundle, int requestCode) {
-
-        Log.e("ckTrac","========>dispatch:999999:"+bundle.containsKey(ParamKey.EXTRAKEY_JSONPARAM));
-
         if (bundle == null) {
             return;
         }
