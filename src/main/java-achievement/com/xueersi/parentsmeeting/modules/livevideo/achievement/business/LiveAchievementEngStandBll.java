@@ -9,8 +9,9 @@ import android.widget.RelativeLayout;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnStandAchievePager;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
  * Created by linyuqiang on 2018/11/21.
  * 小英本场成就-站立直播
  */
-public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInteractAction {
+public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInteractAction, BetterMeInteractAction {
     private String TAG = "LiveAchievementEngStandBll";
     protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
     private LiveGetInfo mLiveGetInfo;
@@ -103,6 +104,20 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
     public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
         if (enAchievePager != null) {
             enAchievePager.updateEnpk(enTeamPkRankEntity);
+        }
+    }
+
+    @Override
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity, boolean isShowBubble) {
+        if (enAchievePager != null) {
+            enAchievePager.onBetterMeUpdate(aimRealTimeValEntity, isShowBubble);
+        }
+    }
+
+    @Override
+    public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isShowBubble) {
+        if (enAchievePager != null) {
+            enAchievePager.onReceiveBetterMe(betterMeEntity, isShowBubble);
         }
     }
 }

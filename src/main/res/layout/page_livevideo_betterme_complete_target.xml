@@ -1,0 +1,256 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/transparent_80"
+    android:clickable="true"
+    android:focusable="true">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="564dp"
+        android:layout_height="375dp"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:id="@+id/ll_livevideo_betterme_completetarget_content"
+        android:layout_width="564dp"
+        android:layout_height="375dp"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="105dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="133dp"
+                android:background="@drawable/app_xiaomubiao_shellwindow_gongxiwancheng_bg_pic"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="小目标"
+                    android:textColor="#ffe65c00"
+                    android:textSize="13dp" />
+
+                <ImageView
+                    android:layout_width="132dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/app_xiaomubiao_shellwindow_gongxiwancheng_line_pic" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_livevideo_betterme_completetarget_aim"
+                    android:layout_width="154dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="26dp">
+
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                        android:id="@+id/tv_livevideo_betterme_completetarget_aimtype"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/pg_livevideo_better_completetar"
+                        android:layout_marginLeft="5dp"
+                        android:textColor="#ff756565"
+                        android:textSize="9dp"
+                        tools:text="正确率" />
+
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                        android:id="@+id/tv_livevideo_betterme_completetarget_aimvalue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@+id/pg_livevideo_better_completetar"
+                        android:layout_marginRight="5dp"
+                        android:textColor="#ff756565"
+                        android:textSize="9dp"
+                        tools:text="目标80%" />
+
+                    <ProgressBar
+                        android:id="@+id/pg_livevideo_better_completetar"
+                        style="@style/ProgressBar_live_betterme"
+                        android:layout_width="133dp"
+                        android:layout_height="13dp"
+                        android:layout_below="@+id/tv_livevideo_betterme_completetarget_aimtype"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:max="100"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:progress="0" />
+
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                        android:id="@+id/tv_livevideo_betterme_aimtips"
+                        android:layout_width="30dp"
+                        android:layout_height="15dp"
+                        android:layout_below="@+id/pg_livevideo_better_completetar"
+                        android:layout_alignParentLeft="true"
+                        android:background="@drawable/livevideo_enteampk_xiaomubiao_tips_bg_nor"
+                        android:gravity="center"
+                        android:paddingTop="3dp"
+                        android:textColor="@color/white"
+                        android:textSize="9dp" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="133dp"
+                android:background="@drawable/app_xiaomubiao_shellwindow_gongxiwancheng_bg_pic"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/rl_livevideo_betterme_completetarget_level_up"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content">
+
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                        android:id="@+id/tv_livevideo_betterme_completetarget_level_up"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="段位升级"
+                        android:textColor="#ffe65c00"
+                        android:textSize="13dp" />
+
+                    <ImageView
+                        android:layout_width="11dp"
+                        android:layout_height="11dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="6dp"
+                        android:layout_toRightOf="@+id/tv_livevideo_betterme_completetarget_level_up"
+                        android:background="@drawable/app_xiaomubiao_shellwindow_benchangxiaomubiao_icon_nor" />
+
+                </RelativeLayout>
+
+                <ImageView
+                    android:layout_width="132dp"
+                    android:layout_height="2dp"
+                    android:background="@drawable/app_xiaomubiao_shellwindow_gongxiwancheng_line_pic" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                            android:id="@+id/tv_livevideo_betterme_completetarget_current_level"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#ff756565"
+                            android:textSize="11dp"
+                            tools:text="倔强青铜2级" />
+
+                        <ImageView
+                            android:id="@+id/iv_livevideo_betterme_completetarget_current_level"
+                            android:layout_width="54dp"
+                            android:layout_height="54dp"
+                            tools:background="@drawable/app_livevideo_enteampk_juejiangqingtong_img_nor"
+                            tools:src="@drawable/app_livevideo_enteampk_qinfenbaiyin_xingxing2_img_nor" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/iv_livevideo_betterme_completetarget_arrow"
+                        android:layout_width="9dp"
+                        android:layout_height="9dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="2dp"
+                        android:background="@drawable/app_xiaomubiao_shellwindow_jiantou_img" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_livevideo_betterme_completetarget_next_level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                            android:id="@+id/tv_livevideo_betterme_completetarget_next_level"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#ff8c8080"
+                            android:textSize="11dp"
+                            tools:text="倔强青铜3级" />
+
+                        <ImageView
+                            android:id="@+id/iv_livevideo_betterme_completetarget_next_level"
+                            android:layout_width="54dp"
+                            android:layout_height="54dp"
+                            tools:src="@drawable/app_livevideo_enteampk_juejiangqingtong_img_diss" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@+id/tv_livevideo_betterme_completetarget_level_upgraded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-4dp"
+                    android:textColor="#ff756565"
+                    android:textSize="11dp"
+                    tools:text="还需完成3场目标可升级" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/iv_livevideo_betterme_completetarget_great"
+            android:layout_width="118dp"
+            android:layout_height="39dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-2dp"
+            android:src="@drawable/selector_livevideo_betterme_completetarget_great" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/tv_livevideo_betterme_completetarget_countdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="10s "
+                android:textColor="#ff8c8080"
+                android:textSize="10dp" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="后关闭"
+                android:textColor="#ff8c8080"
+                android:textSize="10dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

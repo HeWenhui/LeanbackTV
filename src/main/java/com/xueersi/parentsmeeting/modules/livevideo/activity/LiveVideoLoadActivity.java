@@ -231,8 +231,16 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
-                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                    finishAndExit();
+//                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
+                    int status = responseEntity.getmStatus();
+                    if (10 == status) {
+//                        Intent data = new Intent();
+//                        data.putExtra("msg", "请升级APP");
+//                        setResult(ShareBusinessConfig.LIVE_APP_UPDATE, data);
+//                        finish();
+                    } else {
+                        finishAndExit();
+                    }
                 }
             });
         } else if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -311,8 +319,16 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
-                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                    finishAndExit();
+//                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
+                    int status = responseEntity.getmStatus();
+                    if (10 == status) {
+//                        Intent data = new Intent();
+//                        data.putExtra("msg", "请升级APP");
+//                        setResult(ShareBusinessConfig.LIVE_APP_UPDATE, data);
+//                        finish();
+                    } else {
+                        finishAndExit();
+                    }
                 }
             });
         }
@@ -426,7 +442,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
         LiveMainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                System.exit(0);
+//                System.exit(0);
             }
         }, 1000);
     }
