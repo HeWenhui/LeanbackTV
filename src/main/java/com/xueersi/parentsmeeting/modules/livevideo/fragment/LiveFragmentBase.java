@@ -710,8 +710,10 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         if (mLiveBll != null) {
             mLiveBll.onDestroy();
         }
-        liveVideoAction.onDestroy();
-        liveVideoAction = null;
+        if (liveVideoAction != null) {
+            liveVideoAction.onDestroy();
+            liveVideoAction = null;
+        }
         LiveAppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
         mHandler.post(new Runnable() {
