@@ -561,6 +561,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 });
             } else {
                 goldNum = "" + getInfoGoldNum;
+                onGetMyGoldDataEvent(goldNum);
             }
             View view = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
             if (view != null) {

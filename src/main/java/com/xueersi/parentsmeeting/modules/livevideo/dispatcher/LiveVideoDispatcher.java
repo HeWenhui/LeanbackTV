@@ -298,9 +298,9 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         if ("720P".equals(publicLiveCourseEntity.getRadioType())) {
             LiveVideoEnter.intentToLectureLivePlayBackVideo(activity, bundle, activity.getClass().getSimpleName());
         } else {
-           // LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
+            // LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
             // FIXME: 2019/9/6  线上bug 直播间有字符串比较逻辑 此次需写死 ：PublicLiveDetailActivity
-             LiveVideoEnter.intentTo(activity, bundle, "PublicLiveDetailActivity");
+            LiveVideoEnter.intentTo(activity, bundle, "PublicLiveDetailActivity");
         }
     }
 
@@ -360,7 +360,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         bundle.putBoolean("isBigLive",true);
         // FIXME: 2019/9/6  PublicLiveDetailActivity
         //LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
-         LiveVideoEnter.intentTo(activity, bundle, "PublicLiveDetailActivity");
+        LiveVideoEnter.intentTo(activity, bundle, "PublicLiveDetailActivity");
     }
 
 

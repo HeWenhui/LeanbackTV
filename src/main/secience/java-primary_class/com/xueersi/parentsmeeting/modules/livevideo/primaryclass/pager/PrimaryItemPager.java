@@ -802,6 +802,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         } else if (type == PrimaryClassConfig.MMTYPE_AUDIO) {
             if (audioStatus != open) {
                 audioStatus = open;
+                setAudioMode("onMessage");
                 if (open) {
                     foreach(new ItemCall() {
                         @Override

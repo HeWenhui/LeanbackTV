@@ -490,10 +490,10 @@ public class NewIRCMessage implements IIRCMessage {
         public void onRecvRoomUserList(PMDefs.RoomUserList roomUserList) {
             // 353-聊天室昵称列表 366-聊天室昵称列表结束
             logger.i("ircsdk room user code: " + roomUserList.code);
-            logger.i("ircsdk room user list size: " + roomUserList.userList.size());
+            logger.i("ircsdk room user list size: " + roomUserList.userList);
             if (PMDefs.ResultCode.Result_RoomUserList == roomUserList.code) {
                 onUserList = true;
-                String s = "___bug  onUserList:channel=" + roomUserList.roomId + ",users=" + roomUserList.userList.size();
+                String s = "___bug  onUserList:channel=" + roomUserList.roomId + ",users=" + roomUserList.userList;
                 if (roomUserList.userList != null && roomUserList.userList.size() > 0) {
                     User[] users = new User[roomUserList.userList.size()];
                     PMDefs.PsIdEntity userEntity;
@@ -690,6 +690,10 @@ public class NewIRCMessage implements IIRCMessage {
                         //  如果是专属老师
                         if (mIRCCallback != null) {
                             if (sender.startsWith("t_") || sender.startsWith("f_")) {
+                                //不确定其他有没有问题。中学点赞判断
+                                if (XESCODE.PRAISE_CLASS_NUM == msgJosn.optInt("type")) {
+                                    msg = text;
+                                }
                                 if (mChannels.length > 1) {
                                     if (LiveTopic.MODE_CLASS.equals(currentMode)) {
                                         mIRCCallback.onPrivateMessage(false, target, name, login, hostname, msg);

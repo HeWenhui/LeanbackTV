@@ -23,6 +23,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -31,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSw
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.EngForceSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 import org.json.JSONArray;
@@ -532,6 +534,9 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         if (phoneScores.isEmpty()) {
             logger.d("onResult(SUCCESS):phoneScores.isEmpty");
         } else {
+            double speechDuration = resultEntity.getSpeechDuration();
+            EnglishSpeekAction englishSpeekAction = ProxUtil.getProxUtil().get(mContext,EnglishSpeekAction.class);
+
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(type)) {
                 logger.e("选择题！！！" + "type:" + type);
                 int rightIndex = -1;

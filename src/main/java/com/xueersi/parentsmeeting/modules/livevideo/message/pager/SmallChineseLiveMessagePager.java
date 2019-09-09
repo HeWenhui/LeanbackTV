@@ -801,6 +801,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             } else {
                 goldNum = "" + getInfoGoldNum;
             }
+            onGetMyGoldDataEvent(goldNum);
         }
     }
 

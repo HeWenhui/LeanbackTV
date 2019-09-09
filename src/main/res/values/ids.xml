@@ -514,6 +514,7 @@
     <item name="btn_live_roleplayer_enter" type="id" />
     <item name="rl_live_roleplayer_read_main" type="id" />
     <item name="lv_live_roleplayer_read_list" type="id" />
+    <item name="iv_live_roleplayer_message_user_segment" type="id" />
     <item name="civ_live_roleplayer_message_user_head" type="id" />
     <item name="ll_live_roleplayer_message_user_name" type="id" />
     <item name="tv_live_roleplayer_message_username" type="id" />
@@ -541,6 +542,7 @@
     <item name="tv_live_speech_result_fluency_lable" type="id" />
     <item name="tv_live_speech_result_fluency_text" type="id" />
     <item name="civ_live_speech_result_head" type="id" />
+    <item name="iv_live_speech_result_head_segment" type="id" />
     <item name="v_live_speech_result_center" type="id" />
     <item name="vs_live_speech_result_myenergy" type="id" />
     <item name="rl_live_speech_result_myenergy" type="id" />
@@ -556,6 +558,7 @@
     <item name="rv_live_speech_result_other" type="id" />
     <item name="rl_live_speech_result_member_head" type="id" />
     <item name="civ_live_speech_result_member_head" type="id" />
+    <item name="iv_live_speech_result_member_head_segment" type="id" />
     <item name="tv_live_speech_result_member_score" type="id" />
     <item name="tv_live_speech_result_member_name" type="id" />
     <!--战队pk-->
@@ -1275,6 +1278,8 @@
     <item name="tv_livevideo_en_achive_num_star" type="id" />
     <item name="tv_livevideo_en_achive_num_right" type="id" />
     <item name="tv_livevideo_en_achive_num_target" type="id" />
+    <item name="pg_livevideo_en_achive_num_target" type="id" />
+    <item name="tv_livevideo_en_achive_num_tips" type="id" />
     <item name="vs_livevideo_en_achive_bottom" type="id" />
     <item name="vs_livevideo_en_achive_bottom2" type="id" />
     <!--英语本场成就-战队pk-->

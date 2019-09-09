@@ -12,6 +12,8 @@ import com.airbnb.lottie.LottieAnimationView;
 
 public class ArtsAnswerResultLottieEffectInfo extends LottieEffectInfo {
 
+    private static final String VOTE_RESULT ="img_23.png";
+
     public ArtsAnswerResultLottieEffectInfo(String imgDir, String jsonFilePath, String... targetFileNames) {
         super(imgDir, jsonFilePath, targetFileNames);
     }
@@ -19,7 +21,13 @@ public class ArtsAnswerResultLottieEffectInfo extends LottieEffectInfo {
     @Override
     public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width,
                                     int height) {
-        return super.fetchTargetBitMap(animationView, fileName, bitmapId, width, height);
+        Bitmap bitmap = getBitMapFromAssets(VOTE_RESULT,animationView.getContext());
+        return bitmap;
+    }
+
+    public Bitmap getBitMap(LottieAnimationView animationView){
+        Bitmap bitmap = getBitMapFromAssets(VOTE_RESULT,animationView.getContext());
+        return bitmap;
     }
 
 }

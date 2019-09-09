@@ -23,5 +23,6 @@ public interface AnswerResultStateListener {
     /**用户主动关闭答题结果页面**/
     void onCloseByUser();
 
-
+    /**投票统计折叠次数**/
+    void onUpdateVoteFoldCount(String count);
 }

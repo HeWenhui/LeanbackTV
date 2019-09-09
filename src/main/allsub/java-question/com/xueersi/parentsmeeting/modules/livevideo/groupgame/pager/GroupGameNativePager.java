@@ -232,10 +232,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         this.liveAndBackDebug = new ContextLiveAndBackDebug(context);
         preLoad = new MiddleSchoolPreLoad();
         if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type) || LiveQueConfig
-                .EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)
-                || LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)
-                || LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(detailInfo.type)
-               ) {
+                .EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type) || LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING
+                .equals(detailInfo.type) || LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(detailInfo.type)
+                || LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
+                .equals(detailInfo.type) || LiveQueConfig.EN_COURSE_TYPE_GET_IT
+                .equals(detailInfo.type)) {
             singleModeAction = new HotAirBallonAction();
         } else {
             singleModeAction = new CleanUpAction();
@@ -280,6 +281,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onClick(View view) {
                 addJs = false;
+                newCourseCache.reload();
                 rlGroupGameSingle.setVisibility(View.GONE);
                 mWaveView.stop();
                 wvSubjectWeb.reload();
@@ -380,7 +382,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         });
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "99999", creattime, new StaticWeb
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "" + detailInfo.id, creattime, new StaticWeb
                 .OnMessage() {
             @Override
             public void postMessage(String where, final JSONObject message, String origin) {
@@ -711,8 +713,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 fireNum = rightNum < 50 ? rightNum : 50;
             } else if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
                 fireNum = rightNum < 30 ? rightNum : 30;
-            }
-            else if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type)) {
+            }else if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(detailInfo.type)) {
+                fireNum = rightNum < 30 ? rightNum : 30;
+            }else if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type)) {
                 fireNum = (rightNum + 5) < 30 ? ((rightNum + 5)) : 30;
             }else if(LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(detailInfo.type)){
                 //语音开宝箱 火焰计算规则
@@ -958,12 +961,15 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         private double coursewareEndAnimationTime = 0;
 
         HotAirBallonAction() {
+        }
+
+        private void initGameTime(){
             //what's missing 发送该消息后若为第一题，需要等待(总题数+1)秒再开始倒计时收音  若不为第一题，需要等待1.5秒再开始倒计时和收音
             if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)) {
                 coursewareStartAnimationTime = mAnswersList.size() + 1;
                 coursewareEndAnimationTime = GroupGameConfig.WHATIS_MISSING_COURSEWARE_END_ANMITION_TIME;
             } else if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
-                coursewareStartAnimationTime = 3;
+                coursewareStartAnimationTime = 0;
                 coursewareEndAnimationTime = GroupGameConfig.VOICE_CANNON_END_ANMITION_TIME;
             } else if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type)) {
                 coursewareStartAnimationTime = 0;
@@ -971,6 +977,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             } else if(LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(detailInfo.type)){
                 coursewareStartAnimationTime = 0;
                 coursewareEndAnimationTime = GroupGameConfig.VOICE_TREASURE_BOX_END_ANIM_TIME;
+            } else if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = 0;
+                coursewareEndAnimationTime = GroupGameConfig.SOLITAIRE_END_ANMITION_TIME;
+            } else if (LiveQueConfig.EN_COURSE_TYPE_GET_IT.equals(detailInfo.type)) {
+                coursewareStartAnimationTime = 0;
+                coursewareEndAnimationTime = GroupGameConfig.GET_IT_END_ANMITION_TIME;
             }
         }
 
@@ -1009,11 +1021,16 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void onLoadComplete() {
+                initGameTime();
             try {
                 JSONObject resultData = new JSONObject();
                 resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
                 resultData.put("pageNum", 0);
                 resultData.put("restTime", mAnswersList.get(0).getSingleTime());
+                if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
+                        .equals(detailInfo.type)){
+                    resultData.put("nextStudentNum", 2);
+                }
                 resultData.put("currentRight", 0);
                 resultData.put("isSingle", true);
 
@@ -1158,9 +1175,19 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
                 //答对题目学生序号（1/2/3）  单人模式只有2号学生
-                jsonData.put("studentNum", 2);
+                if(LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE
+                        .equals(detailInfo.type)){
+                    if(!isTurnPage)
+                        return;
+                    jsonData.put("nextStudentNum", 2);
+                } else if(LiveQueConfig.EN_COURSE_TYPE_GET_IT
+                        .equals(detailInfo.type)){
+                    jsonData.put("studentNum", 3);
+                } else {
+                    jsonData.put("studentNum", 2);
+                    jsonData.put("isTurnPage", isTurnPage);
+                }
                 jsonData.put("score", score);
-                jsonData.put("isTurnPage", isTurnPage);
                 jsonData.put("turnToPageNum", turnToPageNum);
                 logger.d("uploadScore : jsonData = " + jsonData.toString());
                 postMessage(jsonData);
@@ -1187,6 +1214,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 return;
             }
             if (LiveQueConfig.EN_COURSE_TYPE_WHAT_IS_MISSING.equals(detailInfo.type)&&fireNum > 30) {
+                return;
+            }
+            if (LiveQueConfig.EN_COURSE_TYPE_SOLITAIRE.equals(detailInfo.type)&&fireNum > 30) {
+                return;
+            }
+            if (LiveQueConfig.EN_COURSE_TYPE_GET_IT.equals(detailInfo.type)&&fireNum > 30) {
                 return;
             }
             tvFireSum.setText("" + fireNum);
@@ -1267,6 +1300,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         public void startTimer() {
             presentTime = System.currentTimeMillis();
             int time = mTestInfoEntity.getAnswerLimitTime() + 1;
+            startSpeechRecognize();
             mainHandler.removeCallbacks(stopTimerRunnable);
             mainHandler.postDelayed(stopTimerRunnable, time * 1000);
         }
@@ -1506,7 +1540,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         try {
             jsonData.put("type", "coursewareComeOn");
             jsonData.put("comeOn", true);
-
+            if (LiveQueConfig.EN_COURSE_TYPE_GET_IT.equals(detailInfo.type)) {
+                jsonData.put("studentNum", 3);
+            }
             JSONObject liveinfo = new JSONObject();
             liveinfo.put("liveid", liveId);
             liveinfo.put("userid", stuId);

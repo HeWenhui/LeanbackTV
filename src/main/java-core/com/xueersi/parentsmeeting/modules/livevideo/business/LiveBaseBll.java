@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.CallSuper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -237,6 +239,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
      *
      * @param getInfo 直播间初始化参数
      */
+    @CallSuper
     public void onLiveInited(LiveGetInfo getInfo) {
         this.mGetInfo = getInfo;
     }
@@ -260,10 +263,12 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     /**
      * 直播间创建
      */
+    @CallSuper
     public void onCreate(HashMap<String, Object> data) {
         mState = LiveActivityState.CREATED;
     }
 
+    @CallSuper
     public void onStart() {
         mState = LiveActivityState.STARTED;
     }
@@ -271,6 +276,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     /**
      * activity onPause
      */
+    @CallSuper
     public void onPause() {
         mState = LiveActivityState.STARTED;
     }
@@ -278,6 +284,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     /**
      * activity onStop
      */
+    @CallSuper
     public void onStop() {
         mState = LiveActivityState.STOPPED;
     }
@@ -285,6 +292,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     /**
      * activity onResume
      */
+    @CallSuper
     public void onResume() {
         mState = LiveActivityState.RESUMED;
     }
@@ -292,6 +300,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     /**
      * activity onDestroy
      */
+    @CallSuper
     public void onDestroy() {
         mState = LiveActivityState.INITIALIZING;
         mDestroyed = true;

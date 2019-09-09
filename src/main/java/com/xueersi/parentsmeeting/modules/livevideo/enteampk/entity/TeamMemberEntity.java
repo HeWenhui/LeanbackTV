@@ -16,6 +16,11 @@ public class TeamMemberEntity {
     /** 聊天的昵称，接口返回 */
     private String nick_name = "";
 
+    /** 段位 */
+    private int segmentType;
+    /** 星星 */
+    private int star;
+
     public void copy(TeamMemberEntity other) {
         id = other.id;
         isMy = other.isMy;
@@ -44,6 +49,22 @@ public class TeamMemberEntity {
 
     public void setNick_name(String nick_name) {
         this.nick_name = nick_name;
+    }
+
+    public int getSegmentType() {
+        return segmentType;
+    }
+
+    public void setSegmentType(int segmentType) {
+        this.segmentType = segmentType;
+    }
+
+    public int getStar() {
+        return star;
+    }
+
+    public void setStar(int star) {
+        this.star = star;
     }
 
     @Override

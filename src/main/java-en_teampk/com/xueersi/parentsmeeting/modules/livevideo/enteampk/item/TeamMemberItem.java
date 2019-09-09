@@ -12,6 +12,7 @@ import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.utils.BetterMeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
@@ -19,7 +20,7 @@ import com.xueersi.ui.adapter.AdapterItemInterface;
 
 public class TeamMemberItem implements AdapterItemInterface<TeamMemberEntity> {
     private Logger logger = LiveLoggerFactory.getLogger("TeamMemberItem");
-    private RelativeLayout ivTeampkMember;
+    private ImageView ivTeampkMember;
     private TextView tvTeampkName;
     private ImageView civTeampkHead;
     private RelativeLayout group;
@@ -50,7 +51,7 @@ public class TeamMemberItem implements AdapterItemInterface<TeamMemberEntity> {
         tvTeampkName.setText(entity.name);
         if (entity.isMy) {
 //            tvTeampkName.setBackgroundResource(R.drawable.app_zhanduipk_xuanzhong_pic);
-            ivTeampkMember.setBackgroundResource(R.drawable.app_livevideo_enteampk_morentouxiang_light_bg_img_nor);
+//            ivTeampkMember.setBackgroundResource(R.drawable.app_livevideo_enteampk_morentouxiang_light_bg_img_nor);
             tvTeampkName.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
@@ -69,8 +70,9 @@ public class TeamMemberItem implements AdapterItemInterface<TeamMemberEntity> {
             });
         } else {
 //            tvTeampkName.setBackgroundResource(0);
-            ivTeampkMember.setBackgroundResource(R.drawable.app_livevideo_enteampk_morentouxiang_bg_img_nor);
+//            ivTeampkMember.setBackgroundResource(R.drawable.app_livevideo_enteampk_morentouxiang_bg_img_nor);
         }
+        BetterMeUtil.addSegment(ivTeampkMember, entity.getSegmentType(), entity.getStar());
         ImageLoader.with(ContextManager.getContext()).load(entity.headurl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civTeampkHead);
     }
 }

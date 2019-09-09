@@ -19,39 +19,6 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
         super(context);
     }
 
-    /**
-     * 扣除金币
-     *
-     * @param enStuId
-     * @param requestCallBack
-     */
-    public void deductStuGold(String enStuId, String stuCouId, String courseId, String liveId, int isGetPlanInfo,
-                              HttpCallBack
-                                      requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("courseId", courseId);
-        params.addBodyParam("liveId", liveId);
-        // 直播 直播辅导
-        params.addBodyParam("enstuId", enStuId);
-        params.addBodyParam("stuCouId", stuCouId);
-        params.addBodyParam("isGetPlanInfo", "" + isGetPlanInfo);
-        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
-        sendPost(ShareBusinessConfig.URL_STUDY_GET_LIVE_COURSE_TEST_INFO_FOR_PLAYBACK, params, requestCallBack);
-    }
-
-    /**
-     * 文科新课件平台回放事件的新接口
-     *
-     * @param liveId
-     * @param requestCallBack
-     */
-    public void artscoursewarenewpoint(String liveId, HttpCallBack
-            requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("liveId", liveId);
-        sendPost("https://app.arts.xueersi.com/v2/playback/getEvent", params, requestCallBack);
-    }
-
     public void deductStuGolds(String liveId, String termId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();

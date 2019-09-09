@@ -19,6 +19,7 @@ import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
@@ -30,6 +31,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveTransferHttpManager;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,30 +48,33 @@ import static com.xueersi.parentsmeeting.modules.livevideo.dispatcher.Dispatcher
 public class DispatcherBll extends BaseBll {
 
     private DispatcherHttpManager dispatcherHttpManager;
+    private LiveTransferHttpManager liveTransferHttpManager;
     private DispatcherHttpResponseParser dispatcherHttpResponseParser;
 
     public DispatcherBll(Context context) {
         super(context);
         dispatcherHttpManager = new DispatcherHttpManager(context);
+        liveTransferHttpManager = new LiveTransferHttpManager(mContext);
         dispatcherHttpResponseParser = new DispatcherHttpResponseParser();
     }
 
 
     public void deductStuGold(final VideoSectionEntity sectionEntity, final String stuCouId) {
-        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
+        final DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
-        dispatcherHttpManager.deductStuGold(myUserInfoEntity.getEnstuId(), stuCouId, sectionEntity.getvCoursseID(),
-                sectionEntity.getvSectionID(), 0, new HttpCallBack(dataLoadEntity) {
+        liveTransferHttpManager.deductStuGold(stuCouId, sectionEntity.getvCoursseID(),
+                sectionEntity.getvSectionID(), 0, new HttpCallBack() {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         VideoResultEntity entity = dispatcherHttpResponseParser
                                 .deductStuGoldParser(sectionEntity.getvSectionID(), stuCouId, responseEntity);
                         if (entity != null && entity.getIsArts() == 1) {
-                            artscoursewarenewpoint(sectionEntity, stuCouId, entity);
+                            artscoursewarenewpoint(sectionEntity, stuCouId, entity, dataLoadEntity);
                         } else {
+                            EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity
+                                    .webDataSuccess()));
                             intentToPlayBack(sectionEntity, entity);
                         }
                     }
@@ -77,29 +82,31 @@ public class DispatcherBll extends BaseBll {
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         logger.i("onPmFailure");
+                        EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataError
+                                (ContextManager
+                                        .getContext().getResources().getString(com.xueersi.parentsmeeting.base.R.string.net_request_error))));
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         logger.i("onPmError");
+                        EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataError
+                                (responseEntity.getErrorMsg())));
                     }
                 });
     }
 
 
-    public void artscoursewarenewpoint(final VideoSectionEntity sectionEntity, final String stuCouId,
-                                       final VideoResultEntity entitys) {
-        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
-        postDataLoadEvent(dataLoadEntity.beginLoading());
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+    public void artscoursewarenewpoint(final VideoSectionEntity sectionEntity, final String stuCouId, final VideoResultEntity entitys, DataLoadEntity dataLoadEntity) {
+//        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
+//        postDataLoadEvent(dataLoadEntity.beginLoading());
         // 网络加载数据
-        dispatcherHttpManager.artscoursewarenewpoint(sectionEntity.getvSectionID(), new HttpCallBack(dataLoadEntity) {
+        liveTransferHttpManager.artscoursewarenewpoint(sectionEntity.getvSectionID(), new HttpCallBack(dataLoadEntity) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 Loger.e("Duncan", "responseEntity:" + responseEntity);
-                VideoResultEntity entity = dispatcherHttpResponseParser.parseNewArtsEvent(stuCouId,
-                        sectionEntity.getvSectionID(), entitys, responseEntity);
+                VideoResultEntity entity = dispatcherHttpResponseParser.parseNewArtsEvent(stuCouId, sectionEntity.getvSectionID(), entitys, responseEntity);
                 intentToPlayBack(sectionEntity, entity);
             }
 
@@ -220,7 +227,6 @@ public class DispatcherBll extends BaseBll {
     public void deductStuGolds(final VideoSectionEntity sectionEntity, final String liveId, final String termId) {
         DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
         postDataLoadEvent(dataLoadEntity.beginLoading());
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         // 网络加载数据
         dispatcherHttpManager.deductStuGolds(liveId, termId,
                 new HttpCallBack(dataLoadEntity) {

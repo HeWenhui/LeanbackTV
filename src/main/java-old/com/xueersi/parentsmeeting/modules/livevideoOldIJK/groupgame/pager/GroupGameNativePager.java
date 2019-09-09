@@ -1143,6 +1143,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         public void startTimer() {
             presentTime = System.currentTimeMillis();
             int time = mTestInfoEntity.getAnswerLimitTime() + 1;
+            startSpeechRecognize();
             handler.removeCallbacks(stopTimerRunnable);
             handler.postDelayed(stopTimerRunnable, time * 1000);
         }

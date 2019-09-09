@@ -4,10 +4,15 @@
     android:layout_height="78dp">
 
     <RelativeLayout
-        android:id="@id/rl_livevideo_en_teampk_member"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@id/rl_livevideo_en_teampk_member"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
 
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_livevideo_en_teampk_head"

@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.xueersi.common.base.BaseActivity;
@@ -24,6 +26,7 @@ import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -266,12 +269,19 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                        finishAndExit();
+//                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
+                        int status = responseEntity.getmStatus();
+                        if (10 == status) {
+//                        Intent data = new Intent();
+//                        data.putExtra("msg", "请升级APP");
+//                        setResult(ShareBusinessConfig.LIVE_APP_UPDATE, data);
+//                        finish();
+                        } else {
+                            finishAndExit();
+                        }
                     }
                 });
             }
-
         } else if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             final String vStuCourseID = intent.getStringExtra("vStuCourseID");
             String courseId = intent.getStringExtra("courseId");
@@ -349,8 +359,16 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
-                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                    finishAndExit();
+//                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
+                    int status = responseEntity.getmStatus();
+                    if (10 == status) {
+//                        Intent data = new Intent();
+//                        data.putExtra("msg", "请升级APP");
+//                        setResult(ShareBusinessConfig.LIVE_APP_UPDATE, data);
+//                        finish();
+                    } else {
+                        finishAndExit();
+                    }
                 }
             });
         }

@@ -49,7 +49,6 @@ public class LiveLog {
         }
     };
 
-
     public LiveLog() {
     }
 
@@ -153,7 +152,6 @@ public class LiveLog {
         log(log);
         sendLog();
     }
-
 
     public static Map<String, Long> getAllFilesInfo() {
         return getLoganInstance().getAllFilesInfo();
