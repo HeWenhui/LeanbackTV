@@ -32,7 +32,7 @@ public class SoundWaveView extends View {
     private Context mContext;
     private Paint mPaint;
     private int mColor;
-    private int mSpeed, mDensity;
+    private float mSpeed, mDensity;
     boolean mIsFill, mIsAlpha;
 
     public SoundWaveView(Context context, @Nullable AttributeSet attrs) {
@@ -49,7 +49,7 @@ public class SoundWaveView extends View {
         mContext = getContext();
         // 设置画笔样式
         mPaint = new Paint();
-//        mPaint.setColor(mColor);
+        mPaint.setColor(mColor);
 //        mPaint.setStrokeWidth(DensityUtil.dip2px(mContext, 20));
 //        if (mIsFill) {
 //            mPaint.setStyle(Paint.Style.FILL);
@@ -78,8 +78,8 @@ public class SoundWaveView extends View {
     private void initView(AttributeSet attrs) {
         // 获取用户配置属性
         TypedArray tya = getContext().obtainStyledAttributes(attrs, R.styleable.RingView);
-        mColor = tya.getColor(R.styleable.RingView_cColor, Color.BLUE);
-        mSpeed = tya.getInt(R.styleable.RingView_cSpeed, 1);
+        mColor = tya.getColor(R.styleable.RingView_cColor, getContext().getResources().getColor(R.color.COLOR_66F7E1A8));
+        mSpeed = tya.getFloat(R.styleable.RingView_cSpeed, 1);
         mDensity = tya.getInt(R.styleable.RingView_cDensity, 10);
         mIsFill = tya.getBoolean(R.styleable.RingView_cIsFill, false);
         mIsAlpha = tya.getBoolean(R.styleable.RingView_cIsAlpha, false);
@@ -152,55 +152,9 @@ public class SoundWaveView extends View {
 
             mPaint.setStyle(Paint.Style.STROKE);
 
-//            if (c.level == 1) {
-//                mPaint.setAlpha((int) (255));
-//                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_99F7E1A8));
-//            } else if (c.level == 2) {
-//                mPaint.setAlpha((int) (0.7 * 255));
-//                mPaint.setColor(mContext.getResources().getColor(R.color.CLOR_66F7E1A8));
-//            } else if (c.level == 3) {
-//                mPaint.setAlpha((int) (0.4 * 255f));
-//                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_33F7E1A8));
-//                if (c.width > 20) {
-
-//                    mPaint.setColor(Color.CYAN);
-
-//                }
-//                if (c.width < innerRadius + oneRadius) {
-//                    Paint onePaint = new Paint(mPaint);
-//                    onePaint.setColor(oneColor);
-//                    onePaint.setStrokeWidth(c.width - innerRadius);
-//                    canvas.drawArc(rectF, 0, 360, false, onePaint);
-//                } else if (c.width < innerRadius + oneRadius + twoRadius) {
-//                    Paint onePaint = new Paint(mPaint);
-//                    onePaint.setColor(oneColor);
-//                    onePaint.setStrokeWidth(c.width - innerRadius - oneRadius);
-//                    canvas.drawArc(rectF, 0, 360, false, onePaint);
-//                    Paint twoPaint = new Paint(mPaint);
-//                    twoPaint.setColor(twoColor);
-//                    twoPaint.setStrokeWidth(twoRadius);
-//                    RectF twoR = new RectF();
-//                    canvas.drawArc(rectF, 0, 360, false, twoPaint);
-//                } else {
-//                    Paint onePaint = new Paint(mPaint);
-//                    onePaint.setColor(oneColor);
-//                    onePaint.setStrokeWidth(c.width - innerRadius - oneRadius - twoRadius);
-//                    canvas.drawArc(rectF, 0, 360, false, onePaint);
-//                    Paint twoPaint = new Paint(mPaint);
-//                    twoPaint.setColor(twoColor);
-//                    twoPaint.setStrokeWidth(twoRadius);
-//                    canvas.drawArc(rectF, 0, 360, false, twoPaint);
-//                    Paint threePaint = new Paint(mPaint);
-//                    threePaint.setStrokeWidth(threeRadius);
-//                    threePaint.setColor(threeColor);
-//                    canvas.drawArc(rectF, 0, 360, false, threePaint);
-//                }
-
-//            }
-
             logger.i("width:" + (c.width + innerRadius));
             // 当圆超出View的宽度后删除
-            if (c.width + innerRadius > (mWidth / 2 - innerRadius) / 3 * c.level + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / c.level) {
+            if (c.level!=0 && c.width + innerRadius > (mWidth / 2 - innerRadius) / 3 * c.level + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / c.level) {
                 mRipples.remove(0);
                 i--;
             } else {
@@ -208,10 +162,10 @@ public class SoundWaveView extends View {
                 oneRadius = (mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius);
                 twoRadius = (mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / 2;
 
-                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_66F7E1A8));
+//                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_66F7E1A8));
                 if (c.level == 1) {
-                    int ik = (c.width + innerRadius);
-                    int jk = ((mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius));
+                    float ik = (c.width + innerRadius);
+                    float jk = ((mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius));
                     logger.i("a.level:" + c.level + " " + " w.width=" + ik + (c.width) * 1.0 / (oneRadius - innerRadius));
 //                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_99F7E1A8));
                     int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (oneRadius - innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / c.level)));
@@ -219,38 +173,28 @@ public class SoundWaveView extends View {
 
                     mPaint.setAlpha(alpha);
                 } else if (c.level == 2) {
-                    int ik = (c.width + innerRadius);
-                    int jk = (((mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / 2));
+                    float ik = (c.width + innerRadius);
+                    float jk = (((mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / 2));
                     logger.i("b.level:" + c.level + " " + " w.width=" + ik + " " + jk + (ik * 1.0 / jk));
 //                    mPaint.setColor(mContext.getResources().getColor(R.color.CLOR_66F7E1A8));
                     int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (twoRadius - innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / c.level)));
                     logger.i("b alpha:" + alpha);
                     mPaint.setAlpha(alpha);
-                } else {
+                } else if(c.level == 3){
                     logger.i("c.level:" + c.level + " " + (c.width + innerRadius));
                     int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (mWidth / 2 - innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / c.level)));
                     logger.i("c alpha:" + alpha);
                     mPaint.setAlpha(alpha);
 //                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_33F7E1A8));
                 }
-                if (c.level == 1) {
-                    c.width += 1;
-                } else {
-                    c.width += mSpeed * c.level;
-                }
+
+                c.width += mSpeed * c.level;
                 if (c.level != 0) {
                     canvas.drawArc(rectF, 0, 360, false, mPaint);
                 }
 //            }
             }
 
-
-            // 里面添加圆
-//        if (mRipples.size() > 0) {
-//            // 控制第二个圆出来的间距
-//            if (mRipples.get(mRipples.size() - 1).width > DensityUtil.dip2px(mContext, mDensity)) {
-//                mRipples.add(new Circle(0, (add++) % 3 + 1));
-//            }
         }
         if (mRipples.size() == 0) {
             mRipples.add(new Circle(0, 1));
@@ -261,14 +205,14 @@ public class SoundWaveView extends View {
     }
 
     public static class Circle {
-        public Circle(int width, int level) {
+        public Circle(float width, int level) {
             this.width = width;
 //            this.alpha = alpha;
             this.level = level;
 //            nowLevel = 3;
         }
 
-        int width;
+        float width;
 
         int level;
     }

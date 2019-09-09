@@ -1,8 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

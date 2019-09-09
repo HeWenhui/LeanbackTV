@@ -2,9 +2,16 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.JsonUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseBll;
@@ -25,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.AllLiveBasePagerIml;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveDebugBigClassIml;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
@@ -41,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.OnPointClick;
 
 import org.json.JSONObject;
 
@@ -54,7 +63,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by linyuqiang on 2018/7/17.
  */
-public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick {
+public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointClick {
     protected String TAG = "LiveBackBll";
     protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
     protected Activity activity;
@@ -127,13 +136,15 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
      * 是否是体验课
      */
     private Boolean isExperience;
-
+    LiveDebugBigClassIml liveAndBackDebugIml;
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity);
         logger.setLogMethod(false);
         this.activity = activity;
         this.mVideoEntity = mVideoEntity;
-        ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, this);
+        if(!mVideoEntity.isBigLive()) {
+            ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, this);
+        }
         Intent intent = activity.getIntent();
         isArts = intent.getIntExtra("isArts", 0);
         islocal = intent.getBooleanExtra("islocal", false);
@@ -233,6 +244,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 }
             }
         }
+        if(mVideoEntity.isBigLive()) {
+            liveAndBackDebugIml  = new LiveDebugBigClassIml(activity, mLiveType, mVideoEntity.getLiveId(), mVideoEntity.getCourseId());
+
+            ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, liveAndBackDebugIml);
+
+        }
         liveLog = new LiveLog(activity, mLiveType, mVideoEntity.getLiveId(), getPrefix());
         ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, liveLog);
         logToFile = new LogToFile(activity, TAG);
@@ -324,6 +341,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     public void onCreate() {
         LiveGetInfo liveGetInfo = new LiveGetInfo(null);
         mGetInfo = liveGetInfo;
+        if(liveAndBackDebugIml!=null) {
+            liveAndBackDebugIml.onGetInfo(mGetInfo,UmsConstants.LIVE_BUSINESS_APP_ID);
+        }
         liveGetInfo.setId(mVideoEntity.getLiveId());
         liveGetInfo.setUname(LiveAppUserInfo.getInstance().getChildName());
         liveGetInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
@@ -345,6 +365,27 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setTeacherId(mVideoEntity.getTutorTeacherId());
         liveGetInfo.setTeacherName(mVideoEntity.getTutorTeacherName());
         liveGetInfo.setTeacherIMG(mVideoEntity.getTutorTeacherImg());
+
+        liveGetInfo.setsTime(mVideoEntity.getsTime());
+        liveGetInfo.seteTime(mVideoEntity.geteTime());
+        liveGetInfo.setBigLive(mVideoEntity.isBigLive());
+
+        liveGetInfo.setInitModuleUrl(mVideoEntity.getInitModuleUrl());
+        liveGetInfo.setGetChatRecordUrl(mVideoEntity.getGetChatRecordUrl());
+        liveGetInfo.setGetMetadataUrl(mVideoEntity.getGetMetadataUrl());
+      /*  Log.e("ckTrac","=======>liveBackBll_onCreate:"+liveGetInfo.getInitModuleUrl()
+                +":"+liveGetInfo.getGetChatRecordUrl()+":"+liveGetInfo.getGetMetadataUrl());*/
+        try {
+            String[] subjectIds = new String[]{mVideoEntity.getSubjectId()};
+            liveGetInfo.setSubjectIds(subjectIds);
+           String gradeIdStr =  mVideoEntity.getGradId();
+           if(!TextUtils.isEmpty(gradeIdStr)){
+               liveGetInfo.setGrade(Integer.parseInt(gradeIdStr));
+           }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
         if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getEnglishName())) {
             liveGetInfo.setEn_name(LiveAppUserInfo.getInstance().getEnglishName());
@@ -402,16 +443,45 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (liveLog != null) {
             liveLog.setGetInfo(liveGetInfo);
         }
+
+        addHttpDefaultParams(liveGetInfo);
+
         String clientLog = mShareDataManager.getString(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, LiveHttpConfig
                 .URL_LIVE_ON_LOAD_LOGS, ShareDataManager.SHAREDATA_NOT_CLEAR);
         liveGetInfo.setClientLog(clientLog);
         liveUidRx.setLiveGetInfo(liveGetInfo);
         liveUidRx.onCreate();
+        addCommonData(true);
+
+    }
+
+    public void addCommonData(boolean isBase){
         ArrayList<LiveBackBaseBll> templiveBackBaseBlls = new ArrayList<>(liveBackBaseBlls);
         for (LiveBackBaseBll liveBackBaseBll : templiveBackBaseBlls) {
-            liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
+            if(liveBackBaseBll.getPluginId()==-1 && !isBase) {
+                continue;
+            }
+            liveBackBaseBll.onCreateF(mVideoEntity, mGetInfo, businessShareParamMap);
         }
         templiveBackBaseBlls.clear();
+    }
+
+
+
+    /**
+     * 大班整合添加 header 公共参数
+     * @param liveGetInfo
+     */
+    private void addHttpDefaultParams(LiveGetInfo liveGetInfo) {
+
+        Log.e("ckTrac","=====>LiveBackBll_addHttpDefaultParams:"+liveGetInfo.isBigLive());
+        if(liveGetInfo != null && mHttpManager != null && liveGetInfo.isBigLive()){
+            mHttpManager.addHeaderParams("switch-grade",liveGetInfo.getGrade()+"");
+            String subjectId = (liveGetInfo.getSubjectIds()!= null && liveGetInfo.getSubjectIds().length >0)? liveGetInfo.getSubjectIds()[0]:"";
+            mHttpManager.addHeaderParams("switch-subject",subjectId);
+            mHttpManager.addHeaderParams("bizId",mLiveType+"");
+        }
+
     }
 
     public ArrayList<LiveBackBaseBll> getLiveBackBaseBlls() {
@@ -993,5 +1063,27 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
      */
     public LiveGetInfo getRommInitData() {
         return mGetInfo;
+    }
+
+    public void getGrayControl(LivePluginRequestParam param, final AbstractBusinessDataCallBack requestCallBack){
+        mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.d("getLivePluingConfigInfo"+responseEntity.getJsonObject().toString());
+                if (responseEntity != null) {
+
+                    JSONObject json = (JSONObject) responseEntity.getJsonObject();
+                    String jsonString = (String) responseEntity.getJsonObject().toString();
+                    if (json != null) {
+                        LiveModuleConfigInfo  mLiveModuleConfigInfo = (LiveModuleConfigInfo) JsonUtil.jsonToObject(jsonString, LiveModuleConfigInfo.class);
+                        mGetInfo.setLiveModuleConfigInfo(mLiveModuleConfigInfo);
+                        if (!isEmpty(mLiveModuleConfigInfo)) {
+                            requestCallBack.onDataSucess(mLiveModuleConfigInfo);
+                        }
+                    }
+
+                }
+            }
+        });
     }
 }

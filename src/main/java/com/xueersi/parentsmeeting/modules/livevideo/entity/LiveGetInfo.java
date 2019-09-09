@@ -1,9 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,7 +155,7 @@ public class LiveGetInfo {
     /**
      * 当前时间
      */
-    private double nowTime;
+    private long nowTime;
     private List<TestInfoEntity> testInfo = new ArrayList<TestInfoEntity>();
     private ArrayList<TalkConfHost> newTalkConfHosts;
     /**
@@ -196,6 +193,11 @@ public class LiveGetInfo {
     /**
      * 聊天中老师连接是否可以点击
      */
+
+    /**直播入口接口 返回session ID**/
+    public String sessionId;
+
+
     private int urlClick;
     private boolean allowLinkMic;
     /** 2018新接麦 */
@@ -267,6 +269,8 @@ public class LiveGetInfo {
     private String educationStage;
     /** 直播课年级 */
     private int grade;
+    private String gradeIds;
+
     /** 一发多题的动态接口 */
     private String mulpreload;
     private String mulh5url;
@@ -312,10 +316,22 @@ public class LiveGetInfo {
     /** 语文AI主观题AI接口 */
     private String subjectiveItem2AIUrl;
 
+    /** 直播key */
+    private String livePluginKey;
     /**
      * 是否是幼教
      */
     private boolean preschool;
+
+
+    /**大班整合灰控接口**/
+    private String initModuleUrl;
+
+    /**聊天信息接口**/
+    private String getChatRecordUrl;
+    /**扫点信息接口**/
+    private String getMetadataUrl;
+
 
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
@@ -337,6 +353,11 @@ public class LiveGetInfo {
     private VideoConfigEntity videoConfigEntity;
 
     private boolean showHightFeedback;
+
+    /** 灰度控制开关控制*/
+    LiveModuleConfigInfo liveModuleConfigInfo;
+
+
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -671,7 +692,7 @@ public class LiveGetInfo {
         this.liveTime = liveTime;
     }
 
-    public void setNowTime(double nowTime) {
+    public void setNowTime(long nowTime) {
         this.nowTime = nowTime;
     }
 
@@ -744,6 +765,16 @@ public class LiveGetInfo {
         }
         return uname;
     }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
 
     public String getEn_name() {
         return en_name;
@@ -857,7 +888,7 @@ public class LiveGetInfo {
         this.eTime = eTime;
     }
 
-    public double getNowTime() {
+    public Long getNowTime() {
         return nowTime;
     }
 
@@ -1136,6 +1167,22 @@ public class LiveGetInfo {
 
     public boolean isPreschool() {
         return preschool;
+    }
+
+    public String getGetChatRecordUrl() {
+        return getChatRecordUrl;
+    }
+
+    public void setGetChatRecordUrl(String getChatRecordUrl) {
+        this.getChatRecordUrl = getChatRecordUrl;
+    }
+
+    public String getGetMetadataUrl() {
+        return getMetadataUrl;
+    }
+
+    public void setGetMetadataUrl(String getMetadataUrl) {
+        this.getMetadataUrl = getMetadataUrl;
     }
 
     public static class MainTeacherInfo {
@@ -1588,5 +1635,223 @@ public class LiveGetInfo {
 
     public void setShowHightFeedback(boolean showHightFeedback) {
         this.showHightFeedback = showHightFeedback;
+    }
+    /*************************************************大班整合新增相关字段****************************************************************/
+
+    /**磐石id**/
+    private String psId;
+    /**磐石密码**/
+    private String psPwd;
+
+
+    /**主讲流名称**/
+    private String mainTeacherVieo;
+
+    /**辅导流名称**/
+    private String counselorTeacherVideo;
+
+    /**irc 昵称**/
+    private String ircNick;
+    /**irc 房间**/
+    private List<String> ircRoomList;
+
+    /**业务接口配置**/
+    private HashMap<String,String> urlMap;
+
+    /**云平台appId**/
+    private String psAppId;
+    /**云平台 appkey**/
+    private String psAppKey;
+
+    /**是否是大班整合直播**/
+    private boolean bigLive;
+
+
+    public String getMainTeacherVieo() {
+        return mainTeacherVieo;
+    }
+
+    public void setMainTeacherVieo(String mainTeacherVieo) {
+        this.mainTeacherVieo = mainTeacherVieo;
+    }
+
+    public String getCounselorTeacherVideo() {
+        return counselorTeacherVideo;
+    }
+
+    public void setCounselorTeacherVideo(String counselorTeacherVideo) {
+        this.counselorTeacherVideo = counselorTeacherVideo;
+    }
+
+    public String getIrcNick() {
+        return ircNick;
+    }
+
+    public void setIrcNick(String ircNick) {
+        this.ircNick = ircNick;
+    }
+
+    public List<String> getIrcRoomList() {
+        return ircRoomList;
+    }
+
+    public void setIrcRoomList(List<String> ircRoomList) {
+        this.ircRoomList = ircRoomList;
+    }
+
+
+    public String getPsAppId() {
+        return psAppId;
+    }
+
+    public void setPsAppId(String psAppId) {
+        this.psAppId = psAppId;
+    }
+
+    public String getPsAppKey() {
+        return psAppKey;
+    }
+
+    public void setPsAppKey(String psAppKey) {
+        this.psAppKey = psAppKey;
+    }
+
+    public void setPsId(String psId) {
+        this.psId = psId;
+    }
+
+    public String getPsId() {
+        return psId;
+    }
+
+
+    public void setPsPwd(String psPwd) {
+        this.psPwd = psPwd;
+    }
+
+    public String getPsPwd() {
+        return psPwd;
+    }
+
+
+    public void setBigLive(boolean bigLive) {
+        this.bigLive = bigLive;
+    }
+
+    public boolean isBigLive() {
+        return bigLive;
+    }
+
+    public String getLivePluginKey() {
+        return livePluginKey;
+    }
+
+    public void setLivePluginKey(String livePluginKey) {
+        this.livePluginKey = livePluginKey;
+    }
+
+    public LiveModuleConfigInfo getLiveModuleConfigInfo() {
+        return liveModuleConfigInfo;
+    }
+
+    public void setLiveModuleConfigInfo(LiveModuleConfigInfo liveModuleConfigInfo) {
+        this.liveModuleConfigInfo = liveModuleConfigInfo;
+    }
+
+
+    /**
+     * 根据moduleId 查找 Plugin
+     *
+     * @param moduleId
+     * @return
+     */
+    public LivePlugin getLivePluginByModuleId(int moduleId) {
+        LivePlugin plugin = null;
+        LiveModuleConfigInfo info = getLiveModuleConfigInfo();
+        if (info != null && info.plugins != null) {
+            List<LivePlugin> plugins = info.plugins;
+            for (int i = 0; i < plugins.size(); i++) {
+                if (moduleId == plugins.get(i).moduleId) {
+                    plugin = plugins.get(i);
+                    break;
+                }
+            }
+        }
+
+        return plugin;
+    }
+
+
+    /**
+     * 根据pluginName 查找 Plugin
+     *
+     * @param pluginName
+     * @return
+     */
+    public LivePlugin getLivePluginByPluginName(String pluginName) {
+        LivePlugin plugin = null;
+        LiveModuleConfigInfo info = getLiveModuleConfigInfo();
+        if (info != null && info.plugins != null) {
+            List<LivePlugin> plugins = info.plugins;
+            for (int i = 0; i < plugins.size(); i++) {
+                if (pluginName.equals(plugins.get(i).pluginName)) {
+                    plugin = plugins.get(i);
+                    break;
+                }
+            }
+        }
+        return plugin;
+    }
+
+
+    /**
+     *
+     * 根据moudlid key 返回属性
+     * @param moudleId
+     * @param key
+     * @return
+     */
+    public String getProperties(int moudleId,String key){
+        LivePlugin plugin = getLivePluginByModuleId(moudleId);
+        if(plugin!=null) {
+            Map<String,String > maplist = plugin.properties;
+            if(maplist!=null) {
+                return maplist.get(key);
+            }
+        }
+        return "";
+    }
+
+
+
+    /**
+     *
+     * 根据moudlid 功能是否打开
+     * @param moudleId
+     * @param key
+     * @return
+     */
+    public boolean isMoudleAllowed(int moudleId){
+        LivePlugin plugin =  getLivePluginByModuleId(moudleId);
+        if(plugin!=null) {
+            return plugin.isAllowed;
+        }
+        return false;
+    }
+
+    public void setInitModuleUrl(String initModuleUrl) {
+        this.initModuleUrl = initModuleUrl;
+    }
+
+    public String getInitModuleUrl() {
+        return initModuleUrl;
+    }
+
+    public String getGradeIds() {
+        return gradeIds;
+    }
+
+    public void setGradeIds(String gradeIds) {
+        this.gradeIds = gradeIds;
     }
 }

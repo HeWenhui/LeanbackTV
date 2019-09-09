@@ -90,6 +90,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
                 LiveCrashReport.postCatchedException(TAG, e);
             }
         }
+
         return new LiveVideoFragment();
     }
 

@@ -223,6 +223,55 @@ public class LiveVideoEnter {
         return true;
     }
 
+
+    /**
+     * 跳转到直播, 公开直播
+     *
+     * @param context
+     * @param vSectionID 节id
+     * @param from       入口
+     */
+    public static void intentToLiveVideoActivityLecture(final Activity context, final String vSectionID,
+                                                        final int from, final boolean isBiglive) {
+        if (TextUtils.isEmpty(vSectionID)) {
+            Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public void success() {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("vSectionID", vSectionID);
+                bundle.putBoolean("isBigLive",isBiglive);
+                bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
+                bundle.putBoolean("loadAsserts", true);
+                bundle.putInt(ENTER_ROOM_FROM, from);
+                //        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+            }
+
+            @Override
+            public void progress(float progress, int type) {
+
+            }
+
+            @Override
+            public void fail(int errorCode, String errorMsg) {
+
+            }
+        });
+
+
+    }
+
     /**
      * 跳转到直播, 公开直播
      *
