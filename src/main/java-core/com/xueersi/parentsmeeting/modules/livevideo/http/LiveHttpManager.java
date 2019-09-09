@@ -12,17 +12,23 @@ import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.lib.framework.utils.DeviceUtils;
+import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveIntegratedCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLiveEnterParam;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
@@ -1986,7 +1992,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param mode
      * @param requestCallBack
      */
-    public void reportStuInfo(String mode, String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, HttpCallBack requestCallBack) {
+    public void reportStuInfo(String mode, String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, String segment_type, String segment, String star, String segment_count, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("mode", "" + mode);
         params.addBodyParam("stu_id", "" + stu_id);
@@ -1996,6 +2002,10 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("stu_lose_flag", stu_lose_flag);
         params.addBodyParam("nick_name", nick_name);
         params.addBodyParam("unique_id", unique_id);
+        params.addBodyParam("segment_type", segment_type);
+        params.addBodyParam("segment", segment);
+        params.addBodyParam("star", star);
+        params.addBodyParam("segment_count", segment_count);
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STUINFO + "?unique_id=" + unique_id, params, requestCallBack);
     }

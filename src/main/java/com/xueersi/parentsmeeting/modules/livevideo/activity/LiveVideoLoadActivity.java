@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveBusinessResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
@@ -280,7 +281,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         }
                     }
                 });
-            } else if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+            }
+        } else if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             final String vStuCourseID = intent.getStringExtra("vStuCourseID");
             String courseId = intent.getStringExtra("courseId");
             httpManager.addBodyParam("stuCouId", vStuCourseID);
