@@ -43,11 +43,15 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
 
     private static Gson gson = new Gson();
 
-
+    public static int LOGTYPE_SYS = -1;
     private String mUploadLogUrl_sys = "https://appdj.xesimg.com/1001829/sys.gif";
+    public static int LOGTYPE_PV = 0;
     private String mUploadLogUrl_pv = "https://appdj.xesimg.com/1001829/pv.gif";
+    public static int LOGTYPE_CLICK = 1;
     private String mUploadLogUrl_click = "https://appdj.xesimg.com/1001829/click.gif";
+    public static int LOGTYPE_SHOW = 2;
     private String mUploadLogUrl_show = "https://appdj.xesimg.com/1001829/show.gif";
+    public static int LOGTYPE_LAUNCH = 3;
     private String mUploadLogUrl_launch = "https://appdj.xesimg.com/1001829/launch.gif";
 
 
@@ -127,45 +131,45 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
         try {
 
             //业务日志
-            if (new File(LOGFILEPATH + -1 + ".txt").exists()) {
+            if (new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SYS + ".txt").exists()) {
                 Log.e(TAG, "日志-------requset--(-1)------------------");
                 FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + -1 + ".txt"));
                 boolean backData1 = doXrsPostRequest(mUploadLogUrl_sys, fileStream1, getActionHeader());
-                new File(LOGFILEPATH + -1 + ".txt").delete();
+                new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SYS + ".txt").delete();
                 isSuccess = backData1;
             }
 
             //pv
-            if (new File(LOGFILEPATH + 0 + ".txt").exists()) {
+            if (new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_PV + ".txt").exists()) {
                 //Log.e(TAG, "页面日志-------requset--1------------------");
                 FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + 0 + ".txt"));
                 boolean backData1 = doXrsPostRequest(mUploadLogUrl_pv, fileStream1, getActionHeader());
-                new File(LOGFILEPATH + 0 + ".txt").delete();
+                new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_PV + ".txt").delete();
                 isSuccess = backData1;
             }
 
             //click
-            if (new File(LOGFILEPATH + 1 + ".txt").exists()) {
+            if (new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_CLICK + ".txt").exists()) {
                 //Log.e(TAG, "click日志-------requset--2------------------");
                 FileInputStream fileStream2 = new FileInputStream(new File(LOGFILEPATH + 1 + ".txt"));
                 boolean backData2 = doXrsPostRequest(mUploadLogUrl_click, fileStream2, getActionHeader());
-                new File(LOGFILEPATH + 1 + ".txt").delete();
+                new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_CLICK + ".txt").delete();
                 isSuccess = backData2;
             }
             //show
-            if (new File(LOGFILEPATH + 2 + ".txt").exists()) {
+            if (new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SHOW + ".txt").exists()) {
                 //Log.e(TAG, "show日志-------requset--3------------------");
                 FileInputStream fileStream3 = new FileInputStream(new File(LOGFILEPATH + 2 + ".txt"));
                 boolean backData3 = doXrsPostRequest(mUploadLogUrl_show, fileStream3, getActionHeader());
-                new File(LOGFILEPATH + 2 + ".txt").delete();
+                new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SHOW + ".txt").delete();
                 isSuccess = backData3;
             }
             //launch
-            if (new File(LOGFILEPATH + 3 + ".txt").exists()) {
+            if (new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_LAUNCH + ".txt").exists()) {
                 //Log.e(TAG, "launch日志-------requset--4-----------------");
                 FileInputStream fileStream4 = new FileInputStream(new File(LOGFILEPATH + 3 + ".txt"));
                 boolean backData4 = doXrsPostRequest(mUploadLogUrl_launch, fileStream4, getActionHeader());
-                new File(LOGFILEPATH + 3 + ".txt").delete();
+                new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_LAUNCH + ".txt").delete();
                 isSuccess = backData4;
             }
 
