@@ -5,20 +5,28 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.util.Log;
+
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 
 /**
- * Created by linyuqiang on 2018/7/18.
- */
-
-public class LecVideoActivity extends LiveVideoActivity {
-    LectureLiveVideoFragment lectureLiveVideoFragment;
-
+*大班整合直播间入口
+*@author chekun
+*created  at 2019/9/9 16:38
+*/
+public class BigLiveVideoActivity extends LiveVideoActivity {
 
     @Override
     protected LiveVideoFragmentBase getFragment() {
-        lectureLiveVideoFragment = new LectureLiveVideoFragment();
-        return lectureLiveVideoFragment;
+        if(isBigLive()){
+            try {
+                String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessFragment";
+                LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return new LiveVideoFragment();
     }
 
     /**
@@ -35,7 +43,6 @@ public class LecVideoActivity extends LiveVideoActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        lectureLiveVideoFragment.onNewIntent(intent);
     }
 
 
@@ -46,7 +53,7 @@ public class LecVideoActivity extends LiveVideoActivity {
      * @param bundle
      */
     public static void intentTo(Activity context, Bundle bundle) {
-        Intent intent = new Intent(context, LecVideoActivity.class);
+        Intent intent = new Intent(context, BigLiveVideoActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         intent.putExtras(bundle);
         context.startActivity(intent);
