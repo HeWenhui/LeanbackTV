@@ -295,9 +295,26 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     }
 
+
+    /**
+     * 显示视频缓冲UI
+     * @param visibility
+     * @return false 显示默认缓冲UI
+     */
+    protected boolean showBufferingUl(int visibility){
+        return false;
+    }
+
     public static class LiveLivePlayerPlayFragment extends LivePlayerFragment {
         private final String TAG = "LiveLivePlayerPlayFragment";
         LiveFragmentBase liveFragmentBase;
+
+        @Override
+        protected void setVideoLoadingLayoutVisibility(int visibility){
+           if(!liveFragmentBase.showBufferingUl(visibility)){
+                super.setVideoLoadingLayoutVisibility(visibility);
+           }
+        }
 
         public LiveLivePlayerPlayFragment() {
             logger.d("LiveLivePlayerPlayFragment");
