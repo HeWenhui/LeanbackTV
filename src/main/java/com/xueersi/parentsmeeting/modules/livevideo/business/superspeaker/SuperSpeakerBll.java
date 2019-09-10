@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker;
 
 import android.app.Activity;
 import android.support.annotation.UiThread;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -26,17 +25,19 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import okhttp3.Call;
 
 public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicAction, ISuperSpeakerContract.ICameraPresenter {
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public SuperSpeakerBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -66,7 +67,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
 //                                e.onComplete();
 //                            }
 //                        }).
-                createObserValbeDelay(data.optBoolean("open")).
+                compositeDisposable.add(createObserValbeDelay(data.optBoolean("open")).
                         observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Consumer<Boolean>() {
                             @Override
@@ -79,7 +80,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                                     }
                                 }
                             }
-                        });
+                        }));
 
                 break;
             }
@@ -165,7 +166,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
 //                            }
 //                        }).
 //                        delay(2, TimeUnit.SECONDS).
-                createObserValbeDelay(dataJson.optBoolean("open")).
+                compositeDisposable.add(createObserValbeDelay(dataJson.optBoolean("open")).
                         observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Consumer<Boolean>() {
                             @Override
@@ -174,7 +175,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                                     performShowRecordCamera(answerTime, recordVideoTotalTime);
                                 }
                             }
-                        });
+                        }));
 //            if (open) {
 //                performShowRecordCamera(answerTime, recordVideoTotalTime);
 //            }
@@ -416,7 +417,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     public void onModeChange(String oldMode, final String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
 
-        Observable.
+        compositeDisposable.add(Observable.
                 just(superSpeakerBridge != null && !LiveTopic.MODE_CLASS.equals(mode)).
                 doOnNext(new Consumer<Boolean>() {
                     @Override
@@ -441,7 +442,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                         throwable.printStackTrace();
                         logger.e(throwable);
                     }
-                });
+                }));
 //    }
     }
 
@@ -450,6 +451,14 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
         super.onStop();
         if (superSpeakerBridge != null) {
             superSpeakerBridge.pauseVideo();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (compositeDisposable != null) {
+            compositeDisposable.dispose();
         }
     }
 }

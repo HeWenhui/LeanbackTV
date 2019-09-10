@@ -485,6 +485,14 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         LiveBackVideoFragmentBase liveBackVideoFragment;
 
         @Override
+        protected void setVideoLoadingLayoutVisibility(int visibility) {
+
+          if(!liveBackVideoFragment.showBufferingUI(visibility)){
+              super.setVideoLoadingLayoutVisibility(visibility);
+          }
+        }
+
+        @Override
         public void pause() {
             super.pause();
             liveBackVideoFragment.pausePlay = true;
@@ -564,6 +572,16 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
 
     }
 
+    /**
+     * 显示视频缓冲中Ui
+     * @param visibility
+     * @return  true 使用自己UI false 使用父类默认ui
+     */
+    protected boolean showBufferingUI(int visibility){
+        return false;
+    }
+
+
     protected void onStartPlayer() {
     }
 
@@ -622,12 +640,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         }
     }
 
-    /** 加载缓冲进度动画 */
-    private void setVideoLoadingLayoutVisibility(int visibility) {
-        if (videoLoadingLayout != null) {
-            videoLoadingLayout.setVisibility(visibility);
-        }
-    }
+
 
     /** 加载视频异常时出现可重新刷新的背景界面 */
     protected void showRefresyLayout(int arg1, int arg2) {

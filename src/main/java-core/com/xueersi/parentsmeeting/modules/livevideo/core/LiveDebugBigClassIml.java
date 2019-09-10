@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog.LiveBusiLog;
 import com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog.LiveBusiLogEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog.LiveBusiLogSendLogRunnable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -53,7 +54,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
             return;
         }
         setLogParam(eventtype, mData);
-        logEntity.logType = -1;
+        logEntity.logType = LiveBusiLogSendLogRunnable.LOGTYPE_SYS;
         logEntity.mData = mData;
         LiveBusiLog.log(logEntity);
       //  UmsAgentManager.umsAgentDebug(mContext, appID, eventtype, mData);
@@ -65,7 +66,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
             return;
         }
         setLogParam(eventtype, mData);
-        logEntity.logType = 0;
+        logEntity.logType = LiveBusiLogSendLogRunnable.LOGTYPE_CLICK;
         logEntity.mData = mData;
         LiveBusiLog.log(logEntity);
         //UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.typePv, mData);
@@ -77,7 +78,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
             return;
         }
         setLogParam(eventtype, mData);
-        logEntity.logType = 2;
+        logEntity.logType = LiveBusiLogSendLogRunnable.LOGTYPE_PV;
         logEntity.mData = mData;
         LiveBusiLog.log(logEntity);
       //  UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.typeShow, mData);
@@ -90,7 +91,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
         mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
-        logEntity.logType = -1;
+        logEntity.logType = LiveBusiLogSendLogRunnable.LOGTYPE_SYS;
         logEntity.mData = mData;
         LiveBusiLog.log(logEntity);
      //   UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadSystem, mData, analysis);
@@ -103,7 +104,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
         mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
-        logEntity.logType = 0;
+        logEntity.logType = LiveBusiLogSendLogRunnable.LOGTYPE_CLICK;
         logEntity.mData = mData;
         LiveBusiLog.log(logEntity);
        // UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.typePv, mData, analysis);
@@ -120,7 +121,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
         mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
-        logEntity.logType = 2;
+        logEntity.logType = LiveBusiLogSendLogRunnable.LOGTYPE_PV;
         logEntity.mData = mData;
         LiveBusiLog.log(logEntity);
        // UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.typeShow, mData, analysis);
