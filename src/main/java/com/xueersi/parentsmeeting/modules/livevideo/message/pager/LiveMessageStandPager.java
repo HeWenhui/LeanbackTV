@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.AssertUtil;
@@ -74,8 +75,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -85,6 +88,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageCo
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessSysItem;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
@@ -207,6 +211,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     private long mRecogtestEndTime;
     private ShareDataManager mSdm;
 
+    private int segmentType;
+    private int star;
+
     public LiveMessageStandPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                  BaseLiveMediaControllerBottom
                                          liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities,
@@ -234,6 +241,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 initData();
             }
         });
+    }
+
+    @Override
+    public void setGetInfo(LiveGetInfo getInfo) {
+        super.setGetInfo(getInfo);
+        if (getInfo.getBetterMe().getStuSegment() != null) {
+            segmentType = getInfo.getBetterMe().getStuSegment().getSegmentType();
+            star = getInfo.getBetterMe().getStuSegment().getStar();
+        }
     }
 
     @Override
@@ -632,7 +648,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                                 etMessageContent.setText("");
                                 mVoiceContent = "";
                                 mMsgContent = "";
-                                addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, getInfo.getHeadImgPath());
+                                addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, getInfo.getHeadImgPath(),
+                                        segmentType, star);
                                 lastSendMsg = System.currentTimeMillis();
                                 onTitleShow(true);
                                 isSend = true;
@@ -824,7 +841,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         }
 
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5) {
-            String fileName = "live_stand_head.json";
+            String fileName = "live_stand/chat_head/data.json";
 
             @Override
             public Object getItemViewType(LiveMessageEntity liveMessageEntity) {
@@ -845,13 +862,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                     });
                 }
             }
-        }
+        };
 
-        ;
-        lvMessage.setVerticalFadingEdgeEnabled(false);
+//        lvMessage.setVerticalFadingEdgeEnabled(false);
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
         lp.topMargin = ScreenUtils.getScreenHeight() / 3;
-        lvMessage.setLayoutParams(lp);
+        LayoutParamsUtil.setViewLayoutParams(lvMessage, lp);
         lvMessage.setAdapter(messageAdapter);
 //        mView.post(new Runnable() {
 //            @Override
@@ -896,6 +912,18 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
                 get(liveVideoActivity, AudioRequest.class);
         logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
+//        LiveVideoPoint.getInstance().addVideoSizeChangeAndCall(mContext, new LiveVideoPoint.VideoSizeChange() {
+//            @Override
+//            public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
+//                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
+//                int leftMargin = liveVideoPoint.x2 + 10;
+//                if (lp.leftMargin != leftMargin) {
+//                    lp.leftMargin = leftMargin;
+//                    LayoutParamsUtil.setViewLayoutParams(rlInfo, lp);
+//                }
+//            }
+//        });
+        setVideoLayout(LiveVideoPoint.getInstance());
     }
 
     @Override
@@ -1200,7 +1228,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
                         addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"), jsonObject.optString("path",""));
+                                .getString("msg"), jsonObject.optString("path", ""), jsonObject.optInt
+                                ("segmentType"), jsonObject.optInt("star"));
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
@@ -1446,8 +1475,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             @Override
             public void run() {
                 final SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
-                                .chatSendContentDeal(text), mContext,
-                        messageSize);
+                        .chatSendContentDeal(text), mContext, messageSize);
                 mView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -1494,6 +1522,69 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 //                                                logger.d( "addMessage:lvMessage=" + paddingBottom + "," +
 // lvMessage.getScrollY() + "," + lvMessage.getHeight()
 //                                                        + ",child=" + child.getHeight() + "," + childBottom);
+                                            if (childBottom + paddingBottom > lvMessage.getHeight()) {
+                                                int offset = (childBottom + paddingBottom) - lvMessage.getHeight();
+                                                logger.d("addMessage:offset=" + offset);
+                                                lvMessage.smoothScrollByOffset(offset);
+                                            }
+                                        }
+                                    }
+                                }, 200);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        super.setVideoLayout(liveVideoPoint);
+        if (liveStandMessageContent != null) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) liveStandMessageContent
+                    .getLayoutParams();
+            layoutParams.leftMargin = liveVideoPoint.x2;
+            liveStandMessageContent.setLayoutParams(layoutParams);
+        }
+        if (btMesOpen != null) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) btMesOpen
+                    .getLayoutParams();
+            layoutParams.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+            btMesOpen.setLayoutParams(layoutParams);
+        }
+    }
+
+    /*添加聊天信息，超过120，移除60个*/
+    public void addMessage(final String sender, final int type, final String text, final String headUrl, final int
+            segmentType, final int star) {
+        pool.execute(new Runnable() {
+            @Override
+            public void run() {
+                final SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
+                        .chatSendContentDeal(text), mContext, messageSize);
+                mView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (liveMessageEntities.size() > 2) {
+                            LiveMessageEntity entity = liveMessageEntities.remove(0);
+                        }
+                        LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl,
+                                segmentType, star);
+                        liveMessageEntities.add(entity);
+                        messageAdapter.notifyDataSetChanged();
+                        lvMessage.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                lvMessage.smoothScrollToPosition(lvMessage.getCount() - 1);
+                                lvMessage.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        int childrenCount = lvMessage.getChildCount();
+                                        if (childrenCount > 0) {
+                                            View child = lvMessage.getChildAt(childrenCount - 1);
+                                            int childBottom = child.getBottom();
+                                            int paddingBottom = lvMessage.getPaddingBottom();
                                             if (childBottom + paddingBottom > lvMessage.getHeight()) {
                                                 int offset = (childBottom + paddingBottom) - lvMessage.getHeight();
                                                 logger.d("addMessage:offset=" + offset);
@@ -1864,7 +1955,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         public void run() {
                             startEvaluator();
                         }
-                    },300);
+                    }, 300);
                 }
             });
         }

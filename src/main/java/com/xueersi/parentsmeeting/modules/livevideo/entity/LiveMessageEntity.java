@@ -20,6 +20,8 @@ public class LiveMessageEntity {
     private boolean playAnimation;
     private StandLiveHeadView standLiveHeadView;
     private String headUrl;
+    private int segmentType;
+    private int star;
     //自己
     public static final int MESSAGE_MINE = 0;
     //教师
@@ -46,6 +48,15 @@ public class LiveMessageEntity {
         this.type = type;
         this.text = text;
         this.headUrl = headUrl;
+    }
+
+    public LiveMessageEntity(String sender, int type, CharSequence text, String headUrl,int segmentType,int star) {
+        this.sender = sender;
+        this.type = type;
+        this.text = text;
+        this.headUrl = headUrl;
+        this.segmentType = segmentType;
+        this.star = star;
     }
 
     public LiveMessageEntity(boolean self, String sender, int type, int ftype) {
@@ -105,6 +116,22 @@ public class LiveMessageEntity {
 
     public void setStandLiveHeadView(StandLiveHeadView standLiveHeadView) {
         this.standLiveHeadView = standLiveHeadView;
+    }
+
+    public int getSegmentType() {
+        return segmentType;
+    }
+
+    public void setSegmentType(int segmentType) {
+        this.segmentType = segmentType;
+    }
+
+    public int getStar() {
+        return star;
+    }
+
+    public void setStar(int star) {
+        this.star = star;
     }
 
     @Override

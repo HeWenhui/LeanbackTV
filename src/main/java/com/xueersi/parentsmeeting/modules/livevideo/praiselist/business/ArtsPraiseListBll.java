@@ -311,14 +311,15 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
 
     public void closePager() {
         if (artsPraisePager != null) {
+            final ArtsPraisePager finalartsPraisePager=artsPraisePager;
             post(new Runnable() {
                 @Override
                 public void run() {
-                    removeView(artsPraisePager.getRootView());
+                    removeView(finalartsPraisePager.getRootView());
                 }
             });
+            artsPraisePager = null;
         }
-        artsPraisePager = null;
     }
 
     /**

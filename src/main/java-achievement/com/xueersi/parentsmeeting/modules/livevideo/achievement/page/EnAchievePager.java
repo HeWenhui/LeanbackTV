@@ -22,14 +22,19 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType1LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType2LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType3LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.lottie.BubbleLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.utils.BetterMeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -43,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 public class EnAchievePager extends LiveBasePager {
     private RelativeLayout parent;
     private LiveGetInfo mLiveGetInfo;
+    private RelativeLayout rlAchieveTitle;
     private CheckBox cbAchiveTitle;
     private RelativeLayout rlAchiveBack;
     private RelativeLayout rlAchiveContent;
@@ -53,7 +59,6 @@ public class EnAchievePager extends LiveBasePager {
     private ProgressBar pgAchivePk;
     private FrameLayout flProgress;
     private ImageView progressImageView;
-    //    private ImageView progressImageView;
     private Activity activity;
     private TextView tvAchiveNumStar;
     private TextView tvAchiveNumGold;
@@ -65,6 +70,20 @@ public class EnAchievePager extends LiveBasePager {
     private int energyCount;
     private int myTotal = 0;
     private int otherTotal = 0;
+
+    /**
+     * 小目标控件
+     */
+    private TextView tvAchiveAimEmpty;
+    private RelativeLayout rlAchiveAimContent;
+    private TextView tvAchiveAimType;
+    private TextView tvAchiveAimValue;
+    private ProgressBar pgAchiveAim;
+    private TextView tvAchiveAimTips;
+    private int WIDTH_PROGRESS_BAR_AIM_VIEWGROUP = 165;
+    private int WIDTH_SOLID_PROGRESS_BAR_AIM = 137;
+    private int currentProgress = 0;
+    private String currentValue;
 
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -83,6 +102,7 @@ public class EnAchievePager extends LiveBasePager {
     @Override
     public View initView() {
         mView = LayoutInflater.from(mContext).inflate(R.layout.layout_livevodeo_en_achive, parent, false);
+        rlAchieveTitle = mView.findViewById(R.id.rl_livevideo_en_achive_title);
         cbAchiveTitle = mView.findViewById(R.id.cb_livevideo_en_achive_title);
         rlAchiveBack = mView.findViewById(R.id.rl_livevideo_en_achive_back);
         rlAchiveContent = mView.findViewById(R.id.rl_livevideo_en_achive_content);
@@ -91,6 +111,16 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumStar = mView.findViewById(R.id.tv_livevideo_en_achive_num_star);
         tvAchiveNumGold = mView.findViewById(R.id.tv_livevideo_en_achive_num_gold);
         tvAchiveNumFire = mView.findViewById(R.id.tv_livevideo_en_achive_num_fire);
+
+        /**
+         * 小目标控件绑定
+         */
+        tvAchiveAimEmpty = mView.findViewById(R.id.tv_livevideo_en_achive_aim_empty);
+        rlAchiveAimContent = mView.findViewById(R.id.rl_livevideo_en_achive_aim_content);
+        tvAchiveAimType = mView.findViewById(R.id.tv_livevideo_en_achive_aimtype);
+        tvAchiveAimValue = mView.findViewById(R.id.tv_livevideo_en_achive_aimvalue);
+        tvAchiveAimTips = mView.findViewById(R.id.tv_livevideo_en_achive_aimtips);
+        pgAchiveAim = mView.findViewById(R.id.pg_livevideo_en_achive_aim);
         return mView;
     }
 
@@ -124,6 +154,18 @@ public class EnAchievePager extends LiveBasePager {
 //            lp.topMargin = (int) (73 * ScreenUtils.getScreenDensity());
 //            view.setLayoutParams(lp);
 //        }
+        LiveGetInfo.BetterMe betterMe = mLiveGetInfo.getBetterMe();
+        if (betterMe.isUseBetterMe() && betterMe.isArriveLate()) {
+            onBetterMeLate();
+        }
+        if (betterMe.isUseBetterMe() && !betterMe.isArriveLate()) {
+            if (betterMe.getTarget() != null) {
+                onReceiveBetterMe(betterMe.getTarget(), false);
+            }
+            if (betterMe.getCurrent() != null) {
+                onBetterMeUpdate(betterMe.getCurrent(), false);
+            }
+        }
     }
 
     public void onEnglishPk() {
@@ -193,6 +235,12 @@ public class EnAchievePager extends LiveBasePager {
     @Override
     public void initListener() {
         super.initListener();
+        rlAchieveTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cbAchiveTitle.performClick();
+            }
+        });
         cbAchiveTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -386,6 +434,223 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumStar.setText("" + starCount);
     }
 
+    /**
+     * 收到本场小目标
+     */
+    public void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isShowBubble) {
+        onBetterMeLayoutChange();
+        //隐藏没有小目标时的默认视图
+        if (tvAchiveAimEmpty != null) {
+            tvAchiveAimEmpty.setVisibility(View.GONE);
+        }
+        //显示小目标的内容
+        if (rlAchiveAimContent != null) {
+            rlAchiveAimContent.setVisibility(View.VISIBLE);
+        }
+        String current = "0%";
+        String target = betterMeEntity.getAimValue();
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(betterMeEntity.getAimType())) {
+            tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
+            target = Math.round(Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(betterMeEntity.getAimType())) {
+            tvAchiveAimType.setText(BetterMeConfig.PARTICIPATERATE);
+            target = Math.round(Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_TALKTIME.equals(betterMeEntity.getAimType())) {
+            tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
+            target = BetterMeUtil.secondToMinite(target);
+            current = "0:00";
+        }
+        tvAchiveAimValue.setText("目标" + target);
+        tvAchiveAimTips.setText(current);
+        setBetterMePro(0);
+        if (isShowBubble) {
+            receiveBetterMeBubble(betterMeEntity);
+        }
+        currentValue = "0";
+    }
+
+    /**
+     * 更新本场小目标
+     */
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity, boolean isShowBubble) {
+        onBetterMeLayoutChange();
+        //隐藏没有小目标时的默认视图
+        if (tvAchiveAimEmpty != null) {
+            tvAchiveAimEmpty.setVisibility(View.GONE);
+        }
+        //显示小目标的内容
+        if (rlAchiveAimContent != null) {
+            rlAchiveAimContent.setVisibility(View.VISIBLE);
+        }
+        String current = aimRealTimeValEntity.getRealTimeVal();
+        String target = aimRealTimeValEntity.getAimValue();
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
+            tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
+            current = Math.round(Double.valueOf(current) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
+            tvAchiveAimType.setText(BetterMeConfig.PARTICIPATERATE);
+            current = Math.round(Double.valueOf(current) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
+            tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
+            current = BetterMeUtil.secondToMinite(current);
+            target = BetterMeUtil.secondToMinite(target);
+        }
+        if (aimRealTimeValEntity.isDoneAim()) {
+            tvAchiveAimValue.setText("已完成目标");
+            pgAchiveAim.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
+                    .app_livevideo_enteampk_xiaomubiao_progressbar_finish_achieve));
+
+        } else {
+            tvAchiveAimValue.setText("目标" + target);
+            pgAchiveAim.setProgressDrawable(mContext.getResources().getDrawable(R.drawable
+                    .layerlst_livevideo_achieve_betterme_prog));
+        }
+        tvAchiveAimTips.setText(current);
+        float realTimeVal = Float.parseFloat(aimRealTimeValEntity.getRealTimeVal());
+        float aimVal = Float.parseFloat(aimRealTimeValEntity.getAimValue());
+        int progress = (int) (realTimeVal / aimVal * 100);
+        setBetterMePro(progress);
+        if (isShowBubble) {
+            updateBetterMeBubble(aimRealTimeValEntity);
+        }
+        this.currentValue = aimRealTimeValEntity.getRealTimeVal();
+    }
+
+    /**
+     * 小目标迟到
+     */
+    private void onBetterMeLate() {
+        if (tvAchiveAimEmpty != null) {
+            tvAchiveAimEmpty.setText("早点来上课才有小目标哦~");
+        }
+    }
+
+    /**
+     * 设置小目标进度
+     */
+    private void setBetterMePro(int progress) {
+        logger.i("setBetterMePro : progress = " + progress);
+        if (progress > 100) {
+            progress = 100;
+        }
+        currentProgress = progress;
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
+        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, WIDTH_SOLID_PROGRESS_BAR_AIM) / 100;
+        tvAchiveAimTips.setLayoutParams(layoutParams);
+
+        if (progress == 0) {
+            pgAchiveAim.setProgress(0);
+        } else if (progress == 100) {
+            pgAchiveAim.setProgress(100);
+        } else {
+            int a = 6 * 100 / (6 + WIDTH_SOLID_PROGRESS_BAR_AIM);
+            int b = progress * WIDTH_SOLID_PROGRESS_BAR_AIM / (6 + WIDTH_SOLID_PROGRESS_BAR_AIM);
+            pgAchiveAim.setProgress(a + b);
+        }
+    }
+
+    /**
+     * 本场小目标气泡
+     */
+    private void receiveBetterMeBubble(BetterMeEntity betterMeEntity) {
+        StringBuilder message = new StringBuilder("本场目标：");
+        String target = betterMeEntity.getAimValue();
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(betterMeEntity.getAimType())) {
+            message.append(BetterMeConfig.CORRECTRATE);
+            target = Math.round(Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(betterMeEntity.getAimType())) {
+            message.append(BetterMeConfig.PARTICIPATERATE);
+            target = Math.round(Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_TALKTIME.equals(betterMeEntity.getAimType())) {
+            message.append(BetterMeConfig.TALKTIME);
+            target = BetterMeUtil.secondToMinite(target);
+        }
+        message.append("达到").append(target);
+        showBetterMeBubble(null, message.toString(), false, false);
+    }
+
+    /**
+     * 更新小目标气泡
+     */
+    private void updateBetterMeBubble(AimRealTimeValEntity aimRealTimeValEntity) {
+        if (cbAchiveTitle.isChecked()) {
+            return;
+        }
+        StringBuilder message = new StringBuilder();
+        String current = aimRealTimeValEntity.getRealTimeVal();
+        String target = aimRealTimeValEntity.getAimValue();
+
+        //当前完成率是上升还是下降
+        boolean isIncrease = false;
+        boolean isDecrease = false;
+        if (currentValue != null) {
+            double doubleCurrent = (Double.valueOf(current));
+            double doublePrevious = (Double.valueOf(currentValue));
+            isIncrease = doubleCurrent > doublePrevious;
+            isDecrease = doubleCurrent < doublePrevious;
+        }
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
+            message.append(BetterMeConfig.CORRECTRATE);
+            current = Math.round(Double.valueOf(current) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
+            message.append(BetterMeConfig.PARTICIPATERATE);
+            current = Math.round(Double.valueOf(current) * 100) + "%";
+            target = Math.round(Double.valueOf(target) * 100) + "%";
+        } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
+            message.append(BetterMeConfig.TALKTIME);
+            current = BetterMeUtil.secondToMinite(current);
+            target = BetterMeUtil.secondToMinite(target);
+        }
+        if (aimRealTimeValEntity.isDoneAim()) {
+            target = "目标已完成";
+        } else {
+            target = "目标" + target;
+        }
+        message.append(current);
+        if (isIncrease || isDecrease) {
+            showBetterMeBubble(message.toString(), target, isIncrease, isDecrease);
+        }
+    }
+
+    /**
+     * 蓝色气泡动效
+     */
+    private void showBetterMeBubble(String current, String target, boolean isIncrease, boolean isDecrease) {
+        ViewGroup rlLivevideoInfo = ((Activity) mContext).findViewById(R.id.rl_livevideo_info);
+        if (rlLivevideoInfo != null) {
+            ViewGroup viewGroup = (ViewGroup) rlLivevideoInfo.getParent();
+            final LottieEffectInfo bubbleEffectInfo = new BubbleLottieEffectInfo(mContext, current, target,
+                    isIncrease, isDecrease);
+            final LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
+            ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+                @Override
+                public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                    return bubbleEffectInfo.fetchBitmapFromAssets(
+                            lottieAnimationView,
+                            lottieImageAsset.getFileName(),
+                            lottieImageAsset.getId(),
+                            lottieImageAsset.getWidth(),
+                            lottieImageAsset.getHeight(),
+                            mContext);
+                }
+            };
+            lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext), "bubble");
+            lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
+            lottieAnimationView.useHardwareAcceleration(true);
+            lottieAnimationView.playAnimation();
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                    .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp.addRule(RelativeLayout.ALIGN_LEFT, R.id.rl_livevideo_info);
+            lp.addRule(RelativeLayout.ALIGN_RIGHT, R.id.rl_livevideo_info);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lp.bottomMargin = ScreenUtils.getScreenHeight() - rlLivevideoInfo.getTop() - SizeUtils.Dp2Px(mContext, 3);
+            viewGroup.addView(lottieAnimationView, lp);
+        }
+    }
+
     private void setEngPro(int progress) {
         logger.d("setEngPro:progress=" + progress);
         if (pgAchivePk == null) {
@@ -423,6 +688,30 @@ public class EnAchievePager extends LiveBasePager {
 
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         setLayoutOnDraw();
+        onBetterMeLayoutChange();
+    }
+
+    private void onBetterMeLayoutChange() {
+        if (rlAchiveContent != null) {
+            rlAchiveContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                    .OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    if (rlAchiveContent.getWidth() != 0) {
+                        rlAchiveContent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        if (rlAchiveContent.getWidth() < SizeUtils.Dp2Px(mContext, WIDTH_PROGRESS_BAR_AIM_VIEWGROUP)) {
+                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) pgAchiveAim
+                                    .getLayoutParams();
+                            layoutParams.width = rlAchiveAimContent.getWidth() - SizeUtils.Dp2Px(mContext, 22);
+                            pgAchiveAim.setLayoutParams(layoutParams);
+                            WIDTH_SOLID_PROGRESS_BAR_AIM = SizeUtils.Px2Dp(mContext, rlAchiveAimContent.getWidth()) -
+                                    28;
+                        }
+                        setBetterMePro(currentProgress);
+                    }
+                }
+            });
+        }
     }
 
     private void setLayoutOnDraw() {

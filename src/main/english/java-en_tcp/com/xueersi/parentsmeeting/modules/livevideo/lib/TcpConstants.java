@@ -8,7 +8,7 @@ public class TcpConstants {
     private static short PackSize = 4;
     private static short HeaderSize = 2;
     private static short VerSize = 2;
-    static short ver = 2;
+    public static short ver = 2;
     private static short TypeSize = 2;
     private static short OperationSize = 4;
     private static short SeqIDSize = 4;
@@ -45,6 +45,8 @@ public class TcpConstants {
     public final static int VOICE_CANNO_STATIS = 18;
     /** 消息类型，客户端发clean up数据 */
     public final static short CLEAN_UP_TYPE = 9;
+    /** 消息类型，服务器端推送投票实时数据 */
+    public final static short VOTE_TYPE = 10;
     /** 消息类型，客户端发clean up数据 */
     public final static int CLEAN_UP_SEND = 16;
     /** 消息类型，服务器clean up回复 */
@@ -73,6 +75,7 @@ public class TcpConstants {
     /** 消息类型，客户端断线获取游戏离线数据包： */
     public final static int GROUP_GAME_SEND = 16;
 
+    public static String VOTE_TYPE_DATA = "";
     public static boolean isTypeOfCannon(short type) {
         return type == VOICE_CANNO_TYPE || type == WHAT_IS_MISSING_TYPE;
     }

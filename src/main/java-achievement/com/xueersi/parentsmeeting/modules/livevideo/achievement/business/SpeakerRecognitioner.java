@@ -85,6 +85,10 @@ public class SpeakerRecognitioner {
                         LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
+                if (check) {
+                    check = false;
+                    check();
+                }
             }
         }
 
@@ -120,6 +124,8 @@ public class SpeakerRecognitioner {
         this.speakerEnrollIvector = speakerEnrollIvector;
     }
 
+    private boolean check = false;
+
     public void check() {
         if (iSpeechRecognitnGen != null) {
             try {
@@ -130,6 +136,8 @@ public class SpeakerRecognitioner {
                 e.printStackTrace();
                 LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
+        } else {
+            check = true;
         }
     }
 

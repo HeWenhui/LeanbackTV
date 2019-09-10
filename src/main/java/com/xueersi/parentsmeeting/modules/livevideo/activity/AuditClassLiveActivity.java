@@ -476,7 +476,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     @Override
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
-        findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+        View view = findViewById(R.id.probar_course_video_loading_tip_progress);
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
@@ -110,24 +112,36 @@ public class LiveGetPlayServer {
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             String channelname = "";
             if (mLiveType != 3) {
-                channelname = CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
-                        + mGetInfo.getTeacherId();
+                //大班整合 视频channel 由接口带回
+                if(!StringUtils.isEmpty(mGetInfo.getMainTeacherVieo())){
+                    channelname = mGetInfo.getMainTeacherVieo();
+                }else{
+                    channelname = CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"+ mGetInfo.getTeacherId();
+                }
             } else {
-                channelname = CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId();
+
+                if(!StringUtils.isEmpty(mGetInfo.getMainTeacherVieo())){
+                    channelname = mGetInfo.getMainTeacherVieo();
+                }else{
+                    channelname = CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId();
+                }
             }
-            mGetInfo.setChannelname(channelname);
+                mGetInfo.setChannelname(channelname);
         } else {
             if (mGetInfo.ePlanInfo == null) {
                 mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
                         + mGetInfo.getTeacherId());
             } else {
-                mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.ePlanInfo.ePlanId + "_"
-                        + mGetInfo.ePlanInfo.eTeacherId);
+                //大班整合 视频channel 由接口带回
+                if(!StringUtils.isEmpty(mGetInfo.getCounselorTeacherVideo())){
+                    mGetInfo.setChannelname(mGetInfo.getCounselorTeacherVideo());
+                }else{
+                    mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.ePlanInfo.ePlanId + "_"+ mGetInfo.ePlanInfo.eTeacherId);
+                }
             }
         }
-        final String serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
-                + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getChannelname() + "&cType=1";
-        mLogtf.d("liveGetPlayServer:serverurl=" + serverurl);
+
+
         if (mGetPlayServerCancle != null) {
             mGetPlayServerCancle.cancel();
             mGetPlayServerCancle = null;

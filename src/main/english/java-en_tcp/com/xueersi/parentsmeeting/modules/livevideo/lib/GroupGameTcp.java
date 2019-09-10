@@ -36,7 +36,7 @@ public class GroupGameTcp {
     private InetSocketAddress inetSocketAddress;
     private Socket socket;
     /** 消息序号 */
-    private static int seq = 0;
+    public static int seq = 0;
     /** ping 超时 */
     private long pingTime = 10000;
     /** 心跳间隔 */

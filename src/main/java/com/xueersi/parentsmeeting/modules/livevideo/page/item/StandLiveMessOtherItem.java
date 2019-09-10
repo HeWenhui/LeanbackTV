@@ -26,7 +26,6 @@ import com.xueersi.ui.adapter.AdapterItemInterface;
  * @date 2018/5/10
  */
 public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageEntity> {
-    static String TAG = "StandLiveMessSysItem";
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     TextView tvMessageItem;
     StandLiveHeadView standLiveHeadView;
@@ -54,7 +53,7 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
     @Override
     public void initViews(View root) {
         logger.d( "initViews");
-        tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
+        tvMessageItem = root.findViewById(R.id.tv_livevideo_message_item);
         tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
         standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
         standLiveHeadView.addAnimatorListener(new Animator.AnimatorListener() {
@@ -65,8 +64,8 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                Log.d(TAG, "onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
-//                                standLiveHeadView.setProgress(1.0f);
+                logger.d("onAnimationEnd:progerss=" + standLiveHeadView.getProgress());
+
             }
 
             @Override
@@ -86,7 +85,7 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
         LottieComposition.Factory.fromAssetFileName(mContext, fileName, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                Log.d(TAG, "onCompositionLoaded:composition=" + composition);
+                logger.d("onCompositionLoaded:composition=" + composition);
                 if (composition == null) {
                     return;
                 }
@@ -94,7 +93,7 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
                     return;
                 }
                 mComposition = composition;
-                standLiveHeadView.setImageAssetsFolder("live_stand/lottie/head");
+                standLiveHeadView.setImageAssetsFolder("live_stand/chat/images");
                 standLiveHeadView.setComposition(composition);
             }
         });
@@ -107,18 +106,6 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
 
     @Override
     public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
-        String sender = entity.getSender();
-//                        switch (entity.getType()) {
-//                            case LiveMessageEntity.MESSAGE_MINE:
-//                            case LiveMessageEntity.MESSAGE_TEACHER:
-//                            case LiveMessageEntity.MESSAGE_TIP:
-//                            case LiveMessageEntity.MESSAGE_CLASS:
-//                                color = nameColors[entity.getType()];
-//                                break;
-//                            default:
-//                                color = nameColors[0];
-//                                break;
-//                        }
         if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
             tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
             tvMessageItem.setText(entity.getText());
@@ -129,50 +116,10 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
             tvMessageItem.setAutoLinkMask(0);
             tvMessageItem.setText(entity.getText());
         }
-//                        boolean deng = standLiveHeadView.getEntity() == entity;
-//                        logger.d( "updateViews:deng=" + deng + ",text=" + entity.getText());
-//                        if (!deng) {
-//                            standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
-////                        entity.setHeadUrl(getInfo.getHeadImgPath());
-//                            standLiveHeadView.setName(entity.getSender());
-//                            standLiveHeadView.setHead(entity.getHeadUrl());
-//                            if (!entity.isPlayAnimation()) {
-//                                entity.setPlayAnimation(true);
-//                                standLiveHeadView.playAnimation();
-//                            } else {
-//                                standLiveHeadView.setProgress(1.0f);
-//                            }
-//                        } else {
-//                            if (!entity.isPlayAnimation()) {
-//                                logger.d( "updateViews:isPlayAnimation=false");
-//                                entity.setPlayAnimation(true);
-//                                standLiveHeadView.playAnimation();
-//                            } else {
-//                                standLiveHeadView.setProgress(1.0f);
-//                            }
-//                        }
-//                        if (!entity.isPlayAnimation()) {
-//                            logger.d( "updateViews:isPlayAnimation=false");
-//                            entity.setPlayAnimation(true);
-//                            standLiveHeadView.playAnimation();
-//                        } else {
-//                            logger.d( "updateViews:equal=" + (standLiveHeadView.getEntity() != entity));
-//                            if (standLiveHeadView.getEntity() != entity) {
-////                                standLiveHeadView.setProgress(1.0f);
-//                                standLiveHeadView.playAnimation();
-//                            } else {
-////                                standLiveHeadView.resumeAnimation();
-//                            }
-//                        }
-        boolean deng = standLiveHeadView.getEntity() == entity;
-//                            if (deng) {
-//                                return;
-//                            }
-        logger.d( "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
         standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
-//                        entity.setHeadUrl(getInfo.getHeadImgPath());
-        standLiveHeadView.setName(entity.getSender());
-        standLiveHeadView.setHead(entity.getHeadUrl());
+        standLiveHeadView.setSystem(false);
+        standLiveHeadView.setEntity(entity);
+        entity.setStandLiveHeadView(standLiveHeadView);
         if (!entity.isPlayAnimation()) {
             entity.setPlayAnimation(true);
             standLiveHeadView.postDelayed(new Runnable() {
@@ -184,8 +131,5 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
         } else {
             standLiveHeadView.setProgress(1.0f);
         }
-        entity.setStandLiveHeadView(standLiveHeadView);
-        standLiveHeadView.setEntity(entity);
     }
-
 }

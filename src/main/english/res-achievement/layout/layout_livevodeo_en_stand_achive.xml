@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="23dp">
+    android:layout_marginLeft="11dp">
 
     <RelativeLayout
         android:id="@id/rl_livevideo_en_stand_achive__content"
@@ -101,6 +101,72 @@
 
                 </RelativeLayout>
 
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@+id/tv_livevideo_en_achive_aim_empty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_livevideo_en_achive_stand_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="21dp"
+                    android:text="@string/livevideo_enpk_notarget"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_livevideo_en_achive_aim_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_livevideo_en_achive_stand_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="177dp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone">
+
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                        android:id="@+id/tv_livevideo_en_achive_aimtype"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/pg_livevideo_en_achive_aim"
+                        android:layout_marginLeft="3dp"
+                        android:textColor="@color/white"
+                        android:textSize="9dp" />
+
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                        android:id="@+id/tv_livevideo_en_achive_aimvalue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@+id/pg_livevideo_en_achive_aim"
+                        android:layout_marginRight="3dp"
+                        android:textColor="@color/white"
+                        android:textSize="9dp" />
+
+                    <ProgressBar
+                        android:id="@+id/pg_livevideo_en_achive_aim"
+                        style="@style/ProgressBar_live_achieve_betterme_stand"
+                        android:layout_width="153dp"
+                        android:layout_height="13dp"
+                        android:layout_below="@+id/tv_livevideo_en_achive_aimtype"
+                        android:layout_centerHorizontal="true"
+                        android:max="100"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:progress="0" />
+
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                        android:id="@+id/tv_livevideo_en_achive_aimtips"
+                        android:layout_width="30dp"
+                        android:layout_height="15dp"
+                        android:layout_below="@+id/pg_livevideo_en_achive_aim"
+                        android:layout_alignParentLeft="true"
+                        android:background="@drawable/livevideo_enteampk_xiaomubiao_tips_bg_nor"
+                        android:gravity="center"
+                        android:paddingTop="3dp"
+                        android:textColor="@color/white"
+                        android:textSize="9dp"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+
                 <ViewStub
                     android:id="@id/vs_livevideo_en_achive_bottom"
                     android:layout_width="match_parent"
@@ -127,7 +193,17 @@
             android:background="@drawable/selector_live_en_stand_achive_open"
             android:button="@null"
             android:checked="false" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_marginTop="-15dp"
+            android:id="@+id/lav_livevideo_en_stand_achive_bubble"
+            android:layout_width="177dp"
+            android:layout_height="37dp"
+            android:layout_below="@id/cb_livevideo_en_stand_achive_title"/>
+
     </RelativeLayout>
+
+
 
     <LinearLayout
         android:id="@id/ll_livevideo_en_stand_achive_user_head_imge"

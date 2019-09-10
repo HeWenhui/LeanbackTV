@@ -645,6 +645,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                                 head.setHeadImg(objRole.optString("img"));
                                 head.setRoleName(objRole.optString("role"));
                                 head.setRoleId(objRole.optInt("suid"));
+                                head.setSegment(objRole.optString("segment"));
+                                head.setSegment_type(objRole.optInt("segment_type"));
+                                head.setStar(objRole.optInt("star"));
                                 if (head.getRoleId() == mRolePlayerEntity.getSelfRoleId()) {
                                     head.setSelfRole(true);
                                 }

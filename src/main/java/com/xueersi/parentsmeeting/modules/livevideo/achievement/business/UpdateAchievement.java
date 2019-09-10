@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 
 /**
@@ -14,4 +16,8 @@ public interface UpdateAchievement {
     void getStuGoldCount(Object method, int type);
 
     void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity);
+
+    void onUpdateBetterMe(AimRealTimeValEntity aimRealTimeValEntity,boolean isShowBubble);
+
+    void onReceiveBetterMe(BetterMeEntity betterMeEntity, boolean isShowBubble);
 }
