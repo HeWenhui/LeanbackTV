@@ -53,7 +53,7 @@ public class TcpDispatch {
     private int addressIndex = 0;
     private Context context;
     private String stuId;
-    private String xes_rfh;
+    private String talToken;
     private String live_id;
     private String class_id;
     private Handler handler = LiveMainHandler.getMainHandler();
@@ -78,10 +78,10 @@ public class TcpDispatch {
     @Deprecated
     private String test_id;
 
-    public TcpDispatch(Context context, String stuId, String xes_rfh, String live_id, String class_id, int gt, int pid, int iid, String test_id) {
+    public TcpDispatch(Context context, String stuId, String talToken, String live_id, String class_id, int gt, int pid, int iid, String test_id) {
         this.context = context;
         this.stuId = stuId;
-        this.xes_rfh = xes_rfh;
+        this.talToken = talToken;
         this.live_id = live_id;
         this.class_id = class_id;
         this.gt = gt;
@@ -161,7 +161,7 @@ public class TcpDispatch {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("uid", stuId);
                 jsonObject.put("role", 1);
-                jsonObject.put("xes_rfh", xes_rfh);
+                jsonObject.put("tal_token", talToken);
                 jsonObject.put("live_id", live_id);
                 jsonObject.put("class_id", class_id);
                 jsonObject.put("device_id", "1");

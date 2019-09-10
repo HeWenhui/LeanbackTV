@@ -606,8 +606,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
                 .getStuId())
-                .append("&xesrfh=").append(LiveAppUserInfo.getInstance().getUserRfh())
-                .append("&cookie=").append(LiveAppUserInfo.getInstance().getUserToken())
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
         return sb.toString();
@@ -998,7 +996,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                 String classId = mGetInfo.getStudentLiveInfo().getClassId();
                 String[] res = getSrcType(englishH5Entity);
-                getCourseWareHttpManager().getCourseWareTests(detailInfo, mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                getCourseWareHttpManager().getCourseWareTests(detailInfo,mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
                         englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), detailInfo.nonce, mGetInfo.getIsAllowTeamPk(), callBack);
             }
         }
