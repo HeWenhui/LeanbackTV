@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
+import com.xueersi.common.config.AppConfig;
+
 /**
  * 直播模块配置,英语接口
  * Created by linyuqiang on 2018/11/19.
@@ -21,4 +23,15 @@ public class LiveVideoHttpEnConfig {
     public static String URL_LIVE_PK_TOTAL_RANK = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getEnglishPkTotalRank";
     /** 学生点赞上报 go https://wiki.xesv5.com/pages/viewpage.action?pageId=14039396 */
     public static String URL_LIVE_REPORT_STULIKE = LiveVideoConfig.APP_ARTS_WXEN_HTTP_HOST + "/team-pk/reportStuLike";
+
+    /** 英语小目标 -获取学生段位信息 */
+    public static String URL_LIVE_GET_STU_SEGMENT = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getStuSegment";
+    /** 英语小目标 -获取学生这节课小目标 */
+    public static String URL_LIVE_BETTER_ME = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/betterMe";
+    /** 英语小目标 -实时获取学生目标完成度 */
+    public static String URL_LIVE_GET_STU_AIM_REALTIME_VAL = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getStuAimRealTimeVal";
+    /** 英语小目标 -获取小目标结果 */
+    public static String URL_LIVE_GET_STU_AIM_RESULT = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getStuAimResult";
+    /** 英语小目标 -获取小目标能量加成 */
+    public static String URL_LIVE_GET_BETTER_ME_AND_PK_MIDDLE_PAGE = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getBetterMeAndPkMiddlePage";
 }

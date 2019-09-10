@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/tv_livevideo_course_mvp_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:ellipsize="end"
+    android:gravity="center"
+    android:includeFontPadding="false"
+    android:maxLines="1"
+    android:textColor="#FFDF95">
+
+</com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView>

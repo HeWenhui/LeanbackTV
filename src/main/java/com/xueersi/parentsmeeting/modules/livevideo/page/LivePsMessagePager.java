@@ -720,12 +720,17 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initPrimaryFlower();
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    OtherModulesEnter.requestGoldTotal(mContext);
-                }
-            });
+            if (getInfoGoldNum == 0) {
+                liveThreadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        UserGoldTotal.requestGoldTotal(mContext);
+                    }
+                });
+            } else {
+                goldNum = "" + getInfoGoldNum;
+                onGetMyGoldDataEvent(goldNum);
+            }
         }
     }
 

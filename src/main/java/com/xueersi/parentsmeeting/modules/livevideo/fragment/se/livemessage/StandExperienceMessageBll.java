@@ -105,7 +105,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
     }
 
     private IIRCMessage mIRCMessage;
-    private final String IRC_CHANNEL_PREFIX = "4L";
+    private final String IRC_CHANNEL_PREFIX = "#4L";
     /** 是否使用新IRC SDK*/
 //    private boolean isNewIRC = false;
 

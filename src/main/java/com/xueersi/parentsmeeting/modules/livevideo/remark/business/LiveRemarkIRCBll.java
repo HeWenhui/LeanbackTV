@@ -140,6 +140,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                             liveTextureView.setLayoutParams(videoView.getLayoutParams());
                         }
                     }
+                    liveRemarkBll.setLiveId(mLiveId);
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
                     liveRemarkBll.setLiveAndBackDebug(contextLiveAndBackDebug);
                     liveRemarkBll.setHttpManager(getHttpManager());

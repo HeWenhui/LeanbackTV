@@ -650,7 +650,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
             classSignEntity.setTeacherIMG(data.getTeacherIMG());
             classSignEntity.setStatus(1);
             long classBeginTime = data.getsTime() * 1000;
-            long nowTime = (long) (data.getNowTime() * 1000);
+            long nowTime = data.getNowTime() * 1000;
             autoSign(classSignEntity, classBeginTime, nowTime);
         } else {
             if (data.getStudentLiveInfo().getSignStatus() != Config.SIGN_STATE_CODE_SIGN_UNSTART && data

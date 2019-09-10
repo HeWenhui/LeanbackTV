@@ -312,12 +312,23 @@ public class LiveVideoFragmentBase extends Fragment {
         btnVideoRefresh.setOnClickListener(btnRefreshListener); // 刷新事件
         ivBack = (ImageView) videoBackgroundRefresh.findViewById(R.id.iv_layout_video_resfresh_back);
         ivBack.setOnClickListener(ivRefreshBackListener); // 刷新页面的回退
-        mMediaController = new LiveMediaController(activity, videoFragment);
+        mMediaController = creatLiveMediaCtr(activity,videoFragment);
+
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         ((ViewGroup) mContentView.findViewById(R.id.rl_course_video_live_controller_content)).addView(mMediaController, params);
         fragment.setMediaController(mMediaController);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 使屏幕保持长亮
         loadLandOrPortView();
+    }
+
+    /**
+     * 创建媒体控制器
+     * @param activity
+     * @param videoFragment
+     * @return
+     */
+    protected LiveMediaController creatLiveMediaCtr(BaseActivity activity, LivePlayerFragment videoFragment) {
+        return new LiveMediaController(activity, videoFragment);
     }
 
     protected LivePlayerFragment getFragment() {
