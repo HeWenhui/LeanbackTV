@@ -332,6 +332,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 englishH5Entity.setNewEnglishH5(true);
                                 try {
                                     JSONObject objects = new JSONObject();
+                                    videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                                     objects.put("packageId", object.getString("pId"));
                                     englishH5Entity.setPackageId(object.getString("pId"));
                                     objects.put("packageSource", object.getString("pSrc"));
@@ -546,6 +547,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             openStatus.set(object.optBoolean("open"));
 //                    String status = object.optString("status", "off");
             String nonce = object.optString("nonce");
+            videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
             LiveVideoConfig.nonce = nonce;
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             String teamId = studentLiveInfo.getTeamId();

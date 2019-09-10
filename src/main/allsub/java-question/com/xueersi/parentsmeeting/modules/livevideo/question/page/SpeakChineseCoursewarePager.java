@@ -661,7 +661,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     }
                     NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
                             getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid,
-                            (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime,detailInfo.isTUtor());
+                            (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime,detailInfo.isTUtor(),"");
                     isRefresh = 0;
                 }
             }
@@ -1158,7 +1158,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 } else {
                     wvSubjectWeb.loadUrl(test.getPreviewPath());
                     NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
-                            getSubtestid(), test.getPreviewPath(), ispreload, test.getId(),detailInfo.isTUtor());
+                            getSubtestid(), test.getPreviewPath(), ispreload, test.getId(),detailInfo.isTUtor(),"");
                 }
             }
 
