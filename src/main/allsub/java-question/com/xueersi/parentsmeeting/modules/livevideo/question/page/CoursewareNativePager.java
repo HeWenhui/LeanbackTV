@@ -1295,12 +1295,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
-//                mainHandler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        staticWeb.testCourseware();
-//                    }
-//                }, 10);
+                if (!TextUtils.equals("2", getProtocal())) {
+                    mainHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            staticWeb.testCourseware();
+                        }
+                    }, 10);
+                }
             }
         } else {
 //            if (isFinish) {
