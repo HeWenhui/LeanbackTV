@@ -1,0 +1,72 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="581dp"
+    android:layout_height="386dp"
+    android:layout_gravity="center"
+    android:background="@color/transparent_80"
+    android:clickable="true"
+    android:focusable="true">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="581dp"
+        android:layout_height="386dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center" />
+
+    <LinearLayout
+        android:id="@+id/ll_livevideo_betterme_introduction_content"
+        android:layout_width="564dp"
+        android:layout_height="375dp"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="40dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="162dp"
+            android:layout_height="29dp"
+            android:src="@drawable/app_xiaomubiao_shellwindow_xiaomubiaojieshao_title_pic" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:gravity="left|center_vertical"
+            android:lineSpacingExtra="4dp"
+            android:text="AI老师会为你量身定制每节课的小目标,完成小目标你就可以："
+            android:textColor="#ff756565"
+            android:textSize="14dp" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:gravity="center"
+            android:text="提升你在直播间的段位"
+            android:textColor="#ff756565"
+            android:textSize="19dp" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_introduction_viewlevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:drawableLeft="@drawable/app_xiaomubiao_shellwindow_benchangxiaomubiao_icon_nor"
+            android:drawablePadding="6dp"
+            android:gravity="center"
+            android:text="查看具体段位"
+            android:textColor="#fffe6600"
+            android:textSize="11dp" />
+
+        <ImageView
+            android:id="@+id/btn_livevideo_betterme_introduction_gotit"
+            android:layout_width="118dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="26dp"
+            android:src="@drawable/selector_livevideo_betterme_introduction_gotit"
+            tools:text="知道啦" />
+
+    </LinearLayout>
+</FrameLayout>

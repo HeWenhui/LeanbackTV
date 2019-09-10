@@ -737,7 +737,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
 
     /**
-     * 获取战队成员信息
+     * 获取战队成员信息，只有小班调用
      */
     private void getTeamMates() {
         if (primaryClass) {
@@ -780,24 +780,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                             }
                         }
                     });
-        } else {
-            mHttpManager.getTeamMates(roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo()
-                    .getTeamId(), new HttpCallBack() {
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                    mTeamMates = mHttpResponseParser.parseTeamMates(responseEntity);
-                }
-
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    super.onPmError(responseEntity);
-                }
-
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    super.onPmFailure(error, msg);
-                }
-            });
         }
     }
 

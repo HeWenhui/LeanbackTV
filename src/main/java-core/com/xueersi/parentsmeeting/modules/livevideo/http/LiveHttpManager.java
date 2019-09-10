@@ -12,17 +12,23 @@ import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.lib.framework.utils.DeviceUtils;
+import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveIntegratedCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLiveEnterParam;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
@@ -51,6 +57,10 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     String TAG = "LiveHttpManager";
     private final Logger logger = LoggerFactory.getLogger(TAG);
     HashMap<String, String> defaultKey = new HashMap<>();
+    /**header 参数**/
+    HashMap<String,String> defaultHeaderParams = new HashMap<>();
+
+
     LiveVideoSAConfig.Inner liveVideoSAConfigInner;
     private LiveVideoSAConfig liveVideoSAConfig;
 
@@ -84,20 +94,63 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         }
     }
 
+    @Override
     public void sendPostDefault(String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
         setDefaultParameter(httpRequestParams);
         sendPost(url, httpRequestParams, httpCallBack);
+    }
+
+    @Override
+    public void sendJsonPostDefault(String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
+        setDefaultParameter(httpRequestParams);
+        setDefaultHeaderParams(httpRequestParams);
+        sendJsonPost(url, httpRequestParams, httpCallBack);
+    }
+
+    @Override
+    public void sendJsonPost(final String url, final Object paramObject, HttpCallBack httpCallBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.setJson(JsonUtil.toJson(paramObject));
+        sendJsonPostDefault(url,httpRequestParams,httpCallBack);
+    }
+
+    /**
+     * 添加header 参数
+     * @param key
+     * @param value
+     */
+    public void addHeaderParams(String key,String value){
+        defaultHeaderParams.put(key, value);
+    }
+    /**
+     * 添加header 头信息
+     * @param httpRequestParams
+     */
+    private void setDefaultHeaderParams(HttpRequestParams httpRequestParams) {
+        if(defaultHeaderParams != null && defaultHeaderParams.size() > 0 ){
+            for (String key : defaultHeaderParams.keySet()) {
+                Map<String, String> headerParams = httpRequestParams.getHeaderParams();
+                //不顶掉已经有的参数，比如战队pk teamId
+                if (headerParams != null && headerParams.containsKey(key)) {
+                    continue;
+                }
+                String value = defaultHeaderParams.get(key);
+                httpRequestParams.addHeaderParam(key,value);
+            }
+        }
     }
 
     public LiveVideoSAConfig getLiveVideoSAConfig() {
         return liveVideoSAConfig;
     }
 
+    @Override
     public void sendPost(final String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
         long before = System.currentTimeMillis();
         super.sendPost(url, httpRequestParams, httpCallBack);
         logger.d("sendPost:time=" + (System.currentTimeMillis() - before) + ",url=" + url);
     }
+
 
     /**
      * 播放器数据初始化
@@ -140,6 +193,25 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("liveId", liveId);
         sendPost(LiveVideoConfig.URL_LIVE_LECTURE_GET_INFO, params, requestCallBack);
     }
+
+
+    /**
+     * 大班整合直播间-直播信息接口
+     * @param planId  场次id
+     * @param bizId 直播类型：1 直播,2:讲座
+     * @param stuCould 学生课程id
+     */
+    public void bigLiveEnter(int planId, int bizId, int stuCould, HttpCallBack requestCallBack){
+
+        BigLiveEnterParam param = new BigLiveEnterParam();
+        param.setBizId(bizId);
+        param.setPlanId(planId);
+        if(stuCould > 0){
+            param.setStuCouId(stuCould);
+        }
+        sendJsonPost(LiveIntegratedCfg.LIVE_ENTER,param,requestCallBack);
+    }
+
 
     int getTimes = 1;
 
@@ -1920,7 +1992,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param mode
      * @param requestCallBack
      */
-    public void reportStuInfo(String mode, String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, HttpCallBack requestCallBack) {
+    public void reportStuInfo(String mode, String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, String segment_type, String segment, String star, String segment_count, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("mode", "" + mode);
         params.addBodyParam("stu_id", "" + stu_id);
@@ -1930,6 +2002,10 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("stu_lose_flag", stu_lose_flag);
         params.addBodyParam("nick_name", nick_name);
         params.addBodyParam("unique_id", unique_id);
+        params.addBodyParam("segment_type", segment_type);
+        params.addBodyParam("segment", segment);
+        params.addBodyParam("star", star);
+        params.addBodyParam("segment_count", segment_count);
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STUINFO + "?unique_id=" + unique_id, params, requestCallBack);
     }
@@ -2132,5 +2208,108 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("courseId", courseId);
         params.addBodyParam("isPlayBack", isPlayBack);
         sendPost(LiveHttpConfig.URL_LIVE_COURSE_GETEVALUATE, params, httpCallBack);
+    }
+
+    /**
+     * 获取直播Plugin配置信息
+     *
+     * @param requestCallBack
+     */
+    public void getLivePluginConfigInfo(LivePluginRequestParam param, HttpCallBack requestCallBack) {
+        String url = param.url;
+        if (TextUtils.isEmpty(url)) {
+            url = LivePluginHttpConfig.URL_MODULE_INIT;
+        }
+        sendJsonPost(url, param, requestCallBack);
+    }
+
+
+    /**
+     * 英语小目标 - 获取学生段位信息
+     *
+     * @param requestCallBack
+     */
+    public void getStuSegment( HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_SEGMENT, params, requestCallBack);
+    }
+
+    /**
+     * 英语小目标 - 获取学生这节课小目标
+     *
+     * @param liveId
+     * @param courseId
+     * @param requestCallBack
+     */
+    public void getBetterMe(String liveId, String courseId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_BETTER_ME, params, requestCallBack);
+    }
+
+    /**
+     * 英语小目标 - 实时获取学生目标完成度
+     *
+     * @param liveId
+     * @param courseId
+     * @param requestCallBack
+     */
+    public void getStuAimRealTimeVal(String liveId, String courseId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_AIM_REALTIME_VAL, params, requestCallBack);
+    }
+
+    /**
+     * 英语小目标 - 获取小目标结果
+     *
+     * @param liveId
+     * @param courseId
+     * @param requestCallBack
+     */
+    public void getStuAimResult(String liveId, String courseId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_AIM_RESULT, params, requestCallBack);
+    }
+
+
+    /**
+     * 英语小目标 - 获取小目标能量加成
+     *
+     * @param liveId
+     * @param courseId
+     * @param requestCallBack
+     */
+    public void getBetterMeAndPkMiddlePage(String liveId, String courseId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_BETTER_ME_AND_PK_MIDDLE_PAGE, params, requestCallBack);
+    }
+
+    /**
+     * 投票统计折叠次数
+     *
+     * @param requestCallBack
+     */
+    public void voteFoldCountCommit(String foldCount, String testId, String mainTeacherId, String teacherId, String stuId, String classId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("foldCount", foldCount);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("teacherId", mainTeacherId);
+        params.addBodyParam("counselorId", teacherId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("classId", classId);
+        setDefaultParameter(params);
+        sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOTE_FOLD_COUNT, params, requestCallBack);
     }
 }

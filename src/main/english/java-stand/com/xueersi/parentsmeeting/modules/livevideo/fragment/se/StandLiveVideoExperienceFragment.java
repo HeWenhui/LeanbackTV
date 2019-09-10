@@ -594,10 +594,11 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         }
 //        StandLiveVideoExperienceMediaController mPlayBackMediaController = createLivePlaybackMediaController();
 //        mPlayBackMediaController.setOnPointClick(liveBackBll);
-        this.mMediaController = createLivePlaybackMediaController();
+        StandLiveVideoExperienceMediaController mediaController = createLivePlaybackMediaController();
+        this.mMediaController = mediaController;
         liveBackPlayVideoFragment.setMediaController(mMediaController);
         rl_course_video_live_controller_content.removeAllViews();
-        rl_course_video_live_controller_content.addView(mMediaController, new ViewGroup.LayoutParams(ViewGroup
+        rl_course_video_live_controller_content.addView(mediaController, new ViewGroup.LayoutParams(ViewGroup
                 .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // 设置播放器横竖屏切换按钮不显示
         mMediaController.setAutoOrientation(false);
@@ -644,6 +645,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 mIsLand.get());
     }
 
+    @Override
     public void playNewVideo(Uri uri, String mSectionName) {
         liveBackVideoBll.playNewVideo(uri, mSectionName);
     }

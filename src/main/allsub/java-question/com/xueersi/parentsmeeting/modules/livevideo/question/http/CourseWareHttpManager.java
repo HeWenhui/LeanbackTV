@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class CourseWareHttpManager {
     private final Logger logger = LoggerFactory.getLogger("CourseWareHttpManager");
@@ -37,7 +38,7 @@ public class CourseWareHttpManager {
         }
     }
 
-    public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo,String stuId, String packageId, String packageSource, String packageAttr, String releasedPageInfos, int isPlayBack, String classId,
+    public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, String stuId, String packageId, String packageSource, String packageAttr, String releasedPageInfos, int isPlayBack, String classId,
                                       String classTestId, String srcTypes, String testIds, String educationStage, String nonce, String testInfos, int isforce, long entranceTime, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
@@ -112,7 +113,7 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("nonce", "" + nonce);
         httpRequestParams.addBodyParam("isShowTeamPk", "" + isShowTeamPk);
         String url;
-        if (info.isTUtor()){
+        if (info.isTUtor()) {
 //            httpRequestParams.addBodyParam("stuCouId","9649079");
 //            httpRequestParams.addBodyParam("stuId", "58074");
 //            httpRequestParams.addBodyParam("packageId", "59148");
@@ -158,7 +159,7 @@ public class CourseWareHttpManager {
      * 请求学生作答情况列表
      */
     public void getStuTestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
-                                 final AbstractBusinessDataCallBack callBack,boolean isTutor) {
+                                 final AbstractBusinessDataCallBack callBack, boolean isTutor) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("liveId", liveId);
@@ -339,6 +340,85 @@ public class CourseWareHttpManager {
         });
     }
 
+    public void isSubmitH5Vote(final String userAnswer, final String testId, final String classId, final String stuId, final int isPlayBack, final int isforce, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("testId", "" + testId);
+        httpRequestParams.addBodyParam("stuId", "" + stuId);
+        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_IS_SUBMIT_COURSEWARE_VOTE, httpRequestParams, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("isSubmitH5Vote:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                try {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    Boolean isSubmit = jsonObject.optBoolean("isSubmit");
+                    if (isSubmit) {
+                        callBack.onDataSucess(responseEntity.getJsonObject(), true);
+                    } else {
+                        submitH5Vote(userAnswer, testId, classId, stuId, isPlayBack, isforce, callBack);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("isSubmitH5Vote:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("isSubmitH5Vote:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    public void submitH5Vote(String userAnswer, String testId, String classId, String stuId, int isPlayBack, final int isforce, final AbstractBusinessDataCallBack callBack) {
+        try {
+            JSONArray jsonArray = new JSONArray(userAnswer);
+            if (jsonArray.length() > 0) {
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                userAnswer = jsonObject.optString("useranswer");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("userAnswer", userAnswer);
+        httpRequestParams.addBodyParam("testId", "" + testId);
+        if (isforce == 1) {
+            httpRequestParams.addBodyParam("forceSubmit", "" + false);
+        } else {
+            httpRequestParams.addBodyParam("forceSubmit", "" + true);
+        }
+        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
+        httpRequestParams.addBodyParam("classId", "" + classId);
+        httpRequestParams.addBodyParam("stuId", "" + stuId);
+        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOTE, httpRequestParams, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("submitH5Vote:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                callBack.onDataSucess(responseEntity.getJsonObject(), false);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("submitH5Vote:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("submitH5Vote:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
     /**
      * 小组互动 - 拉题
      *
@@ -360,7 +440,7 @@ public class CourseWareHttpManager {
                 if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(type)) {
                     entity = courseWareParse.parseCleanUpTestInfo(responseEntity);
                 } else {
-                    entity = courseWareParse.parseGroupGameTestInfo(responseEntity);
+                    entity = courseWareParse.parseGroupGameTestInfo(responseEntity, type);
                 }
                 if (entity != null) {
                     callBack.onDataSucess(entity);

@@ -1,17 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
-import android.app.Activity;
 import android.content.Intent;
 
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
-import com.xueersi.parentsmeeting.modules.livevideo.business.BusinessCreat;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 public class AllBllConfig {
@@ -70,10 +62,13 @@ public class AllBllConfig {
             //金话筒
             "com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldMicroPhoneBll",
             //教师反馈
-            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"
+            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll",
+            //语文半身直播超级演讲秀
+            "com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll"
     };
     private static String[] engClassPath = {
             //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishCommonBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBll",
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
             "com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll",
@@ -94,7 +89,8 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"};
+            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.betterme.presenter.BetterMeIRCBll",};
     private static String[] cnClassPath = {
             //弹幕
             "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBll",

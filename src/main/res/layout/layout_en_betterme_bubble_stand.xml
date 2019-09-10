@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_livevideo_en_betterme_bubble_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/pc_livevideo_enteampk_benchangchengjiu_tips_bg_stand"
+    android:ellipsize="end"
+    android:gravity="center_horizontal"
+    android:includeFontPadding="false"
+    android:maxLines="1"
+    android:textColor="@color/white">
+
+</com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView>

@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
@@ -515,6 +516,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "PraiseInteractionBll.onPrivateMessage", e.getMessage());
         }
 
     }

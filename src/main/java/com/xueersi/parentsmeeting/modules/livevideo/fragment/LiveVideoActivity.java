@@ -95,6 +95,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
                 LiveCrashReport.postCatchedException(TAG, e);
             }
         }
+
         return new LiveVideoFragment();
     }
 
@@ -175,7 +176,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                updateAchievement.updateGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION, gold, star);
+                updateAchievement.getStuGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION);
             }
             VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
             if (reg != null) {
