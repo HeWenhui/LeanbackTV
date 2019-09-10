@@ -112,13 +112,25 @@ public class LiveAppUserInfo {
         return AppBll.getInstance().getAppInfoEntity().getChildName();
     }
 
+
+    /**
+     * 获取平台用户token
+     *
+     * @return
+     */
+    public String getTalToken() {
+        return UserBll.getInstance().getTalToken();
+    }
+
     /**
      * 获取用户当前的Token,间接调用AppBll
      *
      * @return
      */
+    @Deprecated
     public String getUserToken() {
-        return AppBll.getInstance().getUserToken();
+//        return AppBll.getInstance().getUserToken();
+        return "";
     }
 
     /**
@@ -126,8 +138,10 @@ public class LiveAppUserInfo {
      *
      * @return
      */
+    @Deprecated
     public String getUserRfh() {
-        return AppBll.getInstance().getUserRfh();
+//        return AppBll.getInstance().getUserRfh();
+        return "";
     }
 
     public String getUsernameDefault() {

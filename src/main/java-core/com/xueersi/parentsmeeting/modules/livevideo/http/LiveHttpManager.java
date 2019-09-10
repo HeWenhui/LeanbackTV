@@ -664,7 +664,6 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("answers", testAnswer);
         params.addBodyParam("isPlayBack", "1");
         params.addBodyParam("isForce", isSubmit);
-        params.addBodyParam("Cookie", LiveAppUserInfo.getInstance().getUserToken());
         sendPost(url, params, requestCallBack);
     }
 
