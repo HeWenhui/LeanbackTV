@@ -24,19 +24,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/roleplay_touxiangzhezhao_pic_nor" />
-
                 <com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView
                     android:id="@id/civ_live_roleplayer_message_user_head"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_centerInParent="true"
                     android:clickable="true"
                     android:src="@drawable/ic_default_head_square" />
+
+                <ImageView
+                    android:layout_width="52dp"
+                    android:layout_height="55dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/roleplay_touxiangzhezhao_pic_nor" />
 
             </RelativeLayout>
 
