@@ -4,13 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
@@ -129,20 +129,18 @@ public class StandLiveHeadView extends LottieAnimationView {
         String shortName = StandLiveTextView.getShortName(entity.getSender());
         Bitmap bitmap;
         try {
-            NoPaddingTextview textView = new NoPaddingTextview(getContext());
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.item_livevideo_livemessage_name,null);
+            TextView textView = view.findViewById(R.id.tv_item_livevideo_livemessage_name);
             Bitmap nameBitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/img_2.png"));
             bitmap = Bitmap.createBitmap(nameBitmap.getWidth(), nameBitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
-            textView.setGravity(Gravity.CENTER_VERTICAL);
             textView.setText(shortName);
             textView.setTextSize(nameBitmap.getHeight() / ScreenUtils.getScreenDensity());
-            textView.setTextColor(Color.WHITE);
-            textView.setShadowLayer(3, 1, 1, Color.parseColor("#66010101"));
             int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(nameBitmap.getWidth(), View.MeasureSpec.EXACTLY);
             int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(nameBitmap.getHeight(), View.MeasureSpec.EXACTLY);
-            textView.measure(widthMeasureSpec, heightMeasureSpec);
-            textView.layout(0, 0, nameBitmap.getWidth(), nameBitmap.getHeight());
-            textView.draw(canvas);
+            view.measure(widthMeasureSpec, heightMeasureSpec);
+            view.layout(0, 0, nameBitmap.getWidth(), nameBitmap.getHeight());
+            view.draw(canvas);
         } catch (IOException e) {
             return;
         }
