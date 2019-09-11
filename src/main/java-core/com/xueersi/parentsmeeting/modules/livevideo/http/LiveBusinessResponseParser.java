@@ -162,7 +162,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                JSONObject cfgJsonObj = data.getJSONObject("configs");
                 liveGetInfo.setMainTeacherVieo(cfgJsonObj.optString("mainTeacherVideo"));
                 liveGetInfo.setCounselorTeacherVideo(cfgJsonObj.optString("counselorTeacherVideo"));
-                liveGetInfo.setIrcNick(cfgJsonObj.optString("ircNick"));
+                liveGetInfo.setIrcNick(cfgJsonObj.optString("stuIrcId"));
                 JSONArray ircRooms = cfgJsonObj.optJSONArray("ircRooms");
                 //设置房间号
                 if(ircRooms != null && ircRooms.length() > 0){
