@@ -1259,8 +1259,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         };
         lvReadList.setAdapter(mRolePlayerAdapter);
         lvReadList.setVisibility(View.VISIBLE);
-//        lvReadList.setDividerHeight(SizeUtils.Dp2Px
-//                (mContext, 5));
+        lvReadList.setDividerHeight(SizeUtils.Dp2Px(mContext, 5));
         vHead = new View(mContext);
         //修改类型转换异常
         ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px
