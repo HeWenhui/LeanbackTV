@@ -267,7 +267,7 @@ public class FileDownLoadManager {
 
     private static DownLoadInfoFactory factory = new DownLoadInfoFactory();
 
-    public synchronized static void addToAudioDownloadPool(LiveVideoDownLoadFile info) {
+    public synchronized static void addToAutoDownloadPool(LiveVideoDownLoadFile info) {
         if (info == null || TextUtils.isEmpty(info.getUrl())) {
             return;
         }

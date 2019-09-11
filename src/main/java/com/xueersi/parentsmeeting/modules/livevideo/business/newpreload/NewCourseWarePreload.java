@@ -10,6 +10,8 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.utils.CoursewareHelper;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
@@ -142,25 +144,25 @@ public class NewCourseWarePreload {
             isPrecise.set(true);
             if (0 == mSubject) {//理科
                 logger.i("donwload science");
-                sendPost(liveId, new CoursewareHttpCallBack(false, "science", liveId));
+                sendPost(LiveHttpConfig.URL_LIVE_GET_SCIENCE_COURSEWARE_URL, liveId, new CoursewareHttpCallBack(false, "science", liveId));
             } else if (1 == mSubject) {//英语
                 logger.i("download english");
-                sendPost(liveId, new CoursewareHttpCallBack(false, "english", liveId));
+                sendPost(LiveHttpConfig.URL_LIVE_GET_ENGLISH_COURSEWARE_URL, liveId, new CoursewareHttpCallBack(false, "english", liveId));
             } else if (2 == mSubject) {//语文
                 logger.i("download chs");
-                sendPost(liveId, new CoursewareHttpCallBack(false, "chs", liveId));
+                sendPost(LiveHttpConfig.URL_LIVE_GET_ARTS_COURSEWARE_URL, liveId, new CoursewareHttpCallBack(false, "chs", liveId));
             }
         } else {//下载当天所有课件资源
             logger.i("donwload all subjects");
-            sendPost("", new CoursewareHttpCallBack(false, "science", ""));
-            sendPost("", new CoursewareHttpCallBack(false, "english", ""));
-            sendPost("", new CoursewareHttpCallBack(false, "chs", ""));
+            sendPost(LiveHttpConfig.URL_LIVE_GET_SCIENCE_COURSEWARE_URL, "", new CoursewareHttpCallBack(false, "science", ""));
+            sendPost(LiveHttpConfig.URL_LIVE_GET_ENGLISH_COURSEWARE_URL, "", new CoursewareHttpCallBack(false, "english", ""));
+            sendPost(LiveHttpConfig.URL_LIVE_GET_ARTS_COURSEWARE_URL, "", new CoursewareHttpCallBack(false, "chs", ""));
         }
     }
 
-    private void sendPost(String liveId, HttpCallBack httpCallBack) {
+    private void sendPost(String url, String liveId, HttpCallBack httpCallBack) {
         subjectNum.getAndIncrement();
-        mHttpManager.getScienceCourewareInfo(liveId, httpCallBack);
+        mHttpManager.getCoursewareInfo(url, liveId, httpCallBack);
     }
 
     public class CoursewareHttpCallBack extends HttpCallBack {
@@ -233,18 +235,24 @@ public class NewCourseWarePreload {
         if (courseWareInfos.size() == subjectNum.get()) {
             logger.i("perform download ");
             LiveAppBll.getInstance().registerAppEvent(this);
-            for (int i = 0; i < courseWareInfos.size(); i++) {
-
-            }
-//            storageLiveId();
-//            execDownLoad(
-//                    sortArrays(),
-//                    mergeList(courseWareInfos, 1),
-//                    mergeList(courseWareInfos, 2),
-//                    mergeList(courseWareInfos, 3));
+            CoursewareHelper coursewareHelper = new CoursewareHelper();
+            coursewareHelper.handleCourseWare(courseWareInfos, cacheFile);
             return true;
         } else {
             return false;
         }
+    }
+
+
+    /**
+     * 下载公共资源(字体)
+     *
+     * @param resourseInfos
+     * @param ips
+     * @param cdns
+     */
+    private void downloadResources(List<String> resourseInfos, List<String> cdns,
+                                   final List<String> ips) {
+
     }
 }

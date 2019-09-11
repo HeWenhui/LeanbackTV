@@ -17,13 +17,32 @@ public class CoursewareInfoEntity {
     /** 字体公式资源 */
     List<String> resources = new ArrayList<>();
     /** 加载页资源 */
-    List<String> loadpages = new ArrayList<>();
+//    List<String> loadpages = new ArrayList<>();
     /** 静态资源 */
-    List<String> staticSources = new ArrayList<>();
+//    List<String> staticSources = new ArrayList<>();
 
     /** Nb 加试 实验预加载资源 **/
     NbCoursewareInfo nbCoursewareInfo;
+    //理科加试实验
+    List<AddExperiment> addExperiments;
+    //理科自由实验
+    List<FreeExperiment> freeExperiments;
 
+    public List<AddExperiment> getAddExperiments() {
+        return addExperiments;
+    }
+
+    public void setAddExperiments(List<AddExperiment> addExperiments) {
+        this.addExperiments = addExperiments;
+    }
+
+    public List<FreeExperiment> getFreeExperiments() {
+        return freeExperiments;
+    }
+
+    public void setFreeExperiments(List<FreeExperiment> freeExperiments) {
+        this.freeExperiments = freeExperiments;
+    }
 
     public List<LiveCourseware> getCoursewaresList() {
         return coursewareList;
@@ -57,21 +76,21 @@ public class CoursewareInfoEntity {
         this.resources = resources;
     }
 
-    public List<String> getLoadpages() {
-        return loadpages;
-    }
+//    public List<String> getLoadpages() {
+//        return loadpages;
+//    }
 
-    public void setLoadpages(List<String> loadpages) {
-        this.loadpages = loadpages;
-    }
+//    public void setLoadpages(List<String> loadpages) {
+//        this.loadpages = loadpages;
+//    }
 
-    public List<String> getStaticSources() {
-        return staticSources;
-    }
+//    public List<String> getStaticSources() {
+//        return staticSources;
+//    }
 
-    public void setStaticSources(List<String> staticSources) {
-        this.staticSources = staticSources;
-    }
+//    public void setStaticSources(List<String> staticSources) {
+//        this.staticSources = staticSources;
+//    }
 
     public static class LiveCourseware {
         /** 课件id */
@@ -281,4 +300,45 @@ public class CoursewareInfoEntity {
         }
     }
 
+    public static class AddExperiment {
+        String zip_path;
+        String zip_md5;
+
+        public String getZip_path() {
+            return zip_path;
+        }
+
+        public void setZip_path(String zip_path) {
+            this.zip_path = zip_path;
+        }
+
+        public String getZip_md5() {
+            return zip_md5;
+        }
+
+        public void setZip_md5(String zip_md5) {
+            this.zip_md5 = zip_md5;
+        }
+    }
+
+    public static class FreeExperiment {
+        String zip_path;
+        String zip_md5;
+
+        public String getZip_path() {
+            return zip_path;
+        }
+
+        public void setZip_path(String zip_path) {
+            this.zip_path = zip_path;
+        }
+
+        public String getZip_md5() {
+            return zip_md5;
+        }
+
+        public void setZip_md5(String zip_md5) {
+            this.zip_md5 = zip_md5;
+        }
+    }
 }

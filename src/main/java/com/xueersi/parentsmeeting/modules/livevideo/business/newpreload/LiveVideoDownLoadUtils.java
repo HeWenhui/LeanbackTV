@@ -179,7 +179,7 @@ public class LiveVideoDownLoadUtils {
         //使用自定义方式删除文件
         public static final int DELETE_NEW_CUSTOM = 2;
 
-        static class Builder {
+        public static class Builder {
             //下载的url
             String url;
             //下载文件的文件夹
@@ -300,8 +300,9 @@ public class LiveVideoDownLoadUtils {
                 return new LiveVideoDownLoadFile(this);
             }
 
-            public void setInFileName(String inFileName) {
+            public Builder setInFileName(String inFileName) {
                 this.inFileName = inFileName;
+                return this;
             }
         }
 
