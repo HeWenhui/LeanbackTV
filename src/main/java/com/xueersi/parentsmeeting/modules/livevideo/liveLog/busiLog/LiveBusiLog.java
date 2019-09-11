@@ -1,11 +1,15 @@
 package com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog;
 
+import android.os.Process;
+
 import com.hwl.log.LogConfig;
 import com.hwl.log.xrsLog.UpdateParamInterface;
+import com.hwl.log.xrsLog.XrsLogEntity;
 import com.hwl.log.xrsLog.XrsLogPublicParam;
 import com.hwl.logan.Logan;
 import com.hwl.logan.LoganConfig;
 import com.hwl.logan.SendLogRunnable;
+import com.xueersi.lib.framework.utils.JsonUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,7 +56,16 @@ public class LiveBusiLog {
     }
 
     public static void log(LiveBusiLogEntity entity) {
-        getLoganInstance().wObject(entity, 0);
+
+        XrsLogEntity outEntity = new XrsLogEntity();
+        if (getUpParamInterface() != null) {
+            param.logIndexId = ++index;
+            param.processId = Process.myPid();
+            outEntity.pp = param;
+        }
+        outEntity.data = JsonUtil.toJson(entity);
+        outEntity.type = entity.logType;
+        getLoganInstance().wObject(outEntity, 0);
     }
 
     public static void flushLog() {

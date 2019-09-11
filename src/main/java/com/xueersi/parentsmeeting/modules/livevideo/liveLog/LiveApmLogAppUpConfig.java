@@ -20,8 +20,8 @@ public class LiveApmLogAppUpConfig implements AppUpBusiConfigInterface {
     public void init() {
         LiveLogBill.getInstance().initLiveLog(); //初始化直播日志
 
-        final String processName =getProcessName(android.os.Process.myPid());
-        if(XueErSiRunningEnvironment.sAppContext.getPackageName().equals(processName)){
+        final String processName = getProcessName(android.os.Process.myPid());
+        if (XueErSiRunningEnvironment.sAppContext.getPackageName().equals(processName)) {
             LiveLogBill.getInstance().openAppLiveLog();//主进程开启直播性能启动日志
         }
         LiveLogBill.getInstance().initLiveBisLog();//初始化直播业务日志
