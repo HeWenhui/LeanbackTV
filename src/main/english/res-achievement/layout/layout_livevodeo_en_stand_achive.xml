@@ -1,12 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="11dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@id/rl_livevideo_en_stand_achive__content"
-        android:layout_width="177dp"
+        android:layout_width="199dp"
         android:layout_height="wrap_content">
 
         <FrameLayout
@@ -14,6 +13,7 @@
             android:layout_width="177dp"
             android:layout_height="155dp"
             android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
             android:visibility="gone">
 
             <RelativeLayout
@@ -187,18 +187,18 @@
         <CheckBox
             android:id="@id/cb_livevideo_en_stand_achive_title"
             android:layout_width="152dp"
-            android:layout_marginLeft="13dp"
-            android:layout_marginRight="13dp"
+            android:layout_centerHorizontal="true"
             android:layout_height="63dp"
             android:background="@drawable/selector_live_en_stand_achive_open"
             android:button="@null"
             android:checked="false" />
 
         <com.airbnb.lottie.LottieAnimationView
-            android:layout_marginTop="-15dp"
+            android:layout_marginTop="-12dp"
             android:id="@+id/lav_livevideo_en_stand_achive_bubble"
-            android:layout_width="177dp"
-            android:layout_height="37dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/cb_livevideo_en_stand_achive_title"/>
 
     </RelativeLayout>
