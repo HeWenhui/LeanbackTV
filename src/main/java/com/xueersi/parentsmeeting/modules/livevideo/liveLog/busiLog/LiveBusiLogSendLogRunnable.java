@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.hwl.log.xrsLog.XrsLogEntity;
 import com.hwl.logan.SendLogRunnable;
 import com.xueersi.common.logerhelper.XesLogEntity;
 import com.xueersi.lib.framework.utils.string.MD5Utils;
@@ -231,7 +232,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
             e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (outputStream != null) {
@@ -367,8 +368,12 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
             try {
                 if (type == 0) {
                     String buryString = gson.toJson(data);
-                    LiveBusiLogEntity bury = gson.fromJson(buryString, LiveBusiLogEntity.class);
-                    writeToFile(bury, buryString);
+
+                    //LiveBusiLogEntity bury = gson.fromJson(buryString, LiveBusiLogEntity.class);
+                    //writeToFile(bury, buryString);
+
+                    XrsLogEntity log = gson.fromJson(buryString, XrsLogEntity.class);
+                    writeToFile(log, buryString);
 
                 }
             } catch (Exception e) {
@@ -399,6 +404,17 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
      */
     private void writeToFile(LiveBusiLogEntity bury, String log) {
         String fileName = bury.logType + ".txt";
+
+        Log.e(TAG, "livebusiLogInfo:" + log);
+        writeTxtToFile(log, LOGFILEPATH, fileName);
+
+    }
+
+    /**
+     * 按照日志类型，分别写入各自类型文件
+     */
+    private void writeToFile(XrsLogEntity bury, String log) {
+        String fileName = bury.type + ".txt";
 
         Log.e(TAG, "livebusiLogInfo:" + log);
         writeTxtToFile(log, LOGFILEPATH, fileName);
