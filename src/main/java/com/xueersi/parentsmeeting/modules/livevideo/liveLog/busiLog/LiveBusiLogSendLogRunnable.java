@@ -227,7 +227,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
             e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (outputStream != null) {
