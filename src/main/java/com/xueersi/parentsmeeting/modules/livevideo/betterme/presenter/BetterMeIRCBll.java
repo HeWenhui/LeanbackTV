@@ -133,8 +133,8 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimType) || BetterMeConfig
                 .TYPE_PARTICIPATERATE.equals(aimType)) {
             Random r = new Random();
-            int s = r.nextInt(3);
-            s += 5;
+            int s = r.nextInt(2);
+            s += 8;
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
