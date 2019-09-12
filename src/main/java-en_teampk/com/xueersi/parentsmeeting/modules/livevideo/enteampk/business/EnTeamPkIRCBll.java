@@ -825,9 +825,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
                 break;
             case XESCODE.ARTS_STOP_QUESTION:
-                if (!LiveQueConfig.EN_INTELLIGENT_EVALUTION.equals(data.optString("ptype"))) {
-                    onCourseEnd();
-                }
+                onCourseEnd();
                 break;
 //            case XESCODE.STOPQUESTION: {
 //                onQuestionEnd();
@@ -888,6 +886,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void onCourseEnd() {
+        if (videoQuestionLiveEntity != null &&
+                LiveQueConfig.EN_INTELLIGENT_EVALUTION.equals(videoQuestionLiveEntity.getArtType())) {
+            return;
+        }
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
