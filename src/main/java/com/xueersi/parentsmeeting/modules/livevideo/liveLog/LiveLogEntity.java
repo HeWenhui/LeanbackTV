@@ -94,6 +94,8 @@ public class LiveLogEntity {
 
     public Pridata pridata;
 
+    public int processId;
+
 
 
 }

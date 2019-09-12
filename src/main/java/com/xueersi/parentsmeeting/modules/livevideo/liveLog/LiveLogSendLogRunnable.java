@@ -40,7 +40,7 @@ import javax.net.ssl.SSLSession;
 
 
 /***
- *  直播日志上传
+ *  直播APM日志上传
  */
 public class LiveLogSendLogRunnable extends SendLogRunnable {
 
@@ -241,7 +241,7 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
             e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (outputStream != null) {
