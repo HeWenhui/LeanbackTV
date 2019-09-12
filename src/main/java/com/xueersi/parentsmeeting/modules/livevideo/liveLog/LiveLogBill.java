@@ -242,7 +242,7 @@ public class LiveLogBill {
     public void openAppLiveLog() {
 
 
-        livebaseLog(2);
+        livebaseLog(1);
 
 //        if (mLiveRemoteConfigInfo.liveANRLogTag != 0) {
 //            return;
@@ -389,10 +389,16 @@ public class LiveLogBill {
 
                 isRunning = true;
                 LiveLogEntity log = new LiveLogEntity();
-                log.pri = type;
+                if(type==1 || type==2){
+                    log.pri = 2;
+                }else{
+                    log.pri = type;
+                }
                 if (LiveLogBill.param != null) {
                     log.liveid = LiveLogBill.param.liveid;
                 }
+                log.processId=android.os.Process.myPid();
+                log.reason=type+"";
                 if (myUserInfoEntity == null) {
                     myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 }
