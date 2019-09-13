@@ -33,7 +33,7 @@
                     android:src="@drawable/ic_default_head_square" />
 
                 <ImageView
-                    android:layout_width="52dp"
+                    android:layout_width="55dp"
                     android:layout_height="55dp"
                     android:layout_centerInParent="true"
                     android:background="@drawable/roleplay_touxiangzhezhao_pic_nor" />
@@ -43,7 +43,7 @@
             <TextView
                 android:id="@id/tv_live_roleplayer_message_username"
                 style="@style/text_style_chat__name_style"
-                android:layout_width="60dp"
+                android:layout_width="55dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
@@ -59,7 +59,7 @@
             android:id="@id/rl_live_roleplayer_message_voice_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
+            android:layout_marginLeft="63dp"
             android:background="@drawable/selector_live_stand_roleplayer_other_item_bubble"
             android:minHeight="32dp"
             android:minWidth="120dp"

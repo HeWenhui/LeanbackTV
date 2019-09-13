@@ -148,7 +148,7 @@ public class StandLiveHeadView extends LottieAnimationView {
     }
 
     public void updateHeadSys() {
-        Bitmap headBitmap = BitmapFactory.decodeResource(getResources(), sysHeadId);
+        Bitmap headBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
         updateHead(headBitmap);
     }
 
