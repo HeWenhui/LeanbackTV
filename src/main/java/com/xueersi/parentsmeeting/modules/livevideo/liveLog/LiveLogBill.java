@@ -15,11 +15,15 @@ import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.NetUtil;
 import com.xueersi.common.logerhelper.LogBill;
 import com.xueersi.common.logerhelper.network.PingInfo;
+import com.xueersi.lib.analytics.umsagent.CommonUtil;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
+import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.ListUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog.LiveBusiLog;
 import com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog.LiveBusiLogSendLogRunnable;
+
+import net.grandcentrix.tray.core.ItemNotFoundException;
 
 import java.io.File;
 import java.util.HashMap;
@@ -150,7 +154,6 @@ public class LiveLogBill {
     }
 
 
-
     /**
      * 直播业务日志
      */
@@ -172,13 +175,46 @@ public class LiveLogBill {
                 .setMinSDCard(10)
                 .build();
 
-        LiveBusiLog.init(apmConfig, logSendLogRunnable,5);
+        LiveBusiLog.init(apmConfig, logSendLogRunnable, 5);
         LiveBusiLog.setUpParamInterface(new UpdateParamInterface() {
             @Override
             public XrsLogPublicParam getXrsLogPublicParam() {
 
                 BuryPublicParam buryPublicParam = new BuryPublicParam();
+                buryPublicParam.app_id = "1001637";
+                buryPublicParam.app_clientid = "xesApp";
+                buryPublicParam.devid = "8";
+                buryPublicParam.sn = "android";
+                buryPublicParam.user_id = CommonUtil.getUserIdentifier(XueErSiRunningEnvironment.sAppContext);
+                try {
+                    //系统日志,seesinnID app 启动后不变
+                    buryPublicParam.session_id = UmsAgentTrayPreference.getInstance().getString(UmsAgentTrayPreference.UMSAGENT_APP_SESSID);
+                } catch (ItemNotFoundException e) {
+                    e.printStackTrace();
+                }
                 buryPublicParam.ver = AppUtils.getAppVersionName(XueErSiRunningEnvironment.sAppContext);
+                buryPublicParam.clientIdentifier = AppBll.getInstance().getAppInfoEntity().getAppUUID();
+
+                buryPublicParam.ci = ""; //IP
+                buryPublicParam.ac = DeviceInfo.getNetworkTypeWIFI2G3G();
+                buryPublicParam.access_subtype = CommonUtil.getNetworkType(XueErSiRunningEnvironment.sAppContext);
+                buryPublicParam.ch = AppBll.getInstance().getAppChannel();
+                //buryPublicParam.lt = DeviceInfo.getDeviceTime();
+                buryPublicParam.lt = System.currentTimeMillis() + "";
+                buryPublicParam.st = ""; //服务端时间
+                buryPublicParam.log = "";
+                buryPublicParam.et = "";
+                buryPublicParam.imei = DeviceInfo.getDeviceIMEI();
+                buryPublicParam.imsi = DeviceInfo.getIMSI();
+                buryPublicParam.cr = ""; //运营商
+                buryPublicParam.br = DeviceInfo.getDeviceName(); //手机品牌
+                buryPublicParam.dm = DeviceInfo.getDeviceProduct();//手机型号
+                buryPublicParam.os = DeviceInfo.getOsVersion(); //系统名称
+                buryPublicParam.lbs = ""; //地址信息
+                buryPublicParam.gps = DeviceInfo.getLatitude() + "*" + DeviceInfo.getLongitude();
+                buryPublicParam.lan = DeviceInfo.getLanguage();
+                buryPublicParam.ab_group = ""; //AB测试
+                buryPublicParam.r = DeviceInfo.getReasolution(); //分辨率
                 return buryPublicParam;
             }
         });
@@ -206,7 +242,7 @@ public class LiveLogBill {
     public void openAppLiveLog() {
 
 
-        livebaseLog(2);
+        livebaseLog(1);
 
 //        if (mLiveRemoteConfigInfo.liveANRLogTag != 0) {
 //            return;
@@ -337,7 +373,7 @@ public class LiveLogBill {
             return;
         }
 
-        if (type==3) {
+        if (type == 3) {
 
             anrCount++;
             if (anrCount >= mLiveRemoteConfigInfo.liveANRLogPuhNum) {
@@ -353,10 +389,16 @@ public class LiveLogBill {
 
                 isRunning = true;
                 LiveLogEntity log = new LiveLogEntity();
-                log.pri = type;
+                if(type==1 || type==2){
+                    log.pri = 2;
+                }else{
+                    log.pri = type;
+                }
                 if (LiveLogBill.param != null) {
                     log.liveid = LiveLogBill.param.liveid;
                 }
+                log.processId=android.os.Process.myPid();
+                log.reason=type+"";
                 if (myUserInfoEntity == null) {
                     myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 }
@@ -364,10 +406,10 @@ public class LiveLogBill {
                     log.psId = myUserInfoEntity.getPsimId();
                 }
 
-                if( "wifi".equals(DeviceInfo.getNetworkTypeWIFI2G3G())){
-                    log.net=5;
-                }else{
-                    log.net=9;
+                if ("wifi".equals(DeviceInfo.getNetworkTypeWIFI2G3G())) {
+                    log.net = 5;
+                } else {
+                    log.net = 9;
                 }
                 List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
                 Pridata pridata = new Pridata();

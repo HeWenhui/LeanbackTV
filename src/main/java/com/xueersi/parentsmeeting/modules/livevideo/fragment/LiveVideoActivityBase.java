@@ -68,6 +68,7 @@ public class LiveVideoActivityBase extends XesActivity {
         if (AppConfig.DEBUG) {
             Map<String, String> map = new HashMap<>();
             map.put("liveId", getIntent().getStringExtra("vSectionID"));
+            map.put("live_start_pause", getIntent().getStringExtra("vSectionID"));
             UmsAgentManager.umsAgentDebug(this, LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map);
         }
         LiveLogBill.getInstance().setLiveId(getIntent().getStringExtra("vSectionID"));
