@@ -71,6 +71,14 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_GET_IT = "27";
     /** 直播- 接龙 */
     public static final String EN_COURSE_TYPE_SOLITAIRE = "28";
+    /** 直播- 普通互动题-判断题 */
+    public static final String EN_COURSE_TYPE_31 = "31";
+    /** 直播- 普通互动题-连词成句 */
+    public static final String EN_COURSE_TYPE_32 = "32";
+    /** 直播- 普通互动题-连线题 */
+    public static final String EN_COURSE_TYPE_33 = "33";
+    /** 直播- 普通互动题-排序题 */
+    public static final String EN_COURSE_TYPE_34 = "34";
     /** 直播-小组互动语音炮弹 */
     public static final int EN_COURSE_GAME_TYPE_1 = 1;
     /** 直播-小组互动Cleaning up */
@@ -139,6 +147,14 @@ public class LiveQueConfig {
             SUBMIT_MULTI_TEST_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_18);
             // 19
             SUBMIT_MULTI_TEST_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_19);
+            // 31
+            SUBMIT_MULTI_TEST_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_31);
+            // 32
+            SUBMIT_MULTI_TEST_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_32);
+            // 33
+            SUBMIT_MULTI_TEST_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_33);
+            // 34
+            SUBMIT_MULTI_TEST_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_34);
         }
         return SUBMIT_MULTI_TEST_TYPES;
     }
@@ -178,6 +194,14 @@ public class LiveQueConfig {
             SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_18);
             // 19
             SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_19);
+            // 31
+            SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_31);
+            // 32
+            SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_32);
+            // 33
+            SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_33);
+            // 34
+            SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_34);
         }
         return SHOW_CONTROL_TYPES;
     }

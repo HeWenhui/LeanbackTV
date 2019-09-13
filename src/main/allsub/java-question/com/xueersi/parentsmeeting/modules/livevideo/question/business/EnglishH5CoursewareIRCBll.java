@@ -240,6 +240,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         h5OnlineTechEntity.setAnswer(onlineTechObj.optString("answer"));
                         videoQuestionLiveEntity.assess_ref = onlineTechObj.optString("assess_ref");
                         videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
+                        videoQuestionLiveEntity.setTestsProtocal(onlineTechObj.optString("testsProtocal"));
                         // 09.03 拼接和前端交互的URL
                         JSONArray jsonArray = onlineTechObj.optJSONArray("id");
                         String testIds = getIdStr(jsonArray);

@@ -192,11 +192,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         try {
             testsProtocalList = new ArrayList<>();
-            JSONArray testsProtocalArray = new JSONArray(baseVideoQuestionEntity.getTestsProtocal());
-            for (int index = 0; index < testsProtocalArray.length(); index++) {
-                testsProtocalList.add(testsProtocalArray.optString(index));
+            if(baseVideoQuestionEntity.getTestsProtocal()!=null){
+                JSONArray testsProtocalArray = new JSONArray(baseVideoQuestionEntity.getTestsProtocal());
+                for (int index = 0; index < testsProtocalArray.length(); index++) {
+                    testsProtocalList.add(testsProtocalArray.optString(index));
+                }
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         this.liveId = liveId;
@@ -664,7 +666,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             addJs = false;
                             loadJs = false;
                             NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId(), detailInfo.isTUtor(),getProtocal());
-                            wvSubjectWeb.loadUrl(test.getPreviewPath()+"?cw_platform=android");
+                            if (TextUtils.equals("2", getProtocal())) {
+                                wvSubjectWeb.loadUrl(test.getPreviewPath()+"?cw_platform=android");
+                            }else {
+                                wvSubjectWeb.loadUrl(test.getPreviewPath());
+                            }
                         }
                     }
                 }
@@ -1091,7 +1097,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         JSONArray userAnswerContent2 = answer.getJSONArray("userAnswerContent");
                         for (int k = 0; k < userAnswerContent2.length(); k++) {
                             String str = userAnswerContent2.getJSONObject(k).optString("text");
-                            if (LiveQueConfig.EN_COURSE_TYPE_BLANK.equals(test.getTestType()) || LiveQueConfig.EN_COURSE_TYPE_18.equals(test.getTestType())) {
+                            if (LiveQueConfig.EN_COURSE_TYPE_BLANK.equals(test.getTestType()) || LiveQueConfig.EN_COURSE_TYPE_18.equals(test.getTestType())
+                                    || LiveQueConfig.EN_COURSE_TYPE_31.equals(test.getTestType()) || LiveQueConfig.EN_COURSE_TYPE_32.equals(test.getTestType())
+                                    || LiveQueConfig.EN_COURSE_TYPE_33.equals(test.getTestType()) || LiveQueConfig.EN_COURSE_TYPE_34.equals(test.getTestType())) {
                                 blank.put(str);
                             } else {
                                 choice.put(str);
@@ -1364,9 +1372,17 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                     setNum(1);
                     currentIndex = 0;
-                    wvSubjectWeb.loadUrl(test.getPreviewPath()+"?cw_platform=android");
-                    staticWeb.setLoadUrl(test.getPreviewPath()+"?cw_platform=android");
-                    int type = newCourseCache.loadCourseWareUrl(test.getPreviewPath()+"?cw_platform=android");
+                    int type;
+                    if (TextUtils.equals("2", getProtocal())) {
+                        wvSubjectWeb.loadUrl(test.getPreviewPath()+"?cw_platform=android");
+                        staticWeb.setLoadUrl(test.getPreviewPath()+"?cw_platform=android");
+                        type = newCourseCache.loadCourseWareUrl(test.getPreviewPath()+"?cw_platform=android");
+                    }else {
+                        wvSubjectWeb.loadUrl(test.getPreviewPath());
+                        staticWeb.setLoadUrl(test.getPreviewPath());
+                        type = newCourseCache.loadCourseWareUrl(test.getPreviewPath());
+                    }
+
                     if (type != 0) {
                         ispreload = type == 1;
                     } else {
