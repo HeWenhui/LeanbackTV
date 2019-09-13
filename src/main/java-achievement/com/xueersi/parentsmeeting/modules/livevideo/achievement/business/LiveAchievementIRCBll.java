@@ -320,7 +320,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             public void onClick(View v) {
                 UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
                         .personal_1701003));
-                startAchievement();
+//                startAchievement();
             }
         });
         recognizeDialog.setCancelShowText("取消").setVerifyShowText("去认证");
