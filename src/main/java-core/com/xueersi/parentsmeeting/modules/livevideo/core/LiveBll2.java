@@ -1740,7 +1740,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     public void getLivePluingConfigInfo(LivePluginRequestParam param, final AbstractBusinessDataCallBack callBack) {
         mLivePluginRequestParam = param;
 
-        mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack() {
+        mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.d("getLivePluingConfigInfo" + responseEntity.getJsonObject().toString());
