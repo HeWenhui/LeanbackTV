@@ -55,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfi
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ExceptionRunnable;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -336,7 +337,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
     @Override
     public void onH5Courseware(final String status, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
 //        logToFile.i("onH5Courseware:url=" + url + ",status=" + status);
-        handler.post(new Runnable() {
+        handler.post(new ExceptionRunnable() {
             @Override
             public void run() {
                 if ("on".equals(status)) {
