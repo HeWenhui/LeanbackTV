@@ -5,12 +5,22 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
  */
 
 public class StarAndGoldEntity {
+    public final static int ENGLISH_INTELLIGENT_RECOGNITION = 1;
     private int starCount;
     private int goldCount;
+    private int catagery;
     private PkEnergy pkEnergy = new PkEnergy();
 
     public int getStarCount() {
         return starCount;
+    }
+
+    public void setCatagery(int catagery) {
+        this.catagery = catagery;
+    }
+
+    public int getCatagery() {
+        return catagery;
     }
 
     public void setStarCount(int starCount) {

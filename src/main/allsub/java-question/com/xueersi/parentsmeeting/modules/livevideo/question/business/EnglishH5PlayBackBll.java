@@ -1,18 +1,19 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
@@ -20,12 +21,15 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -56,8 +60,12 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+import static com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.utils.IntelligentConstants.PROCESS_RECORD_SIGN;
+import static com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.view.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_FILTER_ACTION;
+import static com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.view.IntelligentRecognitionContract.intelligent_recognition_sign;
 import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTIONS_SHOW;
 import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTION_CLOSE;
+import static com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig.EN_INTELLIGENT_EVALUTION;
 
 /**
  * Created by linyuqiang on 2018/7/17.
@@ -157,6 +165,12 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             }
             break;
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
+                if (questionEntity.getvQuestionType().equals(EN_INTELLIGENT_EVALUTION)) {
+                    Intent intent = new Intent(INTELLIGENT_RECOGNITION_FILTER_ACTION);
+                    intent.putExtra(intelligent_recognition_sign, new JSONObject().toString());
+                    activity.sendBroadcast(intent);
+                    return;
+                }
                 VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
                 Log.e("mqtt", "关闭上一题" + "CATEGORY_H5COURSE_NEWARTSWARE");
                 EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
@@ -284,7 +298,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 // mCurrentQuestionEntity.setNewArtsCourseware(true);
                 Log.e("Duncan", "mqtt+文科新课件平台");
                 BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
-                if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
+                if (!liveBackBll.getExperience() && mediaPlayerControl != null &&
+                        !questionEntity.getvQuestionType().equals(EN_INTELLIGENT_EVALUTION)) {//体验课不能暂停
                     mediaPlayerControl.pause();
                 }
                 questionEntity.setAnswered(true);
@@ -321,7 +336,31 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         showQuestion.onHide(questionEntity);
                     }
                 });
-                verifyCancelAlertDialog.showDialog();
+                if (questionEntity.getvQuestionType().equals(EN_INTELLIGENT_EVALUTION)) {
+                    if (mediaPlayerControl == null) {
+                        mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
+                    }
+                    if (mediaPlayerControl != null) {
+                        mediaPlayerControl.start();
+                    }
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
+                            (questionEntity, vCategory);
+                    if (videoQuestionLiveEntity.type.equals(EN_INTELLIGENT_EVALUTION)) {
+                        Bundle bundle = new Bundle();
+                        IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
+//                intelligentRecognitionRecord.setAnswerTime(questionEntity.get);
+                        intelligentRecognitionRecord.setStuId(liveGetInfo.getStuId());
+                        intelligentRecognitionRecord.setStuCouId(liveGetInfo.getStuCouId());
+                        intelligentRecognitionRecord.setLiveId(liveGetInfo.getId());
+                        intelligentRecognitionRecord.setMaterialId(videoQuestionLiveEntity.id);
+                        intelligentRecognitionRecord.setIsPlayBack("1");
+                        bundle.putParcelable(PROCESS_RECORD_SIGN, intelligentRecognitionRecord);
+                        XueErSiRouter.startModule(activity, "/english/intelligent_recognition", bundle);
+                        return;
+                    }
+                } else {
+                    verifyCancelAlertDialog.showDialog();
+                }
             }
             break;
             default:

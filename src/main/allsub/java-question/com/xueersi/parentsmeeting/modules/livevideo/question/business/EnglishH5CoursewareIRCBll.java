@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -56,6 +57,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
+import static com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.view.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_FILTER_ACTION;
+import static com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.view.IntelligentRecognitionContract.intelligent_recognition_sign;
 
 /**
  * Created by linyuqiang on 2018/7/5.
@@ -199,6 +203,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.type = coursewareH5.optString("ptype");
                 videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                 String status = coursewareH5.optString("status", "off");
+                if (videoQuestionLiveEntity.type.equals(LiveQueConfig.EN_INTELLIGENT_EVALUTION)) {
+                    stopIntelligentRecognitionSpeech(jsonObject.toString());
+                    return;
+                }
                 if ("on".equals(status)) {
                     // LiveVideoConfig.isNewArts = true;
                     videoQuestionLiveEntity.noticeType = XESCODE.ARTS_SEND_QUESTION;
@@ -491,6 +499,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 break;
 
             case XESCODE.ARTS_STOP_QUESTION:
+                if (object.optString("ptype").equals(LiveQueConfig.EN_INTELLIGENT_EVALUTION)) {
+                    stopIntelligentRecognitionSpeech(object.toString());
+                    return;
+                }
             case XESCODE.ARTS_H5_COURSEWARE: {
                 Loger.e(Tag, "===========>ARTS_H5_COURSEWARE");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
@@ -854,6 +866,18 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             courseWareHttpManager = new CourseWareHttpManager(getHttpManager());
         }
         return courseWareHttpManager;
+    }
+
+    /**
+     * 停止英语智能测评
+     *
+     * @param jString
+     */
+    private void stopIntelligentRecognitionSpeech(String jString) {
+        Intent intent = new Intent(INTELLIGENT_RECOGNITION_FILTER_ACTION);
+        intent.putExtra(intelligent_recognition_sign, jString);
+        activity.sendBroadcast(intent);
+        return;
     }
 
     /**

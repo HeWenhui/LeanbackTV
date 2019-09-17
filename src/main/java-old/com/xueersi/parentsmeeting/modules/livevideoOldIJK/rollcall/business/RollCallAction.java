@@ -43,7 +43,7 @@ public interface RollCallAction {
      * @param classStartTime 课程开始时间
      * @param nowTime        当前时间
      */
-    void autoSign(ClassSignEntity classSignEntity,long classStartTime,long nowTime);
+    void autoSign(ClassSignEntity classSignEntity, long classStartTime, long nowTime);
 
 
     /**
