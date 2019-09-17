@@ -25,6 +25,7 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -230,6 +231,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
             View view = View.inflate(mContext, R.layout.fragment_vote, null);
+            UmsAgentManager.umsAgentDebug(mContext,"vote_version_1","vote_version");
             VoteView voteView = view.findViewById(R.id.ll_vote);
             voteView.updateVote(mData.get(position), resultData);
             container.addView(view);
