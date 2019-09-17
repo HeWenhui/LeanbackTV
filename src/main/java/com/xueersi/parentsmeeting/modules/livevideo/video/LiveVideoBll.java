@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -234,6 +235,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
                     setUserName(mGetInfo.getUname()).
                     setUserId(mGetInfo.getStuId());
         }
+        Log.e("ckTrac","=====>LiveVideoBll:getVideoCfg:"+videoConfigEntity.getWaterMark()
+                +":"+videoConfigEntity.getDuration()+":"+videoConfigEntity.getUserId()
+                +":"+videoConfigEntity.getUserName());
         return videoConfigEntity;
     }
 
