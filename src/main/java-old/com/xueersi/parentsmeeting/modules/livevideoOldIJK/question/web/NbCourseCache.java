@@ -62,7 +62,7 @@ public class NbCourseCache {
             mNbCacheFileDir = new File(mResDir, resDir);
         }
         header.put("Access-Control-Allow-Origin", "*");
-        webInstertJs = new WebInstertJs(context,"99999");
+        webInstertJs = new com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs(context,"99999");
     }
 
 

@@ -343,7 +343,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         EventBus.getDefault().post(new AnswerResultEvent(data));
     }
 
-    @JavascriptInterface
+    @android.webkit.JavascriptInterface
     private void addJavascriptInterface() {
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setJavaScriptEnabled(true);

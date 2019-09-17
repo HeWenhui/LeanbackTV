@@ -174,7 +174,7 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
         speechFeedBackPager = new SpeechCollectivePager(activity, new SpeechCollectivePager.CountDownListener() {
             @Override
             public void onCountDownFinish() {
-                liveThreadPoolExecutor.execute(new AudioRecordRunnable());
+                liveThreadPoolExecutor.execute(new SpeechCollectiveBll.AudioRecordRunnable());
             }
         });
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup

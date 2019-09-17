@@ -5,9 +5,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.widget.RelativeLayout;
 
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.BaseBll;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.PermissionItem;
@@ -79,7 +82,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 连接地址
      */
     private String webSocketUrl = "ws://wsarts.xueersi" +
-            ".com/roleplay/index?userId=%1$s&role=1&cookie=%2$s&liveId=%3$s&xes_rfh=%4$s";
+            ".com/roleplay/index?userId=%1$s&role=1&tal_token=%2$s&liveId=%3$s";
 
     /**
      * RolePlayer数据实体
@@ -375,8 +378,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }
 
         mWebSocket = new WebSocketConn();
-        webSocketUrl = String.format(webSocketUrl, LiveAppUserInfo.getInstance().getStuId(), LiveAppUserInfo.getInstance().getUserToken(),
-                mLiveId, LiveAppUserInfo.getInstance().getUserRfh());
+        webSocketUrl = String.format(webSocketUrl, LiveAppUserInfo.getInstance().getStuId(), LiveAppUserInfo.getInstance().getTalToken(), mLiveId);
+//        webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), AppBll
+//                .getInstance().getUserToken(), mLiveId, AppBll.getInstance().getUserRfh());
         //webSocketUrl = String.format(webSocketUrl, "1237", "1111111", "1234");
         logger.i("websocket:" + webSocketUrl);
         mWebSocket.connect(webSocketUrl, new WebSocketConn.WebSocketCallBack() {

@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideoOldIJK.videochat.page;//package com.xueersi.parentsmeeting.modules.livevideoOldIJK.page;
+//package com.xueersi.parentsmeeting.modules.livevideoOldIJK.page;
 //
 //import android.app.Activity;
 //import android.graphics.drawable.BitmapDrawable;

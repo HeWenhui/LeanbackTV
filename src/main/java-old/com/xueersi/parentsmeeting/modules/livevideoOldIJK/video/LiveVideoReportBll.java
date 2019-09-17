@@ -98,7 +98,7 @@ public class LiveVideoReportBll {
             isOpenSuccess = true;
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenSuccess:openTime=" + openTime);
-            streamReport(MegId.MEGID_12102, mGetInfo.getChannelname(), openTime);
+            streamReport(LiveVideoReportBll.MegId.MEGID_12102, mGetInfo.getChannelname(), openTime);
             if (livePlayLog != null) {
                 livePlayLog.onOpenSuccess();
             }
@@ -165,17 +165,17 @@ public class LiveVideoReportBll {
         }
     };
 
-    public void streamReport(MegId msgid, String channelname, long connsec) {
+    public void streamReport(LiveVideoReportBll.MegId msgid, String channelname, long connsec) {
         if (mServer == null || playserverEntity == null) {
             return;
         }
         HttpRequestParams entity = new HttpRequestParams();
-        if (MegId.MEGID_12107 == msgid) {
+        if (LiveVideoReportBll.MegId.MEGID_12107 == msgid) {
             boolean isPresent = liveBll.isPresent();
             if (!isPresent) {
                 return;
             }
-        } else if (MegId.MEGID_12102 == msgid) {
+        } else if (LiveVideoReportBll.MegId.MEGID_12102 == msgid) {
             if (livePlayLog != null) {
                 String cpuName = livePlayLog.getCpuName();
                 String memsize = livePlayLog.getMemsize();
