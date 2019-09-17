@@ -231,7 +231,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
             View view = View.inflate(mContext, R.layout.fragment_vote, null);
-            UmsAgentManager.umsAgentDebug(mContext,"vote_version_1","vote_version");
+       //     UmsAgentManager.umsAgentDebug(mContext,"vote_version_1","vote_version");
             VoteView voteView = view.findViewById(R.id.ll_vote);
             voteView.updateVote(mData.get(position), resultData);
             container.addView(view);
