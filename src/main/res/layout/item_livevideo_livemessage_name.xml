@@ -3,13 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.xueersi.parentsmeeting.modules.livevideo.widget.NoPaddingTextview
+    <TextView
         android:id="@+id/tv_item_livevideo_livemessage_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:shadowColor="#66010101"
+        android:gravity="center_horizontal|top"
         android:shadowDx="1"
+        android:includeFontPadding="false"
         android:shadowDy="1"
         android:shadowRadius="3.0"
         android:textColor="@color/white" />

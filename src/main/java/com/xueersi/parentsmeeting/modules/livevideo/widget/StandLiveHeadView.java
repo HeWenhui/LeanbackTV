@@ -134,8 +134,13 @@ public class StandLiveHeadView extends LottieAnimationView {
             Bitmap nameBitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/img_2.png"));
             bitmap = Bitmap.createBitmap(nameBitmap.getWidth(), nameBitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
-            textView.setText(shortName);
-            textView.setTextSize(nameBitmap.getHeight() / ScreenUtils.getScreenDensity());
+            if (isSystem) {
+                textView.setText(shortName + "  ");
+            } else {
+                textView.setText(shortName + "我我我我");
+            }
+            textView.setTextSize((float) nameBitmap.getHeight() * 9.0f / 10.0f / ScreenUtils.getScreenDensity());
+            textView.setPadding(0, -nameBitmap.getHeight() / 10, 0, 0);
             int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(nameBitmap.getWidth(), View.MeasureSpec.EXACTLY);
             int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(nameBitmap.getHeight(), View.MeasureSpec.EXACTLY);
             view.measure(widthMeasureSpec, heightMeasureSpec);
