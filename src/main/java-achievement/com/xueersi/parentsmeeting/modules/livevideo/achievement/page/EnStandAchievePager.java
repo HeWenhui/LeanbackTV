@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -49,6 +50,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.ui.widget.CircleImageView;
 
 import net.grandcentrix.tray.core.ItemNotFoundException;
+
+import java.util.Random;
 
 public class EnStandAchievePager extends LiveBasePager {
     private RelativeLayout parent;

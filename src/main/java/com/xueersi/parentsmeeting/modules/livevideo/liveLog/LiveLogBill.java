@@ -392,7 +392,7 @@ public class LiveLogBill {
                 if(type==1 || type==2){
                     log.pri = 2;
                 }else{
-                log.pri = type;
+                    log.pri = type;
                 }
                 if (LiveLogBill.param != null) {
                     log.liveid = LiveLogBill.param.liveid;

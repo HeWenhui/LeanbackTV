@@ -91,9 +91,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         }
     }
 
-    /** 上一次战队pk得到的金币数量 */
-    private int lastGold = 0;
-
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
@@ -850,8 +847,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
     //上一个互动题的实体
     private VideoQuestionLiveEntity lastVideoQuestionLiveEntity;
-
-    private boolean isEnglishIntelligentEvaluation = false;
 
     private class AchieveQuestionShowAction implements QuestionShowAction {
 

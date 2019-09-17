@@ -9,6 +9,8 @@ import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.xueersi.lib.framework.utils.ThreadMap;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
@@ -555,10 +557,19 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             }
         } else {
             String loadUrl = url + "?t=" + System.currentTimeMillis();
-            if (!url.isEmpty() && url.substring(url.length() - 1).equals("&")) {
-                loadUrl = url + "t=" + System.currentTimeMillis();
+            if (url != null) {
+                if (!url.isEmpty() && url.substring(url.length() - 1).equals("&")) {
+                    loadUrl = url + "t=" + System.currentTimeMillis();
+                }
+            } else {
+                XESToastUtils.showToast("加载失败，退出直播重试");
+                mLogtf.d("initData:Dynamicurl=" + englishH5Entity.getDynamicurl());
+                Object obj = ThreadMap.getInstance().getAndRemoveKey("postexception");
+                if (obj instanceof Exception) {
+                    Exception exception = (Exception) obj;
+                    LiveCrashReport.postCatchedException(TAG, exception);
+                }
             }
-
             // 文理老课件平台 直播回放  url 多拼接一个isPlayBack字段
             if (isPlayBack) {
                 loadUrl += "&isPlayBack=1";
