@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
-import android.util.Log;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
@@ -203,8 +202,6 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                     videoConfigEntity.setWaterMark(cfgJsonObj.optLong("waterMark"));
                     liveGetInfo.setVideoConfigEntity(videoConfigEntity);
                 }
-                Log.e("ckTrac","=======>LiveBusinessRes:"+liveGetInfo.getVideoConfigEntity().getDuration()
-                        +":"+liveGetInfo.getVideoConfigEntity().getWaterMark());
 
             }
 
