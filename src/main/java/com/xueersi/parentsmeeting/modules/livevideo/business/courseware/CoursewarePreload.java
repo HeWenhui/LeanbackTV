@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -80,11 +79,11 @@ public class CoursewarePreload {
      * 下载的科目总数
      */
     private AtomicInteger subjectNum = new AtomicInteger(0);
+
     /**
      * nb 加试实验 预加载资源信息
      **/
-    private CoursewareInfoEntity.NbCoursewareInfo mNbCoursewareInfo;
-
+//    private CoursewareInfoEntity.NbCoursewareInfo mNbCoursewareInfo;
     public CoursewarePreload(Context context, int subject) {
         mContext = context;
 //        this.liveId = liveId;
@@ -259,9 +258,9 @@ public class CoursewarePreload {
             courseWareInfos.add(coursewareInfoEntity);
             logger.i(arts + " pmSuccess");
             // 加试实验 只从理科资源预加载接口返回
-            if ("science".equals(arts) && coursewareInfoEntity != null) {
-                mNbCoursewareInfo = coursewareInfoEntity.getNbCoursewareInfo();
-            }
+//            if ("science".equals(arts) && coursewareInfoEntity != null) {
+//                mNbCoursewareInfo = coursewareInfoEntity.getNbCoursewareInfo();
+//            }
             boolean perform = performDownLoad();
             try {
                 StableLogHashMap hashMap = new StableLogHashMap();
@@ -332,6 +331,10 @@ public class CoursewarePreload {
                 ansList = appendList(ansList, coursewareInfoEntity.getIps());
             } else if (type == 3) {
                 ansList = appendList(ansList, coursewareInfoEntity.getResources());
+            } else if (type == 4) {
+
+            } else if (type == 5) {
+
             }
         }
         return ansList;
@@ -397,12 +400,31 @@ public class CoursewarePreload {
 
         downloadResources(resources, cdns, newIPs);
         exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
-
+        downloadNbCourseware();
         //下载Nb 预加载资源
-        if (mNbCoursewareInfo != null) {
-            downLoadNbResource(mNbCoursewareInfo, cdns, newIPs);
-        }
+//        if (mNbCoursewareInfo != null) {
+//            downLoadNbResource(mNbCoursewareInfo, cdns, newIPs);
+//        }
 
+
+    }
+
+    private void downloadNbCourseware(List<CoursewareInfoEntity.NbCoursewareInfo> addExps, List<CoursewareInfoEntity.NbCoursewareInfo> freeExps) {
+        for (int i = 0; i < addExps.size(); i++) {
+            CoursewareInfoEntity.NbCoursewareInfo addExp = addExps.get(i);
+            String url = addExp.getResourceUrl();
+            String md5 = addExp.getResourceMd5();
+
+        }
+        for (int i = 0; i < freeExps.size(); i++) {
+            CoursewareInfoEntity.NbCoursewareInfo addExp = freeExps.get(i);
+            String url = addExp.getResourceUrl();
+            String md5 = addExp.getResourceMd5();
+        }
+        final File mPublicCacheout = new File(cacheFile, mPublicCacheoutName);
+        if (!mPublicCacheout.exists()) {
+            mPublicCacheout.mkdirs();
+        }
 
     }
 
