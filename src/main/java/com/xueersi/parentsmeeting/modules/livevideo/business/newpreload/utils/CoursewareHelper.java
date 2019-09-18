@@ -5,7 +5,6 @@ import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
-import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreLoadDownLoaderManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.FileDownLoadManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.LiveVideoDownLoadUtils;
@@ -44,10 +43,12 @@ public class CoursewareHelper {
      */
     private AtomicInteger documentNum;
 
-    public void handleCourseWare(List<CoursewareInfoEntity> courseWareInfos, File cacheFile, boolean isPrecise, AtomicInteger documentNum) {
+    public void handleCourseWare(List<CoursewareInfoEntity> courseWareInfos,
+                                 File cacheFile,
+                                 boolean isPrecise) {
         this.cacheFile = cacheFile;
         this.isPrecise = isPrecise;
-        this.documentNum = documentNum;
+        this.documentNum = new AtomicInteger(0);
         execDownLoad(
                 courseWareInfos,
                 getMergeList(courseWareInfos, CDNS),
@@ -92,9 +93,9 @@ public class CoursewareHelper {
 
         exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
         //下载Nb 预加载资源
-        if (mNbCoursewareInfo != null) {
-            downLoadNbResource(mNbCoursewareInfo, cdns, newIPs);
-        }
+//        if (mNbCoursewareInfo != null) {
+//            downLoadNbResource(mNbCoursewareInfo, cdns, newIPs);
+//        }
     }
 
     static ThreadPoolExecutor executos = new ThreadPoolExecutor(1, 1,
@@ -117,7 +118,7 @@ public class CoursewareHelper {
     }
 
     /**
-     * //下载同一场直播的课件资源
+     * //下载同一场直播的课件资源,包括nb实验
      *
      * @param liveCoursewares
      * @param cdns
@@ -236,6 +237,7 @@ public class CoursewareHelper {
 //                    PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(resourceDownLoadInfo,
 //                            new CoursewarePreload.ZipDownloadListener(
 //                                    mMorecachein,
+
 //                                    mMorecacheout,
 //                                    resourceName,
 //                                    ips,

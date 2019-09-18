@@ -236,7 +236,7 @@ public class NewCourseWarePreload {
             logger.i("perform download ");
             LiveAppBll.getInstance().registerAppEvent(this);
             CoursewareHelper coursewareHelper = new CoursewareHelper();
-            coursewareHelper.handleCourseWare(courseWareInfos, cacheFile);
+            coursewareHelper.handleCourseWare(courseWareInfos, cacheFile, false);
             return true;
         } else {
             return false;
