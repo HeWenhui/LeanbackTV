@@ -22,25 +22,42 @@ public class CoursewareInfoEntity {
 //    List<String> staticSources = new ArrayList<>();
 
     /** Nb 加试 实验预加载资源 **/
-    NbCoursewareInfo nbCoursewareInfo;
+//    NbCoursewareInfo nbCoursewareInfo;
     //理科加试实验
-    List<AddExperiment> addExperiments;
+    List<NbCoursewareInfo> addExperiments;
     //理科自由实验
-    List<FreeExperiment> freeExperiments;
+    List<NbCoursewareInfo> freeExperiments;
 
-    public List<AddExperiment> getAddExperiments() {
+//    public List<AddExperiment> getAddExperiments() {
+//        return addExperiments;
+//    }
+
+//    public void setAddExperiments(List<AddExperiment> addExperiments) {
+//        this.addExperiments = addExperiments;
+//    }
+
+//    public List<FreeExperiment> getFreeExperiments() {
+//        return freeExperiments;
+//    }
+
+//    public void setFreeExperiments(List<FreeExperiment> freeExperiments) {
+//        this.freeExperiments = freeExperiments;
+//    }
+
+
+    public List<NbCoursewareInfo> getAddExperiments() {
         return addExperiments;
     }
 
-    public void setAddExperiments(List<AddExperiment> addExperiments) {
+    public void setAddExperiments(List<NbCoursewareInfo> addExperiments) {
         this.addExperiments = addExperiments;
     }
 
-    public List<FreeExperiment> getFreeExperiments() {
+    public List<NbCoursewareInfo> getFreeExperiments() {
         return freeExperiments;
     }
 
-    public void setFreeExperiments(List<FreeExperiment> freeExperiments) {
+    public void setFreeExperiments(List<NbCoursewareInfo> freeExperiments) {
         this.freeExperiments = freeExperiments;
     }
 
@@ -240,13 +257,13 @@ public class CoursewareInfoEntity {
     }
 
 
-    public void setNbCoursewareInfo(NbCoursewareInfo nbCoursewareInfo) {
-        this.nbCoursewareInfo = nbCoursewareInfo;
-    }
-
-    public NbCoursewareInfo getNbCoursewareInfo() {
-        return nbCoursewareInfo;
-    }
+//    public void setNbCoursewareInfo(NbCoursewareInfo nbCoursewareInfo) {
+//        this.nbCoursewareInfo = nbCoursewareInfo;
+//    }
+//
+//    public NbCoursewareInfo getNbCoursewareInfo() {
+//        return nbCoursewareInfo;
+//    }
 
     /**
      * 乐步物理实验资源
@@ -299,46 +316,46 @@ public class CoursewareInfoEntity {
             this.md5 = md5;
         }
     }
-
-    public static class AddExperiment {
-        String zip_path;
-        String zip_md5;
-
-        public String getZip_path() {
-            return zip_path;
-        }
-
-        public void setZip_path(String zip_path) {
-            this.zip_path = zip_path;
-        }
-
-        public String getZip_md5() {
-            return zip_md5;
-        }
-
-        public void setZip_md5(String zip_md5) {
-            this.zip_md5 = zip_md5;
-        }
-    }
-
-    public static class FreeExperiment {
-        String zip_path;
-        String zip_md5;
-
-        public String getZip_path() {
-            return zip_path;
-        }
-
-        public void setZip_path(String zip_path) {
-            this.zip_path = zip_path;
-        }
-
-        public String getZip_md5() {
-            return zip_md5;
-        }
-
-        public void setZip_md5(String zip_md5) {
-            this.zip_md5 = zip_md5;
-        }
-    }
+//
+//    public static class AddExperiment {
+//        String zip_path;
+//        String zip_md5;
+//
+//        public String getZip_path() {
+//            return zip_path;
+//        }
+//
+//        public void setZip_path(String zip_path) {
+//            this.zip_path = zip_path;
+//        }
+//
+//        public String getZip_md5() {
+//            return zip_md5;
+//        }
+//
+//        public void setZip_md5(String zip_md5) {
+//            this.zip_md5 = zip_md5;
+//        }
+//    }
+//
+//    public static class FreeExperiment {
+//        String zip_path;
+//        String zip_md5;
+//
+//        public String getZip_path() {
+//            return zip_path;
+//        }
+//
+//        public void setZip_path(String zip_path) {
+//            this.zip_path = zip_path;
+//        }
+//
+//        public String getZip_md5() {
+//            return zip_md5;
+//        }
+//
+//        public void setZip_md5(String zip_md5) {
+//            this.zip_md5 = zip_md5;
+//        }
+//    }
 }

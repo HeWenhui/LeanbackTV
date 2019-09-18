@@ -2369,46 +2369,47 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                    JSONArray resourceArray = data.getJSONArray("resource");
                     List<String> resources = new ArrayList<>();
 //                    for (int i = 0; i < resourceArray.length(); i++) {
-                    JSONArray formulasArray = resourceArray.optJSONArray("formulas");
-                    if (formulasArray != null) {
-                        for (int j = 0; j < formulasArray.length(); j++) {
-                            resources.add(formulasArray.getString(j));
+                    {
+                        JSONArray formulasArray = resourceArray.optJSONArray("formulas");
+                        if (formulasArray != null) {
+                            for (int j = 0; j < formulasArray.length(); j++) {
+                                resources.add(formulasArray.getString(j));
+                            }
                         }
                     }
-                    JSONArray fontsArray = resourceArray.optJSONArray("fonts");
-                    if (fontsArray != null) {
-                        for (int k = 0; k < fontsArray.length(); k++) {
-                            resources.add(fontsArray.getString(k));
+                    {
+                        JSONArray fontsArray = resourceArray.optJSONArray("fonts");
+                        if (fontsArray != null) {
+                            for (int k = 0; k < fontsArray.length(); k++) {
+                                resources.add(fontsArray.getString(k));
+                            }
                         }
                     }
+                    coursewareInfoEntity.setResources(resources);
+                    {
+                        JSONObject nbResource = resourceArray.optJSONObject("NBResource");
+                        if (nbResource != null) {
 
-                    JSONObject nbResource = resourceArray.optJSONObject("NBResource");
-                    if (nbResource != null) {
-                        {
                             JSONArray addExperimentArray = nbResource.optJSONArray("addExperiment");
-
+                            List<CoursewareInfoEntity.NbCoursewareInfo> addExperiments = new ArrayList<>();
                             for (int q = 0; q < addExperimentArray.length(); q++) {
-//                            CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
-
                                 JSONObject iJSOn = (JSONObject) addExperimentArray.get(q);
-
                                 String resourseUrl = iJSOn.optString("zip_path");
                                 String resourseMd5 = iJSOn.optString("zip_md5");
                                 if (!TextUtils.isEmpty(resourseMd5) && !TextUtils.isEmpty(resourseUrl)) {
                                     CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
                                     nbCoursewareInfo.setResourceMd5(resourseMd5);
                                     nbCoursewareInfo.setResourceUrl(resourseUrl);
-                                    coursewareInfoEntity.setNbCoursewareInfo(nbCoursewareInfo);
+                                    addExperiments.add(nbCoursewareInfo);
                                     //缓存NB资源文件解压相对路径
 //                                ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
 //                                        ShareDataManager.SHAREDATA_NOT_CLEAR);
                                 }
-//                            nbCoursewareInfo.setResourceMd5(resourseMd5);
-//                            nbCoursewareInfo.setResourceUrl(resourseUrl);
-
                             }
+                            coursewareInfoEntity.setAddExperiments(addExperiments);
                         }
                         {
+                            List<CoursewareInfoEntity.NbCoursewareInfo> freeExperiments = new ArrayList<>();
                             JSONArray freeExperimentArray = nbResource.optJSONArray("freeExperiment");
                             for (int q = 0; q < freeExperimentArray.length(); q++) {
                                 JSONObject iJSOn = (JSONObject) freeExperimentArray.get(q);
@@ -2418,7 +2419,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                                     CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
                                     nbCoursewareInfo.setResourceMd5(resourseMd5);
                                     nbCoursewareInfo.setResourceUrl(resourseUrl);
-                                    coursewareInfoEntity.setNbCoursewareInfo(nbCoursewareInfo);
+                                    freeExperiments.add(nbCoursewareInfo);
                                     //缓存NB资源文件解压相对路径
 //                                ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
 //                                        ShareDataManager.SHAREDATA_NOT_CLEAR);
@@ -2427,9 +2428,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                            nbCoursewareInfo.setResourceUrl(resourseUrl);
 
                             }
+                            coursewareInfoEntity.setFreeExperiments(freeExperiments);
                         }
-//                        String resurseMd5 = nbResource.optString("resourceMd5");
-//                        String resurseUrl = nbResource.optString("resourceUrl");
 //                        if (!TextUtils.isEmpty(resurseMd5) && !TextUtils.isEmpty(resurseUrl)) {
 //                            CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
 //                            nbCoursewareInfo.setResourceMd5(resurseMd5);
@@ -2442,23 +2442,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
 
 //                    }
-                    coursewareInfoEntity.setResources(resources);
                 }
-//                if (data.has("loadpages")){
-//                    JSONArray loadpageArray = data.getJSONArray("loadpages");
-//                    List<String> loadpages = new ArrayList<>();
-//                    for (int i = 0; i < loadpageArray.length(); i++) {
-//                        loadpages.add(loadpageArray.getString(i));
-//                    }
-//                    coursewareInfoEntity.setLoadpages(loadpages);
-//                }
-//                if (data.has("staticSource")){
-//                    JSONObject staticSourceJson = data.getJSONObject("staticSource");
-//                    List<String> staticSources = new ArrayList<>();
-//                    staticSources.add(staticSourceJson.optString("V1"));
-//                    staticSources.add(staticSourceJson.optString("V2"));
-//                    coursewareInfoEntity.setStaticSources(staticSources);
-//                }
             } catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseCoursewareInfo", e.getMessage());
                 e.printStackTrace();

@@ -174,11 +174,12 @@ public class CoursewareHelper {
      * @param cdns
      */
     private void downloadCourseware(File path, List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos, final List<String> ips, List<String> cdns, String itemLiveId) {
-
+        //输入文件夹
         final File mMorecachein = new File(path, itemLiveId);
         if (!mMorecachein.exists()) {
             mMorecachein.mkdirs();
         }
+//        输出文件夹
         File mMorecacheout = new File(path, itemLiveId + "child");
         if (!mMorecacheout.exists()) {
             mMorecacheout.mkdirs();
@@ -401,8 +402,7 @@ public class CoursewareHelper {
                         CoursewareHelper.this.decrementDocument();
                     }
                 });
-                builder.setUrl(ip + coursewareInfo.getResourceUrl())
-                        .setMd5(coursewareInfo.getResourceMd5())
+                builder.setUrl(ip + coursewareInfo.getIntelligentEntity().getResource())
                         .setInFileName(resourceName + ".temp")
                         .setInDirPath(mMorecachein.getAbsolutePath());
 
