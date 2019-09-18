@@ -8,6 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:maxLines="1"
         android:shadowColor="#66010101"
         android:gravity="center_horizontal|top"
         android:shadowDx="1"
