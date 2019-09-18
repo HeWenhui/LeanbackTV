@@ -133,7 +133,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     mLogtf.d("getStuGoldCount:method=" + method + ",type=" + type);
                     if (1 == englishPk.canUsePK) {
                         if (type != UpdateAchievement.GET_TYPE_RED && type != UpdateAchievement.GET_TYPE_TEAM
-                                && type != UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION) {
+                                && type != UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION && type != UpdateAchievement.GET_TYPE_VOTE) {
                             return;
                         }
                     }

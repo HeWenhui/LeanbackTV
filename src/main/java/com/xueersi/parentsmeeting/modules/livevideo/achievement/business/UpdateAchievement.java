@@ -17,7 +17,8 @@ public interface UpdateAchievement {
     int GET_TYPE_TEAM = 3;
     //智能测评
     int GET_TYPE_INTELLIGENT_RECOGNITION = 4;
-
+    //投票
+    int GET_TYPE_VOTE = 5;
     void getStuGoldCount(Object method, int type);
 
     void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity);
