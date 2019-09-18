@@ -1,10 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.utils;
 
+import com.xueersi.common.network.download.DownLoadInfo;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.FileDownLoadManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.LiveVideoDownLoadUtils;
@@ -18,10 +18,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import org.xutils.xutils.common.util.MD5;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +40,7 @@ public class CoursewareHelper {
     private Logger logger = LoggerFactory.getLogger(TAG);
     File cacheFile;
     boolean isPrecise;
-
+    private File todayCacheDir;
     /**
      * 所有需要下载文件的总量
      */
@@ -49,6 +52,11 @@ public class CoursewareHelper {
         this.cacheFile = cacheFile;
         this.isPrecise = isPrecise;
         this.documentNum = new AtomicInteger(0);
+        executos.allowCoreThreadTimeOut(true);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        Date date = new Date();
+        final String today = dateFormat.format(date);
+        todayCacheDir = new File(cacheFile, today);
         execDownLoad(
                 courseWareInfos,
                 getMergeList(courseWareInfos, CDNS),
@@ -131,6 +139,7 @@ public class CoursewareHelper {
         for (final CoursewareInfoEntity.LiveCourseware liveCourseware : liveCoursewares) {
             //课件列表
             liveIds.append(liveCourseware.getLiveId() + ",");
+
 
             PreloadStaticStorage.preloadLiveId.add(liveCourseware.getLiveId());
             executos.execute(new Runnable() {
@@ -280,24 +289,44 @@ public class CoursewareHelper {
 //                DownLoader templateDownLoader = new DownLoader(mContext, templateDownLoadInfo);
 //                templateDownLoader.setDownloadThreadCount(mDownloadThreadCount);
 //                templateDownLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, templateName, ips, cdns, coursewareInfo.getTemplateUrl(), coursewareInfo.getMd5(), new AtomicInteger()));
-                    PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(
-                            templateDownLoadInfo,
-                            new CoursewarePreload.ZipDownloadListener(
-                                    mMorecachein,
-                                    mMorecacheout,
-                                    templateName,
-                                    ips,
-                                    cdns,
-                                    coursewareInfo.getTemplateUrl(),
-                                    coursewareInfo.getTemplateMd5(),
-                                    new AtomicInteger(0),
-                                    itemLiveId,
-                                    "1"),
-                            itemLiveId);
-                    if (!isPrecise.get()) {
-                        PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
+                    builder.setDownloadListener(new ZipDownloadListener(
+                            mMorecachein,
+                            mMorecacheout,
+                            templateName,
+                            ips,
+                            cdns,
+                            coursewareInfo.getTemplateUrl(),
+                            coursewareInfo.getTemplateMd5(),
+                            new AtomicInteger(0),
+                            itemLiveId,
+                            "1",
+                            isPrecise,
+                            executos
+                    ) {
+                        @Override
+                        protected void decrementDocument() {
+                            CoursewareHelper.this.decrementDocument();
+                        }
+                    });
+
+//                    PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(
+//                            templateDownLoadInfo,
+//                            new CoursewarePreload.ZipDownloadListener(
+//                                    mMorecachein,
+//                                    mMorecacheout,
+//                                    templateName,
+//                                    ips,
+//                                    cdns,
+//                                    coursewareInfo.getTemplateUrl(),
+//                                    coursewareInfo.getTemplateMd5(),
+//                                    new AtomicInteger(0),
+//                                    itemLiveId,
+//                                    "1"),
+//                            itemLiveId);
+                    if (!isPrecise) {
+                        FileDownLoadManager.addToAutoDownloadPool(builder.build());
                     } else {
-                        PreLoadDownLoaderManager.addUrgentInfo(infoListener);
+                        FileDownLoadManager.addUrgentInfo(builder.build());
                     }
                     documentNum.getAndIncrement();
                 }
@@ -305,6 +334,99 @@ public class CoursewareHelper {
             //英语智能测评预加载
             if (coursewareInfo.getIntelligentEntity() != null) {
                 downLoadIntelligentResourse(coursewareInfo, mMorecachein, mMorecacheout, isIP, ip, cdn, ips, cdns, itemLiveId);
+            }
+        }
+    }
+
+    /**
+     * 下载英语智能测评的资源
+     *
+     * @param coursewareInfo
+     * @param cacheIn
+     * @param cacheOut
+     * @param isIP
+     * @param ip
+     * @param cdn
+     * @param ips
+     * @param cdns
+     * @param itemLiveId
+     */
+    private void downLoadIntelligentResourse(
+            CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo,
+            File cacheIn, File cacheOut,
+            boolean isIP, String ip, String cdn, List<String> ips, List<String> cdns, String itemLiveId) {
+        {
+            //与其他预加载不同，还需要使用sourceId作文文件路径
+            File mMorecachein = new File(cacheIn, coursewareInfo.getSourceId());
+            if (!mMorecachein.exists()) {
+                mMorecachein.mkdirs();
+            }
+            File mMorecacheout = new File(cacheOut, coursewareInfo.getSourceId());
+            if (!mMorecacheout.exists()) {
+                mMorecacheout.mkdirs();
+            }
+            final String resourceName = coursewareInfo.getSourceId() + ".zip";
+
+            File resourceSave = new File(mMorecachein, resourceName);
+            if (!fileIsExists(resourceSave.getAbsolutePath())) {
+                logger.i("T_T" + ip + coursewareInfo.getIntelligentEntity().getResource());
+                DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(
+                        ip + coursewareInfo.getIntelligentEntity().getResource(),
+                        mMorecachein.getAbsolutePath(),
+                        resourceName + ".temp",
+                        null);
+
+                if (isIP) {
+                    resourceDownLoadInfo.setHost(cdn);
+                }
+                logger.d("courseware url path:  " + ip + coursewareInfo.getIntelligentEntity().getResource()
+                        + "   file name:" + resourceName + ".zip");
+
+                LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder builder = new LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder();
+                builder.setDownloadListener(new ZipDownloadListener(mMorecachein,
+                        mMorecacheout,
+                        resourceName,
+                        ips,
+                        cdns,
+                        coursewareInfo.getIntelligentEntity().getResource(),
+                        null,
+                        new AtomicInteger(0),
+                        itemLiveId,
+                        "1",
+                        isPrecise,
+                        executos
+                ) {
+                    @Override
+                    protected void decrementDocument() {
+                        CoursewareHelper.this.decrementDocument();
+                    }
+                });
+                builder.setUrl(ip + coursewareInfo.getResourceUrl())
+                        .setMd5(coursewareInfo.getResourceMd5())
+                        .setInFileName(resourceName + ".temp")
+                        .setInDirPath(mMorecachein.getAbsolutePath());
+
+//                PreLoadDownLoaderManager.DownLoadInfoAndListener
+//                        infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(resourceDownLoadInfo,
+//                        new CoursewarePreload.ZipDownloadListener(
+//                                mMorecachein,
+//                                mMorecacheout,
+//                                resourceName,
+//                                ips,
+//                                cdns,
+//                                coursewareInfo.getIntelligentEntity().getResource(),
+//                                null,
+//                                new AtomicInteger(0),
+//                                itemLiveId,
+//                                "1"),
+//                        itemLiveId);
+
+                if (!isPrecise) {
+                    FileDownLoadManager.addToAutoDownloadPool(builder.build());
+                } else {
+                    FileDownLoadManager.addUrgentInfo(builder.build());
+                }
+                documentNum.getAndIncrement();
             }
         }
     }
@@ -416,7 +538,7 @@ public class CoursewareHelper {
                     logger.d("resource zip url path:  " + ip + url + "   file name:" + fileName + ".zip");
                     LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder builder =
                             new LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder();
-                    builder.setInFileName("fileName + \".temp\"")
+                    builder.setInFileName(fileName + ".temp")
                             .setUrl(ip + url).
                             setInDirPath(mPublicCacheout.getAbsolutePath())
                             .setDownloadListener(new ZipDownloadListener(
