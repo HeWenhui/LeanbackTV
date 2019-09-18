@@ -47,7 +47,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="70dp"
-            android:layout_marginTop="2dp"
             android:background="@drawable/selector_live_roleplayer_other_item_bubble"
             android:minHeight="32dp"
             android:minWidth="120dp"
