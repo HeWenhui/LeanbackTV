@@ -192,10 +192,19 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         try {
             testsProtocalList = new ArrayList<>();
-            if(baseVideoQuestionEntity.getTestsProtocal()!=null){
-                JSONArray testsProtocalArray = new JSONArray(baseVideoQuestionEntity.getTestsProtocal());
-                for (int index = 0; index < testsProtocalArray.length(); index++) {
-                    testsProtocalList.add(testsProtocalArray.optString(index));
+            if(isPlayBack){
+                if(baseVideoQuestionEntity.getAnswerDay()!=null){
+                    JSONArray testsProtocalArray = new JSONArray(baseVideoQuestionEntity.getAnswerDay());
+                    for (int index = 0; index < testsProtocalArray.length(); index++) {
+                        testsProtocalList.add(testsProtocalArray.optString(index));
+                    }
+                }
+            } else {
+                if(baseVideoQuestionEntity.getTestsProtocal()!=null){
+                    JSONArray testsProtocalArray = new JSONArray(baseVideoQuestionEntity.getTestsProtocal());
+                    for (int index = 0; index < testsProtocalArray.length(); index++) {
+                        testsProtocalList.add(testsProtocalArray.optString(index));
+                    }
                 }
             }
         } catch (Exception e) {
