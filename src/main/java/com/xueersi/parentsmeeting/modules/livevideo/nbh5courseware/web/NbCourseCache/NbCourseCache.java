@@ -2,12 +2,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.web.NbCourse
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
-import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WrapInputStream;
@@ -53,12 +51,13 @@ public class NbCourseCache {
 
     public NbCourseCache(Context context) {
         header = new HashMap();
-        String resDir = ShareDataManager.getInstance().getString(NbCourseWareConfig.LOCAL_RES_DIR, "",
-                ShareDataManager.SHAREDATA_NOT_CLEAR);
-        File mResDir = LiveCacheFile.geCacheFile(context, NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
-        if (mResDir.exists() && !TextUtils.isEmpty(resDir)) {
-            mNbCacheFileDir = new File(mResDir, resDir);
-        }
+//        String resDir = ShareDataManager.getInstance().getString(NbCourseWareConfig.LOCAL_RES_DIR, "",
+//                ShareDataManager.SHAREDATA_NOT_CLEAR);
+//        File mResDir = LiveCacheFile.geCacheFile(context, NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
+//        if (mResDir.exists() && !TextUtils.isEmpty(resDir)) {
+//            mNbCacheFileDir = new File(mResDir, resDir);
+//        }
+        mNbCacheFileDir = LiveCacheFile.geCacheFile(context, NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
         header.put("Access-Control-Allow-Origin", "*");
         webInstertJs = new WebInstertJs(context, "99999");
     }
@@ -178,7 +177,7 @@ public class NbCourseCache {
         int index = url.lastIndexOf(ASSESTFILE_PATH_KEY_WORD);
         if (index != -1) {
             String filePath = url.substring(index + 1, url.length());
-             //Log.e("NbCourseCache", "======>getAssetsFile: filePath=" + filePath);
+            //Log.e("NbCourseCache", "======>getAssetsFile: filePath=" + filePath);
             resultFile = new File(mNbCacheFileDir, filePath);
         }
         return resultFile;

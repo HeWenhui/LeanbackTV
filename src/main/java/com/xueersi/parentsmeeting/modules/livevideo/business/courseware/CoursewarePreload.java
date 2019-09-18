@@ -36,6 +36,7 @@ import org.xutils.xutils.common.util.MD5;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -69,6 +70,9 @@ public class CoursewarePreload {
     private File todayCacheDir;
     public static String mPublicCacheoutName = "publicRes";
     public static String FZY3JW_TTF = "FZY3JW.ttf";
+
+    List<CoursewareInfoEntity> courseWareInfos = new CopyOnWriteArrayList<>();
+    public static final String NB_EXPERIMENT = "NBExperiment";
 //    public static int mDownloadThreadCount = 1;
 
     /**
@@ -100,7 +104,6 @@ public class CoursewarePreload {
         this.mHttpManager = mHttpManager;
     }
 
-    List<CoursewareInfoEntity> courseWareInfos = new CopyOnWriteArrayList<>();
     /**
      * 是否紧急下载
      */
@@ -111,7 +114,7 @@ public class CoursewarePreload {
     /**
      * 删除旧的Dir
      */
-    private void deleteOldDir(final File file, final String today) {
+    private void deleteOldDirAsync(final File file, final String today) {
         synchronized (CoursewarePreload.class) {
             executos.execute(new Runnable() {
                 @Override
@@ -200,7 +203,7 @@ public class CoursewarePreload {
         final String today = dateFormat.format(date);
         todayCacheDir = new File(cacheFile, today);
 
-        deleteOldDir(cacheFile, today);
+        deleteOldDirAsync(cacheFile, today);
 
         //根据传liveid来判断 不为空或者不是""则为直播进入下载资源，否则为学习中心进入下载资源
         ipPos = new AtomicInteger(0);
@@ -315,10 +318,22 @@ public class CoursewarePreload {
                     mergeList(courseWareInfos, 1),
                     mergeList(courseWareInfos, 2),
                     mergeList(courseWareInfos, 3));
+            execDownLoadNb(InfoUtils.mergeNbList(courseWareInfos));
+
+//            List<CoursewareInfoEntity.NbCoursewareInfo> ansList = InfoUtils.mergeNbList(courseWareInfos);
             return true;
         } else {
             return false;
         }
+    }
+
+    private void execDownLoadNb(final List<CoursewareInfoEntity.NbCoursewareInfo> list) {
+        executos.execute(new Runnable() {
+            @Override
+            public void run() {
+                downloadNbCoursewareAsync(list);
+            }
+        });
     }
 
     private List<String> mergeList(List<CoursewareInfoEntity> coursewareInfoEntities, int type) {
@@ -331,10 +346,6 @@ public class CoursewarePreload {
                 ansList = appendList(ansList, coursewareInfoEntity.getIps());
             } else if (type == 3) {
                 ansList = appendList(ansList, coursewareInfoEntity.getResources());
-            } else if (type == 4) {
-
-            } else if (type == 5) {
-
             }
         }
         return ansList;
@@ -400,7 +411,6 @@ public class CoursewarePreload {
 
         downloadResources(resources, cdns, newIPs);
         exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
-        downloadNbCourseware();
         //下载Nb 预加载资源
 //        if (mNbCoursewareInfo != null) {
 //            downLoadNbResource(mNbCoursewareInfo, cdns, newIPs);
@@ -409,23 +419,62 @@ public class CoursewarePreload {
 
     }
 
-    private void downloadNbCourseware(List<CoursewareInfoEntity.NbCoursewareInfo> addExps, List<CoursewareInfoEntity.NbCoursewareInfo> freeExps) {
+    private String getFileName(String url) {
+        final String fileName;
+        int index = url.lastIndexOf("/");
+        if (index != -1) {
+            fileName = url.substring(index + 1);
+        } else {
+            fileName = MD5Utils.getMD5(url);
+        }
+        return fileName;
+    }
+
+    private void downloadNbCoursewareAsync(List<CoursewareInfoEntity.NbCoursewareInfo> addExps) {
+        File cacheDir = LiveCacheFile.geCacheFile(mContext,
+                NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
+        if (!cacheDir.exists()) {
+            cacheDir.mkdirs();
+        }
         for (int i = 0; i < addExps.size(); i++) {
             CoursewareInfoEntity.NbCoursewareInfo addExp = addExps.get(i);
-            String url = addExp.getResourceUrl();
-            String md5 = addExp.getResourceMd5();
-
+            String remoteUrl = addExp.getResourceUrl();
+            String remoteMD5 = addExp.getResourceMd5();
+            if (remoteUrl.endsWith(".zip")) {
+                String fileName = getFileName(remoteUrl);
+                final File save = new File(cacheDir, fileName);
+                if (!fileIsExists(save.getAbsolutePath())) {
+//                if (!fileIsExists(save.getAbsolutePath())) {
+                    logger.d("resource zip url path:  " + remoteUrl + "   file name:" + fileName + ".zip");
+                    DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(
+                            remoteUrl,
+                            cacheDir.getAbsolutePath(),
+                            fileName + ".temp",
+                            remoteMD5);
+                    PreLoadDownLoaderManager.DownLoadInfoAndListener
+                            infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(
+                            downLoadInfo,
+                            new ZipDownloadListener(
+                                    cacheDir,
+                                    cacheDir,
+                                    fileName,
+                                    new ArrayList<String>(),
+                                    new ArrayList<String>(),
+                                    remoteUrl,
+                                    fileName,
+                                    new AtomicInteger(0),
+                                    "",
+                                    "2"),
+                            "");
+                    if (!isPrecise.get()) {
+                        PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
+                    } else {
+                        PreLoadDownLoaderManager.addUrgentInfo(infoListener);
+                    }
+                    documentNum.getAndIncrement();
+                }
+            }
         }
-        for (int i = 0; i < freeExps.size(); i++) {
-            CoursewareInfoEntity.NbCoursewareInfo addExp = freeExps.get(i);
-            String url = addExp.getResourceUrl();
-            String md5 = addExp.getResourceMd5();
-        }
-        final File mPublicCacheout = new File(cacheFile, mPublicCacheoutName);
-        if (!mPublicCacheout.exists()) {
-            mPublicCacheout.mkdirs();
-        }
-
     }
 
     /**
@@ -520,7 +569,6 @@ public class CoursewarePreload {
                             mMorecachein.getAbsolutePath(),
                             resourceName + ".temp",
                             coursewareInfo.getResourceMd5());
-
                     if (isIP) {
                         resourceDownLoadInfo.setHost(cdn);
                     }
@@ -695,13 +743,13 @@ public class CoursewarePreload {
         String cdn = cdns.get(cdnIndex).substring(subIndex);
         for (String url : resourseInfos) {
             if (url.endsWith(".zip")) {
-                final String fileName;
-                int index = url.lastIndexOf("/");
-                if (index != -1) {
-                    fileName = url.substring(index + 1);
-                } else {
-                    fileName = MD5Utils.getMD5(url);
-                }
+                final String fileName = getFileName(url);
+//                int index = url.lastIndexOf("/");
+//                if (index != -1) {
+//                    fileName = url.substring(index + 1);
+//                } else {
+//                    fileName = MD5Utils.getMD5(url);
+//                }
                 final File save = new File(mPublicCacheout, fileName);
                 if (!fileIsExists(save.getAbsolutePath())) {
 //                if (!fileIsExists(save.getAbsolutePath())) {

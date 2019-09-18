@@ -165,7 +165,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             }
             break;
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
-                if (questionEntity.getvQuestionType().equals(EN_INTELLIGENT_EVALUTION)) {
+                if (EN_INTELLIGENT_EVALUTION.equals(questionEntity.getvQuestionType())) {
                     Intent intent = new Intent(INTELLIGENT_RECOGNITION_FILTER_ACTION);
                     intent.putExtra(intelligent_recognition_sign, new JSONObject().toString());
                     activity.sendBroadcast(intent);
@@ -336,7 +336,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         showQuestion.onHide(questionEntity);
                     }
                 });
-                if (questionEntity.getvQuestionType().equals(EN_INTELLIGENT_EVALUTION)) {
+                if (EN_INTELLIGENT_EVALUTION.equals(questionEntity.getvQuestionType())) {
                     if (mediaPlayerControl == null) {
                         mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                     }
@@ -345,7 +345,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                     }
                     VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
                             (questionEntity, vCategory);
-                    if (videoQuestionLiveEntity.type.equals(EN_INTELLIGENT_EVALUTION)) {
+                    if (EN_INTELLIGENT_EVALUTION.equals(videoQuestionLiveEntity.type)) {
                         Bundle bundle = new Bundle();
                         IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
 //                intelligentRecognitionRecord.setAnswerTime(questionEntity.get);
@@ -504,14 +504,14 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                     getCourseWareHttpManager().submitMultiTest("" + testInfos, 2, isforce, callBack);
                 } else {
                     if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.type)) {
-                        getCourseWareHttpManager().submitH5Vote("" + testInfos, detailInfo.id, liveGetInfo.getStudentLiveInfo().getClassId(),liveGetInfo.getStuId(), 2, isforce, callBack);
+                        getCourseWareHttpManager().submitH5Vote("" + testInfos, detailInfo.id, liveGetInfo.getStudentLiveInfo().getClassId(), liveGetInfo.getStuId(), 2, isforce, callBack);
                     } else {
                         getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.getArtType(), liveGetInfo.getStuId(), 2, isforce, callBack);
                     }
                 }
             } else {
                 if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.type)) {
-                    getCourseWareHttpManager().submitH5Vote("" + testInfos, detailInfo.id, liveGetInfo.getStudentLiveInfo().getClassId(),liveGetInfo.getStuId(), 2, isforce, callBack);
+                    getCourseWareHttpManager().submitH5Vote("" + testInfos, detailInfo.id, liveGetInfo.getStudentLiveInfo().getClassId(), liveGetInfo.getStuId(), 2, isforce, callBack);
                 } else {
                     EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                     String classId = liveGetInfo.getStudentLiveInfo().getClassId();
