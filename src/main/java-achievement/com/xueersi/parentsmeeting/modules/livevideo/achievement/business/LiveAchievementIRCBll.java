@@ -252,6 +252,15 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (englishSpeekAction != null) {
+            handler.removeMessages(1);
+            englishSpeekAction.stop(null);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (isGotoRecogniz) {
@@ -292,6 +301,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                    }
 //                }
 //            }).start();
+        } else {
+            if (audioRequest.get()) {
+                release();
+            }
         }
     }
 
