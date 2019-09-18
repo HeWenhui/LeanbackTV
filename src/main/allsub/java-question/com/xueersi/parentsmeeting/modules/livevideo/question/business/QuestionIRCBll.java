@@ -818,8 +818,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
                 .getStuId())
-                .append("&xesrfh=").append(LiveAppUserInfo.getInstance().getUserRfh())
-                .append("&cookie=").append(LiveAppUserInfo.getInstance().getUserToken())
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
         return sb.toString();
@@ -841,9 +839,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         sb.append(url).append("?liveId=").append(mLiveId)
                 .append("&testId=").append(id).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
-                .getStuId())
-                .append("&xesrfh=").append(LiveAppUserInfo.getInstance().getUserRfh())
-                .append("&cookie=").append(LiveAppUserInfo.getInstance().getUserToken());
+                .getStuId());
         return sb.toString();
     }
 
@@ -1040,7 +1036,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         });
             }
         }
-
         @Override
         public void sendSpeechEvalResult2(boolean isNewArt, String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
             String liveid = mGetInfo.getId();

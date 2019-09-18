@@ -293,7 +293,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
     }
 
 
-    @JavascriptInterface
+    @android.webkit.JavascriptInterface
     private void addJavascriptInterface() {
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setJavaScriptEnabled(true);

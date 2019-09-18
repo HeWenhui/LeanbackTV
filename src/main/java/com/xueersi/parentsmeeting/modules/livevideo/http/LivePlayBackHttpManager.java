@@ -111,6 +111,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     /**
      * 提交h5语音答题答案
      *
+     * @param enStuId
      * @param srcType
      * @param testId
      * @param testResult
@@ -151,7 +152,6 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                 params.addBodyParam("answers", testResult);
                 params.addBodyParam("isPlayBack", "2");
                 params.addBodyParam("isForce", isSubmit);
-                params.addBodyParam("Cookie", LiveAppUserInfo.getInstance().getUserToken());
                 sendPost(url, params, requestCallBack);
             }
         } else {

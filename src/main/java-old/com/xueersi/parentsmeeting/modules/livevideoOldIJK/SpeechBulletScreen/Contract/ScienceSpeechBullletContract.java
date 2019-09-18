@@ -7,7 +7,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 public interface ScienceSpeechBullletContract {
 
-    interface ScienceSpeechBulletView extends BaseView<ScienceSpeechBulletPresenter> {
+    interface ScienceSpeechBulletView extends BaseView<ScienceSpeechBullletContract.ScienceSpeechBulletPresenter> {
         /**
          * 展示语音弹幕
          *

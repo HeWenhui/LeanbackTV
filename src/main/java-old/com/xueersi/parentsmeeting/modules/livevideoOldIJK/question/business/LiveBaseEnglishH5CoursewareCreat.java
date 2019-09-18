@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.log.logger.Logger;
@@ -8,17 +9,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.groupgame.pager.GroupGameEmptyPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.groupgame.pager.GroupGameNativePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.ScienceStaticConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseEnglishH5CoursewarePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ChineseAiSubjectiveCoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ChineseAiSubjectiveCoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.EnglishH5CoursewareX5Pager;
@@ -202,6 +202,11 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                     if (LiveQueConfig.isGroupGame(type)) {
                         BaseEnglishH5CoursewarePager h5CoursewarePager = createGame(context, videoQuestionH5Entity, onH5ResultClose);
                         return h5CoursewarePager;
+                    } else if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, type)) {
+                        CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, "0", isArts, false);
+                        coursewareNativePager.setLivePagerBack(livePagerBack);
+                        return coursewareNativePager;
                     }
                 }
             }

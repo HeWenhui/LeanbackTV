@@ -29,29 +29,56 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
     @Override
     protected LiveBackVideoFragmentBase getFragment() {
         String where = getIntent().getStringExtra("where");
-        if ("PublicLiveDetailActivity".equals(where)) {
-            return new LecBackVideoFragment();
-        }
-        int pattern = getIntent().getIntExtra("pattern", 0);
+        Log.e("ckTrac", "=======>LiveBackVideoFragment_getFragment:" + where + ":" + isBigLive());
 
-        isExperience = getIntent().getBooleanExtra("isExperience", false);
-        if (!isExperience) {
-            if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
-//                return new StandBackVideoFragment();
-                try {
-                    String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.StandBackVideoFragment";
-                    LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
-                    return fragmentBase;
-                } catch (Exception e) {
-                    LiveCrashReport.postCatchedException(TAG, e);
-                }
+        if (isBigLive()) {
+            try {
+                String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessBackFragment";
+                LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
             }
+            //异常时 进入默认直播间
             return new LiveBackVideoFragment();
+        } else {
+            //讲座回放
+            if ("PublicLiveDetailActivity".equals(where)) {
+                return new LecBackVideoFragment();
+            }
+            int pattern = getIntent().getIntExtra("pattern", 0);
+            isExperience = getIntent().getBooleanExtra("isExperience", false);
+            if (!isExperience) {
+                if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+                    try {
+                        String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.StandBackVideoFragment";
+                        LiveBackVideoFragmentBase fragmentBase =
+                                (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
+                        return fragmentBase;
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(TAG, e);
+                    }
+                }
+                return new LiveBackVideoFragment();
+            }
+            String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandLiveVideoExperienceFragment";
+            LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
+            return fragmentBase;
         }
-//        setRequestedOrientation(Configuration.ORIENTATION_LANDSCAPE);
-        String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandLiveVideoExperienceFragment";
-        LiveBackVideoFragmentBase fragmentBase = (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
-        return fragmentBase;
+
+    }
+
+
+    /**
+     * 判断是否是大班整合
+     *
+     * @return
+     */
+    private boolean isBigLive() {
+        Bundle bundle = getIntent().getExtras();
+        boolean result = bundle != null && bundle.getBoolean("isBigLive");
+        Log.e("ckTrac", "=======>LiveBackVideoFragment_isBigLive:" + result);
+        return result;
     }
 
     @Override
@@ -100,13 +127,15 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         try {
-            VideoLivePlayBackEntity serializable = (VideoLivePlayBackEntity) bundle.getSerializable("videoliveplayback");
+            VideoLivePlayBackEntity serializable = (VideoLivePlayBackEntity) bundle.getSerializable(
+                    "videoliveplayback");
             if (serializable != null) {
                 HashMap<String, String> hashMap = new HashMap();
                 if (serializable.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {
                     hashMap.put("logtype", "recorded");
                 } else if (serializable.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_LECTURE) {
                     hashMap.put("logtype", "lecplayback");
+                    hashMap.put("isBigLive", bundle.getBoolean("isBigLive") + "");
                 } else {
                     hashMap.put("logtype", "liveplayback");
                 }

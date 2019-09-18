@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.config;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.Config;
 
 /**
  * linyuqiang
@@ -52,9 +53,18 @@ public class LiveQueHttpConfig {
     /** 辅导 提交试题 */
     public static String LIVE_GET_COURSEWARE_SUBMIT_TESTS = LiveHttpConfig.LIVE_HOST_SCIENCE + "/Tutorship/submitCourseWareTest";
     /** 辅导 获取课件结果 */
+
+    /** 投票查询是否已作答 */
+    public static String LIVE_IS_SUBMIT_COURSEWARE_VOTE = LiveVideoConfig.APP_ARTS_WXEN_HTTP_HOST + "/vote/stuCheckCommit";
+    /** 投票提交投票 */
+    public static String LIVE_SUBMIT_COURSEWARE_VOTE = LiveVideoConfig.APP_ARTS_WXEN_HTTP_HOST + "/vote/stuCommitVote";
+    /** 投票学生点击折叠次数统计 */
+    public static String LIVE_SUBMIT_COURSEWARE_VOTE_FOLD_COUNT = LiveVideoConfig.APP_ARTS_WXEN_HTTP_HOST + "/vote/stuCommitFold";
     public static String LIVE_GET_COURSEWARE_TUTOR_RESULT = LiveHttpConfig.LIVE_HOST_SCIENCE + "/Tutorship/getStuTestResult";
 
     /** 辅导 加载课件 */
     public static String TUTOR_COURSE_URL = LiveHttpConfig.LIVE_HOST + "/scistatic/outDoorTest/index.html";
 
+    /** 小组互动-上报答题信息 */
+    public static String LIVE_GROUPGAME_REPORT = "/report/operate";
 }

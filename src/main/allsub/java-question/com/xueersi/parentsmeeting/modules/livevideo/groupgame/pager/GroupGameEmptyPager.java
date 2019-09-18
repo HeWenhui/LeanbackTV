@@ -208,8 +208,9 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
 //                mGroupGameTestInfosEntity.setAnswered(true);
                 GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
                 int gameModel = test.getGameModel();
+                String gameOrder = test.getGameOrder();
                 if (gameModel == LiveQueConfig.GAME_MODEL_2) {
-                    GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(mContext, liveGetInfo, detailInfo, englishH5Entity, new EnglishH5CoursewareBll.OnH5ResultClose() {
+                    GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(mContext, gameOrder, liveGetInfo, detailInfo, englishH5Entity, new EnglishH5CoursewareBll.OnH5ResultClose() {
                         @Override
                         public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
                             //延迟remove，否则会卡住界面

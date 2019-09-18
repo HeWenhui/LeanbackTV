@@ -214,9 +214,15 @@ public class NewCourseCache {
 
     private int urlindex = 0;
     private int reload = 0;
+    private int newProgress;
 
     public void reload() {
+        urlindex = 0;
         reload++;
+    }
+
+    public void onProgressChanged(int newProgress) {
+        this.newProgress = newProgress;
     }
 
     public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
@@ -262,6 +268,7 @@ public class NewCourseCache {
                 stableLogHashMap.put("courseurl", "" + courseUrl);
                 stableLogHashMap.put("url", s);
                 stableLogHashMap.put("urlindex", "" + (urlindex++));
+                stableLogHashMap.put("newProgress", "" + newProgress);
                 stableLogHashMap.put("reload", "" + reload);
                 stableLogHashMap.put("liveId", liveId);
                 stableLogHashMap.put("testid", testid);
@@ -293,6 +300,7 @@ public class NewCourseCache {
                 stableLogHashMap.put("courseurl", "" + courseUrl);
                 stableLogHashMap.put("url", s);
                 stableLogHashMap.put("urlindex", "" + (urlindex++));
+                stableLogHashMap.put("newProgress", "" + newProgress);
                 stableLogHashMap.put("reload", "" + reload);
                 stableLogHashMap.put("liveId", liveId);
                 stableLogHashMap.put("testid", testid);

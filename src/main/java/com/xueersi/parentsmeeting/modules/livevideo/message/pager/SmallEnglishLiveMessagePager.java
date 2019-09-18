@@ -1272,6 +1272,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             } else {
                 goldNum = "" + getInfoGoldNum;
             }
+            onGetMyGoldDataEvent(goldNum);
         }
     }
 

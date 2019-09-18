@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.os.Bundle;
 
 import com.xueersi.common.entity.EnglishH5Entity;
@@ -232,6 +233,11 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                     } else if (LiveQueConfig.EN_INTELLIGENT_EVALUTION.equals(type)) {
                         gotoIntelligentEvaluation(context, videoQuestionH5Entity);
                         return null;
+                    }else if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, type)) {
+                        CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, "0", isArts, false);
+                        coursewareNativePager.setLivePagerBack(livePagerBack);
+                        return coursewareNativePager;
                     }
                 }
             }

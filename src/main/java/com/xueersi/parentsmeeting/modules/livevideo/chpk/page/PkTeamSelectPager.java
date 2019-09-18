@@ -222,18 +222,21 @@ public class PkTeamSelectPager extends SoundEffectPager implements View.OnClickL
     }
 
     private void playBgMusic() {
-        soundPoolHelper.playMusic(R.raw.war_bg, MUSIC_VOLUME_RATIO_BG, true);
+        if (soundPoolHelper != null)
+            soundPoolHelper.playMusic(R.raw.war_bg, MUSIC_VOLUME_RATIO_BG, true);
     }
 
     private void playWelcomeMusic() {
-        soundPoolHelper.playMusic(R.raw.welcome_to_teampk, MUSIC_VOLUME_RATIO_FRONT, false);
+        if (soundPoolHelper != null)
+            soundPoolHelper.playMusic(R.raw.welcome_to_teampk, MUSIC_VOLUME_RATIO_FRONT, false);
     }
 
     /**
      * 播放欢呼音效
      */
     private void playCheering() {
-        soundPoolHelper.playMusic(R.raw.cheering, MUSIC_VOLUME_RATIO_FRONT, false);
+        if (soundPoolHelper != null)
+            soundPoolHelper.playMusic(R.raw.cheering, MUSIC_VOLUME_RATIO_FRONT, false);
     }
 
     /**
@@ -398,7 +401,8 @@ public class PkTeamSelectPager extends SoundEffectPager implements View.OnClickL
         teamsRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                soundPoolHelper.playMusic(R.raw.marquee, MUSIC_VOLUME_RATIO_FRONT, true);
+                if (soundPoolHelper != null)
+                    soundPoolHelper.playMusic(R.raw.marquee, MUSIC_VOLUME_RATIO_FRONT, true);
                 startMarquee();
             }
         }, delay);

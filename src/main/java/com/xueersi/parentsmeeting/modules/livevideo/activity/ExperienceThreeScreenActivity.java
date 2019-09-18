@@ -184,7 +184,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      */
     public static final int COURSE_STATE_4 = 4;
 
-    private static final String IRC_CHANNEL_PREFIX = "4L";
+    private static final String IRC_CHANNEL_PREFIX = "#4L";
 
     private final Handler getHandler = new Handler();
 

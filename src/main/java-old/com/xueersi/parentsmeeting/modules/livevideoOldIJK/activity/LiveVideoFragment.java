@@ -230,6 +230,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             liveIRCMessageBll.setLiveMediaCtrTop(baseLiveMediaControllerTop);
 
             mLiveBll.addBusinessBll(liveIRCMessageBll);
+            mLiveBll.addBusinessBll(new EnglishCommonBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));

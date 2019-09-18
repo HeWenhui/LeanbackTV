@@ -387,8 +387,8 @@ public class LivePlaybackMediaController extends MediaController2 {
         });
     }
 
-    /** 互动题点点击事件 */
+   /* *//** 互动题点点击事件 *//*
     public interface OnPointClick {
         void onOnPointClick(VideoQuestionEntity videoQuestionEntity, long position);
-    }
+    }*/
 }

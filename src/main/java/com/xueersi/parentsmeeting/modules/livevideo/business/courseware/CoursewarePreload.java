@@ -231,11 +231,11 @@ public class CoursewarePreload {
             mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack(false, "english", ""));
             subjectNum.getAndIncrement();
             mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs", ""));
-            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs", ""));
-            if (AppConfig.DEBUG) {
+//            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs", ""));
+//            if (AppConfig.DEBUG) {
 //                subjectNum.getAndIncrement();
 //                mHttpManager.getTestIntelligentRecognitionInfo(new CoursewareHttpCallBack(false, "intelligent_recg"));
-            }
+//            }
         }
     }
 

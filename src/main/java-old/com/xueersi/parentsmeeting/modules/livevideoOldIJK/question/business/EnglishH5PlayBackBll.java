@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -134,18 +135,18 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
-                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity,vCategory);
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
                 englishH5CoursewareBll.onH5Courseware("off", videoQuestionLiveEntity);
             }
             break;
             case LocalCourseConfig.CATEGORY_TUTOR_EVENT_35:
             case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE: {
-                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity,vCategory);
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
                 englishH5CoursewareBll.onH5Courseware("off", videoQuestionLiveEntity);
             }
             break;
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
-                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity,vCategory);
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
                 Log.e("mqtt", "关闭上一题" + "CATEGORY_H5COURSE_NEWARTSWARE");
                 EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
                 englishH5CoursewareBll.onH5Courseware("off", videoQuestionLiveEntity);
@@ -179,7 +180,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                             mediaPlayerControl.start();
                         }
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
-                                (questionEntity,vCategory);
+                                (questionEntity, vCategory);
 
                         englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                         showQuestion.onShow(true, videoQuestionLiveEntity);
@@ -224,7 +225,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                             mediaPlayerControl.start();
                         }
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
-                                (questionEntity,vCategory);
+                                (questionEntity, vCategory);
                         EnglishH5Entity englishH5Entity =
                                 videoQuestionLiveEntity.englishH5Entity;
                         englishH5Entity.setNewEnglishH5(true);
@@ -279,7 +280,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                             mediaPlayerControl.start();
                         }
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
-                                (questionEntity,vCategory);
+                                (questionEntity, vCategory);
                         if (ptTypeFilters.contains(videoQuestionLiveEntity.type) && !"1".equals(videoQuestionLiveEntity
                                 .getIsVoice())) {
                             Loger.e("EnglishH5back", "====> return h5back");
@@ -308,7 +309,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         }
     }
 
-    protected VideoQuestionLiveEntity getVideoQuestionLiveEntity(VideoQuestionEntity questionEntity,int vCategory) {
+    protected VideoQuestionLiveEntity getVideoQuestionLiveEntity(VideoQuestionEntity questionEntity, int vCategory) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
         if (vCategory == LocalCourseConfig.CATEGORY_TUTOR_EVENT_35) {
             videoQuestionLiveEntity.setTUtor(true);
@@ -414,16 +415,21 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
             String[] res = getSrcType(englishH5Entity);
             getCourseWareHttpManager().getStuTestResult(liveGetInfo.getId(), liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
-                    englishH5Entity.getPackageAttr(), isPlayBack, callBack,detailInfo.isTUtor());
+                    englishH5Entity.getPackageAttr(), isPlayBack, callBack, detailInfo.isTUtor());
         }
 
         @Override
         public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
             String classId = liveGetInfo.getStudentLiveInfo().getClassId();
-            String[] res = getSrcType(englishH5Entity);
-            getCourseWareHttpManager().submitCourseWareTests(detailInfo,liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                    englishH5Entity.getReleasedPageInfos(), 1, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), nonce, testInfos, isforce, entranceTime, callBack);
+            if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.type)) {
+                getCourseWareHttpManager().submitH5Vote("" + testInfos, detailInfo.id, liveGetInfo.getStudentLiveInfo().getClassId(),liveGetInfo.getStuId(), 2, isforce, callBack);
+            } else {
+                String[] res = getSrcType(englishH5Entity);
+                getCourseWareHttpManager().submitCourseWareTests(detailInfo, liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                        englishH5Entity.getReleasedPageInfos(), 1, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), nonce, testInfos, isforce, entranceTime, callBack);
+
+            }
         }
 
         @Override
@@ -437,6 +443,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN) {
                 if (LiveQueConfig.isGroupGame(detailInfo.type)) {
                     getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, liveGetInfo.getStuId(), detailInfo.type, callBack);
+                } else if(TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.type)){
+                    getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
                 } else {
                     EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                     String classId = liveGetInfo.getStudentLiveInfo().getClassId();
@@ -611,8 +619,6 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         sb.append(new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_ARTS_H5_URL).append("?liveId=").append(mVideoEntity.getLiveId())
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append("2")
                 .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&stuId=").append(LiveAppUserInfo.getInstance().getStuId())
-                .append("&xesrfh=").append(AppBll.getInstance().getUserRfh())
-                .append("&cookie=").append(AppBll.getInstance().getUserToken())
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
         return sb.toString();

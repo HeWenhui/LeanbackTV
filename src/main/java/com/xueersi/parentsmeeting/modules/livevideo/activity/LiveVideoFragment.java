@@ -146,7 +146,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
     /** 设置显示的加载动画 */
     protected void setLoadingView() {
-
         boolean overrideHandler = false;
         liveVideoPlayFragment = (LivePlayerFragment) getChildFragmentManager().findFragmentByTag("LivePlayerFragment");
         if (LiveVideoConfig.isSmallChinese) {

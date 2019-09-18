@@ -110,6 +110,7 @@
             android:process=":livevideo"
             android:screenOrientation="portrait"
             android:theme="@style/style_live_compat"
+            android:exported="false"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
 
         <activity
@@ -117,6 +118,7 @@
             android:process=":livevideo"
             android:screenOrientation="portrait"
             android:theme="@style/style_live_compat"
+            android:exported="false"
             android:windowSoftInputMode="adjustUnspecified|stateHidden">
             <intent-filter>
                 <action android:name="com.xueersi.parentsmeeting.action.livevideo" />
@@ -185,6 +187,18 @@
             android:process=":livevideo"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+
+        <!--大班整合-直播间入口-->
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.fragment.BigLiveVideoActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:launchMode="singleTask"
+            android:process=":livevideo"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+
 
         <!--<activity-->
         <!--android:name=".activity.StandLiveVideoActivity"-->

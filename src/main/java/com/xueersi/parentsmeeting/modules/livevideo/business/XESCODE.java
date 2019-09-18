@@ -18,6 +18,7 @@ public interface XESCODE {
     int CLASSBEGIN = 105;
     /** 懂了吗老师 */
     int UNDERSTANDT = 106;
+
 //    int UNDERSTANDT = 133;
     /** 懂了吗学生 */
     int UNDERSTANDS = 107;
@@ -273,7 +274,6 @@ public interface XESCODE {
     /** 文科语音弹幕  表扬消息 */
     int XCR_ROOM_VOICEBARRAGEPRAISE = 1007;
 
-
     /**
      * 文科新课件平台 对接notice 指令
      */
@@ -317,8 +317,9 @@ public interface XESCODE {
         int XEP_MODE_CHANGE = 500;
         int XEP_BACK_FINISH = 501;
     }
+    /** 大班整合 送礼物*/
+    int LIVE_BUSINESS_SEND_GIFT = 106;
+    /** 大班整合 感谢学生*/
+    int LIVE_BUSINESS_GIFT_THANK_STUDENT = 10110;
 
-//    int intelligent_recognition_open = 1104;
-
-//    int intelligent_recognition_close = 1105;
 }
