@@ -148,6 +148,7 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.businessinterface)
     rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.xutils)
     rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.danmaku)
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.businesslibraries.aievaluation)
 //    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.3'
 //    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
 

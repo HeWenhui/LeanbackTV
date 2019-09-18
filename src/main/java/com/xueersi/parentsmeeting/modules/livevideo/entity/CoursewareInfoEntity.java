@@ -21,7 +21,7 @@ public class CoursewareInfoEntity {
     /** 静态资源 */
     List<String> staticSources = new ArrayList<>();
 
-    /**Nb 加试 实验预加载资源**/
+    /** Nb 加试 实验预加载资源 **/
     NbCoursewareInfo nbCoursewareInfo;
 
 
@@ -128,6 +128,16 @@ public class CoursewareInfoEntity {
 
         String resourceMd5;
         String templateMd5;
+        //英语智能测评的实体
+        CourseWareIntelligentEntity intelligentEntity;
+
+        public CourseWareIntelligentEntity getIntelligentEntity() {
+            return intelligentEntity;
+        }
+
+        public void setIntelligentEntity(CourseWareIntelligentEntity intelligentEntity) {
+            this.intelligentEntity = intelligentEntity;
+        }
 
         public String getPackageId() {
             return packageId;
@@ -211,7 +221,6 @@ public class CoursewareInfoEntity {
     }
 
 
-
     public void setNbCoursewareInfo(NbCoursewareInfo nbCoursewareInfo) {
         this.nbCoursewareInfo = nbCoursewareInfo;
     }
@@ -223,10 +232,10 @@ public class CoursewareInfoEntity {
     /**
      * 乐步物理实验资源
      */
-    public static class NbCoursewareInfo{
-        /**下载地址**/
+    public static class NbCoursewareInfo {
+        /** 下载地址 **/
         private String resourceUrl;
-        /**文件Md5值**/
+        /** 文件Md5值 **/
         private String resourceMd5;
 
         public String getResourceUrl() {
@@ -240,11 +249,36 @@ public class CoursewareInfoEntity {
         public String getResourceMd5() {
             return resourceMd5;
         }
+
         public void setResourceMd5(String resourceMd5) {
             this.resourceMd5 = resourceMd5;
         }
     }
 
+    /**
+     * 英语智能测评实体
+     */
+    public static class CourseWareIntelligentEntity {
+        //智能反馈资源包   非智能反馈返回空
+        String resource;
 
+        String md5;
+
+        public String getResource() {
+            return resource;
+        }
+
+        public void setResource(String resource) {
+            this.resource = resource;
+        }
+
+        public String getMd5() {
+            return md5;
+        }
+
+        public void setMd5(String md5) {
+            this.md5 = md5;
+        }
+    }
 
 }

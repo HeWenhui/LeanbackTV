@@ -13,11 +13,11 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Looper;
+import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -41,7 +41,6 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.AssertUtil;
 import com.tal.speech.config.SpeechConfig;
-import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
@@ -210,6 +209,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     private long mRecogtestBeginTime;
     private long mRecogtestEndTime;
     private ShareDataManager mSdm;
+    //阻塞chinese的layout
+    private ConstraintLayout blockChineseLayout;
 
     private int segmentType;
     private int star;
@@ -276,7 +277,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         vwvVoiceChatWave = mView.findViewById(R.id.vwv_livevideo_voicechat_wave);
         tvVoiceChatCountdown = mView.findViewById(R.id.tv_livevideo_voicechat_countdown);
         rlMessageText = mView.findViewById(R.id.rl_livevideo_text_message_content);
-
+        blockChineseLayout = mView.findViewById(R.id.layout_livevideo_small_english_block_chinese);
 //        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
 //        int rightMargin = videoPoint.screenWidth - videoPoint.x4;
 //        if (rightMargin > 0) {
@@ -587,6 +588,46 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 return false;
             }
         });
+        etMessageContent.addTextChangedListener(new TextWatcher() {
+            private int selectionEnd;
+            private int lengthBefore;
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+                selectionEnd = etMessageContent.getSelectionEnd();
+                lengthBefore = charSequence.length();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (getInfo.getBlockChinese()) {
+                    String str = editable.toString();
+                    String repickStr = str.replaceAll("[\u4e00-\u9fa5]", "");
+                    if (!repickStr.equals(str)) {
+                        int selectionAdditon = repickStr.length() - lengthBefore;
+                        blockChineseLayout.setVisibility(View.VISIBLE);
+                        mView.removeCallbacks(setTipsGoneRunnable);
+                        mView.postDelayed(setTipsGoneRunnable, 2000);
+                        etMessageContent.removeTextChangedListener(this);
+                        editable.replace(0, editable.length(), repickStr);
+                        etMessageContent.setSelection(selectionEnd + selectionAdditon);
+                        etMessageContent.addTextChangedListener(this);
+                    }
+//                if (StringUtils.isSpace(repickStr)) {
+//                    setBtnDisenable(btMessageSend);
+//                } else {
+//                    btMessageSend.setEnabled(true);
+//                    btMessageSend.setAlpha(1.0f);
+//                    btMessageSend.setTextColor(Color.WHITE);
+//                }
+                }
+            }
+        });
         btMessageFlowers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -717,6 +758,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     }
 
     int c = 0;
+
+    private Runnable setTipsGoneRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (blockChineseLayout != null && blockChineseLayout.getVisibility() != View.GONE) {
+                blockChineseLayout.setVisibility(View.GONE);
+            }
+        }
+    };
 
     @Override
     public void initData() {
@@ -1081,6 +1131,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 @Override
                 public void run() {
                     switchFSPanelLinearLayout.setVisibility(View.GONE);
+                    if (blockChineseLayout != null) {
+                        blockChineseLayout.setVisibility(View.GONE);
+                    }
                 }
             }, 10);
         }
@@ -1939,6 +1992,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 @Override
                 public void run() {
                     switchFSPanelLinearLayout.setVisibility(View.GONE);
+                    if (blockChineseLayout != null) {
+                        blockChineseLayout.setVisibility(View.GONE);
+                    }
                 }
             }, 10);
         }

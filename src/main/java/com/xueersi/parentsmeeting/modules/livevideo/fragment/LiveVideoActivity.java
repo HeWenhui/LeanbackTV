@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,11 +12,15 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 
 /**
  * 直播
@@ -151,5 +156,33 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
         super.finish(result);
         UmsAgentManager.umsAgentDebug(this, TAG + "finish", "finish(result):" + Log.getStackTraceString(new Exception()));
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        logger.w("回调activityResult  requestCode:" + requestCode + " resultCode:" + resultCode);
+        if (requestCode == XESCODE.ARTS_SEND_QUESTION && resultCode == 30) {
+            UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+            if (updateAchievement != null) {
+                int gold = 0, star = 0;
+                try {
+                    String sGoldCount = data.getStringExtra("gold");
+                    String sStarCount = data.getStringExtra("star");
+                    if (!TextUtils.isEmpty(sGoldCount)) {
+                        gold = Integer.valueOf(sGoldCount);
+                        star = Integer.valueOf(sStarCount);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                updateAchievement.getStuGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION);
+            }
+            VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
+            if (reg != null) {
+                logger.i("停止播放");
+                reg.playVideo();
+            }
+        }
     }
 }

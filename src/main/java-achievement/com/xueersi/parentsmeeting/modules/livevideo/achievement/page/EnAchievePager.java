@@ -311,6 +311,9 @@ public class EnAchievePager extends LiveBasePager {
     }
 
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
+        if (starAndGoldEntity == null) {
+            return;
+        }
         tvAchiveNumStar.setText("" + starAndGoldEntity.getStarCount());
         tvAchiveNumGold.setText("" + starAndGoldEntity.getGoldCount());
         StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
