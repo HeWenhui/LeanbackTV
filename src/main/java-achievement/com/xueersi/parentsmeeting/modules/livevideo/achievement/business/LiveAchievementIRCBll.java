@@ -133,7 +133,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     mLogtf.d("getStuGoldCount:method=" + method + ",type=" + type);
                     if (1 == englishPk.canUsePK) {
                         if (type != UpdateAchievement.GET_TYPE_RED && type != UpdateAchievement.GET_TYPE_TEAM
-                                && type != UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION) {
+                                && type != UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION && type != UpdateAchievement.GET_TYPE_VOTE) {
                             return;
                         }
                     }
@@ -252,6 +252,15 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (englishSpeekAction != null) {
+            handler.removeMessages(1);
+            englishSpeekAction.stop(null);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (isGotoRecogniz) {
@@ -292,6 +301,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                    }
 //                }
 //            }).start();
+        } else {
+            if (audioRequest.get()) {
+                release();
+            }
         }
     }
 
@@ -321,7 +334,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             public void onClick(View v) {
                 UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
                         .personal_1701003));
-                startAchievement();
+//                startAchievement();
             }
         });
         recognizeDialog.setCancelShowText("取消").setVerifyShowText("去认证");

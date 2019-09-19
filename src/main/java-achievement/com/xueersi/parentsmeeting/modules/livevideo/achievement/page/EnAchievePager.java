@@ -705,9 +705,9 @@ public class EnAchievePager extends LiveBasePager {
                         if (rlAchiveContent.getWidth() < SizeUtils.Dp2Px(mContext, WIDTH_PROGRESS_BAR_AIM_VIEWGROUP)) {
                             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) pgAchiveAim
                                     .getLayoutParams();
-                            layoutParams.width = rlAchiveAimContent.getWidth() - SizeUtils.Dp2Px(mContext, 22);
+                            layoutParams.width = rlAchiveContent.getWidth() - SizeUtils.Dp2Px(mContext, 22);
                             pgAchiveAim.setLayoutParams(layoutParams);
-                            WIDTH_SOLID_PROGRESS_BAR_AIM = SizeUtils.Px2Dp(mContext, rlAchiveAimContent.getWidth()) -
+                            WIDTH_SOLID_PROGRESS_BAR_AIM = SizeUtils.Px2Dp(mContext, rlAchiveContent.getWidth()) -
                                     28;
                         }
                         setBetterMePro(currentProgress);
