@@ -162,6 +162,15 @@ public class NbCourseCache {
         return resultFile;
     }
 
+    private File getNbCacheFile(String fileName) {
+        if (!TextUtils.isEmpty(fileName)) {
+            return new File(mNbCacheFileDir.getPath() + File.pathSeparator +
+                    fileName + File.pathSeparator + fileName);
+        }
+        return null;
+//        File resultFile = new File(mNbCacheFileDir.getPath() + fileName + File.pathSeparator + fileName);
+    }
+
     /**
      * 是否是本地 assetsRes中的文件
      *
@@ -178,7 +187,8 @@ public class NbCourseCache {
         if (index != -1) {
             String filePath = url.substring(index + 1, url.length());
             //Log.e("NbCourseCache", "======>getAssetsFile: filePath=" + filePath);
-            resultFile = new File(mNbCacheFileDir, filePath);
+            resultFile = new File(mNbCacheFileDir,filePath);
+//            resultFile = new File(mNbCacheFileDir.getPath() + filePath + File.pathSeparator + filePath);
         }
         return resultFile;
     }

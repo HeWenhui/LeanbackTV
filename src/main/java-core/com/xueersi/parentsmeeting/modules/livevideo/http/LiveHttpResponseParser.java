@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -2303,6 +2304,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
     public CoursewareInfoEntity parseCoursewareInfo(ResponseEntity responseEntity) {
+        logger.i("" + responseEntity.getJsonObject().toString());
         CoursewareInfoEntity coursewareInfoEntity = new CoursewareInfoEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         List<CoursewareInfoEntity.LiveCourseware> liveCoursewares = new ArrayList<>();
@@ -2388,48 +2390,74 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     coursewareInfoEntity.setResources(resources);
                     {
                         JSONObject nbResource = resourceArray.optJSONObject("NBResource");
-                        if (nbResource != null) {
+                        parseNBResource(coursewareInfoEntity, nbResource);
 
-                            JSONArray addExperimentArray = nbResource.optJSONArray("addExperiment");
-                            List<CoursewareInfoEntity.NbCoursewareInfo> addExperiments = new ArrayList<>();
-                            for (int q = 0; q < addExperimentArray.length(); q++) {
-                                JSONObject iJSOn = (JSONObject) addExperimentArray.get(q);
-                                String resourseUrl = iJSOn.optString("zip_path");
-                                String resourseMd5 = iJSOn.optString("zip_md5");
-                                if (!TextUtils.isEmpty(resourseMd5) && !TextUtils.isEmpty(resourseUrl)) {
-                                    CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
-                                    nbCoursewareInfo.setResourceMd5(resourseMd5);
-                                    nbCoursewareInfo.setResourceUrl(resourseUrl);
-                                    addExperiments.add(nbCoursewareInfo);
-                                    //缓存NB资源文件解压相对路径
+                    }
+//                    }
+                }
+            } catch (JSONException e) {
+                MobAgent.httpResponseParserError(TAG, "parseCoursewareInfo", e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return coursewareInfoEntity;
+    }
+
+    private void parseNBResource(CoursewareInfoEntity coursewareInfoEntity, JSONObject nbResource) {
+        try {
+            if (nbResource != null) {
+                JSONArray addExperimentArray = nbResource.optJSONArray("addExperiment");
+                List<CoursewareInfoEntity.NbCoursewareInfo> addExperiments = new ArrayList<>();
+                if (addExperimentArray != null) {
+                    for (int q = 0; q < addExperimentArray.length(); q++) {
+                        JSONObject iJSOn = (JSONObject) addExperimentArray.get(q);
+                        String resourseUrl = iJSOn.optString("zip_path");
+                        String resourseMd5 = iJSOn.optString("zip_md5");
+                        if (AppConfig.DEBUG) {
+                            if (!resourseUrl.contains("http")) {
+                                resourseUrl = "https://testmv.xesimg.com" + resourseUrl;
+                            }
+                        }
+                        if (!TextUtils.isEmpty(resourseMd5) && !TextUtils.isEmpty(resourseUrl)) {
+                            CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
+                            nbCoursewareInfo.setResourceMd5(resourseMd5);
+                            nbCoursewareInfo.setResourceUrl(resourseUrl);
+                            addExperiments.add(nbCoursewareInfo);
+                            //缓存NB资源文件解压相对路径
 //                                ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
 //                                        ShareDataManager.SHAREDATA_NOT_CLEAR);
+                        }
+                    }
+                }
+                coursewareInfoEntity.setAddExperiments(addExperiments);
+                {
+                    List<CoursewareInfoEntity.NbCoursewareInfo> freeExperiments = new ArrayList<>();
+                    JSONArray freeExperimentArray = nbResource.optJSONArray("freeExperiment");
+                    if (freeExperimentArray != null) {
+                        for (int q = 0; q < freeExperimentArray.length(); q++) {
+                            JSONObject iJSOn = (JSONObject) freeExperimentArray.get(q);
+                            String resourseUrl = iJSOn.optString("zip_path");
+                            if (AppConfig.DEBUG) {
+                                if (!resourseUrl.contains("http")) {
+                                    resourseUrl = "https://testmv.xesimg.com" + resourseUrl;
                                 }
                             }
-                            coursewareInfoEntity.setAddExperiments(addExperiments);
-                        }
-                        {
-                            List<CoursewareInfoEntity.NbCoursewareInfo> freeExperiments = new ArrayList<>();
-                            JSONArray freeExperimentArray = nbResource.optJSONArray("freeExperiment");
-                            for (int q = 0; q < freeExperimentArray.length(); q++) {
-                                JSONObject iJSOn = (JSONObject) freeExperimentArray.get(q);
-                                String resourseUrl = iJSOn.optString("zip_path");
-                                String resourseMd5 = iJSOn.optString("zip_md5");
-                                if (!TextUtils.isEmpty(resourseMd5) && !TextUtils.isEmpty(resourseUrl)) {
-                                    CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
-                                    nbCoursewareInfo.setResourceMd5(resourseMd5);
-                                    nbCoursewareInfo.setResourceUrl(resourseUrl);
-                                    freeExperiments.add(nbCoursewareInfo);
-                                    //缓存NB资源文件解压相对路径
+                            String resourseMd5 = iJSOn.optString("zip_md5");
+                            if (!TextUtils.isEmpty(resourseMd5) && !TextUtils.isEmpty(resourseUrl)) {
+                                CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
+                                nbCoursewareInfo.setResourceMd5(resourseMd5);
+                                nbCoursewareInfo.setResourceUrl(resourseUrl);
+                                freeExperiments.add(nbCoursewareInfo);
+                                //缓存NB资源文件解压相对路径
 //                                ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
 //                                        ShareDataManager.SHAREDATA_NOT_CLEAR);
-                                }
+                            }
 //                            nbCoursewareInfo.setResourceMd5(resourseMd5);
 //                            nbCoursewareInfo.setResourceUrl(resourseUrl);
-
-                            }
-                            coursewareInfoEntity.setFreeExperiments(freeExperiments);
                         }
+                    }
+                    coursewareInfoEntity.setFreeExperiments(freeExperiments);
+                }
 //                        if (!TextUtils.isEmpty(resurseMd5) && !TextUtils.isEmpty(resurseUrl)) {
 //                            CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
 //                            nbCoursewareInfo.setResourceMd5(resurseMd5);
@@ -2439,16 +2467,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                            ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
 //                                    ShareDataManager.SHAREDATA_NOT_CLEAR);
 //                        }
-                    }
-
-//                    }
-                }
-            } catch (JSONException e) {
-                MobAgent.httpResponseParserError(TAG, "parseCoursewareInfo", e.getMessage());
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.e(e.getMessage());
         }
-        return coursewareInfoEntity;
     }
 
     /**

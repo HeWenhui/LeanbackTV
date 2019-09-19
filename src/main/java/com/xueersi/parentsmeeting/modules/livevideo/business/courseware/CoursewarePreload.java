@@ -443,9 +443,19 @@ public class CoursewarePreload {
             if (remoteUrl.endsWith(".zip")) {
                 String fileName = getFileName(remoteUrl);
                 final File save = new File(cacheDir, fileName);
-                if (!fileIsExists(save.getAbsolutePath())) {
+                String outDirName = fileName.substring(0, fileName.length() - 4);
+                File outDir = new File(cacheDir, outDirName);
+                if (!outDir.exists()) {
+                    outDir.mkdirs();
+                }
+                boolean equals = false;
+                if (fileIsExists(save.getAbsolutePath())) {
+                    String filemd5 = FileUtils.getFileMD5ToString(save);
+                    equals = remoteMD5.equalsIgnoreCase(filemd5);
+                }
+                if (!fileIsExists(save.getAbsolutePath()) || !equals) {
 //                if (!fileIsExists(save.getAbsolutePath())) {
-                    logger.d("resource zip url path:  " + remoteUrl + "   file name:" + fileName + ".zip");
+                    logger.d("nb resource zip url path:  " + remoteUrl + "   file name:" + fileName + ".zip");
                     DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(
                             remoteUrl,
                             cacheDir.getAbsolutePath(),
@@ -456,7 +466,7 @@ public class CoursewarePreload {
                             downLoadInfo,
                             new ZipDownloadListener(
                                     cacheDir,
-                                    cacheDir,
+                                    outDir,
                                     fileName,
                                     new ArrayList<String>(),
                                     new ArrayList<String>(),
@@ -464,7 +474,7 @@ public class CoursewarePreload {
                                     fileName,
                                     new AtomicInteger(0),
                                     "",
-                                    "2"),
+                                    NbCourseWareConfig.RESOURSE_TYPE_NB),
                             "");
                     if (!isPrecise.get()) {
                         PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
@@ -983,12 +993,18 @@ public class CoursewarePreload {
         @Override
         public void onSuccess(String folderPath, String fileName) {
             long downLoadTime = System.currentTimeMillis() - startDownLoadTime;
-            StringBuilder sb = new StringBuilder(ips.get(0));
+            StringBuilder sb = new StringBuilder();
+            if (ips.size() > 0) {
+                sb = new StringBuilder(ips.get(0));
+            }
             for (int i = 0; i < downTryCount.get() && i < ips.size(); i++) {
                 sb.append("," + ips.get(i) + url);
             }
-
-            String tempIP = ips.get(downTryCount.get() % ipLength.get());
+            int successIpPos = downTryCount.get() % ipLength.get();
+            String tempIP = "";
+            if (successIpPos < ips.size()) {
+                tempIP = ips.get(successIpPos);
+            }
             boolean isIP;
             //拼接ip
             if (tempIP.contains("http") || tempIP.contains("https")) {
@@ -1024,10 +1040,18 @@ public class CoursewarePreload {
 
         @Override
         public void onFail(int errorCode) {
-            String oldIP = ips.get(downTryCount.get() % ipLength.get());
+            int oldPos = downTryCount.get() % ipLength.get();
+            String oldIP = "";
+            if (oldPos < ips.size()) {
+                oldIP = ips.get(oldPos);
+            }
             logger.d("fail url path:  " + oldIP + url + "   file name:" + mFileName + ".zip path in:" + mMorecachein.getAbsolutePath() + " out:" + mMorecacheout.getAbsolutePath());
             downTryCount.getAndIncrement();
-            String tempIP = ips.get(downTryCount.get() % ipLength.get());
+            int newPos = downTryCount.get() % ipLength.get();
+            String tempIP = "";
+            if (newPos < ips.size()) {
+                tempIP = ips.get(newPos);
+            }
             String ip;
             boolean isIP;
             //拼接ip
@@ -1041,8 +1065,11 @@ public class CoursewarePreload {
             int tryCount = downTryCount.get();
             logger.d("download zip fail trycount" + tryCount);
             if (tryCount < ips.size()) {
-                logger.i("onFail:ips=" + ips.size() + "");
-                int index = cdns.get(tryCount % cdnLength.get()).indexOf("/") + 2;
+                logger.i("onFail:ips.size()=" + ips.size() );
+                int failCdnPos = tryCount % cdnLength.get(), index = 0;
+                if (failCdnPos < cdns.size()) {
+                    index = cdns.get(failCdnPos).indexOf("/") + 2;
+                }
                 DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mMorecachein.getAbsolutePath(), mFileName + ".temp", md5);
                 logger.d("now url path:  " + ip + url + "   file name:" + mFileName + ".zip");
                 if (isIP) {
@@ -1070,7 +1097,10 @@ public class CoursewarePreload {
                 }
             } else {
                 decrementDocument();
-                StringBuilder sb = new StringBuilder(ips.get(0));
+                StringBuilder sb = new StringBuilder();
+                if (ips.size() > 0) {
+                    sb = new StringBuilder(ips.get(0));
+                }
                 for (int i = 0; i < downTryCount.get() && i < ips.size(); i++) {
                     sb.append("," + ips.get(i) + url);
                 }
@@ -1245,7 +1275,10 @@ public class CoursewarePreload {
 //            hashMap.put("loadurl", url);
 //            hashMap.put("sno", "2");
 //            hashMap.put("status", "true");
-            StringBuilder sb = new StringBuilder(ips.get(0));
+            StringBuilder sb = new StringBuilder();
+            if (ips.size() > 0) {
+                sb = new StringBuilder(ips.get(0));
+            }
             for (int i = 1; i < downTryCount.get() && i < ips.size(); i++) {
                 sb.append("," + ips.get(i));
             }
@@ -1261,7 +1294,11 @@ public class CoursewarePreload {
 
 
                 long downLoadTime = System.currentTimeMillis() - startDonwLoadTime;
-                String tempIP = ips.get(downTryCount.get() % ipLength.get());
+                int tempPos = downTryCount.get() % ipLength.get();
+                String tempIP = "";
+                if (tempPos < ips.size()) {
+                    tempIP = ips.get(tempPos);
+                }
                 boolean isIP;
                 //拼接ip
                 if (tempIP.contains("http") || tempIP.contains("https")) {
@@ -1293,10 +1330,18 @@ public class CoursewarePreload {
         @Override
         public void onFail(int errorCode) {
 //            String ip = "http://" + ips.get((cdnPos.getAndIncrement()) % cdnLength.get());
-            String oldIP = ips.get(downTryCount.get() % ipLength.get());
+            int oldPos = downTryCount.get() % ipLength.get();
+            String oldIP = "";
+            if (oldPos < ips.size()) {
+                oldIP = ips.get(oldPos);
+            }
             logger.d("fail url path:  " + oldIP + url + "   file name:" + mFileName + ".nozip");
             downTryCount.getAndIncrement();
-            String tempIP = ips.get(downTryCount.get() % ipLength.get());
+            int newPos = downTryCount.get() % ipLength.get();
+            String tempIP = "";
+            if (newPos < ips.size()) {
+                tempIP = ips.get(newPos);
+            }
             String ip;
             boolean isIP;
             //拼接ip

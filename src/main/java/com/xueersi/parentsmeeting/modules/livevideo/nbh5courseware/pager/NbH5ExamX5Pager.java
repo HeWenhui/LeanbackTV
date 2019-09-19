@@ -781,8 +781,9 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView webView, WebResourceRequest request) {
             String url = request.getUrl() + "";
-            Log.e("nbTrac","======>X5Pager_InterceptRequest_new:"+url);
+            //第一个必须加载网页的url,并且在下载下来的js文件中注入一段js代码。
             if (url.contains(NB_COURSE_WARE_URL_KEY_WORD) || url.contains(".html")) {
+                logger.e("======>X5Pager_InterceptRequest_new:"+url);
                 if (!jsInserted) {
                     jsInserted = true;
                     WebResourceResponse webResourceResponse = newCourseCache.interceptIndexRequest(webView, url);
@@ -802,7 +803,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                 }
             }
             if (url.contains(WebInstertJs.indexStr())) {
-                Log.e("nbTrac","======>X5Pager_InterceptRequest_new_insertJs called:");
+                logger.e("======>X5Pager_InterceptRequest_new_insertJs called:");
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(webView, url);
                 logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
                 if (webResourceResponse != null) {
