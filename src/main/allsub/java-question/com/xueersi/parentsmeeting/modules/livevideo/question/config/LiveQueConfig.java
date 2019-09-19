@@ -63,6 +63,8 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_CLEANING_UP = "23";
     /** 直播- 热气球 */
     public static final String EN_COURSE_TYPE_HOT_AIR_BALLON = "24";
+    /** 英语智能评测 */
+    public static final String EN_INTELLIGENT_EVALUTION = "30";
     /**直播-语音开宝箱**/
     public static final String EN_COURSE_TYPE_VOICE_TREASURE_BOX = "25";
     /** 直播- what's missing */

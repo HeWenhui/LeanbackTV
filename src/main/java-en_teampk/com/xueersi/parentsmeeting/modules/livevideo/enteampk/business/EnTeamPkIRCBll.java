@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.view.ViewTreeObserver;
 
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -15,15 +13,15 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeTeamPKContract;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
@@ -37,6 +35,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.event.ClassEndEvent
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.http.EnTeamPkHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpDispatch;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpRunnable;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -887,6 +887,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void onCourseEnd() {
+        if (videoQuestionLiveEntity != null &&
+                LiveQueConfig.EN_INTELLIGENT_EVALUTION.equals(videoQuestionLiveEntity.getArtType())) {
+            return;
+        }
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -979,7 +983,15 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         String teamId = "" + pkTeamEntity.getPkTeamId();
                         final String testId = old.id;
                         mLogtf.d("onQuestionEnd:testId=" + testId + ",teamId=" + teamId);
-                        if (!TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, old.type))
+                        if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, old.type)) {
+                            //全身直播得仪式结束以后，请求本场成就
+                            if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
+                                UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+                                if (updateAchievement != null) {
+                                    updateAchievement.getStuGoldCount("onQuestionEnd", UpdateAchievement.GET_TYPE_VOTE);
+                                }
+                            }
+                        } else {
                             getHttpManager().updataEnglishPkByTestId(teamId, testId, new HttpCallBack(false) {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
@@ -1015,6 +1027,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                     logger.e("onQuestionEnd:onPmFailure" + msg, error);
                                 }
                             });
+                        }
                     }
                 }
             }

@@ -7,15 +7,18 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.tencent.bugly.crashreport.BuglyLog;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.XesActivity;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
+import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.liveLog.LiveLogBill;
 import com.xueersi.parentsmeeting.modules.livevideo.service.LiveService;
@@ -24,6 +27,9 @@ import com.xueersi.ui.dataload.DataLoadManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /***
@@ -59,6 +65,12 @@ public class LiveVideoActivityBase extends XesActivity {
         }
         BuglyLog.i(TAG, "onCreate");
         LiveLogBill.getInstance().initLiveLog();
+        if (AppConfig.DEBUG) {
+            Map<String, String> map = new HashMap<>();
+            map.put("liveId", getIntent().getStringExtra("vSectionID"));
+            map.put("live_start_pause", getIntent().getStringExtra("vSectionID"));
+            UmsAgentManager.umsAgentDebug(this, LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map);
+        }
         LiveLogBill.getInstance().setLiveId(getIntent().getStringExtra("vSectionID"));
         LiveLogBill.getInstance().openLiveLog();
 //        FloatWindowManager.addView(this,new Button(this),2);

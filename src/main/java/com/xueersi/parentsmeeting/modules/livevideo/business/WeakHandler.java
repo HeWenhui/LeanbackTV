@@ -25,7 +25,7 @@ public class WeakHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
         Handler.Callback callback = reference.get();
-        if(callback!=null){
+        if (callback != null) {
             callback.handleMessage(msg);
         }
     }

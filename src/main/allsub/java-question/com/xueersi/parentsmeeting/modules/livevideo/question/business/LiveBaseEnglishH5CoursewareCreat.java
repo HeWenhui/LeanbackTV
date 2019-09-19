@@ -1,17 +1,22 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -26,6 +31,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5Cours
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeakChineseCoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentConstants.PROCESS_RECORD_SIGN;
 
 /**
  * Created by linyuqiang on 2018/7/26.
@@ -170,6 +178,9 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                         String type = videoQuestionH5Entity.type;
                         if (LiveQueConfig.isGroupGame(type)) {
                             h5CoursewarePager = createGame(context, videoQuestionH5Entity, onH5ResultClose);
+                        } else if (LiveQueConfig.EN_INTELLIGENT_EVALUTION.equals(type)) {
+                            gotoIntelligentEvaluation(context, videoQuestionH5Entity);
+                            return null;
                         } else {
                             CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                     videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, "0", isArts, false);
@@ -219,7 +230,10 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                     if (LiveQueConfig.isGroupGame(type)) {
                         BaseEnglishH5CoursewarePager h5CoursewarePager = createGame(context, videoQuestionH5Entity, onH5ResultClose);
                         return h5CoursewarePager;
-                    }else if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, type)) {
+                    } else if (LiveQueConfig.EN_INTELLIGENT_EVALUTION.equals(type)) {
+                        gotoIntelligentEvaluation(context, videoQuestionH5Entity);
+                        return null;
+                    } else if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, type)) {
                         CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, "0", isArts, false);
                         coursewareNativePager.setLivePagerBack(livePagerBack);
@@ -234,6 +248,40 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, isShowRanks, isArts, allowTeamPk);
         h5CoursewarePager.setLivePagerBack(livePagerBack);
         return h5CoursewarePager;
+    }
+
+    /**
+     * 跳转到英语智能测评
+     *
+     * @param context
+     * @param videoQuestionH5Entity
+     */
+    private void gotoIntelligentEvaluation(Context context, VideoQuestionLiveEntity videoQuestionH5Entity) {
+        //英语智能测评
+        Bundle bundle = new Bundle();
+        IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
+        intelligentRecognitionRecord.setAnswerTime(videoQuestionH5Entity.time + "");
+        intelligentRecognitionRecord.setStuId(liveGetInfo.getStuId());
+        intelligentRecognitionRecord.setStuCouId(liveGetInfo.getStuCouId());
+        intelligentRecognitionRecord.setLiveId(liveGetInfo.getId());
+        intelligentRecognitionRecord.setContent(videoQuestionH5Entity.answer);
+//                        JSONArray jsonArray = data.optJSONArray("id");
+//                        if (jsonArray != null && jsonArray.length() > 0) {
+        intelligentRecognitionRecord.setMaterialId(videoQuestionH5Entity.id);
+        logger.i("videoQuestionH5Entity.id:" + videoQuestionH5Entity.toString());
+//                        }
+        intelligentRecognitionRecord.setIsPlayBack("0");
+        if (liveGetInfo.getStudentLiveInfo() != null) {
+            intelligentRecognitionRecord.setClassId(liveGetInfo.getStudentLiveInfo().getClassId());
+            intelligentRecognitionRecord.setTeamId(liveGetInfo.getStudentLiveInfo().getTeamId());
+        }
+        bundle.putParcelable(PROCESS_RECORD_SIGN, intelligentRecognitionRecord);
+        VPlayerListenerReg reg = ProxUtil.getProxUtil().get(context, VPlayerListenerReg.class);
+        if (reg != null) {
+            logger.i("停止播放");
+            reg.release();
+        }
+        XueErSiRouter.startModuleForResult((Activity) context, "/english/intelligent_recognition", XESCODE.ARTS_SEND_QUESTION, bundle);
     }
 
     /**

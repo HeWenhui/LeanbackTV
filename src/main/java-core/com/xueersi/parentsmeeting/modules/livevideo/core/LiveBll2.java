@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -848,6 +847,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
+                    mGetInfo.setBlockChinese(info.getBolockChinese() == 1);
                     mGetInfo.setArtsExtLiveInfo(info);
                     List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
                     for (LiveBaseBll businessBll : businessBllTemps) {
@@ -1188,6 +1188,45 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             lastChanged = changed;
             lastChannelId = channelId;
             sendTopic(channel, topicstr, setBy, date, changed, channelId);
+        }
+
+        @Override
+        public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target,
+                             String notice, String channelId) {
+            try {
+                JSONObject object = new JSONObject(notice);
+                int mtype = object.getInt("type");
+                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
+
+                List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
+                if (noticeActions != null && noticeActions.size() > 0) {
+                    for (NoticeAction noticeAction : noticeActions) {
+                        try {
+                            noticeAction.onNotice(sourceNick, target, object, mtype);
+                        } catch (Exception e) {
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
+                    }
+                } else {
+                    if (UselessNotice.isUsed(mtype)) {
+                        try {
+                            HashMap<String, String> hashMap = new HashMap<>();
+                            hashMap.put("logtype", "onNotice");
+                            hashMap.put("livetype", "" + mLiveType);
+                            hashMap.put("liveid", "" + mLiveId);
+                            hashMap.put("arts", "" + mGetInfo.getIsArts());
+                            hashMap.put("pattern", "" + mGetInfo.getPattern());
+                            hashMap.put("type", "" + mtype);
+                            UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
+                        } catch (Exception e) {
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.e("onNotice", e);
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+            }
         }
 
         public void sendTopic(String channel, String topicstr, String setBy, long date, boolean changed,
@@ -1701,7 +1740,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     public void getLivePluingConfigInfo(LivePluginRequestParam param, final AbstractBusinessDataCallBack callBack) {
         mLivePluginRequestParam = param;
 
-        mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack() {
+        mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.d("getLivePluingConfigInfo" + responseEntity.getJsonObject().toString());

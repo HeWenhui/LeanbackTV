@@ -42,7 +42,7 @@ public class HalfBodyHotWordHolder extends RecyclerView.ViewHolder {
          * @param view
          * @param postion
          */
-        void onItemClick(View view,int postion);
+        void onItemClick(View view, int postion);
     }
 
 }

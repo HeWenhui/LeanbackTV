@@ -1066,7 +1066,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
     }
 
     public void getGrayControl(LivePluginRequestParam param, final AbstractBusinessDataCallBack requestCallBack){
-        mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack() {
+        if(mGetInfo!=null && !TextUtils.isEmpty(mGetInfo.getInitModuleUrl())) {
+            param.url = mGetInfo.getInitModuleUrl();
+        }
+        mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.d("getLivePluingConfigInfo"+responseEntity.getJsonObject().toString());

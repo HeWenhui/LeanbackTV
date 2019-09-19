@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingDefaultResource">
+
+    <ImageView
+        android:id="@id/iv_livevideo_small_english_block_chinese_background"
+        android:layout_width="180dp"
+        android:layout_height="65dp"
+        android:src="@drawable/bg_livevideo_english_intelligent_recognition_block_chinese_background"
+        tools:ignore="MissingConstraints" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginBottom="15dp"
+        android:text="@string/english_block_chinese_text_tips"
+        android:textColor="@color/COLOR_FF7200"
+        android:textSize="12dp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_small_english_block_chinese_background"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_small_english_block_chinese_background"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_small_english_block_chinese_background" />
+</android.support.constraint.ConstraintLayout>
