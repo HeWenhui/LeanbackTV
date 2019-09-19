@@ -7,6 +7,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEn
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1661,6 +1663,8 @@ public class LiveGetInfo {
     private String ircNick;
     /**irc 房间**/
     private List<String> ircRoomList;
+    /**irc 房间JsonArray**/
+    private JSONArray ircRoomsJsonArray;
 
     /**业务接口配置**/
     private HashMap<String,String> urlMap;
@@ -1706,6 +1710,13 @@ public class LiveGetInfo {
         this.ircRoomList = ircRoomList;
     }
 
+    public JSONArray getIrcRoomsJsonArray() {
+        return ircRoomsJsonArray;
+    }
+
+    public void setIrcRoomsJsonArray(JSONArray ircRoomsJsonArray) {
+        this.ircRoomsJsonArray = ircRoomsJsonArray;
+    }
 
     public String getPsAppId() {
         return psAppId;

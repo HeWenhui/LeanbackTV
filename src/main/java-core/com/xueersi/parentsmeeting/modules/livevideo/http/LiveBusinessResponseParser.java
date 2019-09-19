@@ -174,6 +174,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                     }
                     liveGetInfo.setIrcRoomList(ircRoomList);
                 }
+                liveGetInfo.setIrcRoomsJsonArray(ircRooms);
 
                 liveGetInfo.setPsAppId(cfgJsonObj.optString("appId"));
                 liveGetInfo.setPsAppKey(cfgJsonObj.optString("appKey"));
