@@ -1664,7 +1664,7 @@ public class LiveGetInfo {
     /**irc 房间**/
     private List<String> ircRoomList;
     /**irc 房间JsonArray**/
-    private JSONArray ircRoomsJsonArray;
+    private String ircRoomsJson;
 
     /**业务接口配置**/
     private HashMap<String,String> urlMap;
@@ -1710,12 +1710,12 @@ public class LiveGetInfo {
         this.ircRoomList = ircRoomList;
     }
 
-    public JSONArray getIrcRoomsJsonArray() {
-        return ircRoomsJsonArray;
+    public String getIrcRoomsJson() {
+        return ircRoomsJson;
     }
 
-    public void setIrcRoomsJsonArray(JSONArray ircRoomsJsonArray) {
-        this.ircRoomsJsonArray = ircRoomsJsonArray;
+    public void setIrcRoomsJson(String ircRoomsJson) {
+        this.ircRoomsJson = ircRoomsJson;
     }
 
     public String getPsAppId() {
