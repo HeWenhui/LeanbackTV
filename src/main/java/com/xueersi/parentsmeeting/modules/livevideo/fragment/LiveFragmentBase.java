@@ -332,7 +332,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         @Override
         protected void onPlayOpenStart() {
             liveFragmentBase.setFirstBackgroundVisible(View.VISIBLE);
-            liveFragmentBase.mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+            if(liveFragmentBase.mContentView.findViewById(R.id.probar_course_video_loading_tip_progress)!=null) {
+                liveFragmentBase.mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+            }
             liveFragmentBase.openSuccess = false;
         }
 
