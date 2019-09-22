@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message;
 
+import android.content.Context;
+
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -7,6 +9,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IrcAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -14,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.json.JSONException;
@@ -25,11 +29,10 @@ import org.json.JSONObject;
 
 public class ExperienceIrcState implements IRCState {
 
+    private Context context;
     private LiveGetInfo mGetInfo;
 
     private LiveTopic mLiveTopic;
-
-    private IIRCMessage mIRCMessage;
 
     private VideoLivePlayBackEntity playBackEntity;
 
@@ -37,10 +40,10 @@ public class ExperienceIrcState implements IRCState {
 
     private LiveHttpResponseParser mHttpResponseParser;
 
-    public ExperienceIrcState(LiveGetInfo mGetInfo, LiveTopic mLiveTopic, IIRCMessage mIRCMessage, VideoLivePlayBackEntity playBackEntity, LiveHttpManager mHttpManager) {
+    public ExperienceIrcState(Context context,LiveGetInfo mGetInfo, LiveTopic mLiveTopic,VideoLivePlayBackEntity playBackEntity, LiveHttpManager mHttpManager) {
+        this.context = context;
         this.mGetInfo = mGetInfo;
         this.mLiveTopic = mLiveTopic;
-        this.mIRCMessage = mIRCMessage;
         this.playBackEntity = playBackEntity;
         this.mHttpManager = mHttpManager;
         mHttpResponseParser = new LiveHttpResponseParser(null);
@@ -67,7 +70,8 @@ public class ExperienceIrcState implements IRCState {
             if (frommWhichTeacher != null) {
                 jsonObject.put("to", frommWhichTeacher);
             }
-            mIRCMessage.sendMessage(jsonObject.toString());
+            IrcAction ircAction= ProxUtil.getProvide(context,IrcAction.class);
+            ircAction.sendMessage(jsonObject.toString());
 //            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
             // logger.e( "understand", e)
@@ -115,7 +119,8 @@ public class ExperienceIrcState implements IRCState {
                 jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
                 jsonObject.put("version", "" + mGetInfo.getHeadImgVersion());
                 jsonObject.put("msg", msg);
-                mIRCMessage.sendMessage(jsonObject.toString());
+                IrcAction ircAction= ProxUtil.getProvide(context,IrcAction.class);
+                ircAction.sendMessage(jsonObject.toString());
             } catch (Exception e) {
                 // logger.e( "understand", e);
                 UmsAgentManager.umsAgentException(ContextManager.getContext(), "livevideo_livebll_sendMessage", e);

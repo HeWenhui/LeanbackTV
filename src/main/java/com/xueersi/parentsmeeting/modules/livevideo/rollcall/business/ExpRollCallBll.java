@@ -4,16 +4,22 @@ import android.app.Activity;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpLiveInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IrcAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,29 +31,27 @@ import java.util.List;
  * Created by yuanwei2 on 2019/5/31.
  */
 
-public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, RollCallHttp {
+public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, TopicAction, RollCallHttp {
 
     private RollCallBll rollCallBll;
 
     private ExperienceBusiness mHttpManager;
 
-    private IIRCMessage ircMessage;
-
+    private ExpLiveInfo expLiveInfo;
     private String signInUrl;
 
     private int expLiveId;
 
     private String orderId;
 
-    public ExpRollCallBll(Activity activity, LiveBackBll liveBackBll, IIRCMessage ircMessage, String signInUrl, int expLiveId, String orderId) {
+    public ExpRollCallBll(Activity activity, LiveBackBll liveBackBll, ExpLiveInfo expLiveInfo, String orderId) {
         super(activity, liveBackBll);
         this.rollCallBll = new RollCallBll(activity);
         this.mHttpManager = new ExperienceBusiness(activity);
-        this.ircMessage = ircMessage;
         this.rollCallBll.setRollCallHttp(this);
-
-        this.signInUrl = signInUrl;
-        this.expLiveId = expLiveId;
+        this.expLiveInfo = expLiveInfo;
+        this.signInUrl = expLiveInfo.getSignInUrl();
+        this.expLiveId = expLiveInfo.getExpLiveId();
         this.orderId = orderId;
     }
 
@@ -79,10 +83,11 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
 
     @Override
     public void sendRollCallNotice(JSONObject data, String targetName) {
+        IrcAction ircAction= ProxUtil.getProvide(activity,IrcAction.class);
         if (targetName != null) {
-            ircMessage.sendNotice(targetName, data.toString());
+            ircAction.sendNotice(targetName, data.toString());
         } else {
-            ircMessage.sendNotice(data.toString());
+            ircAction.sendNotice(data.toString());
         }
     }
 
@@ -179,4 +184,36 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
 
     }
 
+    @Override
+    public void onTopic(LiveTopic liveTopic, JSONObject json, boolean modeChange) {
+
+        if (expLiveInfo.getIsSignIn() == 2) {
+            return;
+        }
+        try {
+
+            if (!json.has("room_2")) {
+                return;
+            }
+
+            json = json.getJSONObject("room_2");
+
+            if (!json.has("isCalling")) {
+                return;
+            }
+
+            boolean isCalling = json.getBoolean("isCalling");
+
+            if (isCalling) {
+                ClassSignEntity classSignEntity = new ClassSignEntity();
+                classSignEntity.setStuName(liveGetInfo.getStuName());
+                classSignEntity.setTeacherName(liveGetInfo.getTeacherName());
+                classSignEntity.setTeacherIMG(liveGetInfo.getTeacherIMG());
+                classSignEntity.setStatus(1);
+                openSignAuto(classSignEntity);
+            }
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
+    }
 }

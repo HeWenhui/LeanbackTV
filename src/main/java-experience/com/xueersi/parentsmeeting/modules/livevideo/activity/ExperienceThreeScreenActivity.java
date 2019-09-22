@@ -20,6 +20,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperIRCMessBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IrcAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayState;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -34,7 +37,6 @@ import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpAutoLive;
@@ -46,42 +48,30 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
-import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
-import com.xueersi.parentsmeeting.modules.livevideo.business.SimpleLiveBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.ExpFeedbackDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.StudyResultDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
-import com.xueersi.parentsmeeting.modules.livevideo.message.ExperienceIrcState;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.ExpRollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -99,7 +89,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -143,8 +132,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      */
     public static final int COURSE_STATE_4 = 4;
 
-    private static final String IRC_CHANNEL_PREFIX = "#4L";
-
     private final Handler getHandler = LiveMainHandler.getMainHandler();
 
     // 刷新状态任务
@@ -170,288 +157,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
     };
 
-    private class ExperkDebug extends SimpleLiveBackDebug {
-
-        ExperkDebug() {
-            ProxUtil.getProxUtil().put(ExperienceThreeScreenActivity.this, LiveAndBackDebug.class, this);
-        }
-
-        @Override
-        public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-            UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
-        }
-
-        @Override
-        public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-            mData.put("appid", appID);
-            mData.put("userid", LiveAppUserInfo.getInstance().getStuId() + "");
-            mData.put("usertype", "student");
-            mData.put("teacherid", expLiveInfo.getCoachTeacherId() + "");
-            mData.put("timestamp", System.currentTimeMillis() + "");
-            mData.put("liveid", playBackEntity.getLiveId());
-            mData.put("termid", playBackEntity.getChapterId());
-            mData.put("uip", IpAddressUtil.USER_IP);
-
-            if (mGetInfo != null && mGetInfo.getStuName() != null) {
-                mData.put("uname", mGetInfo.getStuName());
-            } else {
-                mData.put("uname", "");
-            }
-            UmsAgentManager.umsAgentOtherBusiness(ExperienceThreeScreenActivity.this, appID, UmsConstants.uploadBehavior, mData);
-        }
-    }
-
-    // IRC 回调处理
-    private final IRCCallback mIRCcallback = new IRCCallback() {
-
-        @Override
-        public void onStartConnect() {
-            Log.i("expTess", "onStartConnect");
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onStartConnect();
-            }
-        }
-
-        @Override
-        public void onConnect(IRCConnection connection) {
-            Log.i("expTess", "onConnect");
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onConnect();
-            }
-        }
-
-        @Override
-        public void onRegister() {
-            Log.i("expTess", "onRegister");
-
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onRegister();
-            }
-        }
-
-        @Override
-        public void onDisconnect(IRCConnection connection, boolean isQuitting) {
-            Log.i("expTess", "onDisconnect");
-
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onDisconnect();
-            }
-
-        }
-
-        @Override
-        public void onMessage(String target, String sender, String login, String hostname, String text) {
-            Log.i("expTess", "onMessage");
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onMessage(target, sender, login, hostname, text, "");
-            }
-        }
-
-        @Override
-        public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
-
-            Log.i("expTess", "onPrivateMessage");
-
-            if (isSelf && "T".equals(message)) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        XESToastUtils.showToast(ExperienceThreeScreenActivity.this, "您的帐号已在其他设备登录，请重新进入直播间");
-                        Intent intent = new Intent();
-                        intent.putExtra("msg", "您的帐号已在其他设备登录，请重新进入直播间");
-                        setResult(ShareBusinessConfig.LIVE_USER_KICK, intent);
-                        finish();
-                    }
-                });
-            } else {
-                if (mLiveMessagePager != null) {
-                    mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
-                }
-            }
-        }
-
-        @Override
-        public void onChannelInfo(String channel, int userCount, String topic) {
-            Log.i("expTess", "onChannelInfo channel" + channel);
-        }
-
-        @Override
-        public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice, String channelId) {
-
-            int type = -1;
-            JSONObject data = null;
-
-            try {
-                data = new JSONObject(notice);
-                type = data.getInt("type");
-                expRollCallBll.dispatcNotice(sourceNick, target, data, type);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            Log.i("expTess", "onNotice type=" + type);
-
-            if (data == null) {
-                return;
-            }
-
-            // 老师聊天
-            if (type == XESCODE.TEACHER_MESSAGE) {
-                String name;
-                if (sourceNick.startsWith("t")) {
-                    name = "主讲老师";
-                    String teacherImg = "";
-                    String message = "";
-                    try {
-                        teacherImg = mGetInfo.getMainTeacherInfo().getTeacherImg();
-                        message = data.getString("msg");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    mLiveMessagePager.onMessage(target, sourceNick, "", "", message, teacherImg);
-                } else {
-                    name = "辅导老师";
-                    String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
-                    String to = "";
-                    String message = "";
-
-                    try {
-                        to = data.optString("to", "All");
-                        message = data.getString("msg");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    if ("All".equals(to) || teamId.equals(to)) {
-                        String teacherIMG = mGetInfo.getTeacherIMG();
-                        mLiveMessagePager.onMessage(target, sourceNick, "", "", message, teacherIMG);
-                    }
-                }
-            } else if (type == XESCODE.GAG) {
-                // 禁言
-                try {
-                    String id = data.getString("id");
-                    boolean disable = data.getBoolean("disable");
-                    String nickName = "" + mIRCMessage.getNickname();
-                    if (nickName.equals(id)) {
-                        mLiveMessagePager.onDisable(disable, true);
-                        mGetInfo.getLiveTopic().setDisable(true);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else if (type == XESCODE.OPENCHAT) {
-
-                // 开关聊天区
-                try {
-                    String mode = "";
-
-                    if (sourceNick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
-                        mode = LiveTopic.MODE_TRANING;
-                    } else {
-                        mode = LiveTopic.MODE_CLASS;
-                    }
-
-                    boolean open = data.getBoolean("open");
-                    mExpIrcState.setChatOpen(open);
-                    mLiveMessagePager.onopenchat(open, mode, true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else if (type == XESCODE.ExpLive.XEP_MODE_CHANGE) {
-                try {
-                    int status = data.getInt("status");
-                    setNoticeMode(status);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        @Override
-        public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
-            Log.i("expTess", "onTopic");
-
-            if (!isFirstTopic) {
-                return;
-            }
-
-            try {
-                JSONObject json = new JSONObject(topic);
-                isFirstTopic = false;
-
-                handleTopicSpeak(json);
-                handleTopicCall(json);
-                handleTopicChat(json);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void onUserList(String channel, User[] users) {
-            Log.i("expTess", "onUserList");
-            peopleCount.set(users.length, new Exception());
-            int count = users != null ? users.length : 0;
-
-            for (int index = 0; index < count; index++) {
-                User user = users[index];
-                if (user.getNick().startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
-                    // 辅导老师已在直播间
-                    teacherNick = user.getNick();
-                    peopleCount.set(users.length - 1, new Exception());
-                    break;
-                }
-            }
-
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onUserList(channel, users);
-            }
-            logger.i("=====>onUserList end:" + peopleCount);
-        }
-
-        @Override
-        public void onJoin(String target, String sender, String login, String hostname) {
-            Log.i("expTess", "onJoin");
-            if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
-                // 辅导老师进来了
-                teacherNick = sender;
-            } else {
-                peopleCount.set(peopleCount.get() + 1, new Exception(sender));
-                if (mLiveMessagePager != null) {
-                    mLiveMessagePager.onJoin(target, sender, login, hostname);
-                }
-            }
-        }
-
-        @Override
-        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
-            Log.i("expTess", "onQuit");
-
-            if (!sourceNick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
-                // 辅导老师离开了
-                peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
-                if (mLiveMessagePager != null) {
-                    mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
-                }
-            }
-        }
-
-        @Override
-        public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String
-                recipientNick, String reason) {
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onKick(target, kickerNick, kickerLogin, kickerHostname, recipientNick, reason);
-            }
-        }
-
-        @Override
-        public void onUnknown(String line) {
-
-        }
-    };
-
     // Player 接口监听
     private final VPlayerCallBack.VPlayerListener mPlayerListener = new VPlayerCallBack.SimpleVPlayerListener() {
         @Override
@@ -473,8 +178,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
     };
 
-    private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
-
     private VideoLivePlayBackEntity playBackEntity;
 
     private ExpLiveInfo expLiveInfo;
@@ -494,30 +197,23 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     private int pattern;
 
     private int mNetWorkType;
-    private IIRCMessage mIRCMessage;
     private LiveGetInfo mGetInfo;
     private String appID = UmsConstants.APP_ID;
-    private XesAtomicInteger peopleCount = new XesAtomicInteger(0);
 
     private LiveBackBll liveBackBll;
-
+    private ExperienceIRCBll experienceIrcBll;
 
     /**
      * 签到业务
      */
     private ExpRollCallBll expRollCallBll;
 
-
     private LiveHttpManager mHttpManager;
-
-    private ExperienceIrcState mExpIrcState;
 
     private ExperienceBusiness expBusiness;
 
-    private LiveMessageBll liveMessageBll;
-
     private LiveMessagePager mLiveMessagePager;
-
+    private ExperIRCMessBll experIRCMessBll;
     private RelativeLayout bottomContent;
 
     private ViewGroup rootLayout;
@@ -637,16 +333,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         liveBackBll.onDestroy();
         mLiveMessagePager = null;
-        mIRCMessage.setCallback(null);
-
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                mIRCMessage.destory();
-            }
-        }.start();
-
         super.finish();
     }
 
@@ -690,8 +376,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     public void onEvent(AppEvent event) {
         mNetWorkType = event.netWorkType;
 
-        if (mIRCMessage != null) {
-            mIRCMessage.onNetWorkChange(mNetWorkType);
+        if (experienceIrcBll != null) {
+            experienceIrcBll.onNetWorkChange(mNetWorkType);
         }
     }
 
@@ -972,7 +658,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         liveBackBll.setStuCourId(playBackEntity.getStuCourseId());
         liveBackBll.setvPlayer(vPlayer);
 
-        liveMessageBll = new LiveMessageBll(this, 1);
         expBusiness = new ExperienceBusiness(this);
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", playBackEntity.getLiveId());
@@ -988,6 +673,9 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         initlizeTalk();
 
+        experIRCMessBll = new ExperIRCMessBll(this, liveBackBll);
+        liveBackBll.addBusinessBll(experIRCMessBll);
+
         ArrayList<BllConfigEntity> bllConfigEntities = AllExperienceConfig.getExperienceBusiness();
         for (int i = 0; i < bllConfigEntities.size(); i++) {
             LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntities.get(i));
@@ -997,7 +685,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
 
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(this, liveBackBll, playBackEntity.getChapterId()));
-        expRollCallBll = new ExpRollCallBll(this, liveBackBll, mIRCMessage, expLiveInfo.getSignInUrl(), expLiveInfo.getExpLiveId(), expAutoLive.getTermId());
+        expRollCallBll = new ExpRollCallBll(this, liveBackBll, expLiveInfo, expAutoLive.getTermId());
         liveBackBll.addBusinessBll(expRollCallBll);
 
         liveBackBll.onCreate();
@@ -1007,9 +695,9 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         rlQuestionContent.setVisibility(View.VISIBLE);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
+            experienceIrcBll.addBll(businessBll);
             businessBll.initViewF(liveViewAction, null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
-
         expRollCallBll.initSignStatus(expLiveInfo.getIsSignIn());
     }
 
@@ -1061,7 +749,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
         liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
         liveMediaControllerBottom.experience();
-
+        ProxUtil.getProxUtil().put(this, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
         ivTeacherNotpresent = findViewById(R.id.iv_course_video_teacher_notpresent);
 
@@ -1086,37 +774,28 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlLiveMessageContent, 0, params);
 
-        String channel = IRC_CHANNEL_PREFIX + expChatId;
-        String chatRoomUid = "s_" + "4" + "_" + expChatId + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
 
-        mIRCMessage = new NewIRCMessage(this,  chatRoomUid, mGetInfo.getId(),"", channel);
+        experienceIrcBll = new ExperienceIRCBll(this, expChatId, mGetInfo);
+        experienceIrcBll.addNotice(new NoticeAction() {
+            @Override
+            public void onNotice(String sourceNick, String target, JSONObject data, int type) {
+                if (type == XESCODE.ExpLive.XEP_MODE_CHANGE) {
+                    try {
+                        int status = data.getInt("status");
+                        setNoticeMode(status);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
-        mExpIrcState = new ExperienceIrcState(mGetInfo, mGetInfo.getLiveTopic(), mIRCMessage, playBackEntity, mHttpManager);
-
-        mLiveMessagePager = new LiveMessagePager(this, liveMediaControllerBottom, liveMessageLandEntities, null);
-        mLiveMessagePager.setGetInfo(mGetInfo);
-
-
-        // 关联聊天人数
-        mLiveMessagePager.setPeopleCount(peopleCount);
-
-        // TODO: 2018/8/11 设置ircState
-        //mLiveMessagePager.setLiveBll(mLiveBll);
-        mLiveMessagePager.setIrcState(mExpIrcState);
-
-
-        mLiveMessagePager.onModeChange(mExpIrcState.getMode());
-        mLiveMessagePager.setIsRegister(true);
-
-        // 隐藏锁屏按钮
-        mLiveMessagePager.hideclock();
-        rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
-
-
-        mIRCMessage.setCallback(mIRCcallback);
-        mIRCMessage.create();
+            @Override
+            public int[] getNoticeFilter() {
+                return new int[]{XESCODE.ExpLive.XEP_MODE_CHANGE};
+            }
+        });
+        experienceIrcBll.onCreate();
     }
 
     /**
@@ -1328,9 +1007,9 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         // 发送IRC指令，告诉辅导老师快播放完了
-        mIRCMessage.sendNotice(teacherNick, data.toString());
+        IrcAction ircAction= ProxUtil.getProvide(this,IrcAction.class);
+        ircAction.sendNotice(teacherNick, data.toString());
     }
 
     /**
@@ -1488,97 +1167,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     }
 
     /**
-     * 处理禁言topic
-     *
-     * @param json
-     * @throws Exception
-     */
-    protected void handleTopicSpeak(JSONObject json) throws Exception {
-        if (!json.has("disable_speaking")) {
-            return;
-        }
-
-        JSONArray disableSpeakingArray = json.getJSONArray("disable_speaking");
-        boolean selfDisable = false;
-
-        for (int i = 0; i < disableSpeakingArray.length(); i++) {
-            JSONObject object = disableSpeakingArray.getJSONObject(i);
-            String id = object.getString("id");
-
-            if (id.equals("" + mIRCMessage.getNickname())) {
-                selfDisable = true;
-                break;
-            }
-        }
-
-        if (mGetInfo.getLiveTopic().isDisable() != selfDisable) {
-            mGetInfo.getLiveTopic().setDisable(true);
-            mLiveMessagePager.onDisable(selfDisable, true);
-        }
-
-    }
-
-    /**
-     * 处理签到topic
-     *
-     * @param json
-     * @throws Exception
-     */
-    protected void handleTopicCall(JSONObject json) throws Exception {
-
-        if (expLiveInfo.getIsSignIn() == 2) {
-            return;
-        }
-
-        if (!json.has("room_2")) {
-            return;
-        }
-
-        json = json.getJSONObject("room_2");
-
-        if (!json.has("isCalling")) {
-            return;
-        }
-
-        boolean isCalling = json.getBoolean("isCalling");
-
-        if (isCalling) {
-            ClassSignEntity classSignEntity = new ClassSignEntity();
-            classSignEntity.setStuName(mGetInfo.getStuName());
-            classSignEntity.setTeacherName(mGetInfo.getTeacherName());
-            classSignEntity.setTeacherIMG(mGetInfo.getTeacherIMG());
-            classSignEntity.setStatus(1);
-            expRollCallBll.openSignAuto(classSignEntity);
-        }
-    }
-
-    /**
-     * 处理聊天topic
-     *
-     * @param json
-     * @throws Exception
-     */
-    protected void handleTopicChat(JSONObject json) throws Exception {
-        if (!json.has("room_2")) {
-            return;
-        }
-
-        json = json.getJSONObject("room_2");
-
-        if (!json.has("isCalling")) {
-            return;
-        }
-
-        boolean openchat = json.getBoolean("openchat");
-
-        if (mExpIrcState.openchat() != openchat) {
-            mExpIrcState.setChatOpen(openchat);
-            mLiveMessagePager.onopenchat(openchat, LiveTopic.MODE_TRANING, true);
-        }
-
-    }
-
-    /**
      * 互动题扫描
      *
      * @param position
@@ -1620,8 +1208,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                             + playPosition);
                     if (playPosition == chatEntity.getvQuestionInsretTime()) {
                         logger.i("=====> teahcer close chat called begin");
-                        mLiveMessagePager.onopenchat(false, "in-class", true);
-                        mExpIrcState.setChatOpen(false);
+                        experIRCMessBll.onopenchat(false, "in-class", true);
                         isRoomChatAvailable = false;
                         logger.i("=====> teahcer close chat called end 11111");
                     }
@@ -1632,7 +1219,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                     if (playPosition == chatEntity.getvQuestionInsretTime()) {
                         logger.i("=====> teahcer open chat called begin");
                         mLiveMessagePager.onopenchat(true, "in-class", true);
-                        mExpIrcState.setChatOpen(true);
                         isRoomChatAvailable = true;
                         logger.i("=====> teahcer open chat called  end 111111");
                     }
@@ -1664,13 +1250,10 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
 
         if (!roomChatAvalible) {
-            mLiveMessagePager.onopenchat(false, "in-class", isRoomChatAvailable);
-            mExpIrcState.setChatOpen(false);
+            experIRCMessBll.onopenchat(false, "in-class", isRoomChatAvailable);
         } else {
-            mLiveMessagePager.onopenchat(true, "in-class", !isRoomChatAvailable);
-            mExpIrcState.setChatOpen(true);
+            experIRCMessBll.onopenchat(true, "in-class", !isRoomChatAvailable);
         }
-
         return roomChatAvalible;
     }
 
@@ -1716,6 +1299,10 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (experienceIrcBll != null) {
+            experienceIrcBll.onDestory();
+            experienceIrcBll = null;
+        }
         ProxUtil.getProxUtil().clear(this);
     }
 }
