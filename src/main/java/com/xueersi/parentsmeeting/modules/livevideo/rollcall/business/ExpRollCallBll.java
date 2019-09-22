@@ -55,10 +55,6 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Top
         this.orderId = orderId;
     }
 
-    public void initSignStatus(int signStatus) {
-        liveGetInfo.getStudentLiveInfo().setSignStatus(signStatus);
-    }
-
     public void openSignAuto(ClassSignEntity classSignEntity) {
         rollCallBll.onRollCall(false);
         rollCallBll.onRollCall(classSignEntity);
@@ -74,6 +70,7 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Top
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
         rollCallBll.setLiveGetInfo(liveGetInfo);
+        liveGetInfo.getStudentLiveInfo().setSignStatus(expLiveInfo.getIsSignIn());
     }
 
     @Override

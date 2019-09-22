@@ -195,8 +195,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     private String sex;
 
     private int pattern;
-
-    private int mNetWorkType;
     private LiveGetInfo mGetInfo;
     private String appID = UmsConstants.APP_ID;
 
@@ -208,19 +206,14 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      */
     private ExpRollCallBll expRollCallBll;
 
-    private LiveHttpManager mHttpManager;
-
     private ExperienceBusiness expBusiness;
 
-    private LiveMessagePager mLiveMessagePager;
     private ExperIRCMessBll experIRCMessBll;
     private RelativeLayout bottomContent;
 
     private ViewGroup rootLayout;
 
     private RelativeLayout rlFirstBackgroundView;
-
-    private RelativeLayout rlLiveMessageContent;
 
     private ImageView ivTeacherNotpresent;
 
@@ -240,8 +233,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     private boolean isBackPressed;
 
     private boolean isStudyShow;
-
-    private boolean isFirstTopic = true;
 
     /**
      * 播放器当前状态值
@@ -319,24 +310,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     }
 
     @Override
-    public void finish() {
-
-        getHandler.removeCallbacks(liveModeTask);
-        getHandler.removeCallbacks(liveHeartTask);
-        getHandler.removeCallbacks(playDelayTask);
-
-        LiveAppBll.getInstance().unRegisterAppEvent(this);
-
-        if (videoPlayState.isPlaying) {
-            stopPlayer();
-        }
-
-        liveBackBll.onDestroy();
-        mLiveMessagePager = null;
-        super.finish();
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
@@ -374,10 +347,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
-        mNetWorkType = event.netWorkType;
-
         if (experienceIrcBll != null) {
-            experienceIrcBll.onNetWorkChange(mNetWorkType);
+            experienceIrcBll.onNetWorkChange(event);
         }
     }
 
@@ -402,10 +373,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH, (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
         final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
-
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
-        }
 
         int topGap = (savedHeight - videoView.getLayoutParams().height) / 2;
         int paddingBottom = (int) (topGap + 15 * ScreenUtils.getScreenDensity());
@@ -659,18 +626,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         liveBackBll.setvPlayer(vPlayer);
 
         expBusiness = new ExperienceBusiness(this);
-        mHttpManager = new LiveHttpManager(mContext);
-        mHttpManager.addBodyParam("liveId", playBackEntity.getLiveId());
-        LiveVideoSAConfig liveVideoSAConfig = null;
-
-        if (isArts == 1) {
-            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
-        } else {
-            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
-        }
-
-        mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
-
         initlizeTalk();
 
         experIRCMessBll = new ExperIRCMessBll(this, liveBackBll);
@@ -698,7 +653,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             experienceIrcBll.addBll(businessBll);
             businessBll.initViewF(liveViewAction, null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
-        expRollCallBll.initSignStatus(expLiveInfo.getIsSignIn());
     }
 
     protected LiveBackBaseBll creatBll(BllConfigEntity bllConfigEntity) {
@@ -769,13 +723,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      * 初始化聊天
      */
     protected void initlizeTalk() {
-
-        rlLiveMessageContent = new RelativeLayout(this);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlLiveMessageContent, 0, params);
-
-        mNetWorkType = NetWorkHelper.getNetWorkState(this);
-
         experienceIrcBll = new ExperienceIRCBll(this, expChatId, mGetInfo);
         experienceIrcBll.addNotice(new NoticeAction() {
             @Override
@@ -1218,7 +1165,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
                     if (playPosition == chatEntity.getvQuestionInsretTime()) {
                         logger.i("=====> teahcer open chat called begin");
-                        mLiveMessagePager.onopenchat(true, "in-class", true);
+                        experIRCMessBll.onopenchat(true, "in-class", true);
                         isRoomChatAvailable = true;
                         logger.i("=====> teahcer open chat called  end 111111");
                     }
@@ -1299,6 +1246,18 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        getHandler.removeCallbacks(liveModeTask);
+        getHandler.removeCallbacks(liveHeartTask);
+        getHandler.removeCallbacks(playDelayTask);
+
+        LiveAppBll.getInstance().unRegisterAppEvent(this);
+
+        if (videoPlayState.isPlaying) {
+            stopPlayer();
+        }
+
+        liveBackBll.onDestroy();
         if (experienceIrcBll != null) {
             experienceIrcBll.onDestory();
             experienceIrcBll = null;

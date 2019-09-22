@@ -3,7 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.content.Context;
 import android.util.Log;
 
+import com.xueersi.common.event.AppEvent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -47,12 +49,14 @@ public class ExperienceIRCBll {
      * 需处理 全量 消息的 业务集合
      */
     private List<MessageAction> mMessageActions = new ArrayList<>();
+    private int mNetWorkType;
 
     public ExperienceIRCBll(Context context, String expChatId, LiveGetInfo liveGetInfo) {
         this.context = context;
         this.expChatId = expChatId;
         this.mGetInfo = liveGetInfo;
         mLogtf = new LogToFile(context, TAG);
+        mNetWorkType = NetWorkHelper.getNetWorkState(context);
         ProxUtil.getProxUtil().put(context, IrcAction.class, new IrcAction() {
             @Override
             public void sendMessage(String message) {
@@ -294,8 +298,8 @@ public class ExperienceIRCBll {
         }
     };
 
-    public void onNetWorkChange(int netWorkType) {
-
+    public void onNetWorkChange(AppEvent event) {
+        mNetWorkType = event.netWorkType;
     }
 
     public void onDestory() {
