@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayState;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -77,10 +78,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.ExperienceIrcState;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.ExpRollCallBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -115,50 +118,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         context.startActivityForResult(intent, requestCode);
     }
 
-    private class VideoPlayState {
-
-        /**
-         * 是否正在播放
-         */
-        private boolean isPlaying;
-
-        /**
-         * 视频播放地址
-         */
-        private String videoPath;
-
-        /**
-         * 视频协议
-         */
-        private int protocol;
-
-        /**
-         * 是否上报过
-         */
-        private boolean reported;
-    }
-
-    /**
-     * 辅导老师前缀
-     */
-    public static String COUNTTEACHER_PREFIX = "f_";
-
-    /**
-     * 视频宽度
-     */
-    public static final float VIDEO_WIDTH = 1280f;
-
-    /**
-     * 视频高度
-     */
-    public static final float VIDEO_HEIGHT = 720f;
-
-    /**
-     * 视频宽高比
-     */
-    public static final float VIDEO_RATIO = VIDEO_WIDTH / VIDEO_HEIGHT;
-
-
     /**
      * 未开始
      */
@@ -186,7 +145,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     private static final String IRC_CHANNEL_PREFIX = "#4L";
 
-    private final Handler getHandler = new Handler();
+    private final Handler getHandler = LiveMainHandler.getMainHandler();
 
     // 刷新状态任务
     private final Runnable liveModeTask = new Runnable() {
@@ -241,9 +200,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             UmsAgentManager.umsAgentOtherBusiness(ExperienceThreeScreenActivity.this, appID, UmsConstants.uploadBehavior, mData);
         }
     }
-
-    // 体验课相关日志的埋点
-    private final LiveAndBackDebug ums = new ExperkDebug();
 
     // IRC 回调处理
     private final IRCCallback mIRCcallback = new IRCCallback() {
@@ -391,7 +347,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 try {
                     String mode = "";
 
-                    if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
+                    if (sourceNick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
                         mode = LiveTopic.MODE_TRANING;
                     } else {
                         mode = LiveTopic.MODE_CLASS;
@@ -441,7 +397,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
             for (int index = 0; index < count; index++) {
                 User user = users[index];
-                if (user.getNick().startsWith(COUNTTEACHER_PREFIX)) {
+                if (user.getNick().startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
                     // 辅导老师已在直播间
                     teacherNick = user.getNick();
                     peopleCount.set(users.length - 1, new Exception());
@@ -458,7 +414,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         @Override
         public void onJoin(String target, String sender, String login, String hostname) {
             Log.i("expTess", "onJoin");
-            if (sender.startsWith(COUNTTEACHER_PREFIX)) {
+            if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
                 // 辅导老师进来了
                 teacherNick = sender;
             } else {
@@ -473,7 +429,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
             Log.i("expTess", "onQuit");
 
-            if (!sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
+            if (!sourceNick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
                 // 辅导老师离开了
                 peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
                 if (mLiveMessagePager != null) {
@@ -757,7 +713,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         savedWidth = viewWidth;
         savedHeight = viewHeight;
 
-        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH, (int) VIDEO_HEIGHT, VIDEO_RATIO);
+        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH, (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
         final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
 
@@ -775,7 +731,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         RelativeLayout.LayoutParams params = null;
 
-        int rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (savedWidth - lp.width) / 2);
+        int rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / LiveVideoConfig.VIDEO_WIDTH + (savedWidth - lp.width) / 2);
         int leftMargin = (savedWidth - lp.width) / 2;
         int topAndBottom = (savedHeight - lp.height) / 2;
 
