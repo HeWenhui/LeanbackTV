@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.adapter.HalfBodyHotWordAdapter;
 import com.xueersi.parentsmeeting.modules.livevideo.adapter.HalfBodyHotWordHolder;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -45,9 +46,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
@@ -55,8 +58,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMediaCtrl
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTouchEventLayout;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.ui.adapter.CommonAdapter;
 
 import org.json.JSONException;
@@ -71,6 +72,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 
 /**
  * 理科半身直播2.0 聊天区域
+ *
  * @author chenkun
  * @version 1.0, 2018/10/23 下午4:09
  */
@@ -209,7 +211,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     public HalfBodyLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                     LiveAndBackDebug ums, BaseLiveMediaControllerBottom
-                                            liveMediaControllerBottom,BaseLiveMediaControllerTop controllerTop,
+                                            liveMediaControllerBottom, BaseLiveMediaControllerTop controllerTop,
                                     ArrayList<LiveMessageEntity>
                                             liveMessageEntities, ArrayList<LiveMessageEntity>
                                             otherLiveMessageEntities) {
@@ -218,7 +220,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         this.liveMediaControllerTop = controllerTop;
         this.keyboardShowingListener = keyboardShowingListener;
-        this.liveAndBackDebug =  new ContextLiveAndBackDebug(context);
+        this.liveAndBackDebug = new ContextLiveAndBackDebug(context);
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
 
@@ -668,6 +670,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     /**
      * 移动热词输入面板
+     *
      * @param direction 1:向左  2:向右
      */
     private void transBottomMediaCtr(int direction) {
@@ -691,19 +694,19 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     /**
      * 热词埋点日志
-     * @param hotwordCmd  热词指令
+     *
+     * @param hotwordCmd 热词指令
      */
     private void upLoadHotWordLog(String hotwordCmd) {
         try {
-            if(getInfo != null){
-                HotWordLog.hotWordSend(this.liveAndBackDebug,hotwordCmd,HotWordLog.LIVETYPE_NOT_PRESHCOOL,
-                        getInfo.getStudentLiveInfo().getClassId(),getInfo.getStudentLiveInfo().getTeamId(),getInfo.getStudentLiveInfo().getCourseId());
+            if (getInfo != null) {
+                HotWordLog.hotWordSend(this.liveAndBackDebug, hotwordCmd, HotWordLog.LIVETYPE_NOT_PRESHCOOL,
+                        getInfo.getStudentLiveInfo().getClassId(), getInfo.getStudentLiveInfo().getTeamId(), getInfo.getStudentLiveInfo().getCourseId());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
 
     /**
@@ -738,7 +741,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     }
 
 
-
     private boolean isMediaCtrShowing = false;
 
     Runnable hideBtmMediaCtrTask = new Runnable() {
@@ -750,7 +752,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 liveMediaControllerBottom.onHide();
             }
 
-            if(liveMediaControllerTop != null){
+            if (liveMediaControllerTop != null) {
                 liveMediaControllerTop.onHide();
             }
         }
@@ -759,7 +761,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     /**
      * 关闭媒体控制栏
-     * @param timeDelay  延时多久
+     *
+     * @param timeDelay 延时多久
      */
     private void hideBottomMediaCtr(long timeDelay) {
         mView.removeCallbacks(hideBtmMediaCtrTask);
@@ -775,7 +778,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             ((LiveHalfBodyMediaControllerBottom) liveMediaControllerBottom).interceptHideBtmMediaCtr(interCept);
         }
 
-        if(liveMediaControllerTop != null && liveMediaControllerTop instanceof HalfBodyLiveMediaCtrlTop){
+        if (liveMediaControllerTop != null && liveMediaControllerTop instanceof HalfBodyLiveMediaCtrlTop) {
             ((HalfBodyLiveMediaCtrlTop) liveMediaControllerTop).interceptHideMediaCtr(interCept);
         }
     }
@@ -784,7 +787,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onTitleShow(boolean show) {
 
-        if(mediaCtrShowing()){
+        if (mediaCtrShowing()) {
             hideBottomMediaCtr(0);
         }
 
@@ -814,9 +817,9 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void closeChat(final boolean close) {
-        mChatState = close?CHAT_SATE_TEACHER:CHAT_SATE_ALL;
-        btMsgState.setBackgroundResource(close?R.drawable.selector_live_halfbody_msgstate_teacher
-                :R.drawable.selector_live_halfbody_msgstate_open);
+        mChatState = close ? CHAT_SATE_TEACHER : CHAT_SATE_ALL;
+        btMsgState.setBackgroundResource(close ? R.drawable.selector_live_halfbody_msgstate_teacher
+                : R.drawable.selector_live_halfbody_msgstate_open);
     }
 
 
@@ -828,6 +831,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     /**
      * 关闭所有消息，除了系统消息
+     *
      * @return
      */
     private boolean isCloseAllMsg() {
@@ -905,11 +909,14 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-
-        if(isCloseAllMsg()){
+//    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+    public void onMessage(MessageShowEntity messageShowEntity) {
+        if (isCloseAllMsg() || messageShowEntity == null) {
             return;
         }
+        String sender = messageShowEntity.getSender();
+        String text = messageShowEntity.getText();
+        String headurl = messageShowEntity.getHeadurl();
         if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
@@ -920,11 +927,14 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
 
     @Override
-    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
-                                 final String message) {
-        if (isCloseChat() || isCloseAllMsg()) {
+//    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
+//                                 final String message) {
+    public void onPrivateMessage(MessageShowEntity messageShowEntity) {
+        if (isCloseChat() || isCloseAllMsg() || messageShowEntity == null) {
             return;
         }
+        final String message = messageShowEntity.getText();
+        final String sender = messageShowEntity.getSender();
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -960,7 +970,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             recipientNick, String reason) {
 
     }
-
 
 
     /**

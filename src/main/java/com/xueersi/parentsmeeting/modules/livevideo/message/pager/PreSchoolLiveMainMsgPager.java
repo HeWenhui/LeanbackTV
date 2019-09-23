@@ -34,12 +34,22 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.adapter.HalfBodyHotWordAdapter;
+import com.xueersi.parentsmeeting.modules.livevideo.adapter.HalfBodyHotWordHolder;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
@@ -47,15 +57,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMediaCtrl
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTouchEventLayout;
-import com.xueersi.parentsmeeting.modules.livevideo.adapter.HalfBodyHotWordAdapter;
-import com.xueersi.parentsmeeting.modules.livevideo.adapter.HalfBodyHotWordHolder;
-import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.ui.adapter.CommonAdapter;
 
 import org.json.JSONException;
@@ -69,10 +70,11 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 
 /**
-*幼教直播  主讲态聊天消息面板
-*@author chekun
-*created  at 2019/5/6 14:37
-*/
+ * 幼教直播  主讲态聊天消息面板
+ *
+ * @author chekun
+ * created  at 2019/5/6 14:37
+ */
 public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
 
     private static String TAG = "PreSchoolLiveMainMsgPager";
@@ -179,14 +181,14 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
     /**
      * 热词消息指令
      **/
-    private String[] mHotwordCmd = {"1", "2", "3", "[e]em_19[e]","[e]em_18[e]"};
+    private String[] mHotwordCmd = {"1", "2", "3", "[e]em_19[e]", "[e]em_18[e]"};
 
 
     public PreSchoolLiveMainMsgPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                      LiveAndBackDebug ums, BaseLiveMediaControllerBottom
-                                               liveMediaControllerBottom,BaseLiveMediaControllerTop controllerTop, ArrayList<LiveMessageEntity>
-                                               liveMessageEntities, ArrayList<LiveMessageEntity>
-                                               otherLiveMessageEntities) {
+                                             liveMediaControllerBottom, BaseLiveMediaControllerTop controllerTop, ArrayList<LiveMessageEntity>
+                                             liveMessageEntities, ArrayList<LiveMessageEntity>
+                                             otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
@@ -622,15 +624,16 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
 
     /**
      * 热词埋点日志
-     * @param hotwordCmd  热词指令
+     *
+     * @param hotwordCmd 热词指令
      */
     private void upLoadHotWordLog(String hotwordCmd) {
         try {
-            if(getInfo != null){
-                HotWordLog.hotWordSend(this.liveAndBackDebug,hotwordCmd,HotWordLog.LIVETYPE_PRESCHOOL,
-                        getInfo.getStudentLiveInfo().getClassId(),getInfo.getStudentLiveInfo().getTeamId(),getInfo.getStudentLiveInfo().getCourseId());
+            if (getInfo != null) {
+                HotWordLog.hotWordSend(this.liveAndBackDebug, hotwordCmd, HotWordLog.LIVETYPE_PRESCHOOL,
+                        getInfo.getStudentLiveInfo().getClassId(), getInfo.getStudentLiveInfo().getTeamId(), getInfo.getStudentLiveInfo().getCourseId());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -718,7 +721,7 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
             if (liveMediaControllerBottom.getController() != null) {
                 liveMediaControllerBottom.onHide();
             }
-            if(liveMediaControllerTop != null){
+            if (liveMediaControllerTop != null) {
                 liveMediaControllerTop.onHide();
             }
         }
@@ -727,7 +730,8 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
 
     /**
      * 关闭媒体控制栏
-     * @param timeDelay  延时多久
+     *
+     * @param timeDelay 延时多久
      */
     private void hideBottomMediaCtr(long timeDelay) {
         mView.removeCallbacks(hideBtmMediaCtrTask);
@@ -742,19 +746,20 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
                 liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom) {
             ((LiveHalfBodyMediaControllerBottom) liveMediaControllerBottom).interceptHideBtmMediaCtr(interCept);
         }
-        if(liveMediaControllerTop != null && liveMediaControllerTop instanceof HalfBodyLiveMediaCtrlTop){
+        if (liveMediaControllerTop != null && liveMediaControllerTop instanceof HalfBodyLiveMediaCtrlTop) {
             ((HalfBodyLiveMediaCtrlTop) liveMediaControllerTop).interceptHideMediaCtr(interCept);
         }
     }
 
     private boolean isMediaCtrShowing = false;
+
     private boolean mediaCtrShowing() {
         return isMediaCtrShowing;
     }
 
     @Override
     public void onTitleShow(boolean show) {
-        if(mediaCtrShowing()){
+        if (mediaCtrShowing()) {
             hideBottomMediaCtr(0);
         }
         btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
@@ -778,9 +783,9 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
 
     @Override
     public void closeChat(final boolean close) {
-        mChatState = close?CHAT_SATE_TEACHER:CHAT_SATE_ALL;
-        btMsgState.setBackgroundResource(close?R.drawable.selector_live_halfbody_msgstate_teacher
-                :R.drawable.selector_live_halfbody_msgstate_open);
+        mChatState = close ? CHAT_SATE_TEACHER : CHAT_SATE_ALL;
+        btMsgState.setBackgroundResource(close ? R.drawable.selector_live_halfbody_msgstate_teacher
+                : R.drawable.selector_live_halfbody_msgstate_open);
     }
 
 
@@ -792,6 +797,7 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
 
     /**
      * 关闭所有消息，除了系统消息
+     *
      * @return
      */
     private boolean isCloseAllMsg() {
@@ -837,7 +843,6 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
     }
 
 
-
     /**
      * 聊天进入房间
      */
@@ -871,11 +876,14 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-
-        if(isCloseAllMsg()){
+//    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+    public void onMessage(MessageShowEntity messageShowEntity) {
+        if (isCloseAllMsg() || messageShowEntity == null) {
             return;
         }
+        String sender = messageShowEntity.getSender();
+        String text = messageShowEntity.getText();
+        String headurl = messageShowEntity.getHeadurl();
         if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
@@ -886,11 +894,14 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
 
 
     @Override
-    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
-                                 final String message) {
-        if (isCloseChat() || isCloseAllMsg()) {
+//    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
+//                                 final String message) {
+    public void onPrivateMessage(MessageShowEntity messageShowEntity) {
+        if (isCloseChat() || isCloseAllMsg() || messageShowEntity == null) {
             return;
         }
+        final String message = messageShowEntity.getText();
+        final String sender = messageShowEntity.getSender();
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -949,7 +960,7 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
                         //btMesOpen.setAlpha(1.0f);
                         btMesOpen.setBackgroundResource(getMsgBtnResId());
                     } else {
-                       // btMesOpen.setAlpha(0.4f);
+                        // btMesOpen.setAlpha(0.4f);
                         btMesOpen.setBackgroundResource(getMsgBtnResId());
                     }
                 }

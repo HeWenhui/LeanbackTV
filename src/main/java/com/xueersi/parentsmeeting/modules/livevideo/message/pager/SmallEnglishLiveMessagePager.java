@@ -87,6 +87,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -1670,7 +1671,14 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     }
 
     @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+//    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+    public void onMessage(MessageShowEntity messageShowEntity) {
+        if (messageShowEntity == null) {
+            return;
+        }
+        String sender = messageShowEntity.getSender();
+        String text = messageShowEntity.getText();
+        String headurl = messageShowEntity.getHeadurl();
         logger.e("=====>onMessage called");
         if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
@@ -1678,6 +1686,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             sender = "辅导老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
+
     }
 
     public static class TypeSpannableStringBuilder extends SpannableStringBuilder {
@@ -1692,11 +1701,14 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     }
 
     @Override
-    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
-                                 final String message) {
-        if (isCloseChat()) {
+//    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
+//                                 final String message) {
+    public void onPrivateMessage(MessageShowEntity messageShowEntity) {
+        if (isCloseChat() || messageShowEntity == null) {
             return;
         }
+        final String message = messageShowEntity.getText();
+        final String sender = messageShowEntity.getSender();
         mainHandler.post(new Runnable() {
             @Override
             public void run() {

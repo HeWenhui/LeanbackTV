@@ -36,7 +36,6 @@ import org.xutils.xutils.common.util.MD5;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -411,8 +410,8 @@ public class CoursewarePreload {
         cdnLength.set(cdns.size());
         ipLength.set(newIPs.size());
 
-        downloadResources(resources, cdns, newIPs);
-        exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
+//        downloadResources(resources, cdns, newIPs);
+//        exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
 
         execDownLoadNb(InfoUtils.mergeNbList(courseWareInfos), cdns, newIPs);
         //下载Nb 预加载资源
@@ -450,7 +449,6 @@ public class CoursewarePreload {
             if (remoteCourseware.endsWith(".zip")) {
 //                String fileName = addExp.getId();
                 String fileNameSuffix = addExp.getId() + ".zip";
-                String inDownLoadFileName = addExp.getId() + ".zip.temp";
                 if (TextUtils.isEmpty(fileNameSuffix)) {
                     fileNameSuffix = getFileName(remoteCourseware);
                 }
@@ -474,7 +472,7 @@ public class CoursewarePreload {
                     int index = cdns.get(0).indexOf("/") + 2;
                     cdn = cdns.get(0).substring(index);
                 }
-                String remoteUrl = ip + remoteCourseware;
+
                 boolean equals = false;
                 if (fileIsExists(save.getAbsolutePath())) {
                     String filemd5 = FileUtils.getFileMD5ToString(save);
@@ -482,7 +480,9 @@ public class CoursewarePreload {
                 }
                 if (!fileIsExists(save.getAbsolutePath()) || !equals) {
 //                if (!fileIsExists(save.getAbsolutePath())) {
+                    String remoteUrl = ip + remoteCourseware;
                     logger.i("nb resource zip url path:  " + remoteUrl + "   file name:" + fileNameSuffix);
+                    String inDownLoadFileName = addExp.getId() + ".zip.temp";
                     DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(
                             remoteUrl,
                             cacheDir.getAbsolutePath(),
@@ -498,9 +498,9 @@ public class CoursewarePreload {
                                     cacheDir,
                                     outDir,
                                     fileNameSuffix,
-                                    new ArrayList<String>(),
-                                    new ArrayList<String>(),
-                                    remoteUrl,
+                                    allIPS,
+                                    cdns,
+                                    remoteCourseware,
                                     remoteMD5,
                                     new AtomicInteger(0),
                                     "",
@@ -1073,6 +1073,7 @@ public class CoursewarePreload {
 
         @Override
         public void onFail(int errorCode) {
+            logger.e("zip download error:" + errorCode);
             int oldPos = downTryCount.get() % ipLength.get();
             String oldIP = "";
             if (oldPos < ips.size()) {

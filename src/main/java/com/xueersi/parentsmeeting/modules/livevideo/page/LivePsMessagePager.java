@@ -34,7 +34,6 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.util.FontCache;
@@ -48,8 +47,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordPsItem;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -58,21 +57,20 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1323,7 +1321,14 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+//    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+    public void onMessage(MessageShowEntity messageShowEntity) {
+        if (messageShowEntity == null) {
+            return;
+        }
+        String sender = messageShowEntity.getSender();
+        String text = messageShowEntity.getText();
+        String headurl = messageShowEntity.getHeadurl();
         Loger.e("LiveMessagerPager", "=====>onMessage called");
         if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
@@ -1334,11 +1339,14 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     @Override
-    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
-                                 final String message) {
-        if (isCloseChat()) {
+//    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
+//                                 final String message) {
+    public void onPrivateMessage(MessageShowEntity messageShowEntity) {
+        if (isCloseChat() || messageShowEntity == null) {
             return;
         }
+        final String message = messageShowEntity.getText();
+        final String sender = messageShowEntity.getSender();
         mainHandler.post(new Runnable() {
             @Override
             public void run() {

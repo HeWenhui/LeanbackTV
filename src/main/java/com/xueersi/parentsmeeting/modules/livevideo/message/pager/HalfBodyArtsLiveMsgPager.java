@@ -40,12 +40,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.HalfBodyLiveAr
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -66,12 +67,12 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 
 
-
 /**
- *半身直播  语文聊天UI
- *@author chenkun
- *created 2019/4/22 上午11:05
- *version 1.0
+ * 半身直播  语文聊天UI
+ *
+ * @author chenkun
+ * created 2019/4/22 上午11:05
+ * version 1.0
  */
 public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
 
@@ -156,7 +157,6 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
     private LiveMessageEntity mLastMsg;
 
 
-
     public HalfBodyArtsLiveMsgPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                     LiveAndBackDebug ums, BaseLiveMediaControllerBottom
                                             liveMediaControllerBottom, ArrayList<LiveMessageEntity>
@@ -213,17 +213,20 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
 
     /**
      * 获取热词按钮 资源图片
+     *
      * @return
      */
     protected int getHotwordBtnResId() {
         return R.drawable.bg_livevideo_message_common;
     }
+
     /**
      * 获取聊天按钮 资源图片
+     *
      * @return
      */
     protected int getMsgBtnResId() {
-        return  R.drawable.bg_livevideo_message_open;
+        return R.drawable.bg_livevideo_message_open;
     }
 
     @Override
@@ -242,12 +245,13 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
 
         liveMsgReclView = mView.findViewById(R.id.rcl_live_halfbody_msg);
         // 从底部添加
-        liveMsgReclView.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,true));
+        liveMsgReclView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true));
         return mView;
     }
 
     /**
      * 获取 布局layout
+     *
      * @return
      */
     protected int getLayoutId() {
@@ -411,7 +415,7 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
         initMsgRcyclView();
     }
 
-    private  class MsgItemHolder extends RecyclerView.ViewHolder{
+    private class MsgItemHolder extends RecyclerView.ViewHolder {
         private TextView tvMsg;
         /**
          * 展示带图片的消息
@@ -446,13 +450,13 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
                 CenterAlignImageSpan imageSpan = new CenterAlignImageSpan(drawable);
                 ssb.setSpan(imageSpan, 0, 1, ImageSpan.ALIGN_BASELINE);
                 tvSysMsg.setVisibility(View.VISIBLE);
-                if(urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == data.getType() ){
+                if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == data.getType()) {
                     tvSysMsg.setAutoLinkMask(Linkify.WEB_URLS);
                     tvSysMsg.setText(data.getText());
                     urlClick(tvSysMsg);
                     tvSysMsg.setText(ssb);
                     tvSysMsg.append(data.getText());
-                }else{
+                } else {
                     tvSysMsg.setAutoLinkMask(0);
                     tvSysMsg.setText(ssb);
                     tvSysMsg.append(data.getText());
@@ -467,7 +471,7 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
     }
 
 
-    private  class LiveMsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private class LiveMsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private List<LiveMessageEntity> mData;
 
         public LiveMsgAdapter(List<LiveMessageEntity> data) {
@@ -493,6 +497,7 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
 
     private Drawable dwSysIcon;
     private Drawable dwTeacherIcon;
+
     /**
      * 初始化 联通信息
      */
@@ -503,8 +508,8 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
         mLastMsg = null;
 
-        if(mLiveMsgList != null && mLiveMsgList.size() > 0){
-            mLastMsg = mLiveMsgList.remove((mLiveMsgList.size()-1));
+        if (mLiveMsgList != null && mLiveMsgList.size() > 0) {
+            mLastMsg = mLiveMsgList.remove((mLiveMsgList.size() - 1));
         }
 
         mMsgAdapter = new LiveMsgAdapter(mLiveMsgList);
@@ -515,10 +520,10 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
         int screenHeight = Math.min(point.x, point.y);
         int height = (int) (screenHeight * 0.573);
-        int width = (int) (screenWidth *0.45f);
+        int width = (int) (screenWidth * 0.45f);
         params.height = height;
         params.width = width;
-        params.bottomMargin = (int) (screenHeight *0.054f);
+        params.bottomMargin = (int) (screenHeight * 0.054f);
         liveMsgReclView.setLayoutParams(params);
 
         liveMsgReclView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -555,14 +560,14 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
      */
     private void initReclItemState() {
         //FIXME: 2018/11/10  解决从同步辅导态消息后  item显示异常
-        if(mLastMsg != null){
+        if (mLastMsg != null) {
             liveMsgReclView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mLiveMsgList.add(mLastMsg);
                     mMsgAdapter.notifyItemInserted(0);
                 }
-            },100);
+            }, 100);
         }
     }
 
@@ -610,7 +615,7 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if( liveMediaControllerBottom.getController() != null && liveMediaControllerBottom.getController().isShow()){
+                if (liveMediaControllerBottom.getController() != null && liveMediaControllerBottom.getController().isShow()) {
                     liveMediaControllerBottom.getController().hide();
                 }
 
@@ -644,15 +649,17 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
 
     /**
      * 获取 热词item
+     *
      * @param adapter
      * @return
      */
     protected AdapterItemInterface<String> generateHotWordItem(CommonAdapter adapter) {
-        return new HalfBodyLiveArtsCommonWordItem(mContext,adapter);
+        return new HalfBodyLiveArtsCommonWordItem(mContext, adapter);
     }
 
     /**
      * 获取热词弹框 布局id
+     *
      * @return
      */
     protected int getHotWordPopwindLayout() {
@@ -692,7 +699,7 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
 
 
     @Override
-    public void setVideoLayout(LiveVideoPoint liveVideoPoint){
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
     }
 
     /**
@@ -764,7 +771,14 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+//    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+    public void onMessage(MessageShowEntity messageShowEntity) {
+        if (messageShowEntity == null) {
+            return;
+        }
+        String sender = messageShowEntity.getSender();
+        String text = messageShowEntity.getText();
+        String headurl = messageShowEntity.getHeadurl();
         if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
@@ -774,11 +788,17 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
-                                 final String message) {
+//    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
+//                                 final String message) {
+    public void onPrivateMessage(MessageShowEntity messageShowEntity) {
         if (isCloseChat()) {
             return;
         }
+        if (messageShowEntity == null) {
+            return;
+        }
+        final String message = messageShowEntity.getText();
+        final String sender = messageShowEntity.getText();
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -851,6 +871,7 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
         });
 
     }
+
     /**
      * 关闭开启聊天
      */
@@ -902,8 +923,10 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
     public void onFDOpenbarrage(boolean open, boolean b) {
 
     }
+
     /**
      * 理科，主讲和辅导切换的时候，给出提示（切流）
+     *
      * @param oldMode
      * @param newMode
      * @param isShowNoticeTips  为false的时候，默认显示"已切换到 主讲/辅导模式"
@@ -919,6 +942,7 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
     public void onOpenVoiceNotic(boolean openVoice, String type) {
 
     }
+
     /*添加聊天信息，超过120，移除60个*/
     @Override
     public void addMessage(final String sender, final int type, final String text, final String headUrl) {

@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
@@ -106,9 +107,9 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "#4L";
-    /** 是否使用新IRC SDK*/
-//    private boolean isNewIRC = false;
 
+    /** 是否使用新IRC SDK */
+//    private boolean isNewIRC = false;
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity,
                          LiveGetInfo liveGetInfo,
@@ -176,7 +177,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
-        mIRCMessage = new NewIRCMessage(mContext, chatRoomUid, liveGetInfo.getId(),"", channel);
+        mIRCMessage = new NewIRCMessage(mContext, chatRoomUid, liveGetInfo.getId(), "", channel);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
     }
@@ -258,7 +259,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
             logger.i("=====>onMessage");
 
             if (mLiveMessagePager != null) {
-                mLiveMessagePager.onMessage(target, sender, login, hostname, text, "");
+                mLiveMessagePager.onMessage(new MessageShowEntity(target, sender, login, hostname, text, ""));
             }
         }
 
@@ -279,7 +280,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                 });
             } else {
                 if (mLiveMessagePager != null) {
-                    mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                    mLiveMessagePager.onPrivateMessage(new MessageShowEntity(isSelf, sender, login, hostname, target, message));
                 }
             }
         }

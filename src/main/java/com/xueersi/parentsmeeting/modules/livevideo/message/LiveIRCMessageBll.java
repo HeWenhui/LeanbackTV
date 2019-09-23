@@ -4,13 +4,12 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
@@ -24,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDrive
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
@@ -306,7 +307,15 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text) {
         if (mRoomAction != null) {
-            mRoomAction.onMessage(target, sender, login, hostname, text, "");
+            MessageShowEntity messageShowEntity = new MessageShowEntity(target, sender, login, hostname, text, "");
+//            messageShowEntity.setTarget(target);
+//            messageShowEntity.setSender(sender);
+//            messageShowEntity.setLogin(login);
+//            messageShowEntity.setHostname(hostname);
+//            messageShowEntity.setText(text);
+//            messageShowEntity.setHeadurl("");
+            mRoomAction.onMessage(new MessageShowEntity(target, sender, login, hostname, text, ""));
+//            mRoomAction.onMessage(messageShowEntity);
         }
     }
 
@@ -332,7 +341,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         }
         if (mRoomAction != null) {
-            mRoomAction.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+//            MessageShowEntity messageShowEntity = new MessageShowEntity(isSelf, sender, login, hostname, target, message);
+//            messageShowEntity.setSelf(isSelf);
+            mRoomAction.onPrivateMessage(new MessageShowEntity(isSelf, sender, login, hostname, target, message));
         }
     }
 
@@ -625,15 +636,15 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             } catch (Exception e) {
 
                             }
-                            mRoomAction.onMessage(target, sourceNick, "", "", object.getString("msg"), teacherImg);
+                            mRoomAction.onMessage(new MessageShowEntity(target, sourceNick, "", "", object.getString("msg"), teacherImg));
                         } else {
                             name = "辅导老师";
                             String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
                             String to = object.optString("to", "All");
                             if ("All".equals(to) || teamId.equals(to)) {
                                 String teacherIMG = mGetInfo.getTeacherIMG();
-                                mRoomAction.onMessage(target, sourceNick, "", "", object.getString("msg"),
-                                        teacherIMG);
+                                mRoomAction.onMessage(new MessageShowEntity(target, sourceNick, "", "", object.getString("msg"),
+                                        teacherIMG));
                             }
                         }
                     }

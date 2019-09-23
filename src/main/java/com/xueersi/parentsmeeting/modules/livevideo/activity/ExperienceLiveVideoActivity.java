@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -29,12 +28,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.SimpleLiveBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
@@ -44,6 +39,7 @@ import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
@@ -70,24 +66,27 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
+import com.xueersi.parentsmeeting.modules.livevideo.business.SimpleLiveBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceGuideBll;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.IPlayStatus;
@@ -507,7 +506,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        mIRCMessage = new NewIRCMessage(this,  chatRoomUid, mGetInfo.getId(),"", channel);
+        mIRCMessage = new NewIRCMessage(this, chatRoomUid, mGetInfo.getId(), "", channel);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
 
@@ -555,7 +554,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             logger.i("=====>onMessage");
 
             if (mLiveMessagePager != null) {
-                mLiveMessagePager.onMessage(target, sender, login, hostname, text, "");
+                mLiveMessagePager.onMessage(new MessageShowEntity(target, sender, login, hostname, text, ""));
             }
         }
 
@@ -576,7 +575,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 });
             } else {
                 if (mLiveMessagePager != null) {
-                    mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                    mLiveMessagePager.onPrivateMessage(new MessageShowEntity(isSelf, sender, login, hostname, target, message));
                 }
             }
         }

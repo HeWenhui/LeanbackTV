@@ -1165,7 +1165,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             }
         }
 
-    };
+    }
+
+    ;
 
 
     /**
@@ -1719,8 +1721,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
 
-    public void grayBusinessControl(){
-        if(grayControl !=null && mGetInfo !=null) {
+    public void grayBusinessControl() {
+        if (grayControl != null && mGetInfo != null) {
             LivePluginRequestParam param = new LivePluginRequestParam();
             param.bizId = 2;
             if (!TextUtils.isEmpty(mGetInfo.getId())) {
@@ -1856,7 +1858,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         return false;
     }
 
-    public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl ){
+    public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl) {
         this.grayControl = grayControl;
     }
 }

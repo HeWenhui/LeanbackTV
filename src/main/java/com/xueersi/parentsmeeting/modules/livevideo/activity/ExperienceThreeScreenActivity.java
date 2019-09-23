@@ -20,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.event.AppEvent;
@@ -60,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.ExpFeedbackDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.StudyResultDialog;
@@ -72,14 +72,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.ExperienceIrcState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
-import com.xueersi.parentsmeeting.modules.livevideo.message.ExperienceIrcState;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.ExpRollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
@@ -287,7 +288,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         public void onMessage(String target, String sender, String login, String hostname, String text) {
             Log.i("expTess", "onMessage");
             if (mLiveMessagePager != null) {
-                mLiveMessagePager.onMessage(target, sender, login, hostname, text, "");
+                mLiveMessagePager.onMessage(new MessageShowEntity(target, sender, login, hostname, text, ""));
             }
         }
 
@@ -309,7 +310,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 });
             } else {
                 if (mLiveMessagePager != null) {
-                    mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                    mLiveMessagePager.onPrivateMessage(new MessageShowEntity(isSelf, sender, login, hostname, target, message));
                 }
             }
         }
@@ -353,7 +354,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                         e.printStackTrace();
                     }
 
-                    mLiveMessagePager.onMessage(target, sourceNick, "", "", message, teacherImg);
+                    mLiveMessagePager.onMessage(new MessageShowEntity(target, sourceNick, "", "", message, teacherImg));
                 } else {
                     name = "辅导老师";
                     String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
@@ -369,7 +370,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
                     if ("All".equals(to) || teamId.equals(to)) {
                         String teacherIMG = mGetInfo.getTeacherIMG();
-                        mLiveMessagePager.onMessage(target, sourceNick, "", "", message, teacherIMG);
+                        mLiveMessagePager.onMessage(new MessageShowEntity(target, sourceNick, "", "", message, teacherIMG));
                     }
                 }
             } else if (type == XESCODE.GAG) {
@@ -1135,7 +1136,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
 
-        mIRCMessage = new NewIRCMessage(this,  chatRoomUid, mGetInfo.getId(),"", channel);
+        mIRCMessage = new NewIRCMessage(this, chatRoomUid, mGetInfo.getId(), "", channel);
 
         mExpIrcState = new ExperienceIrcState(mGetInfo, mGetInfo.getLiveTopic(), mIRCMessage, playBackEntity, mHttpManager);
 
