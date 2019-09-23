@@ -118,12 +118,12 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                 if (AppConfig.DEBUG) {
                     Set<String> setString;
                     if (uploadService != null) {
-                        setString = uploadService.getUploadingVideo();
-                        if (setString != null && setString.contains(ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId)) {
-                            // FIXME: 2019/7/24 视频正在后台上传中
-                        } else {
-                            // FIXME: 2019/7/24 视频没有在后台上传
-                        }
+//                        setString = uploadService.getUploadingVideo();
+//                        if (setString != null && setString.contains(ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId)) {
+//                            // FIXME: 2019/7/24 视频正在后台上传中
+//                        } else {
+//                            // FIXME: 2019/7/24 视频没有在后台上传
+//                        }
                     }
                 }
             }
