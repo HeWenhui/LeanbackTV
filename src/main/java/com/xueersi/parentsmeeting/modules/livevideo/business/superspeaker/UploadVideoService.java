@@ -428,6 +428,8 @@ public class UploadVideoService extends Service {
     }
 
     private void performUploadUrl(Intent intent) {
+        if (intent == null)
+            return;
         latch = new CountDownLatch(2);
 //        liveId = intent.getStringExtra("liveId");
 //        courseWareId = intent.getStringExtra("courseWareId");
