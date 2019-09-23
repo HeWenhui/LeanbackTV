@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -2413,20 +2412,22 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         JSONObject iJSOn = (JSONObject) addExperimentArray.get(q);
                         String resourseUrl = iJSOn.optString("zip_path");
                         String resourseMd5 = iJSOn.optString("zip_md5");
-                        if (AppConfig.DEBUG) {
-                            if (!resourseUrl.contains("http")) {
-                                resourseUrl = "https://testmv.xesimg.com" + resourseUrl;
-                            }
-                        }
-                        if (!TextUtils.isEmpty(resourseMd5) && !TextUtils.isEmpty(resourseUrl)) {
-                            CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
-                            nbCoursewareInfo.setResourceMd5(resourseMd5);
-                            nbCoursewareInfo.setResourceUrl(resourseUrl);
-                            addExperiments.add(nbCoursewareInfo);
-                            //缓存NB资源文件解压相对路径
+                        String id = iJSOn.optString("id");
+//                        if (AppConfig.DEBUG) {
+//                            if (!resourseUrl.contains("http")) {
+//                                resourseUrl = "https://testmv.xesimg.com" + resourseUrl;
+//                            }
+//                        }
+//                        if (!TextUtils.isEmpty(resourseMd5) && !TextUtils.isEmpty(resourseUrl)) {
+                        CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
+                        nbCoursewareInfo.setResourceMd5(resourseMd5);
+                        nbCoursewareInfo.setResourceUrl(resourseUrl);
+                        nbCoursewareInfo.setId(id);
+                        addExperiments.add(nbCoursewareInfo);
+                        //缓存NB资源文件解压相对路径
 //                                ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
 //                                        ShareDataManager.SHAREDATA_NOT_CLEAR);
-                        }
+//                        }
                     }
                 }
                 coursewareInfoEntity.setAddExperiments(addExperiments);
@@ -2437,16 +2438,18 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         for (int q = 0; q < freeExperimentArray.length(); q++) {
                             JSONObject iJSOn = (JSONObject) freeExperimentArray.get(q);
                             String resourseUrl = iJSOn.optString("zip_path");
-                            if (AppConfig.DEBUG) {
-                                if (!resourseUrl.contains("http")) {
-                                    resourseUrl = "https://testmv.xesimg.com" + resourseUrl;
-                                }
-                            }
+//                            if (AppConfig.DEBUG) {
+//                                if (!resourseUrl.contains("http")) {
+//                                    resourseUrl = "https://testmv.xesimg.com" + resourseUrl;
+//                                }
+//                            }
                             String resourseMd5 = iJSOn.optString("zip_md5");
+                            String id = iJSOn.optString("id");
                             if (!TextUtils.isEmpty(resourseMd5) && !TextUtils.isEmpty(resourseUrl)) {
                                 CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
                                 nbCoursewareInfo.setResourceMd5(resourseMd5);
                                 nbCoursewareInfo.setResourceUrl(resourseUrl);
+                                nbCoursewareInfo.setId(id);
                                 freeExperiments.add(nbCoursewareInfo);
                                 //缓存NB资源文件解压相对路径
 //                                ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,

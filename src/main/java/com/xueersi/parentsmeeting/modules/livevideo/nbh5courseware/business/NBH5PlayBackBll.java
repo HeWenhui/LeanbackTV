@@ -1,19 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NbCourseEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareBll;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,20 +40,20 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
 
     @Override
     public int[] getCategorys() {
-        return new int[]{LocalCourseConfig.CATEGORY_H5COURSE_WARE,LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT};
+        return new int[]{LocalCourseConfig.CATEGORY_H5COURSE_WARE, LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT};
     }
 
     @Override
     public void onQuestionEnd(VideoQuestionEntity questionEntity) {
         if (h5CoursewareBll != null) {
-            if(isNbAddExperiment(questionEntity)){
+            if (isNbAddExperiment(questionEntity)) {
                /* NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(),questionEntity.getH5Play_url(),false);
                 entity.setExperimentId(questionEntity.getvQuestionID());
                 entity.setPlayBack(true);
                 entity.setNbAddExperiment(true);
                 h5CoursewareBll.onH5Courseware(entity, "off");*/
-            }else{
-                NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(),questionEntity.getH5Play_url(),false);
+            } else {
+                NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(), questionEntity.getH5Play_url(), NbCourseWareEntity.NB_FREE_EXPERIMENT);
                 h5CoursewareBll.onH5Courseware(entity, "off");
             }
         }
@@ -63,6 +61,7 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
 
     /**
      * 是否是Nb 加试实验
+     *
      * @param questionEntity
      * @return
      */
@@ -89,7 +88,7 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
                             h5CoursewareBll.setIsPlayback(true);
                             h5CoursewareBll.initView(mRootView);
                         }
-                        NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(), questionEntity.getH5Play_url(), false);
+                        NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(), questionEntity.getH5Play_url(), NbCourseWareEntity.NB_FREE_EXPERIMENT);
                         h5CoursewareBll.onH5Courseware(entity, "on");
                     }
                 });
@@ -119,8 +118,8 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
                             h5CoursewareBll.initView(mRootView);
                         }
                         NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(), questionEntity.getH5Play_url(),
-                                false);
-                        entity.setNbAddExperiment(true);
+                                NbCourseWareEntity.NB_ADD_EXPERIMENT);
+                        entity.setNbAddExperiment(NbCourseWareEntity.NB_ADD_EXPERIMENT);
                         entity.setPlayBack(true);
                         entity.setExperimentId(questionEntity.getvQuestionID());
                         h5CoursewareBll.onH5Courseware(entity, "on");
@@ -148,12 +147,12 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNbH5PageClose(NbCourseEvent event){
-        if(event.getEventType() == NbCourseEvent.EVENT_TYPE_NBH5_CLOSE){
+    public void onNbH5PageClose(NbCourseEvent event) {
+        if (event.getEventType() == NbCourseEvent.EVENT_TYPE_NBH5_CLOSE) {
             BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
             // Nb 加试实验 关闭页面 调转到试题结束 时间点
-            if(mediaPlayerControl != null && !mediaPlayerControl.isPlaying()){
-                if(currentQuestion != null){
+            if (mediaPlayerControl != null && !mediaPlayerControl.isPlaying()) {
+                if (currentQuestion != null) {
                     mediaPlayerControl.seekTo(currentQuestion.getvEndTime() * 1000);
                     mediaPlayerControl.start();
                 }
@@ -164,7 +163,7 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(h5CoursewareBll != null){
+        if (h5CoursewareBll != null) {
             h5CoursewareBll.onDestroy();
         }
         EventBus.getDefault().unregister(this);

@@ -7,6 +7,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WrapInputStream;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -38,8 +39,9 @@ public class NbCourseCache {
     /**
      * 本地资源包 根路径下  url 路径中关键字
      **/
-    private static final String ROOT_FILE_PATH_KEY_WORD = "physics-libs.";
+    private static final String ROOT_FILE_PATH_KEY_WORD = "physics-libs";
 
+    private static final String FREE_FILE_PATH_KEY_WORD = "wuliplayercdn.nobook.com";
     private static final String RESROOTDIR = "";
 
 
@@ -49,15 +51,29 @@ public class NbCourseCache {
      **/
     private File mNbCacheFileDir;
 
-    public NbCourseCache(Context context) {
+    private NbCourseWareEntity nbCourseWareEntity;
+
+    public NbCourseCache(Context context, NbCourseWareEntity nbCourseWareEntity) {
         header = new HashMap();
+        this.nbCourseWareEntity = nbCourseWareEntity;
 //        String resDir = ShareDataManager.getInstance().getString(NbCourseWareConfig.LOCAL_RES_DIR, "",
 //                ShareDataManager.SHAREDATA_NOT_CLEAR);
 //        File mResDir = LiveCacheFile.geCacheFile(context, NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
 //        if (mResDir.exists() && !TextUtils.isEmpty(resDir)) {
 //            mNbCacheFileDir = new File(mResDir, resDir);
 //        }
-        mNbCacheFileDir = LiveCacheFile.geCacheFile(context, NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
+        File tempFile = LiveCacheFile.geCacheFile(context, NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
+//        if (AppConfig.DEBUG && nbCourseWareEntity.isNbExperiment() == NbCourseWareEntity.NB_FREE_EXPERIMENT) {
+//            mNbCacheFileDir = new File(
+//                    tempFile.getPath() +
+//                            File.separator +
+//                            "257961cc0edc4edd31a9f8394fc4fb194792219270");
+//        } else {
+        mNbCacheFileDir = new File(
+                tempFile.getPath() +
+                        File.separator +
+                        nbCourseWareEntity.getExperimentId());
+//        }
         header.put("Access-Control-Allow-Origin", "*");
         webInstertJs = new WebInstertJs(context, "99999");
     }
@@ -124,7 +140,11 @@ public class NbCourseCache {
                     result = fileName.contains(ROOT_FILE_PATH_KEY_WORD);
                 }
             }
+            if (nbCourseWareEntity.isNbExperiment() == NbCourseWareEntity.NB_FREE_EXPERIMENT) {
+                result = url.contains(FREE_FILE_PATH_KEY_WORD);
+            }
         }
+
         return result;
     }
 
@@ -135,6 +155,7 @@ public class NbCourseCache {
             if (index != -1) {
                 String fileName = url.substring(index + 1, url.length());
                 //Log.e("NbCourseCache", "======>getRootFile: filePath=" + fileName);
+//                resultFile = new File(mNbCacheFileDir, fileName);
                 resultFile = new File(mNbCacheFileDir, fileName);
             }
         }
@@ -157,19 +178,12 @@ public class NbCourseCache {
         if (index != -1) {
             String filePath = url.substring(index + 1, url.length());
             //Log.e("NbCourseCache", "======>getBulidFile: filePath=" + filePath);
+//            resultFile = new File(mNbCacheFileDir, filePath);
             resultFile = new File(mNbCacheFileDir, filePath);
         }
         return resultFile;
     }
 
-    private File getNbCacheFile(String fileName) {
-        if (!TextUtils.isEmpty(fileName)) {
-            return new File(mNbCacheFileDir.getPath() + File.pathSeparator +
-                    fileName + File.pathSeparator + fileName);
-        }
-        return null;
-//        File resultFile = new File(mNbCacheFileDir.getPath() + fileName + File.pathSeparator + fileName);
-    }
 
     /**
      * 是否是本地 assetsRes中的文件
@@ -187,7 +201,7 @@ public class NbCourseCache {
         if (index != -1) {
             String filePath = url.substring(index + 1, url.length());
             //Log.e("NbCourseCache", "======>getAssetsFile: filePath=" + filePath);
-            resultFile = new File(mNbCacheFileDir,filePath);
+            resultFile = new File(mNbCacheFileDir, filePath);
 //            resultFile = new File(mNbCacheFileDir.getPath() + filePath + File.pathSeparator + filePath);
         }
         return resultFile;

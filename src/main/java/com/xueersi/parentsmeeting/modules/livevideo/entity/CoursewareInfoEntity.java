@@ -273,6 +273,8 @@ public class CoursewareInfoEntity {
         private String resourceUrl;
         /** 文件Md5值 **/
         private String resourceMd5;
+        /** 在互动题中对应的id,对应存储的文件名 */
+        private String id;
 
         public String getResourceUrl() {
             return resourceUrl;
@@ -288,6 +290,14 @@ public class CoursewareInfoEntity {
 
         public void setResourceMd5(String resourceMd5) {
             this.resourceMd5 = resourceMd5;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
     }
 

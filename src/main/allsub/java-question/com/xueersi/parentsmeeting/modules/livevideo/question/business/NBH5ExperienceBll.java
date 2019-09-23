@@ -40,7 +40,7 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
     @Override
     public void onQuestionEnd(VideoQuestionEntity questionEntity) {
         if (h5CoursewareBll != null) {
-            NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(),questionEntity.getH5Play_url(),false);
+            NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(), questionEntity.getH5Play_url(), NbCourseWareEntity.NB_FREE_EXPERIMENT);
             h5CoursewareBll.onH5Courseware(entity, "off");
         }
     }
@@ -53,7 +53,7 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_H5COURSE_WARE: {
                 if (h5CoursewareBll == null) {
-                    h5CoursewareBll = new H5CoursewareBll(mContext,liveBackBll.getRommInitData());
+                    h5CoursewareBll = new H5CoursewareBll(mContext, liveBackBll.getRommInitData());
                     h5CoursewareBll.initView(mRootView);
                 }
                 if (oldQuestionEntity == null || questionEntity == null || !oldQuestionEntity.getvQuestionID().equals(questionEntity.getvQuestionID())) {
@@ -67,7 +67,7 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
                                 }
                             });
                 }
-                NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(),questionEntity.getH5Play_url(),false);
+                NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(), questionEntity.getH5Play_url(), NbCourseWareEntity.NB_FREE_EXPERIMENT);
                 h5CoursewareBll.onH5Courseware(entity, "on");
                 break;
             }
@@ -79,7 +79,7 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(h5CoursewareBll != null){
+        if (h5CoursewareBll != null) {
             h5CoursewareBll.onDestroy();
         }
     }
