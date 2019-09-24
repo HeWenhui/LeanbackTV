@@ -22,6 +22,8 @@ public class LiveMessageEntity {
     private String headUrl;
     private int segmentType;
     private int star;
+
+    private String evenNum;
     //自己
     public static final int MESSAGE_MINE = 0;
     //教师
@@ -64,6 +66,14 @@ public class LiveMessageEntity {
         this.sender = sender;
         this.type = type;
         this.ftype = ftype;
+    }
+
+    public String getEvenNum() {
+        return evenNum;
+    }
+
+    public void setEvenNum(String evenNum) {
+        this.evenNum = evenNum;
     }
 
     public String getSender() {
