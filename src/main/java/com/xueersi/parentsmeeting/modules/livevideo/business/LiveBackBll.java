@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveUidRx;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
@@ -339,7 +340,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
     }
 
     public void onCreate() {
-        LiveGetInfo liveGetInfo = new LiveGetInfo(null);
+        LiveGetInfo liveGetInfo = new LiveGetInfo(new LiveTopic());
         mGetInfo = liveGetInfo;
         if(liveAndBackDebugIml!=null) {
             liveAndBackDebugIml.onGetInfo(mGetInfo,UmsConstants.LIVE_BUSINESS_APP_ID);

@@ -100,7 +100,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     /** 视频总时长 */
     protected long mDuration;
     /** 播放器界面的模式 */
-    private int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
+    protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
     /** 放播放器的 io.vov.vitamio.widget.CenterLayout */
     public View viewRoot;
     /** 播放器的VideoView com.xueersi.parentsmeeting.player.media.VideoView */
@@ -209,6 +209,10 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         baseApplication.addActivty(activity);
         //showDialog(savedInstanceState);
         video = "ijk";
+    }
+
+    public final <T extends View> T findViewById(int id) {
+        return mContentView.findViewById(id);
     }
 
     private void onSelect(Bundle savedInstanceState, String video) {

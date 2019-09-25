@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.activity;
+package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
 import android.content.ClipboardManager;
@@ -20,13 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.parentsmeeting.modules.livevideo.business.ExperIRCMessBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.IrcAction;
-import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayState;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -34,9 +28,9 @@ import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.JsonUtil;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpAutoLive;
@@ -47,15 +41,20 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceThreeScreenActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperIRCMessBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IrcAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
+import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayState;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.ExpFeedbackDialog;
@@ -69,16 +68,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.ExpRollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
+import com.xueersi.parentsmeeting.modules.livevideo.weight.ExperMediaCtrl;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -89,23 +89,14 @@ import org.json.JSONObject;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * 主要功能： 课前直播；课中回放；课后直播；互动题；学习报告;(打点数据;禁言；签到；踢人；聊天；学习反馈;数据埋点;)
- * <p>
- * Created by yuanwei2 on 2019/5/23.
- */
+public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase implements ViewTreeObserver.OnGlobalLayoutListener {
 
-public class ExperienceThreeScreenActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom.MediaChildViewClick, ViewTreeObserver.OnGlobalLayoutListener {
-    private String TAG = "ExperienceThreeScreenActivity";
+    private String TAG = "ExperienceRecordFragmentBase";
 
-    public static void intentTo(Activity context, Bundle bundle, String where, int requestCode) {
-//        Intent intent = new Intent(context, ExperienceThreeScreenActivity.class);
-        Intent intent = new Intent(context, ExperienceActivity.class);
-        intent.putExtras(bundle);
-        intent.putExtra("where", where);
-        context.startActivityForResult(intent, requestCode);
+    {
+        /** 布局默认资源 */
+        mLayoutVideo = R.layout.frag_exper_live_back_video;
     }
 
     /**
@@ -154,7 +145,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         @Override
         public void run() {
             if (videoPlayState.isPlaying)
-                playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
+                liveBackPlayVideoFragment.playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
         }
     };
 
@@ -210,9 +201,9 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     private ExperienceBusiness expBusiness;
 
     private ExperIRCMessBll experIRCMessBll;
+    private RelativeLayout rl_course_video_live_controller_content;
     private RelativeLayout bottomContent;
-
-    private ViewGroup rootLayout;
+    LiveViewAction liveViewAction;
 
     private RelativeLayout rlFirstBackgroundView;
 
@@ -275,15 +266,15 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             logHashMap.put(key, val);
         }
 
-        UmsAgentManager.umsAgentOtherBusiness(ExperienceThreeScreenActivity.this, appID, UmsConstants.uploadBehavior, logHashMap.getData());
+        UmsAgentManager.umsAgentOtherBusiness(activity, appID, UmsConstants.uploadBehavior, logHashMap.getData());
     }
 
     @Override
-    protected boolean onVideoCreate(Bundle savedInstanceState) {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    protected void onVideoCreate(Bundle savedInstanceState) {
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
         // 设置不可自动横竖屏
@@ -306,8 +297,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         if (expLiveInfo.getMode() != COURSE_STATE_4) {
             getHandler.postDelayed(liveHeartTask, getHeartInterval());
         }
-
-        return true;
     }
 
     @Override
@@ -320,8 +309,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     }
 
     @Override
-    public void onBackPressed() {
-
+    protected void onUserBackPressed() {
         boolean userBackPressed = liveBackBll.onUserBackPressed();
         if (userBackPressed) {
             return;
@@ -330,15 +318,10 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             isBackPressed = true;
             initStudyResult();
         } else {
-            finish();
+            activity.finish();
         }
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        liveBackBll.onRestart();
-    }
 
     @Override
     public void onStop() {
@@ -353,16 +336,15 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
     }
 
-    @Override
     public void onGlobalLayout() {
         boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         if (!isLand) {
             return;
         }
-
-        int viewWidth = rootLayout.getMeasuredWidth();
-        int viewHeight = rootLayout.getMeasuredHeight();
+        View contentView = activity.findViewById(android.R.id.content);
+        int viewWidth = contentView.getMeasuredWidth();
+        int viewHeight = contentView.getMeasuredHeight();
 
         if (viewWidth <= 0 || viewHeight <= 0 || (savedWidth == viewWidth && savedHeight == viewHeight)) {
             return;
@@ -373,7 +355,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH, (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
         final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-        LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
+        LiveVideoPoint.initLiveVideoPoint(activity, LiveVideoPoint.getInstance(), lp);
 
         int topGap = (savedHeight - videoView.getLayoutParams().height) / 2;
         int paddingBottom = (int) (topGap + 15 * ScreenUtils.getScreenDensity());
@@ -400,11 +382,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         params.leftMargin = leftMargin;
         params.rightMargin = rightMargin;
         ivTeacherNotpresent.setLayoutParams(params);
-    }
-
-    @Override
-    public void onMediaViewClick(View child) {
-
     }
 
     @Override
@@ -451,8 +428,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     }
 
     @Override
-    protected void playComplete() {
-        super.playComplete();
+    protected void resultComplete() {
+        super.resultComplete();
 
         if (expLiveInfo.getMode() == COURSE_STATE_2) {
             sendLogMessage("playVideoFileFinished",
@@ -533,11 +510,40 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     }
 
     @Override
+    protected LiveBackPlayerFragment getFragment() {
+        ExPlayerFragment exPlayerFragment = new ExPlayerFragment();
+        exPlayerFragment.setRecordFragmentBase(this);
+        return exPlayerFragment;
+    }
+
+    @Override
+    protected void restoreFragment(LiveBackPlayerFragment videoFragment) {
+        ExPlayerFragment exPlayerFragment = (ExPlayerFragment) videoFragment;
+        exPlayerFragment.setRecordFragmentBase(this);
+    }
+
+    public static class ExPlayerFragment extends LiveBackPlayerFragment {
+        ExperienceRecordFragmentBase recordFragmentBase;
+
+        public void setRecordFragmentBase(ExperienceRecordFragmentBase recordFragmentBase) {
+            this.recordFragmentBase = recordFragmentBase;
+        }
+
+        @Override
+        protected VPlayerCallBack.VPlayerListener getWrapListener() {
+            return new VPlayerCallBack.SimpleVPlayerListener() {
+                @Override
+                public void onPlayError() {
+                    recordFragmentBase.onPlayError();
+                }
+            };
+        }
+    }
+
     protected void onPlayError() {
         Log.i("expTess", "onPlayError");
-
         if (videoPlayState.isPlaying) {
-            playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
+            liveBackPlayVideoFragment.playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
         }
     }
 
@@ -562,7 +568,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      * 初始化数据
      */
     protected void initlizeData() {
-        Intent intent = getIntent();
+        Intent intent = activity.getIntent();
         Bundle extras = intent.getExtras();
 
         playBackEntity = (VideoLivePlayBackEntity) extras.getSerializable("videoliveplayback");
@@ -622,14 +628,14 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      */
     protected void initlizeBlls() {
 
-        liveBackBll = new LiveBackBll(this, playBackEntity);
+        liveBackBll = new LiveBackBll(activity, playBackEntity);
         liveBackBll.setStuCourId(playBackEntity.getStuCourseId());
         liveBackBll.setvPlayer(vPlayer);
 
-        expBusiness = new ExperienceBusiness(this);
+        expBusiness = new ExperienceBusiness(activity);
         initlizeTalk();
 
-        experIRCMessBll = new ExperIRCMessBll(this, liveBackBll);
+        experIRCMessBll = new ExperIRCMessBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(experIRCMessBll);
 
         ArrayList<BllConfigEntity> bllConfigEntities = AllExperienceConfig.getExperienceBusiness();
@@ -640,19 +646,19 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             }
         }
 
-        liveBackBll.addBusinessBll(new RedPackageExperienceBll(this, liveBackBll, playBackEntity.getChapterId()));
-        expRollCallBll = new ExpRollCallBll(this, liveBackBll, expLiveInfo, expAutoLive.getTermId());
+        liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, playBackEntity.getChapterId()));
+        expRollCallBll = new ExpRollCallBll(activity, liveBackBll, expLiveInfo, expAutoLive.getTermId());
         liveBackBll.addBusinessBll(expRollCallBll);
 
         liveBackBll.onCreate();
 
-        RelativeLayout rlQuestionContent = findViewById(R.id.rl_course_video_live_question_contents);
-        LiveViewAction liveViewAction = new LiveViewActionIml(this, null, rlQuestionContent);
+        RelativeLayout rlQuestionContent = findViewById(R.id.rl_course_video_record_question_content);
+        liveViewAction = new LiveViewActionIml(activity, mContentView, rlQuestionContent);
         rlQuestionContent.setVisibility(View.VISIBLE);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
             experienceIrcBll.addBll(businessBll);
-            businessBll.initViewF(liveViewAction, null, rlQuestionContent, new AtomicBoolean(mIsLand));
+            businessBll.initViewF(liveViewAction, null, rlQuestionContent, mIsLand);
         }
     }
 
@@ -665,7 +671,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             if (BackBusinessCreat.class.isAssignableFrom(c)) {
                 Class<? extends BackBusinessCreat> creatClazz = (Class<? extends BackBusinessCreat>) c;
                 BackBusinessCreat businessCreat = creatClazz.newInstance();
-                clazz = businessCreat.getClassName(getIntent());
+                clazz = businessCreat.getClassName(activity.getIntent());
                 if (clazz == null) {
                     return null;
                 }
@@ -685,13 +691,53 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         return null;
     }
 
+    /** 当前处于第几条线路 */
+    private int nowPos = 0;
+    /** 一共有几条线路 */
+    private int totalRouteNum = 0;
+    // region 播放器核心服务监听
+    /** 播放器核心服务监听 */
+
+    /**
+     * 切换到下一条线路(回放和体验课专用,目前只支持mp4)
+     */
+    protected void changeNextLine() {
+        this.nowPos++;
+        //当前线路小于总线路数
+        if (this.nowPos < totalRouteNum) {
+            liveBackPlayVideoFragment.changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        } else {
+            if (totalRouteNum != 0) {
+                this.nowPos = 0;
+                liveBackPlayVideoFragment.changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            } else {
+                liveBackPlayVideoFragment.playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
+            }
+        }
+    }
+
+    @Override
+    protected void attachMediaController() {
+//        super.attachMediaController();
+        if (mMediaController == null) {
+            mMediaController = new ExperMediaCtrl(activity, liveBackPlayVideoFragment);
+        }
+        setFileName(); // 设置视频显示名称
+        showLongMediaController();
+    }
+
     /**
      * 初始化视图
      */
     protected void initlizeView() {
-
-        rootLayout = findViewById(R.id.rl_course_video_contentview);
-        rootLayout.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        rl_course_video_live_controller_content = mContentView.findViewById(R.id
+                .rl_course_video_live_controller_content);
+        ExperMediaCtrl experMediaCtrl;
+        mMediaController = experMediaCtrl = new ExperMediaCtrl(activity, liveBackPlayVideoFragment);
+        rl_course_video_live_controller_content.addView(experMediaCtrl, new ViewGroup.LayoutParams(ViewGroup
+                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        final View contentView = activity.findViewById(android.R.id.content);
+        contentView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
         bottomContent = findViewById(R.id.rl_course_video_live_question_content);
         rlFirstBackgroundView = findViewById(R.id.rl_course_video_first_backgroud);
@@ -700,12 +746,12 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         bottomContent.setVisibility(View.VISIBLE);
         ivTeacherNotpresent.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
-        mMediaController.setControllerTop(baseLiveMediaControllerTop);
-        liveMediaControllerBottom = new LiveMediaControllerBottom(this, mMediaController, this);
+        BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, experMediaCtrl, liveBackPlayVideoFragment);
+        experMediaCtrl.setControllerTop(baseLiveMediaControllerTop);
+        liveMediaControllerBottom = new LiveMediaControllerBottom(activity, experMediaCtrl, liveBackPlayVideoFragment);
         liveMediaControllerBottom.experience();
-        ProxUtil.getProxUtil().put(this, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
-        mMediaController.setControllerBottom(liveMediaControllerBottom, false);
+        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
+        experMediaCtrl.setControllerBottom(liveMediaControllerBottom, false);
         ivTeacherNotpresent = findViewById(R.id.iv_course_video_teacher_notpresent);
 
         ivLoading = findViewById(R.id.iv_course_video_loading_bg);
@@ -724,7 +770,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      * 初始化聊天
      */
     protected void initlizeTalk() {
-        experienceIrcBll = new ExperienceIRCBll(this, expChatId, mGetInfo);
+        experienceIrcBll = new ExperienceIRCBll(activity, expChatId, mGetInfo);
         experienceIrcBll.addNotice(new NoticeAction() {
             @Override
             public void onNotice(String sourceNick, String target, JSONObject data, int type) {
@@ -885,8 +931,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             videoPlayState.isPlaying = true;
             videoPlayState.videoPath = videoPath;
             videoPlayState.protocol = protocol;
-            setmDisplayName(playBackEntity.getPlayVideoName());
-            playPSVideo(videoPath, protocol);
+            liveBackPlayVideoFragment.setmDisplayName(playBackEntity.getPlayVideoName());
+            liveBackPlayVideoFragment.playPSVideo(videoPath, protocol);
 
         } else if (mode == COURSE_STATE_2) {
 
@@ -910,8 +956,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             videoPlayState.isPlaying = true;
             videoPlayState.videoPath = videoPath;
             videoPlayState.protocol = protocol;
-            setmDisplayName(playBackEntity.getPlayVideoName());
-            playPSVideo(videoPath, protocol);
+            liveBackPlayVideoFragment.setmDisplayName(playBackEntity.getPlayVideoName());
+            liveBackPlayVideoFragment.playPSVideo(videoPath, protocol);
         } else {
 
             if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
@@ -956,7 +1002,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             e.printStackTrace();
         }
         // 发送IRC指令，告诉辅导老师快播放完了
-        IrcAction ircAction= ProxUtil.getProvide(this,IrcAction.class);
+        IrcAction ircAction = ProxUtil.getProvide(activity, IrcAction.class);
         ircAction.sendNotice(teacherNick, data.toString());
     }
 
@@ -977,7 +1023,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 if (learn != null) {
                     showStudyResult(learn);
                 } else if (isBackPressed) {
-                    finish();
+                    experienceIrcBll = new ExperienceIRCBll(activity, expChatId, mGetInfo);
+                    activity.finish();
                 }
 
                 isStudyShow = true;
@@ -988,7 +1035,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 isStudyShow = true;
 
                 if (isBackPressed) {
-                    finish();
+                    activity.finish();
                 }
             }
 
@@ -997,7 +1044,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 isStudyShow = true;
 
                 if (isBackPressed) {
-                    finish();
+                    activity.finish();
                 }
             }
 
@@ -1017,7 +1064,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     protected void showStudyResult(final ExperienceResult result) {
 
         if (studyResultDialog == null) {
-            studyResultDialog = new StudyResultDialog(this);
+            studyResultDialog = new StudyResultDialog(activity);
             studyResultDialog.setCancelable(false);
         }
 
@@ -1029,22 +1076,21 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 if (which == StudyResultDialog.BUTTON_SHUT) {
                     showExpFeedBack();
                 } else if (which == StudyResultDialog.BUTTON_CHAT) {
-                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipboardManager cm = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
                     cm.setText(result.getWechatNum());
-                    Toast.makeText(getApplicationContext(), "您已复制老师微信号，快去添加吧!", Toast.LENGTH_LONG).show();
-
+                    XESToastUtils.showToast("您已复制老师微信号，快去添加吧!");
                     if (isBackPressed) {
-                        finish();
+                        activity.finish();
                     }
                 } else if (which == StudyResultDialog.BUTTON_APPLY) {
                     if (result.getUrl() != null) {
-                        BrowserActivity.openBrowser(ExperienceThreeScreenActivity.this, result.getUrl());
+                        BrowserActivity.openBrowser(activity, result.getUrl());
                     } else {
-                        Toast.makeText(getApplicationContext(), "数据异常", Toast.LENGTH_LONG).show();
+                        XESToastUtils.showToast("数据异常");
                     }
 
                     if (isBackPressed) {
-                        finish();
+                        activity.finish();
                     }
                 }
             }
@@ -1061,7 +1107,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     protected void showExpFeedBack() {
 
         if (expFeedbackDialog == null) {
-            expFeedbackDialog = new ExpFeedbackDialog(this);
+            expFeedbackDialog = new ExpFeedbackDialog(activity);
             expFeedbackDialog.setCancelable(false);
         }
 
@@ -1069,7 +1115,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             @Override
             public void onCancel(DialogInterface dialog) {
                 if (isBackPressed) {
-                    finish();
+                    activity.finish();
                 }
             }
         });
@@ -1120,7 +1166,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
      * @param position
      */
     protected void scanQuestion(long position) {
-        if (!mIsLand || vPlayer == null || !vPlayer.isPlaying()) {
+        if (!mIsLand.get() || vPlayer == null || !vPlayer.isPlaying()) {
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
             return;
         }
@@ -1263,6 +1309,17 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             experienceIrcBll.onDestory();
             experienceIrcBll = null;
         }
-        ProxUtil.getProxUtil().clear(this);
+        ProxUtil.getProxUtil().clear(activity);
     }
+
+    @Override
+    protected void seekTo(long pos) {
+
+    }
+
+    @Override
+    protected long getStartPosition() {
+        return 0;
+    }
+
 }

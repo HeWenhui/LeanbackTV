@@ -224,6 +224,7 @@ public class ExperienceIRCBll {
             LiveTopic liveTopic = new LiveTopic();
             JSONTokener jsonTokener = null;
             try {
+                jsonTokener = new JSONTokener(topic);
                 JSONObject jsonObject = new JSONObject(jsonTokener);
                 if (mTopicActions != null && mTopicActions.size() > 0) {
                     for (TopicAction mTopicAction : mTopicActions) {
