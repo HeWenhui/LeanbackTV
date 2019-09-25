@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
@@ -26,6 +28,7 @@ import java.util.HashMap;
  * created  at 2019/4/13 11:08
  */
 public class NbCourseCache {
+    private Logger logger = LoggerFactory.getLogger(NbCourseCache.class.getSimpleName());
     /**
      * 本地assets 包下 资源  url 路径中关键字
      **/
@@ -112,10 +115,13 @@ public class NbCourseCache {
                         }
                         response = new WebResourceResponse(mimeType, "", inputStream);
                         response.setResponseHeaders(header);
+                        logger.i("需要加载的url:" + url + " 找到本地资源,资源路径" + resFile.getPath());
                         // Log.e("NbCourseCache", "====>return local resource:"+mimeType+":"+extension);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
+                } else {
+                    logger.i("需要加载的url:" + url + " 寻找的本地文件不存在，路径:" + resFile.getPath());
                 }
             }
         } catch (Exception e) {
