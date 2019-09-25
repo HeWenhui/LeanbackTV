@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -55,6 +56,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -64,7 +66,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
 import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTION_CLOSE;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentConstants.PROCESS_RECORD_SIGN;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_FILTER_ACTION;
-import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.intelligent_recognition_sign;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_SIGN_KEY;
 import static com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig.EN_INTELLIGENT_EVALUTION;
 
 /**
@@ -166,9 +168,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             break;
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
                 if (EN_INTELLIGENT_EVALUTION.equals(questionEntity.getvQuestionType())) {
-                    Intent intent = new Intent(INTELLIGENT_RECOGNITION_FILTER_ACTION);
-                    intent.putExtra(intelligent_recognition_sign, new JSONObject().toString());
-                    activity.sendBroadcast(intent);
+                    stopIntelligentActivity();
                     return;
                 }
                 VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
@@ -180,6 +180,16 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             default:
                 break;
         }
+    }
+
+    /**
+     * 终止智能测评的Activity
+     */
+    private void stopIntelligentActivity() {
+        setPauseNotStop(false);
+        Intent intent = new Intent(INTELLIGENT_RECOGNITION_FILTER_ACTION);
+        intent.putExtra(INTELLIGENT_RECOGNITION_SIGN_KEY, new JSONObject().toString());
+        activity.sendBroadcast(intent);
     }
 
     @Override
@@ -355,6 +365,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         intelligentRecognitionRecord.setMaterialId(videoQuestionLiveEntity.id);
                         intelligentRecognitionRecord.setIsPlayBack("1");
                         bundle.putParcelable(PROCESS_RECORD_SIGN, intelligentRecognitionRecord);
+                        setPauseNotStop(true);
                         XueErSiRouter.startModule(activity, "/english/intelligent_recognition", bundle);
                         return;
                     }
@@ -365,6 +376,19 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             break;
             default:
                 break;
+        }
+    }
+
+    PauseNotStopVideoIml pauseNotStopVideoIml;
+    /** onPause状态不暂停视频 */
+    AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(false);
+
+    private void setPauseNotStop(boolean pauseNotStop) {
+        onPauseNotStopVideo.set(pauseNotStop);
+        if (pauseNotStopVideoIml == null) {
+            pauseNotStopVideoIml = new PauseNotStopVideoIml(activity, onPauseNotStopVideo);
+        } else {
+            pauseNotStopVideoIml.setPause(pauseNotStop);
         }
     }
 
