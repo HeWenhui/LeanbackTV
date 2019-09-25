@@ -14,17 +14,17 @@ import com.czt.mp3recorder.util.LameUtil;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.AudioMediaCodecUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.UploadAliUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import java.io.File;
@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,6 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -56,7 +58,7 @@ public class UploadVideoService extends Service {
     //    private Set<String> courseWeareList = new ConcurrentSkipListSet<>();
     private Map<String, String> map = new ConcurrentHashMap<>();
 
-    private List<String> listUploading = new CopyOnWriteArrayList<>();
+    private static List<String> listUploading = new CopyOnWriteArrayList<>();
     private String videoUrl, audioUrl = "";
     Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
@@ -67,9 +69,16 @@ public class UploadVideoService extends Service {
     private XesStsUploadListener videoUploadListener;
 
     private String uploadVideoSetKey = "";
+    /**
+     * 上传进度数目
+     */
+    private static final int uploadVideoProcessLogNum = 2;
 
     private class VideoUploadListener implements XesStsUploadListener {
         String videoLocalUrl;
+        private int logUploadNum = 2;
+        private boolean percent_5 = false;
+        private boolean percent_90 = false;
 
         public VideoUploadListener(String videoLocalUrl) {
             this.videoLocalUrl = videoLocalUrl;
@@ -81,7 +90,20 @@ public class UploadVideoService extends Service {
 
         @Override
         public void onProgress(XesCloudResult result, int percent) {
-
+            if (percent > 5 && !percent_5 && logUploadNum > 0) {
+                Map<String, String> map = new HashMap<>();
+                map.put(UploadAliUtils.SUPER_SPEAKER_VIDEO_PERCENT, String.valueOf(percent));
+                UmsAgentManager.umsAgentDebug(UploadVideoService.this, UploadAliUtils.SUPER_SPEAKER_LOG, map);
+                logUploadNum--;
+                percent_5 = true;
+            }
+            if (percent > 90 && !percent_90 && logUploadNum > 0) {
+                Map<String, String> map = new HashMap<>();
+                map.put(UploadAliUtils.SUPER_SPEAKER_VIDEO_PERCENT, String.valueOf(percent));
+                UmsAgentManager.umsAgentDebug(UploadVideoService.this, UploadAliUtils.SUPER_SPEAKER_LOG, map);
+                logUploadNum--;
+                percent_90 = true;
+            }
             logger.i("video upload percent:" + percent);
         }
 
@@ -91,12 +113,12 @@ public class UploadVideoService extends Service {
             logger.i("video upload succes " + videoUrl);
 //            XESToastUtils.showToast(UploadVideoService.this, "视频上传成功");
 //            uploadSuccess();
-
-            ShareDataManager.getInstance().put(
-                    ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
-                    2,
-                    ShareDataManager.SHAREDATA_NOT_CLEAR,
-                    false);
+            StorageUtils.setStorageSPKey(liveId, courseWareId, 2);
+//            ShareDataManager.getInstance().put(
+//                    ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
+//                    2,
+//                    ShareDataManager.SHAREDATA_NOT_CLEAR,
+//                    false);
 //            uploadSuccess();
             latch.countDown();
             try {
@@ -122,15 +144,6 @@ public class UploadVideoService extends Service {
         }
     }
 
-//    private short[] convertShort(byte[] b) {
-//        int len = b.length;
-//        int shortL = b.length % 2 == 0 ? b.length / 2 : b.length / 2 + 1;
-//        short[] aShort = new short[shortL];
-//        for (int i = 0; i < aShort.length; i++) {
-//            shortL[i] = b[i * 2] + b[i * 2 + 1] << 8;
-//
-//        }
-//}
     /**
      * 录音文件输出
      */
@@ -222,13 +235,15 @@ public class UploadVideoService extends Service {
 
     }
 
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     /**
      * 使用rxjava方式解决pcm编码问题
      *
      * @param codecUtils
      */
     private void performRxUploadAudio(final AudioMediaCodecUtils codecUtils) {
-        Flowable.
+        compositeDisposable.add(Flowable.
                 just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
                 subscribeOn(Schedulers.io()).
                 filter(new Predicate<Boolean>() {
@@ -254,7 +269,7 @@ public class UploadVideoService extends Service {
                     public void accept(AudioMediaCodecUtils.PCMEntity pcmEntity) throws Exception {
                         uploadAudio(uploadVideoEntity.getAudioLocalUrl());
                     }
-                });
+                }));
 
     }
 
@@ -453,7 +468,8 @@ public class UploadVideoService extends Service {
 //        String videoLocalUrl = intent.getStringExtra("videoRemoteUrl");
         String audioLocalUrl = uploadVideoEntity.getAudioLocalUrl();
         String videoLocalUrl = uploadVideoEntity.getVideoLocalUrl();
-        uploadVideoSetKey = ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + uploadVideoEntity.getLiveId() + "_" + courseWareId;
+        uploadVideoSetKey = StorageUtils.getVideoPath();
+//        uploadVideoSetKey = ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + uploadVideoEntity.getLiveId() + "_" + courseWareId;
         audioUploadListener = new AudioUploadListener(audioLocalUrl);
         videoUploadListener = new VideoUploadListener(videoLocalUrl);
         uploadVideo(videoLocalUrl);
@@ -472,7 +488,7 @@ public class UploadVideoService extends Service {
 
     }
 
-    public List<String> getUploadingList() {
+    public static List<String> getUploadingList() {
         return listUploading;
     }
 //    public Set<String> getUploadingVideo() {

@@ -5,14 +5,13 @@ import android.support.annotation.UiThread;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.SuperSpeakerBridge;
-import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -191,10 +190,11 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                     public Boolean apply(Boolean bol) throws Exception {
                         //1打开试题并且点击提交按钮
                         return bol
-                                && ShareDataManager.getInstance().getInt(
-                                ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
-                                0,
-                                ShareDataManager.SHAREDATA_NOT_CLEAR) == 0
+                                && StorageUtils.getStorageSPValue(mGetInfo.getId(), courseWareId) == 0
+//                                ShareDataManager.getInstance().getInt(
+//                                ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
+//                                0,
+//                                ShareDataManager.SHAREDATA_NOT_CLEAR) == 0
                                 &&
                                 mGetInfo.getLiveTopic().getMode().equals(LiveTopic.MODE_CLASS);//主讲态
 

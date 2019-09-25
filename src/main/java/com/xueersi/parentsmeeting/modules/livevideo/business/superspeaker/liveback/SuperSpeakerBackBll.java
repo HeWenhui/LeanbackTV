@@ -1,10 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,21 +20,20 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.Upload
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPopWindowPager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.SuperSpeakerUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.SuperSpeakerBridge;
-import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
 import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_SUPER_SPEAKER;
-import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils.audioUrl;
 
 public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeakerContract.ICameraPresenter {
 
@@ -52,9 +47,12 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
 
     }
 
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    BackMediaPlayerControl mediaPlayerControl;
     private String srcType, courseWareId;
 
     private SuperSpeakerBridge superSpeakerBridge;
+    SuperSpeakerPopWindowPager superSpeakerPopWindowPager;
 
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
@@ -67,7 +65,7 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
         int uploadStatus = questionEntity.getIsupload();
         SuperSpeakerPopWindowPager superSpeakerPopWindowPager;
 
-        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
+        mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
 //        if (mediaPlayerControl != null) {//暂停视频
 //            mediaPlayerControl.pause();
 //        }
@@ -81,86 +79,103 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
             }
             putCurrentPos(questionEntity.getvEndTime() * 1000);
         } else {
-            uploadStatus = ShareDataManager.getInstance().getInt(
-                    ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId,
-                    0,
-                    ShareDataManager.SHAREDATA_NOT_CLEAR);
+//            String videoUrl = StorageUtils.getVideoPath();
+            uploadStatus = StorageUtils.getStorageSPValue(liveGetInfo.getId(), courseWareId);
+//                    ShareDataManager.getInstance().getInt(
+//                    ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId,
+//                    0,
+//                    ShareDataManager.SHAREDATA_NOT_CLEAR);
 
             if (uploadStatus == 0) {
-                UploadVideoEntity uploadVideoEntity = new UploadVideoEntity();
-                uploadVideoEntity.setLiveId(liveGetInfo.getId());
-                uploadVideoEntity.setTestId(courseWareId);
-                uploadVideoEntity.setSrcType(srcType);
-                uploadVideoEntity.setStuCouId(liveGetInfo.getStuCouId());
-                uploadVideoEntity.setStuId(liveGetInfo.getStuId());
-                uploadVideoEntity.setIsPlayBack("2");
-                uploadVideoEntity.setIsUpload("2");
-                superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, liveGetInfo.getId(), courseWareId, 2, uploadVideoEntity);
-//                if (mediaPlayerControl != null) {
-//                    mediaPlayerControl.seekTo(questionEntity.getvQuestionInsretTime());
-//                }
-                stopLiveVideo();
-                superSpeakerBridge.performShowRecordCamera(questionEntity.getAnswerTime(), questionEntity.getRecordTime());
+                performStartRecord();
             } else if (uploadStatus == 2) {
-                superSpeakerPopWindowPager = new SuperSpeakerPopWindowPager(mContext);
-                superSpeakerPopWindowPager.setTextTip(mContext.getString(R.string.super_speaker_back_has_send));
-                addPopWindowPager(superSpeakerPopWindowPager.getRootView());
-                if (mediaPlayerControl != null) {
-                    mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
-                }
-                putCurrentPos(questionEntity.getvEndTime() * 1000);
+                performLoadOver();
             } else {
-                superSpeakerPopWindowPager = new SuperSpeakerPopWindowPager(mContext);
-                superSpeakerPopWindowPager.setTextTip(mContext.getString(R.string.super_speaker_back_upload_in_background));
-                addPopWindowPager(superSpeakerPopWindowPager.getRootView());
-                if (mediaPlayerControl != null) {
-                    mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
-                }
-                putCurrentPos(questionEntity.getvEndTime() * 1000);
                 if (AppConfig.DEBUG) {
-//                    Set<String> setString;
-                    List<String> listUploading;
-                    if (isServiceAlive()) {
-                        Intent intent = new Intent(mContext, UploadVideoService.class);
-                        if (uploadService != null) {
-                            listUploading = uploadService.getUploadingList();
-                            if (listUploading != null && listUploading.contains(ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId)) {
-//                            // FIXME: 2019/7/24 视频正在后台上传中
-
-                            } else {
-//                            // FIXME: 2019/7/24 视频没有在后台上传
-                            }
-                        }
-
-                        mContext.startService(intent);
+                    if (isServiceAlive() &&
+                            UploadVideoService.getUploadingList().contains(StorageUtils.getVideoPath())) {
+                        performShowInLoad();
+                    } else {
+                        performStartRecord();
                     }
                 }
             }
         }
     }
 
+    /**
+     * 准备打开视频
+     */
+    private void performStartRecord() {
+        UploadVideoEntity uploadVideoEntity = new UploadVideoEntity();
+        uploadVideoEntity.setLiveId(liveGetInfo.getId());
+        uploadVideoEntity.setTestId(courseWareId);
+        uploadVideoEntity.setSrcType(srcType);
+        uploadVideoEntity.setStuCouId(liveGetInfo.getStuCouId());
+        uploadVideoEntity.setStuId(liveGetInfo.getStuId());
+        uploadVideoEntity.setIsPlayBack("2");
+        uploadVideoEntity.setIsUpload("2");
+        superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, liveGetInfo.getId(), courseWareId, 2, uploadVideoEntity);
+//                if (mediaPlayerControl != null) {
+//                    mediaPlayerControl.seekTo(questionEntity.getvQuestionInsretTime());
+//                }
+        stopLiveVideo();
+        superSpeakerBridge.performShowRecordCamera(questionEntity.getAnswerTime(), questionEntity.getRecordTime());
+    }
+
+    private void performLoadOver() {
+        superSpeakerPopWindowPager = new SuperSpeakerPopWindowPager(mContext);
+        superSpeakerPopWindowPager.setTextTip(mContext.getString(R.string.super_speaker_back_has_send));
+        addPopWindowPager(superSpeakerPopWindowPager.getRootView());
+        if (mediaPlayerControl != null) {
+            mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+        }
+        putCurrentPos(questionEntity.getvEndTime() * 1000);
+    }
+
+    /**
+     * 显示正在上传中
+     */
+    private void performShowInLoad() {
+//        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
+        superSpeakerPopWindowPager = new SuperSpeakerPopWindowPager(mContext);
+        superSpeakerPopWindowPager.setTextTip(mContext.getString(R.string.super_speaker_back_upload_in_background));
+        addPopWindowPager(superSpeakerPopWindowPager.getRootView());
+        if (mediaPlayerControl != null) {
+            mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+        }
+        putCurrentPos(questionEntity.getvEndTime() * 1000);
+    }
+
+    /**
+     * 当前Service是否存在
+     *
+     * @return
+     */
     private boolean isServiceAlive() {
 
         return SuperSpeakerUtils.isServiceExisted(mContext, UploadVideoService.class.getName());
     }
 
-    private UploadVideoService uploadService;
+//    private UploadVideoService uploadService;
 
-    private class UploadServiceConnction implements ServiceConnection {
+//    private UploadServiceConnction serviceConnection;
 
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            if (service instanceof UploadVideoService.UploadBinder) {
-                uploadService = ((UploadVideoService.UploadBinder) service).getService();
-//                Set<String> setString = ((UploadVideoService.UploadBinder) service).getUploadingVideo();
-            }
-        }
+//    private class UploadServiceConnction implements ServiceConnection {
+//
+//        @Override
+//        public void onServiceConnected(ComponentName name, IBinder service) {
+//            if (service instanceof UploadVideoService.UploadBinder) {
+//                uploadService = ((UploadVideoService.UploadBinder) service).getService();
+////                Set<String> setString = ((UploadVideoService.UploadBinder) service).getUploadingVideo();
+//            }
+//        }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    }
+//        @Override
+//        public void onServiceDisconnected(ComponentName name) {
+//
+//        }
+//    }
 
     private void addPopWindowPager(final View view) {
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
@@ -168,7 +183,7 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
             layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
         mRootView.addView(view, layoutParams);
-        Observable.
+        compositeDisposable.add(Observable.
                 just(true).
                 delay(3, TimeUnit.SECONDS).
                 observeOn(AndroidSchedulers.mainThread()).
@@ -185,11 +200,7 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                         throwable.printStackTrace();
                         logger.e(throwable);
                     }
-                });
-    }
-
-    private void performShowRecordCamera() {
-
+                }));
     }
 
     @Override
@@ -238,7 +249,7 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
     }
 
     @Override
-    public void uploadSucess(String videoUrl, String audioUrkl, String averVocieDecibel) {
+    public void uploadSucess(String videoUrl, String audioUrl, String averVocieDecibel) {
         getCourseHttpManager().uploadSpeechShow(
                 liveGetInfo.getId(),
                 liveGetInfo.getStuCouId(),
@@ -329,6 +340,14 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
         super.onStop();
         if (superSpeakerBridge != null) {
             superSpeakerBridge.pauseVideo();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (compositeDisposable != null) {
+            compositeDisposable.dispose();
         }
     }
 

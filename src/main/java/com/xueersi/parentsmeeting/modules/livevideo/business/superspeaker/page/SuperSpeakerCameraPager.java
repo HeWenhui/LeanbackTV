@@ -32,8 +32,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.TimeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.CustomVideoController2;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
@@ -119,7 +117,6 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                                    int back) {
         super(context);
         this.bridge = bridge;
-
         this.liveId = liveId;
         this.courseWareId = courseWareId;
         this.answerTime = answerTime;
@@ -390,7 +387,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
 
     /** 删除旧的文件夹 */
     private void deleteOldDir() {
-        File file = new File(StorageUtils.videoUrl);
+        File file = new File(StorageUtils.getVideoPath());
         if (!file.exists()) {
             return;
         }
@@ -423,10 +420,11 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             return;
         }
         if (camera1Utils != null) {
-            StorageUtils.videoUrl = LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
-            logger.i(StorageUtils.videoUrl);
-            StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.VIDEO_URL, StorageUtils.videoUrl);
-            if (camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.videoUrl)) {
+            StorageUtils.setVideoPath(liveId, courseWareId);
+//            StorageUtils.videoUrl = LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
+            logger.i(StorageUtils.getVideoPath());
+            StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.VIDEO_URL, StorageUtils.getVideoPath());
+            if (camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.getVideoPath())) {
                 initCamera = true;
                 //把视频按比例拉长
                 ViewGroup.LayoutParams layoutParams = handleSize(camera1Utils.getCameraSize(), sfvVideo);
@@ -543,13 +541,13 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                         sfvVideo.setVisibility(View.INVISIBLE);
                         invisibleTime = System.currentTimeMillis() - invisibleTime;
                         customVideoController2.setVisibility(View.VISIBLE);
-                        customVideoController2.startPlayVideo(StorageUtils.videoUrl, 0);
+                        customVideoController2.startPlayVideo(StorageUtils.getVideoPath(), 0);
                         if (invisibleTime > 1000) {
                             StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.CAMERA_INVISIBLE, String.valueOf(invisibleTime));
                             UmsAgentManager.umsAgentDebug(mContext, ISuperSpeakerContract.SUPER_SPEAKER_EVNT_ID, map.getData());
                             logger.i(invisibleTime + "");
                         }
-                        sendVideoAlbum(StorageUtils.videoUrl);
+                        sendVideoAlbum(StorageUtils.getVideoPath());
 
                     }
                 }, new Consumer<Throwable>() {
@@ -585,8 +583,9 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         extraObservable = new MediaUtils.ExtraObservable();
 
         extraObservable.addObserver(new ExtractObserber());
-        StorageUtils.audioUrl = LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "audio.mp3";
-        logger.i(" audio url:" + StorageUtils.audioUrl);
+        StorageUtils.setAudioUrl(liveId, courseWareId);
+//        StorageUtils.audioUrl = LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "audio.mp3";
+        logger.i(" audio url:" + StorageUtils.getAudioUrl());
 //        mediaUtils.process(StorageUtils.videoUrl, StorageUtils.videoUrl, StorageUtils.audioUrl, extraObservable);
     }
 
@@ -795,7 +794,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         if (customVideoController2 != null) {
             logger.i("resumeVideo");
             if (customVideoController2.getVisibility() == View.VISIBLE) {
-                customVideoController2.startPlayVideo(StorageUtils.videoUrl, 0);
+                customVideoController2.startPlayVideo(StorageUtils.getVideoPath(), 0);
             } else {
                 if (isInRecord && !isInTime()) {
                     performStopRecord();

@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.czt.mp3recorder.util.LameUtil;
-import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
@@ -22,7 +21,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 
 import java.io.IOException;
 
@@ -110,18 +108,18 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     public void submitSpeechShow(String isForce, String averVocieDecibel) {
         long videoDuration = getVideoDuration() / 1000l + 1;
         logger.i("averVocieDecibel = " + averVocieDecibel + "videoDuration =" + videoDuration);
-
-        ShareDataManager.getInstance().put(
-                ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
-                1,
-                ShareDataManager.SHAREDATA_NOT_CLEAR,
-                false);
+        StorageUtils.setStorageSPKey(liveId, courseWareId, 1);
+//        ShareDataManager.getInstance().put(
+//                ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
+//                1,
+//                ShareDataManager.SHAREDATA_NOT_CLEAR,
+//                false);
 //        latch = new CountDownLatch(2);
         this.voiceDecibel = averVocieDecibel;
 
         serViceIntent = new Intent(mContext, UploadVideoService.class);
-        uploadVideoEntity.setAudioLocalUrl(StorageUtils.audioUrl);
-        uploadVideoEntity.setVideoLocalUrl(StorageUtils.videoUrl);
+        uploadVideoEntity.setAudioLocalUrl(StorageUtils.getAudioUrl());
+        uploadVideoEntity.setVideoLocalUrl(StorageUtils.getVideoPath());
         uploadVideoEntity.setAverVocieDecibel(averVocieDecibel);
         uploadVideoEntity.setSampleRate(16000);
 //        uploadVideoEntity.setTestId(courseWareId);
@@ -134,8 +132,8 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 //        serViceIntent.putExtra("audioRemoteUrl", StorageUtils.audioUrl);
 //        mContext.startService(intent);
         mContext.startService(serViceIntent);
-        serviceConnection = new UploadServiceConnction();
-        mContext.bindService(serViceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+//        serviceConnection = new UploadServiceConnction();
+//        mContext.bindService(serViceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
         logger.i("bindService success");
         if (iCameraPresenter != null) {
             iCameraPresenter.submitSpeechShow(isForce, String.valueOf(videoDuration));
@@ -206,7 +204,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     private long getVideoDuration() {
         MediaPlayer mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource(StorageUtils.videoUrl);
+            mediaPlayer.setDataSource(StorageUtils.getVideoPath());
             mediaPlayer.prepare();
         } catch (IOException e) {
             e.printStackTrace();
