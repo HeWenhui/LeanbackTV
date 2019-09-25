@@ -120,10 +120,14 @@ public class StaticWeb {
 
     /**直接使用对象调用。日志更全*/
     @Deprecated
-    public static void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data) {
+    public static void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data,String coursewareType) {
         final LogToFile logToFile = new LogToFile(wvSubjectWeb.getContext(), TAG);
         final int old = CALL_TIMES;
-        wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
+        if(TextUtils.equals("2",coursewareType)){
+            wvSubjectWeb.loadUrl("javascript:transmitToCourseware(" + type + ",'" + data + "')");
+        }else {
+            wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
+        }
         wvSubjectWeb.post(new Runnable() {
             @Override
             public void run() {

@@ -220,6 +220,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private List<Boolean> answerInfo = new ArrayList<>();
     private HashMap<String, Integer> answerInfoOfGetIt = new HashMap<>();
     private final GroupGameLog mLog;
+    private List<String> testsProtocalList;
 
     public GroupGameMultNativePager(Context context, String gameOrder, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
         super(context);
@@ -240,6 +241,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         mLog = new GroupGameLog(detailInfo.type);
         initData();
         initListener();
+        try {
+            testsProtocalList = new ArrayList<>();
+            if(detailInfo.getTestsProtocal()!=null){
+                JSONArray testsProtocalArray = new JSONArray(detailInfo.getTestsProtocal());
+                for (int index = 0; index < testsProtocalArray.length(); index++) {
+                    testsProtocalList.add(testsProtocalArray.optString(index));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -1825,7 +1837,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     }
                 }
                 createSpeechContent("getCourseWareTests", lastTime < 0);
-                wvSubjectWeb.loadUrl(testEntity.getPreviewPath());
+                if (TextUtils.equals("2", getProtocal())) {
+                    XESToastUtils.showToast(mContext,  "加载新课件");
+                    wvSubjectWeb.loadUrl(testEntity.getPreviewPath()+"?cw_platform=android");
+                }else {
+                    XESToastUtils.showToast(mContext,  "加载旧课件");
+                    wvSubjectWeb.loadUrl(testEntity.getPreviewPath());
+                }
                 int type = newCourseCache.loadCourseWareUrl(testEntity.getPreviewPath());
                 if (type != 0) {
                     ispreload = type == 1;
@@ -2326,11 +2344,27 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             String url = request.getUrl() + "";
-            if (url.contains(".html")) {
-                if (!addJs) {
-                    addJs = true;
-                    WebResourceResponse webResourceResponse = newCourseCache.interceptIndexRequest(view, url);
-                    logger.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
+            if (!TextUtils.equals("2", getProtocal())) {
+                if (url.contains(".html")) {
+                    if (!addJs) {
+                        addJs = true;
+                        WebResourceResponse webResourceResponse = newCourseCache.interceptIndexRequest(view, url);
+                        logger.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
+                        if (webResourceResponse != null) {
+                            return webResourceResponse;
+                        } else {
+                            mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    wvSubjectWeb.stopLoading();
+                                }
+                            });
+                            XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
+                        }
+                    }
+                } else if (url.contains(WebInstertJs.indexStr())) {
+                    WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
+                    logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
@@ -2340,24 +2374,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 wvSubjectWeb.stopLoading();
                             }
                         });
-                        XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
+                        XESToastUtils.showToast(mContext, "通信文件加载失败，请刷新");
                     }
                 }
-            } else if (url.contains(WebInstertJs.indexStr())) {
-                WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
-                logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
-                if (webResourceResponse != null) {
-                    return webResourceResponse;
-                } else {
-                    mainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            wvSubjectWeb.stopLoading();
-                        }
-                    });
-                    XESToastUtils.showToast(mContext, "通信文件加载失败，请刷新");
-                }
             }
+
             WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(view, url);
             if (webResourceResponse != null) {
                 logger.d("shouldInterceptRequest:url=" + url);
@@ -2524,7 +2545,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             e.printStackTrace();
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
-        StaticWeb.sendToCourseware(wvSubjectWeb, type, data);
+        StaticWeb.sendToCourseware(wvSubjectWeb, type, data,getProtocal());
     }
 
     private void postMessage(JSONObject jsonData) {
@@ -2540,7 +2561,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             e.printStackTrace();
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
-        wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+        StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*",getProtocal());
+        //wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
     }
 
     /*  课件comeOn接口  */
@@ -3393,5 +3415,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         public short[] getMessageFilter() {
             return new short[]{TcpConstants.AUDIO_TYPE};
         }
+    }
+
+    private String getProtocal(){
+        if (testsProtocalList.size()>0){
+            return testsProtocalList.get(0);
+        }
+        return "1";
     }
 }

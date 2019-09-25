@@ -202,6 +202,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.type = coursewareH5.optString("ptype");
                 videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                 String status = coursewareH5.optString("status", "off");
+                videoQuestionLiveEntity.setTestsProtocal(coursewareH5.optString("testsProtocal"));
                 if (videoQuestionLiveEntity.type.equals(LiveQueConfig.EN_INTELLIGENT_EVALUTION)) {
                     stopIntelligentRecognitionSpeech(jsonObject.toString());
                     return;
@@ -437,6 +438,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             videoQuestionLiveEntity.nonce = nonce;
                             String isVoice = object.optString("isVoice");
                             videoQuestionLiveEntity.setIsVoice(isVoice);
+                            videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                             if ("1".equals(isVoice)) {
                                 videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = object
                                         .optString("questiontype");
@@ -510,6 +512,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.noticeType = XESCODE.ARTS_H5_COURSEWARE;
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String artStatus = object.optString("status", "off");
+                videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                 if ("on".equals(artStatus)) {
                     videoQuestionLiveEntity.gold = object.optDouble("gold");
                     videoQuestionLiveEntity.type = object.optString("ptype");

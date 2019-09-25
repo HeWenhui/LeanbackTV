@@ -653,7 +653,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                                     resultData.put("isCanAnswer", 1);
                                     resultData.put("userAnswerContent", userAnswerContent2);
                                     jsonData.put("data", resultData);
-                                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*","1");
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -736,7 +736,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 jsonData.put("type", CourseMessage.SEND_getAnswer);
                 JSONObject resultData = new JSONObject();
                 jsonData.put("data", resultData);
-                StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*","1");
             } catch (JSONException e) {
                 LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submitData", e);

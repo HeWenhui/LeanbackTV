@@ -648,7 +648,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                     resultData.put("isCanAnswer", 1);
                                     resultData.put("userAnswerContent", userAnswerContent2);
                                     jsonData.put("data", resultData);
-                                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*","1");
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -820,7 +820,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                             resultData.put("userAnswerContent", userAnswerArray);
                                             jsonData.put("data", resultData);
                                             logger.e("onResult: " + jsonData.toString());
-                                            StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                                            StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*","1");
 
                                         } else {
                                             logger.i("result score" + score + "result text" + word);
@@ -982,7 +982,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 jsonData.put("type", CourseMessage.SEND_getAnswer);
                 JSONObject resultData = new JSONObject();
                 jsonData.put("data", resultData);
-                StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*","1");
             } catch (JSONException e) {
                 LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submitData", e);

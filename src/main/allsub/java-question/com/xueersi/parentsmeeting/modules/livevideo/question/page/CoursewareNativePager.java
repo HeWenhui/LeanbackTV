@@ -676,8 +676,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             loadJs = false;
                             NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId(), detailInfo.isTUtor(),getProtocal());
                             if (TextUtils.equals("2", getProtocal())) {
+                                XESToastUtils.showToast(mContext,  "加载新课件");
                                 wvSubjectWeb.loadUrl(test.getPreviewPath()+"?cw_platform=android");
                             }else {
+                                XESToastUtils.showToast(mContext,  "加载旧课件");
                                 wvSubjectWeb.loadUrl(test.getPreviewPath());
                             }
                         }
@@ -1383,10 +1385,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     currentIndex = 0;
                     int type;
                     if (TextUtils.equals("2", getProtocal())) {
+                        XESToastUtils.showToast(mContext,  "加载新课件");
                         wvSubjectWeb.loadUrl(test.getPreviewPath()+"?cw_platform=android");
                         staticWeb.setLoadUrl(test.getPreviewPath()+"?cw_platform=android");
                         type = newCourseCache.loadCourseWareUrl(test.getPreviewPath()+"?cw_platform=android");
                     }else {
+                        XESToastUtils.showToast(mContext,  "加载旧课件");
                         wvSubjectWeb.loadUrl(test.getPreviewPath());
                         staticWeb.setLoadUrl(test.getPreviewPath());
                         type = newCourseCache.loadCourseWareUrl(test.getPreviewPath());
