@@ -83,9 +83,11 @@ public class ExperienceIRCBll {
     public void addBll(LiveBackBaseBll businessBll) {
         if (businessBll instanceof TopicAction) {
             addTopic((TopicAction) businessBll);
-        } else if (businessBll instanceof NoticeAction) {
+        }
+        if (businessBll instanceof NoticeAction) {
             addNotice((NoticeAction) businessBll);
-        } else if (businessBll instanceof MessageAction) {
+        }
+        if (businessBll instanceof MessageAction) {
             mMessageActions.add((MessageAction) businessBll);
         }
     }

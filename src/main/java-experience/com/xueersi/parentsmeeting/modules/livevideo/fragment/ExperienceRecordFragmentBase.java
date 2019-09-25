@@ -522,11 +522,12 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         exPlayerFragment.setRecordFragmentBase(this);
     }
 
-    public static class ExPlayerFragment extends LiveBackPlayerFragment {
+    public static class ExPlayerFragment extends LiveVideoFragmentBase {
         ExperienceRecordFragmentBase recordFragmentBase;
 
         public void setRecordFragmentBase(ExperienceRecordFragmentBase recordFragmentBase) {
             this.recordFragmentBase = recordFragmentBase;
+            liveBackVideoFragment = recordFragmentBase;
         }
 
         @Override

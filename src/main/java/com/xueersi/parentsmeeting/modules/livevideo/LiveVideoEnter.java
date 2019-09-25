@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AIExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceThreeScreenActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity;
@@ -552,7 +553,8 @@ public class LiveVideoEnter {
 
             @Override
             public void success() {
-                ExperienceThreeScreenActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+//                ExperienceThreeScreenActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+                ExperienceActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
             }
 
             @Override

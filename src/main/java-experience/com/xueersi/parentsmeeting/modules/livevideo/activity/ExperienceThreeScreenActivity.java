@@ -101,8 +101,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     private String TAG = "ExperienceThreeScreenActivity";
 
     public static void intentTo(Activity context, Bundle bundle, String where, int requestCode) {
-//        Intent intent = new Intent(context, ExperienceThreeScreenActivity.class);
-        Intent intent = new Intent(context, ExperienceActivity.class);
+        Intent intent = new Intent(context, ExperienceThreeScreenActivity.class);
         intent.putExtras(bundle);
         intent.putExtra("where", where);
         context.startActivityForResult(intent, requestCode);
