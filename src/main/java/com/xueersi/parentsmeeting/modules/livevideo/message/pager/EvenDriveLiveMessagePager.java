@@ -55,17 +55,29 @@ public class EvenDriveLiveMessagePager extends LiveMessagePager {
                 if (type != LiveMessageEntity.MESSAGE_MINE) {
                     evenNum = Integer.valueOf(sEvenNum);
                 } else {
-                    evenNum = Integer.valueOf(myTest ? "5" : "0");
+                    evenNum = Integer.valueOf(myTest ? "24" : mNowEvenNum);
                 }
                 if (evenNum >= 2) {
-                    Drawable drawable = mContext.getResources().getDrawable(evenDriveNumDrawable[evenNum]);
-                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                    Drawable drawable;
+//                    if (evenNum < 8) {
+//                        drawable = mContext.getResources().getDrawable(evenDriveNumDrawable[evenNum]);
+//                    } else if (evenNum <= 24) {
+//                        drawable = mContext.getResources().getDrawable(evenDriveNumDrawable[9]);
+//                    } else {
+//                        drawable = mContext.getResources().getDrawable(evenDriveNumDrawable[10]);
+//                    }
                     if (evenNum >= 2 && evenNum < 8) {
 //                                    evenDrawa = mContext.getDrawable(evenNum);
+                        drawable = mContext.getResources().getDrawable(evenDriveNumDrawable[evenNum]);
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                         verticalImageSpan = new VerticalImageSpan(drawable);
-                    } else if (8 <= evenNum && evenNum < 24) {
+                    } else if (8 <= evenNum && evenNum <= 24) {
+                        drawable = mContext.getResources().getDrawable(evenDriveNumDrawable[9]);
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                         verticalImageSpan = new VerticalImageSpan(drawable);
-                    } else if (evenNum >= 24) {
+                    } else if (evenNum > 24) {
+                        drawable = mContext.getResources().getDrawable(evenDriveNumDrawable[10]);
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                         verticalImageSpan = new VerticalImageSpan(drawable);
                     }
                 }

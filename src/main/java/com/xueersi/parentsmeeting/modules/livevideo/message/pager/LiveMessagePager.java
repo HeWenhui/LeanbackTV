@@ -331,7 +331,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     if (ircState.openchat()) {
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                             Map<String, String> map = new HashMap<>();
-                            map.put("evenexc", myTest ? "5" : String.valueOf(mNowEvenNum));
+                            map.put("evenexc", myTest ? "24" : String.valueOf(mNowEvenNum));
                             boolean send = ircState.sendMessage(msg, "", map);
                             if (send) {
                                 etMessageContent.setText("");
@@ -1845,8 +1845,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         Loger.e("Duncan", "sender:" + sender);
     }
 
-    boolean myTest = false || AppConfig.DEBUG;
-    String mNowEvenNum = myTest ? "5" : "0";
+    boolean myTest = false && AppConfig.DEBUG;
+    String mNowEvenNum = myTest ? "24" : "0";
     String mHighestRightNum = "0";
 
     /**

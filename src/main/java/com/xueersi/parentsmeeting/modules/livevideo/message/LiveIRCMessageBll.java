@@ -823,23 +823,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
                 boolean isOpen = object.optBoolean("open");
-                //
-
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
                     if (!isOpen) {
                         //老师收题之后，更新聊天区连对榜
-//                    getHttpManager().getEvenLikeData(
-////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
-//                            mGetInfo.getGetEvenPairListUrl(),
-//                            mGetInfo.getStudentLiveInfo().getClassId(),
-//                            mGetInfo.getId(),
-//                            mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-//                                @Override
-//                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                                    EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
-//                                    mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
-//                                }
-//                            });
                         postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -1009,6 +995,16 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         };
     }
 
+    /**
+     * 是否是新版文科 课件 topic消息
+     *
+     * @param jsonObject
+     * @return
+     */
+    private boolean isNewArtsH5Courseware(JSONObject jsonObject) {
+        return (jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech"));
+    }
+
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         List<String> disableSpeaking = liveTopic.getDisableSpeaking();
@@ -1018,7 +1014,22 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 forbidSendMsg = true;
             }
         }
-
+        JSONObject object = jsonObject.optJSONObject("platformTest");
+        if (object != null && !object.toString().equals("{}")) {
+            isMiddleScienceEvenDriveH5Open = true;
+        }
+        if (isNewArtsH5Courseware(jsonObject)) {
+            JSONObject onlineJobj = jsonObject.optJSONObject("coursewareOnlineTech");
+            if (onlineJobj != null && "on".equals(onlineJobj.optString("status"))) {
+                JSONObject onlineTechObj = jsonObject.optJSONObject("coursewareOnlineTech");
+                if (onlineTechObj != null && !"{}".equals(onlineTechObj.toString())) {
+                    String status = onlineTechObj.optString("status");
+                    if ("on".equals(status)) {
+                        isMiddleScienceEvenDriveH5Open = true;
+                    }
+                }
+            }
+        }
         liveTopic.setDisable(forbidSendMsg);
         if (mRoomAction != null) {
             try {
