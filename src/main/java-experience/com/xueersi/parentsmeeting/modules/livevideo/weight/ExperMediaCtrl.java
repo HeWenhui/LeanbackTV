@@ -223,14 +223,6 @@ public class ExperMediaCtrl extends LiveMediaController implements IPlayBackMedi
         mTvSeekCurrentTime.setText(strCurrentTime);
     }
 
-    /**
-     * 设置播放时的视频名称
-     */
-    @Override
-    public void setFileName(String name) {
-        mFileName.setText(name);
-    }
-
     @Override
     public boolean handleMessage(Message msg) {
         if (msg.what == MSG_SHOW_PROGRESS) {
@@ -386,8 +378,7 @@ public class ExperMediaCtrl extends LiveMediaController implements IPlayBackMedi
         /** 双击屏幕 */
         @Override
         public void onDoubleTap() {
-            // 暂停视频
-            doPauseResume();
+
         }
 
         /** 手指伸缩操作 */
@@ -530,30 +521,6 @@ public class ExperMediaCtrl extends LiveMediaController implements IPlayBackMedi
     }
 
     /**
-     * 暂停或者播放
-     */
-    @Override
-    public void doPauseResume(boolean doPlaying) {
-        if (doPlaying) {
-            mPlayer.start();
-        } else {
-            mPlayer.pause();
-        }
-        updatePausePlay();
-    }
-
-    /**
-     * 回退监听
-     */
-    private OnClickListener mBackClickListener = new OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            mPlayer.stop(); // 回退操作
-        }
-    };
-
-    /**
      * 播放进度栏SeekBar操作监听
      */
     private SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener() {
@@ -617,25 +584,6 @@ public class ExperMediaCtrl extends LiveMediaController implements IPlayBackMedi
         if (controllerBottom != null) {
             controllerBottom.setAutoOrientation(autoOrientation);
         }
-    }
-
-    @Override
-    public void pause() {
-        if (mPlayer.isPlaying()) {
-            show(DEFAULT_LONG_TIME_SHOW);
-        } else {
-            show();
-        }
-        doPauseResume();
-    }
-
-    /**
-     * 控制栏是否显示
-     *
-     * @return
-     */
-    public boolean isShow() {
-        return mShowing;
     }
 
     /**

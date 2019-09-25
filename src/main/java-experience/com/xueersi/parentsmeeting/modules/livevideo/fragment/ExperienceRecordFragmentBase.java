@@ -722,9 +722,9 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
 //        super.attachMediaController();
         if (mMediaController == null) {
             mMediaController = new ExperMediaCtrl(activity, liveBackPlayVideoFragment);
+            mMediaController.setFileName(playBackEntity.getPlayVideoName());
         }
-        setFileName(); // 设置视频显示名称
-        showLongMediaController();
+//        showLongMediaController();
     }
 
     /**
@@ -737,6 +737,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         mMediaController = experMediaCtrl = new ExperMediaCtrl(activity, liveBackPlayVideoFragment);
         rl_course_video_live_controller_content.addView(experMediaCtrl, new ViewGroup.LayoutParams(ViewGroup
                 .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
         final View contentView = activity.findViewById(android.R.id.content);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
@@ -765,6 +766,9 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
 
         bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
+        //设置标题，要在setControllerTop方法以后
+        mMediaController.setFileName(playBackEntity.getPlayVideoName());
+        mMediaController.show();
     }
 
     /**

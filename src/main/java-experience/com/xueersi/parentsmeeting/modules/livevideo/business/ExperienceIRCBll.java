@@ -48,7 +48,7 @@ public class ExperienceIRCBll {
     /**
      * 需处理 全量 消息的 业务集合
      */
-    private List<MessageAction> mMessageActions = new ArrayList<>();
+    private final List<MessageAction> mMessageActions = new ArrayList<>();
     private int mNetWorkType;
 
     public ExperienceIRCBll(Context context, String expChatId, LiveGetInfo liveGetInfo) {
@@ -134,7 +134,8 @@ public class ExperienceIRCBll {
 
         @Override
         public void onConnect(IRCConnection connection) {
-            if (mMessageActions != null && mMessageActions.size() > 0) {
+            logger.d("onConnect:size=" + mMessageActions.size());
+            if (mMessageActions.size() > 0) {
                 for (MessageAction mesAction : mMessageActions) {
                     mesAction.onConnect(connection);
                 }

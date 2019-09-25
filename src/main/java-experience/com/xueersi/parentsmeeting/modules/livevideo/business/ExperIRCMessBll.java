@@ -70,6 +70,7 @@ public class ExperIRCMessBll extends LiveBackBaseBll implements TopicAction, Not
 
     @Override
     public void onStartConnect() {
+        logger.d("onStartConnect:mLiveMessagePager=" + mLiveMessagePager);
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onStartConnect();
         }
@@ -77,6 +78,7 @@ public class ExperIRCMessBll extends LiveBackBaseBll implements TopicAction, Not
 
     @Override
     public void onConnect(IRCConnection connection) {
+        logger.d("onConnect:mLiveMessagePager=" + mLiveMessagePager);
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onConnect();
         }
