@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
@@ -23,7 +24,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDrive
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -57,9 +57,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 //import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
@@ -1141,60 +1139,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 mode = LiveTopic.MODE_CLASS;
             }
             return mode;
-        }
-
-
-        @Override
-        public boolean sendMessage(String msg, String name, Map<String, String> map) {
-            boolean sendMessage = false;
-            if (mLiveTopic.isDisable()) {
-                return false;
-            } else {
-                try {
-                    JSONObject jsonObject = new JSONObject();
-                    if (map != null) {
-                        Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
-                        for (; iterator.hasNext(); ) {
-                            Map.Entry<String, String> _entry = iterator.next();
-                            String key = _entry.getKey();
-                            String value = _entry.getValue();
-                            jsonObject.put(key, value);
-                        }
-                    }
-                    jsonObject.put("type", "" + XESCODE.TEACHER_MESSAGE);
-                    if (StringUtils.isEmpty(name)) {
-                        name = mGetInfo.getStuName();
-                    }
-                    jsonObject.put("name", name);
-                    jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
-                    jsonObject.put("version", "" + mGetInfo.getHeadImgVersion());
-                    jsonObject.put("msg", msg);
-                    if (mGetInfo.getBetterMe().getStuSegment() != null) {
-                        jsonObject.put("segment", mGetInfo.getBetterMe().getStuSegment().getSegment());
-                        jsonObject.put("segmentType", mGetInfo.getBetterMe().getStuSegment().getSegmentType());
-                        jsonObject.put("star", mGetInfo.getBetterMe().getStuSegment().getStar());
-                    }
-                    if (haveTeam) {
-                        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-                        String teamId = studentLiveInfo.getTeamId();
-                        jsonObject.put("from", "android_" + teamId);
-                        jsonObject.put("to", teamId);
-                    }
-                    sendMessage = mLiveBll.sendMessage(jsonObject);
-                    for (int i = 0; i < onSendMsgs.size(); i++) {
-                        try {
-                            onSendMsgs.get(i).onSendMsg(msg);
-                        } catch (Exception e) {
-                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-                        }
-                    }
-                } catch (Exception e) {
-                    // logger.e( "understand", e);
-                    UmsAgentManager.umsAgentException(ContextManager.getContext(), "livevideo_livebll_sendMessage", e);
-                    mLogtf.e("sendMessage", e);
-                }
-            }
-            return sendMessage;
         }
 
         @Override

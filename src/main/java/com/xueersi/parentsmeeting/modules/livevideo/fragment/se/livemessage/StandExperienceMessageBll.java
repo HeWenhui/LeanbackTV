@@ -44,7 +44,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
@@ -364,11 +363,6 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         @Override
         public boolean openchat() {
             return openChat;
-        }
-
-        @Override
-        public boolean sendMessage(String msg, String s, Map<String, String> map) {
-            return false;
         }
 
         @Override

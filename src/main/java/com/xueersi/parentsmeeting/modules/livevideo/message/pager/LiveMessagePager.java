@@ -41,7 +41,6 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -83,8 +82,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
@@ -95,7 +92,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  * @date 2016/8/2
  * 直播聊天横屏-直播课和直播辅导
  */
-public class LiveMessagePager extends BaseLiveMessagePager {
+public abstract class LiveMessagePager extends BaseLiveMessagePager {
     static String TAG = "LiveMessagePager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
@@ -330,9 +327,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     }
                     if (ircState.openchat()) {
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                            Map<String, String> map = new HashMap<>();
-                            map.put("evenexc", myTest ? "5" : String.valueOf(mNowEvenNum));
-                            boolean send = ircState.sendMessage(msg, "", map);
+                            boolean send = ircState.sendMessage(msg, "");
                             if (send) {
                                 etMessageContent.setText("");
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
@@ -402,9 +397,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         }, 10);
     }
 
-    protected SpannableString addEvenDriveMessageNum(SpannableString spannableString, String evenNum, int type) {
-        return spannableString;
-    }
+    protected abstract void addEvenDriveMessageNum(SpannableString spannableString, String evenNum, int type);
 
     @Override
     public void initData() {
@@ -456,6 +449,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
                         String sender = entity.getSender();
                         SpannableString spanttt = new SpannableString(sender + ": ");
+                        addEvenDriveMessageNum(spanttt, entity.getEvenNum(), entity.getType());
                         int color;
                         switch (entity.getType()) {
                             case LiveMessageEntity.EVEN_DRIVE_LIKE:
@@ -492,21 +486,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             tvMessageItem.setText(likeEvenDrive(entity));
                         } else {
                             tvMessageItem.setAutoLinkMask(0);
-                            if (getInfo.getIsOpenNewCourseWare() == 1) {
-                                SpannableString itemSpan;
-                                SpannableString evenSpan = new SpannableString("icon");
-                                itemSpan = addEvenDriveMessageNum(evenSpan, entity.getEvenNum(), entity.getType());
-                                if (itemSpan != null) {
-                                    tvMessageItem.setText(itemSpan);
-                                    tvMessageItem.append(spanttt);
-                                } else {
-                                    tvMessageItem.setText(spanttt);
-                                }
-                            } else {
-                                tvMessageItem.setText(spanttt);
-                            }
+                            tvMessageItem.setText(spanttt);
                             tvMessageItem.append(entity.getText());
-                            logger.i(tvMessageItem.getText());
                         }
                     }
                 };
@@ -616,9 +597,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 String msg = words.get(position);
                 if (ircState.openchat()) {
                     if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                        Map<String, String> map = new HashMap<>();
-                        map.put("evenexc", myTest ? "5" : String.valueOf(mNowEvenNum));
-                        boolean send = ircState.sendMessage(msg, "", map);
+                        boolean send = ircState.sendMessage(msg, "");
                         if (send) {
                             etMessageContent.setText("");
                             addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
@@ -1256,8 +1235,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         });
     }
 
-    protected void addEvenDriveMessage(final String sender, final int type, final String text, final String headUrl, final String evenDriveNum) {
-    }
+    protected abstract void addEvenDriveMessage(final String sender, final int type, final String text, final String headUrl, final String evenDriveNum);
 
     @Override
     public void onJoin(String target, final String sender, String login, String hostname) {
@@ -1809,9 +1787,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             liveMessageEntities.remove(0);
                         }
                         LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
-//                        if (type == LiveMessageEntity.MESSAGE_MINE) {
-//                            entity.setEvenNum(myTest ? "5" : mNowEvenNum);
-//                        }
+
                         liveMessageEntities.add(entity);
                         if (otherLiveMessageEntities != null) {
                             if (otherLiveMessageEntities.size() > 29) {
@@ -1845,10 +1821,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         Loger.e("Duncan", "sender:" + sender);
     }
 
-    boolean myTest = false || AppConfig.DEBUG;
-    String mNowEvenNum = myTest ? "5" : "0";
-    String mHighestRightNum = "0";
-
     /**
      * 设置连对数
      *
@@ -1859,8 +1831,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (tvNowEvenNum == null || tvHighestEvenNum == null) {
             return;
         }
-        mNowEvenNum = nowEvenNum;
-        mHighestRightNum = highestRightNum;
         if (nowEvenNum.equals("0") || nowEvenNum.equals("1")) {
             tvNowEvenNum.setText("连对 -");
         } else {
