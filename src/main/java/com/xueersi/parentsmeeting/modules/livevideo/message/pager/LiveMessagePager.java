@@ -57,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
@@ -92,8 +93,8 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  * @date 2016/8/2
  * 直播聊天横屏-直播课和直播辅导
  */
-public abstract class LiveMessagePager extends BaseLiveMessagePager {
-    static String TAG = "LiveMessagePager";
+public class LiveMessagePager extends BaseLiveMessagePager {
+    private static String TAG = "LiveMessagePager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
     /** 聊天常用语 */
@@ -109,18 +110,18 @@ public abstract class LiveMessagePager extends BaseLiveMessagePager {
     /** 聊天IRC一下状态，正在连接，在线等 */
     private ImageView ivMessageOnline;
     /** 聊天消息 */
-    ListView lvMessage;
+    private ListView lvMessage;
     private View rlInfo;
     private View rlMessageContent;
     private Button btMessageSend;
     private Button btMessageExpress;
-    CommonAdapter<LiveMessageEntity> messageAdapter;
-    CommonAdapter<LiveMessageEntity> otherMessageAdapter;
-    boolean isTouch = false;
+    private CommonAdapter<LiveMessageEntity> messageAdapter;
+    private CommonAdapter<LiveMessageEntity> otherMessageAdapter;
+    private boolean isTouch = false;
     /** 大题互动过程中，不能收聊天消息 */
     private boolean isBigQue = false;
     /** 聊天字体大小，最多13个汉字 */
-    int messageSize = 0;
+    private int messageSize = 0;
     /** 献花 */
     private PopupWindow mFlowerWindow;
     private View flowerContentView;
@@ -133,10 +134,10 @@ public abstract class LiveMessagePager extends BaseLiveMessagePager {
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     private ImageView ivExpressionCancle;
     /** 竖屏的时候，也添加横屏的消息 */
-    ArrayList<LiveMessageEntity> otherLiveMessageEntities;
+    private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
     private long mOldTime = 0;//记录点击赠送按钮那一刻的时间
     /** 是否统计用户发送消息 */
-    boolean debugMsg = false;
+    private boolean debugMsg = false;
 
     public LiveMessagePager(Context context,
                             BaseLiveMediaControllerBottom
@@ -397,7 +398,7 @@ public abstract class LiveMessagePager extends BaseLiveMessagePager {
         }, 10);
     }
 
-    protected abstract void addEvenDriveMessageNum(SpannableString spannableString, String evenNum, int type);
+    int c = 0;
 
     @Override
     public void initData() {
@@ -449,7 +450,6 @@ public abstract class LiveMessagePager extends BaseLiveMessagePager {
                     public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
                         String sender = entity.getSender();
                         SpannableString spanttt = new SpannableString(sender + ": ");
-                        addEvenDriveMessageNum(spanttt, entity.getEvenNum(), entity.getType());
                         int color;
                         switch (entity.getType()) {
                             case LiveMessageEntity.EVEN_DRIVE_LIKE:
@@ -1221,8 +1221,8 @@ public abstract class LiveMessagePager extends BaseLiveMessagePager {
                     JSONObject jsonObject = new JSONObject(message);
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
-                        addEvenDriveMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"), "", jsonObject.optString("evenexc"));
+                        addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
+                                .getString("msg"), "");
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
@@ -1234,8 +1234,6 @@ public abstract class LiveMessagePager extends BaseLiveMessagePager {
             }
         });
     }
-
-    protected abstract void addEvenDriveMessage(final String sender, final int type, final String text, final String headUrl, final String evenDriveNum);
 
     @Override
     public void onJoin(String target, final String sender, String login, String hostname) {
@@ -1787,7 +1785,6 @@ public abstract class LiveMessagePager extends BaseLiveMessagePager {
                             liveMessageEntities.remove(0);
                         }
                         LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
-
                         liveMessageEntities.add(entity);
                         if (otherLiveMessageEntities != null) {
                             if (otherLiveMessageEntities.size() > 29) {
