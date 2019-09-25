@@ -34,6 +34,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -49,8 +53,10 @@ import io.reactivex.schedulers.Schedulers;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class UploadVideoService extends Service {
 
-//    private Set<String> courseWeareList = new ConcurrentSkipListSet<>();
+    //    private Set<String> courseWeareList = new ConcurrentSkipListSet<>();
+    private Map<String, String> map = new ConcurrentHashMap<>();
 
+    private List<String> listUploading = new CopyOnWriteArrayList<>();
     private String videoUrl, audioUrl = "";
     Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
@@ -60,14 +66,17 @@ public class UploadVideoService extends Service {
     private AtomicInteger uploadVideoNum = new AtomicInteger(3);
     private XesStsUploadListener videoUploadListener;
 
-//    private String uploadVideoSetKey;
+    private String uploadVideoSetKey = "";
 
     private class VideoUploadListener implements XesStsUploadListener {
         String videoLocalUrl;
 
         public VideoUploadListener(String videoLocalUrl) {
             this.videoLocalUrl = videoLocalUrl;
-//            courseWeareList.add(uploadVideoSetKey);
+//            map.put(uploadVideoSetKey, );
+            if (!listUploading.contains(uploadVideoSetKey)) {
+                listUploading.add(uploadVideoSetKey);
+            }
         }
 
         @Override
@@ -444,7 +453,7 @@ public class UploadVideoService extends Service {
 //        String videoLocalUrl = intent.getStringExtra("videoRemoteUrl");
         String audioLocalUrl = uploadVideoEntity.getAudioLocalUrl();
         String videoLocalUrl = uploadVideoEntity.getVideoLocalUrl();
-//        uploadVideoSetKey = ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + uploadVideoEntity.getLiveId() + "_" + courseWareId;
+        uploadVideoSetKey = ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + uploadVideoEntity.getLiveId() + "_" + courseWareId;
         audioUploadListener = new AudioUploadListener(audioLocalUrl);
         videoUploadListener = new VideoUploadListener(videoLocalUrl);
         uploadVideo(videoLocalUrl);
@@ -463,6 +472,9 @@ public class UploadVideoService extends Service {
 
     }
 
+    public List<String> getUploadingList() {
+        return listUploading;
+    }
 //    public Set<String> getUploadingVideo() {
 //        return courseWeareList;
 //    }

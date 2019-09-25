@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveb
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.view.View;
@@ -23,12 +24,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.Upload
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPopWindowPager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.SuperSpeakerUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.SuperSpeakerBridge;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -116,23 +118,30 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                 }
                 putCurrentPos(questionEntity.getvEndTime() * 1000);
                 if (AppConfig.DEBUG) {
-                    Set<String> setString;
-                    if (uploadService != null) {
-//                        setString = uploadService.getUploadingVideo();
-//                        if (setString != null && setString.contains(ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId)) {
+//                    Set<String> setString;
+                    List<String> listUploading;
+                    if (isServiceAlive()) {
+                        Intent intent = new Intent(mContext, UploadVideoService.class);
+                        if (uploadService != null) {
+                            listUploading = uploadService.getUploadingList();
+                            if (listUploading != null && listUploading.contains(ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId)) {
 //                            // FIXME: 2019/7/24 视频正在后台上传中
-//                        } else {
+
+                            } else {
 //                            // FIXME: 2019/7/24 视频没有在后台上传
-//                        }
+                            }
+                        }
+
+                        mContext.startService(intent);
                     }
                 }
             }
         }
     }
 
-    private boolean isInProcess() {
-        UploadVideoService service = new UploadVideoService();
-        return false;
+    private boolean isServiceAlive() {
+
+        return SuperSpeakerUtils.isServiceExisted(mContext, UploadVideoService.class.getName());
     }
 
     private UploadVideoService uploadService;
