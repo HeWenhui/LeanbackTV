@@ -328,7 +328,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
             logger.i("停止播放");
             reg.release();
         }
-        XueErSiRouter.startModuleForResult((Activity) context, "/english/intelligent_recognition", XESCODE.ARTS_SEND_QUESTION, bundle);
+        XueErSiRouter.startModuleForResult((Activity) context, "/aievaluation/intelligent_recognition", XESCODE.ARTS_SEND_QUESTION, bundle);
     }
 
     private void stopIntelligentOnce(Context context) {

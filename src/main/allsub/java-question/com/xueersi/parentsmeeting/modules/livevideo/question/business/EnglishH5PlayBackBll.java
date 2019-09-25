@@ -366,7 +366,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         intelligentRecognitionRecord.setIsPlayBack("1");
                         bundle.putParcelable(PROCESS_RECORD_SIGN, intelligentRecognitionRecord);
                         setPauseNotStop(true);
-                        XueErSiRouter.startModule(activity, "/english/intelligent_recognition", bundle);
+                        XueErSiRouter.startModule(activity, "/aievaluation/intelligent_recognition", bundle);
                         return;
                     }
                 } else {
