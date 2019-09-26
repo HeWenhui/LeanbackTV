@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.ExperStandRecordFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.ExperienceRecordFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoActivityBase;
@@ -21,7 +22,11 @@ public class ExperienceActivity extends LiveBackVideoActivityBase {
 
     @Override
     protected LiveBackVideoFragmentBase getFragment() {
-        if (false) {
+        int pattern = getIntent().getIntExtra("pattern", LiveVideoConfig.LIVE_PATTERN_COMMON);
+        logger.d("getFragment:pattern=" + pattern);
+        if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+            return new ExperStandRecordFragmentBase();
+        } else if (pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
             return new ExperStandRecordFragmentBase();
         }
         return new ExperienceRecordFragmentBase();

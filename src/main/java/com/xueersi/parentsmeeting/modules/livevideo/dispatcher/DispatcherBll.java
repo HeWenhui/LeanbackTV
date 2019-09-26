@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveTransferHttpManager;
 import com.xueersi.ui.dataload.DataLoadEntity;
@@ -314,11 +315,11 @@ public class DispatcherBll extends BaseBll {
                                     ShareDataManager.SHAREDATA_USER);
                         }
 
-                        if (videoEntity.getPattern() == 1) {//三分屏体验课
+                        if (videoEntity.getPattern() == LiveVideoConfig.LIVE_PATTERN_COMMON) {//三分屏体验课
                             if (videoEntity.getExpLiveType() == 2) { // 录直播体验课
-                                ExpLiveInfo expLiveInfo = dispatcherHttpResponseParser.parserExliveInfo(responseEntity);
-                                videoEntity.setTutorTeacherId(expLiveInfo.getCoachTeacherId() + "");
+                                ExpLiveInfo expLiveInfo = DispatcherHttpResponseParser.parserExliveInfo(responseEntity);
                                 if (expLiveInfo != null) {
+                                    videoEntity.setTutorTeacherId(expLiveInfo.getCoachTeacherId() + "");
                                     expLiveInfo.setLiveType(entity.getLiveType());
                                     bundle.putSerializable("expLiveInfo", expLiveInfo);
                                 }
@@ -343,10 +344,32 @@ public class DispatcherBll extends BaseBll {
                                         mContext.getClass().getSimpleName());
                             }
 
-                        } else if (videoEntity.getPattern() == 2) {//全身直播体验课
-                            LiveVideoEnter.intentToStandExperience((Activity) mContext, bundle,
-                                    mContext.getClass().getSimpleName());
-                        } else if (videoEntity.getPattern() == 6) {//半身直播体验课
+                        } else if (videoEntity.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {//全身直播体验课
+                            if (videoEntity.getExpLiveType() == 2) { // 录直播体验课
+                                ExpLiveInfo expLiveInfo = DispatcherHttpResponseParser.parserExliveInfo(responseEntity);
+                                if (expLiveInfo != null) {
+                                    videoEntity.setTutorTeacherId(expLiveInfo.getCoachTeacherId() + "");
+                                    expLiveInfo.setLiveType(entity.getLiveType());
+                                    bundle.putSerializable("expLiveInfo", expLiveInfo);
+                                }
+
+                                long startTime = entity.getAutoLive().getStartTime();
+                                long endTime = entity.getAutoLive().getEndTime();
+                                long nowTime = entity.getAutoLive().getNowTime();
+                                String gradId = entity.getAutoLive().getGradId();
+                                String termId = entity.getAutoLive().getTermId();
+
+                                ExpAutoLive expAutoLive = new ExpAutoLive(startTime, endTime, nowTime, gradId, termId);
+                                bundle.putSerializable("expAutoLive", expAutoLive);
+
+                                bundle.putSerializable("entity", entity.getAutoLive());
+                                LiveVideoEnter.intentToLiveBackExperience((Activity) mContext, bundle,
+                                        mContext.getClass().getSimpleName());
+                            } else {
+                                LiveVideoEnter.intentToStandExperience((Activity) mContext, bundle,
+                                        mContext.getClass().getSimpleName());
+                            }
+                        } else if (videoEntity.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {//半身直播体验课
                             LiveVideoEnter.intentToHalfBodyExperience((Activity) mContext, bundle,
                                     mContext.getClass().getSimpleName());
                         }
