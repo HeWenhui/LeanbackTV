@@ -2210,6 +2210,22 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     }
 
     /**
+     * 教师反馈
+     *
+     * @param liveId
+     * @param courseId
+     * @param httpCallBack
+     */
+    public void checkFeedBack(String liveId, String courseId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+       // params.addBodyParam("isPlayBack", isPlayBack);
+        sendPost(LiveHttpConfig.URL_COURSE_EVALUATE, params, httpCallBack);
+    }
+
+
+    /**
      * 获取直播Plugin配置信息
      *
      * @param requestCallBack
