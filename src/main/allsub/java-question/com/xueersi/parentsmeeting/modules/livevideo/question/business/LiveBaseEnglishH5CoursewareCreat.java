@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeakChineseCo
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
+
+import java.util.List;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentConstants.PROCESS_RECORD_SIGN;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_STOP_ONCE;
@@ -282,10 +285,19 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
     }
 
     private boolean judgeIntelligentAlive(Context context) {
-        Intent intent = new Intent();
-        intent.setClassName("com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.widget",
-                "IntelligentRecognitionActivity");
-        return intent.resolveActivity(context.getPackageManager()) != null;
+        List<ActivityManager.RunningTaskInfo> list = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningTasks(Integer.MAX_VALUE);
+        for (ActivityManager.RunningTaskInfo taskInfo : list) {
+            if (taskInfo.topActivity.getShortClassName().
+                    contains("com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.widget.IntelligentRecognitionActivity")) { // 说明它已经启动了
+//                flag = true;
+                return true;
+            }
+        }
+        return false;
+//        Intent intent = new Intent();//(ActivityManager) context.getSystemService(ACTIVITY_SERVICE)
+//        intent.setClassName("com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.widget",
+//                "IntelligentRecognitionActivity");
+//        return intent.resolveActivity(context.getPackageManager()) != null;
     }
 
     /**
@@ -332,7 +344,8 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
     }
 
     private void stopIntelligentOnce(Context context) {
-        Intent stopIntent = new Intent();
+        logger.i("当前Actiivty在线，发送停止广播");
+        Intent stopIntent = new Intent(INTELLIGENT_RECOGNITION_STOP_ONCE);
         stopIntent.setAction(INTELLIGENT_RECOGNITION_STOP_ONCE);
         context.sendBroadcast(stopIntent);
     }
