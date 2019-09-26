@@ -88,7 +88,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.learnfeedback.business.HalfBodyExperienceLearnFeedbackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyExpLiveMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
@@ -121,7 +120,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private String TAG = "HalfBodyLiveExperienceActivity";
     LiveBackBll liveBackBll;
     private RelativeLayout rlLiveMessageContent;
-    LiveMessageBll liveMessageBll;
     private LiveVideoSAConfig liveVideoSAConfig;
     /**
      * 横屏聊天信息
@@ -194,8 +192,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
      */
     private boolean isChatSateInited = false;
     private List<VideoQuestionEntity> roomChatEvent;
-
-    private PopupWindow mFeedbackWindow;
     /**
      * 视频地址列表
      */
@@ -394,16 +390,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private LiveBll mLiveBll;
     private XesAtomicInteger peopleCount = new XesAtomicInteger(0);
-    /**
-     * 当前时间，豪妙
-     */
-    private long currentMsg = 0;
-    private ExPerienceLiveMessage mMessage;
-    private Boolean send = false;
-    private String testIdKey = "ExperienceLiveQuestion";
-    private RoundProgressBar mProgressbar;
     private PopupWindow mWindow;
-    private ExperienceResult mData;
 
     private boolean isFirstGetResult = true;
     private EnglishH5Cache englishH5Cache;
@@ -699,7 +686,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         String id = mVideoEntity.getLiveId();
         mHttpManager.addBodyParam("liveId", id);
-        liveMessageBll = new LiveMessageBll(this, 1);
     }
 
 
@@ -945,10 +931,10 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         public void onDataSucess(Object... objData) {
             // 获取到数据之后的逻辑处理
             if (objData.length > 0) {
-                mData = (ExperienceResult) objData[0];
+                ExperienceResult mData = (ExperienceResult) objData[0];
                 // 测试体验课播放器的结果页面
                 if (mData != null && isFirstGetResult) {
-                    showPopupwinResult();
+                    showPopupwinResult(mData);
                     isFirstGetResult = false;
                     setBackgroundAlpha(0.4f);
                 }
@@ -956,7 +942,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         }
     };
 
-    private void showPopupwinResult() {
+    private void showPopupwinResult(final ExperienceResult mData) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View result = inflater.inflate(R.layout.pop_halfbody_experience_learnback, null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -964,7 +950,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 .MATCH_PARENT, false);
         mWindow.setOutsideTouchable(false);
         mWindow.showAtLocation(result, Gravity.CENTER, 0, 0);
-        mProgressbar = (RoundProgressBar) result.findViewById(R.id.roundProgressBar);
+        RoundProgressBar mProgressbar = (RoundProgressBar) result.findViewById(R.id.roundProgressBar);
         TextView recommand = (TextView) result.findViewById(R.id.tv_detail_result);
         TextView beat = (TextView) result.findViewById(R.id.tv_result);
         TextView totalscore = (TextView) result.findViewById(R.id.tv_total_score);
@@ -1021,18 +1007,8 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     }
 
     private void showPopupwinFeedback() {
-        mFeedbackWindow = null;
         setBackgroundAlpha(1.0f);
         learnFeedbackBll.showWindow();
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (mFeedbackWindow == null) {
-            return super.dispatchKeyEvent(event);
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -1081,7 +1057,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         if (NetWorkHelper.getNetWorkState(mContext) == NetWorkHelper.NO_NETWORK) {
             return;
         }
-        currentMsg = currentPosition;
         // 扫描互动题
         scanQuestion(currentPosition);
     }

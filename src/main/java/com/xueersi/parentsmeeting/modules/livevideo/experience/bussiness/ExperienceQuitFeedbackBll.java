@@ -11,6 +11,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
@@ -44,7 +45,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
     private boolean isShowQuitDialog = false;
     private IStandExperienceEvaluationContract.IEvaluationView mEvaluationView;
     private boolean isStand;
-    private LiveVideoActivityBase liveVideoActivityBase;
+    private LiveMediaController.MediaPlayerControl mediaPlayerControl;
     VideoLivePlayBackEntity mVideoEntity;
 
     public ExperienceQuitFeedbackBll(Activity activity, LiveBackBll liveBackBll, boolean isStand) {
@@ -79,8 +80,8 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         this.isStand = isStand;
     }
 
-    public void setLiveVideo(LiveVideoActivityBase liveVideoActivityBase) {
-        this.liveVideoActivityBase = liveVideoActivityBase;
+    public void setLiveVideo(LiveMediaController.MediaPlayerControl mediaPlayerControl) {
+        this.mediaPlayerControl = mediaPlayerControl;
     }
 
     public void playComplete() {
@@ -180,8 +181,8 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
             ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
             activityChangeLand.changeLOrP();
         } else {
-            if (liveVideoActivityBase != null) {
-                liveVideoActivityBase.changeLOrP();
+            if (mediaPlayerControl != null) {
+                mediaPlayerControl.changeLOrP();
             }
         }
         activity.finish();

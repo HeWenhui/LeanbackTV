@@ -69,7 +69,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
+import com.xueersi.parentsmeeting.modules.livevideo.learnfeedback.business.HalfBodyExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.ExpRollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
@@ -168,7 +170,8 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
 
     protected LiveBackBll liveBackBll;
     protected ExperienceIRCBll experienceIrcBll;
-
+    HalfBodyExperienceLearnFeedbackBll learnFeedbackBll;
+    ExperienceQuitFeedbackBll experienceQuitFeedbackBll;
     /**
      * 签到业务
      */
