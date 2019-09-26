@@ -10,6 +10,12 @@ public class AllExperienceConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll",
     };
+    private static String[] experienceRecordClassPath = {
+            "com.xueersi.parentsmeeting.modules.livevideo.business.ExperIRCMessBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll",
+    };
     private static String[] experienceHalfClassPath = {
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5HalfBodyExperienceBll",
@@ -30,6 +36,14 @@ public class AllExperienceConfig {
         ArrayList<BllConfigEntity> arrayList = new ArrayList<>();
         for (int i = 0; i < experienceClassPath.length; i++) {
             arrayList.add(new BllConfigEntity(experienceClassPath[i]));
+        }
+        return arrayList;
+    }
+
+    public static ArrayList<BllConfigEntity> getExperienceRecordBusiness() {
+        ArrayList<BllConfigEntity> arrayList = new ArrayList<>();
+        for (int i = 0; i < experienceRecordClassPath.length; i++) {
+            arrayList.add(new BllConfigEntity(experienceRecordClassPath[i]));
         }
         return arrayList;
     }

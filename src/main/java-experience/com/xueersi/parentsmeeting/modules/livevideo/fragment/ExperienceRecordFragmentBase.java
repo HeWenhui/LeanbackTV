@@ -200,7 +200,6 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
 
     private ExperienceBusiness expBusiness;
 
-    private ExperIRCMessBll experIRCMessBll;
     private RelativeLayout rl_course_video_live_controller_content;
     private RelativeLayout bottomContent;
     LiveViewAction liveViewAction;
@@ -636,10 +635,21 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         expBusiness = new ExperienceBusiness(activity);
         initlizeTalk();
 
-        experIRCMessBll = new ExperIRCMessBll(activity, liveBackBll);
-        liveBackBll.addBusinessBll(experIRCMessBll);
+        addBusiness(activity);
+        liveBackBll.onCreate();
 
-        ArrayList<BllConfigEntity> bllConfigEntities = AllExperienceConfig.getExperienceBusiness();
+        RelativeLayout rlQuestionContent = findViewById(R.id.rl_course_video_record_question_content);
+        liveViewAction = new LiveViewActionIml(activity, mContentView, rlQuestionContent);
+        rlQuestionContent.setVisibility(View.VISIBLE);
+        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+        for (LiveBackBaseBll businessBll : businessBlls) {
+            experienceIrcBll.addBll(businessBll);
+            businessBll.initViewF(liveViewAction, null, rlQuestionContent, mIsLand);
+        }
+    }
+
+    protected void addBusiness(Activity activity) {
+        ArrayList<BllConfigEntity> bllConfigEntities = AllExperienceConfig.getExperienceRecordBusiness();
         for (int i = 0; i < bllConfigEntities.size(); i++) {
             LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntities.get(i));
             if (liveBaseBll != null) {
@@ -651,16 +661,6 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         expRollCallBll = new ExpRollCallBll(activity, liveBackBll, expLiveInfo, expAutoLive.getTermId());
         liveBackBll.addBusinessBll(expRollCallBll);
 
-        liveBackBll.onCreate();
-
-        RelativeLayout rlQuestionContent = findViewById(R.id.rl_course_video_record_question_content);
-        liveViewAction = new LiveViewActionIml(activity, mContentView, rlQuestionContent);
-        rlQuestionContent.setVisibility(View.VISIBLE);
-        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
-        for (LiveBackBaseBll businessBll : businessBlls) {
-            experienceIrcBll.addBll(businessBll);
-            businessBll.initViewF(liveViewAction, null, rlQuestionContent, mIsLand);
-        }
     }
 
     protected LiveBackBaseBll creatBll(BllConfigEntity bllConfigEntity) {
@@ -682,7 +682,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
                 return null;
             }
             Constructor<? extends LiveBackBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBackBll.class});
-            LiveBackBaseBll liveBaseBll = constructor.newInstance(this, liveBackBll);
+            LiveBackBaseBll liveBaseBll = constructor.newInstance(activity, liveBackBll);
             logger.d("creatBll:business=" + className);
             return liveBaseBll;
         } catch (Exception e) {
@@ -1177,83 +1177,6 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         }
 
         liveBackBll.scanQuestion(position);
-
-        int chatSize = roomChatEvent != null ? roomChatEvent.size() : 0;
-
-        for (int i = 0; i < chatSize; i++) {
-            // 处理聊天事件 开闭事件
-            handleChatEvent(TimeUtils.gennerSecond(position), roomChatEvent.get(i));
-        }
-    }
-
-    private int lastCheckTime = 0;
-    private static final int MAX_CHECK_TIME_RANG = 2;
-    private boolean isRoomChatAvailable = true;
-    private boolean isChatSateInited;
-
-    private void handleChatEvent(int playPosition, VideoQuestionEntity chatEntity) {
-        //出现视频快进
-        if ((playPosition - lastCheckTime) >= MAX_CHECK_TIME_RANG || !isChatSateInited) {
-            // isChatSateInited = false;
-            boolean roomChatAvalible = recoverChatState(playPosition);
-            logger.i("=====> resetRoomChatState_:roomChatAvalible=" + roomChatAvalible + ":" + isChatSateInited);
-            isChatSateInited = true;
-        } else {
-            if (chatEntity != null) {
-                logger.i("=====>handleChatEvent:category=" + chatEntity.getvCategory());
-                //关闭聊天
-                if (LocalCourseConfig.CATEGORY_CLOSE_CHAT == chatEntity.getvCategory()) {
-                    logger.i("=====> CATEGORY_CLOSE_CHAT 11111:" + chatEntity.getvQuestionInsretTime() + ":"
-                            + playPosition);
-                    if (playPosition == chatEntity.getvQuestionInsretTime()) {
-                        logger.i("=====> teahcer close chat called begin");
-                        experIRCMessBll.onopenchat(false, "in-class", true);
-                        isRoomChatAvailable = false;
-                        logger.i("=====> teahcer close chat called end 11111");
-                    }
-                } else if (LocalCourseConfig.CATEGORY_OPEN_CHAT == chatEntity.getvCategory()) {
-                    // 开启聊天
-                    logger.i("=====> CATEGORY_OPEN_CHAT  22222:" + chatEntity.getvQuestionInsretTime() + ":" + playPosition);
-
-                    if (playPosition == chatEntity.getvQuestionInsretTime()) {
-                        logger.i("=====> teahcer open chat called begin");
-                        experIRCMessBll.onopenchat(true, "in-class", true);
-                        isRoomChatAvailable = true;
-                        logger.i("=====> teahcer open chat called  end 111111");
-                    }
-                }
-            }
-        }
-
-        lastCheckTime = playPosition;
-    }
-
-    /**
-     * 当进入直播间 或者 发生 视频快进的情况时
-     * 恢复聊天状态
-     */
-    private boolean recoverChatState(int playPosition) {
-        List<VideoQuestionEntity> lstVideoQuestion = playBackEntity.getLstVideoQuestion();
-        boolean roomChatAvalible = true;
-
-        if (lstVideoQuestion != null && lstVideoQuestion.size() > 0) {
-            for (VideoQuestionEntity entity : lstVideoQuestion) {
-                if (entity.getvQuestionInsretTime() <= playPosition) {
-                    if (entity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
-                        roomChatAvalible = true;
-                    } else if (entity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
-                        roomChatAvalible = false;
-                    }
-                }
-            }
-        }
-
-        if (!roomChatAvalible) {
-            experIRCMessBll.onopenchat(false, "in-class", isRoomChatAvailable);
-        } else {
-            experIRCMessBll.onopenchat(true, "in-class", !isRoomChatAvailable);
-        }
-        return roomChatAvalible;
     }
 
     /**

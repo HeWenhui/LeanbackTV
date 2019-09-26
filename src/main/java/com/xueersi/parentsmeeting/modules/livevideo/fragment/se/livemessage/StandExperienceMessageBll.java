@@ -97,7 +97,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 
     LectureLivePlayBackBll lectureLivePlayBackBll;
 
-    public StandExperienceMessageBll(Activity activity, StandExperienceLiveBackBll liveBackBll, LectureLivePlayBackBll
+    public StandExperienceMessageBll(Activity activity, LiveBackBll liveBackBll, LectureLivePlayBackBll
             lectureLivePlayBackBll) {
         super(activity, liveBackBll);
         mHttpManager = new LiveHttpManager(mContext);

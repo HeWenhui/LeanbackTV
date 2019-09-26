@@ -4,13 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
@@ -25,6 +30,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ExperIRCMessBll extends LiveBackBaseBll implements TopicAction, NoticeAction, MessageAction {
     private LiveMessagePager mLiveMessagePager;
@@ -329,5 +336,102 @@ public class ExperIRCMessBll extends LiveBackBaseBll implements TopicAction, Not
     @Override
     public int[] getNoticeFilter() {
         return new int[]{XESCODE.TEACHER_MESSAGE, XESCODE.GAG, XESCODE.OPENCHAT};
+    }
+
+    private List<VideoQuestionEntity> roomChatEvent = new ArrayList<>();
+
+    @Override
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
+        super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+        List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+        int qSize = lstVideoQuestion != null ? lstVideoQuestion.size() : 0;
+        VideoQuestionEntity entity = null;
+        for (int i = 0; i < qSize; i++) {
+            entity = lstVideoQuestion.get(i);
+            if (LocalCourseConfig.CATEGORY_OPEN_CHAT == entity.getvCategory() || LocalCourseConfig.CATEGORY_CLOSE_CHAT == entity.getvCategory()) {
+                roomChatEvent.add(lstVideoQuestion.get(i));
+            }
+        }
+    }
+
+    @Override
+    public void onPositionChanged(long position) {
+        int chatSize = roomChatEvent != null ? roomChatEvent.size() : 0;
+
+        for (int i = 0; i < chatSize; i++) {
+            // 处理聊天事件 开闭事件
+            handleChatEvent(TimeUtils.gennerSecond(position), roomChatEvent.get(i));
+        }
+    }
+
+    private int lastCheckTime = 0;
+    private static final int MAX_CHECK_TIME_RANG = 2;
+    private boolean isRoomChatAvailable = true;
+    private boolean isChatSateInited;
+
+    private void handleChatEvent(int playPosition, VideoQuestionEntity chatEntity) {
+        //出现视频快进
+        if ((playPosition - lastCheckTime) >= MAX_CHECK_TIME_RANG || !isChatSateInited) {
+            // isChatSateInited = false;
+            boolean roomChatAvalible = recoverChatState(playPosition);
+            logger.i("=====> resetRoomChatState_:roomChatAvalible=" + roomChatAvalible + ":" + isChatSateInited);
+            isChatSateInited = true;
+        } else {
+            if (chatEntity != null) {
+                logger.i("=====>handleChatEvent:category=" + chatEntity.getvCategory());
+                //关闭聊天
+                if (LocalCourseConfig.CATEGORY_CLOSE_CHAT == chatEntity.getvCategory()) {
+                    logger.i("=====> CATEGORY_CLOSE_CHAT 11111:" + chatEntity.getvQuestionInsretTime() + ":"
+                            + playPosition);
+                    if (playPosition == chatEntity.getvQuestionInsretTime()) {
+                        logger.i("=====> teahcer close chat called begin");
+                        onopenchat(false, "in-class", true);
+                        isRoomChatAvailable = false;
+                        logger.i("=====> teahcer close chat called end 11111");
+                    }
+                } else if (LocalCourseConfig.CATEGORY_OPEN_CHAT == chatEntity.getvCategory()) {
+                    // 开启聊天
+                    logger.i("=====> CATEGORY_OPEN_CHAT  22222:" + chatEntity.getvQuestionInsretTime() + ":" + playPosition);
+
+                    if (playPosition == chatEntity.getvQuestionInsretTime()) {
+                        logger.i("=====> teahcer open chat called begin");
+                        onopenchat(true, "in-class", true);
+                        isRoomChatAvailable = true;
+                        logger.i("=====> teahcer open chat called  end 111111");
+                    }
+                }
+            }
+        }
+
+        lastCheckTime = playPosition;
+    }
+
+
+    /**
+     * 当进入直播间 或者 发生 视频快进的情况时
+     * 恢复聊天状态
+     */
+    private boolean recoverChatState(int playPosition) {
+        List<VideoQuestionEntity> lstVideoQuestion = roomChatEvent;
+        boolean roomChatAvalible = true;
+
+        if (lstVideoQuestion != null && lstVideoQuestion.size() > 0) {
+            for (VideoQuestionEntity entity : lstVideoQuestion) {
+                if (entity.getvQuestionInsretTime() <= playPosition) {
+                    if (entity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
+                        roomChatAvalible = true;
+                    } else if (entity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
+                        roomChatAvalible = false;
+                    }
+                }
+            }
+        }
+
+        if (!roomChatAvalible) {
+            onopenchat(false, "in-class", isRoomChatAvailable);
+        } else {
+            onopenchat(true, "in-class", !isRoomChatAvailable);
+        }
+        return roomChatAvalible;
     }
 }

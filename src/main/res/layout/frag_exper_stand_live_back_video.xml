@@ -304,4 +304,10 @@
         android:id="@id/live_play_back_bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></RelativeLayout>
+    <!--预加载动画-->
+    <ViewStub
+        android:id="@id/vs_live_stand_update"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/activity_video_live_stand_check" />
 </RelativeLayout>
