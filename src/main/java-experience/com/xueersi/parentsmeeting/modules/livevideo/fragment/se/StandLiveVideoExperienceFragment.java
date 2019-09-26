@@ -16,6 +16,8 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -56,6 +58,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
@@ -75,6 +80,7 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -164,6 +170,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      */
     String appID = UmsConstants.LIVE_APP_ID_BACK;
     private LiveVideoSAConfig liveVideoSAConfig;
+    protected ExperienceIRCBll experienceIrcBll;
     boolean IS_SCIENCE;
     /**
      * 本地视频
@@ -355,6 +362,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 if (activity.isFinishing()) {
                     return;
                 }
+                initlizeTalk();
                 initBll();
             }
         });
@@ -509,6 +517,19 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     }
 
+    /**
+     * 初始化聊天
+     */
+    protected void initlizeTalk() {
+        String expChatId = mVideoEntity.getExpChatId();
+        LiveGetInfo getInfo = new LiveGetInfo(new LiveTopic());
+        getInfo.setId(mVideoEntity.getLiveId());
+        getInfo.setStuId(LiveAppUserInfo.getInstance().getStuId());
+        getInfo.setPattern(LiveVideoConfig.LIVE_PATTERN_2);
+        getInfo.setIsArts(LiveVideoSAConfig.ART_EN);
+        experienceIrcBll = new ExperienceIRCBll(activity, expChatId, getInfo);
+        experienceIrcBll.onCreate();
+    }
 
     protected void initBusiness() {
         liveBackBll.addBusinessShareParam("videoView", videoView);
@@ -518,6 +539,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         try {
             for (LiveBackBaseBll businessBll : businessBlls) {
+                experienceIrcBll.addBll(businessBll);
                 businessBll.initViewF(liveViewAction, rlQuestionContentBottom, rlQuestionContent, mIsLand);
             }
         } catch (Exception e) {
@@ -568,7 +590,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             } else {
                 return null;
             }
-            Constructor<? extends LiveBackBaseBll> constructor = clazz.getConstructor(Activity.class, StandExperienceLiveBackBll.class);
+            Constructor<? extends LiveBackBaseBll> constructor = clazz.getConstructor(Activity.class, LiveBackBll.class);
             LiveBackBaseBll liveBaseBll = constructor.newInstance(activity, liveBackBll);
             logger.d("creatBll:business=" + className);
             return liveBaseBll;
@@ -1251,6 +1273,11 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         ProxUtil.getProxUtil().clear(activity);
         if (liveStandFrameAnim != null) {
             liveStandFrameAnim.onDestroy();
+            liveStandFrameAnim = null;
+        }
+        if (experienceIrcBll != null) {
+            experienceIrcBll.onDestory();
+            experienceIrcBll = null;
         }
     }
 

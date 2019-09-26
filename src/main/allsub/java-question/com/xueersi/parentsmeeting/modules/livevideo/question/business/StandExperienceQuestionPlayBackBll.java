@@ -32,7 +32,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
 
     private String TAG = getClass().getSimpleName();
 
-    public StandExperienceQuestionPlayBackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public StandExperienceQuestionPlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
     }
 
@@ -52,7 +52,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
             //语音评测
             LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(liveBackBll,
                     questionBll);
-            liveBackStandSpeechCreat.setIsExperience(((StandExperienceLiveBackBll) liveBackBll).getExperience());
+            liveBackStandSpeechCreat.setIsExperience(liveBackBll.getExperience());
             liveBackStandSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
             questionBll.setBaseSpeechCreat(liveBackStandSpeechCreat);
         } else {

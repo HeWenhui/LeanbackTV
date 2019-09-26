@@ -37,11 +37,12 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpAutoLive;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpLiveInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.IPlayBackMediaCtr;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceThreeScreenActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExperIRCMessBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceIRCBll;
@@ -211,7 +212,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     private ImageView ivLoading;
 
     private TextView tvLoadingHint;
-
+    BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     LiveMediaControllerBottom liveMediaControllerBottom;
 
     private StudyResultDialog studyResultDialog;
@@ -296,6 +297,22 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         if (expLiveInfo.getMode() != COURSE_STATE_4) {
             getHandler.postDelayed(liveHeartTask, getHeartInterval());
         }
+        ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, new ActivityChangeLand() {
+            @Override
+            public void setAutoOrientation(boolean isAutoOrientation) {
+                liveBackPlayVideoFragment.setIsAutoOrientation(isAutoOrientation);
+            }
+
+            @Override
+            public void setRequestedOrientation(int requestedOrientation) {
+                liveBackPlayVideoFragment.setRequestedOrientation(requestedOrientation);
+            }
+
+            @Override
+            public void changeLOrP() {
+                liveBackPlayVideoFragment.changeLOrP();
+            }
+        });
     }
 
     @Override
@@ -761,20 +778,36 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     }
 
     protected void createMediaController() {
-        ExperMediaCtrl experMediaCtrl;
-        mMediaController = experMediaCtrl = new ExperMediaCtrl(activity, liveBackPlayVideoFragment);
+        mMediaController = creatLiveMediaCtr();
+        ExperMediaCtrl experMediaCtrl = (ExperMediaCtrl) mMediaController;
         rl_course_video_live_controller_content.addView(experMediaCtrl, new ViewGroup.LayoutParams(ViewGroup
                 .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, experMediaCtrl, liveBackPlayVideoFragment);
-        experMediaCtrl.setControllerTop(baseLiveMediaControllerTop);
-        liveMediaControllerBottom = new LiveMediaControllerBottom(activity, experMediaCtrl, liveBackPlayVideoFragment);
-        liveMediaControllerBottom.experience();
+        baseLiveMediaControllerTop = createMediaControlerTop();
+        createMediaControllerBottom();
         ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
+        experMediaCtrl.setControllerTop(baseLiveMediaControllerTop);
         experMediaCtrl.setControllerBottom(liveMediaControllerBottom, false);
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        bottomContent.addView(liveMediaControllerBottom);
         mMediaController.setFileName(playBackEntity.getPlayVideoName());
         mMediaController.show();
+    }
+
+    protected IPlayBackMediaCtr creatLiveMediaCtr() {
+        ExperMediaCtrl experMediaCtrl = new ExperMediaCtrl(activity, liveBackPlayVideoFragment);
+        return experMediaCtrl;
+    }
+
+    protected BaseLiveMediaControllerTop createMediaControlerTop() {
+        ExperMediaCtrl experMediaCtrl = (ExperMediaCtrl) mMediaController;
+        BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, experMediaCtrl, liveBackPlayVideoFragment);
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return baseLiveMediaControllerTop;
+    }
+
+    protected void createMediaControllerBottom() {
+        ExperMediaCtrl experMediaCtrl = (ExperMediaCtrl) mMediaController;
+        liveMediaControllerBottom = new LiveMediaControllerBottom(activity, experMediaCtrl, liveBackPlayVideoFragment);
+        liveMediaControllerBottom.experience();
+        bottomContent.addView(liveMediaControllerBottom);
     }
 
     /**

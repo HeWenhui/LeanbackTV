@@ -71,8 +71,17 @@ public class ExperStandRecordFragmentBase extends ExperienceRecordFragmentBase {
                     return;
                 }
                 initlizeBlls2();
+                onModeChanged();
             }
         });
+    }
+
+    @Override
+    protected void onModeChanged() {
+        if (liveBackBll == null) {
+            return;
+        }
+        super.onModeChanged();
     }
 
     protected void initlizeBlls2() {
@@ -114,34 +123,15 @@ public class ExperStandRecordFragmentBase extends ExperienceRecordFragmentBase {
         experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity, liveBackBll, true);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
 
-
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, playBackEntity.getChapterId()));
         expRollCallBll = new ExpRollCallBll(activity, liveBackBll, expLiveInfo, expAutoLive.getTermId());
         liveBackBll.addBusinessBll(expRollCallBll);
     }
 
     @Override
-    protected void createMediaController() {
-        ExperMediaCtrl experMediaCtrl;
-        mMediaController = experMediaCtrl = new ExperMediaCtrl(activity, liveBackPlayVideoFragment){
-            @Override
-            protected void findViewItems() {
-                super.findViewItems();
-//                mMediaController.setVisibility(GONE);
-            }
-        };
-        rl_course_video_live_controller_content.addView(experMediaCtrl, new ViewGroup.LayoutParams(ViewGroup
-                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, experMediaCtrl, liveBackPlayVideoFragment);
-        experMediaCtrl.setControllerTop(baseLiveMediaControllerTop);
+    protected void createMediaControllerBottom() {
+        ExperMediaCtrl experMediaCtrl = (ExperMediaCtrl) mMediaController;
         liveMediaControllerBottom = new LiveMediaControllerBottom(activity, experMediaCtrl, liveBackPlayVideoFragment);
-        liveMediaControllerBottom.experience();
-        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
-        experMediaCtrl.setControllerBottom(liveMediaControllerBottom, false);
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//        bottomContent.addView(liveMediaControllerBottom);
-        mMediaController.setFileName(playBackEntity.getPlayVideoName());
-        mMediaController.show();
     }
 
     @Override

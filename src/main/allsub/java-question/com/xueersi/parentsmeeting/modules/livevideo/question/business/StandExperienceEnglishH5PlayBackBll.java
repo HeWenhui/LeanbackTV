@@ -18,7 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 
 public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
 
-    public StandExperienceEnglishH5PlayBackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public StandExperienceEnglishH5PlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
     }
 
