@@ -7,6 +7,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -61,8 +62,6 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
      */
     private ExperLiveMessageStandPager mLiveMessagePager;
 
-    private LiveHttpManager mHttpManager;
-
     private int mNetWorkType;
     /**
      * 聊天服务器 参数获取   接口地址  测试时可以采用写死的方法来测试
@@ -95,13 +94,8 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
      */
     private boolean openChat = true;
 
-    LectureLivePlayBackBll lectureLivePlayBackBll;
-
-    public StandExperienceMessageBll(Activity activity, LiveBackBll liveBackBll, LectureLivePlayBackBll
-            lectureLivePlayBackBll) {
+    public StandExperienceMessageBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
-        mHttpManager = new LiveHttpManager(mContext);
-        this.lectureLivePlayBackBll = lectureLivePlayBackBll;
     }
 
     private IIRCMessage mIRCMessage;
@@ -387,7 +381,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 //                        jsonObject.put("from", "android_" + teamId);
 //                        jsonObject.put("to", teamId);
 //                    }
-                    lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity
+                    sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity
                             .getChapterId(), 1);
                     mIRCMessage.sendMessage(jsonObject.toString());
                     sendMessage = true;
@@ -456,6 +450,27 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
     @Override
     public void onKeyboardShowing(boolean isShowing) {
 
+    }
+
+    public void sendRecordInteract(String url, String termId, int times) {
+        getCourseHttpManager().sendExpeRecordInteract(url, termId, times, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.i("sendRecordInteract : Success");
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.i("sendRecordInteract : Failure,msg: " + msg);
+                super.onPmFailure(error, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.i("sendRecordInteract : Error");
+                super.onPmError(responseEntity);
+            }
+        });
     }
 
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
@@ -14,7 +15,7 @@ public class StandExperienceEvaluationBll extends
 
     private IStandExperienceEvaluationContract.IEvaluationView mView;
 
-    public StandExperienceEvaluationBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public StandExperienceEvaluationBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         mView = new StandExperienceEvaluationPager(activity, this);
     }

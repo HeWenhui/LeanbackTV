@@ -170,11 +170,11 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         }
     };
 
-    private VideoLivePlayBackEntity playBackEntity;
+    protected VideoLivePlayBackEntity playBackEntity;
 
-    private ExpLiveInfo expLiveInfo;
+    protected ExpLiveInfo expLiveInfo;
 
-    private ExpAutoLive expAutoLive;
+    protected ExpAutoLive expAutoLive;
 
     private List<String> chatCfgServerList;
 
@@ -190,18 +190,18 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     private LiveGetInfo mGetInfo;
     private String appID = UmsConstants.APP_ID;
 
-    private LiveBackBll liveBackBll;
-    private ExperienceIRCBll experienceIrcBll;
+    protected LiveBackBll liveBackBll;
+    protected ExperienceIRCBll experienceIrcBll;
 
     /**
      * 签到业务
      */
-    private ExpRollCallBll expRollCallBll;
+    protected ExpRollCallBll expRollCallBll;
 
-    private ExperienceBusiness expBusiness;
+    protected ExperienceBusiness expBusiness;
 
-    private RelativeLayout rl_course_video_live_controller_content;
-    private RelativeLayout bottomContent;
+    protected RelativeLayout rl_course_video_live_controller_content;
+    protected RelativeLayout bottomContent;
     LiveViewAction liveViewAction;
 
     private RelativeLayout rlFirstBackgroundView;
@@ -637,7 +637,10 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
 
         addBusiness(activity);
         liveBackBll.onCreate();
+        initBLlView();
+    }
 
+    protected void initBLlView() {
         RelativeLayout rlQuestionContent = findViewById(R.id.rl_course_video_record_question_content);
         liveViewAction = new LiveViewActionIml(activity, mContentView, rlQuestionContent);
         rlQuestionContent.setVisibility(View.VISIBLE);
@@ -733,11 +736,6 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     protected void initlizeView() {
         rl_course_video_live_controller_content = mContentView.findViewById(R.id
                 .rl_course_video_live_controller_content);
-        ExperMediaCtrl experMediaCtrl;
-        mMediaController = experMediaCtrl = new ExperMediaCtrl(activity, liveBackPlayVideoFragment);
-        rl_course_video_live_controller_content.addView(experMediaCtrl, new ViewGroup.LayoutParams(ViewGroup
-                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
         final View contentView = activity.findViewById(android.R.id.content);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
@@ -748,12 +746,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         bottomContent.setVisibility(View.VISIBLE);
         ivTeacherNotpresent.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, experMediaCtrl, liveBackPlayVideoFragment);
-        experMediaCtrl.setControllerTop(baseLiveMediaControllerTop);
-        liveMediaControllerBottom = new LiveMediaControllerBottom(activity, experMediaCtrl, liveBackPlayVideoFragment);
-        liveMediaControllerBottom.experience();
-        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
-        experMediaCtrl.setControllerBottom(liveMediaControllerBottom, false);
+
         ivTeacherNotpresent = findViewById(R.id.iv_course_video_teacher_notpresent);
 
         ivLoading = findViewById(R.id.iv_course_video_loading_bg);
@@ -763,10 +756,23 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
 
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
+        //设置标题，要在setControllerTop方法以后
+        createMediaController();
+    }
 
+    protected void createMediaController() {
+        ExperMediaCtrl experMediaCtrl;
+        mMediaController = experMediaCtrl = new ExperMediaCtrl(activity, liveBackPlayVideoFragment);
+        rl_course_video_live_controller_content.addView(experMediaCtrl, new ViewGroup.LayoutParams(ViewGroup
+                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, experMediaCtrl, liveBackPlayVideoFragment);
+        experMediaCtrl.setControllerTop(baseLiveMediaControllerTop);
+        liveMediaControllerBottom = new LiveMediaControllerBottom(activity, experMediaCtrl, liveBackPlayVideoFragment);
+        liveMediaControllerBottom.experience();
+        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
+        experMediaCtrl.setControllerBottom(liveMediaControllerBottom, false);
         bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
-        //设置标题，要在setControllerTop方法以后
         mMediaController.setFileName(playBackEntity.getPlayVideoName());
         mMediaController.show();
     }

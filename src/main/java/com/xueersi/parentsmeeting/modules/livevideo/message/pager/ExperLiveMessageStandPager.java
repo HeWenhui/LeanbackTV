@@ -841,10 +841,8 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
                     });
                 }
             }
-        }
-
-        ;
-        lvMessage.setVerticalFadingEdgeEnabled(false);
+        };
+//        lvMessage.setVerticalFadingEdgeEnabled(false);
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
         lp.topMargin = ScreenUtils.getScreenHeight() / 3;
         lvMessage.setLayoutParams(lp);

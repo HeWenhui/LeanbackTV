@@ -21,7 +21,7 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll im
 
     StandExperienceUnderstandPager mPager;
 
-    public StandExperienceUnderstandBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public StandExperienceUnderstandBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
 
     }

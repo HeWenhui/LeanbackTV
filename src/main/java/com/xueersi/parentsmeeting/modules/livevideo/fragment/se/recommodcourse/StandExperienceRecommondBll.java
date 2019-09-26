@@ -48,7 +48,7 @@ public class StandExperienceRecommondBll extends StandExperienceEventBaseBll {
     //是否购买成功
     private Boolean isBuyRecommondCourse;
 
-    public StandExperienceRecommondBll(Activity activity, StandExperienceLiveBackBll liveBackBll, VideoView videoView) {
+    public StandExperienceRecommondBll(Activity activity, LiveBackBll liveBackBll, VideoView videoView) {
         super(activity, liveBackBll);
 
 

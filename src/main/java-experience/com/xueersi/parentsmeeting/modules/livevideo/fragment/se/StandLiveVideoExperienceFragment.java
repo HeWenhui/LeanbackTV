@@ -535,7 +535,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             }
         }
         //站立直播体验课聊天区的添加
-        liveBackBll.addBusinessBll(new StandExperienceMessageBll(activity, liveBackBll, lectureLivePlayBackBll));
+        liveBackBll.addBusinessBll(new StandExperienceMessageBll(activity, liveBackBll));
         //懂了吗
         liveBackBll.addBusinessBll(new StandExperienceUnderstandBll(activity, liveBackBll));
         //推荐课程信息

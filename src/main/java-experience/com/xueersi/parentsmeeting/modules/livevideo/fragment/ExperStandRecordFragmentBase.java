@@ -7,8 +7,27 @@ import android.view.ViewGroup;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
+import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.livemessage.StandExperienceMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.StandExperienceRecommondBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.understand.StandExperienceUnderstandBll;
+import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
+import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.ExpRollCallBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.weight.ExperMediaCtrl;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,11 +40,12 @@ public class ExperStandRecordFragmentBase extends ExperienceRecordFragmentBase {
 
     LiveStandFrameAnim liveStandFrameAnim;
     boolean isInit = false;
+    private ExperienceQuitFeedbackBll experienceQuitFeedbackBll;
 
     @Override
     protected void initlizeBlls() {
         if (isInit) {
-            ExperStandRecordFragmentBase.super.initlizeBlls();
+            initlizeBlls2();
             return;
         }
         isInit = true;
@@ -50,14 +70,86 @@ public class ExperStandRecordFragmentBase extends ExperienceRecordFragmentBase {
                 if (activity.isFinishing()) {
                     return;
                 }
-                ExperStandRecordFragmentBase.super.initlizeBlls();
+                initlizeBlls2();
             }
         });
     }
 
+    protected void initlizeBlls2() {
+
+        liveBackBll = new StandExperienceLiveBackBll(activity, playBackEntity);
+        liveBackBll.setStuCourId(playBackEntity.getStuCourseId());
+        liveBackBll.setvPlayer(vPlayer);
+
+        expBusiness = new ExperienceBusiness(activity);
+        initlizeTalk();
+
+        addBusiness(activity);
+        liveBackBll.onCreate();
+
+        initBLlView();
+    }
+
     @Override
     protected void addBusiness(Activity activity) {
-        super.addBusiness(activity);
+        ArrayList<BllConfigEntity> bllConfigEntities = AllBackBllConfig.getStandLiveVideoExperienceBusiness();
+        for (int i = 0; i < bllConfigEntities.size(); i++) {
+            LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntities.get(i));
+            if (liveBaseBll != null) {
+                liveBackBll.addBusinessBll(liveBaseBll);
+            }
+        }
+        //站立直播体验课聊天区的添加
+        liveBackBll.addBusinessBll(new StandExperienceMessageBll(activity, liveBackBll));
+        //懂了吗
+        liveBackBll.addBusinessBll(new StandExperienceUnderstandBll(activity, liveBackBll));
+        //推荐课程信息
+        liveBackBll.addBusinessBll(new StandExperienceRecommondBll(activity, liveBackBll, getVideoView()));
+        //播放完成后的定级卷
+        liveBackBll.addBusinessBll(new StandExperienceEvaluationBll(activity, liveBackBll));
+        //定级完成后的结果页
+//        liveBackBll.addBusinessBll(new ExperienceBuyCourseExperiencePresenter(activity, liveBackBll));
+        //播放完成后的反馈弹窗
+        liveBackBll.addBusinessBll(new StandExperienceLearnFeedbackBll(activity, liveBackBll));
+        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity, liveBackBll, true);
+        liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
+
+
+        liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, playBackEntity.getChapterId()));
+        expRollCallBll = new ExpRollCallBll(activity, liveBackBll, expLiveInfo, expAutoLive.getTermId());
+        liveBackBll.addBusinessBll(expRollCallBll);
+    }
+
+    @Override
+    protected void createMediaController() {
+        ExperMediaCtrl experMediaCtrl;
+        mMediaController = experMediaCtrl = new ExperMediaCtrl(activity, liveBackPlayVideoFragment){
+            @Override
+            protected void findViewItems() {
+                super.findViewItems();
+//                mMediaController.setVisibility(GONE);
+            }
+        };
+        rl_course_video_live_controller_content.addView(experMediaCtrl, new ViewGroup.LayoutParams(ViewGroup
+                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, experMediaCtrl, liveBackPlayVideoFragment);
+        experMediaCtrl.setControllerTop(baseLiveMediaControllerTop);
+        liveMediaControllerBottom = new LiveMediaControllerBottom(activity, experMediaCtrl, liveBackPlayVideoFragment);
+        liveMediaControllerBottom.experience();
+        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
+        experMediaCtrl.setControllerBottom(liveMediaControllerBottom, false);
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        bottomContent.addView(liveMediaControllerBottom);
+        mMediaController.setFileName(playBackEntity.getPlayVideoName());
+        mMediaController.show();
+    }
+
+    @Override
+    protected void resultComplete() {
+        super.resultComplete();
+        if (experienceQuitFeedbackBll != null) {
+            experienceQuitFeedbackBll.playComplete();
+        }
     }
 
     @Override

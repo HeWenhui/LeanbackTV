@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 
@@ -16,7 +17,7 @@ public class StandExperienceLearnFeedbackBll extends StandExperienceEventBaseBll
 
     StandExperienceLearnFeedBackPager mPager;
 
-    public StandExperienceLearnFeedbackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public StandExperienceLearnFeedbackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         initListener();
     }
