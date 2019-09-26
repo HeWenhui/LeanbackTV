@@ -13,9 +13,12 @@ import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpLiveInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperModeChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
@@ -25,6 +28,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ExperConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
@@ -34,7 +39,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceE
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.ExperLiveMessageStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -53,18 +60,19 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 //zyy:仿照全身直播的体验课聊天
 public class StandExperienceMessageBll extends StandExperienceEventBaseBll implements KeyboardUtil
-        .OnKeyboardShowingListener , MessageAction {
+        .OnKeyboardShowingListener, MessageAction, ExperModeChange {
     /**
      * 聊天消失
      */
 //    private final String TAG = getClass().getSimpleName();
     private String TAG = getClass().getSimpleName();
+
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
     /**
      * 在线直播的聊天区
      */
-    private ExperLiveMessageStandPager mLiveMessagePager;
-
+    private BaseLiveMessagePager mLiveMessagePager;
+    private ExperLiveMessageBll mRoomAction;
     /**
      * 聊天服务器 参数获取   接口地址  测试时可以采用写死的方法来测试
      */
@@ -95,6 +103,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
      * 是否打开聊天开关，默认开启
      */
     private boolean openChat = true;
+    private ExpLiveInfo expLiveInfo;
 
     public StandExperienceMessageBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -109,14 +118,14 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                          LiveGetInfo liveGetInfo,
                          HashMap<String, Object> businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+        mRoomAction = new ExperLiveMessageBll(activity);
+        expLiveInfo = ProxUtil.getProxUtil().get(activity, ExpLiveInfo.class);
     }
 
     //
     @Override
     public void initView() {
         super.initView();
-
-
 //        starAction = getInstance(LiveAchievementIRCBll.class);
         videoFragment = new LivePlayerFragment();
         mMediaController = new LiveMediaController(activity, videoFragment);
@@ -124,20 +133,23 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         if (baseLiveMediaControllerBottom == null) {
             baseLiveMediaControllerBottom = new LiveStandMediaControllerBottom(activity, mMediaController, videoFragment);
         }
-        mLiveMessagePager = new ExperLiveMessageStandPager(
-                mContext,
-                this,
-                baseLiveMediaControllerBottom,
-                liveMessageLandEntities,
-                null);
-//        初始化默认看不见这个布局
-        mLiveMessagePager.setStarGoldImageViewVisible(false);//异常右上角临时加的星星和金币图片
+        mRoomAction.setBaseLiveMediaControllerBottom(baseLiveMediaControllerBottom);
+        initPager();
+        registerInBllToHideView();
+    }
+
+    private void initPager() {
+        int mode;
+        if (expLiveInfo == null) {
+            mode = ExperConfig.COURSE_STATE_2;
+        } else {
+            mode = expLiveInfo.getMode();
+        }
+        mLiveMessagePager = mRoomAction.initExper(getLiveViewAction(), mode);
         mLiveMessagePager.setIrcState(videoExperiencIRCState);
-        mRootView.addView(mLiveMessagePager.getRootView());
         mLiveMessagePager.setGetInfo(liveGetInfo);
         //默认打开聊天区
         mLiveMessagePager.onopenchat(openChat, "", false);
-        registerInBllToHideView();
     }
 
     /**
@@ -191,38 +203,35 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
     }
 
     @Override
+    public void onModeChange(int oldmode, int mode) {
+        logger.d("onModeChange:mode=" + mode + "," + expLiveInfo);
+        if (expLiveInfo != null) {
+            initPager();
+        }
+    }
+
+    @Override
     public void onStartConnect() {
         logger.i("=====>onStartConnect");
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.onStartConnect();
-        }
+        mRoomAction.onStartConnect();
     }
 
     @Override
     public void onConnect(IRCConnection connection) {
         logger.i("=====>onConnect");
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.onConnect();
-        }
+        mRoomAction.onConnect();
     }
 
     @Override
     public void onRegister() {
         logger.i("=====>onRegister");
-
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.onRegister();
-        }
+        mRoomAction.onRegister();
     }
 
     @Override
     public void onDisconnect(IRCConnection connection, boolean isQuitting) {
         logger.i("=====>onDisconnect");
-
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.onDisconnect();
-        }
-
+        mRoomAction.onDisconnect();
     }
 
     @Override
@@ -265,43 +274,35 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
     public void onUserList(String channel, User[] users) {
 //            Loger.e("ExperiencLvieAvtiv", "=====>onUserList start:" + peopleCount);
 //            peopleCount.set(users.length, new Exception());
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.onUserList(channel, users);
-        }
+        mRoomAction.onUserList(channel, users);
 //            Loger.e("ExperiencLvieAvtiv", "=====>onUserList end:" + peopleCount);
     }
 
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
-
+        mRoomAction.onJoin(target, sender, login, hostname);
 //            Loger.e("ExperiencLvieAvtiv", "=====>onJoin start:" + peopleCount);
 //            peopleCount.set(peopleCount.get() + 1, new Exception(sender));
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.onJoin(target, sender, login, hostname);
-        }
 //            Loger.e("ExperiencLvieAvtiv", "=====>onJoin end:" + peopleCount);
 
     }
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
-        }
+        mRoomAction.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
     }
 
     @Override
     public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String
             recipientNick, String reason) {
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.onKick(target, kickerNick, kickerLogin, kickerHostname, recipientNick, reason);
-        }
+        mRoomAction.onKick(target, kickerNick, kickerLogin, kickerHostname, recipientNick, reason);
     }
 
     @Override
     public void onUnknown(String line) {
 
     }
+
     private final IRCState videoExperiencIRCState = new IRCState() {
         @Override
         public String getMode() {
@@ -344,7 +345,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 //                    }
                     sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity
                             .getChapterId(), 1);
-                    IrcAction ircAction= ProxUtil.getProvide(activity,IrcAction.class);
+                    IrcAction ircAction = ProxUtil.getProvide(activity, IrcAction.class);
                     ircAction.sendMessage(jsonObject.toString());
                     sendMessage = true;
                 } catch (Exception e) {

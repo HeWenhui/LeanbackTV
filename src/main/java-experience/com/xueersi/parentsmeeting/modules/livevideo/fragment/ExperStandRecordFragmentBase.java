@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperStandLiveAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
@@ -97,6 +98,11 @@ public class ExperStandRecordFragmentBase extends ExperienceRecordFragmentBase {
         liveBackBll.onCreate();
 
         initBllView();
+    }
+
+    @Override
+    protected void createLiveVideoAction() {
+        experLiveAction=new ExperStandLiveAction(activity,mContentView,expLiveInfo);
     }
 
     @Override

@@ -18,7 +18,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.event.AppEvent;
@@ -44,18 +43,18 @@ import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ExperIRCMessBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExperLiveAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperModeChange;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IrcAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayState;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ExperConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -81,7 +80,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -101,31 +99,6 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         /** 布局默认资源 */
         mLayoutVideo = R.layout.frag_exper_live_back_video;
     }
-
-    /**
-     * 未开始
-     */
-    public static final int COURSE_STATE_0 = 0;
-
-    /**
-     * 课前状态
-     */
-    public static final int COURSE_STATE_1 = 1;
-
-    /**
-     * 课中状态
-     */
-    public static final int COURSE_STATE_2 = 2;
-
-    /**
-     * 课后状态
-     */
-    public static final int COURSE_STATE_3 = 3;
-
-    /**
-     * 已结束
-     */
-    public static final int COURSE_STATE_4 = 4;
 
     private final Handler getHandler = LiveMainHandler.getMainHandler();
 
@@ -156,13 +129,13 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     private final VPlayerCallBack.VPlayerListener mPlayerListener = new VPlayerCallBack.SimpleVPlayerListener() {
         @Override
         public void onBufferStart() {
-            if (expLiveInfo.getMode() == COURSE_STATE_2) {
+            if (expLiveInfo.getMode() == ExperConfig.COURSE_STATE_2) {
                 sendLogMessage("playFileNotFluent",
                         "videopath", getBackVideo(),
                         "status", "failed",
                         "loglevel", "1",
                         "functype", "6");
-            } else if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_3) {
+            } else if (expLiveInfo.getMode() == ExperConfig.COURSE_STATE_1 || expLiveInfo.getMode() == ExperConfig.COURSE_STATE_3) {
                 sendLogMessage("playStreamNotFluent",
                         "stream", getLiveVideo(),
                         "status", "failed",
@@ -207,7 +180,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     protected RelativeLayout bottomContent;
     LiveViewAction liveViewAction;
 
-    private ExperLiveAction experLiveAction;
+    protected ExperLiveAction experLiveAction;
 
     private ImageView ivLoading;
 
@@ -294,7 +267,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
 
         getHandler.postDelayed(liveModeTask, getModeInterval());
 
-        if (expLiveInfo.getMode() != COURSE_STATE_4) {
+        if (expLiveInfo.getMode() != ExperConfig.COURSE_STATE_4) {
             getHandler.postDelayed(liveHeartTask, getHeartInterval());
         }
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, new ActivityChangeLand() {
@@ -389,13 +362,13 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     @Override
     protected void onPlayOpenSuccess() {
 
-        if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_3) {
+        if (expLiveInfo.getMode() == ExperConfig.COURSE_STATE_1 || expLiveInfo.getMode() == ExperConfig.COURSE_STATE_3) {
             sendLogMessage("videoStartPlay",
                     "streamid", getLiveVideo(),
                     "status", "success",
                     "loglevel", "1",
                     "functype", "6");
-        } else if (expLiveInfo.getMode() == COURSE_STATE_2) {
+        } else if (expLiveInfo.getMode() == ExperConfig.COURSE_STATE_2) {
             sendLogMessage("videoStartPlay",
                     "videopath", getBackVideo(),
                     "status", "success",
@@ -422,7 +395,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     protected void resultComplete() {
         super.resultComplete();
 
-        if (expLiveInfo.getMode() == COURSE_STATE_2) {
+        if (expLiveInfo.getMode() == ExperConfig.COURSE_STATE_2) {
             sendLogMessage("playVideoFileFinished",
                     "videopath", getBackVideo(),
                     "status", "success",
@@ -436,7 +409,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         Log.i("expTess", "resultFailed  error=" + arg2);
         experLiveAction.resultFailed(videoPlayState, arg1, arg2);
         if (arg2 == MediaErrorInfo.PLAY_COMPLETE) {
-            if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_3) {
+            if (expLiveInfo.getMode() == ExperConfig.COURSE_STATE_1 || expLiveInfo.getMode() == ExperConfig.COURSE_STATE_3) {
                 getHandler.postDelayed(playDelayTask, 3 * 1000);
             }
 
@@ -454,7 +427,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
             return;
         }
 
-        if (expLiveInfo.getMode() == COURSE_STATE_2) {
+        if (expLiveInfo.getMode() == ExperConfig.COURSE_STATE_2) {
             sendLogMessage("playFileError",
                     "videopath", getBackVideo(),
                     "errCode", arg2 + "",
@@ -463,7 +436,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
                     "status", "failed",
                     "loglevel", "Error",
                     "functype", "6");
-        } else if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_2) {
+        } else if (expLiveInfo.getMode() == ExperConfig.COURSE_STATE_1 || expLiveInfo.getMode() == ExperConfig.COURSE_STATE_2) {
             sendLogMessage("playStreamError",
                     "stream", getLiveVideo(),
                     "errCode", arg2 + "",
@@ -547,7 +520,8 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         expChatId = extras.getString("expChatId");
         sex = extras.getString("sex");
         pattern = extras.getInt("pattern");
-
+        lastMode = expLiveInfo.getMode();
+        ProxUtil.getProxUtil().put(activity, ExpLiveInfo.class, expLiveInfo);
         List<VideoQuestionEntity> lstVideoQuestion = playBackEntity.getLstVideoQuestion();
 
         int qSize = lstVideoQuestion != null ? lstVideoQuestion.size() : 0;
@@ -822,7 +796,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
                     onModeChanged();
                 }
 
-                if (mode != COURSE_STATE_4) {
+                if (mode != ExperConfig.COURSE_STATE_4) {
                     getHandler.postDelayed(liveModeTask, getModeInterval());
                 }
 
@@ -839,21 +813,21 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         expBusiness.visitTimeHeart(url, liveId, termId, new HttpCallBack() {
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                if (expLiveInfo.getMode() != COURSE_STATE_4) {
+                if (expLiveInfo.getMode() != ExperConfig.COURSE_STATE_4) {
                     getHandler.postDelayed(liveHeartTask, getHeartInterval());
                 }
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                if (expLiveInfo.getMode() != COURSE_STATE_4) {
+                if (expLiveInfo.getMode() != ExperConfig.COURSE_STATE_4) {
                     getHandler.postDelayed(liveHeartTask, getHeartInterval());
                 }
             }
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                if (expLiveInfo.getMode() != COURSE_STATE_4) {
+                if (expLiveInfo.getMode() != ExperConfig.COURSE_STATE_4) {
                     getHandler.postDelayed(liveHeartTask, getHeartInterval());
                 }
             }
@@ -886,6 +860,8 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         getHandler.post(action);
     }
 
+    int lastMode;
+
     /**
      * 课程模式切换（未开始，课前，课中，课后，已结束)
      */
@@ -896,12 +872,22 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         int mode = expLiveInfo.getMode();
         logger.d("onModeChanged execute mode=" + mode);
         experLiveAction.onModeChanged(mode);
-
+        if (lastMode != mode) {
+            ArrayList<LiveBackBaseBll> liveBackBaseBlls = liveBackBll.getLiveBackBaseBlls();
+            for (int i = 0; i < liveBackBaseBlls.size(); i++) {
+                LiveBackBaseBll liveBackBaseBll = liveBackBaseBlls.get(i);
+                if (liveBackBaseBll instanceof ExperModeChange) {
+                    ExperModeChange experModeChange = (ExperModeChange) liveBackBaseBll;
+                    experModeChange.onModeChange(lastMode, mode);
+                }
+            }
+            lastMode = mode;
+        }
         if (videoPlayState.isPlaying) {
             stopPlayer();
         }
 
-        if (mode == COURSE_STATE_1 || mode == COURSE_STATE_3) {
+        if (mode == ExperConfig.COURSE_STATE_1 || mode == ExperConfig.COURSE_STATE_3) {
             String videoPath = getLiveVideo();
             int protocol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
             videoPlayState.isPlaying = true;
@@ -910,7 +896,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
             liveBackPlayVideoFragment.setmDisplayName(playBackEntity.getPlayVideoName());
             liveBackPlayVideoFragment.playPSVideo(videoPath, protocol);
 
-        } else if (mode == COURSE_STATE_2) {
+        } else if (mode == ExperConfig.COURSE_STATE_2) {
 
             sendLogMessage("playVideoFile",
                     "videopath", getBackVideo(),
@@ -926,7 +912,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
             liveBackPlayVideoFragment.setmDisplayName(playBackEntity.getPlayVideoName());
             liveBackPlayVideoFragment.playPSVideo(videoPath, protocol);
         }
-        if (mode == COURSE_STATE_4 && !isStudyShow) {
+        if (mode == ExperConfig.COURSE_STATE_4 && !isStudyShow) {
             initStudyResult();
         }
     }
