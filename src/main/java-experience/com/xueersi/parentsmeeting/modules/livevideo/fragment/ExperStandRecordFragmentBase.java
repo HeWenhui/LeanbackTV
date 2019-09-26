@@ -96,7 +96,7 @@ public class ExperStandRecordFragmentBase extends ExperienceRecordFragmentBase {
         addBusiness(activity);
         liveBackBll.onCreate();
 
-        initBLlView();
+        initBllView();
     }
 
     @Override

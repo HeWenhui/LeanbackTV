@@ -45,10 +45,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BackBusinessCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExperIRCMessBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperLiveAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IrcAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoPlayState;
@@ -205,9 +207,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     protected RelativeLayout bottomContent;
     LiveViewAction liveViewAction;
 
-    private RelativeLayout rlFirstBackgroundView;
-
-    private ImageView ivTeacherNotpresent;
+    private ExperLiveAction experLiveAction;
 
     private ImageView ivLoading;
 
@@ -379,25 +379,6 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         if (liveMediaControllerBottom.getPaddingBottom() != paddingBottom) {
             liveMediaControllerBottom.setPadding(0, 0, 0, paddingBottom);
         }
-
-
-        RelativeLayout.LayoutParams params = null;
-
-        int rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / LiveVideoConfig.VIDEO_WIDTH + (savedWidth - lp.width) / 2);
-        int leftMargin = (savedWidth - lp.width) / 2;
-        int topAndBottom = (savedHeight - lp.height) / 2;
-
-        params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-        params.topMargin = topAndBottom;
-        params.leftMargin = leftMargin;
-        params.rightMargin = rightMargin;
-        rlFirstBackgroundView.setLayoutParams(params);
-
-        params = (RelativeLayout.LayoutParams) ivTeacherNotpresent.getLayoutParams();
-        params.topMargin = topAndBottom;
-        params.leftMargin = leftMargin;
-        params.rightMargin = rightMargin;
-        ivTeacherNotpresent.setLayoutParams(params);
     }
 
     @Override
@@ -429,17 +410,11 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         Runnable action = new Runnable() {
             @Override
             public void run() {
-                if (rlFirstBackgroundView.getVisibility() != View.GONE) {
-                    rlFirstBackgroundView.setVisibility(View.GONE);
-                }
-
-                if (ivTeacherNotpresent.getVisibility() != View.GONE) {
-                    ivTeacherNotpresent.setVisibility(View.GONE);
-                }
+                experLiveAction.onPlayOpenSuccess();
             }
         };
 
-        rlFirstBackgroundView.postDelayed(action, 1500);
+        getHandler.postDelayed(action, 1500);
 
     }
 
@@ -459,41 +434,17 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     @Override
     protected void resultFailed(int arg1, int arg2) {
         Log.i("expTess", "resultFailed  error=" + arg2);
-
+        experLiveAction.resultFailed(videoPlayState, arg1, arg2);
         if (arg2 == MediaErrorInfo.PLAY_COMPLETE) {
-            if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-            }
-
-            if (rlFirstBackgroundView.getVisibility() != View.GONE) {
-                rlFirstBackgroundView.setVisibility(View.GONE);
-            }
-
             if (expLiveInfo.getMode() == COURSE_STATE_1 || expLiveInfo.getMode() == COURSE_STATE_3) {
                 getHandler.postDelayed(playDelayTask, 3 * 1000);
             }
 
         } else if (arg2 == MediaErrorInfo.PSChannelNotExist) {
-
-            if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-            }
-
-            if (rlFirstBackgroundView.getVisibility() != View.GONE) {
-                rlFirstBackgroundView.setVisibility(View.GONE);
-            }
-
             getHandler.postDelayed(playDelayTask, 3 * 1000);
 
         } else {
             if (videoPlayState.isPlaying) {
-                if (ivTeacherNotpresent.getVisibility() != View.GONE) {
-                    ivTeacherNotpresent.setVisibility(View.GONE);
-                }
-
-                if (rlFirstBackgroundView.getVisibility() != View.VISIBLE) {
-                    rlFirstBackgroundView.setVisibility(View.VISIBLE);
-                }
                 changeNextLine();
 //                playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
             }
@@ -654,10 +605,10 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
 
         addBusiness(activity);
         liveBackBll.onCreate();
-        initBLlView();
+        initBllView();
     }
 
-    protected void initBLlView() {
+    protected void initBllView() {
         RelativeLayout rlQuestionContent = findViewById(R.id.rl_course_video_record_question_content);
         liveViewAction = new LiveViewActionIml(activity, mContentView, rlQuestionContent);
         rlQuestionContent.setVisibility(View.VISIBLE);
@@ -757,14 +708,8 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
         bottomContent = findViewById(R.id.rl_course_video_live_question_content);
-        rlFirstBackgroundView = findViewById(R.id.rl_course_video_first_backgroud);
-        ivTeacherNotpresent = findViewById(R.id.iv_course_video_teacher_notpresent);
-        rlFirstBackgroundView.setVisibility(View.GONE);
+
         bottomContent.setVisibility(View.VISIBLE);
-        ivTeacherNotpresent.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-
-        ivTeacherNotpresent = findViewById(R.id.iv_course_video_teacher_notpresent);
 
         ivLoading = findViewById(R.id.iv_course_video_loading_bg);
         tvLoadingHint = findViewById(R.id.tv_course_video_loading_content);
@@ -775,6 +720,11 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         //设置标题，要在setControllerTop方法以后
         createMediaController();
+        createLiveVideoAction();
+    }
+
+    protected void createLiveVideoAction() {
+        experLiveAction = new ExperLiveAction(activity, mContentView, expLiveInfo);
     }
 
     protected void createMediaController() {
@@ -833,7 +783,12 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
                 return new int[]{XESCODE.ExpLive.XEP_MODE_CHANGE};
             }
         });
-        experienceIrcBll.onCreate();
+        LiveMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                experienceIrcBll.onCreate();
+            }
+        });
     }
 
     /**
@@ -939,37 +894,14 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         getHandler.removeCallbacks(playDelayTask);
 
         int mode = expLiveInfo.getMode();
-        Log.i("expTess", "onModeChanged execute mode=" + mode);
-        if (mode == COURSE_STATE_1) {
-            // 课前状态,辅导老师在直播间就播放直播
-            ivTeacherNotpresent.setImageResource(R.drawable.live_course_open_late);
-        } else if (mode == COURSE_STATE_2) {
-            // 课中状态,播放回放视频
-            ivTeacherNotpresent.setImageResource(R.drawable.live_course_wait_teacher);
-        } else if (mode == COURSE_STATE_3) {
-            // 课后状态,辅导老师在直播间就播放直播
-            ivTeacherNotpresent.setImageResource(R.drawable.live_course_wait_teacher);
-        } else if (mode == COURSE_STATE_4) {
-            // 结束状态
-            ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
-        } else {
-            // 等待状态
-            ivTeacherNotpresent.setImageResource(R.drawable.live_course_open_late);
-        }
+        logger.d("onModeChanged execute mode=" + mode);
+        experLiveAction.onModeChanged(mode);
 
         if (videoPlayState.isPlaying) {
             stopPlayer();
         }
 
         if (mode == COURSE_STATE_1 || mode == COURSE_STATE_3) {
-            if (ivTeacherNotpresent.getVisibility() != View.GONE) {
-                ivTeacherNotpresent.setVisibility(View.GONE);
-            }
-
-            if (rlFirstBackgroundView.getVisibility() != View.VISIBLE) {
-                rlFirstBackgroundView.setVisibility(View.VISIBLE);
-            }
-
             String videoPath = getLiveVideo();
             int protocol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
             videoPlayState.isPlaying = true;
@@ -986,15 +918,6 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
                     "status", "none",
                     "loglevel", "1",
                     "functype", "6");
-
-            if (ivTeacherNotpresent.getVisibility() != View.GONE) {
-                ivTeacherNotpresent.setVisibility(View.GONE);
-            }
-
-            if (rlFirstBackgroundView.getVisibility() != View.VISIBLE) {
-                rlFirstBackgroundView.setVisibility(View.VISIBLE);
-            }
-
             String videoPath = getBackVideo();
             int protocol = MediaPlayer.VIDEO_PROTOCOL_MP4;
             videoPlayState.isPlaying = true;
@@ -1002,17 +925,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
             videoPlayState.protocol = protocol;
             liveBackPlayVideoFragment.setmDisplayName(playBackEntity.getPlayVideoName());
             liveBackPlayVideoFragment.playPSVideo(videoPath, protocol);
-        } else {
-
-            if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-            }
-
-            if (rlFirstBackgroundView.getVisibility() != View.GONE) {
-                rlFirstBackgroundView.setVisibility(View.GONE);
-            }
         }
-
         if (mode == COURSE_STATE_4 && !isStudyShow) {
             initStudyResult();
         }

@@ -125,7 +125,7 @@ public class ExperienceIRCBll {
 
         @Override
         public void onStartConnect() {
-            if (mMessageActions != null && mMessageActions.size() > 0) {
+            if (mMessageActions.size() > 0) {
                 for (MessageAction mesAction : mMessageActions) {
                     mesAction.onStartConnect();
                 }

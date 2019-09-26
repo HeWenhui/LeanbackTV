@@ -21,7 +21,7 @@ public class ExperienceActivity extends LiveBackVideoActivityBase {
 
     @Override
     protected LiveBackVideoFragmentBase getFragment() {
-        if (true) {
+        if (false) {
             return new ExperStandRecordFragmentBase();
         }
         return new ExperienceRecordFragmentBase();
