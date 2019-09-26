@@ -140,7 +140,7 @@ public class LiveVideoEnter {
      * @param from       入口
      */
     public static boolean intentToLiveVideoActivity(final Activity context, final String vStuCourseID, final String
-            courseId, final String vSectionID, final int from) {
+            courseId, final String vSectionID, final int from,boolean isBigLive) {
 
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
@@ -154,6 +154,7 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putBoolean("loadAsserts", false);
+        bundle.putBoolean("isBigLive",isBigLive);
         bundle.putInt(ENTER_ROOM_FROM, from);
         LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
 

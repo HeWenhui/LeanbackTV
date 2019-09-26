@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
@@ -226,6 +227,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         boolean isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
+        Log.e("ckTrac","=====>LiveBll2_isBigLive="+isBigLive);
         if (isBigLive) {
             liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId);
         } else {
@@ -510,13 +512,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             mHttpManager.bigLiveEnter(iPlanId, mLiveType, iStuCouId, callBack);
         } else {
             onGetInfoSuccess(getInfo);
-
         }
-
     }
 
 
@@ -1722,7 +1721,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     public void grayBusinessControl(){
         if(grayControl !=null && mGetInfo !=null) {
             LivePluginRequestParam param = new LivePluginRequestParam();
-            param.bizId = 2;
+            param.bizId = mLiveType;
             if (!TextUtils.isEmpty(mGetInfo.getId())) {
                 param.planId = Integer.valueOf(mGetInfo.getId());
             }
