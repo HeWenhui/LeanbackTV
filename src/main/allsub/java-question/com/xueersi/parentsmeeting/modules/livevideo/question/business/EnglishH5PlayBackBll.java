@@ -25,7 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,7 +57,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -379,17 +379,24 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         }
     }
 
-    PauseNotStopVideoIml pauseNotStopVideoIml;
-    /** onPause状态不暂停视频 */
-    AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(false);
+    PauseNotStopVideoInter pauseNotStopVideoIml;
 
+    /** onPause状态不暂停视频 */
+//    AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(false);
     private void setPauseNotStop(boolean pauseNotStop) {
-        onPauseNotStopVideo.set(pauseNotStop);
-        if (pauseNotStopVideoIml == null) {
-            pauseNotStopVideoIml = new PauseNotStopVideoIml(activity, onPauseNotStopVideo);
-        } else {
+//        onPauseNotStopVideo.set(pauseNotStop);
+        pauseNotStopVideoIml = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class);
+//        if (pauseNotStopVideoIml == null) {
+//            pauseNotStopVideoIml = new PauseNotStopVideoIml(activity);
+//        } else {
+        if (pauseNotStopVideoIml != null) {
             pauseNotStopVideoIml.setPause(pauseNotStop);
+        } else {
+//            Map<String, String> map = new HashMap<>();
+//            map.put("ProxUtil_getProxUtil", "PauseNotStopVideoInter.class is null");
+//            UmsAgentManager.umsAgentDebug();
         }
+//        }
     }
 
     /**
