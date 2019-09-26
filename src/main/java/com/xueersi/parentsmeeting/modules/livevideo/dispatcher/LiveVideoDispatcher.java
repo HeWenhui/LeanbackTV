@@ -21,8 +21,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.json.JSONObject;
@@ -164,7 +164,9 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         dispatcherBll.deductStuGolds(sectionEntity, planId, termId);
     }
 
+
     private void startLive(boolean isBiglive) {
+        Log.e("ckTrac","=====>LiveVideoDispatcher_startLive:"+rstatus);
         switch (rstatus) {
             case LiveNewStatus.LIVE_UNBEGIN://未开始
                 break;
@@ -174,23 +176,40 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             case LiveNewStatus.LIVE_WAIT_PLAYBACK://等待回放
             case LiveNewStatus.LIVE_CAN_PLAYBACK: //未完成
             case LiveNewStatus.LIVE_CAN_PLAYBACK_PLUS: { //已完成
-                VideoSectionEntity sectionEntity = new VideoSectionEntity();
-                sectionEntity.setvSectionName(chapterName);
-                sectionEntity.setvChapterName(chapterName);
-                sectionEntity.setvChapterID(planId);
-                sectionEntity.setvSectionID(planId);
-                sectionEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LIVE + "-" + sectionEntity
-                        .getvSectionID());
-                sectionEntity.setvCoursseID(courseId);
-                sectionEntity.setvStuCourseID(vStuCourseId);
-                // 扣除金币
-                dispatcherBll.deductStuGold(sectionEntity, vStuCourseId);
+                if(isBiglive){
+                    //大班整合回放
+                    dispatcherBll.bigLivePlayBack(planId, BigLiveCfg.BIGLIVE_BIZID_LIVE, vStuCourseId, new AbstractBusinessDataCallBack() {
+                        @Override
+                        public void onDataSucess(Object... objData) {
+                            BigLivePlayBackEntity entity = (BigLivePlayBackEntity) objData[0];
+                            if (entity != null) {
+                                enterBigLivePlayBack(entity);
+                            }
+                        }
+                    }, dataLoadEntity);
+
+                }else{
+                    //普通直播回放
+                    VideoSectionEntity sectionEntity = new VideoSectionEntity();
+                    sectionEntity.setvSectionName(chapterName);
+                    sectionEntity.setvChapterName(chapterName);
+                    sectionEntity.setvChapterID(planId);
+                    sectionEntity.setvSectionID(planId);
+                    sectionEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LIVE + "-" + sectionEntity
+                            .getvSectionID());
+                    sectionEntity.setvCoursseID(courseId);
+                    sectionEntity.setvStuCourseID(vStuCourseId);
+                    // 扣除金币
+                    dispatcherBll.deductStuGold(sectionEntity, vStuCourseId);
+                }
             }
             break;
             default:
                 break;
         }
     }
+
+
 
 
     private void startLivePlay(final String vStuCourseID, final String courseId, final String sectionId,
@@ -235,12 +254,13 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             startLivePlayActivity(liveId, isBigLive);
         } else {
             if (isBigLive) {
-                dispatcherBll.getBigLivePublic(planId, "2", "0", new AbstractBusinessDataCallBack() {
+                dispatcherBll.getBigLivePublic(planId, BigLiveCfg.BIGLIVE_BIZID_LECTURE,
+                        "0", new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
                         BigLivePlayBackEntity entity = (BigLivePlayBackEntity) objData[0];
                         if (entity != null) {
-                            enterBigLivePlayBack(entity);
+                            enterBigLiveLecturePlayBack(entity);
                         }
                     }
                 }, dataLoadEntity);
@@ -329,11 +349,11 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
 
     /**
-     * 进度大班整合 回放
+     * 进度大班整合讲座 回放
      *
      * @param entity
      */
-    private void enterBigLivePlayBack(BigLivePlayBackEntity entity) {
+    private void enterBigLiveLecturePlayBack(BigLivePlayBackEntity entity) {
 
         ShareDataManager dataManager = ShareDataManager.getInstance();
         VideoLivePlayBackEntity videoEntity = new VideoLivePlayBackEntity();
@@ -384,6 +404,61 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         //LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
         LiveVideoEnter.intentTo(activity, bundle, "PublicLiveDetailActivity");
     }
+
+
+    /**
+     * 进入大班整合普通回放
+     * @param entity
+     */
+    private void enterBigLivePlayBack(BigLivePlayBackEntity entity) {
+        ShareDataManager dataManager = ShareDataManager.getInstance();
+        VideoLivePlayBackEntity videoEntity = new VideoLivePlayBackEntity();
+        videoEntity.setCourseId(entity.getPlanInfo().getId());
+        videoEntity.setCourseName(entity.getPlanInfo().getName());
+        videoEntity.setPlayVideoId(entity.getPlanInfo().getId());
+        videoEntity.setPlayVideoName(entity.getPlanInfo().getName());
+
+        if (entity.getConfigs() != null) {
+            videoEntity.setVideoPath(entity.getConfigs().getVideoFile());
+            videoEntity.setGetChatRecordUrl(entity.getConfigs().getGetChatRecordUrl());
+            videoEntity.setGetMetadataUrl(entity.getConfigs().getGetMetadataUrl());
+            videoEntity.setInitModuleUrl(entity.getConfigs().getInitModuleUrl());
+        }
+
+        if (entity.getPlanInfo().getSubjectIds() != null && entity.getPlanInfo().getSubjectIds().size() > 0) {
+            videoEntity.setSubjectId(entity.getPlanInfo().getSubjectIds().get(0));
+        }
+        if (entity.getPlanInfo().getGradeIds() != null && entity.getPlanInfo().getGradeIds().size() > 0) {
+            videoEntity.setGradId(entity.getPlanInfo().getGradeIds().get(0));
+        }
+
+        if (entity.getStuLiveInfo() != null) {
+            videoEntity.setClassId(entity.getStuLiveInfo().getClassId());
+        }
+
+        videoEntity.setBigLive(true);
+        if (entity.getPlanInfo() != null) {
+            videoEntity.setsTime(entity.getPlanInfo().getsTime());
+            videoEntity.seteTime(entity.getPlanInfo().geteTIme());
+        }
+        videoEntity.setvCourseSendPlayVideoTime(dataManager.getInt(LocalCourseConfig.SENDPLAYVIDEOTIME, 180,
+                SHAREDATA_USER));
+        videoEntity.setVideoCacheKey(entity.getConfigs().getVideoPath());
+
+        videoEntity.setLiveId(entity.getPlanInfo().getId());
+        videoEntity.setvLivePlayBackType(LocalCourseConfig.LIVETYPE_LIVE);
+        videoEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LIVE + "-" + entity.getPlanInfo().getId());
+        //大班整合默认 走新ijk
+        MediaPlayer.setIsNewIJK(true);
+        updatePsInfo(entity);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("videoliveplayback", videoEntity);
+        bundle.putInt("type", LocalCourseConfig.LIVETYPE_LIVE);
+        bundle.putBoolean("isBigLive", true);
+        LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
+    }
+
+
 
 
     /**

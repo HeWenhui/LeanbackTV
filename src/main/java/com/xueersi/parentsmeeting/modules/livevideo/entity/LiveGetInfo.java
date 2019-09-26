@@ -338,7 +338,16 @@ public class LiveGetInfo {
     private String getChatRecordUrl;
     /**扫点信息接口**/
     private String getMetadataUrl;
+    /**大班整合-bizId*/
+    private int bizId;
 
+    public int getBizId() {
+        return bizId;
+    }
+
+    public void setBizId(int bizId) {
+        this.bizId = bizId;
+    }
 
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
