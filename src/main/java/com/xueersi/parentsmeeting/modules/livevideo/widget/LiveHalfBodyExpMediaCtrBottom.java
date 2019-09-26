@@ -67,9 +67,8 @@ public class LiveHalfBodyExpMediaCtrBottom extends BaseLiveMediaControllerBottom
     /**
      * 根据不同直播流切换不同 底部控制栏
      * @param mode
-     * @param getInfo
      */
-    public void onModeChange(String mode,LiveGetInfo getInfo){
+    public void onModeChange(String mode){
         this.mode = mode;
        // removeAllViews();
         removeAllViewsInLayout();

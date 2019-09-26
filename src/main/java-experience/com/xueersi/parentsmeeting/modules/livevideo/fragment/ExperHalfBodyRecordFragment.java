@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperHalfBodyLiveAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExperStandLiveAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
@@ -50,8 +51,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ExperHalfBodyRecordFragment extends ExperienceRecordFragmentBase {
     private String TAG = "ExperHalfBodyRecordFragment";
@@ -64,10 +63,10 @@ public class ExperHalfBodyRecordFragment extends ExperienceRecordFragmentBase {
         mLayoutVideo = R.layout.frag_exper_half_live_back_video;
     }
 
-//    @Override
-//    protected void createLiveVideoAction() {
-//        experLiveAction=new ExperStandLiveAction(activity,mContentView,expLiveInfo);
-//    }
+    @Override
+    protected void createLiveVideoAction() {
+        experLiveAction=new ExperHalfBodyLiveAction(activity,mContentView,expLiveInfo);
+    }
 
     @Override
     protected void initlizeData() {

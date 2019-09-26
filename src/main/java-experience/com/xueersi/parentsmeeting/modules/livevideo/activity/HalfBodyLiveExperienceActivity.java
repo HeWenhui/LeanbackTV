@@ -121,7 +121,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         .MediaChildViewClick {
     private String TAG = "HalfBodyLiveExperienceActivity";
     LiveBackBll liveBackBll;
-    private RelativeLayout rlLiveMessageContent;
     private LiveVideoSAConfig liveVideoSAConfig;
     /**
      * 横屏聊天信息
@@ -405,6 +404,10 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         // 加载横屏时互动题的列表布局
         rlQuestionContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_contents);
         liveViewAction = new LiveViewActionIml(this, null, rlQuestionContent);
+        LiveHalfBodyExpMediaCtrBottom mediaControllerBottom = new LiveHalfBodyExpMediaCtrBottom(this,
+                mMediaController, this);
+        ProxUtil.getProxUtil().put(this, BaseLiveMediaControllerBottom.class, mediaControllerBottom);
+        liveMediaControllerBottom = mediaControllerBottom;
         initAllBll();
         loadData();
         return true;
@@ -632,19 +635,12 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
-        LiveHalfBodyExpMediaCtrBottom mediaControllerBottom = new LiveHalfBodyExpMediaCtrBottom(this,
-                mMediaController, this);
-        mMediaController.setControllerBottom(mediaControllerBottom, false);
+
+        mMediaController.setControllerBottom(liveMediaControllerBottom, false);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
         ivTeacherNotpresent.setScaleType(ImageView.ScaleType.CENTER_CROP);
         bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
-
-        // 预先添加聊天区域 父布局
-        rlLiveMessageContent = new RelativeLayout(this);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlLiveMessageContent, params);
 
         ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
         updateLoadingImage();
@@ -655,9 +651,9 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        liveMediaControllerBottom = mediaControllerBottom;
         // 直接设置为 主讲模式
-        mediaControllerBottom.onModeChange(LiveTopic.MODE_CLASS, mGetInfo);
+        LiveHalfBodyExpMediaCtrBottom mediaControllerBottom = (LiveHalfBodyExpMediaCtrBottom) liveMediaControllerBottom;
+        mediaControllerBottom.onModeChange(LiveTopic.MODE_CLASS);
         bottomContent.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
@@ -971,7 +967,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     }
 
 
-
     private VideoQuestionEntity getOpenChatEntity(int playPosition) {
         return null;
     }
@@ -1040,6 +1035,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         if (experienceIRCBll != null) {
             experienceIRCBll.onDestory();
         }
+        ProxUtil.getProxUtil().clear(this);
     }
 
 

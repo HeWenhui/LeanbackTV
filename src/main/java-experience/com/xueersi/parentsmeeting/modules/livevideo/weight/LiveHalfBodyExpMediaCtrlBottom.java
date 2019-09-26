@@ -66,7 +66,6 @@ public class LiveHalfBodyExpMediaCtrlBottom extends LiveMediaControllerBottom {
         return view;
     }
 
-
     /**
      * 根据不同直播流切换不同 底部控制栏
      *
@@ -74,6 +73,7 @@ public class LiveHalfBodyExpMediaCtrlBottom extends LiveMediaControllerBottom {
      */
     public void onModeChange(int mode) {
         this.mode = mode;
+        logger.d("onModeChange:mode=" + mode);
         // removeAllViews();
         removeAllViewsInLayout();
         inflateLayout();

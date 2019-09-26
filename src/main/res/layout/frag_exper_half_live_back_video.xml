@@ -42,16 +42,14 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical"
-                android:paddingTop="10dp"
-                android:visibility="gone">
+                android:paddingTop="10dp">
 
                 <ImageView
                     android:id="@id/iv_course_video_loading_bg"
                     android:layout_width="240dp"
                     android:layout_height="65dp"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/livevideo_cy_moren_logo_normal"
-                    android:visibility="gone" />
+                    android:src="@drawable/livevideo_cy_moren_logo_normal" />
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
