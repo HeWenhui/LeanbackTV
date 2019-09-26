@@ -27,7 +27,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SimpleLiveBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
@@ -131,19 +133,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private Long timer = 0L;
     private static final Object mIjkLock = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
-
-    /**
-     * 视频宽度
-     */
-    public static final float VIDEO_WIDTH = 1280f;
-    /**
-     * 视频高度
-     */
-    public static final float VIDEO_HEIGHT = 720f;
-    /**
-     * 视频宽高比
-     */
-    public static final float VIDEO_RATIO = VIDEO_WIDTH / VIDEO_HEIGHT;
     private Long startTime;
     private Long mTotaltime;
     /**
@@ -174,7 +163,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
      * 播放异常统计开始时间
      */
     private Long errorPlayTime;
-    private int mNetWorkType;
     private LiveGetInfo mGetInfo;
     private LiveHttpManager mHttpManager;
     /**
@@ -191,7 +179,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
      * 当前聊天 状态是否初始化完成了
      */
     private boolean isChatSateInited = false;
-    private List<VideoQuestionEntity> roomChatEvent;
     /**
      * 视频地址列表
      */
@@ -211,7 +198,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
      */
     private int mPattern;
 
-    private IIRCMessage mIRCMessage;
+    ExperienceIRCBll experienceIRCBll;
     private final String IRC_CHANNEL_PREFIX = "#4L";
     /** 是否使用新IRC SDK*/
 //    private boolean isNewIRC = false;
@@ -225,7 +212,12 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         public void run() {
             if (isPlay && !isFinishing()) {
                 // 上传心跳时间
-                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), 60L);
+                mHttpManager.uploadExperiencePlayingTime(mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), 60L, new HttpCallBack(false) {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        logger.e("uploadexperiencetime:" + responseEntity.getJsonObject());
+                    }
+                });
                 mHandler.postDelayed(this, mPlayDurTime);
             }
         }
@@ -388,7 +380,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     static int times = -1;
     long createTime;
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
-    private LiveBll mLiveBll;
     private XesAtomicInteger peopleCount = new XesAtomicInteger(0);
     private PopupWindow mWindow;
 
@@ -459,7 +450,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private void connectChatServer() {
 
         //避免多次 连接
-        if (mIRCMessage != null && mIRCMessage.isConnected()) {
+        if (experienceIRCBll != null) {
             return;
         }
         mGetInfo = getRoomInitData();
@@ -468,13 +459,12 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 + expChatId + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
-        mNetWorkType = NetWorkHelper.getNetWorkState(this);
-
-        mIRCMessage = new NewIRCMessage(this,chatRoomUid, mGetInfo.getId(),"", channel);
-
-        mIRCMessage.setCallback(mIRCcallback);
-        mIRCMessage.create();
-
+        experienceIRCBll = new ExperienceIRCBll(this, expChatId, mGetInfo);
+        experienceIRCBll.onCreate(channel, chatRoomUid);
+        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+        for (LiveBackBaseBll businessBll : businessBlls) {
+            experienceIRCBll.addBll(businessBll);
+        }
     }
 
     private final IRCCallback mIRCcallback = new IRCCallback() {
@@ -610,70 +600,16 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         }
     };
 
-
-    /**
-     * 用户是否属于某个分队
-     */
-    private boolean haveTeam = false;
-
-
-    private class MsgSendListener implements LiveBll.SendMsgListener {
-
-        @Override
-        public void onMessageSend(String msg, String targetName) {
-            sendMessage(msg, targetName);
-        }
-    }
-
-    /**
-     * 发生聊天消息
-     */
-    public void sendMessage(String msg, String name) {
-        logger.e("====>sendMessage:" + msg + ":" + name + ":" + mGetInfo.getStuName());
-        if (mLiveBll.openchat()) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("type", "" + XESCODE.TEACHER_MESSAGE);
-                if (StringUtils.isEmpty(name)) {
-                    name = mGetInfo.getStuName();
-                }
-                jsonObject.put("name", name);
-                jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
-                jsonObject.put("msg", msg);
-                if (haveTeam) {
-                    LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-                    String teamId = studentLiveInfo.getTeamId();
-                    jsonObject.put("from", "android_" + teamId);
-                    jsonObject.put("to", teamId);
-                }
-                lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity.getChapterId(),
-                        1);
-                mIRCMessage.sendMessage(jsonObject.toString());
-
-
-            } catch (Exception e) {
-                UmsAgentManager.umsAgentException(ContextManager.getContext(), "ExperienceLiveVideoActivity " +
-                        "sendMessage", e);
-            }
-        }
-    }
-
-
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
         logger.i("onEvent:netWorkType=" + event.netWorkType);
-        mNetWorkType = event.netWorkType;
-
-        if (mIRCMessage != null) {
-            mIRCMessage.onNetWorkChange(mNetWorkType);
+        if (experienceIRCBll != null) {
+            experienceIRCBll.onNetWorkChange(event);
         }
     }
 
-
     private void initAllBll() {
         liveBackBll = new LiveBackBll(this, mVideoEntity);
-        mLiveBll = new LiveBll(this, mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), EXP_LIVE_TYPE, 0);
-        mLiveBll.setSendMsgListener(new MsgSendListener());
         mHttpManager = new LiveHttpManager(mContext);
         isArts = getIntent().getIntExtra("isArts", 0);
         if (isArts == 1) {
@@ -726,27 +662,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void initHalfBodyLiveMsgPager(RelativeLayout bottomContent) {
-
-        HalfBodyExpLiveMsgPager msgPager = new HalfBodyExpLiveMsgPager(this,
-                liveMediaControllerBottom,
-                liveMessageLandEntities, null);
-
-        mLiveMessagePager = msgPager;
-        // 关联聊天人数
-        msgPager.setPeopleCount(peopleCount);
-        msgPager.setIrcState(mLiveBll);
-        msgPager.onModeChange(mLiveBll.getMode());
-        msgPager.setIsRegister(true);
-        msgPager.setGetInfo(mGetInfo);
-        // 03.22 设置统计日志的公共参数
-        msgPager.setLiveTermId(mVideoEntity.getLiveId(), mVideoEntity.getChapterId());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        rlLiveMessageContent.addView(msgPager.getRootView(), params);
-    }
-
-
     private void loadData() {
 //        mRedPacketDialog = new RedPacketAlertDialog(this, baseApplication, false);
         lectureLivePlayBackBll = new LectureLivePlayBackBll(HalfBodyLiveExperienceActivity.this, "");
@@ -793,19 +708,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         expChatId = getIntent().getStringExtra("expChatId");
         sex = getIntent().getStringExtra("sex");
         mPattern = getIntent().getIntExtra("pattern", 0);
-        List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
-        //初始化 老师开关聊天事件
-        if (lstVideoQuestion != null && lstVideoQuestion.size() > 0) {
-            roomChatEvent = new ArrayList<VideoQuestionEntity>();
-            VideoQuestionEntity entity = null;
-            for (int i = 0; i < lstVideoQuestion.size(); i++) {
-                entity = lstVideoQuestion.get(i);
-                if (LocalCourseConfig.CATEGORY_OPEN_CHAT == entity.getvCategory() || LocalCourseConfig
-                        .CATEGORY_CLOSE_CHAT == entity.getvCategory()) {
-                    roomChatEvent.add(lstVideoQuestion.get(i));
-                }
-            }
-        }
     }
 
 
@@ -884,7 +786,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
             if (baseLiveMediaControllerTop == null) {
                 connectChatServer();
                 initHalfBodyLiveUi();
-                initHalfBodyLiveMsgPager(bottomContent);
                 //preLoadCourseWare();
             }
             if (firstTime) {
@@ -1067,74 +968,8 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
             return;
         }
         liveBackBll.scanQuestion(position);
-
-        if (roomChatEvent != null && roomChatEvent.size() > 0) {
-            for (int i = 0; i < roomChatEvent.size(); i++) {
-                // 处理聊天事件 开闭事件
-                handleChatEvent(TimeUtils.gennerSecond(position), roomChatEvent.get(i));
-            }
-        }
     }
 
-    private int lastCheckTime = 0;
-    private static final int MAX_CHECK_TIME_RANG = 2;
-    private boolean isRoomChatAvailable = true;
-
-    private void handleChatEvent(int playPosition, VideoQuestionEntity chatEntity) {
-        //出现视频快进
-        if ((playPosition - lastCheckTime) >= MAX_CHECK_TIME_RANG || !isChatSateInited) {
-            boolean roomChatAvalible = recoverChatState(playPosition);
-            isChatSateInited = true;
-        } else {
-            if (chatEntity != null) {
-                //关闭聊天
-                if (LocalCourseConfig.CATEGORY_CLOSE_CHAT == chatEntity.getvCategory()) {
-                    if (playPosition == chatEntity.getvQuestionInsretTime()) {
-                        mLiveMessagePager.onopenchat(false, "in-class", true);
-                        mLiveBll.setChatOpen(false);
-                        isRoomChatAvailable = false;
-                    }
-                } else if (LocalCourseConfig.CATEGORY_OPEN_CHAT == chatEntity.getvCategory()) {
-                    // 开启聊天
-                    if (playPosition == chatEntity.getvQuestionInsretTime()) {
-                        mLiveMessagePager.onopenchat(true, "in-class", true);
-                        mLiveBll.setChatOpen(true);
-                        isRoomChatAvailable = true;
-                    }
-                }
-            }
-        }
-        lastCheckTime = playPosition;
-
-    }
-
-    /**
-     * 当进入直播间 或者 发生 视频快进的情况时
-     * 恢复聊天状态
-     */
-    private boolean recoverChatState(int playPosition) {
-        List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
-        boolean roomChatAvalible = true;
-        if (lstVideoQuestion != null && lstVideoQuestion.size() > 0) {
-            for (VideoQuestionEntity entity : lstVideoQuestion) {
-                if (entity.getvQuestionInsretTime() <= playPosition) {
-                    if (entity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
-                        roomChatAvalible = true;
-                    } else if (entity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
-                        roomChatAvalible = false;
-                    }
-                }
-            }
-        }
-        if (!roomChatAvalible) {
-            mLiveMessagePager.onopenchat(false, "in-class", isRoomChatAvailable);
-            mLiveBll.setChatOpen(false);
-        } else {
-            mLiveMessagePager.onopenchat(true, "in-class", !isRoomChatAvailable);
-            mLiveBll.setChatOpen(true);
-        }
-        return roomChatAvalible;
-    }
 
 
     private VideoQuestionEntity getOpenChatEntity(int playPosition) {
@@ -1202,15 +1037,8 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         LiveAppBll.getInstance().unRegisterAppEvent(this);
         liveBackBll.onDestroy();
         mLiveMessagePager = null;
-        if (mIRCMessage != null) {
-            mIRCMessage.setCallback(null);
-            new Thread() {
-                @Override
-                public void run() {
-                    super.run();
-                    mIRCMessage.destory();
-                }
-            }.start();
+        if (experienceIRCBll != null) {
+            experienceIRCBll.onDestory();
         }
     }
 

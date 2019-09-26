@@ -96,10 +96,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>
  * Created by yuanwei2 on 2019/5/23.
  */
-
+@Deprecated
 public class ExperienceThreeScreenActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom.MediaChildViewClick, ViewTreeObserver.OnGlobalLayoutListener {
     private String TAG = "ExperienceThreeScreenActivity";
 
+    @Deprecated
     public static void intentTo(Activity context, Bundle bundle, String where, int requestCode) {
         Intent intent = new Intent(context, ExperienceThreeScreenActivity.class);
         intent.putExtras(bundle);

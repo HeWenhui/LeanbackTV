@@ -120,6 +120,12 @@ public class ExperienceIRCBll {
         mIRCMessage.create();
     }
 
+    public void onCreate(String channel, String chatRoomUid) {
+        mIRCMessage = new NewIRCMessage(context, chatRoomUid, mGetInfo.getId(), "", channel);
+        mIRCMessage.setCallback(mIRCcallback);
+        mIRCMessage.create();
+    }
+
     // IRC 回调处理
     private final IRCCallback mIRCcallback = new IRCCallback() {
 
