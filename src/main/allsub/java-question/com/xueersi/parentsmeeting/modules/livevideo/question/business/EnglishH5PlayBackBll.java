@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfi
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -395,6 +396,11 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 //            Map<String, String> map = new HashMap<>();
 //            map.put("ProxUtil_getProxUtil", "PauseNotStopVideoInter.class is null");
 //            UmsAgentManager.umsAgentDebug();
+        }
+        //声音设置为0
+        BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
+        if (videoFragment != null) {
+            videoFragment.setVolume(0, 0);
         }
 //        }
     }
