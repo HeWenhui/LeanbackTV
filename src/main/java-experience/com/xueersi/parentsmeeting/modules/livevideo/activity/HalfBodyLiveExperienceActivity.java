@@ -31,6 +31,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.SimpleLiveBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -128,7 +129,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
     private Handler scanHandler;
     private List<ExPerienceLiveMessage.LiveExMsg> mMsgs;
-    private BaseLiveMessagePager mLiveMessagePager;
     private Long timer = 0L;
     private static final Object mIjkLock = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
@@ -403,9 +403,11 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
         // 加载横屏时互动题的列表布局
         rlQuestionContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_contents);
+        rlQuestionContent.setVisibility(View.VISIBLE);
         liveViewAction = new LiveViewActionIml(this, null, rlQuestionContent);
         LiveHalfBodyExpMediaCtrBottom mediaControllerBottom = new LiveHalfBodyExpMediaCtrBottom(this,
                 mMediaController, this);
+        mediaControllerBottom.onModeChange(LiveTopic.MODE_CLASS);
         ProxUtil.getProxUtil().put(this, BaseLiveMediaControllerBottom.class, mediaControllerBottom);
         liveMediaControllerBottom = mediaControllerBottom;
         initAllBll();
@@ -470,139 +472,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         }
     }
 
-    private final IRCCallback mIRCcallback = new IRCCallback() {
-
-        @Override
-        public void onStartConnect() {
-            logger.e("=====>onStartConnect");
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onStartConnect();
-            }
-        }
-
-        @Override
-        public void onConnect(IRCConnection connection) {
-            logger.e("=====>onConnect");
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onConnect();
-            }
-        }
-
-        @Override
-        public void onRegister() {
-            logger.e("=====>onRegister");
-
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onRegister();
-            }
-        }
-
-        @Override
-        public void onDisconnect(IRCConnection connection, boolean isQuitting) {
-            logger.e("=====>onDisconnect");
-
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onDisconnect();
-            }
-
-        }
-
-        @Override
-        public void onMessage(String target, String sender, String login, String hostname, String text) {
-            logger.e("=====>onMessage");
-
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onMessage(target, sender, login, hostname, text, "");
-            }
-        }
-
-        @Override
-        public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
-                                     String message) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onPrivateMessage:isSelf=" + isSelf);
-            if (isSelf && "T".equals(message)) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        XESToastUtils.showToast(HalfBodyLiveExperienceActivity.this, "您的帐号已在其他设备登录，请重新进入直播间");
-                        Intent intent = new Intent();
-                        intent.putExtra("msg", "您的帐号已在其他设备登录，请重新进入直播间");
-                        setResult(ShareBusinessConfig.LIVE_USER_KICK, intent);
-                        finish();
-                    }
-                });
-            } else {
-                if (mLiveMessagePager != null) {
-                    mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
-                }
-            }
-        }
-
-        @Override
-        public void onChannelInfo(String channel, int userCount, String topic) {
-            logger.e("=====>onChannelInfo");
-
-        }
-
-        @Override
-        public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
-                notice, String channelId) {
-            logger.e("=====>onNotice");
-        }
-
-        @Override
-        public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
-            logger.e("=====>onTopic");
-
-        }
-
-        @Override
-        public void onUserList(String channel, User[] users) {
-            logger.e("=====>onUserList start:" + peopleCount);
-            peopleCount.set(users.length, new Exception());
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onUserList(channel, users);
-            }
-            logger.e("=====>onUserList end:" + peopleCount);
-        }
-
-        @Override
-        public void onJoin(String target, String sender, String login, String hostname) {
-
-            logger.e("=====>onJoin start:" + peopleCount);
-            peopleCount.set(peopleCount.get() + 1, new Exception(sender));
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onJoin(target, sender, login, hostname);
-            }
-            logger.e("=====>onJoin end:" + peopleCount);
-
-        }
-
-        @Override
-        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String
-                channel) {
-            logger.e("=====>onQuit start:" + peopleCount);
-            peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
-            }
-            logger.e("=====>onQuit end:" + peopleCount);
-        }
-
-        @Override
-        public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String
-                recipientNick, String reason) {
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onKick(target, kickerNick, kickerLogin, kickerHostname, recipientNick, reason);
-            }
-        }
-
-        @Override
-        public void onUnknown(String line) {
-
-        }
-    };
-
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
         logger.i("onEvent:netWorkType=" + event.netWorkType);
@@ -648,13 +517,10 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         tvLoadingHint.setText("获取课程信息");
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        // 直接设置为 主讲模式
-        LiveHalfBodyExpMediaCtrBottom mediaControllerBottom = (LiveHalfBodyExpMediaCtrBottom) liveMediaControllerBottom;
-        mediaControllerBottom.onModeChange(LiveTopic.MODE_CLASS);
-        bottomContent.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
@@ -1031,7 +897,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_EXIT, logHashMap.getData());
         LiveAppBll.getInstance().unRegisterAppEvent(this);
         liveBackBll.onDestroy();
-        mLiveMessagePager = null;
         if (experienceIRCBll != null) {
             experienceIRCBll.onDestory();
         }

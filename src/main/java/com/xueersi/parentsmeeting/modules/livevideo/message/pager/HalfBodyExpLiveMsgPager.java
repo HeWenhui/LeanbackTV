@@ -39,6 +39,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.HalfBodyLiveCommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -178,7 +180,7 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
 
                         @Override
                         public void onSHow() {
-
+                            logger.d("onSHow");
                         }
 
                         @Override
@@ -204,6 +206,20 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
         btMesOpen.setBackgroundResource(getMsgBtnResId());
         btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
         btMsgCommon.setBackgroundResource(getHotwordBtnResId());
+        if (liveMediaControllerBottom instanceof LiveUIStateReg) {
+            LiveUIStateReg liveUIStateReg = (LiveUIStateReg) liveMediaControllerBottom;
+            liveUIStateReg.addLiveUIStateListener(new LiveUIStateListener() {
+                @Override
+                public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
+                    logger.d("onViewChange");
+                    btMesOpen = liveMediaControllerBottom.getBtMesOpen();
+                    btMesOpen.setBackgroundResource(getMsgBtnResId());
+                    btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
+                    btMsgCommon.setBackgroundResource(getHotwordBtnResId());
+                    initBottomListener();
+                }
+            });
+        }
     }
 
     /**
@@ -254,9 +270,7 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
     }
 
 
-    @Override
-    public void initListener() {
-
+    private void initBottomListener() {
         // 视频底部控制栏 发言按钮
         btMesOpen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -266,8 +280,35 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
                 KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
             }
         });
+        // 底部控制栏中的热词按钮 点击事件
+        btMsgCommon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                LiveMediaController controller = liveMediaControllerBottom.getController();
+                controller.show();
+                if (mCommonWordWindow == null) {
+                    initCommonWord();
+                }
+                if (mCommonWordWindow.isShowing()) {
+                    mCommonWordWindow.dismiss();
+                } else {
+                    if (mPopWinOffX == 0) {
+                        int[] location = new int[2];
+                        btMsgCommon.getLocationInWindow(location);
+                        int offX = location[0] - (mCommonWordWindow.getContentView().getMeasuredWidth() - btMsgCommon
+                                .getMeasuredWidth()) / 2;
+                        int offY = location[1] - mCommonWordWindow.getContentView().getMeasuredHeight();
+                        mPopWinOffX = offX;
+                        mPopWinOffY = offY - SizeUtils.Dp2Px(mContext, 5);
+                    }
+                    mCommonWordWindow.showAtLocation(btMsgCommon, Gravity.NO_GRAVITY, mPopWinOffX, mPopWinOffY);
+                }
+            }
+        });
+    }
 
-
+    @Override
+    public void initListener() {
         //聊天输入框
         etMessageContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -373,32 +414,7 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
         //默认显示顶部状态栏
         LiveMediaController controller = liveMediaControllerBottom.getController();
         controller.show();
-
-        // 底部控制栏中的热词按钮 点击事件
-        btMsgCommon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                LiveMediaController controller = liveMediaControllerBottom.getController();
-                controller.show();
-                if (mCommonWordWindow == null) {
-                    initCommonWord();
-                }
-                if (mCommonWordWindow.isShowing()) {
-                    mCommonWordWindow.dismiss();
-                } else {
-                    if (mPopWinOffX == 0) {
-                        int[] location = new int[2];
-                        btMsgCommon.getLocationInWindow(location);
-                        int offX = location[0] - (mCommonWordWindow.getContentView().getMeasuredWidth() - btMsgCommon
-                                .getMeasuredWidth()) / 2;
-                        int offY = location[1] - mCommonWordWindow.getContentView().getMeasuredHeight();
-                        mPopWinOffX = offX;
-                        mPopWinOffY = offY - SizeUtils.Dp2Px(mContext, 5);
-                    }
-                    mCommonWordWindow.showAtLocation(btMsgCommon, Gravity.NO_GRAVITY, mPopWinOffX, mPopWinOffY);
-                }
-            }
-        });
+        initBottomListener();
     }
 
     @Override

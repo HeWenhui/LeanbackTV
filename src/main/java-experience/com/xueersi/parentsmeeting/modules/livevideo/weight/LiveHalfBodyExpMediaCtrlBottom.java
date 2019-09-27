@@ -7,6 +7,7 @@ import android.view.View;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ExperConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
  * version 1.0
  */
 
-public class LiveHalfBodyExpMediaCtrlBottom extends LiveMediaControllerBottom {
+public class LiveHalfBodyExpMediaCtrlBottom extends LiveMediaControllerBottom implements LiveUIStateReg {
 
     private int mode = ExperConfig.COURSE_STATE_0;
     private static final String TAG = "LiveHalfBodyExpMediaCtrBottom";

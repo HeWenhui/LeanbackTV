@@ -51,7 +51,6 @@ public class ExperHalfbodyIRCMessBll extends LiveBackBaseBll implements MessageA
         super(activity, liveBackBll);
     }
 
-    @Override
     public void initView() {
         super.initView();
         mExpIrcState = new ExperienceIrcState(mContext, liveGetInfo, liveGetInfo.getLiveTopic(), mVideoEntity, getmHttpManager());
@@ -71,7 +70,7 @@ public class ExperHalfbodyIRCMessBll extends LiveBackBaseBll implements MessageA
         msgPager.setLiveTermId(mVideoEntity.getLiveId(), mVideoEntity.getChapterId());
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        getLiveViewAction().addView(msgPager.getRootView(), params);
+        getLiveViewAction().addView(LiveVideoLevel.LEVEL_MES, msgPager.getRootView(), params);
     }
 
 
