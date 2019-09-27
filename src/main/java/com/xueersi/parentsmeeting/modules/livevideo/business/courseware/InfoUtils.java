@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ZipProg;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -115,7 +116,6 @@ public class InfoUtils {
             LiveCrashReport.postCatchedException(TAG, e);
             return false;
         }
-
     }
 
     /**
@@ -193,4 +193,20 @@ public class InfoUtils {
     }
 
 
+    public static class Progresses implements ZipProg {
+        @Override
+        public void onProgressUpdate(Integer... values) {
+
+        }
+
+        @Override
+        public void onPostExecute(Exception exception) {
+
+        }
+
+        @Override
+        public void setMax(int max) {
+
+        }
+    }
 }

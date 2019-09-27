@@ -410,8 +410,8 @@ public class CoursewarePreload {
         cdnLength.set(cdns.size());
         ipLength.set(newIPs.size());
 
-//        downloadResources(resources, cdns, newIPs);
-//        exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
+        downloadResources(resources, cdns, newIPs);
+        exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
 
         execDownLoadNb(InfoUtils.mergeNbList(courseWareInfos), cdns, newIPs);
         //下载Nb 预加载资源
@@ -873,103 +873,6 @@ public class CoursewarePreload {
         }
     }
 
-    /**
-     * 下载Nb 加试实验资源
-     *
-     * @param coursewareInfo
-     * @param cdns
-     * @param ips
-     */
-    private void downLoadNbResource(CoursewareInfoEntity.NbCoursewareInfo coursewareInfo, List<String> cdns,
-                                    List<String> ips) {
-        if (coursewareInfo == null) {
-            return;
-        }
-        File cacheDir = LiveCacheFile.geCacheFile(mContext,
-                NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
-        if (!cacheDir.exists()) {
-            cacheDir.mkdirs();
-        }
-
-        logger.i("nbresource download ");
-        String tempIP = ips.get(0);
-        String ip;
-        boolean isIp = false;
-        //拼接ip
-        if (tempIP.contains("http") || tempIP.contains("https")) {
-            ip = tempIP;
-            isIp = false;
-        } else {
-            ip = "http://" + tempIP;
-            isIp = true;
-        }
-        int cdnIndex = 0;
-        int subIndex = cdns.get(cdnIndex).indexOf("/") + 2;
-        String cdn = cdns.get(cdnIndex).substring(subIndex);
-
-        String url = coursewareInfo.getResourceUrl();
-        // 以md5 值作为 文件名
-        String fileName = coursewareInfo.getResourceMd5() + ".zip";
-        File save = new File(cacheDir, fileName);
-        if (!InfoUtils.fileIsExists(save.getAbsolutePath())) {
-            DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(
-                    ip + url,
-                    cacheDir.getAbsolutePath(),
-                    fileName + ".temp",
-                    coursewareInfo.getResourceMd5());
-            if (isIp) {
-                downLoadInfo.setHost(cdn);
-            }
-            //设置解压路径
-            File unZipDir = new File(cacheDir, coursewareInfo.getResourceMd5());
-            if (!unZipDir.exists()) {
-                unZipDir.mkdirs();
-            }
-
-            PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager
-                    .DownLoadInfoAndListener(
-                    downLoadInfo,
-
-                    new ZipDownloadListener(
-                            cacheDir,
-                            unZipDir,
-                            fileName,
-                            ips,
-                            cdns,
-                            url,
-                            coursewareInfo.getResourceMd5(),
-                            new AtomicInteger(0),
-                            "",
-                            NbCourseWareConfig.RESOURSE_TYPE_NB),
-
-                    "");
-            if (!isPrecise.get()) {
-                //Log.e("NbDownLoad","=====>downLoadNbResource addToAutoDownloadPool");
-                PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
-            } else {
-                PreLoadDownLoaderManager.addUrgentInfo(infoListener);
-            }
-
-        }
-    }
-
-    private class Progresses implements ZipProg {
-        @Override
-        public void onProgressUpdate(Integer... values) {
-
-        }
-
-        @Override
-        public void onPostExecute(Exception exception) {
-
-        }
-
-        @Override
-        public void setMax(int max) {
-
-        }
-    }
-
     static ThreadPoolExecutor executos = new ThreadPoolExecutor(1, 1,
             10L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
@@ -1077,7 +980,7 @@ public class CoursewarePreload {
             File file = new File(folderPath, mFileName);
             boolean rename = tempFile.renameTo(file);
 //            if (!isUnZip.get()) {
-            PreZipExtractorTask task = new PreZipExtractorTask(file, mMorecacheout, true, new Progresses(), md5, itemLiveId, resourcetype);
+            PreZipExtractorTask task = new PreZipExtractorTask(file, mMorecacheout, true, new InfoUtils.Progresses(), md5, itemLiveId, resourcetype);
             task.setProgressUpdate(false);
             task.executeOnExecutor(executos);
 //                isUnZip.set(true);
