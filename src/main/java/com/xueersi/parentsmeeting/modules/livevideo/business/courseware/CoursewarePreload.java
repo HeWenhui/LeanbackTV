@@ -437,22 +437,24 @@ public class CoursewarePreload {
                                            final List<String> cdns,
                                            final List<String> allIPS) {
 
-        File cacheDir = LiveCacheFile.geCacheFile(mContext,
-                NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
+//        File cacheDir = LiveCacheFile.geCacheFile(mContext,
+//                NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
+        final File cacheDir = InfoUtils.getNbFilePath(mContext);
         if (!cacheDir.exists()) {
             cacheDir.mkdirs();
         }
+        executos.execute(new Runnable() {
+            @Override
+            public void run() {
+                InfoUtils.deleteNotTodayOldDirSync(cacheDir.getParent());
+            }
+        });
         for (int i = 0; i < addExps.size(); i++) {
             CoursewareInfoEntity.NbCoursewareInfo addExp = addExps.get(i);
             String remoteCourseware = addExp.getResourceUrl();
             String remoteMD5 = addExp.getResourceMd5();
             if (remoteCourseware.endsWith(".zip")) {
-//                String fileName = addExp.getId();
-                String fileNameSuffix = addExp.getId() + ".zip";
-                if (TextUtils.isEmpty(fileNameSuffix)) {
-                    fileNameSuffix = getFileName(remoteCourseware);
-                }
-                final File save = new File(cacheDir, fileNameSuffix);
+                //每个预加载文件的子文件夹
                 String outDirName = addExp.getId();
                 File outDir = new File(cacheDir, outDirName);
                 if (!outDir.exists()) {
@@ -472,13 +474,24 @@ public class CoursewarePreload {
                     int index = cdns.get(0).indexOf("/") + 2;
                     cdn = cdns.get(0).substring(index);
                 }
-
-                boolean equals = false;
-                if (fileIsExists(save.getAbsolutePath())) {
-                    String filemd5 = FileUtils.getFileMD5ToString(save);
-                    equals = remoteMD5.equalsIgnoreCase(filemd5);
+                String fileNameSuffix = addExp.getId() + ".zip";
+                if (TextUtils.isEmpty(fileNameSuffix)) {
+                    fileNameSuffix = getFileName(remoteCourseware);
                 }
-                if (!fileIsExists(save.getAbsolutePath()) || !equals) {
+                final File save = new File(cacheDir, fileNameSuffix);
+//                boolean equals = false;
+//                if (fileIsExists(save.getAbsolutePath())) {
+//                    String filemd5 = FileUtils.getFileMD5ToString(save);
+//                    equals = remoteMD5.equalsIgnoreCase(filemd5);
+//                if (!equals) {
+//                    InfoUtils.deleteDirSync(save);
+//                }
+//                }
+                boolean equals = InfoUtils.eqaulsMd5(remoteMD5, save);
+                if (!equals) {
+                    InfoUtils.deleteDirSync(save);
+                }
+                if (!InfoUtils.fileIsExists(save.getAbsolutePath()) || !equals) {
 //                if (!fileIsExists(save.getAbsolutePath())) {
                     String remoteUrl = ip + remoteCourseware;
                     logger.i("nb resource zip url path:  " + remoteUrl + "   file name:" + fileNameSuffix);
@@ -602,11 +615,11 @@ public class CoursewarePreload {
                 final String resourceName = MD5.md5(coursewareInfo.getResourceUrl()) + ".zip";
                 File resourceSave = new File(mMorecachein, resourceName);
                 boolean equals = false;
-                if (fileIsExists(resourceSave.getAbsolutePath())) {
+                if (InfoUtils.fileIsExists(resourceSave.getAbsolutePath())) {
                     String filemd5 = FileUtils.getFileMD5ToString(resourceSave);
                     equals = coursewareInfo.getResourceMd5().equalsIgnoreCase(filemd5);
                 }
-                if (!fileIsExists(resourceSave.getAbsolutePath()) || (fileIsExists(resourceSave.getAbsolutePath()) && !equals)) {
+                if (!InfoUtils.fileIsExists(resourceSave.getAbsolutePath()) || (InfoUtils.fileIsExists(resourceSave.getAbsolutePath()) && !equals)) {
                     DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(
                             ip + coursewareInfo.getResourceUrl(),
                             mMorecachein.getAbsolutePath(),
@@ -645,7 +658,7 @@ public class CoursewarePreload {
                 //下载模板资源
                 final String templateName = MD5.md5(coursewareInfo.getTemplateUrl()) + ".zip";
                 File templateSave = new File(mMorecachein, templateName);
-                if (!fileIsExists(templateSave.getAbsolutePath())) {
+                if (!InfoUtils.fileIsExists(templateSave.getAbsolutePath())) {
 //                templateSave.mkdirs();
                     DownLoadInfo templateDownLoadInfo = DownLoadInfo.createFileInfo(
                             ip + coursewareInfo.getTemplateUrl(),
@@ -718,7 +731,7 @@ public class CoursewarePreload {
             final String resourceName = coursewareInfo.getSourceId() + ".zip";
 
             File resourceSave = new File(mMorecachein, resourceName);
-            if (!fileIsExists(resourceSave.getAbsolutePath())) {
+            if (!InfoUtils.fileIsExists(resourceSave.getAbsolutePath())) {
                 logger.i("T_T" + ip + coursewareInfo.getIntelligentEntity().getResource());
                 DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(
                         ip + coursewareInfo.getIntelligentEntity().getResource(),
@@ -794,7 +807,7 @@ public class CoursewarePreload {
 //                    fileName = MD5Utils.getMD5(url);
 //                }
                 final File save = new File(mPublicCacheout, fileName);
-                if (!fileIsExists(save.getAbsolutePath())) {
+                if (!InfoUtils.fileIsExists(save.getAbsolutePath())) {
 //                if (!fileIsExists(save.getAbsolutePath())) {
                     logger.d("resource zip url path:  " + ip + url + "   file name:" + fileName + ".zip");
                     DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(
@@ -833,7 +846,7 @@ public class CoursewarePreload {
                     fileName = MD5Utils.getMD5(url);
                 }
                 final File save = new File(mPublicCacheout, fileName);
-                if (!fileIsExists(save.getPath())) {
+                if (!InfoUtils.fileIsExists(save.getPath())) {
                     logger.d("resource ttf url path:  " + ip + url + "   file name:" + fileName + ".nozip");
                     DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName + ".temp", "");
                     PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(
@@ -898,7 +911,7 @@ public class CoursewarePreload {
         // 以md5 值作为 文件名
         String fileName = coursewareInfo.getResourceMd5() + ".zip";
         File save = new File(cacheDir, fileName);
-        if (!fileIsExists(save.getAbsolutePath())) {
+        if (!InfoUtils.fileIsExists(save.getAbsolutePath())) {
             DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(
                     ip + url,
                     cacheDir.getAbsolutePath(),
@@ -1461,22 +1474,6 @@ public class CoursewarePreload {
         }
     }
 
-    //判断文件是否存在
-    public boolean fileIsExists(String strFile) {
-//        logger.i(strFile);
-        try {
-            File f = new File(strFile);
-//            logger.i(strFile + "" + f.getName() + " " + f.isFile() + " " + f.exists());
-            if (!f.exists()) {
-                return false;
-            }
-        } catch (Exception e) {
-            LiveCrashReport.postCatchedException(TAG, e);
-            return false;
-        }
-
-        return true;
-    }
 
     /**
      * 统计所有文件是否下载完

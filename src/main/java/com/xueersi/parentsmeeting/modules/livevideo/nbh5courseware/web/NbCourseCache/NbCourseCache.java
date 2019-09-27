@@ -8,11 +8,10 @@ import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.InfoUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WrapInputStream;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,18 +64,21 @@ public class NbCourseCache {
 //        if (mResDir.exists() && !TextUtils.isEmpty(resDir)) {
 //            mNbCacheFileDir = new File(mResDir, resDir);
 //        }
-        File tempFile = LiveCacheFile.geCacheFile(context, NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
+
+        File tempFile; //= LiveCacheFile.geCacheFile(context, NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
+        tempFile = InfoUtils.getNbFilePath(context);
 //        if (AppConfig.DEBUG && nbCourseWareEntity.isNbExperiment() == NbCourseWareEntity.NB_FREE_EXPERIMENT) {
 //            mNbCacheFileDir = new File(
 //                    tempFile.getPath() +
 //                            File.separator +
 //                            "257961cc0edc4edd31a9f8394fc4fb194792219270");
 //        } else {
-        mNbCacheFileDir = new File(
-                tempFile.getPath() +
-                        File.separator +
-                        nbCourseWareEntity.getExperimentId());
+//        mNbCacheFileDir = new File(
+//                tempFile.getPath() +
+//                        File.separator +
+//                        nbCourseWareEntity.getExperimentId());
 //        }
+        mNbCacheFileDir = new File(tempFile, nbCourseWareEntity.getExperimentId());
         header.put("Access-Control-Allow-Origin", "*");
         webInstertJs = new WebInstertJs(context, "99999");
     }
