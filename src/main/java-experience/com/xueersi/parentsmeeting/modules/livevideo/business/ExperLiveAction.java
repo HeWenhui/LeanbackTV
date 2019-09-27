@@ -28,30 +28,35 @@ public class ExperLiveAction {
         setLayout();
     }
 
-    protected void setLayout(){
+    protected void setLayout() {
         LiveVideoPoint.getInstance().addVideoSizeChangeAndCall(activity, new LiveVideoPoint.VideoSizeChange() {
             @Override
             public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivTeacherNotpresent.getLayoutParams();
-                int topAndBottom = liveVideoPoint.y2;
-                int leftMargin = liveVideoPoint.x2;
-                int rightMargin = liveVideoPoint.getRightMargin();
-                if (params.topMargin != topAndBottom || params.leftMargin != leftMargin || params.rightMargin != rightMargin) {
-                    params.topMargin = topAndBottom;
-                    params.leftMargin = leftMargin;
-                    params.rightMargin = rightMargin;
-                    ivTeacherNotpresent.setLayoutParams(params);
-                    LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
-                }
-                params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-                if (params.topMargin != topAndBottom || params.leftMargin != leftMargin || params.rightMargin != rightMargin) {
-                    params.topMargin = topAndBottom;
-                    params.leftMargin = leftMargin;
-                    params.rightMargin = rightMargin;
-                    LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
-                }
+                setThreeFen();
             }
         });
+    }
+
+    protected void setThreeFen() {
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivTeacherNotpresent.getLayoutParams();
+        int topAndBottom = liveVideoPoint.y2;
+        int leftMargin = liveVideoPoint.x2;
+        int rightMargin = liveVideoPoint.getRightMargin();
+        if (params.topMargin != topAndBottom || params.leftMargin != leftMargin || params.rightMargin != rightMargin) {
+            params.topMargin = topAndBottom;
+            params.leftMargin = leftMargin;
+            params.rightMargin = rightMargin;
+            ivTeacherNotpresent.setLayoutParams(params);
+            LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
+        }
+        params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
+        if (params.topMargin != topAndBottom || params.leftMargin != leftMargin || params.rightMargin != rightMargin) {
+            params.topMargin = topAndBottom;
+            params.leftMargin = leftMargin;
+            params.rightMargin = rightMargin;
+            LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
+        }
     }
 
     public void onPlayOpenSuccess() {

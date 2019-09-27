@@ -25,9 +25,9 @@ public class ExperienceActivity extends LiveBackVideoActivityBase {
     protected LiveBackVideoFragmentBase getFragment() {
         int pattern = getIntent().getIntExtra("pattern", LiveVideoConfig.LIVE_PATTERN_COMMON);
         logger.d("getFragment:pattern=" + pattern);
-        if (pattern > 0) {
-            return new ExperHalfBodyRecordFragment();
-        }
+//        if (pattern > 0) {
+//            return new ExperHalfBodyRecordFragment();
+//        }
         if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
             return new ExperStandRecordFragmentBase();
         } else if (pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY) {

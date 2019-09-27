@@ -27,21 +27,25 @@ public class ExperStandLiveAction extends ExperLiveAction {
     @Override
     protected void setLayout() {
         if (expLiveInfo.getMode() == ExperConfig.COURSE_STATE_2) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivTeacherNotpresent.getLayoutParams();
-            if (params.width != ViewGroup.LayoutParams.MATCH_PARENT || params.height != ViewGroup.LayoutParams.MATCH_PARENT) {
-                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
-            }
-            params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-            if (params.width != ViewGroup.LayoutParams.MATCH_PARENT || params.height != ViewGroup.LayoutParams.MATCH_PARENT) {
-                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
-            }
+            setFull();
             return;
         }
         super.setLayout();
+    }
+
+    private void setFull() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivTeacherNotpresent.getLayoutParams();
+        if (params.width != ViewGroup.LayoutParams.MATCH_PARENT || params.height != ViewGroup.LayoutParams.MATCH_PARENT) {
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
+        }
+        params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
+        if (params.width != ViewGroup.LayoutParams.MATCH_PARENT || params.height != ViewGroup.LayoutParams.MATCH_PARENT) {
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
+        }
     }
 
     boolean isFirst = true;
@@ -90,6 +94,11 @@ public class ExperStandLiveAction extends ExperLiveAction {
         } else {
             // 等待状态
             ivTeacherNotpresent.setImageResource(R.drawable.live_course_open_late);
+        }
+        if (mode == ExperConfig.COURSE_STATE_2) {
+            setFull();
+        } else {
+            setThreeFen();
         }
         if (mode == ExperConfig.COURSE_STATE_1 || mode == ExperConfig.COURSE_STATE_3) {
             if (rlFirstBackgroundView.getVisibility() != View.VISIBLE) {
