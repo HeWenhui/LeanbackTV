@@ -56,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ExperConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -181,7 +182,8 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
 
     protected RelativeLayout rl_course_video_live_controller_content;
     protected RelativeLayout bottomContent;
-    LiveViewAction liveViewAction;
+    protected RelativeLayout rlQuestionContent;
+    protected LiveViewAction liveViewAction;
 
     protected ExperLiveAction experLiveAction;
 
@@ -586,9 +588,6 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     }
 
     protected void initBllView() {
-        RelativeLayout rlQuestionContent = findViewById(R.id.rl_course_video_record_question_content);
-        liveViewAction = new LiveViewActionIml(activity, mContentView, rlQuestionContent);
-        rlQuestionContent.setVisibility(View.VISIBLE);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
             experienceIrcBll.addBll(businessBll);
@@ -692,7 +691,10 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         tvLoadingHint = findViewById(R.id.tv_course_video_loading_content);
 
         tvLoadingHint.setText("正在加载视频");
-
+        //基础布局
+        rlQuestionContent = findViewById(R.id.rl_course_video_record_question_content);
+        liveViewAction = new LiveViewActionIml(activity, mContentView, rlQuestionContent);
+        rlQuestionContent.setVisibility(View.VISIBLE);
         // 预加载布局中退出事件
         findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         //设置标题，要在setControllerTop方法以后
@@ -726,7 +728,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     protected BaseLiveMediaControllerTop createMediaControlerTop() {
         ExperMediaCtrl experMediaCtrl = (ExperMediaCtrl) mMediaController;
         BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, experMediaCtrl, liveBackPlayVideoFragment);
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         return baseLiveMediaControllerTop;
     }
 
@@ -734,7 +736,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         ExperMediaCtrl experMediaCtrl = (ExperMediaCtrl) mMediaController;
         liveMediaControllerBottom = new LiveMediaControllerBottom(activity, experMediaCtrl, liveBackPlayVideoFragment);
         liveMediaControllerBottom.experience();
-        bottomContent.addView(liveMediaControllerBottom);
+        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     /**

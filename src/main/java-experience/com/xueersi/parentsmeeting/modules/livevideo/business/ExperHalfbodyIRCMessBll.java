@@ -5,14 +5,14 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpLiveInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ExperConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
@@ -30,22 +30,22 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePag
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.ui.dataload.PageDataLoadEntity;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ExperHalfbodyIRCMessBll extends LiveBackBaseBll implements MessageAction {
+/**
+ * 体验课聊天，录直播
+ */
+public class ExperHalfbodyIRCMessBll extends LiveBackBaseBll implements MessageAction, ExperModeChange {
     private BaseLiveMessagePager mLiveMessagePager;
     private XesAtomicInteger peopleCount = new XesAtomicInteger(0);
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
     private ExperienceIrcState mExpIrcState;
-    private String teacherNick = null;
     private List<VideoQuestionEntity> roomChatEvent;
+    /** 暂时通过录直播有这个变量，判断状态 */
+    private ExpLiveInfo expLiveInfo;
 
     public ExperHalfbodyIRCMessBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -54,25 +54,53 @@ public class ExperHalfbodyIRCMessBll extends LiveBackBaseBll implements MessageA
     public void initView() {
         super.initView();
         mExpIrcState = new ExperienceIrcState(mContext, liveGetInfo, liveGetInfo.getLiveTopic(), mVideoEntity, getmHttpManager());
-        BaseLiveMediaControllerBottom liveMediaControllerBottom = ProxUtil.getProxUtil().get(activity, BaseLiveMediaControllerBottom.class);
-        HalfBodyExpLiveMsgPager msgPager = new HalfBodyExpLiveMsgPager(activity,
-                liveMediaControllerBottom,
-                liveMessageLandEntities, null);
-
-        mLiveMessagePager = msgPager;
-        // 关联聊天人数
-        msgPager.setPeopleCount(peopleCount);
-        msgPager.setIrcState(mExpIrcState);
-        msgPager.onModeChange(mExpIrcState.getMode());
-        msgPager.setIsRegister(true);
-        msgPager.setGetInfo(liveGetInfo);
-        // 03.22 设置统计日志的公共参数
-        msgPager.setLiveTermId(mVideoEntity.getLiveId(), mVideoEntity.getChapterId());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        getLiveViewAction().addView(LiveVideoLevel.LEVEL_MES, msgPager.getRootView(), params);
+        initPager();
     }
 
+    private void initPager() {
+        int mode;
+        if (expLiveInfo == null) {
+            mode = ExperConfig.COURSE_STATE_2;
+        } else {
+            mode = expLiveInfo.getMode();
+        }
+        boolean isRegister = false;
+        if (mLiveMessagePager != null) {
+            getLiveViewAction().removeView(mLiveMessagePager.getRootView());
+            isRegister = mLiveMessagePager.isRegister();
+        }
+        BaseLiveMediaControllerBottom liveMediaControllerBottom = ProxUtil.getProxUtil().get(activity, BaseLiveMediaControllerBottom.class);
+        if (mode == ExperConfig.COURSE_STATE_2) {
+            HalfBodyExpLiveMsgPager msgPager = new HalfBodyExpLiveMsgPager(activity,
+                    liveMediaControllerBottom,
+                    liveMessageLandEntities, null);
+            mLiveMessagePager = msgPager;
+            // 关联聊天人数
+            msgPager.setPeopleCount(peopleCount);
+            msgPager.setIrcState(mExpIrcState);
+            msgPager.onModeChange(mExpIrcState.getMode());
+            msgPager.setIsRegister(isRegister);
+            msgPager.setGetInfo(liveGetInfo);
+        } else {
+            LiveMessagePager liveMessagePager = new LiveMessagePager(activity, liveMediaControllerBottom, liveMessageLandEntities, null);
+            liveMessagePager.setIsRegister(isRegister);
+            liveMessagePager.setIrcState(mExpIrcState);
+            liveMessagePager.setPeopleCount(peopleCount);
+            liveMessagePager.setGetInfo(liveGetInfo);
+            mLiveMessagePager = liveMessagePager;
+        }
+        onopenchat(mExpIrcState.openchat(), liveGetInfo.getLiveTopic().getMode(), false);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        getLiveViewAction().addView(LiveVideoLevel.LEVEL_MES, mLiveMessagePager.getRootView(), params);
+    }
+
+    @Override
+    public void onModeChange(int oldmode, int mode) {
+        if (expLiveInfo != null) {
+            initPager();
+        }
+    }
 
     @Override
     public void onStartConnect() {
@@ -185,6 +213,7 @@ public class ExperHalfbodyIRCMessBll extends LiveBackBaseBll implements MessageA
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+        expLiveInfo = ProxUtil.getProxUtil().get(activity, ExpLiveInfo.class);
         List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
         //初始化 老师开关聊天事件
         if (lstVideoQuestion != null && lstVideoQuestion.size() > 0) {
@@ -218,7 +247,7 @@ public class ExperHalfbodyIRCMessBll extends LiveBackBaseBll implements MessageA
      */
     private boolean isChatSateInited = false;
 
-    public void onopenchat(boolean openchat, final String mode, boolean fromNotice) {
+    public void onopenchat(boolean openchat, String mode, boolean fromNotice) {
         mLiveMessagePager.onopenchat(openchat, mode, fromNotice);
         mExpIrcState.setChatOpen(openchat);
     }

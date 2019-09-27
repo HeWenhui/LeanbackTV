@@ -132,8 +132,6 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
      * 竖屏的时候，也添加横屏的消息
      */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
-    private String liveId;
-    private String termId;
     private View mFloatView;
     private long mOldTime = 0;
     private View liveMessageContent;
@@ -885,11 +883,6 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
     public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String
             recipientNick, String reason) {
 
-    }
-
-    public void setLiveTermId(String liveId, String termId) {
-        this.liveId = liveId;
-        this.termId = termId;
     }
 
     /**

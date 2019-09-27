@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllExperienceConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
@@ -65,7 +66,7 @@ public class ExperHalfBodyRecordFragment extends ExperienceRecordFragmentBase {
 
     @Override
     protected void createLiveVideoAction() {
-        experLiveAction=new ExperHalfBodyLiveAction(activity,mContentView,expLiveInfo);
+        experLiveAction = new ExperHalfBodyLiveAction(activity, mContentView, expLiveInfo);
     }
 
     @Override
@@ -122,18 +123,19 @@ public class ExperHalfBodyRecordFragment extends ExperienceRecordFragmentBase {
         liveMediaControllerBottom = new LiveHalfBodyExpMediaCtrlBottom(activity, experMediaCtrl, liveBackPlayVideoFragment);
         LiveHalfBodyExpMediaCtrlBottom liveHalfBodyExpMediaCtrlBottom = (LiveHalfBodyExpMediaCtrlBottom) liveMediaControllerBottom;
         liveHalfBodyExpMediaCtrlBottom.onModeChange(expLiveInfo.getMode());
-        bottomContent.addView(liveMediaControllerBottom);
+        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom,new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     @Override
     protected void onModeChanged() {
-        super.onModeChanged();
         LiveHalfBodyExpMediaCtrlBottom liveHalfBodyExpMediaCtrlBottom = (LiveHalfBodyExpMediaCtrlBottom) liveMediaControllerBottom;
         liveHalfBodyExpMediaCtrlBottom.onModeChange(expLiveInfo.getMode());
+        super.onModeChanged();
     }
 
     AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack() {
         private boolean isFirstGetResult = true;
+
         @Override
         public void onDataSucess(Object... objData) {
             // 获取到数据之后的逻辑处理
