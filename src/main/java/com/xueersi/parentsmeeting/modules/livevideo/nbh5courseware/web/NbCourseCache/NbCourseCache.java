@@ -78,7 +78,9 @@ public class NbCourseCache {
 //                        File.separator +
 //                        nbCourseWareEntity.getExperimentId());
 //        }
-        mNbCacheFileDir = new File(tempFile, nbCourseWareEntity.getExperimentId());
+        if (nbCourseWareEntity.getExperimentId() != null) {
+            mNbCacheFileDir = new File(tempFile, nbCourseWareEntity.getExperimentId());
+        }
         header.put("Access-Control-Allow-Origin", "*");
         webInstertJs = new WebInstertJs(context, "99999");
     }

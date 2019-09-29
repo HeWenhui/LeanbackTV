@@ -68,6 +68,7 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
                             });
                 }
                 NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(), questionEntity.getH5Play_url(), NbCourseWareEntity.NB_FREE_EXPERIMENT);
+                entity.setExperimentId(questionEntity.getvQuestionID());
                 h5CoursewareBll.onH5Courseware(entity, "on");
                 break;
             }
