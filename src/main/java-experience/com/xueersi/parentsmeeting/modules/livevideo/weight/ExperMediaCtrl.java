@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.CommonGestures;
@@ -306,6 +307,7 @@ public class ExperMediaCtrl extends LiveMediaController implements IPlayBackMedi
         return mGestures.onTouchEvent(event) || super.onTouchEvent(event);
     }
 
+    boolean isSeekto = true;
     /**
      * 手势触摸操作接口实现
      */
@@ -390,7 +392,23 @@ public class ExperMediaCtrl extends LiveMediaController implements IPlayBackMedi
         /** 左右滑动 */
         @Override
         public void onSeekControl(float percent) {
+            if (isSeekto && AppConfig.DEBUG) {
+                mDragging = true; // 使进度条不在自动更新
+                // 快进快退
+                float changeNumber = percent * mDuration / 5;
+                // mChangeNumber += changeNumber;
+                boolean left = false;
+                if (changeNumber < 0) {
+                    left = true;
+                } else {
+                    left = false;
+                }
 
+                mCurrentPosition = mPlayer.getCurrentPosition();
+                mCurrentPosition += changeNumber;
+                setProgress(mDuration, mCurrentPosition);
+                seekControlByPosition();
+            }
         }
 
         /** 跳转到快进快退的停下来的点位 */
