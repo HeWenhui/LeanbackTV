@@ -157,8 +157,6 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
 
     private List<String> chatCfgServerList;
 
-    private List<VideoQuestionEntity> roomChatEvent;
-
     private int isArts;
 
     private String expChatId;
@@ -527,21 +525,6 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         pattern = extras.getInt("pattern");
         lastMode = expLiveInfo.getMode();
         ProxUtil.getProxUtil().put(activity, ExpLiveInfo.class, expLiveInfo);
-        List<VideoQuestionEntity> lstVideoQuestion = playBackEntity.getLstVideoQuestion();
-
-        int qSize = lstVideoQuestion != null ? lstVideoQuestion.size() : 0;
-
-        //初始化 老师开关聊天事件
-        roomChatEvent = new ArrayList<VideoQuestionEntity>();
-        VideoQuestionEntity entity = null;
-
-        for (int i = 0; i < qSize; i++) {
-            entity = lstVideoQuestion.get(i);
-            if (LocalCourseConfig.CATEGORY_OPEN_CHAT == entity.getvCategory() || LocalCourseConfig.CATEGORY_CLOSE_CHAT == entity.getvCategory()) {
-                roomChatEvent.add(lstVideoQuestion.get(i));
-            }
-        }
-
         videoPlayState = new VideoPlayState();
     }
 
@@ -1010,12 +993,10 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
      * @param result
      */
     protected void showStudyResult(final ExperienceResult result) {
-
         if (studyResultDialog == null) {
             studyResultDialog = new StudyResultDialog(activity);
             studyResultDialog.setCancelable(false);
         }
-
         studyResultDialog.setOnClickListener(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

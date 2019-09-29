@@ -254,7 +254,7 @@ public class DispatcherBll extends BaseBll {
                         videoEntity.setGradId(entity.getAutoLive().getGradId());
                         videoEntity.setSubjectId(entity.getAutoLive().getSubjectId());
                         videoEntity.setPattern(entity.getPattern());
-
+//                        videoEntity.setPattern(6);
                         videoEntity.setSpeechEvalUrl(entity.getSpeechEvalUrl());
                         videoEntity.setSpeechEvalSubmitUrl(entity.getSpeechEvalSubmitUrl());
                         videoEntity.setSubmitCourseWareH5AnswerUseVoiceUrl(entity
@@ -370,8 +370,30 @@ public class DispatcherBll extends BaseBll {
                                         mContext.getClass().getSimpleName());
                             }
                         } else if (videoEntity.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {//半身直播体验课
-                            LiveVideoEnter.intentToHalfBodyExperience((Activity) mContext, bundle,
-                                    mContext.getClass().getSimpleName());
+                            if (videoEntity.getExpLiveType() == 2) { // 录直播体验课
+                                ExpLiveInfo expLiveInfo = DispatcherHttpResponseParser.parserExliveInfo(responseEntity);
+                                if (expLiveInfo != null) {
+                                    videoEntity.setTutorTeacherId(expLiveInfo.getCoachTeacherId() + "");
+                                    expLiveInfo.setLiveType(entity.getLiveType());
+                                    bundle.putSerializable("expLiveInfo", expLiveInfo);
+                                }
+
+                                long startTime = entity.getAutoLive().getStartTime();
+                                long endTime = entity.getAutoLive().getEndTime();
+                                long nowTime = entity.getAutoLive().getNowTime();
+                                String gradId = entity.getAutoLive().getGradId();
+                                String termId = entity.getAutoLive().getTermId();
+
+                                ExpAutoLive expAutoLive = new ExpAutoLive(startTime, endTime, nowTime, gradId, termId);
+                                bundle.putSerializable("expAutoLive", expAutoLive);
+
+                                bundle.putSerializable("entity", entity.getAutoLive());
+                                LiveVideoEnter.intentToLiveBackExperience((Activity) mContext, bundle,
+                                        mContext.getClass().getSimpleName());
+                            } else {
+                                LiveVideoEnter.intentToHalfBodyExperience((Activity) mContext, bundle,
+                                        mContext.getClass().getSimpleName());
+                            }
                         }
 
                     }

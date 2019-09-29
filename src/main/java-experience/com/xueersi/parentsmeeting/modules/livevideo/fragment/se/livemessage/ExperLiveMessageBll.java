@@ -8,6 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RoomAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ExperConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.ExperLiveMessageStandPager;
@@ -68,7 +69,7 @@ public class ExperLiveMessageBll implements KeyboardUtil.OnKeyboardShowingListen
             mLiveMessagePager.onUserList("", new User[peopleCount.get()]);
         }
         mLiveMessagePager.setIsRegister(isRegister);
-        liveViewAction.addView(mLiveMessagePager.getRootView());
+        liveViewAction.addView(LiveVideoLevel.LEVEL_MES, mLiveMessagePager.getRootView());
         return mLiveMessagePager;
     }
 

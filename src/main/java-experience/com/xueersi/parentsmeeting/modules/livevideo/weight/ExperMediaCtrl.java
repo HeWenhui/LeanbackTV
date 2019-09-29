@@ -500,8 +500,10 @@ public class ExperMediaCtrl extends LiveMediaController implements IPlayBackMedi
             }
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-            mPlayer.stop(); // 返回按钮
-            return true;
+            if (event.getAction() == KeyEvent.ACTION_UP) {
+                mPlayer.stop(); // 返回按钮
+                return true;
+            }
         } else {
             // 其它按钮一律直接显示控制栏
             show(DEFAULT_TIME_OUT);
