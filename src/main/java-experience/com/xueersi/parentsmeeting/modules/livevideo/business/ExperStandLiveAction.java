@@ -63,31 +63,15 @@ public class ExperStandLiveAction extends ExperLiveAction {
         rlFirstBackgroundView.setBackgroundColor(0xff000000);
     }
 
-    private void setFull() {
+    @Override
+    protected void setFull() {
+        super.setFull();
         logger.d("setFull");
         if (ll_course_video_loading != null) {
             ll_course_video_loading.setVisibility(View.GONE);
         }
         if (iv_course_video_loading_bg != null) {
             iv_course_video_loading_bg.setVisibility(View.GONE);
-        }
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivTeacherNotpresent.getLayoutParams();
-        logger.d("setFull:width=" + params.width + ",height=" + params.height);
-        if (params.width != ViewGroup.LayoutParams.MATCH_PARENT || params.height != ViewGroup.LayoutParams.MATCH_PARENT || params.rightMargin != 0 || params.leftMargin != 0) {
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.leftMargin = 0;
-            params.rightMargin = 0;
-            LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
-        }
-        params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-        logger.d("setFull:width=" + params.width + ",height=" + params.height);
-        if (params.width != ViewGroup.LayoutParams.MATCH_PARENT || params.height != ViewGroup.LayoutParams.MATCH_PARENT || params.rightMargin != 0 || params.leftMargin != 0) {
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.leftMargin = 0;
-            params.rightMargin = 0;
-            LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
         }
     }
 

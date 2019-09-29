@@ -19,18 +19,20 @@ public class ExperHalfBodyLiveAction extends ExperLiveAction {
 
     @Override
     protected void setLayout() {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivTeacherNotpresent.getLayoutParams();
-        if (params.width != ViewGroup.LayoutParams.MATCH_PARENT || params.height != ViewGroup.LayoutParams.MATCH_PARENT) {
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
+        if (expLiveInfo.getMode() == ExperConfig.COURSE_STATE_2) {
+            setFull();
+            return;
         }
-        params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-        if (params.width != ViewGroup.LayoutParams.MATCH_PARENT || params.height != ViewGroup.LayoutParams.MATCH_PARENT) {
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
-        }
+        super.setLayout();
     }
 
+    @Override
+    public void onModeChanged(int mode) {
+        super.onModeChanged(mode);
+        if (mode == ExperConfig.COURSE_STATE_2) {
+            setFull();
+        } else {
+            setThreeFen();
+        }
+    }
 }

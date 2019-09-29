@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -58,6 +59,27 @@ public class ExperLiveAction {
             params.topMargin = topAndBottom;
             params.leftMargin = leftMargin;
             params.rightMargin = rightMargin;
+            LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
+        }
+    }
+
+    protected void setFull() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivTeacherNotpresent.getLayoutParams();
+        logger.d("setFull:width=" + params.width + ",height=" + params.height);
+        if (params.width != ViewGroup.LayoutParams.MATCH_PARENT || params.height != ViewGroup.LayoutParams.MATCH_PARENT || params.rightMargin != 0 || params.leftMargin != 0) {
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.leftMargin = 0;
+            params.rightMargin = 0;
+            LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
+        }
+        params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
+        logger.d("setFull:width=" + params.width + ",height=" + params.height);
+        if (params.width != ViewGroup.LayoutParams.MATCH_PARENT || params.height != ViewGroup.LayoutParams.MATCH_PARENT || params.rightMargin != 0 || params.leftMargin != 0) {
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.leftMargin = 0;
+            params.rightMargin = 0;
             LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
         }
     }
