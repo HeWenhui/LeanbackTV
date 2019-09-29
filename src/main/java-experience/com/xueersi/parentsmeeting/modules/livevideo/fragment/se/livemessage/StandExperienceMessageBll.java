@@ -31,6 +31,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ExperConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -62,7 +64,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 //zyy:仿照全身直播的体验课聊天
 public class StandExperienceMessageBll extends StandExperienceEventBaseBll implements KeyboardUtil
-        .OnKeyboardShowingListener, MessageAction, ExperModeChange {
+        .OnKeyboardShowingListener, MessageAction, ExperModeChange, NoticeAction, TopicAction {
     /**
      * 聊天消失
      */
@@ -161,20 +163,20 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         //在QuestionShowReg中注册(也就是QuestionShowReg唯一实现类QuestionBLl中注册)，为了在QuestionBll显示时隐藏该聊天区
         QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
         if (questionShowReg != null) {
-            questionShowReg.registQuestionShow(new QuestionShowAction(){
+            questionShowReg.registQuestionShow(new QuestionShowAction() {
                 @Override
                 public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
-                    mLiveMessagePager.onQuestionShow(videoQuestionLiveEntity,isShow);
+                    mLiveMessagePager.onQuestionShow(videoQuestionLiveEntity, isShow);
                 }
             });
         }
         //在EnglishShowReg中注册(也就是EnglishShowReg唯一实现类EnglishH5CoursewareBll中注册)，为了在EnglishH5CoursewareBll显示时隐藏该聊天区
         EnglishShowReg englishShowReg = getInstance(EnglishShowReg.class);
         if (englishShowReg != null) {
-            englishShowReg.registQuestionShow(new QuestionShowAction(){
+            englishShowReg.registQuestionShow(new QuestionShowAction() {
                 @Override
                 public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
-                    mLiveMessagePager.onQuestionShow(videoQuestionLiveEntity,isShow);
+                    mLiveMessagePager.onQuestionShow(videoQuestionLiveEntity, isShow);
                 }
             });
         }
@@ -313,6 +315,70 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
     @Override
     public void onUnknown(String line) {
 
+    }
+
+    @Override
+    public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+        boolean oldopenChat = openChat;
+        if (ExperConfig.COURSE_STATE_2 == expLiveInfo.getMode()) {
+            openChat = liveTopic.getMainRoomstatus().isOpenchat();
+        } else {
+            openChat = liveTopic.getCoachRoomstatus().isOpenchat();
+        }
+        logger.d("onTopic:openChat=" + openChat);
+        if (openChat != oldopenChat) {
+            mRoomAction.onopenchat(openChat, LiveTopic.MODE_TRANING, false);
+        }
+    }
+
+    @Override
+    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
+        switch (type) {
+            case XESCODE.OPENCHAT: {
+                try {
+                    boolean open = data.getBoolean("open");
+                    String from = data.optString("from", "t");
+                    if ("t".equals(from)) {
+                        mLiveTopic.getMainRoomstatus().setOpenchat(open);
+                        if (ExperConfig.COURSE_STATE_2 == expLiveInfo.getMode()) {
+                            if (mRoomAction != null) {
+                                openChat = open;
+                                mRoomAction.onopenchat(open, LiveTopic.MODE_CLASS, true);
+                            }
+                        }
+                    } else {
+                        mLiveTopic.getCoachRoomstatus().setOpenchat(open);
+                        if (ExperConfig.COURSE_STATE_2 != expLiveInfo.getMode()) {
+                            if (mRoomAction != null) {
+                                openChat = open;
+                                mRoomAction.onopenchat(open, LiveTopic.MODE_TRANING, true);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.e("onNotice:OPENCHAT", e);
+                }
+            }
+            case XESCODE.TEACHER_MESSAGE:
+                try {
+                    if (mRoomAction != null) {
+                        if (sourceNick.startsWith("t")) {
+                            mRoomAction.onMessage(target, sourceNick, "", "", data.getString("msg"), "");
+                        } else {
+                            mRoomAction.onMessage(target, sourceNick, "", "", data.getString("msg"),
+                                    "");
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.e("TEACHER_MESSAGE", e);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public int[] getNoticeFilter() {
+        return new int[]{XESCODE.TEACHER_MESSAGE, XESCODE.OPENCHAT};
     }
 
     private final IRCState videoExperiencIRCState = new IRCState() {

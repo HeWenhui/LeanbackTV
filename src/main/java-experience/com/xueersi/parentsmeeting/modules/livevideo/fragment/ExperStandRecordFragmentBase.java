@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -11,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ExperStandLiveActio
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
@@ -24,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPacka
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.ExpRollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.weight.ExperMediaCtrl;
+import com.xueersi.parentsmeeting.modules.livevideo.weight.ExperStandMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -82,6 +85,8 @@ public class ExperStandRecordFragmentBase extends ExperienceRecordFragmentBase {
         if (liveBackBll == null) {
             return;
         }
+        ExperStandMediaControllerBottom experStandMediaControllerBottom = (ExperStandMediaControllerBottom) liveMediaControllerBottom;
+        experStandMediaControllerBottom.onModeChange(expLiveInfo.getMode());
         super.onModeChanged();
     }
 
@@ -102,7 +107,7 @@ public class ExperStandRecordFragmentBase extends ExperienceRecordFragmentBase {
 
     @Override
     protected void createLiveVideoAction() {
-        experLiveAction=new ExperStandLiveAction(activity,mContentView,expLiveInfo);
+        experLiveAction = new ExperStandLiveAction(activity, mContentView, expLiveInfo);
     }
 
     @Override
@@ -136,7 +141,8 @@ public class ExperStandRecordFragmentBase extends ExperienceRecordFragmentBase {
     @Override
     protected void createMediaControllerBottom() {
         ExperMediaCtrl experMediaCtrl = (ExperMediaCtrl) mMediaController;
-        liveMediaControllerBottom = new LiveMediaControllerBottom(activity, experMediaCtrl, liveBackPlayVideoFragment);
+        liveMediaControllerBottom = new ExperStandMediaControllerBottom(activity, experMediaCtrl, liveBackPlayVideoFragment);
+        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     @Override

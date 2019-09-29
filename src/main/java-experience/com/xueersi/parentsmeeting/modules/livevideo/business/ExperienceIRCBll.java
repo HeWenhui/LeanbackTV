@@ -8,6 +8,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -17,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONArray;
@@ -50,13 +52,17 @@ public class ExperienceIRCBll {
      */
     private final List<MessageAction> mMessageActions = new ArrayList<>();
     private int mNetWorkType;
+    private final LiveTopic mLiveTopic;
+    private LiveHttpResponseParser mHttpResponseParser;
 
     public ExperienceIRCBll(Context context, String expChatId, LiveGetInfo liveGetInfo) {
         this.context = context;
         this.expChatId = expChatId;
         this.mGetInfo = liveGetInfo;
+        mLiveTopic = liveGetInfo.getLiveTopic();
         mLogtf = new LogToFile(context, TAG);
         mNetWorkType = NetWorkHelper.getNetWorkState(context);
+        mHttpResponseParser = new LiveHttpResponseParser(context);
         ProxUtil.getProxUtil().put(context, IrcAction.class, new IrcAction() {
             @Override
             public void sendMessage(String message) {
@@ -230,11 +236,11 @@ public class ExperienceIRCBll {
         @Override
         public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
             Log.i("expTess", "onTopic");
-            LiveTopic liveTopic = new LiveTopic();
             JSONTokener jsonTokener = null;
             try {
                 jsonTokener = new JSONTokener(topic);
                 JSONObject jsonObject = new JSONObject(jsonTokener);
+                LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, LiveVideoConfig.LIVE_TYPE_LIVE);
                 if (mTopicActions != null && mTopicActions.size() > 0) {
                     for (TopicAction mTopicAction : mTopicActions) {
                         try {

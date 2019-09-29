@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.se.livemessage;
 
 import android.app.Activity;
+import android.os.Handler;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
@@ -13,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.ExperLiveMessageStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 public class ExperLiveMessageBll implements KeyboardUtil.OnKeyboardShowingListener, RoomAction {
     private String TAG = "ExperLiveMessageBll";
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     private XesAtomicInteger peopleCount = new XesAtomicInteger(0);
     /**
      * 消息
@@ -123,8 +126,17 @@ public class ExperLiveMessageBll implements KeyboardUtil.OnKeyboardShowingListen
     }
 
     @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-
+    public void onMessage(final String target, final String sender, final String login, final String hostname, final String text, final String headurl) {
+        if (mLiveMessagePager != null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mLiveMessagePager != null) {
+                        mLiveMessagePager.onMessage(target, sender, login, hostname, text, headurl);
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -177,7 +189,10 @@ public class ExperLiveMessageBll implements KeyboardUtil.OnKeyboardShowingListen
 
     @Override
     public void onopenchat(boolean openchat, String mode, boolean fromNotice) {
-
+        if (mLiveMessagePager != null) {
+            //默认打开聊天区
+            mLiveMessagePager.onopenchat(openchat, "", fromNotice);
+        }
     }
 
     @Override
