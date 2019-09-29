@@ -50,4 +50,7 @@ public class SysLogLable {
     public static SysLogEntity ShellingCommit = new SysLogEntity(ShellingScienceWebViewLog, "ShellingCommit");
     /** 手动退出界面 */
     public static SysLogEntity backButtonClick = new SysLogEntity(ShellingScienceWebViewLog, "backButtonClick");
+    /** 三端协议日志 */
+    public static SysLogEntity xesWebLog = new SysLogEntity(ShellingScienceWebViewLog, "xesWebLog");
+
 }
