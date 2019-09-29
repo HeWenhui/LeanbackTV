@@ -1317,7 +1317,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
                             isMessageLayoutShow = false;
                         }
                         lvMessage.setVisibility(View.VISIBLE);
-                        logger.i("显示聊天框");
+                        logger.i("onopenchat:show");
                     } else {
                         if (rlMessageVoice.getVisibility() == View.VISIBLE) {
                             isMessageLayoutShow = true;
@@ -1327,7 +1327,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
                         btMesOpen.setVisibility(View.GONE);
                         btnVoiceMesOpen.setVisibility(View.GONE);
                         ivMessageClose.performClick();
-                        logger.i("隐藏聊天框");
+                        logger.i("onopenchat:hind");
                     }
                     if (fromNotice) {
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -1537,6 +1537,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     @Override
     public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, final boolean isShow) {
         isAnaswer = isShow;
+        logger.i("onQuestionShow:isShow=" + isShow);
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1556,14 +1557,12 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
                     //现在的隐藏显示和liveStandMessageContent一致
                     btnVoiceMesOpen.setVisibility(View.GONE);
                     btMesOpen.setVisibility(View.GONE);
-                    logger.i("隐藏聊天框");
                 } else {
                     if (ircState.openchat()) {
                         if (liveStandMessageContent.getVisibility() != View.VISIBLE) {
                             liveStandMessageContent.setVisibility(View.VISIBLE);
                             StandLiveMethod.voicePopup(liveSoundPool);
                         }
-                        logger.i("显示聊天框");
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
                         if (isNotExpericence) {
