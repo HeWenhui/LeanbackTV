@@ -373,12 +373,27 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                     logger.e("TEACHER_MESSAGE", e);
                 }
                 break;
+            case XESCODE.GAG:
+                // 禁言
+                try {
+                    String id = data.getString("id");
+                    boolean disable = data.getBoolean("disable");
+                    IrcAction ircAction = ProxUtil.getProvide(activity, IrcAction.class);
+                    String nickName = "" + ircAction.getNickname();
+                    if (nickName.equals(id)) {
+                        mLiveMessagePager.onDisable(disable, true);
+                        liveGetInfo.getLiveTopic().setDisable(true);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.TEACHER_MESSAGE, XESCODE.OPENCHAT};
+        return new int[]{XESCODE.TEACHER_MESSAGE, XESCODE.GAG,XESCODE.OPENCHAT};
     }
 
     private final IRCState videoExperiencIRCState = new IRCState() {
@@ -442,7 +457,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 
         @Override
         public boolean isDisable() {
-            return false;
+            return liveGetInfo.getLiveTopic().isDisable();
         }
 
         @Override
