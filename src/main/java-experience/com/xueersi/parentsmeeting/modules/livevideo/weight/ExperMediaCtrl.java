@@ -471,9 +471,6 @@ public class ExperMediaCtrl extends LiveMediaController implements IPlayBackMedi
     public boolean dispatchKeyEvent(KeyEvent event) {
         int keyCode = event.getKeyCode();
         switch (keyCode) {
-            case KeyEvent.KEYCODE_VOLUME_MUTE:
-                // 静音键,返回系统
-                return super.dispatchKeyEvent(event);
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 // 音量上下键，调用自己的音量设置
@@ -499,11 +496,6 @@ public class ExperMediaCtrl extends LiveMediaController implements IPlayBackMedi
                 updatePausePlay();
             }
             return true;
-        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (event.getAction() == KeyEvent.ACTION_UP) {
-                mPlayer.stop(); // 返回按钮
-                return true;
-            }
         } else {
             // 其它按钮一律直接显示控制栏
             show(DEFAULT_TIME_OUT);

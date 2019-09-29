@@ -124,6 +124,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
         mRoomAction = new ExperLiveMessageBll(activity);
         expLiveInfo = ProxUtil.getProxUtil().get(activity, ExpLiveInfo.class);
+        mLiveTopic = liveGetInfo.getLiveTopic();
     }
 
     //
@@ -192,7 +193,6 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
             .ShowQuestion showQuestion) {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
-
         if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
             openChat = true;
         } else if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
@@ -329,6 +329,18 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         if (openChat != oldopenChat) {
             mRoomAction.onopenchat(openChat, LiveTopic.MODE_TRANING, false);
         }
+        //禁言列表
+        List<String> disableSpeaking = liveTopic.getDisableSpeaking();
+        boolean forbidSendMsg = false;
+        for (String id : disableSpeaking) {
+            IrcAction ircAction = ProxUtil.getProvide(activity, IrcAction.class);
+            String nickName = "" + ircAction.getNickname();
+            if (("" + id).endsWith(nickName) || nickName.endsWith("" + id)) {
+                forbidSendMsg = true;
+            }
+        }
+        liveTopic.setDisable(forbidSendMsg);
+        mLiveTopic.setDisable(forbidSendMsg);
     }
 
     @Override
@@ -393,7 +405,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.TEACHER_MESSAGE, XESCODE.GAG,XESCODE.OPENCHAT};
+        return new int[]{XESCODE.TEACHER_MESSAGE, XESCODE.GAG, XESCODE.OPENCHAT};
     }
 
     private final IRCState videoExperiencIRCState = new IRCState() {

@@ -251,6 +251,7 @@ public class ExperienceIRCBll {
 
                     }
                 }
+                mLiveTopic.copy(liveTopic);
             } catch (Exception e) {
                 try {
                     if (jsonTokener != null) {
