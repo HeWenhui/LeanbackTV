@@ -494,7 +494,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             tvMessageItem.setAutoLinkMask(0);
                             if (getInfo.getIsOpenNewCourseWare() == 1) {
                                 SpannableString itemSpan;
-                                SpannableString evenSpan = new SpannableString("icon");
+                                SpannableString evenSpan = new SpannableString("icon ");
                                 itemSpan = addEvenDriveMessageNum(evenSpan, entity.getEvenNum(), entity.getType());
                                 if (itemSpan != null) {
                                     tvMessageItem.setText(itemSpan);
@@ -1809,9 +1809,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             liveMessageEntities.remove(0);
                         }
                         LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
-//                        if (type == LiveMessageEntity.MESSAGE_MINE) {
-//                            entity.setEvenNum(myTest ? "5" : mNowEvenNum);
-//                        }
+                        if (type == LiveMessageEntity.MESSAGE_MINE) {
+                            entity.setEvenNum(myTest ? "35" : mNowEvenNum);
+                        }
                         liveMessageEntities.add(entity);
                         if (otherLiveMessageEntities != null) {
                             if (otherLiveMessageEntities.size() > 29) {
