@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tencent.smtt.export.external.interfaces.SslError;
+import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
+import com.tencent.smtt.export.external.interfaces.WebResourceError;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
@@ -19,6 +22,8 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -859,8 +864,42 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         public void onHttpCode(String url, int code) {
             onReceivedHttpError(wvSubjectWeb, url, code, "");
         }
+
+        @Override
+        public void onReceivedHttpError(WebView webView, WebResourceRequest webResourceRequest, WebResourceResponse webResourceResponse) {
+            super.onReceivedHttpError(webView, webResourceRequest, webResourceResponse);
+            newLogger.e("onReceivedHttpError error");
+        }
+
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            newLogger.e(logError + "onReceivedError error");
+        }
+
+        @Override
+        public void onReceivedError(WebView webView, WebResourceRequest webResourceRequest, WebResourceError webResourceError) {
+            super.onReceivedError(webView, webResourceRequest, webResourceError);
+            newLogger.e(logError + "onReceivedError error");
+        }
+
+        @Override
+        public void onReceivedHttpError(WebView webView, String url, int statusCode, String reasonPhrase) {
+            super.onReceivedHttpError(webView, url, statusCode, reasonPhrase);
+            newLogger.e(logError + "onReceivedHttpError error");
+        }
+
+        @Override
+        public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
+            super.onReceivedSslError(webView, sslErrorHandler, sslError);
+            newLogger.e(logError + "onReceivedHttpError error");
+        }
     }
 
+    private String logError = "H5Free Error";
+
+    private String errorLogTAG = "NBFreePager";
+    private Logger newLogger = LoggerFactory.getLogger(errorLogTAG);
 
     private class NbWebChromClient extends MyWebChromeClient {
         @Override
