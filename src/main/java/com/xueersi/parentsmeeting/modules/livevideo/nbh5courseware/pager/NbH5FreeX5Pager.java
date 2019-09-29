@@ -26,7 +26,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NbCourseEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.http.NbHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NbH5PagerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NbPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.web.NbCourseCache.NbCourseCache;
@@ -372,8 +371,8 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         webSetting.setJavaScriptEnabled(true);
-        mJsProvider = new NbWebJsProvider();
-        wvSubjectWeb.addJavascriptInterface(mJsProvider, "xesApp");
+//        mJsProvider = new NbWebJsProvider();
+//        wvSubjectWeb.addJavascriptInterface(mJsProvider, "xesApp");
     }
 
     private void showLoadError() {
@@ -434,7 +433,7 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 //                showStepResult(correctNum, event.getResponseStr());
                 break;
             case NbCourseEvent.EVENT_TYPE_TOGGLEPACKUP:
-                hideResult();
+//                hideResult();
                 break;
             case NbCourseEvent.EVENT_TYPE_INTOTESTMODE:
 //                currentMode = MODE_TEST;
@@ -459,23 +458,23 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
     /**
      * 隐藏实验结果
      */
-    private void hideResult() {
-        //回放直接关闭页面返回视频流
-        if (mCourseWareEntity.isPlayBack()) {
-            mPresenter.closePager();
-        } else {
-//            if (resultLoaded) {
-            //强制提交 直接关闭页面
-            if (isForceSubmit && mPresenter != null) {
-                mPresenter.closePager();
-            } else {
-                webViewContainer.setVisibility(View.INVISIBLE);
-//                    btnReport.setVisibility(View.VISIBLE);
-            }
+//    private void hideResult() {
+//        //回放直接关闭页面返回视频流
+//        if (mCourseWareEntity.isPlayBack()) {
+//            mPresenter.closePager();
+//        } else {
+////            if (resultLoaded) {
+//            //强制提交 直接关闭页面
+//            if (isForceSubmit && mPresenter != null) {
+//                mPresenter.closePager();
+//            } else {
+//                webViewContainer.setVisibility(View.INVISIBLE);
+////                    btnReport.setVisibility(View.VISIBLE);
 //            }
-        }
-
-    }
+////            }
+//        }
+//
+//    }
 
     /**
      * 进入练习模式
@@ -677,39 +676,39 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 
     /** 获取需要加载的试题信息 */
     private void getNbTestInfo() {
-        if (mCourseWareEntity.isNbExperiment() == NbCourseWareEntity.NB_ADD_EXPERIMENT) {
-            mPresenter.getNBTestInfo(mCourseWareEntity, new HttpCallBack() {
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                    NbCourseWareEntity testInfo = NbHttpResponseParser.parseNbTestInfo(responseEntity);
-                    loadNbCourseWare(testInfo);
-                    NbCourseLog.getNbTestInfo(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "1", "");
+//        if (mCourseWareEntity.isNbExperiment() == NbCourseWareEntity.NB_ADD_EXPERIMENT) {
+//            mPresenter.getNBTestInfo(mCourseWareEntity, new HttpCallBack() {
+//                @Override
+//                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                    NbCourseWareEntity testInfo = NbHttpResponseParser.parseNbTestInfo(responseEntity);
+//                    loadNbCourseWare(testInfo);
+//                    NbCourseLog.getNbTestInfo(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "1", "");
+//
+//                }
+//
+//                @Override
+//                public void onPmError(ResponseEntity responseEntity) {
+//                    super.onPmError(responseEntity);
+//                    showLoadError();
+//                    NbCourseLog.getNbTestInfo(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "0", "获取Nb试题信息失败");
+//                }
+//
+//                @Override
+//                public void onPmFailure(Throwable error, String msg) {
+//                    super.onPmFailure(error, msg);
+//                    showLoadError();
+//                    NbCourseLog.getNbTestInfo(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "0", "获取Nb试题信息失败");
+//                }
+//            });
+//        } else if (mCourseWareEntity.isNbExperiment() == NbCourseWareEntity.NB_FREE_EXPERIMENT) {
+        mPresenter.getNBTestInfo(mCourseWareEntity, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                loadNbCourseWare(mCourseWareEntity);
+            }
+        });
 
-                }
-
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    super.onPmError(responseEntity);
-                    showLoadError();
-                    NbCourseLog.getNbTestInfo(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "0", "获取Nb试题信息失败");
-                }
-
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    super.onPmFailure(error, msg);
-                    showLoadError();
-                    NbCourseLog.getNbTestInfo(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "0", "获取Nb试题信息失败");
-                }
-            });
-        } else if (mCourseWareEntity.isNbExperiment() == NbCourseWareEntity.NB_FREE_EXPERIMENT) {
-            mPresenter.getNBTestInfo(mCourseWareEntity, new HttpCallBack() {
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                    loadNbCourseWare(mCourseWareEntity);
-                }
-            });
-
-        }
+//        }
 
     }
 
@@ -783,6 +782,12 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 //            return false;
 //        }
 
+    }
+
+    @Override
+    protected void onPageFinished(WebView view, String url) {
+        super.onPageFinished(view, url);
+        hideLoadingView();
     }
 
     /**
