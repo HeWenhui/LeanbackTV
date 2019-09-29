@@ -274,8 +274,13 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
                 mNbHttpManager.getNbTestInfo(mLiveId, LiveAppUserInfo.getInstance().getStuId(),
                         mNbCourseInfo.getExperimentId(), nbToken, requestCallBack);
             } else {
-                if (requestCallBack != null && h5CoursewarePager != null) {
-                    h5CoursewarePager.loadUrl();
+                if (requestCallBack != null) {
+                    try {
+                        requestCallBack.onPmSuccess(null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+//                    h5CoursewarePager.loadUrl();
                 }
             }
         } else {

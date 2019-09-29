@@ -30,11 +30,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.event.NbCourseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NbH5PagerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NbPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.web.NbCourseCache.NbCourseCache;
-import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.web.NbCourseCache.NbWebJsProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
@@ -42,11 +40,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NbCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountTextView;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
@@ -61,7 +54,7 @@ import ren.yale.android.cachewebviewlib.WebViewCache;
  */
 public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerAction, BaseNbH5CoursewarePager {
     // String url;
-    private NbWebJsProvider mJsProvider;
+//    private NbWebJsProvider mJsProvider;
 
     /**
      * 新课件缓存
@@ -105,7 +98,7 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
     private int correctNum;
     private NbCourseWareEntity mCourseWareEntity;
     private Object nbTestInfo;
-    private boolean isForceSubmit = false;
+//    private boolean isForceSubmit = false;
 
     /** 加试 url **/
     private String nbExamUrl;
@@ -142,7 +135,7 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
     private long loadingStartTime;
 
     /** 课件是否成功加载过 **/
-    private boolean nbLoaded;
+//    private boolean nbLoaded;
 
     /**
      * 是否已开始提交过程
@@ -159,6 +152,7 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
     public NbH5FreeX5Pager(Context context, NbCourseWareEntity entity, LivePagerBack livePagerBack, NbPresenter
             presenter) {
         super(context);
+        liveAndBackDebug = new ContextLiveAndBackDebug(context);
         mCourseWareEntity = entity;
         this.nbExamUrl = entity.getUrl();
         mLiveId = entity.getLiveId();
@@ -168,7 +162,7 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         setLoadTip("实验正在加载，请稍候");
         setLivePagerBack(livePagerBack);
         initData();
-        liveAndBackDebug = new ContextLiveAndBackDebug(context);
+
     }
 
     @Override
@@ -352,19 +346,19 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         wvSubjectWeb.setWebViewClient(client);
         wvSubjectWeb.setWebChromeClient(new NbWebChromClient());
         newCourseCache = new NbCourseCache(mContext, mCourseWareEntity);
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
 
-        mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View v) {
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(View v) {
-//                mView.removeCallbacks(hideStepResultTask);
-                EventBus.getDefault().unregister(NbH5FreeX5Pager.this);
-            }
-        });
+//        mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+//            @Override
+//            public void onViewAttachedToWindow(View v) {
+//            }
+//
+//            @Override
+//            public void onViewDetachedFromWindow(View v) {
+////                mView.removeCallbacks(hideStepResultTask);
+//                EventBus.getDefault().unregister(NbH5FreeX5Pager.this);
+//            }
+//        });
         getNbTestInfo();
         showLoadingView();
     }
@@ -388,77 +382,77 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNbCourseEvent(NbCourseEvent event) {
-
-        switch (event.getEventType()) {
-            case NbCourseEvent.EVENT_TYPE_ONLOAD:
-                hideLoadingView();
-                String url1 = nbExamUrl;
-                NbCourseLog.loadNbCourseWare(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "1", "load_success_url=" + url1);
-//                onSubmit = false;
-                if (!nbLoaded) {
-//                    tvTime.start();
-                    nbLoaded = true;
-                }
-                rlCtrContainer.setVisibility(View.VISIBLE);
-                long timeSpend = System.currentTimeMillis() - loadingStartTime;
-                NbCourseLog.sno4(liveAndBackDebug, mCourseWareEntity.getExperimentId(), wvSubjectWeb.getUrl(), isPreLaod(), timeSpend + "", mCourseWareEntity.isPlayBack(),
-                        "1", isFresh);
-                break;
-            case NbCourseEvent.EVENT_TYPE_LOAD_ERROR:
-                showLoadError();
-
-                String url = nbExamUrl;
-                NbCourseLog.loadNbCourseWare(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "0", "load_failed_url=" + url + "_errorMsg=" + event.getResponseStr());
-
-                wvSubjectWeb.setVisibility(View.INVISIBLE);
-                long timeSpend2 = System.currentTimeMillis() - loadingStartTime;
-                NbCourseLog.sno4(liveAndBackDebug, mCourseWareEntity.getExperimentId(), wvSubjectWeb.getUrl(), isPreLaod(), timeSpend2 + "", mCourseWareEntity.isPlayBack(),
-                        "0", isFresh);
-
-                break;
-//            case NbCourseEvent.EVENT_TYPE_SUBMIT_FAIL:
-//                onSubmit = false;
-//                XESToastUtils.showToast(mContext, !TextUtils.isEmpty(event.getResponseStr()) ? event.getResponseStr()
-//                        : "实验提交失败");
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onNbCourseEvent(NbCourseEvent event) {
 //
-//                NbCourseLog.submitNbCourseWare(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "0", !TextUtils.isEmpty(event.getResponseStr()) ? event.getResponseStr()
-//                        : "NB方提交失败");
+//        switch (event.getEventType()) {
+//            case NbCourseEvent.EVENT_TYPE_ONLOAD:
+//                hideLoadingView();
+//                String url1 = nbExamUrl;
+//                NbCourseLog.loadNbCourseWare(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "1", "load_success_url=" + url1);
+////                onSubmit = false;
+//                if (!nbLoaded) {
+////                    tvTime.start();
+//                    nbLoaded = true;
+//                }
+//                rlCtrContainer.setVisibility(View.VISIBLE);
+//                long timeSpend = System.currentTimeMillis() - loadingStartTime;
+//                NbCourseLog.sno4(liveAndBackDebug, mCourseWareEntity.getExperimentId(), wvSubjectWeb.getUrl(), isPreLaod(), timeSpend + "", mCourseWareEntity.isPlayBack(),
+//                        "1", isFresh);
 //                break;
-//            case NbCourseEvent.EVENT_TYPE_SUBMIT_SUCCESS:
-//                NbCourseLog.submitNbCourseWare(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "1", "Nb方提交成功");
-//                upLoadSubmitResult(event.getResponseStr());
+//            case NbCourseEvent.EVENT_TYPE_LOAD_ERROR:
+//                showLoadError();
+//
+//                String url = nbExamUrl;
+//                NbCourseLog.loadNbCourseWare(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "0", "load_failed_url=" + url + "_errorMsg=" + event.getResponseStr());
+//
+//                wvSubjectWeb.setVisibility(View.INVISIBLE);
+//                long timeSpend2 = System.currentTimeMillis() - loadingStartTime;
+//                NbCourseLog.sno4(liveAndBackDebug, mCourseWareEntity.getExperimentId(), wvSubjectWeb.getUrl(), isPreLaod(), timeSpend2 + "", mCourseWareEntity.isPlayBack(),
+//                        "0", isFresh);
+//
 //                break;
-            case NbCourseEvent.EVENT_TYPE_STEP_WRONG:
-                correctNum = 0;
-                break;
-            case NbCourseEvent.EVENT_TYPE_STEP_CORRECT:
-                correctNum++;
-//                showStepResult(correctNum, event.getResponseStr());
-                break;
-            case NbCourseEvent.EVENT_TYPE_TOGGLEPACKUP:
-//                hideResult();
-                break;
-            case NbCourseEvent.EVENT_TYPE_INTOTESTMODE:
-//                currentMode = MODE_TEST;
-//                intoTestMode();
-                break;
-            case NbCourseEvent.EVENT_TYPE_RESULTPAGE_ONLOAD:
-                try {
-                    String data = event.getResponseStr();
-                    JSONObject jsonObject = new JSONObject(data);
-                    String highrightcount = jsonObject.optString("rightCount", "0");
-                    String goldcount = jsonObject.optString("highGold", "0");
-                    NbCourseLog.sno7(liveAndBackDebug, mCourseWareEntity.getExperimentId(), mCourseWareEntity.isPlayBack(), "1", highrightcount, goldcount);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            default:
-                break;
-        }
-    }
+////            case NbCourseEvent.EVENT_TYPE_SUBMIT_FAIL:
+////                onSubmit = false;
+////                XESToastUtils.showToast(mContext, !TextUtils.isEmpty(event.getResponseStr()) ? event.getResponseStr()
+////                        : "实验提交失败");
+////
+////                NbCourseLog.submitNbCourseWare(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "0", !TextUtils.isEmpty(event.getResponseStr()) ? event.getResponseStr()
+////                        : "NB方提交失败");
+////                break;
+////            case NbCourseEvent.EVENT_TYPE_SUBMIT_SUCCESS:
+////                NbCourseLog.submitNbCourseWare(liveAndBackDebug, mCourseWareEntity.getExperimentId(), "1", "Nb方提交成功");
+////                upLoadSubmitResult(event.getResponseStr());
+////                break;
+//            case NbCourseEvent.EVENT_TYPE_STEP_WRONG:
+//                correctNum = 0;
+//                break;
+//            case NbCourseEvent.EVENT_TYPE_STEP_CORRECT:
+//                correctNum++;
+////                showStepResult(correctNum, event.getResponseStr());
+//                break;
+//            case NbCourseEvent.EVENT_TYPE_TOGGLEPACKUP:
+////                hideResult();
+//                break;
+//            case NbCourseEvent.EVENT_TYPE_INTOTESTMODE:
+////                currentMode = MODE_TEST;
+////                intoTestMode();
+//                break;
+//            case NbCourseEvent.EVENT_TYPE_RESULTPAGE_ONLOAD:
+//                try {
+//                    String data = event.getResponseStr();
+//                    JSONObject jsonObject = new JSONObject(data);
+//                    String highrightcount = jsonObject.optString("rightCount", "0");
+//                    String goldcount = jsonObject.optString("highGold", "0");
+//                    NbCourseLog.sno7(liveAndBackDebug, mCourseWareEntity.getExperimentId(), mCourseWareEntity.isPlayBack(), "1", highrightcount, goldcount);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
     /**
      * 隐藏实验结果
@@ -706,13 +700,17 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 //                }
 //            });
 //        } else if (mCourseWareEntity.isNbExperiment() == NbCourseWareEntity.NB_FREE_EXPERIMENT) {
-        mPresenter.getNBTestInfo(mCourseWareEntity, new HttpCallBack() {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                loadNbCourseWare(mCourseWareEntity);
-            }
-        });
+        if (mCourseWareEntity.getNbToken() != null) {
+            loadNbCourseWare(mCourseWareEntity);
+        } else {
+            mPresenter.getNBTestInfo(mCourseWareEntity, new HttpCallBack() {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    loadNbCourseWare(mCourseWareEntity);
+                }
+            });
 
+        }
 //        }
 
     }

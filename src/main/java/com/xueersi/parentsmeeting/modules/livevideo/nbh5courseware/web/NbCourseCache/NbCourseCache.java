@@ -125,11 +125,16 @@ public class NbCourseCache {
                         e.printStackTrace();
                     }
                 } else {
-                    logger.i("需要加载的url:" + url + " 寻找的本地文件不存在，路径:" + resFile.getPath());
+                    if (resFile != null) {
+                        logger.i("需要加载的url:" + url + " 寻找的本地文件不存在，路径:" + resFile.getPath());
+                    } else {
+                        logger.i("需要加载的url:" + url + " 寻找的本地文件不存在，路径为null:");
+                    }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            logger.e(e.getMessage());
         }
         return response;
     }
