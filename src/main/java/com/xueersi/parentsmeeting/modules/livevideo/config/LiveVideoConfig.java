@@ -71,6 +71,8 @@ public class LiveVideoConfig {
     public final static int LIVE_PATTERN_2 = 2;
     /** 半身直播直播类型 */
     public static final int LIVE_TYPE_HALFBODY = 6;
+    /** 英语小组课 */
+    public static final int LIVE_PATTERN_GROUP_CLASS = 8;
     /** 半身直播直播类型-小组 */
     public static final int LIVE_TYPE_HALFBODY_CLASS = 9;
     /** 视频类型为站立直播体验课 */

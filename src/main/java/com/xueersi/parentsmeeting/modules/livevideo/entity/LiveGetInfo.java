@@ -364,7 +364,8 @@ public class LiveGetInfo {
     /** 灰度控制开关控制*/
     LiveModuleConfigInfo liveModuleConfigInfo;
 
-
+    /** 英语1v2小组课*/
+    RecordStandliveEntity recordStandliveEntity;
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -1765,6 +1766,13 @@ public class LiveGetInfo {
         this.liveModuleConfigInfo = liveModuleConfigInfo;
     }
 
+    public RecordStandliveEntity getRecordStandliveEntity() {
+        return recordStandliveEntity;
+    }
+
+    public void setRecordStandliveEntity(RecordStandliveEntity recordStandliveEntity) {
+        this.recordStandliveEntity = recordStandliveEntity;
+    }
 
     /**
      * 根据moduleId 查找 Plugin
