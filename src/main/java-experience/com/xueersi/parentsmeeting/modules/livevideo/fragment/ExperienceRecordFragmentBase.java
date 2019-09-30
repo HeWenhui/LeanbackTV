@@ -171,10 +171,6 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
     protected ExperienceIRCBll experienceIrcBll;
     HalfBodyExperienceLearnFeedbackBll learnFeedbackBll;
     ExperienceQuitFeedbackBll experienceQuitFeedbackBll;
-    /**
-     * 签到业务
-     */
-    protected ExpRollCallBll expRollCallBll;
 
     protected ExperienceBusiness expBusiness;
 
@@ -588,7 +584,7 @@ public class ExperienceRecordFragmentBase extends LiveBackVideoFragmentBase impl
         }
 
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, playBackEntity.getChapterId()));
-        expRollCallBll = new ExpRollCallBll(activity, liveBackBll, expLiveInfo, expAutoLive.getTermId());
+        ExpRollCallBll expRollCallBll = new ExpRollCallBll(activity, liveBackBll, expLiveInfo, expAutoLive.getTermId());
         liveBackBll.addBusinessBll(expRollCallBll);
 
     }

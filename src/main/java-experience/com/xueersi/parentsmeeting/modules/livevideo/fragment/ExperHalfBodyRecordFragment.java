@@ -114,7 +114,8 @@ public class ExperHalfBodyRecordFragment extends ExperienceRecordFragmentBase {
         experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity, liveBackBll, false);
         experienceQuitFeedbackBll.setLiveVideo(liveBackPlayVideoFragment);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
-        liveBackBll.onCreate();
+        ExpRollCallBll expRollCallBll = new ExpRollCallBll(activity, liveBackBll, expLiveInfo, expAutoLive.getTermId());
+        liveBackBll.addBusinessBll(expRollCallBll);
     }
 
     @Override

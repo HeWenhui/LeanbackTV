@@ -53,6 +53,7 @@ public class ExperLiveMessageBll implements KeyboardUtil.OnKeyboardShowingListen
         if (mLiveMessagePager != null) {
             liveViewAction.removeView(mLiveMessagePager.getRootView());
             isRegister = mLiveMessagePager.isRegister();
+            mLiveMessagePager.onDestroy();
         }
         if (mode == ExperConfig.COURSE_STATE_2) {
             ExperLiveMessageStandPager experLiveMessageStandPager = new ExperLiveMessageStandPager(
@@ -218,5 +219,12 @@ public class ExperLiveMessageBll implements KeyboardUtil.OnKeyboardShowingListen
     @Override
     public void onOpenVoiceNotic(boolean openVoice, String type) {
 
+    }
+
+    public void onDestroy() {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onDestroy();
+            mLiveMessagePager = null;
+        }
     }
 }

@@ -134,7 +134,7 @@ public class ExperStandRecordFragmentBase extends ExperienceRecordFragmentBase {
         experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity, liveBackBll, true);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
 
-        expRollCallBll = new ExpRollCallBll(activity, liveBackBll, expLiveInfo, expAutoLive.getTermId());
+        ExpRollCallBll expRollCallBll = new ExpRollCallBll(activity, liveBackBll, expLiveInfo, expAutoLive.getTermId());
         liveBackBll.addBusinessBll(expRollCallBll);
     }
 

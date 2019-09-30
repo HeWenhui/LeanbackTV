@@ -31,6 +31,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +41,7 @@ import java.util.List;
 /**
  * 体验课聊天，录直播
  */
-public class ExperHalfbodyIRCMessBll extends LiveBackBaseBll implements MessageAction, ExperModeChange {
+public class ExperHalfbodyIRCMessBll extends LiveBackBaseBll implements MessageAction, ExperModeChange, TopicAction, NoticeAction {
     private BaseLiveMessagePager mLiveMessagePager;
     private XesAtomicInteger peopleCount = new XesAtomicInteger(0);
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
@@ -67,6 +70,7 @@ public class ExperHalfbodyIRCMessBll extends LiveBackBaseBll implements MessageA
         boolean isRegister = false;
         if (mLiveMessagePager != null) {
             getLiveViewAction().removeView(mLiveMessagePager.getRootView());
+            mLiveMessagePager.onDestroy();
             isRegister = mLiveMessagePager.isRegister();
         }
         BaseLiveMediaControllerBottom liveMediaControllerBottom = ProxUtil.getProxUtil().get(activity, BaseLiveMediaControllerBottom.class);
@@ -303,4 +307,145 @@ public class ExperHalfbodyIRCMessBll extends LiveBackBaseBll implements MessageA
         return roomChatAvalible;
     }
 
+    @Override
+    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
+        // 老师聊天
+        if (type == XESCODE.TEACHER_MESSAGE) {
+            String name;
+            if (sourceNick.startsWith("t")) {
+                name = "主讲老师";
+                String teacherImg = "";
+                String message = "";
+                try {
+                    teacherImg = liveGetInfo.getMainTeacherInfo().getTeacherImg();
+                    message = data.getString("msg");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                mLiveMessagePager.onMessage(target, sourceNick, "", "", message, teacherImg);
+            } else {
+                name = "辅导老师";
+                String teamId = liveGetInfo.getStudentLiveInfo().getTeamId();
+                String to = "";
+                String message = "";
+
+                try {
+                    to = data.optString("to", "All");
+                    message = data.getString("msg");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if ("All".equals(to) || teamId.equals(to)) {
+                    String teacherIMG = liveGetInfo.getTeacherIMG();
+                    mLiveMessagePager.onMessage(target, sourceNick, "", "", message, teacherIMG);
+                }
+            }
+        } else if (type == XESCODE.GAG) {
+            // 禁言
+            try {
+                String id = data.getString("id");
+                boolean disable = data.getBoolean("disable");
+                IrcAction ircAction = ProxUtil.getProvide(activity, IrcAction.class);
+                String nickName = "" + ircAction.getNickname();
+                if (nickName.equals(id)) {
+                    mLiveMessagePager.onDisable(disable, true);
+                    liveGetInfo.getLiveTopic().setDisable(true);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (type == XESCODE.OPENCHAT) {
+
+            // 开关聊天区
+            try {
+                String mode = "";
+
+                if (sourceNick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
+                    mode = LiveTopic.MODE_TRANING;
+                } else {
+                    mode = LiveTopic.MODE_CLASS;
+                }
+
+                boolean open = data.getBoolean("open");
+                mExpIrcState.setChatOpen(open);
+                mLiveMessagePager.onopenchat(open, mode, true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public int[] getNoticeFilter() {
+        return new int[]{XESCODE.TEACHER_MESSAGE, XESCODE.GAG, XESCODE.OPENCHAT};
+    }
+
+    @Override
+    public void onTopic(LiveTopic liveTopic, JSONObject json, boolean modeChange) {
+        try {
+            handleTopicChat(json);
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
+        try {
+            if (!json.has("disable_speaking")) {
+                return;
+            }
+            JSONArray disableSpeakingArray = json.getJSONArray("disable_speaking");
+            boolean selfDisable = false;
+
+            for (int i = 0; i < disableSpeakingArray.length(); i++) {
+                JSONObject object = disableSpeakingArray.getJSONObject(i);
+                String id = object.getString("id");
+                IrcAction ircAction = ProxUtil.getProvide(activity, IrcAction.class);
+                if (id.equals("" + ircAction.getNickname())) {
+                    selfDisable = true;
+                    break;
+                }
+            }
+
+            if (liveGetInfo.getLiveTopic().isDisable() != selfDisable) {
+                liveGetInfo.getLiveTopic().setDisable(true);
+                mLiveMessagePager.onDisable(selfDisable, true);
+            }
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
+    }
+
+    /**
+     * 处理聊天topic
+     *
+     * @param json
+     * @throws Exception
+     */
+    protected void handleTopicChat(JSONObject json) throws Exception {
+        if (!json.has("room_2")) {
+            return;
+        }
+
+        json = json.getJSONObject("room_2");
+
+        if (!json.has("isCalling")) {
+            return;
+        }
+
+        boolean openchat = json.getBoolean("openchat");
+
+        if (mExpIrcState.openchat() != openchat) {
+            mExpIrcState.setChatOpen(openchat);
+            mLiveMessagePager.onopenchat(openchat, LiveTopic.MODE_TRANING, true);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onDestroy();
+            mLiveMessagePager = null;
+        }
+    }
 }

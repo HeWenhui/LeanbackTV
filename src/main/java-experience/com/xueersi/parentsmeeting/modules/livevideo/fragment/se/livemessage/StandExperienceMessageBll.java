@@ -508,6 +508,9 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mRoomAction != null) {
+            mRoomAction.onDestroy();
+        }
     }
 
     @Override
