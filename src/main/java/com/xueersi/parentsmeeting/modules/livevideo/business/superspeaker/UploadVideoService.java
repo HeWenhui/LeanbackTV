@@ -60,16 +60,14 @@ public class UploadVideoService extends Service {
     private AtomicInteger uploadVideoNum = new AtomicInteger(3);
     private XesStsUploadListener videoUploadListener;
 
-    private String uploadVideoSetKey = "";
+//    private String uploadVideoSetKey;
 
     private class VideoUploadListener implements XesStsUploadListener {
         String videoLocalUrl;
 
         public VideoUploadListener(String videoLocalUrl) {
             this.videoLocalUrl = videoLocalUrl;
-            if (uploadVideoSetKey != null) {
-//                courseWeareList.add(uploadVideoSetKey);
-            }
+//            courseWeareList.add(uploadVideoSetKey);
         }
 
         @Override
@@ -94,9 +92,7 @@ public class UploadVideoService extends Service {
             latch.countDown();
             try {
                 latch.await();
-                if (!TextUtils.isEmpty(uploadVideoSetKey)) {
-//                    courseWeareList.remove(uploadVideoSetKey);
-                }
+//                courseWeareList.remove(uploadVideoSetKey);
                 uploadSuccess();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -109,9 +105,7 @@ public class UploadVideoService extends Service {
 //            uploadSuccess();
             logger.i("video upload fail");
             //重试uploadVideoNum次
-            if (!TextUtils.isEmpty(uploadVideoSetKey)) {
-//                courseWeareList.remove(uploadVideoSetKey);
-            }
+//            courseWeareList.remove(uploadVideoSetKey);
             if (uploadVideoNum.get() > 0) {
                 uploadVideoNum.getAndDecrement();
                 uploadVideo(videoLocalUrl);
@@ -434,6 +428,8 @@ public class UploadVideoService extends Service {
     }
 
     private void performUploadUrl(Intent intent) {
+        if (intent == null)
+            return;
         latch = new CountDownLatch(2);
 //        liveId = intent.getStringExtra("liveId");
 //        courseWareId = intent.getStringExtra("courseWareId");
@@ -448,7 +444,7 @@ public class UploadVideoService extends Service {
 //        String videoLocalUrl = intent.getStringExtra("videoRemoteUrl");
         String audioLocalUrl = uploadVideoEntity.getAudioLocalUrl();
         String videoLocalUrl = uploadVideoEntity.getVideoLocalUrl();
-        uploadVideoSetKey = ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + uploadVideoEntity.getLiveId() + "_" + courseWareId;
+//        uploadVideoSetKey = ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + uploadVideoEntity.getLiveId() + "_" + courseWareId;
         audioUploadListener = new AudioUploadListener(audioLocalUrl);
         videoUploadListener = new VideoUploadListener(videoLocalUrl);
         uploadVideo(videoLocalUrl);
