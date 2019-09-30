@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.FirstPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.Map;
 /**
  * Created by：WangDe on 2018/12/4 20:46
  */
-public class ExperienceQuitFeedbackPager extends LiveBasePager {
+public class ExperienceQuitFeedbackPager extends LiveBasePager implements FirstPager {
     private CheckBox cbItem1;
     private CheckBox cbItem2;
     private CheckBox cbItem3;

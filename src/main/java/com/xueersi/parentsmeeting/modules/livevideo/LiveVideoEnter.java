@@ -9,16 +9,15 @@ import android.widget.Toast;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.route.ReflexCenter;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.AIExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
 
@@ -479,7 +478,9 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentToExperience(final Activity context, final Bundle bundle, final String where) {
-        ExperEnter.intentToExperience(context, bundle, where);
+//        ExperEnter.intentToExperience(context, bundle, where);
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
+                "intentToExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
         return true;
     }
 
@@ -491,12 +492,16 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentToHalfBodyExperience(final Activity context, final Bundle bundle, final String where) {
-        ExperEnter.intentToHalfBodyExperience(context, bundle, where);
+//        ExperEnter.intentToHalfBodyExperience(context, bundle, where);
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
+                "intentToHalfBodyExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
         return true;
     }
 
     public static boolean intentToLiveBackExperience(final Activity context, final Bundle bundle, final String where) {
-        ExperEnter.intentToLiveBackExperience(context, bundle, where);
+//        ExperEnter.intentToLiveBackExperience(context, bundle, where);
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
+                "intentToLiveBackExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
         return true;
     }
 
@@ -507,7 +512,9 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentToAIExperience(final Activity context, final Bundle bundle, final String where) {
-        ExperEnter.intentToAIExperience(context, bundle, where);
+//        ExperEnter.intentToAIExperience(context, bundle, where);
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
+                "intentToAIExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
         return true;
     }
 
