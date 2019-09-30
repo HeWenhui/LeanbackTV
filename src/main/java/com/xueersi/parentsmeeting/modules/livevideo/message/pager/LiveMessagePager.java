@@ -494,7 +494,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             tvMessageItem.setAutoLinkMask(0);
                             if (getInfo.getIsOpenNewCourseWare() == 1) {
                                 SpannableString itemSpan;
-                                SpannableString evenSpan = new SpannableString("icon ");
+                                SpannableString evenSpan = new SpannableString("icon");
                                 itemSpan = addEvenDriveMessageNum(evenSpan, entity.getEvenNum(), entity.getType());
                                 if (itemSpan != null) {
                                     tvMessageItem.setText(itemSpan);

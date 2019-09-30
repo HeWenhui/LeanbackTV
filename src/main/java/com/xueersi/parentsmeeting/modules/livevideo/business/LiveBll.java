@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
@@ -29,9 +30,12 @@ import com.xueersi.ui.dataload.PageDataLoadEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
+import org.xutils.xutils.http.RequestParams;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
 
