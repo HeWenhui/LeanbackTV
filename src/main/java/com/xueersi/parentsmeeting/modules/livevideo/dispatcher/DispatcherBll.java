@@ -254,7 +254,7 @@ public class DispatcherBll extends BaseBll {
                         videoEntity.setGradId(entity.getAutoLive().getGradId());
                         videoEntity.setSubjectId(entity.getAutoLive().getSubjectId());
                         videoEntity.setPattern(entity.getPattern());
-//                        videoEntity.setPattern(6);
+
                         videoEntity.setSpeechEvalUrl(entity.getSpeechEvalUrl());
                         videoEntity.setSpeechEvalSubmitUrl(entity.getSpeechEvalSubmitUrl());
                         videoEntity.setSubmitCourseWareH5AnswerUseVoiceUrl(entity
