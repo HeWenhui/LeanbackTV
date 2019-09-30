@@ -39,12 +39,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
@@ -819,14 +818,7 @@ public class LiveMessageStandPkPager extends BaseLiveMessagePager {
     }
 
     @Override
-//    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-    public void onMessage(MessageShowEntity messageShowEntity) {
-        if (messageShowEntity == null) {
-            return;
-        }
-        String sender = messageShowEntity.getSender();
-        String text = messageShowEntity.getText();
-        String headurl = messageShowEntity.getHeadurl();
+    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = getInfo.getMainTeacherInfo().getTeacherName();
         } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
@@ -836,15 +828,11 @@ public class LiveMessageStandPkPager extends BaseLiveMessagePager {
     }
 
     @Override
-//    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
-//                                 final String message) {
-    public void onPrivateMessage(MessageShowEntity messageShowEntity) {
-
-        if (isCloseChat() || messageShowEntity == null) {
+    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
+                                 final String message) {
+        if (isCloseChat()) {
             return;
         }
-        final String message = messageShowEntity.getText();
-        final String sender = messageShowEntity.getSender();
         mView.post(new Runnable() {
             @Override
             public void run() {

@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 
 /**
@@ -25,15 +24,11 @@ public interface RoomAction {
     void onUserList(String channel, User[] users);
 
     /** 正常消息 */
-//    void onMessage(String target, String sender, String login, String hostname, String text, String headurl);
-
-    void onMessage(MessageShowEntity messageShowEntity);
+    void onMessage(String target, String sender, String login, String hostname, String text, String headurl);
 
     /** 私聊消息 */
-//    void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String
-//            message);
-
-    void onPrivateMessage(MessageShowEntity messageShowEntity);
+    void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String
+            message);
 
     /** 用户加入 */
     void onJoin(String target, String sender, String login, String hostname);
@@ -75,10 +70,8 @@ public interface RoomAction {
 
     /** 关闭开启语音弹幕 */
     void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice);
-
     /**
      * 理科辅导老师开启关闭鲜花
-     *
      * @param open
      * @param b
      */
@@ -91,10 +84,9 @@ public interface RoomAction {
 
     /**
      * 理科，主讲和辅导切换的时候，给出提示（切流）
-     *
      * @param oldMode
      * @param mode
-     * @param isShowNoticeTips  为false的时候，默认显示"已切换到 主讲/辅导模式"
+     * @param isShowNoticeTips 为false的时候，默认显示"已切换到 主讲/辅导模式"
      * @param iszjlkOpenbarrage
      * @param isFDLKOpenbarrage
      */
@@ -102,7 +94,6 @@ public interface RoomAction {
 
     /**
      * 教师端发起语音相关notic时，给出提示 关闭当前语音聊天
-     *
      * @param openVoice
      * @param type
      */

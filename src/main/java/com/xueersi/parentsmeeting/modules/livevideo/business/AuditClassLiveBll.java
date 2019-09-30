@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -25,7 +26,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
@@ -249,7 +249,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
             if (mRoomAction != null) {
-                mRoomAction.onMessage(new MessageShowEntity(target, sender, login, hostname, text, ""));
+                mRoomAction.onMessage(target, sender, login, hostname, text, "");
             }
         }
 
@@ -600,7 +600,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         String nickname = mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
 
-        mIRCMessage = new NewAuditIRCMessage(mContext, nickname, mGetInfo.getId(), mGetInfo.getStudentLiveInfo().getClassId(), channel);
+        mIRCMessage = new NewAuditIRCMessage(mContext, nickname, mGetInfo.getId(),mGetInfo.getStudentLiveInfo().getClassId(), channel);
         ((NewAuditIRCMessage) mIRCMessage).setLiveAndBackDebug(this);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();

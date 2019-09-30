@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -22,7 +23,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
@@ -35,13 +35,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePag
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveMainMsgPager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveTrainMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallChineseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveTrainMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 
 import java.util.ArrayList;
@@ -523,15 +523,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     }
 
     @Override
-//    public void onMessage(final String target, final String sender, final String login, final String hostname, final
-//    String text, final String headurl) {
-    public void onMessage(final MessageShowEntity messageShowEntity) {
-        if (messageShowEntity == null) {
-            return;
-        }
-        final String target = messageShowEntity.getTarget();
-//        final String sender = messageShowEntity.getSender();
-
+    public void onMessage(final String target, final String sender, final String login, final String hostname, final
+    String text, final String headurl) {
         if (!"NOTICE".equals(target) && mLiveMessagePager.isCloseChat()) {//只看老师
             return;
         }
@@ -539,8 +532,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             @Override
             public void run() {
                 if (mLiveMessagePager != null) {
-//                    mLiveMessagePager.onMessage(target, sender, login, hostname, text, headurl);
-                    mLiveMessagePager.onMessage(messageShowEntity);
+                    mLiveMessagePager.onMessage(target, sender, login, hostname, text, headurl);
                 }
             }
         });
@@ -553,15 +545,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     }
 
     @Override
-//    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
-//                                 final String
-//                                         message) {
-    public void onPrivateMessage(MessageShowEntity messageShowEntity) {
-        if (messageShowEntity == null) {
-            return;
-        }
-        boolean isSelf = messageShowEntity.isSelf();
-        String message = messageShowEntity.getText();
+    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
+                                 final String
+                                         message) {
         if (isSelf && "T".equals(message)) {
             mHandler.post(new Runnable() {
                 @Override
@@ -574,7 +560,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             });
         } else {
             if (mLiveMessagePager != null) {
-                mLiveMessagePager.onPrivateMessage(messageShowEntity);
+                mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
             }
         }
     }

@@ -57,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
@@ -64,7 +65,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -1194,15 +1194,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
-//    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-    public void onMessage(MessageShowEntity messageShowEntity) {
-        if (messageShowEntity == null) {
-            return;
-        }
-        String target = messageShowEntity.getTarget();
-        String sender = messageShowEntity.getSender();
-        String text = messageShowEntity.getText();
-        String headurl = messageShowEntity.getHeadurl();
+    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         Loger.e("LiveMessagerPager", "=====>onMessage called");
         if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             // 专属老师，如果当前是辅导态，则不显示主讲老师发的聊天
@@ -1217,14 +1209,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
-//    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
-//                                 final String message) {
-    public void onPrivateMessage(MessageShowEntity messageShowEntity) {
-        if (isCloseChat() || isBigQue || messageShowEntity == null) {
+    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
+                                 final String message) {
+        if (isCloseChat() || isBigQue) {
             return;
         }
-        final String message = messageShowEntity.getText();
-        final String sender = messageShowEntity.getSender();
         mainHandler.post(new Runnable() {
             @Override
             public void run() {

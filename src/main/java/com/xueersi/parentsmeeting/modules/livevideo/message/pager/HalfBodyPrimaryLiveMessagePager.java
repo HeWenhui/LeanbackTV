@@ -7,12 +7,12 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -160,14 +160,13 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
-//    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-    public void onMessage(MessageShowEntity messageShowEntity) {
+    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
 
     }
 
     @Override
-//    public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
-    public void onPrivateMessage(MessageShowEntity messageShowEntity) {
+    public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
+
     }
 
     @Override

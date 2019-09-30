@@ -47,29 +47,28 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.PreSchoolHotwordItem;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BasePrimaryScienceMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.PreSchoolHotwordItem;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BasePrimaryScienceMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
@@ -84,11 +83,10 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 
 /**
- * 幼教辅导态 聊天展示
- *
- * @author chekun
- * created  at 2019/5/6 18:41
- */
+*幼教辅导态 聊天展示
+*@author chekun
+*created  at 2019/5/6 18:41
+*/
 public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
     private static String TAG = "PreSchoolLiveTrainMsgPager";
     /** 聊天，默认开启 */
@@ -403,7 +401,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
         btMsgCommon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if (!first) {
+                if(!first){
                     initCommonWord();
                     first = true;
                 }
@@ -417,7 +415,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
                 int[] location = new int[2];
                 v.getLocationOnScreen(location);
                 //在控件上方显示
-                logger.i("onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
+                logger.i( "onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
                 rlLivevideoCommonWord.setVisibility(View.VISIBLE);
             }
         });
@@ -487,7 +485,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
         btMessageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logger.i("onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                logger.i( "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                 Editable editable = etMessageContent.getText();
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
@@ -541,7 +539,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
                         .OnKeyboardShowingListener() {
                     @Override
                     public void onKeyboardShowing(boolean isShowing) {
-                        logger.i("onKeyboardShowing:isShowing=" + isShowing);
+                        logger.i( "onKeyboardShowing:isShowing=" + isShowing);
                         if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                             onTitleShow(true);
                         }
@@ -575,7 +573,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
     public void initData() {
         long before = System.currentTimeMillis();
         super.initData();
-        logger.i("initData:time1=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         if (getInfoGoldNum == 0) {
             liveThreadPoolExecutor.execute(new Runnable() {
@@ -604,7 +602,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
         int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
-        logger.i("initData:minisize=" + minisize);
+        logger.i( "initData:minisize=" + minisize);
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
@@ -673,7 +671,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
             }
         };
         lvMessage.setAdapter(messageAdapter);
-        logger.i("initData:time2=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mView.post(new Runnable() {
             @Override
@@ -681,9 +679,9 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
                 initDanmaku();
             }
         });
-        logger.i("initData:time3=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        logger.i("initData:time4=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 
@@ -735,10 +733,10 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
         });
         tvMessageGold = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold);
         tvMessageGoldLable = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold_lable);
-        logger.i("initFlower:time1=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mFlowerWindow = flowerWindow;
-        logger.i("initFlower:time2=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         Button flowerSend = flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend);
         mIce = flowerContentView.findViewById(R.id.iv_present_ice);
@@ -821,7 +819,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
                 }
             }
         });
-        logger.i("initFlower:time3=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 
@@ -833,7 +831,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
     /**
      * 热词消息指令
      **/
-    private String[] mHotwordCmd = {"1", "2", "3", "[e]em_19[e]", "[e]em_18[e]"};
+    private String[] mHotwordCmd = {"1", "2", "3", "[e]em_19[e]","[e]em_18[e]"};
     /**
      * 热词资源集
      */
@@ -886,16 +884,15 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
 
     /**
      * 热词埋点日志
-     *
-     * @param hotwordCmd 热词指令
+     * @param hotwordCmd  热词指令
      */
     private void upLoadHotWordLog(String hotwordCmd) {
         try {
-            if (getInfo != null) {
-                HotWordLog.hotWordSend(this.liveAndBackDebug, hotwordCmd, HotWordLog.LIVETYPE_PRESCHOOL,
-                        getInfo.getStudentLiveInfo().getClassId(), getInfo.getStudentLiveInfo().getTeamId(), getInfo.getStudentLiveInfo().getCourseId());
+            if(getInfo != null){
+                HotWordLog.hotWordSend(this.liveAndBackDebug,hotwordCmd,HotWordLog.LIVETYPE_PRESCHOOL,
+                        getInfo.getStudentLiveInfo().getClassId(),getInfo.getStudentLiveInfo().getTeamId(),getInfo.getStudentLiveInfo().getCourseId());
             }
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -1199,7 +1196,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
             if (topMargin != params.topMargin) {
                 params.topMargin = topMargin;
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-                logger.e("setVideoWidthAndHeight:topMargin=" + params.topMargin);
+                logger.e( "setVideoWidthAndHeight:topMargin=" + params.topMargin);
             }
             int bottomMargin = (ScreenUtils.getScreenHeight() - height) / 2;
             params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
@@ -1307,14 +1304,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
     }
 
     @Override
-//    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-    public void onMessage(MessageShowEntity messageShowEntity) {
-        if (messageShowEntity == null) {
-            return;
-        }
-        String sender = messageShowEntity.getSender();
-        String text = messageShowEntity.getText();
-        String headurl = messageShowEntity.getHeadurl();
+    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         Loger.e("LiveMessagerPager", "=====>onMessage called");
         if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
@@ -1325,14 +1315,11 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
     }
 
     @Override
-//    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
-//                                 final String message) {
-    public void onPrivateMessage(MessageShowEntity messageShowEntity) {
-        if (isCloseChat() || messageShowEntity == null) {
+    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
+                                 final String message) {
+        if (isCloseChat()) {
             return;
         }
-        final String message = messageShowEntity.getText();
-        final String sender = messageShowEntity.getSender();
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1745,7 +1732,6 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
             view.setVisibility(View.VISIBLE);
         }
     }
-
     // 03.16 模拟显示聊天人数
     public void showPeopleCount(int num) {
         tvMessageCount.setText(num + "人正在上课");

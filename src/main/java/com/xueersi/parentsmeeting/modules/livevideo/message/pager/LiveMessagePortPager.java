@@ -57,7 +57,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MessageShowEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
@@ -221,7 +220,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND || (event != null && event.getKeyCode() == KeyEvent
                         .KEYCODE_ENTER)) {
-                    logger.i("onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                    logger.i( "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                     Editable editable = etMessageContent.getText();
                     String msg = editable.toString();
                     if (!StringUtils.isSpace(msg)) {
@@ -320,7 +319,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 .OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
-                logger.i("onKeyboardShowing:isShowing=" + isShowing);
+                logger.i( "onKeyboardShowing:isShowing=" + isShowing);
                 if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                     onTitleShow(true);
                 }
@@ -424,7 +423,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             // 04.04 获取到数据之后的逻辑处理
             if (objData.length > 0) {
                 mData = (MoreChoice) objData[0];
-                logger.e("mData:" + mData);
+                logger.e( "mData:" + mData);
                 mChoices.clear();
                 mChoices.addAll(mData.getCases());
                 LiveVideoConfig.MORE_COURSE = mChoices.size();
@@ -861,14 +860,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     }
 
     @Override
-//    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-    public void onMessage(MessageShowEntity messageShowEntity) {
-        if (messageShowEntity == null) {
-            return;
-        }
-        String sender = messageShowEntity.getSender();
-        String text = messageShowEntity.getText();
-        String headurl = messageShowEntity.getHeadurl();
+    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
@@ -878,15 +870,11 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     }
 
     @Override
-//    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
-//                                 final String message) {
-    public void onPrivateMessage(MessageShowEntity messageShowEntity) {
-
-        if (isCloseChat() || messageShowEntity == null) {
+    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
+                                 final String message) {
+        if (isCloseChat()) {
             return;
         }
-        final String message = messageShowEntity.getText();
-        final String sender = messageShowEntity.getSender();
         mView.post(new Runnable() {
             @Override
             public void run() {
