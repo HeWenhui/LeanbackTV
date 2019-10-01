@@ -59,34 +59,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
 
         <activity
-            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:process=":livevideo"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
-
-        <activity
-            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceThreeScreenActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:process=":livevideo"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
-
-        <activity
-            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:process=":livevideo"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
-
-        <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AIExperienceLiveVideoActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
-
-        <activity
-            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.AIExperienceLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
@@ -101,12 +74,6 @@
 
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.HalfBodyLiveExperienceActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
-        <activity
-            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden" />
