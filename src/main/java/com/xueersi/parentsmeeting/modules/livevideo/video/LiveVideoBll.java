@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -168,11 +169,22 @@ public class LiveVideoBll implements VPlayerListenerReg {
             }
         }, mLiveType, getInfo, liveTopic);
         liveGetPlayServer.setVideoAction(mVideoAction);
-        liveGetPlayServer(liveTopic.getMode(), false);
+
+        if (getInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+            //英语1v2录直播 播放文件
+            String videoPath = getInfo.getRecordStandliveEntity().getRecordUrl();
+            long diffBegin = getInfo.getRecordStandliveEntity().getDiffBegin();
+            if (diffBegin >= 0) {
+                //起播时间大于0 才播放
+                videoFragment.playPSFile(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            }
+        } else {
+            liveGetPlayServer(liveTopic.getMode(), false);
+        }
     }
 
     /**
-     * 直播模式变化H
+     * 直播模式变化
      *
      * @param mode      模式
      * @param isPresent 老师在不在直播间H
@@ -419,6 +431,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
             mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
+
+            if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+                //英语1v2小组课 设置起播时间
+                long diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
+                videoFragment.seekTo(diffBegin);
+            }
         }
 
         @Override

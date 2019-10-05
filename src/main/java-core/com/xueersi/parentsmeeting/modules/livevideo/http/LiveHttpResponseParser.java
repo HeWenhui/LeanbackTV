@@ -55,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.MyRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RecordStandliveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
@@ -581,6 +582,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
             }
             getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl"));
+
+            //英语1V2小组课
+            JSONObject recordStandLiveJson = data.optJSONObject("recordStandlive");
+            if (recordStandLiveJson != null) {
+                RecordStandliveEntity recordStandliveEntity = new RecordStandliveEntity();
+                recordStandliveEntity.setDiffBegin(recordStandLiveJson.optInt("diffBegin"));
+                recordStandliveEntity.setMetaDataUrl(recordStandLiveJson.optString("metaDataUrl"));
+                recordStandliveEntity.setRecordUrl(recordStandLiveJson.optString("recordUrl"));
+                getInfo.setRecordStandliveEntity(recordStandliveEntity);
+            }
+
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);

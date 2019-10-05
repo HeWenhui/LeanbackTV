@@ -95,9 +95,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
                 LiveCrashReport.postCatchedException(TAG, e);
             }
         } else if(pattern == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS){
-            //英语1V2
+            //英语1V2小组课
             try{
-                String fname = "com.xueersi.parentsmeeting.modules.groupclass.main.GroupClassLiveFragment";
+                String fname = "com.xueersi.parentsmeeting.modules.groupclass.fragment.GroupClassLiveFragment";
                 LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
                 return fragmentBase;
             } catch (Exception e){

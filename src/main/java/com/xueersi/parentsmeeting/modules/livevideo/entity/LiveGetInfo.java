@@ -365,7 +365,7 @@ public class LiveGetInfo {
     LiveModuleConfigInfo liveModuleConfigInfo;
 
     /** 英语1v2小组课*/
-    RecordStandliveEntity recordStandliveEntity;
+    private RecordStandliveEntity recordStandliveEntity;
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
