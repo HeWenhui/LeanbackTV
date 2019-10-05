@@ -1,9 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -15,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransA
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPopWindowPager;
@@ -23,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -109,7 +115,41 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                     mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                 }
                 putCurrentPos(questionEntity.getvEndTime() * 1000);
+                if (AppConfig.DEBUG) {
+                    Set<String> setString;
+                    if (uploadService != null) {
+//                        setString = uploadService.getUploadingVideo();
+//                        if (setString != null && setString.contains(ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId)) {
+//                            // FIXME: 2019/7/24 视频正在后台上传中
+//                        } else {
+//                            // FIXME: 2019/7/24 视频没有在后台上传
+//                        }
+                    }
+                }
             }
+        }
+    }
+
+    private boolean isInProcess() {
+        UploadVideoService service = new UploadVideoService();
+        return false;
+    }
+
+    private UploadVideoService uploadService;
+
+    private class UploadServiceConnction implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            if (service instanceof UploadVideoService.UploadBinder) {
+                uploadService = ((UploadVideoService.UploadBinder) service).getService();
+//                Set<String> setString = ((UploadVideoService.UploadBinder) service).getUploadingVideo();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
         }
     }
 

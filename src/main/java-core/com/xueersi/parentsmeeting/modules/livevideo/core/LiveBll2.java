@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -848,6 +847,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
+                    mGetInfo.setBlockChinese(info.getBolockChinese() == 1);
                     mGetInfo.setArtsExtLiveInfo(info);
                     List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
                     for (LiveBaseBll businessBll : businessBllTemps) {
@@ -1740,7 +1740,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     public void getLivePluingConfigInfo(LivePluginRequestParam param, final AbstractBusinessDataCallBack callBack) {
         mLivePluginRequestParam = param;
 
-        mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack() {
+        mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.d("getLivePluingConfigInfo" + responseEntity.getJsonObject().toString());

@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
+
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -9,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 import org.json.JSONArray;
@@ -190,6 +192,15 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                     JSONObject urlJsonObj = cfgJsonObj.getJSONObject("urls");
                     String url = urlJsonObj.optString("initModuleUrl");
                     liveGetInfo.setInitModuleUrl(url);
+                }
+                /**
+                 * 解析追播相关参数
+                 */
+                if(cfgJsonObj.has("waterMark")){
+                    VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
+                    videoConfigEntity.setDuration(cfgJsonObj.optLong("duration"));
+                    videoConfigEntity.setWaterMark(cfgJsonObj.optLong("waterMark"));
+                    liveGetInfo.setVideoConfigEntity(videoConfigEntity);
                 }
 
             }

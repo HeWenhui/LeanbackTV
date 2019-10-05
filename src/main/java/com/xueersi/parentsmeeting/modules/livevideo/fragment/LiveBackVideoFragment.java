@@ -195,7 +195,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_TUTOR) {
             mVideoEntity = mVideoTutorEntity;
             isTutorVideo = true;
-
+            isNetWorkEnable = true;
         } else {
             mVideoEntity = mVideoMainEntity;
             isTutorVideo = false;

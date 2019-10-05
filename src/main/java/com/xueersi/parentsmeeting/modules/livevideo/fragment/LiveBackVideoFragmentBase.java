@@ -507,6 +507,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         @Override
         public void start() {
             super.start();
+            liveBackVideoFragment.pausePlay = false;
             liveBackVideoFragment.onStartPlayer();
         }
 

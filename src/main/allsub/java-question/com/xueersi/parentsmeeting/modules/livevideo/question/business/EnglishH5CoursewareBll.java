@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +53,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.IntelligentEvaluationH5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ExceptionRunnable;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -336,7 +337,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
     @Override
     public void onH5Courseware(final String status, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
 //        logToFile.i("onH5Courseware:url=" + url + ",status=" + status);
-        handler.post(new Runnable() {
+        handler.post(new ExceptionRunnable() {
             @Override
             public void run() {
                 if ("on".equals(status)) {
@@ -392,7 +393,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                         }
                     }
                     if (h5CoursewarePager != null) {
-                        if (h5CoursewarePager.getUrl().equals(videoQuestionLiveEntity.getUrl())) {
+                        if (h5CoursewarePager.getUrl() != null && h5CoursewarePager.getUrl().equals(videoQuestionLiveEntity.getUrl())) {
                             logToFile.i("onH5Courseware:url.equals:" + h5CoursewarePager.getUrl());
                             return;
                         } else {
@@ -551,16 +552,18 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
         };
         h5CoursewarePager = baseEnglishH5CoursewareCreat.creat(context, videoQuestionH5Entity, onH5ResultClose,
                 mVSectionID);
-        h5CoursewarePager.setEnglishH5CoursewareBll(this);
-        if (mLiveBll instanceof EnglishH5CoursewareSecHttp) {
-            h5CoursewarePager.setEnglishH5CoursewareSecHttp((EnglishH5CoursewareSecHttp) mLiveBll);
-        }
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
-                .LayoutParams.MATCH_PARENT);
-        liveViewAction.addView(LiveVideoLevel.LEVEL_QUES, h5CoursewarePager.getRootView(), lp);
-        WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
-        if (webViewRequest != null) {
-            webViewRequest.requestWebView();
+        if (h5CoursewarePager != null && !(h5CoursewarePager instanceof IntelligentEvaluationH5Pager)) {
+            h5CoursewarePager.setEnglishH5CoursewareBll(this);
+            if (mLiveBll instanceof EnglishH5CoursewareSecHttp) {
+                h5CoursewarePager.setEnglishH5CoursewareSecHttp((EnglishH5CoursewareSecHttp) mLiveBll);
+            }
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
+                    .LayoutParams.MATCH_PARENT);
+            liveViewAction.addView(LiveVideoLevel.LEVEL_QUES, h5CoursewarePager.getRootView(), lp);
+            WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
+            if (webViewRequest != null) {
+                webViewRequest.requestWebView();
+            }
         }
     }
 

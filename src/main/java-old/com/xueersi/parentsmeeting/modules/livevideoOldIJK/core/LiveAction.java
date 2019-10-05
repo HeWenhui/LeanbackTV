@@ -17,7 +17,7 @@ public interface LiveAction extends LiveAndBackDebug{
      * @param targetName  消息接受方姓名  当targetName 为Null时 广播发送消息
      * @return    是否发送成功
      */
-    boolean sendNotice(String targetName,JSONObject data);
+    boolean sendNotice(String targetName, JSONObject data);
 
     /**
      * 发送 msg 消息
