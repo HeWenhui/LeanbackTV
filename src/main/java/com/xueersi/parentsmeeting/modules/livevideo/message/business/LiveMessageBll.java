@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -510,6 +511,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 this.users.add(user.getNick());
             }
         }
+        XrsCrashReport.d(TAG, "onUserList:users=" + users.length + ",new=" + this.users.size());
         logToFile.d("onUserList:users=" + users.length + ",new=" + this.users.size());
   /*      StringBuilder sb = new StringBuilder();
         for (User user : users){
@@ -601,6 +603,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //        }
         //  Loger.d("____join:  "+sender+"___peoplecount:  "+peopleCount);
         if (!users.contains(sender)) {
+            XrsCrashReport.d(TAG, "onJoin:sender=" + sender + ",get=" + peopleCount.get());
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             users.add(sender);
             if (mLiveMessagePager != null) {
@@ -618,8 +621,11 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            return;
 //        }
         if (users.contains(sourceNick)) {
-            peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
-            users.remove(sourceNick);
+            boolean remove = users.remove(sourceNick);
+            XrsCrashReport.d(TAG, "onQuit:sourceNick=" + sourceNick + ",get=" + peopleCount.get() + ",remove=" + remove);
+            if (remove) {
+                peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
+            }
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
             }
