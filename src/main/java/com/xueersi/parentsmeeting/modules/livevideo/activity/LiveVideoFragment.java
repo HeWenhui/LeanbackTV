@@ -784,13 +784,12 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         }
     }
 
-    @Override
-    public void changeNextLine() {
-        if (mLiveVideoBll != null) {
-            mLiveVideoBll.changeNextLine();
-        }
+//    @Override
+//    public void changeNextLine() {
+//        if (mLiveVideoBll != null) {
+//            mLiveVideoBll.changeNextLine();
 //        }
-    }
+//    }
 
     @Override
     public void changeNowLine() {
