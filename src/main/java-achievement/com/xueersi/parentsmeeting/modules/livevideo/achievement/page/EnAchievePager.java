@@ -81,7 +81,7 @@ public class EnAchievePager extends LiveBasePager {
     private ProgressBar pgAchiveAim;
     private TextView tvAchiveAimTips;
     private int WIDTH_PROGRESS_BAR_AIM_VIEWGROUP = 165;
-    private int WIDTH_SOLID_PROGRESS_BAR_AIM = 137;
+    private int WIDTH_SOLID_PROGRESS_BAR_AIM = 134;
     private int currentProgress = 0;
     private String currentValue;
 
@@ -540,7 +540,8 @@ public class EnAchievePager extends LiveBasePager {
         }
         currentProgress = progress;
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
-        layoutParams.leftMargin = progress * SizeUtils.Dp2Px(mContext, WIDTH_SOLID_PROGRESS_BAR_AIM) / 100;
+        layoutParams.leftMargin = SizeUtils.Dp2Px(mContext, 2) + progress * SizeUtils.Dp2Px(mContext,
+                WIDTH_SOLID_PROGRESS_BAR_AIM - 4) / 100;
         tvAchiveAimTips.setLayoutParams(layoutParams);
 
         if (progress == 0) {

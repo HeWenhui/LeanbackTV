@@ -108,12 +108,7 @@ public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEnt
         entity.setStandLiveHeadView(standLiveHeadView);
         if (!entity.isPlayAnimation()) {
             entity.setPlayAnimation(true);
-            standLiveHeadView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    standLiveHeadView.playAnimation();
-                }
-            }, 10);
+            standLiveHeadView.playAnimation();
         } else {
             standLiveHeadView.setProgress(1.0f);
         }

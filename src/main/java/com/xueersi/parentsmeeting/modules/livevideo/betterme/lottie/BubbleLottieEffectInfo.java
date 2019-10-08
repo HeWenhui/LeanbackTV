@@ -15,6 +15,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
 
 /**
  * @Date on 2019/7/5 19:11
@@ -69,7 +70,7 @@ public class BubbleLottieEffectInfo extends LottieEffectInfo {
                             .app_livevideo_enteampk_benchangchengjiu_tips_rise_bg_nor);
                     increaseBitmap = Bitmap.createScaledBitmap(increaseBitmap, (int) (bitmapHeight * 8 / 9), (int)
                             bitmapHeight, true);
-                    ImageSpan imageSpan = new ImageSpan(mContext, increaseBitmap,ImageSpan.ALIGN_BASELINE);
+                    ImageSpan imageSpan = new CenterAlignImageSpan(mContext, increaseBitmap);
                     message.setSpan(imageSpan, currentMessage.length(), currentMessage.length() + 1, SpannableString
                             .SPAN_INCLUSIVE_EXCLUSIVE);
                 } else if (isDecrease) {
@@ -78,7 +79,7 @@ public class BubbleLottieEffectInfo extends LottieEffectInfo {
                             .app_livevideo_enteampk_benchangchengjiu_tips_drop_bg_nor);
                     decreaseBitmap = Bitmap.createScaledBitmap(decreaseBitmap, (int) (bitmapHeight * 8 / 9), (int)
                             bitmapHeight, true);
-                    ImageSpan imageSpan = new ImageSpan(mContext, decreaseBitmap,ImageSpan.ALIGN_BASELINE);
+                    ImageSpan imageSpan = new CenterAlignImageSpan(mContext, decreaseBitmap);
                     message.setSpan(imageSpan, currentMessage.length(), currentMessage.length() + 1, SpannableString
                             .SPAN_INCLUSIVE_EXCLUSIVE);
                 } else {
