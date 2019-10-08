@@ -195,7 +195,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_TUTOR) {
             mVideoEntity = mVideoTutorEntity;
             isTutorVideo = true;
-
+            isNetWorkEnable = true;
         } else {
             mVideoEntity = mVideoMainEntity;
             isTutorVideo = false;
@@ -250,7 +250,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         this.mMediaController = mPlayBackMediaController;
         liveBackPlayVideoFragment.setMediaController(mMediaController);
         rl_course_video_live_controller_content.removeAllViews();
-        rl_course_video_live_controller_content.addView(mMediaController, new ViewGroup.LayoutParams(ViewGroup
+        rl_course_video_live_controller_content.addView(mPlayBackMediaController, new ViewGroup.LayoutParams(ViewGroup
                 .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (mLiveRemarkBll == null || mVideoEntity.getIsAllowMarkpoint() != 1) {
             mMediaController.getTitleRightBtn().setVisibility(View.GONE);

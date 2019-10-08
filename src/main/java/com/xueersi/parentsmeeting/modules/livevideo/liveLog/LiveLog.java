@@ -39,16 +39,15 @@ public class LiveLog {
     public static Timer timer_log = new Timer();
     public static TimerTask task_log = new TimerTask() {
         public void run() {
+
             LiveLogEntity log = new LiveLogEntity();
             if (LiveLogBill.param != null) {
-                log.live_id = LiveLogBill.param.live_id;
+                log.liveid = LiveLogBill.param.liveid;
             }
-            ApmBill.GetNetIp(LiveLogBill.url);
             log(log);
 
         }
     };
-
 
     public LiveLog() {
     }
@@ -147,13 +146,12 @@ public class LiveLog {
 
         LiveLogEntity log = new LiveLogEntity();
         if (LiveLogBill.param != null) {
-            log.live_id = LiveLogBill.param.live_id;
+            log.liveid = LiveLogBill.param.liveid;
         }
         ApmBill.GetNetIp(LiveLogBill.url);
         log(log);
         sendLog();
     }
-
 
     public static Map<String, Long> getAllFilesInfo() {
         return getLoganInstance().getAllFilesInfo();

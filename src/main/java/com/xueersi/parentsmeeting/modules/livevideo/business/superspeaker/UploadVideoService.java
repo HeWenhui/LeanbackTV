@@ -37,13 +37,20 @@ import java.nio.ShortBuffer;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
+// FIXME: 2019/7/24  如何拿到是否该试题对应的视频正在上传。可以将正在上传的视频通过List保存，然后通过Binder通信告诉当前视频正在上传
 //https://blog.csdn.net/imxiangzi/article/details/76039978
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class UploadVideoService extends Service {
+
+//    private Set<String> courseWeareList = new ConcurrentSkipListSet<>();
+
     private String videoUrl, audioUrl = "";
     Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
@@ -53,11 +60,14 @@ public class UploadVideoService extends Service {
     private AtomicInteger uploadVideoNum = new AtomicInteger(3);
     private XesStsUploadListener videoUploadListener;
 
+//    private String uploadVideoSetKey;
+
     private class VideoUploadListener implements XesStsUploadListener {
         String videoLocalUrl;
 
         public VideoUploadListener(String videoLocalUrl) {
             this.videoLocalUrl = videoLocalUrl;
+//            courseWeareList.add(uploadVideoSetKey);
         }
 
         @Override
@@ -82,6 +92,7 @@ public class UploadVideoService extends Service {
             latch.countDown();
             try {
                 latch.await();
+//                courseWeareList.remove(uploadVideoSetKey);
                 uploadSuccess();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -94,6 +105,7 @@ public class UploadVideoService extends Service {
 //            uploadSuccess();
             logger.i("video upload fail");
             //重试uploadVideoNum次
+//            courseWeareList.remove(uploadVideoSetKey);
             if (uploadVideoNum.get() > 0) {
                 uploadVideoNum.getAndDecrement();
                 uploadVideo(videoLocalUrl);
@@ -198,6 +210,70 @@ public class UploadVideoService extends Service {
                         }
                     }
                 });
+
+    }
+
+    /**
+     * 使用rxjava方式解决pcm编码问题
+     *
+     * @param codecUtils
+     */
+    private void performRxUploadAudio(final AudioMediaCodecUtils codecUtils) {
+        Flowable.
+                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
+                subscribeOn(Schedulers.io()).
+                filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                }).
+                flatMap(new Function<Boolean, Flowable<AudioMediaCodecUtils.PCMEntity>>() {
+                    @Override
+                    public Flowable<AudioMediaCodecUtils.PCMEntity> apply(Boolean aBoolean) throws Exception {
+                        return codecUtils.rxAACToPCM();
+                    }
+                }).
+                doOnNext(new Consumer<AudioMediaCodecUtils.PCMEntity>() {
+                    @Override
+                    public void accept(AudioMediaCodecUtils.PCMEntity pcmEntity) throws Exception {
+                        handlePCM(pcmEntity);
+                    }
+                }).
+                subscribe(new Consumer<AudioMediaCodecUtils.PCMEntity>() {
+                    @Override
+                    public void accept(AudioMediaCodecUtils.PCMEntity pcmEntity) throws Exception {
+                        uploadAudio(uploadVideoEntity.getAudioLocalUrl());
+                    }
+                });
+
+    }
+
+    private void handlePCM(AudioMediaCodecUtils.PCMEntity pcmEntity) {
+        byte[] bytes = pcmEntity.getBytes();
+        int size = pcmEntity.getSize();
+        short[] shorts;
+        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes, 0, size);
+        ShortBuffer shortBuffer = byteBuffer.order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
+        shorts = new short[size / 2];
+        shortBuffer.get(shorts, 0, size / 2);
+        byte[] mp3Buffer = new byte[16000 / 20 + 7200];
+        sampleTotal = new byte[16000 / 20 + 7200];
+        int sampleSize = LameUtil.encode(shorts, shorts, size / 2, mp3Buffer);
+        logger.i((num++) + " start decode audio to mp3 " + "buffer = " + sampleSize + " lenth = " + mp3Buffer.length);
+        if (sampleSize > 0) {
+            System.arraycopy(mp3Buffer, 0, sampleTotal, 0, sampleSize);
+            try {
+                mFileOutputStream.write(sampleTotal, 0, sampleSize);
+                logger.i("decode success");
+            } catch (FileNotFoundException e) {
+                logger.e(e);
+                e.printStackTrace();
+            } catch (IOException e) {
+                logger.e(e);
+                e.printStackTrace();
+            }
+        }
     }
 
     private class AudioUploadListener implements XesStsUploadListener {
@@ -352,6 +428,8 @@ public class UploadVideoService extends Service {
     }
 
     private void performUploadUrl(Intent intent) {
+        if (intent == null)
+            return;
         latch = new CountDownLatch(2);
 //        liveId = intent.getStringExtra("liveId");
 //        courseWareId = intent.getStringExtra("courseWareId");
@@ -366,7 +444,7 @@ public class UploadVideoService extends Service {
 //        String videoLocalUrl = intent.getStringExtra("videoRemoteUrl");
         String audioLocalUrl = uploadVideoEntity.getAudioLocalUrl();
         String videoLocalUrl = uploadVideoEntity.getVideoLocalUrl();
-
+//        uploadVideoSetKey = ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + uploadVideoEntity.getLiveId() + "_" + courseWareId;
         audioUploadListener = new AudioUploadListener(audioLocalUrl);
         videoUploadListener = new VideoUploadListener(videoLocalUrl);
         uploadVideo(videoLocalUrl);
@@ -382,5 +460,10 @@ public class UploadVideoService extends Service {
             return UploadVideoService.this;
         }
 
+
     }
+
+//    public Set<String> getUploadingVideo() {
+//        return courseWeareList;
+//    }
 }

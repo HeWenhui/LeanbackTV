@@ -8,7 +8,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
  */
 public class LiveVideoLevel {
     /** 弹幕布局 */
-    public static LiveVideoLevel LEVEL_DANMU = new LiveVideoLevel(-10);
+    public static LiveVideoLevel LEVEL_DANMU = new LiveVideoLevel(5);
     /** 聊天布局 */
     public static LiveVideoLevel LEVEL_MES = new LiveVideoLevel(0);
     /** 视频控制栏 */

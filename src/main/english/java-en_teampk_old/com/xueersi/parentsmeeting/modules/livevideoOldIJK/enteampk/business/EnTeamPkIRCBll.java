@@ -89,7 +89,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private boolean isEnglishPkTotalRank = false;
     private int classInt = 0;
     private EnTeamPkHttpManager enTeamPkHttpManager;
-
+    private TcpDispatch tcpDispatch;
     private boolean destory = false;
     private InteractiveTeam mInteractiveTeam;
     private ArrayList<TeamMemberEntity> entities = new ArrayList<>();

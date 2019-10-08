@@ -1,8 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  * Created by linyuqiang on 2018/7/18.
@@ -11,11 +14,23 @@ import android.os.Bundle;
 public class LecVideoActivity extends LiveVideoActivity {
     LectureLiveVideoFragment lectureLiveVideoFragment;
 
+
     @Override
     protected LiveVideoFragmentBase getFragment() {
         lectureLiveVideoFragment = new LectureLiveVideoFragment();
         return lectureLiveVideoFragment;
     }
+
+    /**
+     * 判断是否 是大班整合直播间
+     * @return
+     */
+    private  boolean isBigLive(){
+        Bundle bundle = getIntent().getExtras();
+        boolean result = bundle!= null && bundle.getBoolean("isBigLive",false);
+        return result;
+    }
+
 
     @Override
     protected void onNewIntent(Intent intent) {

@@ -14,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class LiveAndBackDebugIml implements LiveAndBackDebug {
+public class LiveAndBackDebugIml implements LiveAndBackDebug, LiveDebugGetInfo {
     private Context mContext;
     private int mLiveType;
     private LiveGetInfo mGetInfo;
@@ -22,13 +22,14 @@ public class LiveAndBackDebugIml implements LiveAndBackDebug {
     private String mLiveId;
     private String mCourseId;
 
-    public LiveAndBackDebugIml(Context mContext, int liveType,String liveId, String courseId) {
+    public LiveAndBackDebugIml(Context mContext, int liveType, String liveId, String courseId) {
         this.mContext = mContext;
         mLiveType = liveType;
         mLiveId = liveId;
         mCourseId = courseId;
     }
 
+    @Override
     public void onGetInfo(LiveGetInfo mGetInfo, String appID) {
         this.mGetInfo = mGetInfo;
         this.appID = appID;

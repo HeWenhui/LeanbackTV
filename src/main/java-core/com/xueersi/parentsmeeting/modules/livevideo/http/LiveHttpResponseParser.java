@@ -23,10 +23,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEn
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
@@ -338,7 +340,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setLiveTime(data.getString("liveTime"));
             getInfo.setsTime(data.optLong("stime"));
             getInfo.seteTime(data.optLong("etime"));
-            getInfo.setNowTime(data.getDouble("nowTime"));
+            getInfo.setNowTime(data.getLong("nowTime"));
             //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));\
             if (data.has("isAllowTeamPk")) {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
@@ -849,13 +851,15 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         try {
-            JSONArray disableSpeakingArray = liveTopicJson.getJSONArray("disable_speaking");
-            List<String> disableSpeaking = new ArrayList<>();
-            for (int i = 0; i < disableSpeakingArray.length(); i++) {
-                JSONObject object = disableSpeakingArray.getJSONObject(i);
-                disableSpeaking.add(object.getString("id"));
+            if (liveTopicJson.has("disable_speaking")) {
+                JSONArray disableSpeakingArray = liveTopicJson.getJSONArray("disable_speaking");
+                List<String> disableSpeaking = new ArrayList<>();
+                for (int i = 0; i < disableSpeakingArray.length(); i++) {
+                    JSONObject object = disableSpeakingArray.getJSONObject(i);
+                    disableSpeaking.add(object.getString("id"));
+                }
+                liveTopic.setDisableSpeaking(disableSpeaking);
             }
-            liveTopic.setDisableSpeaking(disableSpeaking);
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parseLiveTopic", e.getMessage());
             logger.e("parseLiveTopic", e);
@@ -2071,6 +2075,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
         info.setIsGroupGameCourseWare(data.optInt("isGroupGameCourseWare", -1));
         info.setSummerCourseWareSize(data.optString("summerCourseWareSize"));
+        info.setBolockChinese(data.optInt("blockChinese", 2));
         UmsAgentTrayPreference.getInstance().put(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, info.getSummerCourseWareSize());
         return info;
     }
@@ -2330,6 +2335,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                            coursewareInfo.setMd5(coursewareJson.optString("md5"));
                                 coursewareInfo.setResourceMd5(coursewareJson.optString("resourceMd5"));
                                 coursewareInfo.setTemplateMd5(coursewareJson.optString("templateMd5"));
+
+                                if (coursewareJson.has("resource")) {
+                                    CoursewareInfoEntity.CourseWareIntelligentEntity intelligentEntity = new CoursewareInfoEntity.CourseWareIntelligentEntity();
+                                    intelligentEntity.setResource(coursewareJson.optString("resource"));
+                                    coursewareInfo.setIntelligentEntity(intelligentEntity);
+                                }
                                 coursewareInfos.add(coursewareInfo);
                             }
                             liveCourseware.setCoursewareInfos(coursewareInfos);

@@ -799,8 +799,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logMap.put("sid", mSid.toString());
         logMap.put("nickname", mNickname);
         logMap.put("time", "" + System.currentTimeMillis());
-        logMap.put("userid", LiveAppUserInfo.getInstance().getStuId());
-        logMap.put("liveId", liveId);
+        logMap.put("uid", LiveAppUserInfo.getInstance().getStuId());
+        logMap.put("live_id", liveId);
+        logMap.put("channel"  ,mChannel);
         return logMap;
     }
 

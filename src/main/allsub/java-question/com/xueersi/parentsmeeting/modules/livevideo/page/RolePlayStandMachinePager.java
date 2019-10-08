@@ -850,7 +850,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
 
                 }
             });
-            frameAnimation.startAnimation();
+//            frameAnimation.startAnimation();
         } catch (Exception e) {
             logger.i("exception:" + e.getMessage());
         }
