@@ -85,7 +85,7 @@ public abstract class RolePlayerItem implements AdapterItemInterface<RolePlayerE
             return;
         }
 
-        civHeadImage.setBorderWidth(SizeUtils.Dp2Px(mContext, 2));
+        civHeadImage.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
         civHeadImage.setBorderColor(Color.WHITE);
         ImageLoader.with(ContextManager.getApplication()).load(imgURL).error(R.drawable.ic_default_head_square).placeHolder(R.drawable
                 .ic_default_head_square)

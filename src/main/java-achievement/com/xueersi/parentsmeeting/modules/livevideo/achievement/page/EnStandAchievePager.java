@@ -421,9 +421,11 @@ public class EnStandAchievePager extends LiveBasePager {
         }
         if(ACHIEVE_LAYOUT_RIGHT.equals(LAYOUT_SUMMER_SIZE)) {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
-
+            LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+            layoutParams.rightMargin = SizeUtils.Dp2Px(activity,10);
+            layoutParams.leftMargin  = 0;
             layoutParams.topMargin = SizeUtils.Dp2Px(activity,8);
-            layoutParams.width = SizeUtils.Dp2Px(activity,199);
+            layoutParams.width = SizeUtils.Dp2Px(activity,177);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
             rlAchieveContent.setLayoutParams(layoutParams);
@@ -440,10 +442,13 @@ public class EnStandAchievePager extends LiveBasePager {
             llImageContent.setVisibility(View.GONE);
         } else {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rlAchieveContent.getLayoutParams();
+            LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+            //layoutParams.leftMargin =   videoPoint.screenWidth - videoPoint.x4+SizeUtils.Dp2Px(activity,10);
 
             layoutParams.topMargin = SizeUtils.Dp2Px(activity,8);
-            layoutParams.width = SizeUtils.Dp2Px(activity,199);
+            layoutParams.width = SizeUtils.Dp2Px(activity,177);
 
+            layoutParams.rightMargin = 0;
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
