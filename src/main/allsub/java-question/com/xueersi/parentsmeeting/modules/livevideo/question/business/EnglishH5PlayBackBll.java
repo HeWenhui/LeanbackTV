@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -39,6 +40,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -64,7 +67,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
 import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTION_CLOSE;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentConstants.PROCESS_RECORD_SIGN;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_FILTER_ACTION;
-import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.intelligent_recognition_sign;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_SIGN_KEY;
 import static com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig.EN_INTELLIGENT_EVALUTION;
 
 /**
@@ -166,9 +169,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             break;
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
                 if (EN_INTELLIGENT_EVALUTION.equals(questionEntity.getvQuestionType())) {
-                    Intent intent = new Intent(INTELLIGENT_RECOGNITION_FILTER_ACTION);
-                    intent.putExtra(intelligent_recognition_sign, new JSONObject().toString());
-                    activity.sendBroadcast(intent);
+                    stopIntelligentActivity();
                     return;
                 }
                 VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
@@ -180,6 +181,16 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             default:
                 break;
         }
+    }
+
+    /**
+     * 终止智能测评的Activity
+     */
+    private void stopIntelligentActivity() {
+        setPauseNotStop(false);
+        Intent intent = new Intent(INTELLIGENT_RECOGNITION_FILTER_ACTION);
+        intent.putExtra(INTELLIGENT_RECOGNITION_SIGN_KEY, new JSONObject().toString());
+        activity.sendBroadcast(intent);
     }
 
     @Override
@@ -355,7 +366,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         intelligentRecognitionRecord.setMaterialId(videoQuestionLiveEntity.id);
                         intelligentRecognitionRecord.setIsPlayBack("1");
                         bundle.putParcelable(PROCESS_RECORD_SIGN, intelligentRecognitionRecord);
-                        XueErSiRouter.startModule(activity, "/english/intelligent_recognition", bundle);
+                        setPauseNotStop(true);
+                        XueErSiRouter.startModule(activity, "/aievaluation/intelligent_recognition", bundle);
                         return;
                     }
                 } else {
@@ -366,6 +378,31 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             default:
                 break;
         }
+    }
+
+    PauseNotStopVideoInter pauseNotStopVideoIml;
+
+    /** onPause状态不暂停视频 */
+//    AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(false);
+    private void setPauseNotStop(boolean pauseNotStop) {
+//        onPauseNotStopVideo.set(pauseNotStop);
+        pauseNotStopVideoIml = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class);
+//        if (pauseNotStopVideoIml == null) {
+//            pauseNotStopVideoIml = new PauseNotStopVideoIml(activity);
+//        } else {
+        if (pauseNotStopVideoIml != null) {
+            pauseNotStopVideoIml.setPause(pauseNotStop);
+        } else {
+//            Map<String, String> map = new HashMap<>();
+//            map.put("ProxUtil_getProxUtil", "PauseNotStopVideoInter.class is null");
+//            UmsAgentManager.umsAgentDebug();
+        }
+        //声音设置为0
+        BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
+        if (videoFragment != null) {
+            videoFragment.setVolume(0, 0);
+        }
+//        }
     }
 
     /**

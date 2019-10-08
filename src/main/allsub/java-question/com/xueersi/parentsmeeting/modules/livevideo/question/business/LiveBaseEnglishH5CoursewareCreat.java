@@ -1,8 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.xueersi.common.entity.EnglishH5Entity;
@@ -33,7 +36,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 
+import java.util.List;
+
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentConstants.PROCESS_RECORD_SIGN;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_STOP_ONCE;
 
 /**
  * Created by linyuqiang on 2018/7/26.
@@ -257,6 +263,59 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
      * @param videoQuestionH5Entity
      */
     private void gotoIntelligentEvaluation(Context context, VideoQuestionLiveEntity videoQuestionH5Entity) {
+        handleLauchIntelligentEvaluation(context, videoQuestionH5Entity);
+    }
+
+    private void handleLauchIntelligentEvaluation(Context context, VideoQuestionLiveEntity videoQuestionH5Entity) {
+//        stopIntelligentOnce(context);
+        if (handleStopIntelligent(context)) {
+            scheduleLauchIntelligentEvaluation(context, videoQuestionH5Entity);
+        } else {
+            performLauchIntelligentEvaluation(context, videoQuestionH5Entity);
+        }
+    }
+
+
+    private boolean handleStopIntelligent(Context context) {
+        if (judgeIntelligentAlive(context)) {
+            stopIntelligentOnce(context);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean judgeIntelligentAlive(Context context) {
+        List<ActivityManager.RunningTaskInfo> list = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningTasks(Integer.MAX_VALUE);
+        for (ActivityManager.RunningTaskInfo taskInfo : list) {
+            if (taskInfo.topActivity.getShortClassName().
+                    contains("com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.widget.IntelligentRecognitionActivity")) { // 说明它已经启动了
+//                flag = true;
+                return true;
+            }
+        }
+        return false;
+//        Intent intent = new Intent();//(ActivityManager) context.getSystemService(ACTIVITY_SERVICE)
+//        intent.setClassName("com.xueersi.parentsmeeting.modules.aievaluation.intelligent_recognition.widget",
+//                "IntelligentRecognitionActivity");
+//        return intent.resolveActivity(context.getPackageManager()) != null;
+    }
+
+    /**
+     * 延迟一段时间，给stop Activity一点时间
+     *
+     * @param context
+     * @param videoQuestionH5Entity
+     */
+    private void scheduleLauchIntelligentEvaluation(final Context context, final VideoQuestionLiveEntity videoQuestionH5Entity) {
+        new Handler(context.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                performLauchIntelligentEvaluation(context, videoQuestionH5Entity);
+            }
+        }, 1000);
+    }
+
+    private void performLauchIntelligentEvaluation(Context context, VideoQuestionLiveEntity videoQuestionH5Entity) {
         //英语智能测评
         Bundle bundle = new Bundle();
         IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
@@ -281,7 +340,14 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
             logger.i("停止播放");
             reg.release();
         }
-        XueErSiRouter.startModuleForResult((Activity) context, "/english/intelligent_recognition", XESCODE.ARTS_SEND_QUESTION, bundle);
+        XueErSiRouter.startModuleForResult((Activity) context, "/aievaluation/intelligent_recognition", XESCODE.ARTS_SEND_QUESTION, bundle);
+    }
+
+    private void stopIntelligentOnce(Context context) {
+        logger.i("当前Actiivty在线，发送停止广播");
+        Intent stopIntent = new Intent(INTELLIGENT_RECOGNITION_STOP_ONCE);
+        stopIntent.setAction(INTELLIGENT_RECOGNITION_STOP_ONCE);
+        context.sendBroadcast(stopIntent);
     }
 
     /**
