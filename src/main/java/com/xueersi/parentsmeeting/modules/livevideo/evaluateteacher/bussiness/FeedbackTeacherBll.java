@@ -49,7 +49,9 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        if (getInfo != null && getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
+        if (getInfo != null && (getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC ||
+                getInfo.getIsArts() == LiveVideoSAConfig.ART_EN || getInfo.getIsArts() == LiveVideoSAConfig.ART_CH
+                || getInfo.getEducationStage().equals("4"))) {
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
