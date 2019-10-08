@@ -171,10 +171,16 @@ public class CloudWorkerThreadPool {
         if (mRtcEngine == null) {
             mRtcEngine = new RTCEngine(mContext, mEngineEventHandler.rtcEngineEventListener);
             int init = mRtcEngine.initWithToken(token);
-            if (init != 0) {
+             if (init != 0) {
                 mRtcEngine = null;
                 onEngineCreate.onEngineCreate(null, null);
                 return null;
+            }
+            if (onLastmileQuality != null) {
+                mEngineEventHandler.setOnLastmileQuality(onLastmileQuality);
+                mRtcEngine.enableLastmileProbeTest();
+                logToFile.d("start probe");
+                return mRtcEngine;
             }
             mRtcEngine.enableVideo();
             mRtcEngine.enableLocalVideo(enableLocalVideo);
@@ -210,6 +216,7 @@ public class CloudWorkerThreadPool {
 //                });
 //                mRtcEngine.enableLastmileTest();
 //            }
+
         }
         return mRtcEngine;
     }
@@ -326,11 +333,37 @@ public class CloudWorkerThreadPool {
 
     public void enableLastmileTest(MyEngineEventHandler.OnLastmileQuality onLastmileQuality) {
         this.onLastmileQuality = onLastmileQuality;
-        try {
-            ensureRtcEngineReadyLock();
-        } catch (Exception e) {
-            e.printStackTrace();
+        poolExecutor.execute(new WorkRun("enableLastmileTest", new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ensureRtcEngineReadyLock();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
+
+    }
+    public void disableLastmileTest() {
+        if (onLastmileQuality != null) {
+            onLastmileQuality.onQuit();
+            onLastmileQuality = null;
         }
+        poolExecutor.execute(new WorkRun("disableLastmileTest", new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (mRtcEngine != null){
+                        mRtcEngine.disableLastmileProbeTest();
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }));
+        exit();
+
     }
 
     private class WorkRun implements Runnable {
