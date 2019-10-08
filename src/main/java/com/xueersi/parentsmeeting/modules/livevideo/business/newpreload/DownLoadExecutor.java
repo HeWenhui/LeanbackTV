@@ -14,7 +14,7 @@ public class DownLoadExecutor<T> {
 
     public void execute() {
         for (int i = 0; i < downLoadFiles.size(); i++) {
-            FileDownLoadManager.addToAudioDownloadPool(downLoadFiles.get(i));
+            FileDownLoadManager.addToAutoDownloadPool(downLoadFiles.get(i));
         }
     }
 

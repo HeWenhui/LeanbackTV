@@ -3,20 +3,17 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnergyBonusEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnergyBonusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
@@ -26,7 +23,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -2307,6 +2303,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
     public CoursewareInfoEntity parseCoursewareInfo(ResponseEntity responseEntity) {
+        logger.i("" + responseEntity.getJsonObject().toString());
         CoursewareInfoEntity coursewareInfoEntity = new CoursewareInfoEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         List<CoursewareInfoEntity.LiveCourseware> liveCoursewares = new ArrayList<>();
@@ -2373,58 +2370,111 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                    JSONArray resourceArray = data.getJSONArray("resource");
                     List<String> resources = new ArrayList<>();
 //                    for (int i = 0; i < resourceArray.length(); i++) {
-                    JSONArray formulasArray = resourceArray.optJSONArray("formulas");
-                    if (formulasArray != null) {
-                        for (int j = 0; j < formulasArray.length(); j++) {
-                            resources.add(formulasArray.getString(j));
+                    {
+                        JSONArray formulasArray = resourceArray.optJSONArray("formulas");
+                        if (formulasArray != null) {
+                            for (int j = 0; j < formulasArray.length(); j++) {
+                                resources.add(formulasArray.getString(j));
+                            }
                         }
                     }
-                    JSONArray fontsArray = resourceArray.optJSONArray("fonts");
-                    if (fontsArray != null) {
-                        for (int k = 0; k < fontsArray.length(); k++) {
-                            resources.add(fontsArray.getString(k));
+                    {
+                        JSONArray fontsArray = resourceArray.optJSONArray("fonts");
+                        if (fontsArray != null) {
+                            for (int k = 0; k < fontsArray.length(); k++) {
+                                resources.add(fontsArray.getString(k));
+                            }
                         }
                     }
-
-                    JSONObject nbResource = resourceArray.optJSONObject("NBResource");
-                    if (nbResource != null) {
-                        String resurseMd5 = nbResource.optString("resourceMd5");
-                        String resurseUrl = nbResource.optString("resourceUrl");
-                        if (!TextUtils.isEmpty(resurseMd5) && !TextUtils.isEmpty(resurseUrl)) {
-                            CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
-                            nbCoursewareInfo.setResourceMd5(resurseMd5);
-                            nbCoursewareInfo.setResourceUrl(resurseUrl);
-                            coursewareInfoEntity.setNbCoursewareInfo(nbCoursewareInfo);
-                            //缓存NB资源文件解压相对路径
-                            ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
-                                    ShareDataManager.SHAREDATA_NOT_CLEAR);
-                        }
-                    }
-
-//                    }
                     coursewareInfoEntity.setResources(resources);
-                }
-//                if (data.has("loadpages")){
-//                    JSONArray loadpageArray = data.getJSONArray("loadpages");
-//                    List<String> loadpages = new ArrayList<>();
-//                    for (int i = 0; i < loadpageArray.length(); i++) {
-//                        loadpages.add(loadpageArray.getString(i));
+                    {
+                        JSONObject nbResource = resourceArray.optJSONObject("NBResource");
+                        parseNBResource(coursewareInfoEntity, nbResource);
+
+                    }
 //                    }
-//                    coursewareInfoEntity.setLoadpages(loadpages);
-//                }
-//                if (data.has("staticSource")){
-//                    JSONObject staticSourceJson = data.getJSONObject("staticSource");
-//                    List<String> staticSources = new ArrayList<>();
-//                    staticSources.add(staticSourceJson.optString("V1"));
-//                    staticSources.add(staticSourceJson.optString("V2"));
-//                    coursewareInfoEntity.setStaticSources(staticSources);
-//                }
+                }
             } catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseCoursewareInfo", e.getMessage());
                 e.printStackTrace();
             }
         }
         return coursewareInfoEntity;
+    }
+
+    private void parseNBResource(CoursewareInfoEntity coursewareInfoEntity, JSONObject nbResource) {
+        try {
+            if (nbResource != null) {
+                JSONArray addExperimentArray = nbResource.optJSONArray("addExperiment");
+                List<CoursewareInfoEntity.NbCoursewareInfo> addExperiments = new ArrayList<>();
+                if (addExperimentArray != null) {
+                    for (int q = 0; q < addExperimentArray.length(); q++) {
+                        JSONObject iJSOn = (JSONObject) addExperimentArray.get(q);
+                        String resourseUrl = iJSOn.optString("zip_path");
+                        String resourseMd5 = iJSOn.optString("zip_md5");
+                        String id = iJSOn.optString("id");
+//                        if (AppConfig.DEBUG) {
+//                            if (!resourseUrl.contains("http")) {
+//                                resourseUrl = "https://testmv.xesimg.com" + resourseUrl;
+//                            }
+//                        }
+//                        if (!TextUtils.isEmpty(resourseMd5) && !TextUtils.isEmpty(resourseUrl)) {
+                        CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
+                        nbCoursewareInfo.setResourceMd5(resourseMd5);
+                        nbCoursewareInfo.setResourceUrl(resourseUrl);
+                        nbCoursewareInfo.setId(id);
+                        addExperiments.add(nbCoursewareInfo);
+                        //缓存NB资源文件解压相对路径
+//                                ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
+//                                        ShareDataManager.SHAREDATA_NOT_CLEAR);
+//                        }
+                    }
+                }
+                coursewareInfoEntity.setAddExperiments(addExperiments);
+                {
+                    List<CoursewareInfoEntity.NbCoursewareInfo> freeExperiments = new ArrayList<>();
+                    JSONArray freeExperimentArray = nbResource.optJSONArray("freeExperiment");
+                    if (freeExperimentArray != null) {
+                        for (int q = 0; q < freeExperimentArray.length(); q++) {
+                            JSONObject iJSOn = (JSONObject) freeExperimentArray.get(q);
+                            String resourseUrl = iJSOn.optString("zip_path");
+//                            if (AppConfig.DEBUG) {
+//                                if (!resourseUrl.contains("http")) {
+//                                    resourseUrl = "https://testmv.xesimg.com" + resourseUrl;
+//                                }
+//                            }
+                            String resourseMd5 = iJSOn.optString("zip_md5");
+                            String id = iJSOn.optString("id");
+                            if (!TextUtils.isEmpty(resourseMd5) && !TextUtils.isEmpty(resourseUrl)) {
+                                CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
+                                nbCoursewareInfo.setResourceMd5(resourseMd5);
+                                nbCoursewareInfo.setResourceUrl(resourseUrl);
+                                nbCoursewareInfo.setId(id);
+                                freeExperiments.add(nbCoursewareInfo);
+                                //缓存NB资源文件解压相对路径
+//                                ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
+//                                        ShareDataManager.SHAREDATA_NOT_CLEAR);
+                            }
+//                            nbCoursewareInfo.setResourceMd5(resourseMd5);
+//                            nbCoursewareInfo.setResourceUrl(resourseUrl);
+                        }
+                    }
+                    coursewareInfoEntity.setFreeExperiments(freeExperiments);
+                }
+//                        if (!TextUtils.isEmpty(resurseMd5) && !TextUtils.isEmpty(resurseUrl)) {
+//                            CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
+//                            nbCoursewareInfo.setResourceMd5(resurseMd5);
+//                            nbCoursewareInfo.setResourceUrl(resurseUrl);
+//                            coursewareInfoEntity.setNbCoursewareInfo(nbCoursewareInfo);
+//                            //缓存NB资源文件解压相对路径
+//                            ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
+//                                    ShareDataManager.SHAREDATA_NOT_CLEAR);
+//                        }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.e(e.getMessage());
+        }
     }
 
     /**
@@ -2621,7 +2671,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             stuSegmentEntity.setSegmentType(jsonObject.getInt("segmentType"));
             stuSegmentEntity.setStar(jsonObject.getInt("star"));
             stuSegmentEntity.setSumCount(jsonObject.getInt("sumCount"));
-            return  stuSegmentEntity;
+            return stuSegmentEntity;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2640,8 +2690,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             betterMeEntity.setAimType(jsonObject.getString("aimType"));
             betterMeEntity.setAimValue(jsonObject.getString("aimValue"));
-            betterMeEntity.setFirstReceive("1".equals(jsonObject.optString("isFirstReceive","0")));
-            return  betterMeEntity;
+            betterMeEntity.setFirstReceive("1".equals(jsonObject.optString("isFirstReceive", "0")));
+            return betterMeEntity;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2662,7 +2712,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             aimRealTimeValEntity.setType(jsonObject.getString("aimType"));
             aimRealTimeValEntity.setRealTimeVal(jsonObject.getString("realTimeVal"));
             aimRealTimeValEntity.setAimValue(jsonObject.getString("aimValue"));
-            return  aimRealTimeValEntity;
+            return aimRealTimeValEntity;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2688,7 +2738,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             stuAimResultEntity.setAimType(jsonObject.getString("aimType"));
             stuAimResultEntity.setRealTimeVal(jsonObject.getString("realTimeVal"));
             stuAimResultEntity.setAimValue(jsonObject.getString("aimValue"));
-            return  stuAimResultEntity;
+            return stuAimResultEntity;
         } catch (Exception e) {
             e.printStackTrace();
         }
