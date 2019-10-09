@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
 
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -31,6 +33,8 @@ public class XesAtomicInteger {
         return atomicInteger.get();
     }
 
+    boolean small = false;
+
     /**
      * Sets to the given value.
      *
@@ -39,6 +43,11 @@ public class XesAtomicInteger {
     public final void set(int newValue, Exception e) {
         if (newValue <= 0) {
             logToFile.e("set:newValue=" + newValue, e);
+            newValue = 1;
+            if (!small) {
+                small = true;
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
         }
         atomicInteger.set(newValue);
     }

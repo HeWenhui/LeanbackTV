@@ -17,6 +17,7 @@ public class CloudEngineEventHandler {
     public static final String TAG = "CloudEngineEventHandler";
     protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
     private final Context mContext;
+    private MyEngineEventHandler.OnLastmileQuality onLastmileQuality;
 
     public CloudEngineEventHandler(Context ctx) {
         this.mContext = ctx;
@@ -132,5 +133,23 @@ public class CloudEngineEventHandler {
                 handler.onRemoteVideoStateChanged(uid, state);
             }
         }
+
+        @Override
+        public void onOnceLastMileQuality(RTCEngine.RTC_LASTMILE_QUALITY lastmileQuality) {
+            if (onLastmileQuality != null){
+                onLastmileQuality.onLastmileQuality(lastmileQuality.getValue());
+            }
+            Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
+            while (it.hasNext()) {
+                RTCEngine.IRtcEngineEventListener handler = it.next();
+                handler.onOnceLastMileQuality(lastmileQuality);
+            }
+
+        }
     };
+
+    public void setOnLastmileQuality(MyEngineEventHandler.OnLastmileQuality onLastmileQuality) {
+        this.onLastmileQuality = onLastmileQuality;
+    }
+
 }

@@ -298,10 +298,11 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     /**
      * 显示视频缓冲UI
+     *
      * @param visibility
      * @return false 显示默认缓冲UI
      */
-    protected boolean showBufferingUl(int visibility){
+    protected boolean showBufferingUl(int visibility) {
         return false;
     }
 
@@ -310,10 +311,10 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         LiveFragmentBase liveFragmentBase;
 
         @Override
-        protected void setVideoLoadingLayoutVisibility(int visibility){
-           if(!liveFragmentBase.showBufferingUl(visibility)){
+        protected void setVideoLoadingLayoutVisibility(int visibility) {
+            if (!liveFragmentBase.showBufferingUl(visibility)) {
                 super.setVideoLoadingLayoutVisibility(visibility);
-           }
+            }
         }
 
         public LiveLivePlayerPlayFragment() {
@@ -332,7 +333,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         @Override
         protected void onPlayOpenStart() {
             liveFragmentBase.setFirstBackgroundVisible(View.VISIBLE);
-            if(liveFragmentBase.mContentView.findViewById(R.id.probar_course_video_loading_tip_progress)!=null) {
+            if (liveFragmentBase.mContentView.findViewById(R.id.probar_course_video_loading_tip_progress) != null) {
                 liveFragmentBase.mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
             }
             liveFragmentBase.openSuccess = false;

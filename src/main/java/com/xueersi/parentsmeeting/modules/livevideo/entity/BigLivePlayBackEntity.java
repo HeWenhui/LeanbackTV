@@ -434,6 +434,7 @@ public class BigLivePlayBackEntity extends BaseEntity {
       private String appKey;
       private String videoFile;
       private String videoPath;
+      private String ircRoomsJson;
 
         /**聊天信息接口**/
         private String getChatRecordUrl;
@@ -497,6 +498,14 @@ public class BigLivePlayBackEntity extends BaseEntity {
 
         public String getInitModuleUrl() {
             return initModuleUrl;
+        }
+
+        public String getIrcRoomsJson() {
+            return ircRoomsJson;
+        }
+
+        public void setIrcRoomsJson(String ircRoomsJson) {
+            this.ircRoomsJson = ircRoomsJson;
         }
     }
 

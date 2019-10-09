@@ -185,11 +185,12 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                logger.i("请求增加金币的网络接口");
                 updateAchievement.getStuGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION);
             }
             VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
             if (reg != null) {
-                logger.i("停止播放");
+                logger.i("开始播放");
                 reg.playVideo();
             }
         }

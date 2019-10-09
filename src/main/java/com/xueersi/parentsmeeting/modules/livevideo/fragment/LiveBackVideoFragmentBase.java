@@ -298,7 +298,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
             }
             if (vPlayer != null && vPlayer.isPlaying() && !onPauseNotStopVideo.get()) {
                 liveBackPlayVideoFragment.setIsPlayerEnable(false);
-                // 暂停播放
+                // 暂停播放// com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class)
                 stopPlayer();
             } else {
                 liveBackPlayVideoFragment.setIsPlayerEnable(true);
