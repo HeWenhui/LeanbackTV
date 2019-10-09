@@ -25,7 +25,7 @@ public class LiveVideoDownLoadUtils {
         //文件名称
         final File inFile;
         //文件夹路径，文件路径
-        final String inDirPath, inFilePath;
+        final String inDirPath, inFilePath, inFileName;
         final int deleteOldFileCategary;
 
         final Executor executor;
@@ -65,6 +65,7 @@ public class LiveVideoDownLoadUtils {
             this.inFile = inDir;
             this.inDirPath = builder.inDirPath;
             this.inFilePath = builder.inFilePath;
+            this.inFileName = builder.inFileName;
             if (builder.executor != null) {
                 this.executor = builder.executor;
             } else {
@@ -103,6 +104,10 @@ public class LiveVideoDownLoadUtils {
             } else {
                 this.mDownloadType = DownLoadInfo.DownloadType.FILE;
             }
+        }
+
+        public String getInFileName() {
+            return inFileName;
         }
 
         public String getUrl() {
@@ -174,7 +179,7 @@ public class LiveVideoDownLoadUtils {
         //使用自定义方式删除文件
         public static final int DELETE_NEW_CUSTOM = 2;
 
-        static class Builder {
+        public static class Builder {
             //下载的url
             String url;
             //下载文件的文件夹
@@ -182,7 +187,7 @@ public class LiveVideoDownLoadUtils {
             //文件名称
             File inFile;
             //文件夹路径，文件路径
-            String inDirPath, inFilePath;
+            String inDirPath, inFilePath, inFileName;
             int deleteOldFileCategary;
 
             Executor executor;
@@ -293,6 +298,11 @@ public class LiveVideoDownLoadUtils {
 
             public LiveVideoDownLoadFile build() {
                 return new LiveVideoDownLoadFile(this);
+            }
+
+            public Builder setInFileName(String inFileName) {
+                this.inFileName = inFileName;
+                return this;
             }
         }
 

@@ -4,13 +4,12 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
@@ -24,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDrive
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -57,7 +57,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 //import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
@@ -821,23 +823,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
                 boolean isOpen = object.optBoolean("open");
-                //
-
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
                     if (!isOpen) {
                         //老师收题之后，更新聊天区连对榜
-//                    getHttpManager().getEvenLikeData(
-////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
-//                            mGetInfo.getGetEvenPairListUrl(),
-//                            mGetInfo.getStudentLiveInfo().getClassId(),
-//                            mGetInfo.getId(),
-//                            mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-//                                @Override
-//                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                                    EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
-//                                    mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
-//                                }
-//                            });
                         postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -1007,6 +995,16 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         };
     }
 
+    /**
+     * 是否是新版文科 课件 topic消息
+     *
+     * @param jsonObject
+     * @return
+     */
+    private boolean isNewArtsH5Courseware(JSONObject jsonObject) {
+        return (jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech"));
+    }
+
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         List<String> disableSpeaking = liveTopic.getDisableSpeaking();
@@ -1016,7 +1014,22 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 forbidSendMsg = true;
             }
         }
-
+        JSONObject object = jsonObject.optJSONObject("platformTest");
+        if (object != null && !object.toString().equals("{}")) {
+            isMiddleScienceEvenDriveH5Open = true;
+        }
+        if (isNewArtsH5Courseware(jsonObject)) {
+            JSONObject onlineJobj = jsonObject.optJSONObject("coursewareOnlineTech");
+            if (onlineJobj != null && "on".equals(onlineJobj.optString("status"))) {
+                JSONObject onlineTechObj = jsonObject.optJSONObject("coursewareOnlineTech");
+                if (onlineTechObj != null && !"{}".equals(onlineTechObj.toString())) {
+                    String status = onlineTechObj.optString("status");
+                    if ("on".equals(status)) {
+                        isMiddleScienceEvenDriveH5Open = true;
+                    }
+                }
+            }
+        }
         liveTopic.setDisable(forbidSendMsg);
         if (mRoomAction != null) {
             try {
@@ -1139,6 +1152,60 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 mode = LiveTopic.MODE_CLASS;
             }
             return mode;
+        }
+
+
+        @Override
+        public boolean sendMessage(String msg, String name, Map<String, String> map) {
+            boolean sendMessage = false;
+            if (mLiveTopic.isDisable()) {
+                return false;
+            } else {
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    if (map != null) {
+                        Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
+                        for (; iterator.hasNext(); ) {
+                            Map.Entry<String, String> _entry = iterator.next();
+                            String key = _entry.getKey();
+                            String value = _entry.getValue();
+                            jsonObject.put(key, value);
+                        }
+                    }
+                    jsonObject.put("type", "" + XESCODE.TEACHER_MESSAGE);
+                    if (StringUtils.isEmpty(name)) {
+                        name = mGetInfo.getStuName();
+                    }
+                    jsonObject.put("name", name);
+                    jsonObject.put("path", "" + mGetInfo.getHeadImgPath());
+                    jsonObject.put("version", "" + mGetInfo.getHeadImgVersion());
+                    jsonObject.put("msg", msg);
+                    if (mGetInfo.getBetterMe().getStuSegment() != null) {
+                        jsonObject.put("segment", mGetInfo.getBetterMe().getStuSegment().getSegment());
+                        jsonObject.put("segmentType", mGetInfo.getBetterMe().getStuSegment().getSegmentType());
+                        jsonObject.put("star", mGetInfo.getBetterMe().getStuSegment().getStar());
+                    }
+                    if (haveTeam) {
+                        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+                        String teamId = studentLiveInfo.getTeamId();
+                        jsonObject.put("from", "android_" + teamId);
+                        jsonObject.put("to", teamId);
+                    }
+                    sendMessage = mLiveBll.sendMessage(jsonObject);
+                    for (int i = 0; i < onSendMsgs.size(); i++) {
+                        try {
+                            onSendMsgs.get(i).onSendMsg(msg);
+                        } catch (Exception e) {
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
+                    }
+                } catch (Exception e) {
+                    // logger.e( "understand", e);
+                    UmsAgentManager.umsAgentException(ContextManager.getContext(), "livevideo_livebll_sendMessage", e);
+                    mLogtf.e("sendMessage", e);
+                }
+            }
+            return sendMessage;
         }
 
         @Override

@@ -58,7 +58,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_FILTER_ACTION;
-import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.intelligent_recognition_sign;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_SIGN_KEY;
 
 /**
  * Created by linyuqiang on 2018/7/5.
@@ -880,7 +880,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
      */
     private void stopIntelligentRecognitionSpeech(String jString) {
         Intent intent = new Intent(INTELLIGENT_RECOGNITION_FILTER_ACTION);
-        intent.putExtra(intelligent_recognition_sign, jString);
+        intent.putExtra(INTELLIGENT_RECOGNITION_SIGN_KEY, jString);
         activity.sendBroadcast(intent);
         return;
     }

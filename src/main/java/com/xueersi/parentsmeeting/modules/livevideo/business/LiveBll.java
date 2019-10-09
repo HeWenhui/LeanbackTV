@@ -224,6 +224,11 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState {
         return openchat;
     }
 
+    @Override
+    public boolean sendMessage(String msg, String s, Map<String, String> map) {
+        return false;
+    }
+
     private SendMsgListener mSendMsgListener;
 
     public void setSendMsgListener(SendMsgListener listener) {

@@ -1130,6 +1130,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     configs.setGetMetadataUrl(urlsJsonObj.optString("getMetadataUrl"));
                     configs.setInitModuleUrl(urlsJsonObj.optString("initModuleUrl"));
                 }
+                configs.setIrcRoomsJson(configsJsonObj.optJSONArray("ircRooms").toString());
                 playBackEntity.setConfigs(configs);
             }
 

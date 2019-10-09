@@ -2,16 +2,16 @@ package com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.web.NbCourse
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
-import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.InfoUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WrapInputStream;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +27,7 @@ import java.util.HashMap;
  * created  at 2019/4/13 11:08
  */
 public class NbCourseCache {
+    private Logger logger = LoggerFactory.getLogger(NbCourseCache.class.getSimpleName());
     /**
      * 本地assets 包下 资源  url 路径中关键字
      **/
@@ -40,8 +41,9 @@ public class NbCourseCache {
     /**
      * 本地资源包 根路径下  url 路径中关键字
      **/
-    private static final String ROOT_FILE_PATH_KEY_WORD = "physics-libs.";
+    private static final String ROOT_FILE_PATH_KEY_WORD = "physics-libs";
 
+    private static final String FREE_FILE_PATH_KEY_WORD = "wuliplayercdn.nobook.com";
     private static final String RESROOTDIR = "";
 
 
@@ -51,13 +53,33 @@ public class NbCourseCache {
      **/
     private File mNbCacheFileDir;
 
-    public NbCourseCache(Context context) {
+    private NbCourseWareEntity nbCourseWareEntity;
+
+    public NbCourseCache(Context context, NbCourseWareEntity nbCourseWareEntity) {
         header = new HashMap();
-        String resDir = ShareDataManager.getInstance().getString(NbCourseWareConfig.LOCAL_RES_DIR, "",
-                ShareDataManager.SHAREDATA_NOT_CLEAR);
-        File mResDir = LiveCacheFile.geCacheFile(context, NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
-        if (mResDir.exists() && !TextUtils.isEmpty(resDir)) {
-            mNbCacheFileDir = new File(mResDir, resDir);
+        this.nbCourseWareEntity = nbCourseWareEntity;
+//        String resDir = ShareDataManager.getInstance().getString(NbCourseWareConfig.LOCAL_RES_DIR, "",
+//                ShareDataManager.SHAREDATA_NOT_CLEAR);
+//        File mResDir = LiveCacheFile.geCacheFile(context, NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
+//        if (mResDir.exists() && !TextUtils.isEmpty(resDir)) {
+//            mNbCacheFileDir = new File(mResDir, resDir);
+//        }
+
+        File tempFile; //= LiveCacheFile.geCacheFile(context, NbCourseWareConfig.NB_RESOURSE_CACHE_DIR);
+        tempFile = InfoUtils.getNbFilePath(context);
+//        if (AppConfig.DEBUG && nbCourseWareEntity.isNbExperiment() == NbCourseWareEntity.NB_FREE_EXPERIMENT) {
+//            mNbCacheFileDir = new File(
+//                    tempFile.getPath() +
+//                            File.separator +
+//                            "257961cc0edc4edd31a9f8394fc4fb194792219270");
+//        } else {
+//        mNbCacheFileDir = new File(
+//                tempFile.getPath() +
+//                        File.separator +
+//                        nbCourseWareEntity.getExperimentId());
+//        }
+        if (nbCourseWareEntity.getExperimentId() != null) {
+            mNbCacheFileDir = new File(tempFile, nbCourseWareEntity.getExperimentId());
         }
         header.put("Access-Control-Allow-Origin", "*");
         webInstertJs = new WebInstertJs(context, "99999");
@@ -97,14 +119,22 @@ public class NbCourseCache {
                         }
                         response = new WebResourceResponse(mimeType, "", inputStream);
                         response.setResponseHeaders(header);
+                        logger.i("需要加载的url:" + url + " 找到本地资源,资源路径" + resFile.getPath());
                         // Log.e("NbCourseCache", "====>return local resource:"+mimeType+":"+extension);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
+                    }
+                } else {
+                    if (resFile != null) {
+                        logger.i("需要加载的url:" + url + " 寻找的本地文件不存在，路径:" + resFile.getPath());
+                    } else {
+                        logger.i("需要加载的url:" + url + " 寻找的本地文件不存在，路径为null:");
                     }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            logger.e(e.getMessage());
         }
         return response;
     }
@@ -125,7 +155,11 @@ public class NbCourseCache {
                     result = fileName.contains(ROOT_FILE_PATH_KEY_WORD);
                 }
             }
+            if (nbCourseWareEntity.isNbExperiment() == NbCourseWareEntity.NB_FREE_EXPERIMENT) {
+                result = url.contains(FREE_FILE_PATH_KEY_WORD);
+            }
         }
+
         return result;
     }
 
@@ -136,6 +170,7 @@ public class NbCourseCache {
             if (index != -1) {
                 String fileName = url.substring(index + 1, url.length());
                 //Log.e("NbCourseCache", "======>getRootFile: filePath=" + fileName);
+//                resultFile = new File(mNbCacheFileDir, fileName);
                 resultFile = new File(mNbCacheFileDir, fileName);
             }
         }
@@ -158,10 +193,12 @@ public class NbCourseCache {
         if (index != -1) {
             String filePath = url.substring(index + 1, url.length());
             //Log.e("NbCourseCache", "======>getBulidFile: filePath=" + filePath);
+//            resultFile = new File(mNbCacheFileDir, filePath);
             resultFile = new File(mNbCacheFileDir, filePath);
         }
         return resultFile;
     }
+
 
     /**
      * 是否是本地 assetsRes中的文件
@@ -178,8 +215,9 @@ public class NbCourseCache {
         int index = url.lastIndexOf(ASSESTFILE_PATH_KEY_WORD);
         if (index != -1) {
             String filePath = url.substring(index + 1, url.length());
-             //Log.e("NbCourseCache", "======>getAssetsFile: filePath=" + filePath);
+            //Log.e("NbCourseCache", "======>getAssetsFile: filePath=" + filePath);
             resultFile = new File(mNbCacheFileDir, filePath);
+//            resultFile = new File(mNbCacheFileDir.getPath() + filePath + File.pathSeparator + filePath);
         }
         return resultFile;
     }
