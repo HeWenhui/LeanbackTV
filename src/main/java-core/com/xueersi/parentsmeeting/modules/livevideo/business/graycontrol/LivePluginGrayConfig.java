@@ -25,4 +25,8 @@ public class LivePluginGrayConfig {
     public static final int MOUDLE_BARRAYAGE = 7;
     /**用户在线时长**/
     public static final int MOUDLE_LECTUREDURATION = 8;
+    /**本场成就**/
+    public static final int MODULE_HONOUR = 55;
+    /**成就排行榜**/
+    public static final int MODULE_HONOUR_RANK = 56;
 }
