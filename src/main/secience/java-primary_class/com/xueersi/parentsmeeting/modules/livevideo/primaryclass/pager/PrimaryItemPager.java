@@ -751,6 +751,11 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 otherItem.onRemoteVideoStateChanged(uid, state);
             }
         }
+
+        @Override
+        public void onOnceLastMileQuality(RTCEngine.RTC_LASTMILE_QUALITY lastmileQuality) {
+
+        }
     };
 
     private void preview(final BasePrimaryTeamItem courseGroupItem) {

@@ -2,7 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition;
 
 public interface IntelligentRecognitionContract {
     String INTELLIGENT_RECOGNITION_FILTER_ACTION = "com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition_sign";
-    String intelligent_recognition_sign = "intelligent_recognition_sign";
+    String INTELLIGENT_RECOGNITION_SIGN_KEY = "intelligent_recognition_sign";
+    String INTELLIGENT_RECOGNITION_STOP_ONCE = "intelligent_recognition_stop_once";
 
     interface BaseView<T> {
         void setPresenter(T presenter);

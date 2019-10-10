@@ -1,38 +1,43 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
+
 /**
-*nobook 物理实验 信息model
-*@author chekun
-*created  at 2019/4/5 13:22
-*/
+ * nobook 物理实验 信息model
+ *
+ * @author chekun
+ * created  at 2019/4/5 13:22
+ */
 public class NbCourseWareEntity {
-   /**直播id**/
-   private String liveId;
-   /**页面加载地址**/
-   private String url;
-   /**是否是Nb 加 实验**/
-   private boolean nbAddExperiment;
+    public static final int NB_ADD_EXPERIMENT = 0;
+    public static final int NB_FREE_EXPERIMENT = 1;
+    /** 直播id **/
+    private String liveId;
+    /** 页面加载地址 **/
+    private String url;
+    /** 是否是Nb 加 实验或者自由实验 **/
+    private int nbAddExperiment;
 
-   /**试题类型 ：考试/自由实验**/
-   private String experimentType;
-   /**试题ld**/
-   private String experimentId;
-   /**实验 名称**/
-   private String experimentName;
+    /** 试题类型 ：考试/自由实验 **/
+    private String experimentType;
+    /** 试题ld,自由实验作为文件夹的名称来寻找文件 **/
+    private String experimentId;
+    /** 实验 名称 **/
+    private String experimentName;
 
-   /**是否已作答**/
-   private boolean isAnswer ;
+    /** 是否已作答 **/
+    private boolean isAnswer;
 
     /**
      * 是否是回放
      */
-   private boolean playBack;
+    private boolean playBack;
 
-   /**nb 登录token**/
-   private String nbToken ="";
+    /** nb 登录token **/
+    private String nbToken = "";
 
-   public NbCourseWareEntity(){}
+    public NbCourseWareEntity() {
+    }
 
-    public NbCourseWareEntity(String liveId, String url, boolean nbAddExperiment) {
+    public NbCourseWareEntity(String liveId, String url, int nbAddExperiment) {
         this.liveId = liveId;
         this.url = url;
         this.nbAddExperiment = nbAddExperiment;
@@ -54,11 +59,11 @@ public class NbCourseWareEntity {
         this.url = url;
     }
 
-    public boolean isNbExperiment() {
+    public int isNbExperiment() {
         return nbAddExperiment;
     }
 
-    public void setNbAddExperiment(boolean addExperiment) {
+    public void setNbAddExperiment(int addExperiment) {
         this.nbAddExperiment = addExperiment;
     }
 
