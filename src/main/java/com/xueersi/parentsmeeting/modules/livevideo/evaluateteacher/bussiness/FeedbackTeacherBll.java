@@ -88,11 +88,11 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     }
 
     private void checkIfShowFeedback(){
-        getHttpManager().checkFeedBack(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), new HttpCallBack(false) {
+        getHttpManager().checkFeedBack(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), new HttpCallBack(true) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 int status = responseEntity.getmStatus();
-                if (status == 200) {
+                if (status == 1) {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     //is_trigger 是否触发，1：可以，0：不可以
                    int is_trigger= jsonObject.optInt("is_trigger");
@@ -142,7 +142,8 @@ public class FeedbackTeacherBll extends LiveBaseBll {
     public boolean showFeedbackPager() {
 //        if (pager != null && mFeedBackEntity != null) {
 
-        if (pager != null && mFeedBackEntity != null && System.currentTimeMillis() / 1000 > mFeedBackEntity.getEvaluateTime()) {
+//        if (pager != null && mFeedBackEntity != null && System.currentTimeMillis() / 1000 > mFeedBackEntity.getEvaluateTime()) {
+            if (pager != null && mFeedBackEntity != null) {
             logger.i("showEvaluateTeacher");
             logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mFeedBackEntity
                     .getEvaluateTime());
