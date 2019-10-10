@@ -204,6 +204,17 @@ public class LiveGetInfo {
     /**直播入口接口 返回session ID**/
     public String sessionId;
 
+    public int getBizId() {
+        return bizId;
+    }
+
+    public void setBizId(int bizId) {
+        this.bizId = bizId;
+    }
+
+    /**大班整合新增 业务id**/
+    public int bizId;
+
 
     private int urlClick;
     private boolean allowLinkMic;

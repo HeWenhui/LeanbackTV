@@ -1780,16 +1780,16 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     /**
      * 根据moduleId 查找 Plugin
      *
-     * @param pluginId
+     * @param moduleId
      * @return
      */
-    public LivePlugin getLivePluginByModuleId(int pluginId) {
+    public LivePlugin getLivePluginByModuleId(int moduleId) {
         LivePlugin plugin = null;
         LiveModuleConfigInfo info = mLiveModuleConfigInfo;
         if (info != null && info.plugins != null) {
             List<LivePlugin> plugins = info.plugins;
             for (int i = 0; i < plugins.size(); i++) {
-                if (pluginId == plugins.get(i).pluginId) {
+                if (moduleId == plugins.get(i).moduleId) {
                     plugin = plugins.get(i);
                     break;
                 }
@@ -1820,26 +1820,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         return plugin;
     }
-
-
-    /**
-     * 根据moudlid key 返回属性
-     *
-     * @param pluginId
-     * @param key
-     * @return
-     */
-    public String getProperties(int pluginId, String key) {
-        LivePlugin plugin = getLivePluginByModuleId(LivePluginGrayConfig.MOUDLE_GIFT);
-        if (plugin != null) {
-            Map<String, String> maplist = plugin.properties;
-            if (maplist != null) {
-                return maplist.get(key);
-            }
-        }
-        return "";
-    }
-
 
     /**
      * 根据moudlid 功能是否打开

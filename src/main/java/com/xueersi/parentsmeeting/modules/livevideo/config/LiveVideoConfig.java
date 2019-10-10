@@ -383,4 +383,11 @@ public class LiveVideoConfig {
 
     public final static String LIVE_PLAY_BACK_TUTOR_FLAGE = "_t";
 
+    /**大班整合 bizId 定义**/
+    /**大班整合-讲座**/
+    public final static  int BIGLIVE_BIZID_LECTURE = 2;
+    /**大班整合-直播**/
+    public final static  int BIGLIVE_BIZID_LIVE = 3;
+
+
 }
