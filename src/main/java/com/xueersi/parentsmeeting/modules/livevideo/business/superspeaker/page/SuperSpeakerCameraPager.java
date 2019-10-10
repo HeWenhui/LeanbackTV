@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.TimeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.CustomVideoController2;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
@@ -72,6 +73,8 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     private boolean isSurfViewCreat = false;
     /** 是否使用前置摄像头或者后置摄像头,默认faceback,即自拍 */
     protected boolean isFacingBack = false;
+    /** 上一次使用的摄像头 */
+    protected boolean lastFacingBack = !isFacingBack;
     /** 视频播放控制器 */
     private CustomVideoController2 customVideoController2;
 
@@ -413,13 +416,16 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
      * @param isFacingBack 使用前置摄像头还是后置摄像头
      */
     protected void performStartPreView(boolean isFacingBack) {
-//        if(camera1Utils==null){
-//            camera1Utils = new Camera1Utils()
-//        }
         if (!isHasRecordPermission()) {
             return;
         }
-        if (camera1Utils != null) {
+        if (camera1Utils != null && (lastFacingBack != isFacingBack || !camera1Utils.isStartPreview())) {
+//            lastFacingBack = isFacingBack;
+//            StorageUtils.videoUrl = LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
+//            logger.i(StorageUtils.videoUrl);
+//            StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.VIDEO_URL, StorageUtils.videoUrl);
+//            if (camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.videoUrl)) {
+//        if (camera1Utils != null) {
             StorageUtils.setVideoPath(liveId, courseWareId);
 //            StorageUtils.videoUrl = LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
             logger.i(StorageUtils.getVideoPath());

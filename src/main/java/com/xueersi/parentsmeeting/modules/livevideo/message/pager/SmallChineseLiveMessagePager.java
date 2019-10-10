@@ -899,7 +899,8 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                             }
 
 //                            String educationStage = getInfo.getEducationStage();
-                            ircState.praiseTeacher("", smallChineseSendGiftPager.getWhich() + "",
+                            String formWhichTeacher = LiveTopic.MODE_CLASS.equals(ircState.getMode()) ? "t" : "f";
+                            ircState.praiseTeacher(formWhichTeacher, smallChineseSendGiftPager.getWhich() + "",
                                     educationStage, new HttpCallBack(false) {
                                         @Override
                                         public void onPmSuccess(ResponseEntity responseEntity) {

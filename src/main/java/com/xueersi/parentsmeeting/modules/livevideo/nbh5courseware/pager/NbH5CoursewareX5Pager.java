@@ -63,4 +63,9 @@ public class NbH5CoursewareX5Pager extends BaseWebviewX5Pager implements NbH5Pag
         return false;
     }
 
+    @Override
+    public void loadUrl() {
+
+    }
+
 }
