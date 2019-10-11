@@ -23,6 +23,8 @@ import com.xueersi.ui.dataload.PageDataLoadEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 /**
  * Created by yuanwei2 on 2019/6/4.
  */
@@ -104,6 +106,11 @@ public class ExperienceIrcState implements IRCState {
         }
 
         return openchat;
+    }
+
+    @Override
+    public boolean sendMessage(String msg, String s, Map<String, String> map) {
+        return false;
     }
 
     @Override

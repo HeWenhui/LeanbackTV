@@ -9,7 +9,10 @@ public class DownLoadEntityUtils {
         public LiveVideoDownLoadUtils.LiveVideoDownLoadFile create(CoursewareInfoEntity entity) {
 
 
-            return new LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder().setUrl(entity.getIps().get(0)).build();
+            return new LiveVideoDownLoadUtils.
+                    LiveVideoDownLoadFile.Builder()
+                    .setUrl(entity.getIps().get(0))
+                    .build();
         }
     }
 

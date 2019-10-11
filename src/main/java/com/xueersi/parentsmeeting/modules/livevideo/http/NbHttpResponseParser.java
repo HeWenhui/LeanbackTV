@@ -47,6 +47,7 @@ public class NbHttpResponseParser extends HttpResponseParser {
             entity.setExperimentName(jsonObject.optString("name", ""));
             entity.setAnswer(jsonObject.optString("isAnswer", "").equals("1"));
             entity.setUrl(jsonObject.optString("play_url", ""));
+            entity.setNbAddExperiment(NbCourseWareEntity.NB_ADD_EXPERIMENT);
         } catch (Exception e) {
             e.printStackTrace();
         }

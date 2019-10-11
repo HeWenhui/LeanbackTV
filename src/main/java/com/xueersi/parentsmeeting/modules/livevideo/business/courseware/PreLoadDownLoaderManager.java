@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class PreLoadDownLoaderManager {
+class PreLoadDownLoaderManager {
     private static Logger logger = LoggerFactory.getLogger("PreLoadDownLoaderManager");
     /**
      * 当前正在下载的文件url

@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.EvenDriveLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyArtsLiveMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyPrimaryLiveMessagePager;
@@ -35,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePag
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveMainMsgPager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveTrainMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallChineseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
@@ -42,7 +44,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSh
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveTrainMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 
 import java.util.ArrayList;
@@ -349,7 +350,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
             } else {
-                LiveMessagePager liveMessagePager = new LiveMessagePager(activity,
+                LiveMessagePager liveMessagePager = new EvenDriveLiveMessagePager(activity,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
             }
@@ -414,12 +415,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            }
             if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                 LiveMessagePager liveMessagePager =
-                        new LiveMessagePager(activity, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                        new EvenDriveLiveMessagePager(activity, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = liveMessagePager;
             } else {
                 long before = System.currentTimeMillis();
                 if (!isSmallEnglish && !LiveVideoConfig.isSmallChinese) {
-                    LiveMessagePager liveMessagePager = new LiveMessagePager(activity,
+                    LiveMessagePager liveMessagePager = new EvenDriveLiveMessagePager(activity,
                             baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                     mLiveMessagePager = liveMessagePager;
                 } else if (LiveVideoConfig.isSmallChinese) {
@@ -511,6 +512,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 this.users.add(user.getNick());
             }
         }
+        XrsCrashReport.d(TAG, "onUserList:users=" + users.length + ",new=" + this.users.size());
         logToFile.d("onUserList:users=" + users.length + ",new=" + this.users.size());
   /*      StringBuilder sb = new StringBuilder();
         for (User user : users){
@@ -602,6 +604,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //        }
         //  Loger.d("____join:  "+sender+"___peoplecount:  "+peopleCount);
         if (!users.contains(sender)) {
+            XrsCrashReport.d(TAG, "onJoin:sender=" + sender + ",get=" + peopleCount.get());
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             users.add(sender);
             if (mLiveMessagePager != null) {
@@ -619,8 +622,11 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            return;
 //        }
         if (users.contains(sourceNick)) {
-            peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
-            users.remove(sourceNick);
+            boolean remove = users.remove(sourceNick);
+            XrsCrashReport.d(TAG, "onQuit:sourceNick=" + sourceNick + ",get=" + peopleCount.get() + ",remove=" + remove);
+            if (remove) {
+                peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
+            }
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
             }
