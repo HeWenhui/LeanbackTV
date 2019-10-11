@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -16,7 +17,9 @@ import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.parentsmeeting.module.browser.activity.BaseBrowserActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
 
 /**
  * @author anlina
@@ -30,7 +33,9 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
 
     private String mUrl;
 
-
+    public boolean isShow = false;
+    public boolean showEvaluate = false;
+    FeedBackTeacherInterface feedBackTeacherInterface;
     public LiveFeedBackSecondPager(Context context) {
         super(context);
     }
@@ -44,19 +49,19 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
     }
 
     public LiveFeedBackSecondPager(Context context, LiveGetInfo liveGetInfo, String url) {
-        super(context);
+
+        super(context,null,true);
         mLiveGetInfo = liveGetInfo;
         mUrl = url;
+
     }
 
     @Override
     public View initView() {
-        if (mUrl == null) return null;
         View view = LayoutInflater.from(mContext).inflate(R.layout.layout_live_video_feed_back_second, null);
         webView = view.findViewById(R.id.wv_livevideo_feedback_second);
         webViewConfig();
         webView.addJavascriptInterface(this, "");
-        webView.loadUrl(mUrl);
         mView = view;
         return mView;
     }
@@ -136,7 +141,52 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         return object.toString();
     }
 
+    @JavascriptInterface
+    public void close() {
+        onClose();
+    }
 
 
+    @Override
+    public boolean onUserBackPressed() {
+//        webView.loadUrl(mUrl);
+//        isShow = feedBackTeacherInterface.showPager();
+//        return true;
+        if (!isShow) {
+            webView.loadUrl(mUrl);
+            isShow = feedBackTeacherInterface.showPager();
+            isShow = true;
 
+        } else {
+            isShow = feedBackTeacherInterface.removeView();
+        }
+        return isShow;
+
+    }
+    public void setFeedbackSelectInterface(FeedBackTeacherInterface feedBackTeacherInterface) {
+        this.feedBackTeacherInterface = feedBackTeacherInterface;
+    }
+
+    private void onClose() {
+        if (onPagerClose != null) {
+            onPagerClose.onClose(this);
+        }
+        if (feedBackTeacherInterface != null) {
+            feedBackTeacherInterface.onClose();
+        }
+    }
+    CountDownTimer timer = new CountDownTimer(2000, 1000) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+//            String time = String.valueOf(millisUntilFinished / 1000);
+            //  onSubmitError(time + "s后退出直播间", true);
+        }
+
+        @Override
+        public void onFinish() {
+            if (feedBackTeacherInterface != null) {
+                feedBackTeacherInterface.onClose();
+            }
+        }
+    };
 }

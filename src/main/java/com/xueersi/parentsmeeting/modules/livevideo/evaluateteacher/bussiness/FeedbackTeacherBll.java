@@ -95,25 +95,29 @@ public class FeedbackTeacherBll extends LiveBaseBll {
                 if (status == 1) {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     //is_trigger 是否触发，1：可以，0：不可以
-                   int is_trigger= jsonObject.optInt("is_trigger");
-                   String url = null;
+                    int is_trigger = jsonObject.optInt("isTrigger");
+                    String url = null;
+                    if (is_trigger == 1) {
+                        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
+                            //英语
+                            url = jsonObject.getJSONObject("app").optString("english");
+                        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
+                            //理科
+                            url = jsonObject.getJSONObject("app").optString("science");
+                        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
+                            //语文
+                            url = jsonObject.getJSONObject("app").optString("chinese");
+                        } else if (mGetInfo.getEducationStage().equals("4")) {
+                            //高中
+                            url = jsonObject.getJSONObject("app").optString("highSchool");
+                        }
+                        pagerNew = new LiveFeedBackSecondPager(mContext, mGetInfo, url);
+                        pagerNew.setOnPagerClose(onPagerClose);
+                        pagerNew.setFeedbackSelectInterface(feedBackTeacherInterface);
 
-                    if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
-                      //英语
-                        url = jsonObject.getJSONObject("app").optString("english");
-                    } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
-                        //理科
-                        url = jsonObject.getJSONObject("app").optString("science");
-                    } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
-                        //语文
-                        url = jsonObject.getJSONObject("app").optString("chinese");
-                    } else if(mGetInfo.getEducationStage().equals("4")){
-                        //高中
-                        url = jsonObject.getJSONObject("app").optString("highSchool");
                     }
-                    pagerNew = new LiveFeedBackSecondPager(mContext, mGetInfo,url);
-
                 }
+
 
 
             }
@@ -143,10 +147,10 @@ public class FeedbackTeacherBll extends LiveBaseBll {
 //        if (pager != null && mFeedBackEntity != null) {
 
 //        if (pager != null && mFeedBackEntity != null && System.currentTimeMillis() / 1000 > mFeedBackEntity.getEvaluateTime()) {
-            if (pager != null && mFeedBackEntity != null) {
+            if (pagerNew != null) {
             logger.i("showEvaluateTeacher");
-            logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mFeedBackEntity
-                    .getEvaluateTime());
+//            logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mFeedBackEntity
+//                    .getEvaluateTime());
 
             livePlayAction.stopPlayer();
             mLiveBll.onIRCmessageDestory();

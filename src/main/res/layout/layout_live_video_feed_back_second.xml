@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
-<WebView
-    android:id="@+id/wv_livevideo_feedback_second"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-</WebView>
+    <com.tencent.smtt.sdk.WebView
+        android:id="@+id/wv_livevideo_feedback_second"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.tencent.smtt.sdk.WebView>
 </RelativeLayout>
