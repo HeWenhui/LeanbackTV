@@ -1257,6 +1257,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     protected void addEvenDriveMessage(final String sender, final int type, final String text, final String headUrl, final String evenDriveNum) {
+        addMessage(sender, type, text, headUrl);
     }
 
     @Override
