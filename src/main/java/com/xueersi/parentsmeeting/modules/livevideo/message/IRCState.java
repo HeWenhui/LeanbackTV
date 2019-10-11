@@ -17,7 +17,7 @@ public interface IRCState {
 
     boolean openchat();
 
-    boolean sendMessage(String msg, String s, Map<String, String> map);
+    boolean sendMessage(String msg, String name, Map<String, String> map);
 
     boolean sendMessage(String msg, String s);
 
