@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.CameraViewUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.CommonRxObserver;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.TimeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -24,6 +25,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -51,7 +53,7 @@ public abstract class SuperSpeakerCameraPager extends SuperSpeakerCameraInflateP
 
     //include_livevideo_super_speaker_record_video_record_time
     /** 本地计时器 */
-    private int localTimer = 0;
+//    private int localTimer = 0;
 
     private String liveId;
     /** 试题所有回答时间 */
@@ -297,7 +299,8 @@ public abstract class SuperSpeakerCameraPager extends SuperSpeakerCameraInflateP
             return;
         }
         long nowTime = System.currentTimeMillis();
-        mView.removeCallbacks(recordVideoTimer);
+//        recordTimerDisposable.dispose();
+//        mView.removeCallbacks(recordVideoTimer);
         isHasRecordView = true;
         stopRecordVideoTime = nowTime;
         ivBack.setVisibility(View.VISIBLE);
@@ -400,30 +403,58 @@ public abstract class SuperSpeakerCameraPager extends SuperSpeakerCameraInflateP
         if (isSurfViewCreat) {
 //            performStartPreView(true);
             //因为刚开始录制视频，视频初始化有一段时间，所以多延迟0.5s
-            mView.postDelayed(recordVideoTimer, 1500);
-            isInRecord = true;
-            if (IS_LIVE.equals(livevideo)) {
-                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715001));
-            } else {
-                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716001));
-            }
-            startRecordVideo();
+//            mView.postDelayed(recordVideoTimer, 1500);
+//            isInRecord = true;
+//            if (IS_LIVE.equals(livevideo)) {
+//                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715001));
+//            } else {
+//                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716001));
+//            }
+//            startRecordVideo();
 
-//            Observable.just(true).
-//                    subscribeOn(Schedulers.io()).
-//                    doOnNext().
-//                    flatMap(new Function<Boolean, ObservableSource<?>>() {
-//                        @Override
-//                        public ObservableSource<?> apply(Boolean aBoolean) throws Exception {
-//                            return Observable.interval(1500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread());
-//                        }
-//                    });
+            Observable.just(true).
+                    subscribeOn(Schedulers.io()).
+                    doOnNext(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean aBoolean) throws Exception {
+                            if (IS_LIVE.equals(livevideo)) {
+                                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715001));
+                            } else {
+                                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716001));
+                            }
+                            startRecordVideo();
+                        }
+                    }).
+                    flatMap(new Function<Boolean, ObservableSource<Long>>() {
+                        @Override
+                        public ObservableSource<Long> apply(Boolean aBoolean) throws Exception {
+                            return Observable.interval(1000, 1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread());
+                        }
+                    }).
+                    subscribe(new CommonRxObserver<Long>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            super.onSubscribe(d);
+                            compositeDisposable.add(d);
+//                            recordTimerDisposable.add(d);
+                            isInRecord = true;
+                        }
+
+                        @Override
+                        public void onNext(Long o) {
+                            if (!recordVideoT(o) && isInRecord) {
+                                disposable.dispose();
+                            }
+                        }
+                    });
         }
     }
 
+//    private CompositeDisposable recordTimerDisposable = new CompositeDisposable(compositeDisposable);
+
     //初始化变量
     private void initVar() {
-        localTimer = 0;
+//        localTimer = 0;
     }
 
     private void startRecordVideo() {
@@ -434,35 +465,36 @@ public abstract class SuperSpeakerCameraPager extends SuperSpeakerCameraInflateP
         }
     }
 
-    private Runnable recordVideoTimer = new Runnable() {
-        @Override
-        public void run() {
-            if (!isInRecord) {
-                return;
-            }
-            localTimer++;
-            logger.i("localTimer = " + localTimer + ", recordTime = " + recordTime);
-            if (localTimer >= recordTime) {
-                performStopRecord();
-                return;
-            }
-            tvStopRecordCurrentTime.setText(TimeUtils.stringForTime(localTimer));
-            mView.postDelayed(this, 1000);
-        }
-    };
+//    private Runnable recordVideoTimer = new Runnable() {
+//        @Override
+//        public void run() {
+//            if (!isInRecord) {
+//                return;
+//            }
+//            localTimer++;
+//            logger.i("localTimer = " + localTimer + ", recordTime = " + recordTime);
+//            if (localTimer >= recordTime) {
+//                performStopRecord();
+//                return;
+//            }
+//            tvStopRecordCurrentTime.setText(TimeUtils.stringForTime(localTimer));
+//            mView.postDelayed(this, 1000);
+//        }
+//    };
 
-    private void recordVideoT() {
+    private boolean recordVideoT(long o) {
         if (!isInRecord) {
-            return;
+            return false;
         }
-        localTimer++;
-        logger.i("localTimer = " + localTimer + ", recordTime = " + recordTime);
-        if (localTimer >= recordTime) {
+        o = o + 1;
+        logger.i("o = " + o + ", recordTime = " + recordTime);
+        if (o >= recordTime) {
             performStopRecord();
-            return;
+            return false;
         }
-        tvStopRecordCurrentTime.setText(TimeUtils.stringForTime(localTimer));
+        tvStopRecordCurrentTime.setText(TimeUtils.stringForTime(o));
 //        mView.postDelayed(this, 1000);
+        return true;
     }
 
     /** 试题时间倒计时 */
@@ -509,7 +541,9 @@ public abstract class SuperSpeakerCameraPager extends SuperSpeakerCameraInflateP
     @Override
     public void removeCameraView() {
         isInRecord = false;
-        mView.removeCallbacks(recordVideoTimer);
+        compositeDisposable.dispose();
+//        recordTimerDisposable.dispose();
+//        mView.removeCallbacks(recordVideoTimer);
         mView.removeCallbacks(coursewareTimer);
         if (customVideoController2 != null) {
             customVideoController2.stop();
