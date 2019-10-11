@@ -380,7 +380,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                     String nickName = "" + mIRCMessage.getNickname();
                     if (nickName.equals(id)) {
                         mLiveMessagePager.onDisable(disable, true);
-                        mGetInfo.getLiveTopic().setDisable(true);
+                        mGetInfo.getLiveTopic().setDisable(disable);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
