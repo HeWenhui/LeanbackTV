@@ -15,7 +15,7 @@ public interface ISuperSpeakerContract {
 //    }
 
     interface ICameraView {
-        View initView();
+//        View initView();
 
 //        void updateNum(String num);
 

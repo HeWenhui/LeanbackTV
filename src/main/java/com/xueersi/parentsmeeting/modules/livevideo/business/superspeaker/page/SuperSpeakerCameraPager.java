@@ -1,46 +1,31 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page;
 
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Point;
-import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
-import android.support.constraint.Group;
-import android.view.Display;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.Camera1Utils;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.MediaUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.CameraViewUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.TimeUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.CustomVideoController2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
-import java.io.File;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.IS_LIVE;
@@ -48,42 +33,23 @@ import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker
 import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.RECORD_VALID_TIME;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
+public abstract class SuperSpeakerCameraPager extends SuperSpeakerCameraInflatePager implements
         ISuperSpeakerContract.ICameraView,
         ISuperSpeakerContract.ICommonPresenter {
 
     private ISuperSpeakerContract.ISuperSpeakerBridge bridge;
 
     private ISuperSpeakerContract.ICommonTip iCommonTip;
-    /** 录制相机的view */
-    private SurfaceView sfvVideo;
-    /** 相机工具类 */
-    private Camera1Utils camera1Utils;
 
-    private ImageView ivStartRecord, ivStopRecord, ivSubmitRecord, ivBack, ivRestart, ivReversal;
-
-    private Group groupSubmit, groupStop, groupStart, groupRestart, groupReversal;
     /** 开始录制视频的时间 */
     private long startRecordVideoTime = -1;
     /** 结束录制时间 */
     private long stopRecordVideoTime;
-    /** 试题发布时长 */
-    private TextView tvRecordVideoTime;
 
-    private boolean isSurfViewCreat = false;
-    /** 是否使用前置摄像头或者后置摄像头,默认faceback,即自拍 */
-    protected boolean isFacingBack = false;
     /** 上一次使用的摄像头 */
     protected boolean lastFacingBack = !isFacingBack;
-    /** 视频播放控制器 */
-    private CustomVideoController2 customVideoController2;
 
-    private View layoutStartViewTime, layoutStopViewTime;
     //include_livevideo_super_speaker_record_video_record_time
-    /** 当前已经录制的时间 */
-    private TextView tvStopRecordCurrentTime;
-    /** 录制的总时间 */
-    private TextView tvStopRecordTotalTime;
     /** 本地计时器 */
     private int localTimer = 0;
 
@@ -93,23 +59,20 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     /** 相机录制最大时长 */
     private int recordTime = 0;
 
-    private TextView tvStartRecordTotalTime;
-
-    private SuperSpeakerCameraBackPager cameraBackPager;
     /** 是否正在录视频 */
     private boolean isInRecord = false;
-    /** 是否已经录制过视频并且录制时间时间大于1s */
-    private boolean isHasRecordView = false;
+
     /** 试题时长 */
     private String courseWareId;
 
-    private LottieAnimationView lottieAnimationView;
     /** 是否开始预览 */
     private boolean isPreView;
     /** 相机是否初始化成功 */
     protected boolean initCamera = false;
     /** 直播或者回放 1代表直播，2代表回放 */
     private String livevideo;
+
+    protected CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public SuperSpeakerCameraPager(Context context,
                                    ISuperSpeakerContract.ISuperSpeakerBridge bridge,
@@ -128,133 +91,22 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         initData();
     }
 
-    @Override
-    public View initView() {
-        View view = View.inflate(mContext, R.layout.page_livevideo_super_speaker_record_video, null);
-        sfvVideo = view.findViewById(R.id.sfv_livevideo_super_speaker_record_video);
-
-        ivStartRecord = view.findViewById(R.id.iv_livevideo_super_speaker_record_video_start);
-        ivStopRecord = view.findViewById(R.id.iv_livevideo_super_speaker_record_video_stop);
-        ivSubmitRecord = view.findViewById(R.id.iv_livevideo_super_speaker_record_video_submit);
-        ivRestart = view.findViewById(R.id.iv_livevideo_super_speaker_record_video_restart);
-        ivReversal = view.findViewById(R.id.iv_livevideo_super_speaker_record_video_reversal);
-        ivBack = view.findViewById(R.id.iv_livevideo_super_speaker_record_video_back);
-        tvRecordVideoTime = view.findViewById(R.id.tv_livevideo_super_speaker_record_video_time);
-
-
-        layoutStartViewTime = view.findViewById(R.id.include_livevideo_super_speaker_record_video_record_time);
-        layoutStopViewTime = view.findViewById(R.id.include_livevideo_super_speaker_record_video_stop_time);
-
-        tvStartRecordTotalTime = layoutStartViewTime.findViewById(R.id.tv_livevideo_super_speaker_record_video_record_time_total);
-        tvStopRecordCurrentTime = layoutStopViewTime.findViewById(R.id.tv_livevideo_super_speaker_record_video_record_time_currenttime);
-        tvStopRecordTotalTime = layoutStopViewTime.findViewById(R.id.tv_livevideo_super_speaker_record_video_record_time_total);
-
-        lottieAnimationView = view.findViewById(R.id.lottie_livevideo_super_speaker_record_video);
-
-        groupStart = view.findViewById(R.id.group_livevideo_super_speaker_record_video_start);
-        groupRestart = view.findViewById(R.id.group_livevideo_super_speaker_record_video_restart);
-        groupReversal = view.findViewById(R.id.group_livevideo_super_speaker_record_video_reversal);
-        groupStop = view.findViewById(R.id.group_livevideo_super_speaker_record_video_stop);
-        groupSubmit = view.findViewById(R.id.group_livevideo_super_speaker_record_video_submit);
-
-        customVideoController2 = view.findViewById(R.id.custom_controller_livevideo_super_speaker_record_video_video_player);
-//        sfvVideo.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        SurfaceHolder holder = sfvVideo.getHolder();
-        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        holder.addCallback(new SurfaceHolder.Callback() {
-
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                logger.i("surfaceCreated");
-                isSurfViewCreat = true;
-//                startRecordVideo();
-                performStartPreView(isFacingBack);
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                logger.i("surfaceDestroyed");
-                try {
-                    if (holder.getSurface() != null) {
-                        holder.getSurface().release();
-                    }
-                    if (camera1Utils != null) {
-                        camera1Utils.releaseCamera();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-        camera1Utils = new Camera1Utils(sfvVideo);
-        initShowView();
-        initListener();
-
-        return view;
-    }
-
-//    protected boolean isHasRecordPermission() {
-//        return true;
-//    }
 
     protected abstract boolean isHasRecordPermission();
 
-    private void initShowView() {
-        if (groupStart != null && groupStart.getVisibility() != View.VISIBLE) {
-            groupStart.setVisibility(View.VISIBLE);
-        }
-        if (groupReversal != null && groupReversal.getVisibility() != View.VISIBLE) {
-            groupReversal.setVisibility(View.VISIBLE);
-        }
-        if (groupSubmit.getVisibility() != View.GONE) {
-            groupSubmit.setVisibility(View.GONE);
-        }
-        if (groupRestart.getVisibility() != View.GONE) {
-            groupRestart.setVisibility(View.GONE);
-        }
-        if (groupStop.getVisibility() != View.GONE) {
-            groupStop.setVisibility(View.GONE);
-        }
-        if (customVideoController2.getVisibility() != View.GONE) {
-            customVideoController2.setVisibility(View.INVISIBLE);
-        }
-        if (sfvVideo.getVisibility() != View.VISIBLE) {
-            sfvVideo.setVisibility(View.VISIBLE);
-        }
-        tvStopRecordCurrentTime.setText(TimeUtils.stringForTime(0));
-        isHasRecordView = false;
-
-    }
 
     /** 重新拍摄 */
     private void performRestart() {
         initShowView();
         customVideoController2.stop();
         customVideoController2.release();
-//        groupStart.setVisibility(View.VISIBLE);
-//        groupReversal.setVisibility(View.VISIBLE);
-//        groupSubmit.setVisibility(View.GONE);
-//        groupRestart.setVisibility(View.GONE);
-//        customVideoController2.setVisibility(View.GONE);
-        deleteOldDir();
+        CameraViewUtils.deleteOldDir();
         performStartPreView(isFacingBack);
     }
 
     @Override
     public void initListener() {
         super.initListener();
-//        ivStartRecord.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
         ivStartRecord.setOnClickListener(new OnUnDoubleClickListener(1000) {
             @Override
             public void onUnDoubleClick(View v) {
@@ -262,12 +114,6 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 performStartRecordVideo();
             }
         });
-//        ivStopRecord.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                performStopRecord();
-//            }
-//        });
         ivStopRecord.setOnClickListener(new OnUnDoubleClickListener(1000) {
             @Override
             public void onUnDoubleClick(View v) {
@@ -346,7 +192,6 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 cameraBackPager.setiClickListener(new SuperSpeakerCameraBackPager.IClickListener() {
                     @Override
                     public void onNoClick() {
-
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(IS_LIVE.equals(livevideo) ? R.string.livevideo_1715012 : R.string.livevideo_1716012));
                         removeView(cameraBackPager.getRootView());
                     }
@@ -388,14 +233,6 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         performStartPreView(isFacingBack = !isFacingBack);
     }
 
-    /** 删除旧的文件夹 */
-    private void deleteOldDir() {
-        File file = new File(StorageUtils.getVideoPath());
-        if (!file.exists()) {
-            return;
-        }
-        file.delete();
-    }
 
     @Override
     public View getView() {
@@ -428,7 +265,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             if (camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.getVideoPath())) {
                 initCamera = true;
                 //把视频按比例拉长
-                ViewGroup.LayoutParams layoutParams = handleSize(camera1Utils.getCameraSize(), sfvVideo);
+                ViewGroup.LayoutParams layoutParams = CameraViewUtils.handleSize(mContext, camera1Utils.getCameraSize(), sfvVideo);
 
                 map.put(ISuperSpeakerContract.CAMERA_SIZE,
                         camera1Utils.getCameraSize().height + "-" +
@@ -446,54 +283,6 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         }
     }
 
-    /**
-     * 按照相机的比例缩小放大这个View
-     *
-     * @param size
-     * @param view
-     */
-    private ViewGroup.LayoutParams handleSize(Camera.Size size, View view) {
-        if (size == null || view == null) return null;
-        int width = size.width;
-        int height = size.height;
-        if (width > 0 && height > 0) {
-            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-            if (layoutParams != null) {
-                try {
-                    Display defaultDisplay = ((Activity) mContext).getWindowManager().getDefaultDisplay();
-                    Point point = new Point();
-                    defaultDisplay.getSize(point);
-                    int screenWidth = point.y;
-                    int screenHeight = point.x;
-                    logger.i("screenWidth = " + screenWidth + " screenHeight = " + screenHeight);
-                    if (screenWidth < screenHeight) {
-                        int a = screenHeight;
-                        screenHeight = screenWidth;
-                        screenWidth = a;
-                    }
-                    if (height > width) {
-                        int a = height;
-                        height = width;
-                        width = a;
-                    }
-                    double dw = screenHeight * 1.0 / height;
-                    double dh = screenWidth * 1.0 / width;
-                    double dd = dw > dh ? dh : dw;
-                    logger.i("dd = " + dd);
-                    layoutParams.width = (int) (width * dd);
-                    layoutParams.height = (int) (height * dd);
-                    view.setLayoutParams(layoutParams);
-                    return layoutParams;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    logger.e(e);
-                }
-
-            }
-        }
-        return null;
-
-    }
 
     /***
      * 停止拍摄
@@ -516,7 +305,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         groupSubmit.setVisibility(View.VISIBLE);
         groupRestart.setVisibility(View.VISIBLE);
         isInRecord = false;
-        io.reactivex.Observable.
+        compositeDisposable.add(Observable.
                 just(true).
                 subscribeOn(Schedulers.io()).
                 doOnNext(new Consumer<Boolean>() {
@@ -548,7 +337,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                             UmsAgentManager.umsAgentDebug(mContext, ISuperSpeakerContract.SUPER_SPEAKER_EVNT_ID, map.getData());
                             logger.i(invisibleTime + "");
                         }
-                        sendVideoAlbum(StorageUtils.getVideoPath());
+                        CameraViewUtils.sendVideoAlbum(mContext, StorageUtils.getVideoPath());
 
                     }
                 }, new Consumer<Throwable>() {
@@ -556,23 +345,12 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
                         logger.e(throwable);
-                        StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.STOP_RECORD, throwable.toString());
+                        StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.STOP_RECORD, Log.getStackTraceString(throwable));
                         UmsAgentManager.umsAgentDebug(mContext, ISuperSpeakerContract.SUPER_SPEAKER_EVNT_ID, map.getData());
                     }
-                });
+                }));
 
         //录制视频小于1s
-//            groupStart.setVisibility(View.VISIBLE);
-//            groupReversal.setVisibility(View.VISIBLE);
-
-
-//        ((Activity)mContext).findViewById(R.id.sfv_livevideo_super_speaker_record_video).setVisibility(View.GONE);
-
-
-//        String srcPath = StorageUtils.videoUrl;
-//        StorageUtils.imageUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "video.mp4";
-
-
         processVideo();
     }
 
@@ -580,26 +358,8 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
      * 处理音频放在 {@link UploadVideoService}中
      */
     private void processVideo() {
-        MediaUtils mediaUtils = new MediaUtils();
-        extraObservable = new MediaUtils.ExtraObservable();
-
-        extraObservable.addObserver(new ExtractObserber());
         StorageUtils.setAudioUrl(liveId, courseWareId);
-//        StorageUtils.audioUrl = LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "audio.mp3";
         logger.i(" audio url:" + StorageUtils.getAudioUrl());
-//        mediaUtils.process(StorageUtils.videoUrl, StorageUtils.videoUrl, StorageUtils.audioUrl, extraObservable);
-    }
-
-    private MediaUtils.ExtraObservable extraObservable;
-
-    private class ExtractObserber implements Observer {
-
-        @Override
-        public void update(Observable o, Object arg) {
-            if (o instanceof MediaUtils.ExtraObservable) {
-
-            }
-        }
     }
 
     /**
@@ -648,6 +408,16 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716001));
             }
             startRecordVideo();
+
+//            Observable.just(true).
+//                    subscribeOn(Schedulers.io()).
+//                    doOnNext().
+//                    flatMap(new Function<Boolean, ObservableSource<?>>() {
+//                        @Override
+//                        public ObservableSource<?> apply(Boolean aBoolean) throws Exception {
+//                            return Observable.interval(1500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread());
+//                        }
+//                    });
         }
     }
 
@@ -681,6 +451,20 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         }
     };
 
+    private void recordVideoT() {
+        if (!isInRecord) {
+            return;
+        }
+        localTimer++;
+        logger.i("localTimer = " + localTimer + ", recordTime = " + recordTime);
+        if (localTimer >= recordTime) {
+            performStopRecord();
+            return;
+        }
+        tvStopRecordCurrentTime.setText(TimeUtils.stringForTime(localTimer));
+//        mView.postDelayed(this, 1000);
+    }
+
     /** 试题时间倒计时 */
     private Runnable coursewareTimer = new CourseWareTimer();
 
@@ -713,31 +497,6 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             removeCameraView();
 
         }
-    }
-
-    private void sendVideoAlbum(String videoUrl) {
-        File file = new File(videoUrl);
-        if (file == null) {
-            return;
-        }
-        //通知相册更新
-        ContentResolver localContentResolver = mContext.getContentResolver();
-        ContentValues localContentValues = getVideoContentValues(mContext, file, System.currentTimeMillis());
-        Uri localUri = localContentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, localContentValues);
-        mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri));
-    }
-
-    private ContentValues getVideoContentValues(Context paramContext, File paramFile, long paramLong) {
-        ContentValues localContentValues = new ContentValues();
-        localContentValues.put("title", paramFile.getName());
-        localContentValues.put("_display_name", paramFile.getName());
-        localContentValues.put("mime_type", "video/3gp");
-        localContentValues.put("datetaken", Long.valueOf(paramLong));
-        localContentValues.put("date_modified", Long.valueOf(paramLong));
-        localContentValues.put("date_added", Long.valueOf(paramLong));
-        localContentValues.put("_data", paramFile.getAbsolutePath());
-        localContentValues.put("_size", Long.valueOf(paramFile.length()));
-        return localContentValues;
     }
 
     //    @Override

@@ -96,6 +96,7 @@ public class UploadVideoService extends Service {
                 UmsAgentManager.umsAgentDebug(UploadVideoService.this, UploadAliUtils.SUPER_SPEAKER_LOG, map);
                 logUploadNum--;
                 percent_5 = true;
+                logger.i("video upload percent:" + percent);
             }
             if (percent > 90 && !percent_90 && logUploadNum > 0) {
                 Map<String, String> map = new HashMap<>();
@@ -103,8 +104,9 @@ public class UploadVideoService extends Service {
                 UmsAgentManager.umsAgentDebug(UploadVideoService.this, UploadAliUtils.SUPER_SPEAKER_LOG, map);
                 logUploadNum--;
                 percent_90 = true;
+                logger.i("video upload percent:" + percent);
             }
-            logger.i("video upload percent:" + percent);
+
         }
 
         @Override

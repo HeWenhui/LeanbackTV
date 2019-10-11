@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils;
 
+import android.app.job.JobScheduler;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.Handler;
@@ -192,11 +193,13 @@ public class Camera1Utils implements IRecordVideoView {
 //            mediarecorder.setProfile(profile);
 //        }
 //    }
+
     @Override
     public boolean startRecordVideo() {
         if (camera == null) {
             return false;
         }
+
         volum = volumSum = volumNum = 0;
         mediarecorder = new MediaRecorder();// 创建mediarecorder对象
 //        mMediaRecorder.setCamera(mCamera);
