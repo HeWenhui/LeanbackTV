@@ -1034,7 +1034,14 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         requestCallBack.url = LiveHttpConfig.URL_LIVE_GET_ARTSMORE_COURSEWARE_URL;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
-
+    public void getCoursewareInfo(String url,String liveId,HttpCallBack httpCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        if (liveId != null && !"".equals(liveId)) {
+            params.addBodyParam("liveId", liveId);
+        }
+        httpCallBack.url = url;
+        sendPost(url, params, httpCallBack);
+    }
     /**
      * 语文预加载互动题
      *

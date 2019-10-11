@@ -38,14 +38,14 @@ public interface NbCourseWareConfig {
      * 学生端发送提交请求
      **/
     String NOBOOK_SUBMIT = "nobook.submit";
-    /**实验结果提交返回**/
+    /** 实验结果提交返回 **/
     String NOBOOK_SUBMIT_RESPONSE = "nobook.submit_response";
     /**
      * 一个实验小步  正确消息
      **/
     String NOBOOK_ONE_STEP_CORRECT = "nobook.oneStepCorrect";
 
-    /**一个实验小步  错误消息**/
+    /** 一个实验小步  错误消息 **/
     String NOBOOK_ONE_STEP_WRONG = "nobook.oneStepWrong";
     /**
      * 练习完成
@@ -62,35 +62,35 @@ public interface NbCourseWareConfig {
      */
     String NOBOOK_LOAD_ERROR = "load_error";
 
-    /**Nb 实验本地 H5结果页地址**/
+    /** Nb 实验本地 H5结果页地址 **/
     String LIVE_NB_COURSE_RESULT = "file:///android_asset/newcourse_result/nb/index.html";
 
     //   onTeachTakeUp :收卷方法
-      // testMode: 1:可进入练习模式; 0:不可进入练习模式
-      // force:是否强制收卷
+    // testMode: 1:可进入练习模式; 0:不可进入练习模式
+    // force:是否强制收卷
     // https://live.xueersi.com//science/LiveExam/getResultStatistic?liveId=377069&stuId=2363976&experimentId=3&force=0&testMode=1
     /**
      * 考场编号
      */
     String EXAM_SN = "wangxiao";
 
-    /**NB 实验资源缓存文件夹**/
+    /** NB 实验资源缓存文件夹 **/
     String LOCAL_RES_DIR = "nbResDir";
 
-    /**NB 实验资源文件根目录**/
-    String NB_RESOURSE_CACHE_DIR = "nbCourseCache";
+    /** NB 实验资源文件根目录 **/
+    String NB_RESOURSE_CACHE_DIR = "nbCourseCache2";
 
 
     /**和本地结果页通信指令********************************/
-    /**进入联系模式 msg**/
+    /** 进入联系模式 msg **/
     String RESULTPAGE_INTOTESTMODE = "intoTestMode";
-    /**收起结果页消息**/
+    /** 收起结果页消息 **/
     String RESULTPAGE_TOGGLEPACKUP = "togglePackUp";
 
 
     /**
      * NB 实验预加载资源类型
      */
-    public static final String  RESOURSE_TYPE_NB = "100";
+    public static final String RESOURSE_TYPE_NB = "100";
 
 }
