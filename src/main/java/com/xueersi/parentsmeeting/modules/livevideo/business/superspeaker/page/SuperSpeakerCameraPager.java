@@ -32,7 +32,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.TimeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.CustomVideoController2;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
@@ -44,6 +43,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.IS_LIVE;
 import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.LAYOUT_SIZE;
 import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.RECORD_VALID_TIME;
 
@@ -109,7 +109,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     /** 相机是否初始化成功 */
     protected boolean initCamera = false;
     /** 直播或者回放 1代表直播，2代表回放 */
-    private int livevideo;
+    private String livevideo;
 
     public SuperSpeakerCameraPager(Context context,
                                    ISuperSpeakerContract.ISuperSpeakerBridge bridge,
@@ -117,7 +117,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                                    String courseWareId,
                                    int answerTime,
                                    int recordTime,
-                                   int back) {
+                                   String back) {
         super(context);
         this.bridge = bridge;
         this.liveId = liveId;
@@ -279,7 +279,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         ivSubmitRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (livevideo == 1) {
+                if (IS_LIVE.equals(livevideo)) {
                     UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715004));
                 } else {
                     UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716004));
@@ -307,7 +307,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 cameraBackPager.setTvTittle(mContext.getString(R.string.super_speaker_back_camera_tip));
                 if (isHasRecordView || isInRecord) {
                     //预览页面退出
-                    if (livevideo == 1) {
+                    if (IS_LIVE.equals(livevideo)) {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715007));
                     } else {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716007));
@@ -315,12 +315,12 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                     cameraBackPager.setTextContentTip(mContext.getString(R.string.super_speaker_back_camera_content_tip));
                 } else {
                     //录制前页面退出
-                    if (livevideo == 1) {
+                    if (IS_LIVE.equals(livevideo)) {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715006));
                     } else {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716006));
                     }
-                    cameraBackPager.setTextContentTip(livevideo == 1 ?
+                    cameraBackPager.setTextContentTip(IS_LIVE.equals(livevideo) ?
                             mContext.getString(R.string.super_speaker_back_exit_cannot_record) :
                             mContext.getString(R.string.super_speaker_back_exit));
                 }
@@ -335,7 +335,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         ivRestart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (livevideo == 1) {
+                if (IS_LIVE.equals(livevideo)) {
                     UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715005));
                 } else {
                     UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716005));
@@ -347,13 +347,13 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                     @Override
                     public void onNoClick() {
 
-                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(livevideo == 1 ? R.string.livevideo_1715012 : R.string.livevideo_1716012));
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(IS_LIVE.equals(livevideo) ? R.string.livevideo_1715012 : R.string.livevideo_1716012));
                         removeView(cameraBackPager.getRootView());
                     }
 
                     @Override
                     public void onYesClick() {
-                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(livevideo == 1 ? R.string.livevideo_1715013 : R.string.livevideo_1716013));
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(IS_LIVE.equals(livevideo) ? R.string.livevideo_1715013 : R.string.livevideo_1716013));
                         performRestart();
                         removeView(cameraBackPager.getRootView());
                     }
@@ -380,7 +380,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         if (!isHasRecordPermission()) {
             return;
         }
-        if (livevideo == 1) {
+        if (IS_LIVE.equals(livevideo)) {
             UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715002));
         } else {
             UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716002));
@@ -420,12 +420,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             return;
         }
         if (camera1Utils != null && (lastFacingBack != isFacingBack || !camera1Utils.isStartPreview())) {
-//            lastFacingBack = isFacingBack;
-//            StorageUtils.videoUrl = LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
-//            logger.i(StorageUtils.videoUrl);
-//            StableLogHashMap map = new StableLogHashMap().put(ISuperSpeakerContract.VIDEO_URL, StorageUtils.videoUrl);
-//            if (camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.videoUrl)) {
-//        if (camera1Utils != null) {
+            lastFacingBack = isFacingBack;
             StorageUtils.setVideoPath(liveId, courseWareId);
 //            StorageUtils.videoUrl = LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
             logger.i(StorageUtils.getVideoPath());
@@ -527,7 +522,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 doOnNext(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
-                        if (livevideo == 1) {
+                        if (IS_LIVE.equals(livevideo)) {
                             UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715003));
                         } else {
                             UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716003));
@@ -582,7 +577,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     }
 
     /**
-     * 处理音频放在 {@link UploadVideoService#decodeAudio()}中
+     * 处理音频放在 {@link UploadVideoService}中
      */
     private void processVideo() {
         MediaUtils mediaUtils = new MediaUtils();
@@ -647,7 +642,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             //因为刚开始录制视频，视频初始化有一段时间，所以多延迟0.5s
             mView.postDelayed(recordVideoTimer, 1500);
             isInRecord = true;
-            if (livevideo == 1) {
+            if (IS_LIVE.equals(livevideo)) {
                 UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715001));
             } else {
                 UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716001));

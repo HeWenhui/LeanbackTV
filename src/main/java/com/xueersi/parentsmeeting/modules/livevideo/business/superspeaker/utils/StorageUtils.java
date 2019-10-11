@@ -31,7 +31,7 @@ public class StorageUtils {
                 ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
                 value,
                 ShareDataManager.SHAREDATA_NOT_CLEAR,
-                false);
+                true);
     }
 
     public static int getStorageSPValue(String liveId, String courseWareId) {

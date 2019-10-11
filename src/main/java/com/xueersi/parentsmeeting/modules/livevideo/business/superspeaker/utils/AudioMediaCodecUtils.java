@@ -34,10 +34,6 @@ public class AudioMediaCodecUtils {
 
     private MediaCodec mAudioDecoder;
 
-
-//    public AudioMediaCodecUtils() {
-//    }
-
     public boolean init(String path) {
 //        mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/parentsmeeting/livevideo/superSpeaker/485219_7.mp4";
         this.mFilePath = path;
@@ -48,18 +44,12 @@ public class AudioMediaCodecUtils {
         }
         if (!mIsPalying) {
             mIsPalying = true;
-            initAudioDecoder();
-//            Executors.newCachedThreadPool().submit(new Runnable() {
-//                @Override
-//                public void run() {
-//                    // 解码
-//                    aacToPCM();
-//                }
-//            });
-        } else {
-            mIsPalying = false;
+            return initAudioDecoder();
         }
-        return true;
+//        else {
+//            mIsPalying = false;
+//        }
+        return false;
     }
 
     private MediaExtractor mMediaExtractor;

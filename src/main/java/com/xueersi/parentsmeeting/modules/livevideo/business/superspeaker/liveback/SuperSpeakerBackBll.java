@@ -34,6 +34,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
 import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_SUPER_SPEAKER;
+import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.IS_PLAYBACK;
 
 public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeakerContract.ICameraPresenter {
 
@@ -79,12 +80,8 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
             }
             putCurrentPos(questionEntity.getvEndTime() * 1000);
         } else {
-//            String videoUrl = StorageUtils.getVideoPath();
+
             uploadStatus = StorageUtils.getStorageSPValue(liveGetInfo.getId(), courseWareId);
-//                    ShareDataManager.getInstance().getInt(
-//                    ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId,
-//                    0,
-//                    ShareDataManager.SHAREDATA_NOT_CLEAR);
 
             if (uploadStatus == 0) {
                 performStartRecord();
@@ -115,10 +112,8 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
         uploadVideoEntity.setStuId(liveGetInfo.getStuId());
         uploadVideoEntity.setIsPlayBack("2");
         uploadVideoEntity.setIsUpload("2");
-        superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, liveGetInfo.getId(), courseWareId, 2, uploadVideoEntity);
-//                if (mediaPlayerControl != null) {
-//                    mediaPlayerControl.seekTo(questionEntity.getvQuestionInsretTime());
-//                }
+        superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView,
+                liveGetInfo.getId(), courseWareId, IS_PLAYBACK, uploadVideoEntity);
         stopLiveVideo();
         superSpeakerBridge.performShowRecordCamera(questionEntity.getAnswerTime(), questionEntity.getRecordTime());
     }
@@ -214,7 +209,7 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                 liveGetInfo.getId(),
                 liveGetInfo.getStuCouId(),
                 liveGetInfo.getStuId(),
-                "2",
+                IS_PLAYBACK,
                 courseWareId,
                 srcType,
                 isForce,
@@ -248,13 +243,14 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
 
     }
 
+    @Deprecated
     @Override
     public void uploadSucess(String videoUrl, String audioUrl, String averVocieDecibel) {
         getCourseHttpManager().uploadSpeechShow(
                 liveGetInfo.getId(),
                 liveGetInfo.getStuCouId(),
                 liveGetInfo.getStuId(),
-                "2",
+                IS_PLAYBACK,
                 courseWareId,
                 srcType,
                 videoUrl,

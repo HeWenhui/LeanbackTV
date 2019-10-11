@@ -111,15 +111,7 @@ public class UploadVideoService extends Service {
         public void onSuccess(XesCloudResult result) {
             videoUrl = result.getHttpPath();
             logger.i("video upload succes " + videoUrl);
-//            XESToastUtils.showToast(UploadVideoService.this, "视频上传成功");
-//            uploadSuccess();
             StorageUtils.setStorageSPKey(liveId, courseWareId, 2);
-//            ShareDataManager.getInstance().put(
-//                    ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
-//                    2,
-//                    ShareDataManager.SHAREDATA_NOT_CLEAR,
-//                    false);
-//            uploadSuccess();
             latch.countDown();
             try {
                 latch.await();
@@ -140,6 +132,10 @@ public class UploadVideoService extends Service {
             if (uploadVideoNum.get() > 0) {
                 uploadVideoNum.getAndDecrement();
                 uploadVideo(videoLocalUrl);
+            } else {
+                if (!listUploading.contains(uploadVideoSetKey)) {
+                    listUploading.remove(uploadVideoSetKey);
+                }
             }
         }
     }
@@ -219,7 +215,7 @@ public class UploadVideoService extends Service {
                 uploadAudio(uploadVideoEntity.getAudioLocalUrl());
             }
         });
-        Observable.
+        compositeDisposable.add(Observable.
                 just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
                 subscribeOn(Schedulers.io()).
                 subscribe(new Consumer<Boolean>() {
@@ -231,7 +227,7 @@ public class UploadVideoService extends Service {
                             codecUtils.aacToPCM();
                         }
                     }
-                });
+                }));
 
     }
 
@@ -347,6 +343,7 @@ public class UploadVideoService extends Service {
 
     private XesStsUploadListener audioUploadListener;
 
+    @Deprecated
     public interface uploadCallback {
         void uploadSuccess(String videoUrl, String audioUrl);
     }
@@ -383,7 +380,6 @@ public class UploadVideoService extends Service {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         logger.i("upload success");
-//                        XESToastUtils.showToast(mContext, "通知接口成功");
                         stopSelf();
                     }
 
@@ -400,11 +396,8 @@ public class UploadVideoService extends Service {
                         logger.i("upload pmfail " + msg);
                         stopSelf();
                     }
-
                 }
         );
-
-//        }
     }
 
     private void uploadVideo(String videoLocalUrl) {
@@ -468,7 +461,8 @@ public class UploadVideoService extends Service {
 //        String videoLocalUrl = intent.getStringExtra("videoRemoteUrl");
         String audioLocalUrl = uploadVideoEntity.getAudioLocalUrl();
         String videoLocalUrl = uploadVideoEntity.getVideoLocalUrl();
-        uploadVideoSetKey = StorageUtils.getVideoPath();
+        uploadVideoSetKey = uploadVideoEntity.getUploadVideoSetKey();
+//        uploadVideoSetKey = StorageUtils.getVideoPath();
 //        uploadVideoSetKey = ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + uploadVideoEntity.getLiveId() + "_" + courseWareId;
         audioUploadListener = new AudioUploadListener(audioLocalUrl);
         videoUploadListener = new VideoUploadListener(videoLocalUrl);

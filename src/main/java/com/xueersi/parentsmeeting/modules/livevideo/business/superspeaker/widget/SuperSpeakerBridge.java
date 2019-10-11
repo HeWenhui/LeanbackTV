@@ -41,7 +41,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 
     private String courseWareId;
     /** 直播或者回放 1代表直播，2代表回放 */
-    private int livevideo;
+    private String livevideo;
 
     private UploadVideoEntity uploadVideoEntity;
 
@@ -50,7 +50,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
                               ViewGroup viewGroup,
                               String liveId,
                               String courseWareId,
-                              int back,
+                              String back,
                               UploadVideoEntity uploadVideoEntity) {
         this.mContext = context;
         this.iCameraPresenter = iCameraPresenter;
@@ -121,6 +121,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         uploadVideoEntity.setAudioLocalUrl(StorageUtils.getAudioUrl());
         uploadVideoEntity.setVideoLocalUrl(StorageUtils.getVideoPath());
         uploadVideoEntity.setAverVocieDecibel(averVocieDecibel);
+        uploadVideoEntity.setUploadVideoSetKey(StorageUtils.getVideoPath());
         uploadVideoEntity.setSampleRate(16000);
 //        uploadVideoEntity.setTestId(courseWareId);
 //        uploadVideoEntity.setLiveId(liveId);
