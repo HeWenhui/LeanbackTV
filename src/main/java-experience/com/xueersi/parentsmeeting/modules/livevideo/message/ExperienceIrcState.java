@@ -109,8 +109,9 @@ public class ExperienceIrcState implements IRCState {
     }
 
     @Override
-    public boolean sendMessage(String msg, String s, Map<String, String> map) {
-        return false;
+    public boolean sendMessage(String msg, String name, Map<String, String> map) {
+        boolean sendMessage = sendMessage(msg, name);
+        return sendMessage;
     }
 
     @Override

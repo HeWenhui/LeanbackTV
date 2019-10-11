@@ -310,7 +310,7 @@ public class VideoChatBll implements VideoChatAction {
             public void run() {
                 //添加声网
                 rl_livevideo_agora_content = (RelativeLayout) liveViewAction.inflateView(R.layout.layout_livevideo_video_chat);
-                liveViewAction.addView(new LiveVideoLevel(3), rl_livevideo_agora_content);
+                liveViewAction.addView(new LiveVideoLevel(-2), rl_livevideo_agora_content);
                 if (nativeLibLoaded == 1) {
 //            videoChatInter = new LicodeVideoChatPager(activity, this, classmateEntities, getInfo, liveBll,
 // baseLiveMediaControllerBottom);

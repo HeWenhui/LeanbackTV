@@ -19,7 +19,7 @@ public interface IRCState {
 
     boolean sendMessage(String msg, String name, Map<String, String> map);
 
-    boolean sendMessage(String msg, String s);
+    boolean sendMessage(String msg, String name);
 
     void praiseTeacher(String formWhichTeacher, String s, String s1, HttpCallBack gold);
 
