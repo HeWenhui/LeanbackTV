@@ -240,7 +240,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         LiveSubjectResultCreat baseSubjectResultCreat = new LiveSubjectResultCreat();
         baseSubjectResultCreat.setLiveGetInfo(data);
         mQuestionAction.setBaseSubjectResultCreat(baseSubjectResultCreat);
-        if (isArts == LiveVideoSAConfig.ART_EN && data.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
+        if (isArts == LiveVideoSAConfig.ART_EN && (data.getPattern() == LiveVideoConfig.LIVE_PATTERN_2 || data
+                .getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS)) {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction, data));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(activity, queArtHttp, contextLiveAndBackDebug, mQuestionAction));
             StandSpeechTop3Bll standSpeechTop3Bll = new StandSpeechTop3Bll(activity, queArtHttp, contextLiveAndBackDebug);
@@ -828,7 +829,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         StringBuilder sb = new StringBuilder();
         String url;
         if ("5".equals(type)) {
-            if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
+            if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2 || mGetInfo.getPattern() == LiveVideoConfig
+                    .LIVE_PATTERN_GROUP_CLASS) {
                 url = LiveHttpConfig.URL_NEWARTS_STANDROALPLAY_URL;
             } else {
                 url = LiveHttpConfig.URL_NEWARTS_ROALPLAY_URL;

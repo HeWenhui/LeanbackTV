@@ -170,13 +170,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }, mLiveType, getInfo, liveTopic);
         liveGetPlayServer.setVideoAction(mVideoAction);
 
-        if (getInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+        if (isGroupClass()) {
             //英语1v2录直播 播放文件
             String videoPath = getInfo.getRecordStandliveEntity().getRecordUrl();
             long diffBegin = getInfo.getRecordStandliveEntity().getDiffBegin();
             if (diffBegin >= 0) {
                 //起播时间大于0 才播放
-                videoFragment.playPSFile(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                videoFragment.playPSFile(videoPath,(int)(diffBegin));
             }
         } else {
             liveGetPlayServer(liveTopic.getMode(), false);
@@ -432,7 +432,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
 
-            if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+            if (isGroupClass()) {
                 //英语1v2小组课 设置起播时间
                 long diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
                 videoFragment.seekTo(diffBegin);
@@ -858,4 +858,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
         mPlayStatistics.clear();
     }
 
+    boolean isGroupClass() {
+        if (mGetInfo != null) {
+            return mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS;
+        } else {
+            return false;
+        }
+    }
 }

@@ -62,7 +62,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2 || mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
             RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, true, contextLiveAndBackDebug);
             redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
                 @Override
