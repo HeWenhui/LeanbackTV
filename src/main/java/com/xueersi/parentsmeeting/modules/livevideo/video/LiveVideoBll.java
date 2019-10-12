@@ -655,31 +655,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
 //            changeLine(nowPos + 1);
 //        }
     }
-
-    /**
-     * 播放失败，走自动切换线路
-     */
-//    private void autoChangeNextLine() {
-//        this.nowPos++;
-////        if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
-////            //初始化
-////            nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
-//////            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
-////            liveGetPlayServer.liveGetPlayServer(false);
-////            return;
-////        }
-//        //当前线路小于总线路数
-//        if (this.nowPos < total) {
-//            videoFragment.changePlayLive(this.nowPos, nowProtol);
-//        } else {
-//            nowProtol = changeProtol(nowProtol);
-//            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
-//            if (mGetInfo.getVideoConfigEntity() != null) {
-//                videoFragment.enableAutoSpeedPlay(getVideoConfigEntity());
-//            }
-//        }
-//    }
-
     /**
      * 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址
      */

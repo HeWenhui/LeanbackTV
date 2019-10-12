@@ -4,13 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
@@ -129,27 +129,28 @@ public class StandLiveHeadView extends LottieAnimationView {
         String shortName = StandLiveTextView.getShortName(entity.getSender());
         Bitmap bitmap;
         try {
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.item_livevideo_livemessage_name,null);
-            TextView textView = view.findViewById(R.id.tv_item_livevideo_livemessage_name);
-            Bitmap nameBitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/img_0.png"));
+            NoPaddingTextview textView = new NoPaddingTextview(getContext());
+            Bitmap nameBitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/img_2.png"));
             bitmap = Bitmap.createBitmap(nameBitmap.getWidth(), nameBitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
+            textView.setGravity(Gravity.CENTER_VERTICAL);
             textView.setText(shortName);
-            textView.setTextSize(9.0f / 10.0f * (float) nameBitmap.getHeight() / ScreenUtils.getScreenDensity());
-            textView.setPadding(0, -nameBitmap.getHeight() / 10, 0, 0);
+            textView.setTextSize(nameBitmap.getHeight() / ScreenUtils.getScreenDensity());
+            textView.setTextColor(Color.WHITE);
+            textView.setShadowLayer(3, 1, 1, Color.parseColor("#66010101"));
             int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(nameBitmap.getWidth(), View.MeasureSpec.EXACTLY);
             int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(nameBitmap.getHeight(), View.MeasureSpec.EXACTLY);
-            view.measure(widthMeasureSpec, heightMeasureSpec);
-            view.layout(0, 0, nameBitmap.getWidth(), nameBitmap.getHeight());
-            view.draw(canvas);
+            textView.measure(widthMeasureSpec, heightMeasureSpec);
+            textView.layout(0, 0, nameBitmap.getWidth(), nameBitmap.getHeight());
+            textView.draw(canvas);
         } catch (IOException e) {
             return;
         }
-        updateBitmap("image_0", bitmap);
+        updateBitmap("image_2", bitmap);
     }
 
     public void updateHeadSys() {
-        Bitmap headBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        Bitmap headBitmap = BitmapFactory.decodeResource(getResources(), sysHeadId);
         updateHead(headBitmap);
     }
 
@@ -159,13 +160,13 @@ public class StandLiveHeadView extends LottieAnimationView {
     private void updateHead(Bitmap headBitmap) {
         try {
             Bitmap priviousHeadBitmap = BitmapFactory.decodeStream(AssertUtil.open
-                    ("live_stand/chat_head/images/img_1.png"));
+                    ("live_stand/chat_head/images/img_0.png"));
             headBitmap = Bitmap.createScaledBitmap(headBitmap, priviousHeadBitmap.getWidth(), priviousHeadBitmap
                     .getHeight(), true);
         } catch (IOException e) {
             return;
         }
-        updateBitmap("image_1", headBitmap);
+        updateBitmap("image_0", headBitmap);
     }
 
     /**
@@ -181,7 +182,7 @@ public class StandLiveHeadView extends LottieAnimationView {
                 BetterMeUtil.addSegment(imageView, entity.getSegmentType(), entity.getStar());
             }
             Bitmap segmentBitmap = BitmapFactory.decodeStream(AssertUtil.open
-                    ("live_stand/chat_head/images/img_2.png"));
+                    ("live_stand/chat_head/images/img_1.png"));
             bitmap = Bitmap.createBitmap(segmentBitmap.getWidth(), segmentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(segmentBitmap.getWidth(), View.MeasureSpec.EXACTLY);
@@ -193,7 +194,7 @@ public class StandLiveHeadView extends LottieAnimationView {
         } catch (IOException e) {
             return;
         }
-        updateBitmap("image_2", bitmap);
+        updateBitmap("image_1", bitmap);
     }
 
     /**
@@ -204,28 +205,32 @@ public class StandLiveHeadView extends LottieAnimationView {
         try {
             switch (entity.getSegmentType()) {
                 case 1:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open
-                            ("live_stand/chat_head/images/chat_juejiangqingtong_tail_bg.png"));
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_qingtong" +
+                            ".png"));
                     break;
                 case 2:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open
-                            ("live_stand/chat_head/images/chat_qinfenbaiyin_tail_bg.png"));
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_baiyin" +
+                            ".png"));
                     break;
                 case 3:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open
-                            ("live_stand/chat_head/images/chat_kekuhuangjin_tail_bg.png"));
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_huangjin" +
+                            ".png"));
                     break;
                 case 4:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/chat_hengxinbojin_tail_bg.png"));
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_baijin" +
+                            ".png"));
                     break;
                 case 5:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/chat_duxuezuanshi_tail_bg.png"));
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_zuanshi" +
+                            ".png"));
                     break;
                 case 6:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/chat_zuiqiangxueba_tail_bg.png"));
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open
+                            ("live_stand/chat_head/images/tail_zuiqiangxueba.png"));
                     break;
                 default:
-                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/chat_kekuhuangjin_tail_bg.png"));
+                    bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/chat_head/images/tail_huangjin" +
+                            ".png"));
             }
         } catch (IOException e) {
             return;

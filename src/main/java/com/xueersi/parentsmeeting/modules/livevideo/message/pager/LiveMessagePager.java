@@ -492,7 +492,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             tvMessageItem.setText(likeEvenDrive(entity));
                         } else {
                             tvMessageItem.setAutoLinkMask(0);
-                            if (getInfo.getIsOpenNewCourseWare() == 1) {
+                            if (getInfo != null && getInfo.getIsOpenNewCourseWare() == 1) {
                                 SpannableString itemSpan;
                                 SpannableString evenSpan = new SpannableString("icon");
                                 itemSpan = addEvenDriveMessageNum(evenSpan, entity.getEvenNum(), entity.getType());
@@ -1257,6 +1257,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     protected void addEvenDriveMessage(final String sender, final int type, final String text, final String headUrl, final String evenDriveNum) {
+        addMessage(sender, type, text, headUrl);
     }
 
     @Override
