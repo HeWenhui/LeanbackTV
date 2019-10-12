@@ -74,7 +74,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     /** 所在的Activity是否已经onCreated */
     private boolean mCreated = false;
     /** 播放器核心服务 */
-    protected PlayerService vPlayer;
+    protected volatile PlayerService vPlayer;
     /** 播放服务是否已连接 */
     protected boolean mServiceConnected = false;
     /** 播放器的Surface是否创建 */

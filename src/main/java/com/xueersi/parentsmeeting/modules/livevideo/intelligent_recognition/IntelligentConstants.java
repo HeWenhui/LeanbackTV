@@ -93,10 +93,12 @@ public interface IntelligentConstants {
     /** Unity3D使用的帧动画 */
     String UNITY_3D_FRAME_URL = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/test/english.zip";
     String AUDIO_EVALUATE_URL = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/test/ieAudio.zip";
+    String AUDIO_EVALUATE_URL_1 = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/test/ieAudio20.zip";
 
     String AUDIO_EVALUATE_ZIP_FILE_NAME = "ieAudio.zip";
-    String AUDIO_EVALUATE_UNZIP_FILE_NAME = "ieAudio";
+    String AUDIO_EVALUATE_UNZIP_FILE_NAME = "ieAudio20";
     String AUDIO_EVALUATE_ZIP_FILE_NAME_MD5 = "1fc465951cec4714f2c8ced2d9b99bb2";
+    String AUDIO_EVALUATE_ZIP_FILE_NAME_MD5_1 = "8ae270e11b467f8f7bf037e365d84fd0";
     String PRELOAD_DIR = "webviewCache";
     /** 直播 */
     String IS_LIVE = "0";
