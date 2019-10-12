@@ -448,6 +448,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
         videoEntity.setLiveId(entity.getPlanInfo().getId());
         videoEntity.setvLivePlayBackType(LocalCourseConfig.LIVETYPE_LIVE);
+        //设置购课id
+        videoEntity.setStuCourseId(vStuCourseId);
         videoEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LIVE + "-" + entity.getPlanInfo().getId());
         //大班整合默认 走新ijk
         MediaPlayer.setIsNewIJK(true);
