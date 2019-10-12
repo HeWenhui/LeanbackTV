@@ -21,6 +21,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
 
+import org.json.JSONObject;
+
 /**
  * @author anlina
  * @description: 教师评价h5  加载类
@@ -112,7 +114,22 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
      */
 
     @JavascriptInterface
-    public String setTeacherInfo() {
+    public void postMessage(JSONObject jsonObject) {
+        if (jsonObject != null) {
+            String methodName = jsonObject.optString("methodName");
+            if (methodName != null) {
+                if (methodName.equals("setTeacherInfo")) {
+                    JsonObject jsonObject1 = getTeacherInfo();
+                    webView.loadUrl("javascript:transmitToWeb({type:'setTeacherInfo',data:" + jsonObject1 + "})");
+                } else if (methodName.equals("close")) {
+                    onClose();
+                }
+            }
+        }
+
+    }
+
+    private JsonObject getTeacherInfo(){
         /**
          * msg={
          * MainTeacher:{//主讲老师
@@ -138,7 +155,7 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         coash.addProperty("name",mLiveGetInfo.getTeacherName());
         coash.addProperty("id",mLiveGetInfo.getTeacherId());
         object.add("CoachTeacher",coash);
-        return object.toString();
+        return object;
     }
 
     @JavascriptInterface

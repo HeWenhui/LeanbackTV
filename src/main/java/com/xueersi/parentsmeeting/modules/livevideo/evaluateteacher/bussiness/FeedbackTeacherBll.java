@@ -147,6 +147,16 @@ public class FeedbackTeacherBll extends LiveBaseBll {
 //        if (pager != null && mFeedBackEntity != null) {
 
 //        if (pager != null && mFeedBackEntity != null && System.currentTimeMillis() / 1000 > mFeedBackEntity.getEvaluateTime()) {
+        //开始时间
+        long stime = mGetInfo.getsTime();
+        //结束时间
+        long etime = mGetInfo.geteTime();
+        //评价时间
+        long evaluatetime ;
+        if (etime > stime) {
+            evaluatetime = (long) (stime + (etime - stime) * 0.7);
+
+        }
             if (pagerNew != null) {
             logger.i("showEvaluateTeacher");
 //            logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mFeedBackEntity
