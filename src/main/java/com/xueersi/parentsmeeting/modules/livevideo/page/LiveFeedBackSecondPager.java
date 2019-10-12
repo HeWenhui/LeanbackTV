@@ -61,7 +61,7 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         View view = LayoutInflater.from(mContext).inflate(R.layout.layout_live_video_feed_back_second, null);
         webView = view.findViewById(R.id.wv_livevideo_feedback_second);
         webViewConfig();
-        webView.addJavascriptInterface(this, "");
+        webView.addJavascriptInterface(this, "xesAppStudyCenter");
         mView = view;
         return mView;
     }
