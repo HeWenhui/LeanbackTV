@@ -8,8 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.support.v7.widget.RecyclerView;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -497,12 +496,10 @@ public class EnStandAchievePager extends LiveBasePager {
         pgAchivePk.setProgress(progress);
         if (progressImageView == null) {
             progressImageView = new ImageView(activity);
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable
-                    .pc_livevideo_enteampk_pkbar_fire_pic_nor);
-            progressImageView.setImageDrawable(bitmapDrawable);
+            Drawable drawable =  mContext.getResources().getDrawable(R.drawable.pc_livevideo_enteampk_pkbar_fire_pic_nor);
+            progressImageView.setImageDrawable(drawable);
             progressImageView.setVisibility(View.INVISIBLE);
-            rlAchiveStandBg.addView(progressImageView, bitmapDrawable.getIntrinsicWidth(), bitmapDrawable
-                    .getIntrinsicHeight());
+            rlAchiveStandBg.addView(progressImageView, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
             pgAchivePk.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
