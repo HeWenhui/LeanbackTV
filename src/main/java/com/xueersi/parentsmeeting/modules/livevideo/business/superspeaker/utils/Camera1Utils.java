@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -67,21 +66,22 @@ public class Camera1Utils implements IRecordVideoView {
         this.videoPath = videoPath;
 //        logger.d("NUM:" + num);
 
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-        int numberOfCameras = Camera.getNumberOfCameras();
-        for (int i = 0; i < numberOfCameras; i++) {
-            Camera.getCameraInfo(i, cameraInfo);
-            if (cameraInfo.facing == (isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT)) {
-                camera = Camera.open(cameraInfo.facing);
-            }
-        }
-        //魅族手机如果禁止权限，不会再次申请权限。
-        if (camera == null) {
-            return false;
-        }
+
 //        Camera camera = Camera.open(MediaRecorder.VideoSource.CAMERA);
 //        camera = Camera.open(isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT);
         try {
+            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+            int numberOfCameras = Camera.getNumberOfCameras();
+            for (int i = 0; i < numberOfCameras; i++) {
+                Camera.getCameraInfo(i, cameraInfo);
+                if (cameraInfo.facing == (isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT)) {
+                    camera = Camera.open(cameraInfo.facing);
+                }
+            }
+            //魅族手机如果禁止权限，不会再次申请权限。
+            if (camera == null) {
+                return false;
+            }
             camera.lock();
             Camera.Parameters parameters = camera.getParameters();
             //有些手机不支持自动连续对焦

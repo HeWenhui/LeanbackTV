@@ -4,6 +4,8 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
+import java.util.Map;
+
 /**
  * Created by linyuqiang on 2018/6/26.
  */
@@ -15,7 +17,9 @@ public interface IRCState {
 
     boolean openchat();
 
-    boolean sendMessage(String msg, String s);
+    boolean sendMessage(String msg, String name, Map<String, String> map);
+
+    boolean sendMessage(String msg, String name);
 
     void praiseTeacher(String formWhichTeacher, String s, String s1, HttpCallBack gold);
 

@@ -24,6 +24,9 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
         super(context, liveBll);
     }
 
+    /** 截取自由加试实验的url中的关键字，作为寻找本地文件夹名字 */
+    private static final String FREE_INDEX_KEY = "sourceid=";
+
     @Override
     public void onTopic(LiveTopic liveTopic, final JSONObject jsonObject, boolean modeChange) {
         if (jsonObject.has("h5_Experiment")) {
@@ -38,16 +41,18 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
                         if (StringUtils.isEmpty(play_url)) {
                             status = "off";
                         }
-                        NbCourseWareEntity entity = new NbCourseWareEntity(mLiveId,play_url,false);
+                        NbCourseWareEntity entity = new NbCourseWareEntity(mLiveId, play_url, NbCourseWareEntity.NB_FREE_EXPERIMENT);
+                        int index = play_url.lastIndexOf(FREE_INDEX_KEY);
+                        if (index >= 0) {
+                            entity.setExperimentId(play_url.substring(index + FREE_INDEX_KEY.length()));
+                        }
                         h5CoursewareAction.onH5Courseware(entity, status);
-
-
                     } catch (Exception e) {
 
                     }
                 }
             });
-        }else if(jsonObject.has("nb_Experiment")){
+        } else if (jsonObject.has("nb_Experiment")) {
             //Nb 加实 Topic
             initNbAction();
             try {
@@ -55,7 +60,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
                 String status = nb_Experiment.optString("status", "off");
                 String experimentId = nb_Experiment.optString("experimentId");
                 String experimentType = nb_Experiment.optString("experimentType");
-                NbCourseWareEntity entity = new NbCourseWareEntity(mLiveId,"",true);
+                NbCourseWareEntity entity = new NbCourseWareEntity(mLiveId, "", NbCourseWareEntity.NB_ADD_EXPERIMENT);
                 entity.setExperimentId(experimentId);
                 entity.setExperimentType(experimentType);
                 h5CoursewareAction.onH5Courseware(entity, status);
@@ -67,6 +72,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
 
     @Override
     public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
+        logger.i("Nb: type:" + type + " json:" + object);
         switch (type) {
             case XESCODE.H5_START: {
                 post(new Runnable() {
@@ -75,7 +81,11 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
                         initNbAction();
                         try {
                             String play_url = object.getString("play_url");
-                            NbCourseWareEntity entity = new NbCourseWareEntity(mLiveId,play_url,false);
+                            NbCourseWareEntity entity = new NbCourseWareEntity(mLiveId, play_url, NbCourseWareEntity.NB_FREE_EXPERIMENT);
+                            int index = play_url.lastIndexOf(FREE_INDEX_KEY);
+                            if (index >= 0) {
+                                entity.setExperimentId(play_url.substring(index + FREE_INDEX_KEY.length()));
+                            }
                             h5CoursewareAction.onH5Courseware(entity, "on");
                         } catch (Exception e) {
 
@@ -90,7 +100,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
                     public void run() {
                         initNbAction();
                         try {
-                            NbCourseWareEntity entity = new NbCourseWareEntity(mLiveId,"",false);
+                            NbCourseWareEntity entity = new NbCourseWareEntity(mLiveId, "", NbCourseWareEntity.NB_FREE_EXPERIMENT);
                             h5CoursewareAction.onH5Courseware(entity, "off");
                         } catch (Exception e) {
 
@@ -105,7 +115,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
                 String experimentId = object.optString("experimentId");
                 String experimentType = object.optString("experimentType");
                 String status = object.optString("status");
-                NbCourseWareEntity entity = new NbCourseWareEntity(mLiveId,"",true);
+                NbCourseWareEntity entity = new NbCourseWareEntity(mLiveId, "", NbCourseWareEntity.NB_ADD_EXPERIMENT);
                 entity.setExperimentId(experimentId);
                 entity.setExperimentType(experimentType);
                 h5CoursewareAction.onH5Courseware(entity, status);
@@ -117,7 +127,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
 
     private void initNbAction() {
         if (h5CoursewareAction == null) {
-            h5CoursewareAction = new H5CoursewareBll(activity,mGetInfo);
+            h5CoursewareAction = new H5CoursewareBll(activity, mGetInfo);
             h5CoursewareAction.setIsPlayback(false);
             h5CoursewareAction.initView(mRootView);
             h5CoursewareAction.setIRCMsgSender(this);
@@ -127,7 +137,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.H5_START, XESCODE.H5_STOP,XESCODE.NB_EXAM};
+        return new int[]{XESCODE.H5_START, XESCODE.H5_STOP, XESCODE.NB_EXAM};
     }
 
     @Override
@@ -140,7 +150,7 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(h5CoursewareAction != null){
+        if (h5CoursewareAction != null) {
             h5CoursewareAction.onDestroy();
         }
     }

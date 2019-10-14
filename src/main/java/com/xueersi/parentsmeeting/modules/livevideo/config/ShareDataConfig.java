@@ -13,6 +13,7 @@ public class ShareDataConfig {
     /** 视频是否上传成功的sp的key 0:默认，1:点击提交按钮，2:上传成功 */
     public static final String SUPER_SPEAKER_UPLOAD_SP_KEY = "livevideo_super_speaker_upload_status";
 
+    public static final String ENGLISH_INTELLIGENT_READY_GO_END_SP_KEY = "english_intelligent_ready_go_end";
 //    public static final String SUPER_SPEAKER_SUBMIT_SP_KEY = "livevideo_super_speaker_submit_status";
     /** 集体发言 */
     public final static String SP_SPEECH_COLLECTION = "sp_livevideo_collection";

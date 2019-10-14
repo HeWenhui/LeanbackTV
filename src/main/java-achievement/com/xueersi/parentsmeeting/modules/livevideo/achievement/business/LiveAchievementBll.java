@@ -36,8 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity.ENGLISH_INTELLIGENT_RECOGNITION;
-
 /**
  * Created by linyuqiang on 2017/7/20.
  * 本场成就
@@ -530,29 +528,13 @@ public class LiveAchievementBll implements StarInteractAction {
 
     @Override
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
-        int starCountAdd = 0;
-//        if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
-//            starCountAdd = starAndGoldEntity.getStarCount();
-//            starCount += starAndGoldEntity.getStarCount();
-//        } else {
-        starCountAdd = starAndGoldEntity.getStarCount() - starCount;
-        starCount = starAndGoldEntity.getStarCount();
-//        }
+        int starCountAdd = starAndGoldEntity.getStarCount() - starCount;
         AllAnimation allAnimationStar = null;
-        //显示
-        if (starCountAdd > 0 && starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
+        if (starCountAdd > 0) {
             allAnimationStar = onReceiveStat(AnimationType_STAR, starCountAdd, "");
         }
-
-        final int goldCountAdd;
-        if (starAndGoldEntity.getCatagery() == ENGLISH_INTELLIGENT_RECOGNITION) {
-            goldCountAdd = starAndGoldEntity.getGoldCount();
-            goldCount += starAndGoldEntity.getGoldCount();
-        } else {
-            goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
-            goldCount = starAndGoldEntity.getGoldCount();
-        }
-
+        starCount = starAndGoldEntity.getStarCount();
+        final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
         if (goldCountAdd > 0) {
             if (allAnimationStar == null) {
                 onReceiveStat(AnimationType_GOLD, goldCountAdd, "");
@@ -565,7 +547,7 @@ public class LiveAchievementBll implements StarInteractAction {
                 });
             }
         }
-
+        goldCount = starAndGoldEntity.getGoldCount();
         if (starCount < 10) {
             tvStarInteractCountHind.setText(isSmallEnglish ? "0" + starCount : "×0" + starCount);
         } else {
