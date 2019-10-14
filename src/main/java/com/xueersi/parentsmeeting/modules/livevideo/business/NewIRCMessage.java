@@ -385,6 +385,7 @@ public class NewIRCMessage implements IIRCMessage {
 
     private IRoomChatListener mRoomListener = new IRoomChatListener() {
 
+        private List<PMDefs.PsIdEntity> userLists;
         /**
          * 本人进入聊天室回调响应
          * @param joinRoomResp
@@ -396,6 +397,7 @@ public class NewIRCMessage implements IIRCMessage {
             logger.i("ircsdk join room info " + joinRoomResp.info);
             if (PMDefs.ResultCode.Result_Success == joinRoomResp.code) {
                 isConnected = true;
+                userLists = new ArrayList<>();
                 //进入聊天室发送踢人消息
                 if (mIRCCallback != null) {
 //                    mIRCCallback.onRegister();
@@ -491,44 +493,53 @@ public class NewIRCMessage implements IIRCMessage {
             // 353-聊天室昵称列表 366-聊天室昵称列表结束
             logger.i("ircsdk room user code: " + roomUserList.code);
             logger.i("ircsdk room user list size: " + roomUserList.userList);
-            if (PMDefs.ResultCode.Result_RoomUserList == roomUserList.code) {
-                onUserList = true;
-                String s = "___bug  onUserList:channel=" + roomUserList.roomId + ",users=" + roomUserList.userList;
-                if (roomUserList.userList != null && roomUserList.userList.size() > 0) {
-                    User[] users = new User[roomUserList.userList.size()];
-                    PMDefs.PsIdEntity userEntity;
-                    for (int i = 0; i < roomUserList.userList.size(); i++) {
-                        userEntity = roomUserList.userList.get(i);
-                        users[i] = new User(userEntity.psid, userEntity.nickname);
+            if (PMDefs.ResultCode.Result_RoomUserList == roomUserList.code){
+                if (roomUserList.userList != null && !roomUserList.userList.isEmpty()) {
+                    if (userLists == null){
+                        userLists = new ArrayList<>();
                     }
-                    mLogtf.d(s);
-                    if (mIRCCallback != null) {
-                        //  如果不是专属老师
-                        if (currentMode == null) {
+                    userLists.addAll(roomUserList.userList);
+                }
+            }else if (PMDefs.ResultCode.Result_RoomUserListEnd == roomUserList.code) {
+                onUserList = true;
+                String s = "___bug  onUserList:channel=" + roomUserList.roomId ;
+                if (roomUserList.userList != null && !roomUserList.userList.isEmpty()) {
+                    userLists.addAll(roomUserList.userList);
+                }
+                User[] users = new User[userLists.size()];
+                PMDefs.PsIdEntity userEntity;
+                for (int i = 0; i < userLists.size(); i++) {
+                    userEntity = userLists.get(i);
+                    users[i] = new User(userEntity.psid, userEntity.nickname);
+                }
+                mLogtf.d(s);
+                if (mIRCCallback != null) {
+                    //  如果不是专属老师
+                    if (currentMode == null) {
+                        mIRCCallback.onUserList(roomUserList.roomId, users);
+                    } else {
+                        if (LiveTopic.MODE_CLASS.equals(currentMode) && (mChannels[0]).equals(roomUserList.roomId)) {
+                            StringBuilder sb = new StringBuilder();
+                            for (User user : users) {
+                                sb.append(user.getNick());
+                            }
+                            s = "___bug2  onUserList:channel=" + roomUserList.roomId + ",users=" + users.length + "___" + sb.toString();
+                            //  mLogtf.d(s);
                             mIRCCallback.onUserList(roomUserList.roomId, users);
-                        } else {
-                            if (LiveTopic.MODE_CLASS.equals(currentMode) && (mChannels[0]).equals(roomUserList.roomId)) {
-                                StringBuilder sb = new StringBuilder();
-                                for (User user : users) {
-                                    sb.append(user.getNick());
-                                }
-                                s = "___bug2  onUserList:channel=" + roomUserList.roomId + ",users=" + users.length + "___" + sb.toString();
-                                //  mLogtf.d(s);
-                                mIRCCallback.onUserList(roomUserList.roomId, users);
-                            }
+                        }
 
-                            if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length > 1 && ( mChannels[1]).equals(roomUserList.roomId)) {
-                                StringBuilder sb = new StringBuilder();
-                                for (User user : users) {
-                                    sb.append(user.getNick());
-                                }
-                                s = "___bug3  onUserList:channel=" + roomUserList.roomId + ",users=" + users.length + "___" + sb.toString();
-                                // mLogtf.d(s);
-                                mIRCCallback.onUserList(roomUserList.roomId, users);
+                        if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length > 1 && ( mChannels[1]).equals(roomUserList.roomId)) {
+                            StringBuilder sb = new StringBuilder();
+                            for (User user : users) {
+                                sb.append(user.getNick());
                             }
+                            s = "___bug3  onUserList:channel=" + roomUserList.roomId + ",users=" + users.length + "___" + sb.toString();
+                            // mLogtf.d(s);
+                            mIRCCallback.onUserList(roomUserList.roomId, users);
                         }
                     }
                 }
+                userLists.clear();
             }
 
         }
