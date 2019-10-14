@@ -111,6 +111,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
                             //高中
                             url = jsonObject.getJSONObject("app").optString("highSchool");
                         }
+                        url = url+"?courseId="+mGetInfo.getStudentLiveInfo().getCourseId()+"&planId="+mLiveId;
                         pagerNew = new LiveFeedBackSecondPager(mContext, mGetInfo, url);
                         pagerNew.setOnPagerClose(onPagerClose);
                         pagerNew.setFeedbackSelectInterface(feedBackTeacherInterface);

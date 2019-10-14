@@ -84,7 +84,7 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         webSetting.setUseWideViewPort(true);
         webSetting.setJavaScriptEnabled(true);
         webSetting.setDatabaseEnabled(true);
-        webSetting.setDomStorageEnabled(true);
+        webSetting.setDomStorageEnabled(false);
         webSetting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setUserAgentString(webSetting.getUserAgentString() + " jzh");
@@ -114,16 +114,13 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
      */
 
     @JavascriptInterface
-    public void postMessage(JSONObject jsonObject) {
-        if (jsonObject != null) {
-            String methodName = jsonObject.optString("methodName");
-            if (methodName != null) {
-                if (methodName.equals("setTeacherInfo")) {
-                    JsonObject jsonObject1 = getTeacherInfo();
-                    webView.loadUrl("javascript:transmitToWeb({type:'setTeacherInfo',data:" + jsonObject1 + "})");
-                } else if (methodName.equals("close")) {
-                    onClose();
-                }
+    public void postMessage(String methodName) {
+        if (methodName != null) {
+            if (methodName.equals("setTeacherInfo")) {
+                JsonObject jsonObject1 = getTeacherInfo();
+                webView.loadUrl("javascript:transmitToWeb({type:'setTeacherInfo',data:" + jsonObject1 + "})");
+            } else if (methodName.equals("close")) {
+                onClose();
             }
         }
 
@@ -170,12 +167,20 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
 //        isShow = feedBackTeacherInterface.showPager();
 //        return true;
         if (!isShow) {
-            webView.loadUrl(mUrl);
+
             isShow = feedBackTeacherInterface.showPager();
+            webView.loadUrl(mUrl);
             isShow = true;
 
         } else {
             isShow = feedBackTeacherInterface.removeView();
+            webView.clearCache(true);
+            webView.clearHistory();
+            webView.destroy();
+
+            onClose();
+
+            isShow = false;
         }
         return isShow;
 

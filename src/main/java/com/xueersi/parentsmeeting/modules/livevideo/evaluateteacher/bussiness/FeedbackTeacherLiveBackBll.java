@@ -15,10 +15,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveFeedBackSecondPager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -31,6 +34,10 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
     LiveFeedBackPager pager = null;
     LiveHttpManager mHttpManager;
     EvaluateResponseParser mParser;
+    /**
+     * 所有教师评价是h5页面
+     */
+    LiveFeedBackSecondPager pagerNew = null;
 
     VideoLivePlayBackEntity mVideoEntity;
     public FeedbackTeacherLiveBackBll(Activity context, LiveBackBll liveBll) {
@@ -50,7 +57,9 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
             new android.os.Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    showFeedBack(bottomContent);
+                   // showFeedBack(bottomContent);
+
+                    checkIfShowFeedback();
                 }
             }, 10000);
         }
@@ -102,7 +111,43 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
                 });
 
     }
+    private void checkIfShowFeedback(){
+        mHttpManager.checkFeedBack(liveGetInfo.getId(), liveGetInfo.getStudentLiveInfo().getCourseId(), new HttpCallBack(true) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                int status = responseEntity.getmStatus();
+                if (status == 1) {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    //is_trigger 是否触发，1：可以，0：不可以
+                    int is_trigger = jsonObject.optInt("isTrigger");
+                    String url = null;
+                    if (is_trigger == 1) {
+                        if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
+                            //英语
+                            url = jsonObject.getJSONObject("app").optString("english");
+                        } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
+                            //理科
+                            url = jsonObject.getJSONObject("app").optString("science");
+                        } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
+                            //语文
+                            url = jsonObject.getJSONObject("app").optString("chinese");
+                        } else if (liveGetInfo.getEducationStage().equals("4")) {
+                            //高中
+                            url = jsonObject.getJSONObject("app").optString("highSchool");
+                        }
+                        pagerNew = new LiveFeedBackSecondPager(mContext, liveGetInfo, url);
+                        pagerNew.setOnPagerClose(onPagerClose);
+                        pagerNew.setFeedbackSelectInterface(feedBackTeacherInterface);
 
+                    }
+                }
+
+
+
+            }
+        });
+
+    }
     LiveBasePager.OnPagerClose onPagerClose = new LiveBasePager.OnPagerClose() {
         @Override
         public void onClose(LiveBasePager basePager) {
@@ -133,7 +178,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
             liveBackBll.getvPlayer().release();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mRootView.addView(pager.getRootView(), params);
+            mRootView.addView(pagerNew.getRootView(), params);
             return true;
         } else{
             return false;
