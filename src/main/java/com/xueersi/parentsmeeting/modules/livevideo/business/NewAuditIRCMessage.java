@@ -333,7 +333,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     };
 
     private IRoomChatListener mRoomListener = new IRoomChatListener() {
-
+        private List<PMDefs.PsIdEntity> userLists;
         /**
          * 本人进入聊天室回调响应
          * @param joinRoomResp
@@ -345,6 +345,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             logger.i("ircsdk join room info " + joinRoomResp.info);
             if (PMDefs.ResultCode.Result_Success == joinRoomResp.code) {
                 isConnected = true;
+                userLists = new ArrayList<>();
                 if (mIRCCallback != null) {
                     mLogtf.d("onRegister");
                     if (mIsDestory) {
@@ -424,25 +425,31 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             // 353-聊天室昵称列表 366-聊天室昵称列表结束
             logger.i("ircsdk room user code: " + roomUserList.code);
             logger.i("ircsdk room user list size: " + roomUserList.userList.size());
-            if (PMDefs.ResultCode.Result_RoomUserList == roomUserList.code) {
+            if (PMDefs.ResultCode.Result_RoomUserList == roomUserList.code){
+                if (roomUserList.userList != null && !roomUserList.userList.isEmpty()) {
+                    if (userLists == null){
+                        userLists = new ArrayList<>();
+                    }
+                    userLists.addAll(roomUserList.userList);
+                }
+            }else if (PMDefs.ResultCode.Result_RoomUserListEnd == roomUserList.code) {
                 onUserList = true;
                 String s = "___bug  onUserList:channel=" + roomUserList.roomId + ",users=" + roomUserList.userList.size();
-                if (roomUserList.userList != null && roomUserList.userList.size() > 0) {
-                    User[] users = new User[roomUserList.userList.size()];
-                    PMDefs.PsIdEntity userEntity;
-                    for (int i = 0; i < roomUserList.userList.size(); i++) {
-                        userEntity = roomUserList.userList.get(i);
-                        users[i] = new User(userEntity.psid, userEntity.nickname);
-                    }
-                    mLogtf.d(s);
-                    if (mIRCCallback != null) {
-                        mIRCCallback.onUserList(roomUserList.roomId, users);
-                    }
+                if (roomUserList.userList != null && !roomUserList.userList.isEmpty()) {
+                    userLists.addAll(roomUserList.userList);
                 }
-
-
+                User[] users = new User[userLists.size()];
+                PMDefs.PsIdEntity userEntity;
+                for (int i = 0; i < userLists.size(); i++) {
+                    userEntity = userLists.get(i);
+                    users[i] = new User(userEntity.psid, userEntity.nickname);
+                }
+                mLogtf.d(s);
+                if (mIRCCallback != null) {
+                    mIRCCallback.onUserList(roomUserList.roomId, users);
+                }
+                userLists.clear();
             }
-
         }
 
         /**
