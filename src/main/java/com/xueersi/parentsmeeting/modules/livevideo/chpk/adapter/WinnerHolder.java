@@ -9,19 +9,19 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.drawable.DrawableTransform;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.util.DrawableUtils;
 
 public class WinnerHolder extends RecyclerView.ViewHolder {
     ImageView ivHead;
@@ -47,7 +47,12 @@ public class WinnerHolder extends RecyclerView.ViewHolder {
                 .asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap resultBitmap = DrawableUtils.drawable2bitmap(drawable);
+                        Bitmap resultBitmap = null;
+                        if (drawable instanceof GifDrawable) {
+                            resultBitmap = ((GifDrawable) drawable).getFirstFrame();
+                        } else {
+                            resultBitmap = DrawableTransform.drawable2bitmap(drawable);
+                        }
                         if (resultBitmap != null) {
                             Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
                                     resultBitmap.getHeight()) / 2);
