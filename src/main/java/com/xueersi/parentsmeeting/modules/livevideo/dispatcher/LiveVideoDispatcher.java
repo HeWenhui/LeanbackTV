@@ -64,9 +64,13 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     String gotoClassTime;
     private DispatcherBll dispatcherBll;
     /**
-     * 是否是大班 灰度状态
+     * 讲座是否是大班 灰度状态
      **/
     private int big_live_type = -1;
+    /**
+     * 直播 是否是大班 灰度状态
+     */
+    private int planVersion = DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT;
 
     public interface LiveNewStatus {
         int LIVE_UNBEGIN = 1;//待开始
@@ -110,7 +114,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 gotoClassTime = jsonObject.optString("stime");
                 // 大班灰度状态
                 big_live_type = jsonObject.optInt("bigLiveStatus", big_live_type);
-
+                planVersion = jsonObject.optInt("planVersion",DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT);
                 if (type == TYPE_LIVE) {
                     //startLive();
                     enterLive();
@@ -141,16 +145,37 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     private void enterLive() {
         //TODO: 2019/9/25 调试代码
         startLive(true);
-     /*   if (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE) {
-            startLive(true);
-        } else if (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_COMMON) {
-            startLive(false);
-        } else if (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_DEFALUT) {
-            // TODO: 2019/9/25  对接直播灰控接口
-         *//* dataLoadEntity = new DataLoadEntity(activity);
-            dispatcherBll.publicLiveIsGrayLecture(planId, true, publicGrayControlCallBack, dataLoadEntity);*//*
-        }*/
+        /*if(planVersion == DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT){
+            // TODO: 2019/10/15  调用查询接口 查询是否是大班直播
+            dataLoadEntity = new DataLoadEntity(activity);
+            dispatcherBll.bigLivePlanVersion(Integer.parseInt(planId), 3, new AbstractBusinessDataCallBack() {
+                @Override
+                public void onDataSucess(Object... objData) {
+                   BigLiveGrayEntity entity = (BigLiveGrayEntity) objData[0];
+                   int planVersion = entity.getPlanVersion();
+                   if(planVersion != DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT){
+                       if(DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_COMMON == planVersion){
+                           startLive(false);
+                       }else {
+                           startLive(true);
+                       }
+                   }else{
+                       XESToastUtils.showToast(activity, "未知直播类型");
+                   }
+                }
 
+                @Override
+                public void onDataFail(int errStatus, String failMsg) {
+                    super.onDataFail(errStatus, failMsg);
+                    XESToastUtils.showToast(activity, failMsg);
+                }
+            }, dataLoadEntity);
+
+        }else if(planVersion == DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_COMMON){
+            startLive(false);
+        }else {
+            startLive(true);
+        }*/
     }
 
     private void startAudit() {
@@ -294,6 +319,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             XESToastUtils.showToast(activity, failMsg);
         }
     };
+
+
+
+
 
 
     /**

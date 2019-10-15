@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePlu
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
+import com.xueersi.parentsmeeting.modules.livevideo.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -512,7 +513,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            mHttpManager.bigLiveEnter(iPlanId, mLiveType, iStuCouId, callBack);
+            mHttpManager.bigLiveEnter(iPlanId, LiveBusinessResponseParser.getBizIdFromLiveType(mLiveType),
+                    iStuCouId, BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION ,callBack);
         } else {
             onGetInfoSuccess(getInfo);
         }

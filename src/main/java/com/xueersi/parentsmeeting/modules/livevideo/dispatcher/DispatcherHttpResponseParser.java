@@ -1143,7 +1143,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
     }
 
     /**
-     * 直播灰度场次确认
+     * 大班整合-讲座灰度场次确认
      * @param responseEntity
      * @return
      */
@@ -1158,5 +1158,24 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         }
         return -1;
     }
+
+    /**
+     * 大班整合-直播 灰度场次确认
+     * @param responseEntity
+     * @return
+     */
+    public int parseBigLivePlanVersion(ResponseEntity responseEntity){
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        if (jsonObject != null) {
+            try {
+                return jsonObject.optInt("planVersion");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
+    }
+
+
 
 }

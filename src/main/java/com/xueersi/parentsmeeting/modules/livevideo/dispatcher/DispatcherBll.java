@@ -485,7 +485,7 @@ public class DispatcherBll extends BaseBll {
      * @param bizeId
      * @param stuCouId
      */
-    public void getBigLivePublic(String planId,int bizeId, String
+    public void getBigLivePublic(String planId, int bizeId, String
             stuCouId, final AbstractBusinessDataCallBack callBack, DataLoadEntity dataLoadEntity) {
         if (dataLoadEntity == null) {
             dataLoadEntity = new DataLoadEntity(mContext);
@@ -549,7 +549,7 @@ public class DispatcherBll extends BaseBll {
 
 
     /**
-     * 直播灰度场次
+     * 大班讲座灰度场次
      *
      * @param liveId
      * @param callBack
@@ -587,4 +587,44 @@ public class DispatcherBll extends BaseBll {
                 });
 
     }
+
+    /**
+     * 大班整合二期-直播  获取直播场次 版本  用于控制是否能进入大班直播间
+     *
+     * @param liveId         直播id
+     * @param bizId          直播类型id  讲座：2  直播：3
+     * @param callBack
+     * @param dataLoadEntity
+     */
+    public void bigLivePlanVersion( int liveId, int bizId,
+                                   final AbstractBusinessDataCallBack callBack,
+                                   final DataLoadEntity dataLoadEntity) {
+        postDataLoadEvent(dataLoadEntity.beginLoading());
+        //请求查询数据
+        dispatcherHttpManager.bigLivePlanVersion(liveId,bizId,
+                new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        BigLiveGrayEntity entity = new BigLiveGrayEntity();
+                        int status = dispatcherHttpResponseParser.parseBigLivePlanVersion(responseEntity);
+                        entity.setPlanVersion(status);
+                        callBack.onDataSucess(entity);
+                        EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataSuccess()));
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        callBack.onDataFail(-1, msg);
+                        EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataSuccess()));
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        callBack.onDataFail(-1, responseEntity.getErrorMsg());
+                        EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataSuccess()));
+                    }
+                });
+    }
+
+
 }
