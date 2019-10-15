@@ -10,7 +10,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.CountDownTimer;
 import android.support.constraint.ConstraintLayout;
@@ -60,6 +60,7 @@ import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -369,12 +370,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 //            bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * (FrameAnimation.IMAGE_HEIGHT / (float) com
 // .xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));
             bitmap.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * 2.8f / ScreenUtils.getScreenDensity()));
+            Drawable background = DrawableHelper.bitmap2drawable(bitmap);
             if (isVoice) {
 //                btnVoiceMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
-                btnVoiceMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
+                btnVoiceMesOpen.setBackground(background);
             } else {
 //                btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
-                btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
+                btMesOpen.setBackground(background);
             }
 
             inputStream.close();
@@ -1004,7 +1006,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "1束玫瑰", 50));
         flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "1束蓝色妖姬", 100));
         PopupWindow flowerWindow = new PopupWindow(mContext);
-        flowerWindow.setBackgroundDrawable(new BitmapDrawable());
+        flowerWindow.setBackgroundDrawable(DrawableHelper.bitmap2drawable(null));
         flowerWindow.setOutsideTouchable(true);
         flowerWindow.setFocusable(true);
         flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_flower, null);
