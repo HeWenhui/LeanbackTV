@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.SurfaceView;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
@@ -219,13 +220,14 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
     }
 
     public static int getBizIdFromLiveType(int liveType) {
+
+
         int bizId = 0;
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             bizId = LiveVideoConfig.BIGLIVE_BIZID_LIVE;
         } else if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             bizId = LiveVideoConfig.BIGLIVE_BIZID_LECTURE;
         }
-        Log.e("ckTrac","======>LiveBusinessParser:bizid="+bizId+":"+liveType);
         return bizId;
     }
 
