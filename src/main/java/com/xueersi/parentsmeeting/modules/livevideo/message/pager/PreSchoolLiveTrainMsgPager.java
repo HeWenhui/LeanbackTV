@@ -39,6 +39,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
@@ -721,7 +722,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
         mFlowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
         flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_primary_flower, null);
         PopupWindow flowerWindow = new PopupWindow(flowerContentView, dp2px(liveVideoActivity, 478), dp2px(liveVideoActivity, 347), false);
-        flowerWindow.setBackgroundDrawable(new BitmapDrawable());
+        flowerWindow.setBackgroundDrawable(DrawableHelper.bitmap2drawable(null));
         flowerWindow.setOutsideTouchable(true);
         flowerWindow.setFocusable(true);
         flowerWindow.setContentView(flowerContentView);
