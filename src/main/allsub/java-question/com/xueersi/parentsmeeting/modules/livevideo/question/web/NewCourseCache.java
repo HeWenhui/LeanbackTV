@@ -15,8 +15,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.Coursewa
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.question.InputStreamClose;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,6 +65,7 @@ public class NewCourseCache {
     private ArrayList<InterceptRequest> interceptRequests = new ArrayList<>();
     private String liveId;
     private String testid;
+    LiveThreadPoolExecutor threadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     public NewCourseCache(Context mContext, String liveId, String testid) {
         this.mContext = mContext;
@@ -225,7 +228,8 @@ public class NewCourseCache {
         this.newProgress = newProgress;
     }
 
-    public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+    public WebResourceResponse shouldInterceptRequest(WebView view, final String s) {
+        final Thread thread = Thread.currentThread();
         File file = null;
         int index = s.indexOf(coursewarePages);
         if (index != -1) {
@@ -263,30 +267,45 @@ public class NewCourseCache {
                     .exists());
         }
         if (file.exists()) {
-            try {
-                StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequest");
-                stableLogHashMap.put("courseurl", "" + courseUrl);
-                stableLogHashMap.put("url", s);
-                stableLogHashMap.put("urlindex", "" + (urlindex++));
-                stableLogHashMap.put("newProgress", "" + newProgress);
-                stableLogHashMap.put("reload", "" + reload);
-                stableLogHashMap.put("liveId", liveId);
-                stableLogHashMap.put("testid", testid);
-                stableLogHashMap.put("ispreload", "true");
-                stableLogHashMap.put("filepath", file.getPath());
-                stableLogHashMap.put("filelength", "" + file.length());
-                UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
-            } catch (Exception e) {
-                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-            }
+            final File finalFile = file;
             if (file.length() > 0) {
                 FileInputStream inputStream = null;
                 try {
                     inputStream = new FileInputStream(file);
+                    WrapInputStream wrapInputStream = new WrapInputStream(mContext, inputStream);
+                    wrapInputStream.setInputStreamClose(new InputStreamClose() {
+                        @Override
+                        public void onClose(final String readMethod, final long readtime) {
+                            threadPoolExecutor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv2");
+                                        stableLogHashMap.put("courseurl", "" + courseUrl);
+                                        stableLogHashMap.put("url", s);
+                                        stableLogHashMap.put("urlindex", "" + (urlindex++));
+                                        stableLogHashMap.put("newProgress", "" + newProgress);
+                                        stableLogHashMap.put("reload", "" + reload);
+                                        stableLogHashMap.put("liveId", liveId);
+                                        stableLogHashMap.put("testid", testid);
+                                        stableLogHashMap.put("ispreload", "true");
+                                        stableLogHashMap.put("readtime", "" + readtime);
+                                        stableLogHashMap.put("readMethod", "" + readMethod);
+                                        stableLogHashMap.put("thread", "" + thread);
+                                        stableLogHashMap.put("filepath", finalFile.getPath());
+                                        stableLogHashMap.put("filelength", "" + finalFile.length());
+                                        UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
+                                    } catch (Exception e) {
+                                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                                    }
+                                }
+                            });
+                        }
+                    });
                     String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
                     String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                     WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "",
-                            inputStream);
+                            wrapInputStream);
                     webResourceResponse.setResponseHeaders(header);
                     Log.e("Duncan", "artsload");
                     return webResourceResponse;
@@ -295,21 +314,28 @@ public class NewCourseCache {
                 }
             }
         } else {
-            try {
-                StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequest");
-                stableLogHashMap.put("courseurl", "" + courseUrl);
-                stableLogHashMap.put("url", s);
-                stableLogHashMap.put("urlindex", "" + (urlindex++));
-                stableLogHashMap.put("newProgress", "" + newProgress);
-                stableLogHashMap.put("reload", "" + reload);
-                stableLogHashMap.put("liveId", liveId);
-                stableLogHashMap.put("testid", testid);
-                stableLogHashMap.put("ispreload", "false");
-                stableLogHashMap.put("filepath", file.getPath());
-                UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
-            } catch (Exception e) {
-                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-            }
+            final File finalFile1 = file;
+            threadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv2");
+                        stableLogHashMap.put("courseurl", "" + courseUrl);
+                        stableLogHashMap.put("url", s);
+                        stableLogHashMap.put("urlindex", "" + (urlindex++));
+                        stableLogHashMap.put("newProgress", "" + newProgress);
+                        stableLogHashMap.put("reload", "" + reload);
+                        stableLogHashMap.put("liveId", liveId);
+                        stableLogHashMap.put("testid", testid);
+                        stableLogHashMap.put("ispreload", "false");
+                        stableLogHashMap.put("thread", "" + thread);
+                        stableLogHashMap.put("filepath", finalFile1.getPath());
+                        UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+                }
+            });
         }
         return null;
     }
