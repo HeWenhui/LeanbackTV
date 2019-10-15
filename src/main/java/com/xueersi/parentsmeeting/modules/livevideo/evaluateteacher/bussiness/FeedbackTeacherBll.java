@@ -153,12 +153,12 @@ public class FeedbackTeacherBll extends LiveBaseBll {
         //结束时间
         long etime = mGetInfo.geteTime();
         //评价时间
-        long evaluatetime ;
+        long evaluatetime = 0;
         if (etime > stime) {
             evaluatetime = (long) (stime + (etime - stime) * 0.7);
 
         }
-            if (pagerNew != null) {
+        if (pagerNew != null && System.currentTimeMillis() / 1000 > evaluatetime) {
             logger.i("showEvaluateTeacher");
 //            logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mFeedBackEntity
 //                    .getEvaluateTime());
@@ -167,7 +167,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
             mLiveBll.onIRCmessageDestory();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-           // addView(pager.getRootView(), params);
+            // addView(pager.getRootView(), params);
             addView(pagerNew.getRootView(), params);
             return true;
         } else {

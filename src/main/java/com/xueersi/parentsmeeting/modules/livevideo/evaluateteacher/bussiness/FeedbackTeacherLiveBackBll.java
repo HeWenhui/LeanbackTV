@@ -171,8 +171,9 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
 
     public boolean showFeedbackPager() {
 //        if(pager != null){
-        if (pager != null && 0 != mFeedBackEntity.getEvaluateTimePer() && ((liveBackBll.getvPlayer().getCurrentPosition() + 0.0) /
-                liveBackBll.getvPlayer().getDuration()) > mFeedBackEntity.getEvaluateTimePer()){
+
+        if (pagerNew != null && ((liveBackBll.getvPlayer().getCurrentPosition() + 0.0) /
+                liveBackBll.getvPlayer().getDuration()) > 0.7){
             logger.i("showEvaluateTeacher");
             liveBackBll.getvPlayer().stop();
             liveBackBll.getvPlayer().release();
