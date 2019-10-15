@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.log.LoggerFactory;
@@ -133,7 +134,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                 });
                 return;
             }
-            Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable
+            Bitmap bitmap = DrawableHelper.bitmapFromResource(activity.getResources(), R.drawable
                     .ic_scrubber_control_selector_holo_spjd);
             int pointWidth = rlKeyPoints.getWidth();
             float screenDensity = ScreenUtils.getScreenDensity();

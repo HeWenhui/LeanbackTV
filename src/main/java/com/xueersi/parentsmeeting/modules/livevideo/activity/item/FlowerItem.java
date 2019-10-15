@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -47,7 +48,7 @@ public class FlowerItem implements AdapterItemInterface<FlowerEntity> {
 
     @Override
     public void updateViews(FlowerEntity entity, int position, Object objTag) {
-        ivMessageFlower.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), entity.getId()));
+        ivMessageFlower.setImageBitmap(DrawableHelper.bitmapFromResource(context.getResources(), entity.getId()));
         SpannableString spanttt = new SpannableString(entity.getTip());
         CharacterStyle characterStyle = new ForegroundColorSpan(context.getResources().getColor(R.color.white));
         spanttt.setSpan(characterStyle, 0, entity.getTip().length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
