@@ -16,12 +16,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.DrawableUtils;
 
 public class WinnerHolder extends RecyclerView.ViewHolder {
     ImageView ivHead;
@@ -47,12 +47,7 @@ public class WinnerHolder extends RecyclerView.ViewHolder {
                 .asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap resultBitmap = null;
-                        if (drawable instanceof BitmapDrawable) {
-                            resultBitmap = ((BitmapDrawable) drawable).getBitmap();
-                        } else if (drawable instanceof GifDrawable) {
-                            resultBitmap = ((GifDrawable) drawable).getFirstFrame();
-                        }
+                        Bitmap resultBitmap = DrawableUtils.drawable2bitmap(drawable);
                         if (resultBitmap != null) {
                             Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
                                     resultBitmap.getHeight()) / 2);
