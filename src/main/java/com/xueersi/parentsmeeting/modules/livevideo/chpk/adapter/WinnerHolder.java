@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.lib.framework.drawable.DrawableTransform;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -51,7 +51,7 @@ public class WinnerHolder extends RecyclerView.ViewHolder {
                         if (drawable instanceof GifDrawable) {
                             resultBitmap = ((GifDrawable) drawable).getFirstFrame();
                         } else {
-                            resultBitmap = DrawableTransform.drawable2bitmap(drawable);
+                            resultBitmap = DrawableHelper.drawable2bitmap(drawable);
                         }
                         if (resultBitmap != null) {
                             Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
