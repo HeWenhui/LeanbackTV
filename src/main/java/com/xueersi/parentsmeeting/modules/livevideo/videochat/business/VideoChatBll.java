@@ -88,6 +88,8 @@ public class VideoChatBll implements VideoChatAction {
     private LiveAndBackDebug liveAndBackDebug;
     private LiveGetInfo getInfo;
     private boolean raisehand = false;
+    /** 举手人数只展示一次 */
+    private boolean showRaisehand = false;
     private RaiseHandDialog raiseHandDialog;
     private PsRaiseHandDialog psraiseHandDialog;
     /** 暂时没用 */
@@ -424,6 +426,7 @@ public class VideoChatBll implements VideoChatAction {
                                 raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                                 raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                                 raiseHandDialog.showDialog();
+                                showRaisehand = true;
                                 if ("on".equals(onMic)) {
                                     final RaiseHandDialog finalRaiseHandDialog = raiseHandDialog;
                                     mHandler.postDelayed(new Runnable() {
@@ -441,6 +444,7 @@ public class VideoChatBll implements VideoChatAction {
                                 psraiseHandDialog.setRaiseHandGiveup(raisepsHandGiveup);
                                 psraiseHandDialog.setDefault(raiseHandCount);
                                 psraiseHandDialog.showDialog();
+                                showRaisehand = true;
                                 if ("on".equals(onMic)) {
                                     final PsRaiseHandDialog finalRaiseHandDialog = psraiseHandDialog;
                                     mHandler.postDelayed(new Runnable() {
@@ -458,6 +462,7 @@ public class VideoChatBll implements VideoChatAction {
                                 raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                                 raiseHandDialog.setRaiseHandsCount(raiseHandCount);
                                 raiseHandDialog.showDialog();
+                                showRaisehand = true;
                                 if ("on".equals(onMic)) {
                                     final RaiseHandDialog finalRaiseHandDialog = raiseHandDialog;
                                     mHandler.postDelayed(new Runnable() {
@@ -592,6 +597,9 @@ public class VideoChatBll implements VideoChatAction {
                 String oldonmicStatus = onmicStatus;
                 onmicStatus = onmic;
                 final String oldOpenhandsStatus = openhandsStatus;
+                if ("off".equals(openhands)) {
+                    showRaisehand = false;
+                }
                 openhandsStatus = openhands;
                 //老师那边打开开麦状态
                 if ("on".equals(onmic)) {
@@ -1064,6 +1072,7 @@ public class VideoChatBll implements VideoChatAction {
                 isFail = false;
                 VideoChatBll.this.from = from;
                 openhandsStatus = status;
+                showRaisehand = false;
                 if ("on".equals(status)) {
                     VideoChatLog.sno2(liveAndBackDebug, from, nonce);
                     videoChatEvent.showLongMediaController();
@@ -1437,21 +1446,26 @@ public class VideoChatBll implements VideoChatAction {
                     if (raisehand) {
                         if (!isSmallEnglish) {
                             if (LiveVideoConfig.isSmallChinese) {
-                                raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
-                                raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
-                                raiseHandDialog.setRaiseHandsCount(raiseHandCount);
-                                raiseHandDialog.showDialog();
+                                if (!showRaisehand) {
+                                    showRaisehand = true;
+                                    raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
+                                    raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
+                                    raiseHandDialog.setRaiseHandsCount(raiseHandCount);
+                                    raiseHandDialog.showDialog();
+                                }
                             } else if (LiveVideoConfig.isPrimary) {
 //                                psraiseHandDialog = new PsRaiseHandDialog(activity,baseApplication);
 //                                psraiseHandDialog.setRaiseHandsCount(raiseHandCount);
 //                                psraiseHandDialog.showDialog();
                             } else {
-                                raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
-                                raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
-                                raiseHandDialog.setRaiseHandsCount(raiseHandCount);
-                                raiseHandDialog.showDialog();
+                                if (!showRaisehand) {
+                                    showRaisehand = true;
+                                    raiseHandDialog = new RaiseHandDialog(activity, ContextManager.getApplication());
+                                    raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
+                                    raiseHandDialog.setRaiseHandsCount(raiseHandCount);
+                                    raiseHandDialog.showDialog();
+                                }
                             }
-
                         } else {//老师先选中你，然后踢走你，再结束上麦，会回调到这里
 //                            smallEnglishDialog = new SmallEnglishMicTipDialog(activity);
 //                            smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位小朋友在排队哦~");
