@@ -31,5 +31,7 @@ public class LivePluginGrayConfig {
     public static final int MODULE_HONOUR_RANK = 56;
     /**大题互动**/
     public static final int MOUDLE_BIG_QUESTION = 59;
+    /**视频标记点**/
+    public static final int MODULE_VIDEO_MARK = 57;
 
 }
