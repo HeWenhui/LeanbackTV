@@ -108,7 +108,7 @@
 //                });
 //                return;
 //            }
-//            Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_scrubber_control_selector_holo_spjd);
+//            Bitmap bitmap = DrawableHelper.bitmapFromResource(activity.getResources(), R.drawable.ic_scrubber_control_selector_holo_spjd);
 //            int pointWidth = rlKeyPoints.getWidth();
 //            float screenDensity = ScreenUtils.getScreenDensity();
 //            MarginLayoutParams rlKeytipLp = (MarginLayoutParams) rlKeytip.getLayoutParams();

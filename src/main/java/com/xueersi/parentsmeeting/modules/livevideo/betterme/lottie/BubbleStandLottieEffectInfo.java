@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
@@ -66,7 +67,7 @@ public class BubbleStandLottieEffectInfo extends LottieEffectInfo {
                 message = new SpannableString(currentMessage + "  " + targetMessage);
                 if (isIncrease) {
                     float iconHeight = height * 12f / 37f;
-                    Bitmap increaseBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable
+                    Bitmap increaseBitmap = DrawableHelper.bitmapFromResource(mContext.getResources(), R.drawable
                             .app_livevideo_enteampk_benchangchengjiu_tips_rise_bg_nor);
                     increaseBitmap = Bitmap.createScaledBitmap(increaseBitmap, (int) (iconHeight * 8 / 9), (int)
                             iconHeight, true);
@@ -75,7 +76,7 @@ public class BubbleStandLottieEffectInfo extends LottieEffectInfo {
                             .SPAN_INCLUSIVE_EXCLUSIVE);
                 } else if (isDecrease) {
                     float iconHeight = height * 12f / 37f;
-                    Bitmap decreaseBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable
+                    Bitmap decreaseBitmap = DrawableHelper.bitmapFromResource(mContext.getResources(), R.drawable
                             .app_livevideo_enteampk_benchangchengjiu_tips_drop_bg_nor);
                     decreaseBitmap = Bitmap.createScaledBitmap(decreaseBitmap, (int) (iconHeight * 8 / 9), (int)
                             iconHeight, true);

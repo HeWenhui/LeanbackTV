@@ -43,6 +43,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
@@ -549,7 +550,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                                     break;
                             }
                             SpannableString spannableString = new SpannableString("f");
-                            Bitmap bitmap11 = BitmapFactory.decodeResource(mContext.getResources(), id);
+                            Bitmap bitmap11 = DrawableHelper.bitmapFromResource(mContext.getResources(), id);
                             ImageSpan span = new VerticalImageSpan(mContext, Bitmap.createScaledBitmap(bitmap11,
                                     (int) etMessageContent.getTextSize(), (int) tvMessageItem.getTextSize(), true));
                             spannableString.setSpan(span, 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);

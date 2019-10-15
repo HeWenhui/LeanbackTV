@@ -17,6 +17,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 
@@ -176,13 +177,13 @@ public class TeamPkProgressBar extends View {
 
     private void initSlidHeader() {
         if (slidHearResId != -1) {
-            mSlidHeader = BitmapFactory.decodeResource(getContext().getResources(), slidHearResId);
+            mSlidHeader = DrawableHelper.bitmapFromResource(getContext().getResources(), slidHearResId);
             mHeight = mSlidHeader.getHeight();
             mSliderWidth = mSlidHeader.getWidth();
             mSliderHeight = mSlidHeader.getHeight();
         }
         if (sliderBgResId != -1) {
-            sliderBg = BitmapFactory.decodeResource(getResources(), sliderBgResId);
+            sliderBg = DrawableHelper.bitmapFromResource(getResources(), sliderBgResId);
             sliderBgWidth = sliderBg.getWidth();
             sliderBgHeight = sliderBg.getHeight();
             animExtraSpace = (int) (sliderBgWidth * MAX_SCALE_RATIO);
