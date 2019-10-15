@@ -42,5 +42,26 @@
     }
     _fn_({ fontSize: 100, width: 1334 });
   </script>
+<link href="assets/style/main.2917bab4ebea74b8e607.css" rel="stylesheet"></head>
+<body>
+  <div id="root">
+    <p id="__x__" style="width: 80%;position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);font-size: 0.3rem;margin: 0;text-align: center;">资源加载中，请稍后...</p>
+  </div>
+  <script id="__e__">
+    ;!function () {
+      var defaultInfo = document.getElementById('__x__')
+      var errorScript = document.getElementById('__e__')
+      if (!defaultInfo) return document.body.removeChild(errorScript)
+      var timer = setTimeout(() => {
+        if (!defaultInfo) {
+          document.body.removeChild(errorScript)
+          return clearTimeout(timer)
+        }
+        defaultInfo.style.textAlign = 'left'
+        defaultInfo.innerHTML = '加载失败了，建议更新软件到最新版本或重新安装~'
+        document.body.removeChild(errorScript)
+      }, 8000)
+    }();
+  </script>
 <script type="text/javascript" src="assets/script/manifest.7e11f76f368f2698bfa5.js"></script><script type="text/javascript" src="assets/script/vendors~main.b181d4df239de71b36bc.js"></script><script type="text/javascript" src="assets/script/main.97ef0a3ac5e0803bc33c.js"></script></body>
 </html>
