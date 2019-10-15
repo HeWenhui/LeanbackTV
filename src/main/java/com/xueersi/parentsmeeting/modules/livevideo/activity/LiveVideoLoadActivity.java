@@ -27,12 +27,14 @@ import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
+import com.xueersi.parentsmeeting.modules.livevideo.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.dispatcher.DispatcherConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -354,7 +356,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
         int planId = Integer.parseInt(vSectionID);
         int iStuCouId = Integer.parseInt(stuCould);
 
-        httpManager.bigLiveEnter(planId, liveType, iStuCouId, new HttpCallBack(mDataLoadEntity) {
+        httpManager.bigLiveEnter(planId, LiveBusinessResponseParser.getBizIdFromLiveType(liveType),
+                iStuCouId, BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION, new HttpCallBack(mDataLoadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 LiveBusinessResponseParser mHttpResponseParser = new LiveBusinessResponseParser();

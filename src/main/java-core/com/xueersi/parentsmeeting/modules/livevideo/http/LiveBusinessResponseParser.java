@@ -220,8 +220,6 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
     }
 
     public static int getBizIdFromLiveType(int liveType) {
-
-
         int bizId = 0;
         if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             bizId = LiveVideoConfig.BIGLIVE_BIZID_LIVE;

@@ -57,7 +57,7 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 是否大班场次
+     * 讲座是否大班场次
      * @param liveId
      * @param requestCallBack
      */
@@ -66,7 +66,20 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
 //        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
-        sendPost(DispatcherConfig.URL_BIGLIVE_BIG_LIVE_BUSINESS_TEST, params, requestCallBack);
+        sendPost(DispatcherConfig.URL_BIGLIVE_LIVE_GARY, params, requestCallBack);
+    }
+
+    /**
+     *  直播 是否是大班直播场次
+     * @param planId
+     * @param bizId
+     * @param callBack
+     */
+    public void bigLivePlanVersion(int planId,int bizId,HttpCallBack callBack){
+        BigLivePlanVersionParam param = new BigLivePlanVersionParam();
+        param.setBizId(bizId);
+        param.setPlanId(planId);
+        sendJsonPost(DispatcherConfig.URL_BIGLIVE_LIVE_GARY,param,callBack);
     }
 
 }
