@@ -29,4 +29,7 @@ public class LivePluginGrayConfig {
     public static final int MODULE_HONOUR = 55;
     /**成就排行榜**/
     public static final int MODULE_HONOUR_RANK = 56;
+    /**大题互动**/
+    public static final int MOUDLE_BIG_QUESTION = 59;
+
 }
