@@ -151,6 +151,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
     }
 
+    @Override
+    public void playFile() {
+        //英语1v2录直播 播放网络文件
+        final String videoPath = mGetInfo.getRecordStandliveEntity().getRecordUrl();
+        videoFragment.playPSFile(videoPath,0);
+    }
+
     public void setVideoAction(VideoAction mVideoAction) {
         this.mVideoAction = mVideoAction;
     }
@@ -171,12 +178,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
         liveGetPlayServer.setVideoAction(mVideoAction);
 
         if (isGroupClass()) {
-            //英语1v2录直播 播放文件
-            String videoPath = getInfo.getRecordStandliveEntity().getRecordUrl();
-            long diffBegin = getInfo.getRecordStandliveEntity().getDiffBegin();
+            //英语1v2录直播 播放网络文件
+            final String videoPath = getInfo.getRecordStandliveEntity().getRecordUrl();
+            final int diffBegin = getInfo.getRecordStandliveEntity().getDiffBegin();
             if (diffBegin >= 0) {
                 //起播时间大于0 才播放
-                videoFragment.playPSFile(videoPath,(int)(diffBegin));
+                videoFragment.playPSFile(videoPath,diffBegin);
             }
         } else {
             liveGetPlayServer(liveTopic.getMode(), false);
@@ -435,7 +442,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             if (isGroupClass()) {
                 //英语1v2小组课 设置起播时间
                 long diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
-                videoFragment.seekTo(diffBegin);
+                videoFragment.seekTo(diffBegin * 1000);
             }
         }
 

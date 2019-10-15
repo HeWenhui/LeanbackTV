@@ -13,12 +13,15 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -146,18 +149,35 @@ public class LiveBackVideoBll {
         } else {
             //使用PSIJK播放新视屏
 
-            String videoPath;
-            String url = mVideoEntity.getVideoPath();
-            if (url.contains("http") || url.contains("https")) {
-                videoPath = DoPSVideoHandle.getPSVideoPath(url);
-            } else {
-                videoPath = url;
+            //英语1v2小组课 使用recordUrl字段 替换videoPath字段
+            JSONObject getinfo = null;
+            int patten = 0;
+            String recordUrl = null;
+            try {
+                getinfo = new JSONObject(mVideoEntity.getGetInfoStr());
+                patten = getinfo.getInt("pattern");
+                recordUrl = getinfo.getString("recordUrl");
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            if (!islocal) {
-                liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            if (getinfo != null && patten == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS && recordUrl != null) {
+                mVideoEntity.setVideoPath(recordUrl);
+                liveBackPlayVideoFragment.playPSFile(mVideoEntity.getVideoPath(), (int) getStartPosition());
             } else {
-                liveBackPlayVideoFragment.playPSFile(videoPath, (int) getStartPosition());
+                String videoPath;
+                String url = mVideoEntity.getVideoPath();
+                if (url.contains("http") || url.contains("https")) {
+                    videoPath = DoPSVideoHandle.getPSVideoPath(url);
+                } else {
+                    videoPath = url;
+                }
+                if (!islocal) {
+                    liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                } else {
+                    liveBackPlayVideoFragment.playPSFile(videoPath, (int) getStartPosition());
+                }
             }
+
             liveBackPlayVideoFragment.setmDisplayName(mSectionName);
         }
     }

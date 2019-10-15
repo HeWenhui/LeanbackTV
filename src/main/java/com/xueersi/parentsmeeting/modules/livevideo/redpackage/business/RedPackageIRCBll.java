@@ -123,7 +123,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
 
     public void sendReceiveGold(final int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
         mLogtf.d("sendReceiveGold:operateId=" + operateId + ",liveId=" + liveId);
-        getHttpManager().sendReceiveGold(mLiveType, operateId, liveId, new HttpCallBack() {
+        getHttpManager().sendReceiveGold(mLiveType, mGetInfo.getPattern(), operateId, liveId, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
