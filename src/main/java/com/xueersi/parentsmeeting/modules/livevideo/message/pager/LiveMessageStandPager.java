@@ -372,10 +372,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             bitmap.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * 2.8f / ScreenUtils.getScreenDensity()));
             Drawable background = DrawableHelper.bitmap2drawable(bitmap);
             if (isVoice) {
-//                btnVoiceMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
                 btnVoiceMesOpen.setBackground(background);
             } else {
-//                btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
                 btMesOpen.setBackground(background);
             }
 
