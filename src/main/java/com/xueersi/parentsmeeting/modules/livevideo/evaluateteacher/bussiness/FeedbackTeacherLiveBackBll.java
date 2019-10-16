@@ -52,7 +52,9 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
         mHttpManager = liveBackBll.getmHttpManager();
         this.mVideoEntity = mVideoEntity;
         mParser = new EvaluateResponseParser();
-        if (liveGetInfo != null && liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
+        if (liveGetInfo != null && liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC ||
+                liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN || liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH
+                || liveGetInfo.getEducationStage().equals("4")) {
 //      if (liveGetInfo != null){
             new android.os.Handler().postDelayed(new Runnable() {
                 @Override
