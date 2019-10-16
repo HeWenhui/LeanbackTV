@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.airbnb.lottie.AssertUtil;
@@ -169,22 +170,61 @@ public class NewCourseCache {
         return null;
     }
 
-    public WebResourceResponse interceptIndexRequest(WebView view, String url) {
+    public WebResourceResponse interceptIndexRequest(WebView view, final String url) {
         courseUrl = url;
-        File file = getCourseWareFile(url);
+        final File file = getCourseWareFile(url);
         InputStream inputStream = null;
+        final boolean ispreload;
         if (file != null) {
+            ispreload = true;
             inputStream = webInstertJs.readFile(url, file);
+        } else {
+            ispreload = false;
         }
         logToFile.d("interceptIndexRequest:url=" + url + ",inputStream1=" + (inputStream == null));
+        long before = SystemClock.currentThreadTimeMillis();
         if (inputStream == null) {
             inputStream = webInstertJs.httpRequest(url);
         }
+        final long httptime = SystemClock.currentThreadTimeMillis() - before;
         logToFile.d("interceptIndexRequest:url=" + url + ",inputStream2=" + (inputStream == null));
         if (inputStream != null) {
             String extension = android.webkit.MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
             String mimeType = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-            WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", new WrapInputStream(view.getContext(), inputStream));
+            WrapInputStream wrapInputStream = new WrapInputStream(mContext, inputStream);
+            wrapInputStream.setInputStreamClose(new InputStreamClose() {
+                @Override
+                public void onClose(final String readMethod, final long readtime) {
+                    logger.d("interceptIndexRequest:onClose:readMethod=" + readMethod + ",readtime=" + readtime);
+                    threadPoolExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequesthtml");
+                                stableLogHashMap.put("courseurl", "" + courseUrl);
+                                stableLogHashMap.put("url", url);
+                                stableLogHashMap.put("urlindex", "" + (urlindex++));
+                                stableLogHashMap.put("newProgress", "" + newProgress);
+                                stableLogHashMap.put("reload", "" + reload);
+                                stableLogHashMap.put("liveId", liveId);
+                                stableLogHashMap.put("testid", testid);
+                                stableLogHashMap.put("ispreload", "" + ispreload);
+                                stableLogHashMap.put("readtime", "" + readtime);
+                                stableLogHashMap.put("readMethod", "" + readMethod);
+                                stableLogHashMap.put("httptime", "" + httptime);
+                                if (file != null) {
+                                    stableLogHashMap.put("filepath", file.getPath());
+                                    stableLogHashMap.put("filelength", "" + file.length());
+                                }
+                                UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
+                            } catch (Exception e) {
+                                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                            }
+                        }
+                    });
+                }
+            });
+            WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", wrapInputStream);
             webResourceResponse.setResponseHeaders(header);
             return webResourceResponse;
         }
