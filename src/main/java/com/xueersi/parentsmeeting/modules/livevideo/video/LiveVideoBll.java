@@ -616,14 +616,14 @@ public class LiveVideoBll implements VPlayerListenerReg {
                     //调度失败，建议重新访问playLive或者playVod频道不存在
                     //调度失败，延迟1s再次访问调度
 
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            nowProtol = changeProtol(nowProtol);
-                            psRePlay(false);
-                        }
-                    }, 1000);
-
+//                    mHandler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            nowProtol = changeProtol(nowProtol);
+//                            psRePlay(false);
+//                        }
+//                    }, 1000);
+                    scheduleRePlay(1000);
                 }
                 break;
 
@@ -648,6 +648,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 default:
                     //除了这四种情况，还有播放失败的情况
 //                    autoChangeNextLine();
+                    scheduleRePlay(1000);
                     break;
             }
         }
@@ -655,6 +656,17 @@ public class LiveVideoBll implements VPlayerListenerReg {
 //            changeLine(nowPos + 1);
 //        }
     }
+
+    private void scheduleRePlay(int ms) {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                nowProtol = changeProtol(nowProtol);
+                psRePlay(false);
+            }
+        }, ms);
+    }
+
     /**
      * 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址
      */
