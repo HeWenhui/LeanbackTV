@@ -50,7 +50,7 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
         if (redPackageAction == null) {
-            if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+            if (pattern == LiveVideoConfig.LIVE_PATTERN_2 || pattern == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
                 String showName = LiveAppUserInfo.getInstance().getStandShowName();
                 String headUrl = LiveAppUserInfo.getInstance().getHeadImg();
                 RedPackageStandBll redPackageStandBll;

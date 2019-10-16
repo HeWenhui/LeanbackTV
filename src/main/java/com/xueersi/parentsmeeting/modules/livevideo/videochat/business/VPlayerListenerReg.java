@@ -16,5 +16,5 @@ public interface VPlayerListenerReg extends LiveProvide {
 
     void playVideo();
 
-    void playFile();
+    void playFile(String videoPath);
 }

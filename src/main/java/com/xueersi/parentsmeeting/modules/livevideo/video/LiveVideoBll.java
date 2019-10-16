@@ -152,9 +152,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
     }
 
     @Override
-    public void playFile() {
+    public void playFile(String videoPath) {
         //英语1v2录直播 播放网络文件
-        final String videoPath = mGetInfo.getRecordStandliveEntity().getRecordUrl();
         videoFragment.playPSFile(videoPath,0);
     }
 
@@ -179,8 +178,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         if (isGroupClass()) {
             //英语1v2录直播 播放网络文件
-            final String videoPath = getInfo.getRecordStandliveEntity().getRecordUrl();
-            final int diffBegin = getInfo.getRecordStandliveEntity().getDiffBegin();
+            String videoPath = getInfo.getRecordStandliveEntity().getRecordUrl();
+            int diffBegin = getInfo.getRecordStandliveEntity().getDiffBegin();
             if (diffBegin >= 0) {
                 //起播时间大于0 才播放
                 videoFragment.playPSFile(videoPath,diffBegin);
