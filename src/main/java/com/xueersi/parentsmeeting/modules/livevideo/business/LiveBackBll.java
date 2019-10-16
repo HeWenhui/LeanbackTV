@@ -404,6 +404,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
 
         LiveGetInfo.StudentLiveInfoEntity studentLiveInfoEntity = new LiveGetInfo.StudentLiveInfoEntity();
         studentLiveInfoEntity.setClassId(mVideoEntity.getClassId());
+        studentLiveInfoEntity.setTeamId(mVideoEntity.getTeamId());
         studentLiveInfoEntity.setCourseId(mVideoEntity.getCourseId());
 
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {

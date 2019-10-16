@@ -464,6 +464,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
         if (entity.getStuLiveInfo() != null) {
             videoEntity.setClassId(entity.getStuLiveInfo().getClassId());
+            videoEntity.setTeamId(entity.getStuLiveInfo().getTeamId());
         }
 
         videoEntity.setBigLive(true);
