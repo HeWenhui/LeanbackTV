@@ -208,12 +208,10 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
             }
 
             JSONObject liveStatusJsonObj = data.optJSONObject("LiveStatus");
-            LiveGetInfo.LiveStatus status = new LiveGetInfo.LiveStatus();
             if(liveStatusJsonObj != null){
-                status.setStartClass(liveStatusJsonObj.optBoolean("startClass"));
+                liveGetInfo.getLiveStatus().setStartClass(liveStatusJsonObj.optBoolean("startClass"));
             }
 
-            liveGetInfo.setLiveStatus(status);
 
         } catch (Exception e) {
             e.printStackTrace();

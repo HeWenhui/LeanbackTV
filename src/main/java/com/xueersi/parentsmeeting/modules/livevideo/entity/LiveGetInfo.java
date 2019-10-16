@@ -403,7 +403,7 @@ public class LiveGetInfo {
     }
 
     /**大班整合 直播间状态**/
-    private LiveStatus liveStatus;
+    private LiveStatus liveStatus = new LiveStatus();
 
 
     public String getSubjectiveItem2AIUrl() {
