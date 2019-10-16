@@ -33,5 +33,7 @@ public class LivePluginGrayConfig {
     public static final int MOUDLE_BIG_QUESTION = 59;
     /**未来课件互动题**/
     public static final int MOUDLE_FUTURE_COURSEWARE = 59;
+    /**视频标记点**/
+    public static final int MODULE_VIDEO_MARK = 57;
 
 }
