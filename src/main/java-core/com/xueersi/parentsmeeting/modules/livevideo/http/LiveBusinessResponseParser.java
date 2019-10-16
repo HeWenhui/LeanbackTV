@@ -2,8 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.SurfaceView;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
@@ -11,18 +9,15 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -211,6 +206,13 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                 }
 
             }
+
+            JSONObject liveStatusJsonObj = data.optJSONObject("LiveStatus");
+            LiveGetInfo.LiveStatus status = new LiveGetInfo.LiveStatus();
+            if(liveStatusJsonObj != null){
+                status.setStartClass(liveStatusJsonObj.optBoolean("startClass"));
+            }
+            liveGetInfo.setLiveStatus(status);
 
         } catch (Exception e) {
             e.printStackTrace();
