@@ -600,7 +600,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                         liveBackBll.addBusinessBll(liveBaseBll);
                     }
                 }
-                if (liveBackBll.getPattern() != 2) {
+                if (liveBackBll.getPattern() != 2 && liveBackBll.getPattern() != LiveVideoConfig
+                        .LIVE_PATTERN_GROUP_CLASS) {
                     //回放聊天区加上MMD的皮肤
                     liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));
                 }
