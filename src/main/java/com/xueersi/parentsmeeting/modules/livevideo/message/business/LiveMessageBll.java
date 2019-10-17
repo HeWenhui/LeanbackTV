@@ -138,6 +138,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         return rlLiveMessageContent;
     }
 
+
     /**
      * 站立直播聊天
      *

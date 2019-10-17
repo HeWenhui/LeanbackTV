@@ -543,7 +543,9 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                     if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.type)) {
                         getCourseWareHttpManager().submitH5Vote("" + testInfos, detailInfo.id, liveGetInfo.getStudentLiveInfo().getClassId(), liveGetInfo.getStuId(), 2, isforce, callBack);
                     } else {
-                        getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.getArtType(), liveGetInfo.getStuId(), 2, isforce, callBack);
+                        getCourseWareHttpManager().submitH5("" + testInfos,
+                                detailInfo.num, detailInfo.id, detailInfo.getArtType(), liveGetInfo.getStuId(),
+                                2, isforce, callBack);
                     }
                 }
             } else {

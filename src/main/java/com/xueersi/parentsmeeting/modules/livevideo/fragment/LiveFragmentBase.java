@@ -108,8 +108,19 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         logger.d("onVideoCreate:videoView=" + (videoView == null));
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
                 (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
-        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+        final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
+
+        postDelayedIfNotFinish(new Runnable() {
+            @Override
+            public void run() {
+                logger.i("videoview.h:" + videoView.mVideoHeight + " x:" +
+                        videoView.getX() + " width:" + videoView.getWidth() +
+                        " left:" + videoView.getLeft() + " right:" + videoView.getRight());
+//                logger.i("layoutParams:width"+lp.width+" height:"+lp.height+" "+lp.);
+            }
+        }, 1000);
+
         setFirstParam();
         createLiveVideoBll();
         mLiveBll.setmIsLand(mIsLand);

@@ -577,6 +577,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
             }
             getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl"));
+            LiveGetInfo.EvenDriveInfo evenDriveInfo = new LiveGetInfo.EvenDriveInfo();
+            evenDriveInfo.setIsOpenStimulation(data.optInt("isOpenStimulation"));
+            getInfo.setEvenDriveInfo(evenDriveInfo);
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);
@@ -2072,6 +2075,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         info.setIsGroupGameCourseWare(data.optInt("isGroupGameCourseWare", -1));
         info.setSummerCourseWareSize(data.optString("summerCourseWareSize"));
         info.setBolockChinese(data.optInt("blockChinese", 2));
+        info.setEvenDriveRightEvenNumUrl(data.optInt("getContinueRightNum"));
+        info.setIsGroupGameCourseWare(data.optInt("isOpenStimulation"));
         UmsAgentTrayPreference.getInstance().put(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, info.getSummerCourseWareSize());
         return info;
     }

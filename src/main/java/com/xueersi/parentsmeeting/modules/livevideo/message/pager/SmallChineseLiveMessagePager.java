@@ -39,6 +39,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
@@ -356,8 +357,19 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 //                            CharSequence text = tvMessageItem.getText();
                             tvMessageItem.setText(spanttt);
                             tvMessageItem.append(messageSpan);
-//                            Log.w(TAG, "6:" + messageColor + " " + entity.getText());
-//                            tvMessageItem.append(text);
+                        } else if (isOpenStimulation()) {
+                            tvMessageItem.setAutoLinkMask(0);
+                            SpannableString itemSpan;
+                            SpannableString evenSpan = new SpannableString(EVEN_DRIVE_ICON);
+                            itemSpan = addEvenDriveMessageNum(evenSpan, entity.getEvenNum(), entity.getType());
+                            if (itemSpan != null) {
+                                tvMessageItem.setText(itemSpan);
+                                tvMessageItem.append(spanttt);
+                            } else {
+                                tvMessageItem.setText(spanttt);
+                            }
+                            tvMessageItem.append(entity.getText());
+                            logger.i(tvMessageItem.getText());
                         } else {
                             tvMessageItem.setAutoLinkMask(0);
                             tvMessageItem.setText(spanttt);
@@ -384,6 +396,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         before = System.currentTimeMillis();
     }
 
+
     private boolean commonWordInited = false;
 
     private void initCommonWord() {
@@ -406,7 +419,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                 String msg = words.get(position);
                 if (ircState.openchat()) {
                     if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                        boolean send = ircState.sendMessage(msg, "");
+                        boolean send = sendEvenDriveMessage(msg, "");
                         if (send) {
                             etMessageContent.setText("");
                             addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
@@ -429,6 +442,62 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             }
         });
         commonWordInited = true;
+    }
+
+
+    private void addEvenDriveMessage(final String sender, final int type,
+                                     final String text, final String headUrl,
+                                     final String evenDriveNum) {
+        if (isOpenStimulation()) {
+            final Exception e = new Exception();
+            pool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    final SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
+                                    .chatSendContentDeal(text), mContext,
+                            messageSize);
+                    mView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (liveMessageEntities.size() > 29) {
+                                liveMessageEntities.remove(0);
+                            }
+                            LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
+                            entity.setEvenNum(evenDriveNum);
+                            liveMessageEntities.add(entity);
+                            if (otherLiveMessageEntities != null) {
+                                if (otherLiveMessageEntities.size() > 29) {
+                                    otherLiveMessageEntities.remove(0);
+                                }
+                                otherLiveMessageEntities.add(entity);
+                            }
+                            if (otherMessageAdapter != null) {
+                                otherMessageAdapter.notifyDataSetChanged();
+                            }
+                            if (messageAdapter != null) {
+                                messageAdapter.notifyDataSetChanged();
+                            } else {
+                                Loger.e(ContextManager.getContext(), TAG, "" + mContext + "," + sender + "," + type, e,
+                                        true);
+                            }
+                            if (!isTouch) {
+                                lvMessage.setSelection(lvMessage.getCount() - 1);
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            addMessage(sender, type, text, headUrl);
+        }
+        // 03.22 体验课播放器统计用户的发送信息
+//        if (debugMsg && type == LiveMessageEntity.MESSAGE_MINE) {
+//            StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayUserMsg");
+//            logHashMap.put("LiveFreePlayUserMsg", text);
+//            logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
+//            umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
+//        }
+//        Loger.e("Duncan", "sender:" + sender);
     }
 
     @Override
@@ -576,7 +645,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                     }
                     if (ircState.openchat()) {
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                            boolean send = ircState.sendMessage(msg, "");
+                            boolean send = sendEvenDriveMessage(msg, "");
                             if (send) {
                                 etMessageContent.setText("");
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
@@ -1171,8 +1240,9 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                     JSONObject jsonObject = new JSONObject(message);
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
-                        addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"), "");
+                        addEvenDriveMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
+                                        .getString("msg"), "",
+                                jsonObject.optString("evenexc"));
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"), false);
@@ -1383,6 +1453,9 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                             liveMessageEntities.remove(0);
                         }
                         LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
+                        if (type == LiveMessageEntity.MESSAGE_MINE) {
+                            entity.setEvenNum(myTest ? "35" : "" + getEvenNum());
+                        }
                         liveMessageEntities.add(entity);
                         logger.i("聊天的数量：" + liveMessageEntities.size() + "，最后一条是" + liveMessageEntities.get(liveMessageEntities.size() - 1));
                         if (otherLiveMessageEntities != null) {

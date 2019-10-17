@@ -293,6 +293,12 @@ public class LiveHttpConfig {
     @Deprecated
     public final static String URL_PUBLIC_LIVE_COURSE_GET_MESSAGE = LiveVideoConfig.HTTP_HOST +
             "/IrcMessage/getLiveLectureMsgs";
+    //英語获取连对数接口
+    public final static String UEL_ENGLISH_EVEN_DRIVE_MSG = "https://app.arts.xueersi.com/v2/stimulation/getRightNums";
+    //chs新课件获取连对数量
+    public final static String URL_CHINESE_NEW_ARTS_EVEN_DRIVE_MSG = "https://student.chs.xueersi.com/Stimulation/getRightNums";
+    //chs新课件获取自传互动题连对数量
+    public final static String URL_CHINESE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "http://student.chs.xueersi.com/Stimulation/getTestRightNum";
 
     public static int HTTP_ERROR_ERROR = 1;
     public static int HTTP_ERROR_FAIL = 2;

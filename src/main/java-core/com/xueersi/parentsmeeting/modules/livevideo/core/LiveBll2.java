@@ -848,7 +848,13 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
                     mGetInfo.setBlockChinese(info.getBolockChinese() == 1);
+
+                    LiveGetInfo.EvenDriveInfo evenDriveInfo = new LiveGetInfo.EvenDriveInfo();
+                    evenDriveInfo.setIsOpenStimulation(info.getIsGroupGameCourseWare());
+                    evenDriveInfo.setEvenNum(info.getEvenDriveRightEvenNumUrl());
+                    mGetInfo.setEvenDriveInfo(evenDriveInfo);
                     mGetInfo.setArtsExtLiveInfo(info);
+
                     List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
                     for (LiveBaseBll businessBll : businessBllTemps) {
                         try {
@@ -1165,7 +1171,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             }
         }
 
-    };
+    }
+
+    ;
 
 
     /**
@@ -1719,8 +1727,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
 
-    public void grayBusinessControl(){
-        if(grayControl !=null && mGetInfo !=null) {
+    public void grayBusinessControl() {
+        if (grayControl != null && mGetInfo != null) {
             LivePluginRequestParam param = new LivePluginRequestParam();
             param.bizId = 2;
             if (!TextUtils.isEmpty(mGetInfo.getId())) {
@@ -1856,7 +1864,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         return false;
     }
 
-    public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl ){
+    public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl) {
         this.grayControl = grayControl;
     }
 }

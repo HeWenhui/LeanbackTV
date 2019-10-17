@@ -57,8 +57,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     String TAG = "LiveHttpManager";
     private final Logger logger = LoggerFactory.getLogger(TAG);
     HashMap<String, String> defaultKey = new HashMap<>();
-    /**header 参数**/
-    HashMap<String,String> defaultHeaderParams = new HashMap<>();
+    /** header 参数 **/
+    HashMap<String, String> defaultHeaderParams = new HashMap<>();
 
 
     LiveVideoSAConfig.Inner liveVideoSAConfigInner;
@@ -111,23 +111,26 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     public void sendJsonPost(final String url, final Object paramObject, HttpCallBack httpCallBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.setJson(JsonUtil.toJson(paramObject));
-        sendJsonPostDefault(url,httpRequestParams,httpCallBack);
+        sendJsonPostDefault(url, httpRequestParams, httpCallBack);
     }
 
     /**
      * 添加header 参数
+     *
      * @param key
      * @param value
      */
-    public void addHeaderParams(String key,String value){
+    public void addHeaderParams(String key, String value) {
         defaultHeaderParams.put(key, value);
     }
+
     /**
      * 添加header 头信息
+     *
      * @param httpRequestParams
      */
     private void setDefaultHeaderParams(HttpRequestParams httpRequestParams) {
-        if(defaultHeaderParams != null && defaultHeaderParams.size() > 0 ){
+        if (defaultHeaderParams != null && defaultHeaderParams.size() > 0) {
             for (String key : defaultHeaderParams.keySet()) {
                 Map<String, String> headerParams = httpRequestParams.getHeaderParams();
                 //不顶掉已经有的参数，比如战队pk teamId
@@ -135,7 +138,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
                     continue;
                 }
                 String value = defaultHeaderParams.get(key);
-                httpRequestParams.addHeaderParam(key,value);
+                httpRequestParams.addHeaderParam(key, value);
             }
         }
     }
@@ -197,19 +200,20 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
 
     /**
      * 大班整合直播间-直播信息接口
-     * @param planId  场次id
-     * @param bizId 直播类型：1 直播,2:讲座
+     *
+     * @param planId   场次id
+     * @param bizId    直播类型：1 直播,2:讲座
      * @param stuCould 学生课程id
      */
-    public void bigLiveEnter(int planId, int bizId, int stuCould, HttpCallBack requestCallBack){
+    public void bigLiveEnter(int planId, int bizId, int stuCould, HttpCallBack requestCallBack) {
 
         BigLiveEnterParam param = new BigLiveEnterParam();
         param.setBizId(bizId);
         param.setPlanId(planId);
-        if(stuCould > 0){
+        if (stuCould > 0) {
             param.setStuCouId(stuCould);
         }
-        sendJsonPost(LiveIntegratedCfg.LIVE_ENTER,param,requestCallBack);
+        sendJsonPost(LiveIntegratedCfg.LIVE_ENTER, param, requestCallBack);
     }
 
 
@@ -524,7 +528,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     }
 
     /**
-     * 提交测试题
+     * 自传互动题提交测试题
      *
      * @param type            视频类型
      * @param testId          测试题ID
@@ -1034,7 +1038,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         requestCallBack.url = LiveHttpConfig.URL_LIVE_GET_ARTSMORE_COURSEWARE_URL;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
-    public void getCoursewareInfo(String url,String liveId,HttpCallBack httpCallBack){
+
+    public void getCoursewareInfo(String url, String liveId, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         if (liveId != null && !"".equals(liveId)) {
             params.addBodyParam("liveId", liveId);
@@ -1042,6 +1047,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         httpCallBack.url = url;
         sendPost(url, params, httpCallBack);
     }
+
     /**
      * 语文预加载互动题
      *
@@ -2130,9 +2136,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     /**
      * app摄像头开启状态
      *
-     * @param liveId       场次id
-     * @param stuId        学生id
-     * @param testId       互动题所属题目Id
+     * @param liveId 场次id
+     * @param stuId  学生id
+     * @param testId 互动题所属题目Id
      */
     public void sendSuperSpeakerCameraStatus(String liveId, String stuId, String testId, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -2235,7 +2241,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      *
      * @param requestCallBack
      */
-    public void getStuSegment( HttpCallBack requestCallBack) {
+    public void getStuSegment(HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_SEGMENT, params, requestCallBack);
@@ -2317,5 +2323,60 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("classId", classId);
         setDefaultParameter(params);
         sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOTE_FOLD_COUNT, params, requestCallBack);
+    }
+
+    /**
+     * 语文理科自传互动题连对结果显示
+     *
+     * @param stuCouId
+     * @param planId
+     * @param stuId
+     * @param testId
+     * @param callBack
+     */
+    public void getSelfUploadEvenDriveNum(String stuCouId, String planId, String stuId, String testId, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("liveId", planId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("testId", testId);
+        sendPost(LiveHttpConfig.URL_CHINESE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG, params, callBack);
+    }
+
+    /**
+     * 语文理科新课件平台连对结果显示
+     *
+     * @param classId
+     * @param liveId
+     * @param teamId
+     * @param stuId
+     * @param callBack
+     */
+    public void getNewPlatformEvenDriveNum(String classId, String liveId, String teamId, String stuId, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("stuId", stuId);
+        sendPost(LiveHttpConfig.URL_CHINESE_NEW_ARTS_EVEN_DRIVE_MSG, params, callBack);
+    }
+
+    /**
+     * 文科结果页
+     *
+     * @param liveId
+     * @param stuCouId
+     * @param callBack
+     */
+    public void getEnglishEvenDriveNum(String url, String liveId, String stuCouId, String classId, String teamId, HttpCallBack callBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        sendPost(TextUtils.isEmpty(url) ? LiveHttpConfig.UEL_ENGLISH_EVEN_DRIVE_MSG : url, params, callBack);
     }
 }

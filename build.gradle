@@ -80,7 +80,7 @@ android {
         main {
             jniLibs.srcDirs = ['libs']
             java.srcDirs += ['src/main/java-core']
-//            assets.srcDirs += ['src/main/live_assets']
+            assets.srcDirs += ['src/main/live_assets']
             getAllSource(this.android.sourceSets.main);
             getSecSource(this.android.sourceSets.main);
             getCnSource(this.android.sourceSets.main);
@@ -104,8 +104,8 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.uicomponent)
     //framework
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.framework)
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.xutils)
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.danmaku)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xutils)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.danmaku)
     //统计
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.analytics)
     //图片处理
@@ -146,15 +146,21 @@ dependencies {
 //    implementation "androidx.work:work-runtime:2.01"
     //    implementation project(':library:agora')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.businessinterface)
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.xutils)
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.danmaku)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xutils)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.danmaku)
 //    rootProject.xrsImplementation(this.getProject(),rootProject.ext.businesslibraries.aievaluation)
 //    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.3'
 //    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.hwllog)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.hwllogan)
-    implementation(rootProject.ext.thirdlibraries.gson){
+
+    implementation(rootProject.ext.thirdlibraries.gson) {
         changing = true
     }
+
+    annotationProcessor "android.arch.lifecycle:compiler:1.0.0"
+
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.lifecycle_runtion)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.extensions)
 }

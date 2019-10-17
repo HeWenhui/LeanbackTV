@@ -7,8 +7,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEn
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -203,7 +201,7 @@ public class LiveGetInfo {
      * 聊天中老师连接是否可以点击
      */
 
-    /**直播入口接口 返回session ID**/
+    /** 直播入口接口 返回session ID **/
     public String sessionId;
 
 
@@ -333,14 +331,82 @@ public class LiveGetInfo {
     private boolean preschool;
 
 
-    /**大班整合灰控接口**/
+    /** 大班整合灰控接口 **/
     private String initModuleUrl;
 
-    /**聊天信息接口**/
+    /** 聊天信息接口 **/
     private String getChatRecordUrl;
-    /**扫点信息接口**/
+    /** 扫点信息接口 **/
     private String getMetadataUrl;
 
+    private EvenDriveInfo evenDriveInfo;
+
+    public static class EvenDriveInfo {
+        private int isOpenStimulation;
+        private int evenNum;
+
+        public int getIsOpenStimulation() {
+            return isOpenStimulation;
+        }
+
+        public void setIsOpenStimulation(int isOpenStimulation) {
+            this.isOpenStimulation = isOpenStimulation;
+        }
+
+        public int getEvenNum() {
+            return evenNum;
+        }
+
+        public void setEvenNum(int evenNum) {
+            this.evenNum = evenNum;
+        }
+    }
+
+    public EvenDriveInfo getEvenDriveInfo() {
+        return evenDriveInfo;
+    }
+
+    public void setEvenDriveInfo(EvenDriveInfo evenDriveEntity) {
+        this.evenDriveInfo = evenDriveEntity;
+    }
+
+    //    private int isOpenStimulation;
+
+//    public int getIsOpenStimulation() {
+//        return isOpenStimulation;
+//    }
+
+
+//    private AObservable aObservable = new AObservable();
+
+
+//    public static class AObservable extends Observable {
+//        private int isOpenStimulation;
+//
+//        public void setIsOpenStimulation(int isOpenStimulation) {
+//            this.isOpenStimulation = isOpenStimulation;
+//            setChanged();
+//        }
+//
+//        public int getIsOpenStimulation() {
+//            return isOpenStimulation;
+//        }
+//    }
+
+//    public void addAObserver(Observer ab) {
+//        if (aObservable != null && ab != null) {
+//            aObservable.addObserver(ab);
+//        }
+//    }
+
+//    public void setIsOpenStimulation(int isOpenStimulation) {
+//        this.isOpenStimulation = isOpenStimulation;
+//        if (aObservable != null) {
+//            aObservable.setIsOpenStimulation(isOpenStimulation);
+//            aObservable.notifyObservers();
+//            aObservable.deleteObservers();
+//        }
+//    }
 
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
@@ -363,9 +429,8 @@ public class LiveGetInfo {
 
     private boolean showHightFeedback;
 
-    /** 灰度控制开关控制*/
+    /** 灰度控制开关控制 */
     LiveModuleConfigInfo liveModuleConfigInfo;
-
 
 
     public VideoConfigEntity getVideoConfigEntity() {
@@ -1647,34 +1712,34 @@ public class LiveGetInfo {
     }
     /*************************************************大班整合新增相关字段****************************************************************/
 
-    /**磐石id**/
+    /** 磐石id **/
     private String psId;
-    /**磐石密码**/
+    /** 磐石密码 **/
     private String psPwd;
 
 
-    /**主讲流名称**/
+    /** 主讲流名称 **/
     private String mainTeacherVieo;
 
-    /**辅导流名称**/
+    /** 辅导流名称 **/
     private String counselorTeacherVideo;
 
-    /**irc 昵称**/
+    /** irc 昵称 **/
     private String ircNick;
-    /**irc 房间**/
+    /** irc 房间 **/
     private List<String> ircRoomList;
-    /**irc 房间JsonArray**/
+    /** irc 房间JsonArray **/
     private String ircRoomsJson;
 
-    /**业务接口配置**/
-    private HashMap<String,String> urlMap;
+    /** 业务接口配置 **/
+    private HashMap<String, String> urlMap;
 
-    /**云平台appId**/
+    /** 云平台appId **/
     private String psAppId;
-    /**云平台 appkey**/
+    /** 云平台 appkey **/
     private String psAppKey;
 
-    /**是否是大班整合直播**/
+    /** 是否是大班整合直播 **/
     private boolean bigLive;
 
 
@@ -1823,17 +1888,17 @@ public class LiveGetInfo {
 
 
     /**
-     *
      * 根据moudlid key 返回属性
+     *
      * @param moudleId
      * @param key
      * @return
      */
-    public String getProperties(int moudleId,String key){
+    public String getProperties(int moudleId, String key) {
         LivePlugin plugin = getLivePluginByModuleId(moudleId);
-        if(plugin!=null) {
-            Map<String,String > maplist = plugin.properties;
-            if(maplist!=null) {
+        if (plugin != null) {
+            Map<String, String> maplist = plugin.properties;
+            if (maplist != null) {
                 return maplist.get(key);
             }
         }
@@ -1841,17 +1906,16 @@ public class LiveGetInfo {
     }
 
 
-
     /**
-     *
      * 根据moudlid 功能是否打开
+     *
      * @param moudleId
      * @param key
      * @return
      */
-    public boolean isMoudleAllowed(int moudleId){
-        LivePlugin plugin =  getLivePluginByModuleId(moudleId);
-        if(plugin!=null) {
+    public boolean isMoudleAllowed(int moudleId) {
+        LivePlugin plugin = getLivePluginByModuleId(moudleId);
+        if (plugin != null) {
             return plugin.isAllowed;
         }
         return false;
