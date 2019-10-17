@@ -610,6 +610,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                     mVideoAction.onPlayError(MediaErrorInfo.PSPlayerError, PlayErrorCode.PLAY_SERVER_CODE_101);
                     //播放器错误
 //                    autoChangeNextLine();
+                    scheduleRePlay(1000);
                     break;
                 }
                 case MediaErrorInfo.PSDispatchFailed: {

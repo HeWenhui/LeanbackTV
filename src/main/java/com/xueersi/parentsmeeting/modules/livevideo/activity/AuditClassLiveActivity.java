@@ -96,9 +96,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     private static final Object mIjkLock2 = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
     /** 缓冲超时 */
-    private final long mBufferTimeout = 5000;
+//    private final long mBufferTimeout = 5000;
     /** 打开超时 */
-    private final long mOpenTimeOut = 15000;
+//    private final long mOpenTimeOut = 15000;
     private AuditClassLiveBll mLiveBll;
     private AuditClassAction auditClassBll;
     /** 直播缓存打开统计 */
@@ -667,8 +667,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
         @Override
         public void onPlaybackComplete() {
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             mPlayStatistics.onPlaybackComplete();
             mLogtf.d("onPlaybackComplete");
         }
@@ -676,8 +676,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         @Override
         public void onPlayError() {
             isPlay = false;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             mPlayStatistics.onPlayError();
         }
 
@@ -689,7 +689,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 stopPlay();
                 return;
             }
-            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
             mPlayStatistics.onOpenSuccess();
             mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
@@ -699,31 +699,31 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         public void onOpenStart() {
             mLogtf.d("onOpenStart");
             openStartTime = System.currentTimeMillis();
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            postDelayedIfNotFinish(mOpenTimeOutRun, mOpenTimeOut);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            postDelayedIfNotFinish(mOpenTimeOutRun, mOpenTimeOut);
             mPlayStatistics.onOpenStart();
         }
 
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             isPlay = false;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             mPlayStatistics.onOpenFailed(arg1, arg2);
             mLogtf.d("onOpenFailed");
         }
 
         @Override
         public void onBufferStart() {
-            mHandler.removeCallbacks(mBufferTimeOutRun);
-            postDelayedIfNotFinish(mBufferTimeOutRun, mBufferTimeout);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            postDelayedIfNotFinish(mBufferTimeOutRun, mBufferTimeout);
             mPlayStatistics.onBufferStart();
             mLogtf.d("onBufferStart");
         }
 
         @Override
         public void onBufferComplete() {
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             mPlayStatistics.onBufferComplete();
             mLogtf.d("onBufferComplete");
         }
@@ -752,16 +752,16 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     /**
      * 缓冲超时
      */
-    private Runnable mBufferTimeOutRun = new Runnable() {
-
-        @Override
-        public void run() {
-            mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
-            mLiveBll.repair(true);
-//            mLiveBll.liveGetPlayServer(false);
-            changeNextLine();
-        }
-    };
+//    private Runnable mBufferTimeOutRun = new Runnable() {
+//
+//        @Override
+//        public void run() {
+//            mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
+//            mLiveBll.repair(true);
+////            mLiveBll.liveGetPlayServer(false);
+//            changeNextLine();
+//        }
+//    };
 
     protected void changeNextLine() {
         this.nowPos++;
@@ -783,17 +783,17 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     /**
      * 打开超时
      */
-    private Runnable mOpenTimeOutRun = new Runnable() {
-
-        @Override
-        public void run() {
-            long openTimeOut = System.currentTimeMillis() - openStartTime;
-            mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
-            mLiveBll.repair(false);
-//            mLiveBll.liveGetPlayServer(false);
-            changeNextLine();
-        }
-    };
+//    private Runnable mOpenTimeOutRun = new Runnable() {
+//
+//        @Override
+//        public void run() {
+//            long openTimeOut = System.currentTimeMillis() - openStartTime;
+//            mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
+//            mLiveBll.repair(false);
+////            mLiveBll.liveGetPlayServer(false);
+//            changeNextLine();
+//        }
+//    };
 
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
@@ -1695,6 +1695,13 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             }
             break;
             default:
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+//                        playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                        mLiveBll.liveGetPlayServer(false);
+                    }
+                }, 1000);
                 //除了这四种情况，还有播放完成的情况
                 break;
         }
