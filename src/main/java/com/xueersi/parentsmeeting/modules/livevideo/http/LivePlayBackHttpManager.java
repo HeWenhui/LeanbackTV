@@ -699,21 +699,20 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 领取金币
+     * 英语1v2 回放领取红包
      *
      * @param operateId       金币ID
      * @param liveid          直播ID
      * @param requestCallBack
      */
-    public void sendReceiveGold(int operateId, String liveid, HttpCallBack requestCallBack) {
+    public void sendReceiveGold(int operateId, String liveid, String type, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url = liveVideoSAConfigInner.URL_LIVE_RECEIVE_GOLD;
         requestCallBack.url = url;
         params.addBodyParam("liveId", liveid);
-        setDefaultParameter(params);
-        //新增参数：红包类型 type=0 默认直播红包不用改 type=1 录播课直播红包 type=2 录播课回放红包
-        params.addBodyParam("type", "2");
+        params.addBodyParam("type", type);
         params.addBodyParam("operateId", "" + operateId);
+        setDefaultParameter(params);
         sendPost(url, params, requestCallBack);
     }
 

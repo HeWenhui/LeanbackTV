@@ -50,7 +50,7 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
         if (redPackageAction == null) {
-            if (pattern == LiveVideoConfig.LIVE_PATTERN_2 || pattern == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+            if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
                 String showName = LiveAppUserInfo.getInstance().getStandShowName();
                 String headUrl = LiveAppUserInfo.getInstance().getHeadImg();
                 RedPackageStandBll redPackageStandBll;
@@ -101,6 +101,58 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
                                         callBack.onDataFail(1, responseEntity.getErrorMsg());
                                     }
                                 });
+                    }
+                });
+                redPackageAction = redPackageStandBll;
+            } else if (pattern == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+                String showName = LiveAppUserInfo.getInstance().getStandShowName();
+                String headUrl = LiveAppUserInfo.getInstance().getHeadImg();
+                RedPackageStandBll redPackageStandBll;
+                redPackageStandBll = new RedPackageStandBll(activity, false, liveBackBll);
+                redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
+                redPackageStandBll.setUserName(showName);
+                redPackageStandBll.setHeadUrl(headUrl);
+                redPackageStandBll.initView(mRootView, getLiveViewAction());
+                redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
+                    @Override
+                    public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {
+
+                    }
+
+                    @Override
+                    public void getReceiveGoldTeamRank(int operateId, AbstractBusinessDataCallBack callBack) {
+
+                    }
+
+                    @Override
+                    public void onReceiveGold() {
+
+                    }
+
+                    @Override
+                    public void sendReceiveGold(int operateId, String liveId, final AbstractBusinessDataCallBack
+                            callBack) {
+                        getCourseHttpManager().sendReceiveGold(operateId, liveId, "2", new HttpCallBack() {
+
+                            @Override
+                            public void onPmSuccess(ResponseEntity responseEntity) {
+                                VideoResultEntity entity = getCourseHttpResponseParser()
+                                        .redPacketParseParser(responseEntity);
+                                callBack.onDataSucess(entity);
+                            }
+
+                            @Override
+                            public void onPmFailure(Throwable error, String msg) {
+                                XESToastUtils.showToast(mContext, msg);
+                                callBack.onDataFail(0, msg);
+                            }
+
+                            @Override
+                            public void onPmError(ResponseEntity responseEntity) {
+                                XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+                                callBack.onDataFail(1, responseEntity.getErrorMsg());
+                            }
+                        });
                     }
                 });
                 redPackageAction = redPackageStandBll;
