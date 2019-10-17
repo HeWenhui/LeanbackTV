@@ -421,10 +421,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         }), "xesApp");
         if (TextUtils.equals("2", getProtocal())) {
-            XESToastUtils.showToast(mContext,  "加载新课件");
             wvSubjectWeb.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath()+"?cw_platform=android");
         }else {
-            XESToastUtils.showToast(mContext,  "加载旧课件");
             wvSubjectWeb.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath());
         }
     }

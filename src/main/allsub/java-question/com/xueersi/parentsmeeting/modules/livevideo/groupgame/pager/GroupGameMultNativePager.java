@@ -1838,10 +1838,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 createSpeechContent("getCourseWareTests", lastTime < 0);
                 if (TextUtils.equals("2", getProtocal())) {
-                    XESToastUtils.showToast(mContext,  "加载新课件");
                     wvSubjectWeb.loadUrl(testEntity.getPreviewPath()+"?cw_platform=android");
                 }else {
-                    XESToastUtils.showToast(mContext,  "加载旧课件");
                     wvSubjectWeb.loadUrl(testEntity.getPreviewPath());
                 }
                 int type = newCourseCache.loadCourseWareUrl(testEntity.getPreviewPath());
