@@ -152,9 +152,14 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
         } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
             mData.put("gradejudgment", "middle");
         }
-        mData.put("subject", "" + mGetInfo.getSubject_digits());
+        String subjectId = "";
+        if(mGetInfo.getSubjectIds() != null && mGetInfo.getSubjectIds().length > 0){
+            subjectId = mGetInfo.getSubjectIds()[0];
+        }
+        mData.put("subject", "" + subjectId);
         mData.put("ip", "" + IpAddressUtil.USER_IP);
         mData.put("liveid", mLiveId);
+        mData.put("grade",mGetInfo.getGrade()+"");
         mData.put("livetype", "" + mLiveType);
         mData.put("eventtype", "" + eventtype);
         mData.put("clits", "" + System.currentTimeMillis());
