@@ -192,7 +192,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         boolean isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
         if (isBigLive) {
-            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId);
+            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId,false);
         } else {
             liveAndBackDebugIml = new LiveAndBackDebugIml(context, mLiveType, mLiveId, mCourseId);
         }
@@ -230,7 +230,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         boolean isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
         Log.e("ckTrac","=====>LiveBll2_isBigLive="+isBigLive);
         if (isBigLive) {
-            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId);
+            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId,false);
         } else {
             liveAndBackDebugIml = new LiveAndBackDebugIml(context, mLiveType, mLiveId, mCourseId);
         }

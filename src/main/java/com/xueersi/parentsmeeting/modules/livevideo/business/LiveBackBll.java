@@ -246,7 +246,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
             }
         }
         if(mVideoEntity.isBigLive()) {
-            liveAndBackDebugIml  = new LiveDebugBigClassIml(activity, mLiveType, mVideoEntity.getLiveId(), mVideoEntity.getCourseId());
+            liveAndBackDebugIml  = new LiveDebugBigClassIml(activity, mLiveType, mVideoEntity.getLiveId(), mVideoEntity.getCourseId(),true);
 
             ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, liveAndBackDebugIml);
 

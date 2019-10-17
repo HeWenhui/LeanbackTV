@@ -26,14 +26,15 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
     private String appID;
     private String mLiveId;
     private String mCourseId;
-
+    private boolean playBack;
     LiveBusiLogEntity logEntity = new LiveBusiLogEntity();
 
-    public LiveDebugBigClassIml(Context mContext, int liveType, String liveId, String courseId) {
+    public LiveDebugBigClassIml(Context mContext, int liveType, String liveId, String courseId,boolean playBack) {
         this.mContext = mContext;
         mLiveType = liveType;
         mLiveId = liveId;
         mCourseId = courseId;
+        this.playBack = playBack;
     }
 
     @Override
@@ -111,7 +112,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
     }
 
     private String getMode() {
-        return null;
+        return LiveTopic.MODE_CLASS;
     }
 
     @Override
@@ -136,6 +137,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
     private void setLogParam(String eventtype, Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getUname());
+        mData.put("playBack",playBack?"1":"0");
         LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
             mData.put("classid", studentLiveInfo.getClassId());
