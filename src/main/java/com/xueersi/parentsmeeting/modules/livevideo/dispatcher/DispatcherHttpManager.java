@@ -41,18 +41,19 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
 
 
     /**
-     * 大班整合讲座回放入口接口
+     * 大班整合回放入口接口
      * @param planId
      * @param bizId
      * @param stuCouId
      * @param requestCallBack
      */
-    public void publicBigLivePlayBackEnter(int planId, int bizId, int stuCouId, HttpCallBack requestCallBack){
+    public void publicBigLivePlayBackEnter(int planId, int bizId, int stuCouId,int acceptPlanVersion, HttpCallBack requestCallBack){
 
         BigLiveEnterParam param = new BigLiveEnterParam();
         param.setBizId(bizId);
         param.setPlanId(planId);
         param.setStuCouId(stuCouId);
+        param.setAcceptPlanVersion(acceptPlanVersion);
         sendJsonPost(LiveIntegratedCfg.LIVE_PLAY_BACK_ENTER,param,requestCallBack);
     }
 

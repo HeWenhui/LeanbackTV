@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveTransferHttpManager;
 import com.xueersi.ui.dataload.DataLoadEntity;
@@ -496,7 +497,7 @@ public class DispatcherBll extends BaseBll {
         int iStuCouId = Integer.parseInt(stuCouId);
 
         dispatcherHttpManager.publicBigLivePlayBackEnter(iPlanId, bizeId, iStuCouId,
-                new HttpCallBack(dataLoadEntity) {
+                BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION,   new HttpCallBack(dataLoadEntity) {
                     public void onPmSuccess(ResponseEntity responseEntity) {
 
                         BigLivePlayBackEntity bigLivePlayBackEntity = dispatcherHttpResponseParser
@@ -531,6 +532,7 @@ public class DispatcherBll extends BaseBll {
         int iStuCouId = Integer.parseInt(stuCouId);
 
         dispatcherHttpManager.publicBigLivePlayBackEnter(iPlanId, bizeId, iStuCouId,
+                BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION,
                 new HttpCallBack(dataLoadEntity) {
                     public void onPmSuccess(ResponseEntity responseEntity) {
 
