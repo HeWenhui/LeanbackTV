@@ -238,11 +238,8 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             liveTopic.setMode(LiveTopic.MODE_CLASS);
         } else {
-            //直播解析主辅导态
-            String modeStr = liveTopicJson.optString("mode");
-            if(!TextUtils.isEmpty(modeStr)){
-                liveTopic.setMode(modeStr);
-            }
+            //整合二期只支持 主讲流
+            liveTopic.setMode(LiveTopic.MODE_CLASS);
         }
         return liveTopic;
     }

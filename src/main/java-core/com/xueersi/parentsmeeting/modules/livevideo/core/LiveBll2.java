@@ -1244,7 +1244,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 LiveTopic liveTopic = mBigLiveHttpParser.parseBigLiveTopic(mLiveTopic, jsonObject, mLiveType);
                 boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
                 ////直播相关//////
-                if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+               /* if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     //模式切换
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         String oldMode = mLiveTopic.getMode();
@@ -1273,7 +1273,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                             }
                         }
                     }
-                }
+                }*/
                 //////////////
                 if (teacherModeChanged) {
                     mLiveTopic.setMode(liveTopic.getMode());
