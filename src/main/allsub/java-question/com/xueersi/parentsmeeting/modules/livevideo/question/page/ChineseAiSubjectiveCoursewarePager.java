@@ -653,7 +653,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                                     resultData.put("isCanAnswer", 1);
                                     resultData.put("userAnswerContent", userAnswerContent2);
                                     jsonData.put("data", resultData);
-                                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*","1");
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -666,7 +666,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     }
                     NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
                             getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid,
-                            (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime, detailInfo.isTUtor());
+                            (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime, detailInfo.isTUtor(),"");
                     isRefresh = 0;
                 }
             }
@@ -736,7 +736,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 jsonData.put("type", CourseMessage.SEND_getAnswer);
                 JSONObject resultData = new JSONObject();
                 jsonData.put("data", resultData);
-                StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*","1");
             } catch (JSONException e) {
                 LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 mLogtf.e("submitData", e);
@@ -1052,7 +1052,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     showAnswerResult(0);
                 } else {
                     NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
-                            getSubtestid(), test.getPreviewPath(), ispreload, test.getId(), detailInfo.isTUtor());
+                            getSubtestid(), test.getPreviewPath(), ispreload, test.getId(), detailInfo.isTUtor(),"");
                 }
             }
 
