@@ -158,6 +158,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
             evaluatetime = (long) (stime + (etime - stime) * 0.7);
 
         }
+        //evaluatetime = 0; //用于测试
         if (pagerNew != null && System.currentTimeMillis() / 1000 > evaluatetime) {
             logger.i("showEvaluateTeacher");
 //            logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mFeedBackEntity

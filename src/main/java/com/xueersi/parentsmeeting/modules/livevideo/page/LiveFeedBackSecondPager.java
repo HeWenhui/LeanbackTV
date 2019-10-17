@@ -87,6 +87,8 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         webSetting.setDomStorageEnabled(false);
         webSetting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         webSetting.setLoadWithOverviewMode(true);
+        webSetting.setBlockNetworkImage(true);
+        webSetting.setRenderPriority(WebSettings.RenderPriority.HIGH);//设置渲染的优先级
         webSetting.setUserAgentString(webSetting.getUserAgentString() + " jzh");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webSetting.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -99,6 +101,16 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
     }
 
     class MyWebChromeClient extends WebChromeClient{
+        @Override
+        public void onProgressChanged(WebView var1, int newProgress) {
+            if (newProgress == 100) {
+                // 网页加载完成
+                webView.getSettings().setBlockNetworkImage(false);
+            } else {
+                // 网页加载中
+            }
+        }
+
 
     }
 
