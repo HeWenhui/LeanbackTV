@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
@@ -314,6 +315,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
+            getInfo.setCreatTime(SystemClock.currentThreadTimeMillis());
 
             VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
 

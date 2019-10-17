@@ -368,6 +368,8 @@ public class LiveGetInfo {
 
     /** 英语1v2小组课*/
     private RecordStandliveEntity recordStandliveEntity;
+    /** getinfo创建时间*/
+    private long creatTime;
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -1879,5 +1881,13 @@ public class LiveGetInfo {
 
     public void setGradeIds(String gradeIds) {
         this.gradeIds = gradeIds;
+    }
+
+    public long getCreatTime() {
+        return creatTime;
+    }
+
+    public void setCreatTime(long creatTime) {
+        this.creatTime = creatTime;
     }
 }

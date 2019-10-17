@@ -16,11 +16,13 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import java.util.HashMap;
@@ -126,13 +128,16 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
 
                     @Override
                     public void onReceiveGold() {
-
+                        UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+                        if (updateAchievement != null) {
+                            updateAchievement.getStuGoldCount("onReceiveGold", UpdateAchievement.GET_TYPE_RED);
+                        }
                     }
 
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, final AbstractBusinessDataCallBack
                             callBack) {
-                        getCourseHttpManager().sendReceiveGold(operateId, liveId, "2", new HttpCallBack() {
+                        getCourseHttpManager().sendReceiveGold(operateId, liveId, "2",new HttpCallBack() {
 
                             @Override
                             public void onPmSuccess(ResponseEntity responseEntity) {

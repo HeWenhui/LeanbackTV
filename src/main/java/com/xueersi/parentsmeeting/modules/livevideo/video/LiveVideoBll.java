@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -21,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.ProgressAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
@@ -52,7 +52,7 @@ import okhttp3.Response;
  * <p>
  * 所有跟直播中视频播放有关的逻辑处理（不处理任何ui）都在这里操作。
  */
-public class LiveVideoBll implements VPlayerListenerReg {
+public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     private final String TAG = "LiveVideoBll";
     private Logger logger = LoggerFactory.getLogger(TAG);
     /** 直播服务器 */
@@ -151,12 +151,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
     }
 
-    @Override
-    public void playFile(String videoPath) {
-        //英语1v2录直播 播放网络文件
-        videoFragment.playPSFile(videoPath,0);
-    }
-
     public void setVideoAction(VideoAction mVideoAction) {
         this.mVideoAction = mVideoAction;
     }
@@ -175,22 +169,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
             }
         }, mLiveType, getInfo, liveTopic);
         liveGetPlayServer.setVideoAction(mVideoAction);
-
-        if (isGroupClass()) {
-            //英语1v2录直播 播放网络文件
-            String videoPath = getInfo.getRecordStandliveEntity().getRecordUrl();
-            int diffBegin = getInfo.getRecordStandliveEntity().getDiffBegin();
-            if (diffBegin >= 0) {
-                //起播时间大于0 才播放
-                videoFragment.playPSFile(videoPath,diffBegin);
-            }
-        } else {
+        if (!isGroupClass()) {
             liveGetPlayServer(liveTopic.getMode(), false);
         }
     }
 
     /**
-     * 直播模式变化
+     * 直播模式变化H
      *
      * @param mode      模式
      * @param isPresent 老师在不在直播间H
@@ -438,11 +423,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
 
-            if (isGroupClass()) {
-                //英语1v2小组课 设置起播时间
-                long diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
-                videoFragment.seekTo(diffBegin * 1000);
-            }
+            videoFragment.seekTo(positon);
         }
 
         @Override
@@ -864,11 +845,29 @@ public class LiveVideoBll implements VPlayerListenerReg {
         mPlayStatistics.clear();
     }
 
-    boolean isGroupClass() {
-        if (mGetInfo != null) {
-            return mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS;
-        } else {
-            return false;
+    private int positon;
+
+    @Override
+    public void onProgressChanged(int progress) {
+        positon = progress;
+        if (progress == 0) {
+            String videoPath = mGetInfo.getRecordStandliveEntity().getRecordUrl();
+            videoFragment.playPSFile(videoPath, progress);
         }
+    }
+
+    @Override
+    public void onProgressBegin(int beginProgress) {
+        positon = beginProgress;
+        //英语1v2录直播 播放网络文件
+        String videoPath = mGetInfo.getRecordStandliveEntity().getRecordUrl();
+        if (beginProgress >= 0) {
+            //起播时间大于0 才播放
+            videoFragment.playPSFile(videoPath, beginProgress);
+        }
+    }
+
+    private boolean isGroupClass() {
+        return mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS;
     }
 }
