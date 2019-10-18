@@ -88,7 +88,7 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnTeamPkIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll",
             "com.xueersi.parentsmeeting.modules.livevideo.betterme.presenter.BetterMeIRCBll",};
     private static String[] cnClassPath = {
@@ -117,7 +117,7 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldMicroPhoneBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll",
             "com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"
     };
     private static String[] lecClassPath = {
