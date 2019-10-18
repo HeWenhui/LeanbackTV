@@ -1733,14 +1733,19 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         }
     }
 
+    private boolean lastNowNetWork = true;
+
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
         logger.i("onEvent:netWorkType=" + event.netWorkType);
         mLiveBll.onNetWorkChange(event.netWorkType);
         if (event.netWorkType != NetWorkHelper.NO_NETWORK) {
-            if (xv_livevideo_student != null && playUrl != null && mGetInfo.getName() != null) {
+            if (xv_livevideo_student != null && playUrl != null && mGetInfo.getName() != null && lastNowNetWork) {
                 xv_livevideo_student.playNewVideo(Uri.parse(playUrl), mGetInfo.getName());
+                lastNowNetWork = false;
             }
+        } else {
+            lastNowNetWork = true;
         }
     }
 
