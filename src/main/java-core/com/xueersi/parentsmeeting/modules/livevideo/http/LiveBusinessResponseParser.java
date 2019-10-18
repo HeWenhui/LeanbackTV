@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 
-import android.text.TextUtils;
-
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -207,7 +205,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
 
             }
 
-            JSONObject liveStatusJsonObj = data.optJSONObject("LiveStatus");
+            JSONObject liveStatusJsonObj = data.optJSONObject("liveStatus");
             if(liveStatusJsonObj != null){
                 liveGetInfo.getLiveStatus().setStartClass(liveStatusJsonObj.optBoolean("startClass"));
             }
