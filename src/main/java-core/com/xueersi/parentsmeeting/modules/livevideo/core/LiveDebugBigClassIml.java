@@ -121,6 +121,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
         mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        mData.put("teacherMode ",LiveTopic.MODE_CLASS.equals(getMode()) ? "0" : "1");
         setAnalysis(analysis);
         logEntity.logType = LiveBusiLogSendLogRunnable.LOGTYPE_PV;
         logEntity.mData = mData;
