@@ -6,6 +6,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnti
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubMemberEntity;
 
 import org.json.JSONArray;
 
@@ -365,6 +366,9 @@ public class LiveGetInfo {
 
     /** 灰度控制开关控制*/
     LiveModuleConfigInfo liveModuleConfigInfo;
+
+    /** 分组信息 */
+    SubMemberEntity subMemberEntity;
 
     /** 英语1v2小组课*/
     private RecordStandliveEntity recordStandliveEntity;
@@ -1879,5 +1883,13 @@ public class LiveGetInfo {
 
     public void setGradeIds(String gradeIds) {
         this.gradeIds = gradeIds;
+    }
+
+    public SubMemberEntity getSubMemberEntity() {
+        return subMemberEntity;
+    }
+
+    public void setSubMemberEntity(SubMemberEntity subMemberEntity) {
+        this.subMemberEntity = subMemberEntity;
     }
 }
