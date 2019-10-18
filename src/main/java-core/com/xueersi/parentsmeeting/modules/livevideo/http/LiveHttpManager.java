@@ -2322,4 +2322,15 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         setDefaultParameter(params);
         sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOTE_FOLD_COUNT, params, requestCallBack);
     }
+
+    /**
+     * 获取服务器时间
+     *
+     * @param requestCallBack
+     */
+    public void getServerTime( HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_GET_SERVER_TIME, params, requestCallBack);
+    }
 }

@@ -49,7 +49,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             int pattern = getIntent().getIntExtra("pattern", 0);
             isExperience = getIntent().getBooleanExtra("isExperience", false);
             if (!isExperience) {
-                if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+                if (pattern == LiveVideoConfig.LIVE_PATTERN_2||pattern == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
                     try {
                         String fname = "com.xueersi.parentsmeeting.modules.livevideo.fragment.StandBackVideoFragment";
                         LiveBackVideoFragmentBase fragmentBase =

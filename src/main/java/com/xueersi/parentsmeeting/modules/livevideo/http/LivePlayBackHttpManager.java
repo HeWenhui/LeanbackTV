@@ -689,4 +689,36 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     }
 
+    /**
+     * 英语1v2 回放获取本场成就金币
+     *
+     * @param requestCallBack
+     */
+    public void getStuGoldCount(String liveId, String type, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("type", type);
+        setDefaultParameter(params);
+        requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_STUDY_GOLD_COUNT;
+        sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
+    /**
+     * 英语1v2 回放领取红包
+     *
+     * @param operateId       金币ID
+     * @param liveid          直播ID
+     * @param requestCallBack
+     */
+    public void sendReceiveGold(int operateId, String liveid, String type, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        String url = liveVideoSAConfigInner.URL_LIVE_RECEIVE_GOLD;
+        requestCallBack.url = url;
+        params.addBodyParam("liveId", liveid);
+        params.addBodyParam("type", type);
+        params.addBodyParam("operateId", "" + operateId);
+        setDefaultParameter(params);
+        sendPost(url, params, requestCallBack);
+    }
+
 }

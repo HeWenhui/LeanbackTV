@@ -372,6 +372,8 @@ public class LiveGetInfo {
 
     /** 英语1v2小组课*/
     private RecordStandliveEntity recordStandliveEntity;
+    /** getinfo创建时间*/
+    private long creatTime;
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -1891,5 +1893,13 @@ public class LiveGetInfo {
 
     public void setSubMemberEntity(SubMemberEntity subMemberEntity) {
         this.subMemberEntity = subMemberEntity;
+    }
+
+    public long getCreatTime() {
+        return creatTime;
+    }
+
+    public void setCreatTime(long creatTime) {
+        this.creatTime = creatTime;
     }
 }

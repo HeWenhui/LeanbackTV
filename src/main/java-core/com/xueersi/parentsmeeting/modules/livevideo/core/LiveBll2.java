@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -65,6 +66,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
@@ -91,6 +94,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * 需处理 全量 消息的 业务集合
      */
     private List<MessageAction> mMessageActions = new ArrayList<>();
+    /**
+     * 需处理 progress 业务集合
+     */
+    private List<ProgressAction> mProgressActions = new ArrayList<>();
     /**
      * 所有业务bll 集合
      */
@@ -349,6 +356,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         if (bll instanceof MessageAction) {
             mMessageActions.add((MessageAction) bll);
         }
+        if (bll instanceof ProgressAction) {
+            mProgressActions.add((ProgressAction) bll);
+        }
         businessBlls.add(bll);
     }
 
@@ -381,6 +391,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         if (bll instanceof MessageAction) {
             mMessageActions.remove(bll);
+        }
+        if (bll instanceof ProgressAction) {
+            mProgressActions.remove(bll);
         }
     }
 
@@ -832,8 +845,21 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         liveVideoBll.onLiveInit(getInfo, mLiveTopic);
         mShareDataManager.put(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, getInfo.getClientLog(), ShareDataManager.SHAREDATA_NOT_CLEAR);
         initExtInfo(getInfo);
+        //英语1v2 开启定时器 监听直播进度
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+            startTimer();
+        }
     }
 
+    private void startTimer() {
+        int diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
+        long currentTime = SystemClock.currentThreadTimeMillis();
+        diffBegin += Math.round((double) (currentTime - mGetInfo.getCreatTime()) / 1000);
+        logger.d("diffBegin = " + diffBegin);
+        mTimer = new Timer();
+        mTimerTask = new ScanningTimerTask(diffBegin);
+        mTimer.schedule(mTimerTask, 0, 1000);
+    }
 
     private static final long RETRY_DELAY = 3000;
     private static final long MAX_RETRY_TIME = 4;
@@ -1569,6 +1595,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         mNoticeActionMap.clear();
         mTopicActions.clear();
         mMessageActions.clear();
+        mProgressActions.clear();
         mVideoAction = null;
         if (mIRCMessage != null) {
             mIRCMessage.destory();
@@ -1578,6 +1605,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         //清空场次缓存信息
         LiveAppUserInfo.getInstance().clearCachData();
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+        if (mTimerTask != null) {
+            mTimerTask.cancel();
+            mTimerTask = null;
+        }
 
     }
 
@@ -1597,6 +1632,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
     public void setLiveVideoBll(LiveVideoBll liveVideoBll) {
         this.liveVideoBll = liveVideoBll;
+        mProgressActions.add(liveVideoBll);
     }
 
 //    public void liveGetPlayServer() {
@@ -1860,5 +1896,69 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
     public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl ){
         this.grayControl = grayControl;
+    }
+
+    /**
+     * 获取服务器时间
+     *
+     * @param callBack
+     */
+    public void getServerTime(AbstractBusinessDataCallBack callBack) {
+
+        mHttpManager.getServerTime(new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+
+            }
+
+        });
+    }
+
+    private Timer mTimer;
+    private TimerTask mTimerTask;
+
+    class ScanningTimerTask extends TimerTask {
+        int position;
+
+        ScanningTimerTask(int position) {
+            this.position = position;
+            logger.d("onProgressBegin : positon = " + position);
+            if (mProgressActions != null && mProgressActions.size() > 0) {
+                for (ProgressAction mProgressAction : mProgressActions) {
+                    try {
+                        mProgressAction.onProgressBegin(position);
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+
+                }
+            }
+        }
+
+        @Override
+        public void run() {
+            position++;
+            logger.d("onProgressChanged : position = " + position);
+            if (mProgressActions != null && mProgressActions.size() > 0) {
+                for (ProgressAction mProgressAction : mProgressActions) {
+                    try {
+                        mProgressAction.onProgressChanged(position);
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+
+                }
+            }
+        }
     }
 }
