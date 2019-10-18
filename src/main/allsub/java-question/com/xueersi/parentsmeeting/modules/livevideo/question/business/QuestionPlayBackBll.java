@@ -134,8 +134,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             break;
             case LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
                 questionBll.onStopQuestion("PlayBack:onQuestionEnd3", questionEntity.getvQuestionType(), "");
+                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
             }
             break;
 //            case LocalCourseConfig.CATEGORY_BIG_TEST: {
