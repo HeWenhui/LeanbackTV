@@ -30,6 +30,7 @@ import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -237,7 +238,14 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH, (int) VIDEO_HEIGHT, VIDEO_RATIO);
     }
 
-
+    //
+//    @Subscribe(threadMode = ThreadMode.POSTING)
+//    public void onEvent(AppEvent event) {
+//        if (event.getClass() == AppEvent.class) {
+//            logger.i("onEvent:netWorkType=" + event.netWorkType);
+////            mLiveVideoBll.onNetWorkChange(event.netWorkType);
+//        }
+//    }
     private void initListener() {
         AtomicBoolean mIsLand = new AtomicBoolean(false);
         xv_livevideo_student.setIsLand(mIsLand);
@@ -762,7 +770,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 //            changeNextLine();
 //        }
 //    };
-
     protected void changeNextLine() {
         this.nowPos++;
         if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
@@ -794,7 +801,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 //            changeNextLine();
 //        }
 //    };
-
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
         mHandler.post(new Runnable() {
@@ -1731,6 +1737,11 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     public void onEvent(AppEvent event) {
         logger.i("onEvent:netWorkType=" + event.netWorkType);
         mLiveBll.onNetWorkChange(event.netWorkType);
+        if (event.netWorkType != NetWorkHelper.NO_NETWORK) {
+            if (xv_livevideo_student != null && playUrl != null && mGetInfo.getName() != null) {
+                xv_livevideo_student.playNewVideo(Uri.parse(playUrl), mGetInfo.getName());
+            }
+        }
     }
 
     /**
