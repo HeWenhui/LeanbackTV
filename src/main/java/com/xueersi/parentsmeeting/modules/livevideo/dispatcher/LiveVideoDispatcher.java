@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
@@ -145,8 +144,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     private void enterLive() {
         //TODO: 2019/9/25 调试代码
         startLive(true);
-        /*if(planVersion == DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT){
-            // TODO: 2019/10/15  调用查询接口 查询是否是大班直播
+       /* if(planVersion == DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT){
             dataLoadEntity = new DataLoadEntity(activity);
             dispatcherBll.bigLivePlanVersion(Integer.parseInt(planId), 3, new AbstractBusinessDataCallBack() {
                 @Override
@@ -191,7 +189,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
 
     private void startLive(boolean isBiglive) {
-        Log.e("ckTrac","=====>LiveVideoDispatcher_startLive:"+rstatus);
         switch (rstatus) {
             case LiveNewStatus.LIVE_UNBEGIN://未开始
                 break;
