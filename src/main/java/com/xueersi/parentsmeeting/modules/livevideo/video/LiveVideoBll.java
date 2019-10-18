@@ -873,26 +873,27 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     @Override
     public void onProgressBegin(int beginProgress) {
         positon = beginProgress;
-        if (positon >= 0) {
-            playGroupClassVide();
-        }
+        playGroupClassVide();
+
     }
 
     private void playGroupClassVide() {
-        //英语1v2录直播 播放网络文件
-        String videoPath = mGetInfo.getRecordStandliveEntity().getRecordUrl();
-        int sTime = (int) mGetInfo.getsTime();
-        int eTime = (int) mGetInfo.geteTime();
-        int liveTime = eTime - sTime;
-        if (positon < liveTime) {
-            //当前相对时间>0，并且小于直播课总时长（单位s）
-            videoFragment.playPSFile(videoPath, positon);
-            if (!teacherIsPresent.isPresent() && mVideoAction != null) {
-                mVideoAction.onTeacherNotPresent(false);
-            }
-        } else {
-            if (!teacherIsPresent.isPresent() && mVideoAction != null) {
-                mVideoAction.onTeacherNotPresent(false);
+        if (positon >= 0) {
+            //英语1v2录直播 播放网络文件
+            String videoPath = mGetInfo.getRecordStandliveEntity().getRecordUrl();
+            int sTime = (int) mGetInfo.getsTime();
+            int eTime = (int) mGetInfo.geteTime();
+            int liveTime = eTime - sTime;
+            if (positon < liveTime) {
+                //当前相对时间>0，并且小于直播课总时长（单位s）
+                videoFragment.playPSFile(videoPath, positon);
+                if (!teacherIsPresent.isPresent() && mVideoAction != null) {
+                    mVideoAction.onTeacherNotPresent(false);
+                }
+            } else {
+                if (!teacherIsPresent.isPresent() && mVideoAction != null) {
+                    mVideoAction.onTeacherNotPresent(false);
+                }
             }
         }
     }

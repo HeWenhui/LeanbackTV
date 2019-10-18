@@ -315,7 +315,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
-            getInfo.setCreatTime(SystemClock.currentThreadTimeMillis());
+            getInfo.setCreatTime(SystemClock.elapsedRealtime());
 
             VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
 

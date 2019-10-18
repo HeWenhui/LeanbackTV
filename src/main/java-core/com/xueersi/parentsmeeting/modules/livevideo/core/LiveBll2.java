@@ -852,8 +852,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
     private void startTimer() {
+        logger.d("startTimer");
         int diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
-        long currentTime = SystemClock.currentThreadTimeMillis();
+        long currentTime = SystemClock.elapsedRealtime();
         diffBegin += Math.round((double) (currentTime - mGetInfo.getCreatTime()) / 1000);
         logger.d("diffBegin = " + diffBegin);
         mTimer = new Timer();
@@ -1554,6 +1555,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onResume();
         }
+
+        int diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
+        long currentTime = SystemClock.elapsedRealtime();
+        diffBegin += Math.round((double) (currentTime - mGetInfo.getCreatTime()) / 1000);
+        mTimerTask.setPosition(diffBegin);
     }
 
     /**
@@ -1925,7 +1931,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
     private Timer mTimer;
-    private TimerTask mTimerTask;
+    private ScanningTimerTask mTimerTask;
 
     class ScanningTimerTask extends TimerTask {
         int position;
@@ -1959,6 +1965,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
                 }
             }
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
         }
     }
 }
