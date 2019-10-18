@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -231,8 +232,9 @@ public class NbCourseCache {
             inputStream = webInstertJs.readFile(url, file);
         }
         //logToFile.d("interceptIndexRequest:url=" + url + ",inputStream1=" + (inputStream == null));
+        AtomicBoolean islocal = new AtomicBoolean();
         if (inputStream == null) {
-            inputStream = webInstertJs.httpRequest(url);
+            inputStream = webInstertJs.httpRequest(url, islocal);
         }
         //logToFile.d("interceptIndexRequest:url=" + url + ",inputStream2=" + (inputStream == null));
         if (inputStream != null) {
