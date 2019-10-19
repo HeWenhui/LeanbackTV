@@ -15,6 +15,7 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -26,6 +27,7 @@ public class BaseCoursewareNativePager extends LiveBasePager {
     protected WebView wvSubjectWeb;
     /** 失败地址 */
     protected String failingUrl = null;
+    public static String XES_LOADING_X5_ERROR_COUNT = "xes_loading_x5_error_count";
 
     public BaseCoursewareNativePager(Context context) {
         super(context);
@@ -128,6 +130,9 @@ public class BaseCoursewareNativePager extends LiveBasePager {
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
             BaseCoursewareNativePager.this.onReceivedTitle(view, title);
+            int count =  UmsAgentTrayPreference.getInstance().getInt(XES_LOADING_X5_ERROR_COUNT,0);
+
+            UmsAgentTrayPreference.getInstance().put(XES_LOADING_X5_ERROR_COUNT,count-1);
         }
     }
 
@@ -152,6 +157,10 @@ public class BaseCoursewareNativePager extends LiveBasePager {
             BaseCoursewareNativePager.this.failingUrl = null;
             super.onPageStarted(view, url, favicon);
             BaseCoursewareNativePager.this.onPageStarted(view, url, favicon);
+
+            int count =  UmsAgentTrayPreference.getInstance().getInt(XES_LOADING_X5_ERROR_COUNT,0);
+
+            UmsAgentTrayPreference.getInstance().put(XES_LOADING_X5_ERROR_COUNT,count+1);
         }
 
         @Override
