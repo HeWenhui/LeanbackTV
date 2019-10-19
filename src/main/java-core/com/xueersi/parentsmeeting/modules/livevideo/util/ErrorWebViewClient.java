@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import android.os.Looper;
 
+import com.alibaba.fastjson.JSON;
 import com.tencent.smtt.export.external.interfaces.SslError;
 import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -65,8 +66,24 @@ public class ErrorWebViewClient extends WebViewClient {
     @Override
     public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
 
-        sslErrorHandler.proceed();
+        if(sslErrorHandler!=null) {
+            sslErrorHandler.proceed();
+        }
+        onReceivedHttpError(webView,"xes_err_web_onReceivedSslError",1,sslError.getCertificate().toString());
     }
+    public void onError(WebView webView, String url, int statusCode, String reasonPhrase) {
+        HashMap<String, String> logHashMap = new HashMap<>();
+        logHashMap.put("tag", TAG);
+        logHashMap.put("status", "false");
+        logHashMap.put("loadurl", "" + url);
+        logHashMap.put("weburl", "" + loadUrl);
+        logHashMap.put("errcode", "" + statusCode);
+        logHashMap.put("errmsg", "" + reasonPhrase);
+        logHashMap.put("userip", "" + IpAddressUtil.USER_IP);
+        logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
+        UmsAgentManager.umsAgentDebug(webView.getContext(),"webError:", JSON.toJSONString(logHashMap));
+    }
+
 
     @Override
     public void onReceivedError(final WebView webView, final WebResourceRequest webResourceRequest, final WebResourceError webResourceError) {
