@@ -163,11 +163,6 @@ public class BaseCoursewareNativePager extends LiveBasePager {
         }
 
         @Override
-        public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
-            sslErrorHandler.proceed();
-        }
-
-        @Override
         public void onPageFinished(WebView view, String url) {
             BaseCoursewareNativePager.this.onPageFinished(view, url);
         }

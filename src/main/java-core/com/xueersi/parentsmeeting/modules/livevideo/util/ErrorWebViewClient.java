@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import android.os.Looper;
 
+import com.tencent.smtt.export.external.interfaces.SslError;
+import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceError;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
@@ -56,6 +58,14 @@ public class ErrorWebViewClient extends WebViewClient {
             }
         }
         super.onLoadResource(webView, s);
+    }
+
+
+
+    @Override
+    public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
+
+        sslErrorHandler.proceed();
     }
 
     @Override
