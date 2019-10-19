@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import com.tencent.smtt.sdk.QbSdk;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -77,6 +78,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
+        QbSdk.clearAllWebViewCache(getApplicationContext(), true);
+        QbSdk.reset(getApplicationContext());
         String token = LiveAppUserInfo.getInstance().getTalToken();
         //如果没有token，只能重新点击进入了
         if (StringUtils.isEmpty(token)) {
