@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
@@ -176,15 +177,16 @@ public class NewCourseCache {
         InputStream inputStream = null;
         final boolean ispreload;
         if (file != null) {
-            ispreload = true;
             inputStream = webInstertJs.readFile(url, file);
+            ispreload = inputStream != null;
         } else {
             ispreload = false;
         }
         logToFile.d("interceptIndexRequest:url=" + url + ",inputStream1=" + (inputStream == null));
         long before = SystemClock.currentThreadTimeMillis();
+        final AtomicBoolean islocal = new AtomicBoolean();
         if (inputStream == null) {
-            inputStream = webInstertJs.httpRequest(url);
+            inputStream = webInstertJs.httpRequest(url, islocal);
         }
         final long httptime = SystemClock.currentThreadTimeMillis() - before;
         logToFile.d("interceptIndexRequest:url=" + url + ",inputStream2=" + (inputStream == null));
@@ -209,6 +211,7 @@ public class NewCourseCache {
                                 stableLogHashMap.put("liveId", liveId);
                                 stableLogHashMap.put("testid", testid);
                                 stableLogHashMap.put("ispreload", "" + ispreload);
+                                stableLogHashMap.put("islocal", "" + islocal);
                                 stableLogHashMap.put("readtime", "" + readtime);
                                 stableLogHashMap.put("readMethod", "" + readMethod);
                                 stableLogHashMap.put("httptime", "" + httptime);
@@ -490,3 +493,4 @@ public class NewCourseCache {
         }
     }
 }
+
