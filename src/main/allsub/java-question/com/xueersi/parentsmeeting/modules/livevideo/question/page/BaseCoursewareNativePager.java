@@ -7,6 +7,8 @@ import android.view.View;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.JsResult;
+import com.tencent.smtt.export.external.interfaces.SslError;
+import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
@@ -158,6 +160,11 @@ public class BaseCoursewareNativePager extends LiveBasePager {
 
         public MyWebViewClient() {
             super(TAG);
+        }
+
+        @Override
+        public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
+            sslErrorHandler.proceed();
         }
 
         @Override
