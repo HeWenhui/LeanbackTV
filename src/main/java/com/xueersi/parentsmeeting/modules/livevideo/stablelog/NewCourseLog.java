@@ -130,7 +130,7 @@ public class NewCourseLog {
      * sno3学生加载页面loading
      * pageid 页面id(英语无pageid)
      */
-    public static void sno3(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, String loadurl, boolean ispreload, String pageid, boolean isTutor) {
+    public static void sno3(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, String loadurl, boolean ispreload, String pageid, boolean isTutor,String testsProtocal) {
         StableLogHashMap logHashMap = new StableLogHashMap("showLoading");
         logHashMap.put("testid", testid);
         logHashMap.put("subtestid", subtestid);
@@ -139,6 +139,7 @@ public class NewCourseLog {
         logHashMap.put("pageid", "" + pageid);
         logHashMap.put("sno", "3");
         logHashMap.put("status", "true");
+        logHashMap.put("useprotocal", testsProtocal);
         String questionType = QUESTION_TYPE_MAIN;
         if (isTutor) {
             questionType = QUESTION_TYPE_TUTOR;
@@ -148,7 +149,7 @@ public class NewCourseLog {
     }
 
     /** sno4课件加载完成/打开页面 */
-    public static void sno4(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, String loadurl, boolean ispreload, String pageid, long loadtime, int isfresh, int refreshTime, boolean isTutor) {
+    public static void sno4(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, String loadurl, boolean ispreload, String pageid, long loadtime, int isfresh, int refreshTime, boolean isTutor,String testsProtocal) {
         StableLogHashMap logHashMap = new StableLogHashMap("showH5Plat");
         logHashMap.put("testid", testid);
         logHashMap.put("subtestid", subtestid);
@@ -160,6 +161,7 @@ public class NewCourseLog {
         logHashMap.put("refreshTime", "" + refreshTime);
         logHashMap.put("status", "true");
         logHashMap.put("sno", "4");
+        logHashMap.put("useprotocal", testsProtocal);
         String questionType = QUESTION_TYPE_MAIN;
         if (isTutor) {
             questionType = QUESTION_TYPE_TUTOR;

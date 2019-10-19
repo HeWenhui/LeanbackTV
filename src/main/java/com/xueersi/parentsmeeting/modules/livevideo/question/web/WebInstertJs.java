@@ -29,6 +29,7 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2019/3/5.
@@ -123,12 +124,15 @@ public class WebInstertJs {
         return null;
     }
 
-    public InputStream httpRequest(String url) {
+    public InputStream httpRequest(String url, AtomicBoolean islocal) {
         String fileName = "index_" + url.hashCode() + "_" + saveTime + ".html";
         File saveFile = new File(cacheDir, fileName);
         logToFile.d("httpRequest:fileName=" + saveFile + ",exists=" + saveFile.exists());
         if (saveFile.exists()) {
             try {
+                if (islocal != null) {
+                    islocal.set(true);
+                }
                 return new FileInputStream(saveFile);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

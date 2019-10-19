@@ -133,7 +133,7 @@ public class NewIRCMessage implements IIRCMessage {
                 }
                 for (int i = 0; i < mChannels.length; i++) {
                     roomid.add(mChannels[i]);
-                    logger.i( mChannels[i]);
+                    logger.i(mChannels[i]);
                 }
                 mChatClient.getRoomManager().joinChatRooms(roomid);
             } else if (PMDefs.ResultCode.Result_NicknameAlreadyExist == loginResp.code) {
@@ -162,9 +162,9 @@ public class NewIRCMessage implements IIRCMessage {
                 }, 1000);
             }
             Map<String, String> logHashMap = defaultlog();
-            if(loginResp.code == PMDefs.ResultCode.Result_Success ){
+            if (loginResp.code == PMDefs.ResultCode.Result_Success) {
                 logHashMap.put("type", "login success");
-            }else {
+            } else {
                 logHashMap.put("type", "login fail");
             }
             logHashMap.put("loginCode", "" + loginResp.code);
@@ -385,6 +385,8 @@ public class NewIRCMessage implements IIRCMessage {
 
     private IRoomChatListener mRoomListener = new IRoomChatListener() {
 
+        private List<PMDefs.PsIdEntity> userLists;
+
         /**
          * 本人进入聊天室回调响应
          * @param joinRoomResp
@@ -394,8 +396,11 @@ public class NewIRCMessage implements IIRCMessage {
             // 0-加入成功 403-聊天室不存在， 405-加入聊天室过多，471-聊天室上限已满
             logger.i("ircsdk join room code: " + joinRoomResp.code);
             logger.i("ircsdk join room info " + joinRoomResp.info);
+            mLogtf.d(SysLogLable.connectIRCSuccess, "onConnect:count=" + mConnectCount + ",code=" + joinRoomResp.code);
+            mConnectCount++;
             if (PMDefs.ResultCode.Result_Success == joinRoomResp.code) {
                 isConnected = true;
+                userLists = new ArrayList<>();
                 //进入聊天室发送踢人消息
                 if (mIRCCallback != null) {
 //                    mIRCCallback.onRegister();
@@ -427,8 +432,6 @@ public class NewIRCMessage implements IIRCMessage {
         public void onJoinRoomNotice(PMDefs.JoinRoomNotice joinRoomNotice) {
             logger.i("ircsdk onJoinRoomNotic" + joinRoomNotice.info);
             logger.i("ircsdk ");
-            mLogtf.d(SysLogLable.connectIRCSuccess, "onConnect:count=" + mConnectCount);
-            mConnectCount++;
             String sender = joinRoomNotice.userInfo.nickname;
             String target = joinRoomNotice.roomId;
             String login = "";
@@ -492,43 +495,52 @@ public class NewIRCMessage implements IIRCMessage {
             logger.i("ircsdk room user code: " + roomUserList.code);
             logger.i("ircsdk room user list size: " + roomUserList.userList);
             if (PMDefs.ResultCode.Result_RoomUserList == roomUserList.code) {
-                onUserList = true;
-                String s = "___bug  onUserList:channel=" + roomUserList.roomId + ",users=" + roomUserList.userList;
-                if (roomUserList.userList != null && roomUserList.userList.size() > 0) {
-                    User[] users = new User[roomUserList.userList.size()];
-                    PMDefs.PsIdEntity userEntity;
-                    for (int i = 0; i < roomUserList.userList.size(); i++) {
-                        userEntity = roomUserList.userList.get(i);
-                        users[i] = new User(userEntity.psid, userEntity.nickname);
+                if (roomUserList.userList != null && !roomUserList.userList.isEmpty()) {
+                    if (userLists == null) {
+                        userLists = new ArrayList<>();
                     }
-                    mLogtf.d(s);
-                    if (mIRCCallback != null) {
-                        //  如果不是专属老师
-                        if (currentMode == null) {
+                    userLists.addAll(roomUserList.userList);
+                }
+            } else if (PMDefs.ResultCode.Result_RoomUserListEnd == roomUserList.code) {
+                onUserList = true;
+                String s = "___bug  onUserList:channel=" + roomUserList.roomId;
+                if (roomUserList.userList != null && !roomUserList.userList.isEmpty()) {
+                    userLists.addAll(roomUserList.userList);
+                }
+                User[] users = new User[userLists.size()];
+                PMDefs.PsIdEntity userEntity;
+                for (int i = 0; i < userLists.size(); i++) {
+                    userEntity = userLists.get(i);
+                    users[i] = new User(userEntity.psid, userEntity.nickname);
+                }
+                mLogtf.d(s);
+                if (mIRCCallback != null) {
+                    //  如果不是专属老师
+                    if (currentMode == null) {
+                        mIRCCallback.onUserList(roomUserList.roomId, users);
+                    } else {
+                        if (LiveTopic.MODE_CLASS.equals(currentMode) && (mChannels[0]).equals(roomUserList.roomId)) {
+                            StringBuilder sb = new StringBuilder();
+                            for (User user : users) {
+                                sb.append(user.getNick());
+                            }
+                            s = "___bug2  onUserList:channel=" + roomUserList.roomId + ",users=" + users.length + "___" + sb.toString();
+                            //  mLogtf.d(s);
                             mIRCCallback.onUserList(roomUserList.roomId, users);
-                        } else {
-                            if (LiveTopic.MODE_CLASS.equals(currentMode) && (mChannels[0]).equals(roomUserList.roomId)) {
-                                StringBuilder sb = new StringBuilder();
-                                for (User user : users) {
-                                    sb.append(user.getNick());
-                                }
-                                s = "___bug2  onUserList:channel=" + roomUserList.roomId + ",users=" + users.length + "___" + sb.toString();
-                                //  mLogtf.d(s);
-                                mIRCCallback.onUserList(roomUserList.roomId, users);
-                            }
+                        }
 
-                            if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length > 1 && ( mChannels[1]).equals(roomUserList.roomId)) {
-                                StringBuilder sb = new StringBuilder();
-                                for (User user : users) {
-                                    sb.append(user.getNick());
-                                }
-                                s = "___bug3  onUserList:channel=" + roomUserList.roomId + ",users=" + users.length + "___" + sb.toString();
-                                // mLogtf.d(s);
-                                mIRCCallback.onUserList(roomUserList.roomId, users);
+                        if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length > 1 && (mChannels[1]).equals(roomUserList.roomId)) {
+                            StringBuilder sb = new StringBuilder();
+                            for (User user : users) {
+                                sb.append(user.getNick());
                             }
+                            s = "___bug3  onUserList:channel=" + roomUserList.roomId + ",users=" + users.length + "___" + sb.toString();
+                            // mLogtf.d(s);
+                            mIRCCallback.onUserList(roomUserList.roomId, users);
                         }
                     }
                 }
+                userLists.clear();
             }
 
         }
@@ -1003,7 +1015,7 @@ public class NewIRCMessage implements IIRCMessage {
         logMap.put("live_id", liveId);
         logMap.put("devicename", DeviceInfo.getDeviceName());
         for (int i = 0; i < mChannels.length; i++) {
-            logMap.put("channel" + i ,mChannels[i]);
+            logMap.put("channel" + i, mChannels[i]);
         }
         if (analysis == null) {
             analysis = new HashMap<>();

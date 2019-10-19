@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
@@ -314,7 +315,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
      */
     private void disPlayDetailUI() {
         // 游戏题不展示 统计面板 只展示 获得金币UI
-        if (isGameResult()) {
+        if (isGameResult()||isNewEnType()) {
             if (getRootView() != null && getRootView().getParent() != null) {
                 ((ViewGroup) getRootView().getParent()).removeView(getRootView());
             }
@@ -403,8 +404,29 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
     }
 
     private boolean isGameResult() {
-
         return mData != null && mData.getType() == TYPE_GAME;
+    }
+
+    private boolean isNewEnType() {
+        if(mData != null){
+            if (mData.getAnswerList().size() > 0) {
+                for (int i = 0; i < mData.getAnswerList().size(); i++) {
+                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_31, String.valueOf(mData.getAnswerList().get(i).getTestType()))) {
+                        return true;
+                    }
+                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_32, String.valueOf(mData.getAnswerList().get(i).getTestType()))) {
+                        return true;
+                    }
+                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_33, String.valueOf(mData.getAnswerList().get(i).getTestType()))) {
+                        return true;
+                    }
+                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_34, String.valueOf(mData.getAnswerList().get(i).getTestType()))) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -427,7 +449,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
         // 测试代码
         mReusltType = mData.getIsRight();
 
-        if (!isGameResult()) {
+        if (!isGameResult()&&!isNewEnType()) {
             disPlayDetailUI();
             return;
         }
