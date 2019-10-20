@@ -357,6 +357,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             videoQuestionLiveEntity.speechContent = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
                             videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
+                            videoQuestionLiveEntity.setTestsProtocal(onlineTechObj.optString("testsProtocal"));
                             videoQuestionLiveEntity.num = 1;
                             if ("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)) {
                                 videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(onlineTechObj.optJSONArray("id")), videoQuestionLiveEntity.type));
@@ -604,6 +605,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                Loger.e("yzl_roleplay","走人机 end");
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
+                videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                 if ("1".equals(isVoice)) {
                     videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                     videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
@@ -655,6 +657,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
+                videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                 //构建 H5 url
                 if ("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)) {
                     videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(object.optJSONArray("id")), videoQuestionLiveEntity.type));

@@ -847,16 +847,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         initExtInfo(getInfo);
         //英语1v2 开启定时器 监听直播进度
         if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
-            startTimer();
+            startGroupClassTimer();
         }
     }
 
-    private void startTimer() {
-        logger.d("startTimer");
+    private void startGroupClassTimer() {
         int diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
         long currentTime = SystemClock.elapsedRealtime();
         diffBegin += Math.round((double) (currentTime - mGetInfo.getCreatTime()) / 1000);
-        logger.d("diffBegin = " + diffBegin);
         mTimer = new Timer();
         mTimerTask = new ScanningTimerTask(diffBegin);
         mTimer.schedule(mTimerTask, 0, 1000);
@@ -1556,10 +1554,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             businessBll.onResume();
         }
 
-        int diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
-        long currentTime = SystemClock.elapsedRealtime();
-        diffBegin += Math.round((double) (currentTime - mGetInfo.getCreatTime()) / 1000);
-        mTimerTask.setPosition(diffBegin);
+        if (mGetInfo != null) {
+            int diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
+            long currentTime = SystemClock.elapsedRealtime();
+            diffBegin += Math.round((double) (currentTime - mGetInfo.getCreatTime()) / 1000);
+            if (mTimerTask != null) {
+                mTimerTask.setPosition(diffBegin);
+            }
+        }
     }
 
     /**
