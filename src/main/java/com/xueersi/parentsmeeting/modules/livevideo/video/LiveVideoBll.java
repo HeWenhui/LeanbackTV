@@ -888,7 +888,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
                 //当前相对时间>0，并且小于直播课总时长（单位s）
                 videoFragment.playPSFile(videoPath, positon);
             } else {
-                if (!teacherIsPresent.isPresent() && mVideoAction != null) {
+                if (mVideoAction != null) {
                     mVideoAction.onTeacherNotPresent(false);
                 }
             }

@@ -1554,10 +1554,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             businessBll.onResume();
         }
 
-        int diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
-        long currentTime = SystemClock.elapsedRealtime();
-        diffBegin += Math.round((double) (currentTime - mGetInfo.getCreatTime()) / 1000);
-        mTimerTask.setPosition(diffBegin);
+        if (mGetInfo != null) {
+            int diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
+            long currentTime = SystemClock.elapsedRealtime();
+            diffBegin += Math.round((double) (currentTime - mGetInfo.getCreatTime()) / 1000);
+            if (mTimerTask != null) {
+                mTimerTask.setPosition(diffBegin);
+            }
+        }
     }
 
     /**
