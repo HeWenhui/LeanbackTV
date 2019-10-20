@@ -195,103 +195,105 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
 //        CacheExtensionConfig.addGlobalExtension("mp3");
 //        CacheExtensionConfig.addGlobalExtension("WAV");
 //        CacheExtensionConfig.removeNoCacheExtension("mp3");
-        mHttpManager.getCourseWareUrl(new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                if (responseEntity.getJsonObject() instanceof JSONArray) {
-                    ProxUtil.getProxUtil().remove(context, WebViewRequest.class);
-                    return;
-                }
-                if (!isStart) {
-                    return;
-                }
-                new Thread() {
-                    @Override
-                    public void run() {
-                        //删除除了公共资源的文件夹
-                        File files[] = cacheFile.listFiles();
-                        if (files != null) {
-                            for (int i = 0; i < files.length; i++) {
-                                File delectFile = files[i];
-                                if (!delectFile.getPath().equals(todayCacheDir.getPath())) {
-                                    if (!delectFile.getName().startsWith(mPublicCacheoutName)) {
-                                        if (delectFile.isDirectory()) {
-                                            FileUtils.deleteDir(delectFile);
-                                        } else {
-                                            FileUtils.deleteFile(delectFile);
+        boolean isNewPreLoad = ((Activity) context).getIntent().getBooleanExtra("newCourse", false);
+        if (!isNewPreLoad) {
+            mHttpManager.getCourseWareUrl(new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    if (responseEntity.getJsonObject() instanceof JSONArray) {
+                        ProxUtil.getProxUtil().remove(context, WebViewRequest.class);
+                        return;
+                    }
+                    if (!isStart) {
+                        return;
+                    }
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            //删除除了公共资源的文件夹
+                            File files[] = cacheFile.listFiles();
+                            if (files != null) {
+                                for (int i = 0; i < files.length; i++) {
+                                    File delectFile = files[i];
+                                    if (!delectFile.getPath().equals(todayCacheDir.getPath())) {
+                                        if (!delectFile.getName().startsWith(mPublicCacheoutName)) {
+                                            if (delectFile.isDirectory()) {
+                                                FileUtils.deleteDir(delectFile);
+                                            } else {
+                                                FileUtils.deleteFile(delectFile);
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                }.start();
-                final JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                logger.d("getCourseWareUrl:onPmSuccess:jsonObject=" + jsonObject);
-                try {
-                    JSONObject liveIdObj = jsonObject.getJSONObject(liveId);
-                    JSONArray urlArray = liveIdObj.getJSONArray("url");
-                    final ArrayList<String> urls = new ArrayList<>();
-                    for (int i = 0; i < urlArray.length(); i++) {
-                        String play_url = urlArray.getString(i);
-                        File file = new File(todayLiveCacheDir, MD5.md5(play_url));
-                        int index = play_url.indexOf("/index.html");
-                        String startUrl = play_url.substring(0, index);
-                        if (!file.exists()) {
-                            urls.add(play_url);
+                    }.start();
+                    final JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    logger.d("getCourseWareUrl:onPmSuccess:jsonObject=" + jsonObject);
+                    try {
+                        JSONObject liveIdObj = jsonObject.getJSONObject(liveId);
+                        JSONArray urlArray = liveIdObj.getJSONArray("url");
+                        final ArrayList<String> urls = new ArrayList<>();
+                        for (int i = 0; i < urlArray.length(); i++) {
+                            String play_url = urlArray.getString(i);
+                            File file = new File(todayLiveCacheDir, MD5.md5(play_url));
+                            int index = play_url.indexOf("/index.html");
+                            String startUrl = play_url.substring(0, index);
+                            if (!file.exists()) {
+                                urls.add(play_url);
+                            }
+//                        urls.add(play_url);
                         }
+                        logger.d("getCourseWareUrl:onPmSuccess:urlArray=" + urlArray.length() + ",urls=" + urls.size());
+                        JSONArray infoArray = liveIdObj.getJSONArray("infos");
+                        for (int i = 0; i < infoArray.length(); i++) {
+                            JSONObject infoObj = infoArray.getJSONObject(i);
+                            String id = infoObj.getString("id");
+                            String courseware_type = infoObj.getString("type");
+                            String play_url = LiveHttpConfig.LIVE_HOST + "/Live/coursewareH5/" + liveId + "/" + id + "/" + courseware_type
+                                    + "/123456";
+                            logger.d("getCourseWareUrl:onPmSuccess:play_url=" + play_url);
 //                        urls.add(play_url);
-                    }
-                    logger.d("getCourseWareUrl:onPmSuccess:urlArray=" + urlArray.length() + ",urls=" + urls.size());
-                    JSONArray infoArray = liveIdObj.getJSONArray("infos");
-                    for (int i = 0; i < infoArray.length(); i++) {
-                        JSONObject infoObj = infoArray.getJSONObject(i);
-                        String id = infoObj.getString("id");
-                        String courseware_type = infoObj.getString("type");
-                        String play_url = LiveHttpConfig.LIVE_HOST + "/Live/coursewareH5/" + liveId + "/" + id + "/" + courseware_type
-                                + "/123456";
-                        logger.d("getCourseWareUrl:onPmSuccess:play_url=" + play_url);
-//                        urls.add(play_url);
-                    }
-                    if (urls.isEmpty()) {
-                        ProxUtil.getProxUtil().remove(context, WebViewRequest.class);
-                        return;
-                    }
-                    final ArrayList<String> urls2 = new ArrayList<>();
-                    urls2.addAll(urls);
-                    IntentFilter intentFilter = new IntentFilter(CachePreLoadService.URL_CACHE_ACTION);
-                    cacheReceiver = new CacheReceiver(urls2, todayLiveCacheDir);
-                    context.registerReceiver(cacheReceiver, intentFilter);
+                        }
+                        if (urls.isEmpty()) {
+                            ProxUtil.getProxUtil().remove(context, WebViewRequest.class);
+                            return;
+                        }
+                        final ArrayList<String> urls2 = new ArrayList<>();
+                        urls2.addAll(urls);
+                        IntentFilter intentFilter = new IntentFilter(CachePreLoadService.URL_CACHE_ACTION);
+                        cacheReceiver = new CacheReceiver(urls2, todayLiveCacheDir);
+                        context.registerReceiver(cacheReceiver, intentFilter);
 //                    File cacheFile = new File(this.getCacheDir(), "cache_path_name");
-                    for (int i = 0; i < urls.size(); i++) {
-                        final String url = urls.get(i);
-                        Message msg = handler.obtainMessage(1);
-                        msg.what = 1;
-                        msg.obj = url;
-                        handler.sendMessageDelayed(msg, i * 20000);
+                        for (int i = 0; i < urls.size(); i++) {
+                            final String url = urls.get(i);
+                            Message msg = handler.obtainMessage(1);
+                            msg.what = 1;
+                            msg.obj = url;
+                            handler.sendMessageDelayed(msg, i * 20000);
+                        }
+                    } catch (JSONException e) {
+                        logger.e("onPmSuccess", e);
                     }
-                } catch (JSONException e) {
-                    logger.e("onPmSuccess", e);
                 }
-            }
 
-            @Override
-            public void onFailure(Call call, IOException e) {
-                super.onFailure(call, e);
-                logger.e("getCourseWareUrl:onFailure:e=" + e);
-            }
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    super.onFailure(call, e);
+                    logger.e("getCourseWareUrl:onFailure:e=" + e);
+                }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                super.onPmError(responseEntity);
-                logger.e("getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
-            }
-        });
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+                    logger.e("getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+                }
+            });
+        }
         mPublicCacheout = new File(cacheFile, mPublicCacheoutName);
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
         }
-        boolean isNewPreLoad = ((Activity) context).getIntent().getBooleanExtra("newCourse", false);
         // 一次多发的接口调用
         if (LiveVideoConfig.isScience || mGetInfo != null && mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
             if (!isNewPreLoad) {
@@ -1006,3 +1008,4 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
 //        }
 //    }
 }
+
