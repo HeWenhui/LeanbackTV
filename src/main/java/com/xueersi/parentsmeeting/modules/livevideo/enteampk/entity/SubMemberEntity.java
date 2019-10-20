@@ -15,6 +15,8 @@ public class SubMemberEntity {
 
     /** 头像地址 */
     private String iconUrl;
+    /** 是否是自己 */
+    boolean isMy;
 
     public int getGender() {
         return gender;
@@ -46,5 +48,13 @@ public class SubMemberEntity {
 
     public void setIconUrl(String iconUrl) {
         this.iconUrl = iconUrl;
+    }
+
+    public boolean isMy() {
+        return isMy;
+    }
+
+    public void setMy(boolean my) {
+        isMy = my;
     }
 }
