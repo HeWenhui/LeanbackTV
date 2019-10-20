@@ -62,12 +62,40 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2 || mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
-            boolean isLive = true;
-            if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
-                isLive = false;
-            }
-            RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, isLive, contextLiveAndBackDebug);
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
+            RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, true, contextLiveAndBackDebug);
+            redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
+                @Override
+                public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {
+                    RedPackageIRCBll.this.getReceiveGoldTeamStatus(operateId, callBack);
+                }
+
+                @Override
+                public void getReceiveGoldTeamRank(int operateId, AbstractBusinessDataCallBack callBack) {
+                    RedPackageIRCBll.this.getReceiveGoldTeamRank(operateId, callBack);
+                }
+
+                @Override
+                public void onReceiveGold() {
+                    UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+                    if (updateAchievement != null) {
+                        updateAchievement.getStuGoldCount("onReceiveGold", UpdateAchievement.GET_TYPE_RED);
+                    }
+                }
+
+                @Override
+                public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
+                    RedPackageIRCBll.this.sendReceiveGold(operateId, liveId, callBack);
+                }
+            });
+            redPackageStandBll.setUserName(getInfo.getStandLiveName());
+            redPackageStandBll.setHeadUrl(getInfo.getHeadImgPath());
+            redPackageStandBll.setVSectionID(getInfo.getId());
+            redPackageStandBll.initView(mRootView, getLiveViewAction());
+            redPackageAction = redPackageStandBll;
+        } else if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+            RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, false, contextLiveAndBackDebug);
+            redPackageStandBll.setGroupClass(true);
             redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
                 @Override
                 public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {

@@ -111,6 +111,7 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
                 String headUrl = LiveAppUserInfo.getInstance().getHeadImg();
                 RedPackageStandBll redPackageStandBll;
                 redPackageStandBll = new RedPackageStandBll(activity, false, liveBackBll);
+                redPackageStandBll.setGroupClass(true);
                 redPackageStandBll.setVSectionID(mVideoEntity.getLiveId());
                 redPackageStandBll.setUserName(showName);
                 redPackageStandBll.setHeadUrl(headUrl);

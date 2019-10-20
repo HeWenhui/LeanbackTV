@@ -68,6 +68,7 @@ public class RedPackagePage extends LiveBasePager {
     LiveAndBackDebug liveAndBackDebug;
     Top3FrameAnim top3FrameAnim;
     boolean viewAttached = true;
+    boolean isGroupClass = false;
     String file1 = "live_stand/frame_anim/redpackage/1_enter";
     String file2 = "live_stand/frame_anim/redpackage/2_loop";
     String file3 = "live_stand/frame_anim/redpackage/3_fly_up";
@@ -349,29 +350,35 @@ public class RedPackagePage extends LiveBasePager {
      * @param entity
      */
     private void initCenterResult(final VideoResultEntity entity) {
-        final FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, rlLivevideoRedpackageBg,
-                file8, 50, false);
-        frameAnimations.add(btframeAnimation1);
-        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
-            @Override
-            public void onAnimationStart() {
-                StandLiveMethod.changeScene(soundPool);
+        if (isGroupClass) {
+            rlLivevideoRedpackageTeams.setVisibility(View.VISIBLE);
+            if (goldTeamStatus != null) {
+                onGetTeamPackage(goldTeamStatus);
             }
+        } else {
+            final FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, rlLivevideoRedpackageBg,
+                    file8, 50, false);
+            frameAnimations.add(btframeAnimation1);
+            btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+                @Override
+                public void onAnimationStart() {
+                    StandLiveMethod.changeScene(soundPool);
+                }
 
-            @Override
-            public void onAnimationEnd() {
-                FrameAnimation btframeAnimation2 = FrameAnimation.createFromAees(mContext, rlLivevideoRedpackageBg,
-                        file9, 50, false);
-                frameAnimations.add(btframeAnimation2);
-                btframeAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart() {
+                @Override
+                public void onAnimationEnd() {
+                    FrameAnimation btframeAnimation2 = FrameAnimation.createFromAees(mContext, rlLivevideoRedpackageBg,
+                            file9, 50, false);
+                    frameAnimations.add(btframeAnimation2);
+                    btframeAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart() {
 
-                    }
+                        }
 
-                    @Override
-                    public void onAnimationEnd() {
-                        rlLivevideoRedpackageTeams.setVisibility(View.VISIBLE);
+                        @Override
+                        public void onAnimationEnd() {
+                            rlLivevideoRedpackageTeams.setVisibility(View.VISIBLE);
 //                        rlLivevideoRedpackageTeams.postDelayed(new Runnable() {
 //                            @Override
 //                            public void run() {
@@ -382,23 +389,24 @@ public class RedPackagePage extends LiveBasePager {
 //                                group.removeView(rlLivevideoRedpackageTeams);
 //                            }
 //                        }, 4000);
-                        if (goldTeamStatus != null) {
-                            onGetTeamPackage(goldTeamStatus);
+                            if (goldTeamStatus != null) {
+                                onGetTeamPackage(goldTeamStatus);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onAnimationRepeat() {
+                        @Override
+                        public void onAnimationRepeat() {
 
-                    }
-                });
-            }
+                        }
+                    });
+                }
 
-            @Override
-            public void onAnimationRepeat() {
+                @Override
+                public void onAnimationRepeat() {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     /**
@@ -682,5 +690,9 @@ public class RedPackagePage extends LiveBasePager {
          */
         @Deprecated
         void onPackageRight(int operateId);
+    }
+
+    public void setGroupClass(boolean groupClass) {
+        isGroupClass = groupClass;
     }
 }

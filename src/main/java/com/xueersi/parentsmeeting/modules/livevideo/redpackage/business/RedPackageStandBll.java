@@ -46,6 +46,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private boolean isLive;
     private LiveAndBackDebug liveAndBackDebug;
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private boolean isGroupClass = false;
 
     public RedPackageStandBll(Activity activity, boolean isLive, LiveAndBackDebug liveAndBackDebug) {
         mLogtf = new LogToFile(activity, TAG);
@@ -230,6 +231,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
 //                }
             }
         }, userName, headUrl, isLive, liveAndBackDebug);
+        redPackagePage.setGroupClass(isGroupClass);
         View view = redPackagePage.getRootView();
         packagePageHashMap.put("" + operateId, redPackagePage);
         view.setTag(operateId);
@@ -350,4 +352,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         mVPlayVideoControlHandler.postDelayed(r, delayMillis);
     }
 
+    public void setGroupClass(boolean groupClass) {
+        isGroupClass = groupClass;
+    }
 }
