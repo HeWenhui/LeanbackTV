@@ -56,7 +56,7 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         super(context,null,true);
         mLiveGetInfo = liveGetInfo;
         mUrl = url;
-        XesWebViewCookieUtils.syncWebLogin(url);
+        XesWebViewCookieUtils.syncWebLogin(url,".xesv5.com");
     }
 
     @Override
