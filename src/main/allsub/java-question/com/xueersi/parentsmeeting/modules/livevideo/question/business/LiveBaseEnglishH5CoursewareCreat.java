@@ -38,8 +38,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerLi
 
 import java.util.List;
 
-import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentConstants.PROCESS_RECORD_SIGN;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_STOP_ONCE;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.PROCESS_RECORD_SIGN;
 
 /**
  * Created by linyuqiang on 2018/7/26.

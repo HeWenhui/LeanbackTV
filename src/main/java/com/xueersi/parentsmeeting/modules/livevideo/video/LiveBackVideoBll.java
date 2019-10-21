@@ -5,9 +5,7 @@ import android.net.Uri;
 
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
@@ -16,6 +14,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.utils.LiveBackVideoPlayerUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import org.json.JSONArray;
@@ -106,31 +105,31 @@ public class LiveBackVideoBll {
     /**
      * PSIJK使用，改变线路播放
      */
-    public void changeLine(int pos) {
-        liveBackPlayVideoFragment.changePlayLive(pos, MediaPlayer.VIDEO_PROTOCOL_MP4);
-    }
+//    public void changeLine(int pos) {
+//        liveBackPlayVideoFragment.changePlayLive(pos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+//    }
 
     /** 切换到下一条线路 */
-    public void changeNextLine() {
-        this.nowPos++;
-        //当前线路小于总线路数
-        if (this.nowPos < totalRouteNum) {
-            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
-        } else {
-            if (totalRouteNum != 0) {
-                this.nowPos = 0;
-                changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
-            } else {
-                playNewVideo();
-            }
-        }
-    }
+//    public void changeNextLine() {
+//        this.nowPos++;
+//        //当前线路小于总线路数
+//        if (this.nowPos < totalRouteNum) {
+//            changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+//        } else {
+//            if (totalRouteNum != 0) {
+//                this.nowPos = 0;
+//                changePlayLive(this.nowPos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+//            } else {
+//                playNewVideo();
+//            }
+//        }
+//    }
 
-    private void changePlayLive(int pos, int protol) {
-        if (liveBackPlayVideoFragment != null) {
-            liveBackPlayVideoFragment.changePlayLive(pos, protol);
-        }
-    }
+//    private void changePlayLive(int pos, int protol) {
+//        if (liveBackPlayVideoFragment != null) {
+//            liveBackPlayVideoFragment.changePlayLive(pos, protol);
+//        }
+//    }
 
     /**
      * 播放新的视频
@@ -146,13 +145,7 @@ public class LiveBackVideoBll {
         } else {
             //使用PSIJK播放新视屏
 
-            String videoPath;
-            String url = mVideoEntity.getVideoPath();
-            if (url.contains("http") || url.contains("https")) {
-                videoPath = DoPSVideoHandle.getPSVideoPath(url);
-            } else {
-                videoPath = url;
-            }
+            String videoPath = LiveBackVideoPlayerUtils.handleBackVideoPath(mVideoEntity.getVideoPath());
             if (!islocal) {
                 liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
             } else {
@@ -168,13 +161,7 @@ public class LiveBackVideoBll {
             return;
         }
         if (vPlayer != null && mUri != null) {
-            String videoPath;
-            String url = mVideoEntity.getVideoPath();
-            if (url.contains("http") || url.contains("https")) {
-                videoPath = DoPSVideoHandle.getPSVideoPath(url);
-            } else {
-                videoPath = url;
-            }
+            String videoPath = LiveBackVideoPlayerUtils.handleBackVideoPath(mVideoEntity.getVideoPath());
             logger.d("savePosition:videoPath=" + videoPath + ",fromStart=" + fromStart);
             ShareDataManager.getInstance().put(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart,
                     ShareDataManager.SHAREDATA_USER);
@@ -186,13 +173,7 @@ public class LiveBackVideoBll {
         // if (mStartPos <= 0.0f || mStartPos >= 1.0f)
         try {
 
-            String videoPath;
-            String url = mVideoEntity.getVideoPath();
-            if (url.contains("http") || url.contains("https")) {
-                videoPath = DoPSVideoHandle.getPSVideoPath(url);
-            } else {
-                videoPath = url;
-            }
+            String videoPath = LiveBackVideoPlayerUtils.handleBackVideoPath(mVideoEntity.getVideoPath());
             long pos = ShareDataManager.getInstance().getLong(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
                     ShareDataManager.SHAREDATA_USER);
             logger.d("getStartPosition:videoPath=" + videoPath + ",pos=" + pos);
