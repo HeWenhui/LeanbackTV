@@ -198,7 +198,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     }
 
     public void psRePlay(boolean modeChange) {
-        if (isGroupClass()) {
+        if (isGroupClass() && positon >= 0) {
             playGroupClassVideo();
             return;
         }
@@ -856,8 +856,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     public void onProgressChanged(int progress) {
         positon = progress;
         if (positon == 0) {
-            String videoPath = mGetInfo.getRecordStandliveEntity().getRecordUrl();
-            videoFragment.playPSFile(videoPath, positon);
+            playGroupClassVideo();
         }
 
         //追播
@@ -873,26 +872,26 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     @Override
     public void onProgressBegin(int beginProgress) {
         positon = beginProgress;
-        playGroupClassVideo();
-
+        if (positon >= 0) {
+            playGroupClassVideo();
+        }
     }
 
     private void playGroupClassVideo() {
-        if (positon >= 0) {
-            //英语1v2录直播 播放网络文件
-            String videoPath = mGetInfo.getRecordStandliveEntity().getRecordUrl();
-            int sTime = (int) mGetInfo.getsTime();
-            int eTime = (int) mGetInfo.geteTime();
-            int liveTime = eTime - sTime;
-            if (positon < liveTime) {
-                //当前相对时间>0，并且小于直播课总时长（单位s）
-                videoFragment.playPSFile(videoPath, positon);
-            } else {
-                if (mVideoAction != null) {
-                    mVideoAction.onTeacherNotPresent(false);
-                }
+        //英语1v2录直播 播放网络文件
+        String videoPath = mGetInfo.getRecordStandliveEntity().getRecordUrl();
+        videoFragment.playPSFile(videoPath, positon);
+       /* int sTime = (int) mGetInfo.getsTime();
+        int eTime = (int) mGetInfo.geteTime();
+        int liveTime = eTime - sTime;
+        if (positon < liveTime) {
+            //当前相对时间>0，并且小于直播课总时长（单位s）
+
+        } else {
+            if (mVideoAction != null) {
+                mVideoAction.onTeacherNotPresent(false);
             }
-        }
+        }*/
     }
 
     private boolean isGroupClass() {
