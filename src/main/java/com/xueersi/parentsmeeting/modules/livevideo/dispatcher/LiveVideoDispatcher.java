@@ -143,8 +143,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
     private void enterLive() {
         //TODO: 2019/9/25 调试代码
-        startLive(true);
-       /* if(planVersion == DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT){
+        //startLive(true);
+        if(planVersion == DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT){
             dataLoadEntity = new DataLoadEntity(activity);
             dispatcherBll.bigLivePlanVersion(Integer.parseInt(planId), 3, new AbstractBusinessDataCallBack() {
                 @Override
@@ -173,7 +173,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             startLive(false);
         }else {
             startLive(true);
-        }*/
+        }
     }
 
     private void startAudit() {
