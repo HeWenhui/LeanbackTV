@@ -98,18 +98,20 @@ public class FeedbackTeacherBll extends LiveBaseBll {
                     int is_trigger = jsonObject.optInt("isTrigger");
                     String url = null;
                     if (is_trigger == 1) {
-                        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
-                            //英语
-                            url = jsonObject.getJSONObject("app").optString("english");
-                        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
-                            //理科
-                            url = jsonObject.getJSONObject("app").optString("science");
-                        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
-                            //语文
-                            url = jsonObject.getJSONObject("app").optString("chinese");
-                        } else if (mGetInfo.getEducationStage().equals("4")) {
+                        if (mGetInfo.getEducationStage().equals("4")) {
                             //高中
                             url = jsonObject.getJSONObject("app").optString("highSchool");
+                        } else {
+                            if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
+                                //英语
+                                url = jsonObject.getJSONObject("app").optString("english");
+                            } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
+                                //理科
+                                url = jsonObject.getJSONObject("app").optString("science");
+                            } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
+                                //语文
+                                url = jsonObject.getJSONObject("app").optString("chinese");
+                            }
                         }
                         url = url+"?courseId="+mGetInfo.getStudentLiveInfo().getCourseId()+"&planId="+mLiveId;
                         pagerNew = new LiveFeedBackSecondPager(mContext, mGetInfo, url);
