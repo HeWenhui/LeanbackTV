@@ -142,7 +142,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     }
 
     private void enterLive() {
-        //TODO: 2019/9/25 调试代码
         //startLive(true);
         if(planVersion == DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT){
             dataLoadEntity = new DataLoadEntity(activity);
