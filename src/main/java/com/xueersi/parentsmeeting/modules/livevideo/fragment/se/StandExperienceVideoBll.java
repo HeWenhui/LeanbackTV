@@ -118,13 +118,13 @@ public class StandExperienceVideoBll {
     /**
      * 改变播放线路的位置
      */
-    public void changePlayLine() {
-        if (routTotal != 0) {
-            liveBackPlayVideoFragment.changePlayLive((curRoute++) % routTotal, MediaPlayer.VIDEO_PROTOCOL_MP4);
-        }else{
-            playNewVideo();
-        }
-    }
+//    public void changePlayLine() {
+//        if (routTotal != 0) {
+//            liveBackPlayVideoFragment.changePlayLive((curRoute++) % routTotal, MediaPlayer.VIDEO_PROTOCOL_MP4);
+//        }else{
+//            playNewVideo();
+//        }
+//    }
 
     public void playNewVideo() {
         if (!MediaPlayer.getIsNewIJK()) {

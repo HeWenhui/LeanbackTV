@@ -16,7 +16,6 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
@@ -53,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIm
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
@@ -658,11 +658,10 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     /**
      * PSIJK改变线路播放
      */
-    protected void changeLine() {
-        liveBackVideoBll.changePlayLine();
+//    protected void changeLine() {
+//        liveBackVideoBll.changePlayLine();
 //        liveBackPlayVideoFragment.changeLine(pos);
-    }
-
+//    }
     @Override
     public void release() {
         if (mMediaController != null) {
@@ -734,6 +733,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                         break;
                     }
                     default: {
+                        errorInfo.setText("视频播放失败[" + mediaErrorInfo.mErrorCode + "],请点击重试");
                         break;
                     }
                 }
@@ -842,7 +842,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             if (!MediaPlayer.getIsNewIJK()) {
                 liveBackVideoBll.playNewVideo(Uri.parse(mWebPath), mSectionName);
             } else {
-                changeLine();
+//                changeLine();
             }
 
         } else {
@@ -1281,11 +1281,11 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         if (LiveAppBll.getInstance().isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
             logger.d("onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
-            if (MediaPlayer.getIsNewIJK()) {
-                liveBackVideoBll.changePlayLine();
-            } else {
-                playNewVideo();
-            }
+//            if (MediaPlayer.getIsNewIJK()) {
+//                liveBackVideoBll.changePlayLine();
+//            } else {
+            playNewVideo();
+//            }
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
 //            loadView(mLayoutVideo);
