@@ -351,13 +351,22 @@ public class LiveVideoLoadActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 大班直播 入口接口
+     * @param bundle
+     * @param vSectionID
+     * @param liveType
+     * @param from
+     * @param stuCould
+     * @param httpManager
+     */
     private void enterBigLive(final Bundle bundle, final String vSectionID, final int liveType, final int from,String stuCould,
                               LiveHttpManager httpManager) {
         int planId = Integer.parseInt(vSectionID);
         int iStuCouId = Integer.parseInt(stuCould);
 
         httpManager.bigLiveEnter(planId, LiveBusinessResponseParser.getBizIdFromLiveType(liveType),
-                iStuCouId, BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION, new HttpCallBack(mDataLoadEntity) {
+                iStuCouId, BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION, new HttpCallBack(mDataLoadEntity,false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 LiveBusinessResponseParser mHttpResponseParser = new LiveBusinessResponseParser();
@@ -383,8 +392,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
-                finishAndExit();
+                int status = responseEntity.getmStatus();
+                if(10 != status){
+                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
+                    finishAndExit();
+                }
             }
         });
     }
