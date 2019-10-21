@@ -24,6 +24,7 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.parentsmeeting.module.browser.activity.BaseBrowserActivity;
+import com.xueersi.parentsmeeting.module.browser.business.XesWebViewCookieUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -72,7 +73,7 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         super(context,null,true);
         mLiveGetInfo = liveGetInfo;
         mUrl = url;
-
+        XesWebViewCookieUtils.syncWebLogin(url,".xueersi.com");
     }
 
     @Override
