@@ -78,6 +78,14 @@ public class LiveBackVideoBll {
                 }
                 logger.d("setVideoEntity:hostPath=" + hostPath + ",videoPathNoHost=" + videoPathNoHost + ",mWebPaths=" + mWebPaths.size());
             }
+
+            //英语1v2小组课 使用recordPath字段 替换videoPath字段
+            JSONObject getinfo = new JSONObject(mVideoEntity.getGetInfoStr());
+            int patten = getinfo.getInt("pattern");
+            String recordPath = getinfo.getString("recordPath");
+            if (patten == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+                mVideoEntity.setVideoPath(recordPath);
+            }
         } catch (Exception e) {
             logger.d("setVideoEntity:hostPath=" + hostPath, e);
         }
@@ -148,36 +156,18 @@ public class LiveBackVideoBll {
             liveBackPlayVideoFragment.playNewVideo(Uri.parse(url), mSectionName);
         } else {
             //使用PSIJK播放新视屏
-
-            //英语1v2小组课 使用recordUrl字段 替换videoPath字段
-            JSONObject getinfo = null;
-            int patten = 0;
-            String recordUrl = null;
-            try {
-                getinfo = new JSONObject(mVideoEntity.getGetInfoStr());
-                patten = getinfo.getInt("pattern");
-                recordUrl = getinfo.getString("recordUrl");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if (getinfo != null && patten == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS && recordUrl != null) {
-                mVideoEntity.setVideoPath(recordUrl);
-                liveBackPlayVideoFragment.playPSFile(mVideoEntity.getVideoPath(), (int) getStartPosition());
+            String videoPath;
+            String url = mVideoEntity.getVideoPath();
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
             } else {
-                String videoPath;
-                String url = mVideoEntity.getVideoPath();
-                if (url.contains("http") || url.contains("https")) {
-                    videoPath = DoPSVideoHandle.getPSVideoPath(url);
-                } else {
-                    videoPath = url;
-                }
-                if (!islocal) {
-                    liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
-                } else {
-                    liveBackPlayVideoFragment.playPSFile(videoPath, (int) getStartPosition());
-                }
+                videoPath = url;
             }
-
+            if (!islocal) {
+                liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            } else {
+                liveBackPlayVideoFragment.playPSFile(videoPath, (int) getStartPosition());
+            }
             liveBackPlayVideoFragment.setmDisplayName(mSectionName);
         }
     }

@@ -90,7 +90,7 @@ import java.util.List;
  */
 public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements ActivityChangeLand,
         MediaControllerAction {
-    String TAG = "LiveBackVideoFragment";
+    public String TAG = "LiveBackVideoFragment";
 
     {
         /** 布局默认资源 */
@@ -528,7 +528,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     protected void initLiveRemarkBll() {
-        // TODO: 2018/12/5  
+        // TODO: 2018/12/5
         if (isArts == 1 || "PublicLiveDetailActivity".equals(where)) {
             return;
         }
@@ -581,31 +581,16 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 initLiveRemarkBll();
                 liveBackBll.addBusinessBll(new SuperSpeakerBackBll(activity, liveBackBll));//语文半身直播回放走的理科
             } else {
-                if (liveBackBll.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
-                    BllConfigEntity bllConfigEntity = new BllConfigEntity("com.xueersi.parentsmeeting.modules.groupclass.business.answerresult.AnswerResultBackBll");
-                    LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntity);
-                    if (liveBaseBll != null) {
-                        liveBackBll.addBusinessBll(liveBaseBll);
-                    }
-                    bllConfigEntity = new BllConfigEntity("com.xueersi.parentsmeeting.modules.groupclass.business.rtc.RTCVideoBackBll");
-                    liveBaseBll = creatBll(bllConfigEntity);
-                    if (liveBaseBll != null) {
-                        liveBackBll.addBusinessBll(liveBaseBll);
-                    }
-                } else {
-                    Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");
-                    BllConfigEntity bllConfigEntity = new BllConfigEntity("com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll");
-                    LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntity);
-                    if (liveBaseBll != null) {
-                        liveBackBll.addBusinessBll(liveBaseBll);
-                    }
+                Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");
+                BllConfigEntity bllConfigEntity = new BllConfigEntity("com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll");
+                LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntity);
+                if (liveBaseBll != null) {
+                    liveBackBll.addBusinessBll(liveBaseBll);
                 }
-                if (liveBackBll.getPattern() != 2 && liveBackBll.getPattern() != LiveVideoConfig
-                        .LIVE_PATTERN_GROUP_CLASS) {
+                if (liveBackBll.getPattern() != 2) {
                     //回放聊天区加上MMD的皮肤
                     liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));
                 }
-
             }
             if (!islocal) {
                 EvaluateTeacherPlayBackBll evaluateTeacherPlayBackBll = new EvaluateTeacherPlayBackBll(activity,
