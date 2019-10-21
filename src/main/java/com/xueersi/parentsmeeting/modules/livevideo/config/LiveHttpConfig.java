@@ -155,7 +155,7 @@ public class LiveHttpConfig {
     /** 课后评价教师文案获取 */
     public static String URL_LIVE_COURSE_GETEVALUATE = AppConfig.HTTP_HOST + "/science/LiveCourse/getEvaluateContentNew";
     /**新需求评价h5页面类型的，判断是否下发课后评价*/
-    public static String URL_COURSE_EVALUATE= "http://npsopenapi.xesv5.com/App/nps/isRuleTrigger";
+    public static String URL_COURSE_EVALUATE= "http://npsopenapi.xueersi.com/App/nps/isRuleTrigger";
     /** 语文H5默认新地址 */
     public final static String URL_DEFAULT_CHS_H5 = HTTP_LIVE_CHINESE_HOST + "/Live/coursewareH5/";
     public final static String SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE = "sp_en_english_stand_summercours_ewaresize";

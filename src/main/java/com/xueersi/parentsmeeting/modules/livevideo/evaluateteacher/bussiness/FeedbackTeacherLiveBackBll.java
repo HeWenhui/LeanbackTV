@@ -154,7 +154,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
     LiveBasePager.OnPagerClose onPagerClose = new LiveBasePager.OnPagerClose() {
         @Override
         public void onClose(LiveBasePager basePager) {
-            mRootView.removeView(basePager.getRootView());
+            removeView(basePager.getRootView());
         }
     };
 
@@ -182,7 +182,8 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
             liveBackBll.getvPlayer().release();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mRootView.addView(pagerNew.getRootView(), params);
+            addView(pagerNew.getRootView(), params);
+            pagerNew.startLoading();
             return true;
         } else{
             return false;
