@@ -407,7 +407,16 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
         @Override
         public void onOpenSuccess() {
             if (isGroupClass()) {
-                videoFragment.seekTo(positon * 1000);
+                int duration =(int)videoFragment.getDuration()/1000;
+                if ( duration< positon) {
+                    stopPlay();
+                    isEnd = true;
+                    if (mVideoAction != null) {
+                        mVideoAction.onTeacherNotPresent(false);
+                    }
+                } else {
+                    videoFragment.seekTo(positon * 1000);
+                }
             }
             isPlay = true;
             VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);
@@ -851,6 +860,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     }
 
     private int positon;
+    private boolean isEnd = false;
 
     @Override
     public void onProgressChanged(int progress) {
@@ -860,7 +870,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
         }
 
         //追播
-        if (isPlay) {
+        if (isPlay && !isEnd) {
             int currentPosition = (int) (videoFragment.getCurrentPosition() / 1000);
             logger.d("onProgressChanged : " + positon + "; currentPosition : " + currentPosition);
             if ((progress - currentPosition) > 5) {
