@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -34,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
@@ -791,10 +791,14 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 //        }
 //    }
 
+    /**
+     * 接麦专用，走重新调度
+     */
     @Override
     public void changeNowLine() {
         if (mLiveVideoBll != null) {
-            mLiveVideoBll.changeNowLine();
+            mLiveVideoBll.psRePlay(false);
+//            mLiveVideoBll.changeNowLine();
         }
     }
 
