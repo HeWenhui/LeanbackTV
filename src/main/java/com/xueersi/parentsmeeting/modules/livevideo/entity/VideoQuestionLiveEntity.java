@@ -92,6 +92,16 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     /** 辅导态 */
     private boolean isTUtor = false;
 
+    public String getTestsProtocal() {
+        return testsProtocal;
+    }
+
+    public void setTestsProtocal(String testsProtocal) {
+        this.testsProtocal = testsProtocal;
+    }
+
+    private String testsProtocal;
+
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
     }

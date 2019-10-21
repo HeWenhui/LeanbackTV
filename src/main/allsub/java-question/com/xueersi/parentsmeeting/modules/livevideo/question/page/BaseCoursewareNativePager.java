@@ -3,10 +3,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.JsResult;
+import com.tencent.smtt.export.external.interfaces.SslError;
+import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
@@ -22,6 +25,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable.xesWebLog;
 
 public class BaseCoursewareNativePager extends LiveBasePager {
     protected WebView wvSubjectWeb;
@@ -128,6 +133,11 @@ public class BaseCoursewareNativePager extends LiveBasePager {
             boolean isRequst = false;
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
+            }
+            // 三端协议日志
+            if (!TextUtils.isEmpty(consoleMessage.message()) && consoleMessage.message().contains("xesweblog:")) {
+                mLogtf.d(xesWebLog, "onConsoleMessage:level=" + consoleMessage.messageLevel() + ",sourceId=" + consoleMessage.sourceId()
+                        + ",lineNumber=" + consoleMessage.lineNumber() + ",message=" + consoleMessage.message().replace("xesweblog:", ""));
             }
             UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
             if (AppConfig.DEBUG) {
