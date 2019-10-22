@@ -202,6 +202,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.type = coursewareH5.optString("ptype");
                 videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                 String status = coursewareH5.optString("status", "off");
+                videoQuestionLiveEntity.setTestsProtocal(coursewareH5.optString("testsProtocal"));
                 if (videoQuestionLiveEntity.type.equals(LiveQueConfig.EN_INTELLIGENT_EVALUTION)) {
                     stopIntelligentRecognitionSpeech(jsonObject.toString());
                     return;
@@ -247,6 +248,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         h5OnlineTechEntity.setAnswer(onlineTechObj.optString("answer"));
                         videoQuestionLiveEntity.assess_ref = onlineTechObj.optString("assess_ref");
                         videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
+                        videoQuestionLiveEntity.setTestsProtocal(onlineTechObj.optString("testsProtocal"));
                         // 09.03 拼接和前端交互的URL
                         JSONArray jsonArray = onlineTechObj.optJSONArray("id");
                         String testIds = getIdStr(jsonArray);
@@ -339,6 +341,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 englishH5Entity.setNewEnglishH5(true);
                                 try {
                                     JSONObject objects = new JSONObject();
+                                    videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                                     objects.put("packageId", object.getString("pId"));
                                     englishH5Entity.setPackageId(object.getString("pId"));
                                     objects.put("packageSource", object.getString("pSrc"));
@@ -435,6 +438,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             videoQuestionLiveEntity.nonce = nonce;
                             String isVoice = object.optString("isVoice");
                             videoQuestionLiveEntity.setIsVoice(isVoice);
+                            videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                             if ("1".equals(isVoice)) {
                                 videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = object
                                         .optString("questiontype");
@@ -508,6 +512,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.noticeType = XESCODE.ARTS_H5_COURSEWARE;
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String artStatus = object.optString("status", "off");
+                videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                 if ("on".equals(artStatus)) {
                     videoQuestionLiveEntity.gold = object.optDouble("gold");
                     videoQuestionLiveEntity.type = object.optString("ptype");
@@ -557,6 +562,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             openStatus.set(object.optBoolean("open"));
 //                    String status = object.optString("status", "off");
             String nonce = object.optString("nonce");
+            videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
             LiveVideoConfig.nonce = nonce;
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             String teamId = studentLiveInfo.getTeamId();

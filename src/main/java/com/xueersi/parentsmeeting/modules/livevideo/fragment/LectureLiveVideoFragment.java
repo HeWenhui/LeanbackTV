@@ -11,7 +11,6 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -31,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
@@ -171,12 +171,12 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         }
     }
 
-    @Override
-    public void changeNextLine() {
-        if (mLiveVideoBll != null) {
-            mLiveVideoBll.changeNextLine();
-        }
-    }
+//    @Override
+//    public void changeNextLine() {
+//        if (mLiveVideoBll != null) {
+//            mLiveVideoBll.changeNextLine();
+//        }
+//    }
 
     @Override
     public void changeNowLine() {

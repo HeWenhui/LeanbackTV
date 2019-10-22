@@ -29,6 +29,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -472,7 +473,7 @@ public class EnStandAchievePager extends LiveBasePager {
         layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth -  LiveVideoPoint.getInstance().x4 + SizeUtils.Dp2Px(activity,10);
         layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
         llImageContent.setLayoutParams(layoutParams);
-        ImageLoader.with(activity).load(img).into(civUserImage);
+        ImageLoader.with(ContextManager.getContext()).load(img).into(civUserImage);
     }
 
     private void setEnpkView() {
