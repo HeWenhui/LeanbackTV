@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.ExperLiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
@@ -95,7 +96,6 @@ public class ExperCourseWareHttpManager {
     public void getCourseWareTests(VideoQuestionLiveEntity info, String stuId, String packageId, String packageSource, String packageAttr, String releasedPageInfos, int isPlayBack, String classId, String classTestId,
                                    String srcTypes, String testIds, String educationStage, String nonce, String isShowTeamPk, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("stuId", stuId);
         httpRequestParams.addBodyParam("packageId", packageId);
         httpRequestParams.addBodyParam("packageSource", packageSource);
@@ -119,12 +119,12 @@ public class ExperCourseWareHttpManager {
 //            httpRequestParams.addBodyParam("packageAttr", "1");
 //            httpRequestParams.addBodyParam("releasedPageInfos", "[{\"72853\":[\"21\",\"20188\"]}]");
             url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TUTOR_TESTS;
-        } else if (arts == LiveVideoSAConfig.ART_SEC) {
-            url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS;
+        } else if (arts == LiveVideoSAConfig.ART_SEC || arts == LiveVideoSAConfig.ART_CH) {
+            url = ExperLiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS;
         } else {
             url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS_CN;
         }
-        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(url, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getCourseWareTests:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -158,7 +158,6 @@ public class ExperCourseWareHttpManager {
     public void getStuTestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
                                  final AbstractBusinessDataCallBack callBack, boolean isTutor) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("liveId", liveId);
         httpRequestParams.addBodyParam("stuId", stuId);
         httpRequestParams.addBodyParam("srcTypes", srcTypes);
@@ -194,13 +193,13 @@ public class ExperCourseWareHttpManager {
         String url = "";
         if (isTutor) {
             url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TUTOR_RESULT;
-            liveHttpManager.sendPost(url, httpRequestParams, httpCallBack);
+            liveHttpManager.sendPostDefault(url, httpRequestParams, httpCallBack);
         } else if (arts == LiveVideoSAConfig.ART_SEC) {
             url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT;
-            liveHttpManager.sendPost(url, httpRequestParams, httpCallBack);
+            liveHttpManager.sendPostDefault(url, httpRequestParams, httpCallBack);
         } else {
             url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT_CN;
-            liveHttpManager.sendGet(url, httpRequestParams, httpCallBack);
+            liveHttpManager.sendPostDefault(url, httpRequestParams, httpCallBack);
 
         }
     }
@@ -209,7 +208,6 @@ public class ExperCourseWareHttpManager {
     public void getStuChiAITestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
                                       String classId, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("liveId", liveId);
         httpRequestParams.addBodyParam("stuId", stuId);
         httpRequestParams.addBodyParam("srcTypes", srcTypes);
@@ -244,16 +242,15 @@ public class ExperCourseWareHttpManager {
             }
         };
         String url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT_CN;
-        liveHttpManager.sendGet(url, httpRequestParams, httpCallBack);
+        liveHttpManager.sendPostDefault(url, httpRequestParams, httpCallBack);
 
     }
 
     public void getTestInfos(String testIds, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("testIds", testIds);
         String url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS_EN;
-        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(url, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getTestInfos:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -281,11 +278,10 @@ public class ExperCourseWareHttpManager {
 
     public void submitMultiTest(String answers, int isPlayBack, int isForce, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("answers", answers);
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("isForce", "" + isForce);
-        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_EN, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_EN, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getTestInfos:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -308,7 +304,6 @@ public class ExperCourseWareHttpManager {
 
     public void submitH5(String testAnswer, int testNum, String testId, String type, String stu_id, int isPlayBack, int isSubmit, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("testAnswer", testAnswer);
         httpRequestParams.addBodyParam("testNum", "" + testNum);
         httpRequestParams.addBodyParam("testId", "" + testId);
@@ -316,7 +311,7 @@ public class ExperCourseWareHttpManager {
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("isSubmit", "" + isSubmit);
         httpRequestParams.addBodyParam("stuId", "" + stu_id);
-        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOICE_EN, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOICE_EN, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("submitH5:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -339,10 +334,9 @@ public class ExperCourseWareHttpManager {
 
     public void isSubmitH5Vote(final String userAnswer, final String testId, final String classId, final String stuId, final int isPlayBack, final int isforce, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("testId", "" + testId);
         httpRequestParams.addBodyParam("stuId", "" + stuId);
-        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_IS_SUBMIT_COURSEWARE_VOTE, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(LiveQueHttpConfig.LIVE_IS_SUBMIT_COURSEWARE_VOTE, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("isSubmitH5Vote:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -384,7 +378,6 @@ public class ExperCourseWareHttpManager {
             e.printStackTrace();
         }
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("userAnswer", userAnswer);
         httpRequestParams.addBodyParam("testId", "" + testId);
         if (isforce == 1) {
@@ -395,7 +388,7 @@ public class ExperCourseWareHttpManager {
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("classId", "" + classId);
         httpRequestParams.addBodyParam("stuId", "" + stuId);
-        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOTE, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOTE, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("submitH5Vote:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -425,11 +418,10 @@ public class ExperCourseWareHttpManager {
      */
     public void getGroupGameTestInfos(String testIds, String stuId, final String type, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("testIds", testIds);
         httpRequestParams.addBodyParam("stuId", stuId);
         String url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS_EN;
-        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(url, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getGroupGameTestInfos:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -467,7 +459,6 @@ public class ExperCourseWareHttpManager {
                                 int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime,
                                 String answerData, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("classId", "" + classId);
         httpRequestParams.addBodyParam("testId", "" + testId);
         httpRequestParams.addBodyParam("type", type);
@@ -484,7 +475,7 @@ public class ExperCourseWareHttpManager {
         httpRequestParams.addBodyParam("acceptVideoLengthTime", "" + acceptVideoLengthTime);
         httpRequestParams.addBodyParam("acceptMicLengthTime", "" + acceptMicLengthTime);
         httpRequestParams.addBodyParam("answerData", answerData);
-        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_GROUPGAME_EN, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_GROUPGAME_EN, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("submitGroupGame:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -507,7 +498,6 @@ public class ExperCourseWareHttpManager {
 
     public void submitBigTestInteraction(String stuId, String testId, String interactionId, JSONArray userAnswer, long startTime, int isForce, int isPlayBack, String srcType, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("stuId", "" + stuId);
         httpRequestParams.addBodyParam("testId", "" + testId);
         httpRequestParams.addBodyParam("srcType", "" + srcType);
@@ -516,7 +506,7 @@ public class ExperCourseWareHttpManager {
         httpRequestParams.addBodyParam("userAnswer", "" + userAnswer);
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("startTime", "" + startTime);
-        liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_LIVE_SUBMIT_BIG_TEST, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(liveHttpManager.getLiveVideoSAConfigInner().URL_LIVE_SUBMIT_BIG_TEST, httpRequestParams, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -537,13 +527,12 @@ public class ExperCourseWareHttpManager {
 
     public void getStuInteractionResult(String stuId, String testId, String srcType, String interactionId, int isPlayBack, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("stuId", "" + stuId);
         httpRequestParams.addBodyParam("testId", "" + testId);
         httpRequestParams.addBodyParam("srcType", "" + srcType);
         httpRequestParams.addBodyParam("interactionId", "" + interactionId);
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
-        liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_LIVE_GET_BIG_TEST_RESULT, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(liveHttpManager.getLiveVideoSAConfigInner().URL_LIVE_GET_BIG_TEST_RESULT, httpRequestParams, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
