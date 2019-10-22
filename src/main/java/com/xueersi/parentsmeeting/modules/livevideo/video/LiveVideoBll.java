@@ -403,13 +403,13 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
         @Override
         public void onOpenSuccess() {
             if (isGroupClass()) {
-                int duration =(int)videoFragment.getDuration()/1000;
-                if ( duration< positon) {
+                int duration = (int) videoFragment.getDuration() / 1000;
+                if (duration < positon) {
                     stopPlay();
-                    isEnd = true;
                     if (mVideoAction != null) {
                         mVideoAction.onTeacherNotPresent(false);
                     }
+                    isEnd = true;
                 } else {
                     videoFragment.seekTo(positon * 1000);
                 }
@@ -854,8 +854,8 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
         if (isPlay && !isEnd) {
             int currentPosition = (int) (videoFragment.getCurrentPosition() / 1000);
             logger.d("onProgressChanged : " + positon + "; currentPosition : " + currentPosition);
-            if ((progress - currentPosition) > 5) {
-                videoFragment.seekTo(progress * 1000);
+            if ((progress - currentPosition) > 10) {
+                videoFragment.seekTo(positon * 1000);
             }
         }
     }
@@ -870,19 +870,8 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
 
     private void playGroupClassVideo() {
         //英语1v2录直播 播放网络文件
-        String videoPath = mGetInfo.getRecordStandliveEntity().getRecordUrl();
-        videoFragment.playPSFile(videoPath, positon);
-       /* int sTime = (int) mGetInfo.getsTime();
-        int eTime = (int) mGetInfo.geteTime();
-        int liveTime = eTime - sTime;
-        if (positon < liveTime) {
-            //当前相对时间>0，并且小于直播课总时长（单位s）
-
-        } else {
-            if (mVideoAction != null) {
-                mVideoAction.onTeacherNotPresent(false);
-            }
-        }*/
+        String videoPath = mGetInfo.getRecordStandliveEntity().getVideoPath();
+        videoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
     }
 
     private boolean isGroupClass() {

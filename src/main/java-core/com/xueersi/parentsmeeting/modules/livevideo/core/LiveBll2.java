@@ -776,7 +776,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 businessBll.onLiveInited(getInfo);
                 long time = (System.currentTimeMillis() - before);
                 if (time > 10) {
-                    LiveBllLog.BusinessTime businessTime = new LiveBllLog.BusinessTime(businessBll.getClass().getSimpleName(), time);
+                    LiveBllLog.BusinessTime businessTime = new LiveBllLog.BusinessTime(businessBll.getClass()
+                            .getSimpleName(), time);
                     businessTimes.add(businessTime);
                 }
                 before = System.currentTimeMillis();
@@ -843,10 +844,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         logger.e("=======>mIRCMessage.create()");
         mLogtf.d(s);
         liveVideoBll.onLiveInit(getInfo, mLiveTopic);
-        mShareDataManager.put(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, getInfo.getClientLog(), ShareDataManager.SHAREDATA_NOT_CLEAR);
+        mShareDataManager.put(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, getInfo.getClientLog(), ShareDataManager
+                .SHAREDATA_NOT_CLEAR);
         initExtInfo(getInfo);
         //英语1v2 开启定时器 监听直播进度
-        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+        if (isGroupClass()) {
             startGroupClassTimer();
         }
     }
@@ -1015,7 +1017,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                             boolean isPresent = isPresent(mode);
                             if (mVideoAction != null) {
                                 mVideoAction.onModeChange(mode, isPresent);
-                                mLogtf.d(SysLogLable.switchLiveMode, "onNotice:mode=" + mode + ",isPresent=" + isPresent);
+                                mLogtf.d(SysLogLable.switchLiveMode, "onNotice:mode=" + mode + ",isPresent=" +
+                                        isPresent);
                                 if (!isPresent) {
                                     mVideoAction.onTeacherNotPresent(true);
                                 }
@@ -1062,7 +1065,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
 
         @Override
-        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed, String channelId) {
+        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed, String
+                channelId) {
             if (lastTopicstr.equals(topicstr)) {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
@@ -1190,7 +1194,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             }
         }
 
-    };
+    }
+
+    ;
 
 
     /**
@@ -1672,7 +1678,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * 当前状态，老师是不是在直播间
      */
     public boolean isPresent() {
-        return isPresent(mLiveTopic.getMode());
+        if (isGroupClass()) {
+            return true;
+        } else {
+            return isPresent(mLiveTopic.getMode());
+        }
     }
 
     /**
@@ -1761,12 +1771,13 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         if (mLivePluginRequestParam == null) {
             return "";
         }
-        return "_" + mLivePluginRequestParam.bizId + "_" + mLivePluginRequestParam.planId + "_" + mLivePluginRequestParam.isPlayback;
+        return "_" + mLivePluginRequestParam.bizId + "_" + mLivePluginRequestParam.planId + "_" +
+                mLivePluginRequestParam.isPlayback;
     }
 
 
-    public void grayBusinessControl(){
-        if(grayControl !=null && mGetInfo !=null) {
+    public void grayBusinessControl() {
+        if (grayControl != null && mGetInfo != null) {
             LivePluginRequestParam param = new LivePluginRequestParam();
             param.bizId = 2;
             if (!TextUtils.isEmpty(mGetInfo.getId())) {
@@ -1902,7 +1913,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         return false;
     }
 
-    public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl ){
+    public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl) {
         this.grayControl = grayControl;
     }
 
@@ -1972,5 +1983,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         public void setPosition(int position) {
             this.position = position;
         }
+    }
+
+    boolean isGroupClass() {
+        return mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS;
     }
 }

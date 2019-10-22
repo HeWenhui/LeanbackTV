@@ -16,6 +16,10 @@ public class RecordStandliveEntity {
      */
     private String recordUrl;
     /*
+     * 录播课的地址(不包括域名)
+     */
+    private String videoPath;
+    /*
      * 录播课的打点数据
      */
     private String metaDataUrl;
@@ -34,6 +38,14 @@ public class RecordStandliveEntity {
 
     public void setRecordUrl(String recordUrl) {
         this.recordUrl = recordUrl;
+    }
+
+    public String getVideoPath() {
+        return videoPath;
+    }
+
+    public void setVideoPath(String videoPath) {
+        this.videoPath = videoPath;
     }
 
     public String getMetaDataUrl() {
