@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
+import com.tencent.smtt.export.external.interfaces.SslError;
+import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
 import com.tencent.smtt.sdk.DownloadListener;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
@@ -147,6 +149,17 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         @Override
         public void onPageFinished(WebView webView, String s) {
             super.onPageFinished(webView, s);
+        }
+
+        @Override
+        public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
+            //super.onReceivedSslError(webView, sslErrorHandler, sslError);
+
+            // 不要使用super，否则有些手机访问不了，因为包含了一条 handler.cancel()
+            // super.onReceivedSslError(view, handler, error);
+
+            // 接受所有网站的证书，忽略SSL错误，执行访问网页
+            sslErrorHandler.proceed();
         }
     }
 
