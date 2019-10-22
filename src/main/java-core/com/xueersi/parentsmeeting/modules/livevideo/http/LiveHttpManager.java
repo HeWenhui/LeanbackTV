@@ -33,6 +33,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.common.Callback.CancelledException;
 import org.xutils.xutils.common.util.IOUtil;
@@ -59,6 +61,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     HashMap<String, String> defaultKey = new HashMap<>();
     /**header 参数**/
     HashMap<String,String> defaultHeaderParams = new HashMap<>();
+    /**大班整合 公共参数**/
+    HashMap<String,Object> defaultBusinessParams = new HashMap<>();
 
 
     LiveVideoSAConfig.Inner liveVideoSAConfigInner;
@@ -81,6 +85,42 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         defaultKey.put(key, value);
     }
 
+    /**
+     * 大班整合公共参数
+     * @param key
+     * @param value
+     */
+    public void addBusinessParams(String key,Object value){
+        defaultBusinessParams.put(key,value);
+    }
+
+    /**
+     * 大班整合添加公共参数
+     * @param httpRequestParams
+     */
+    private void setDefBusinessParams(HttpRequestParams httpRequestParams) {
+          if(!android.text.TextUtils.isEmpty(httpRequestParams.getJson())){
+              if(defaultBusinessParams != null && defaultBusinessParams.size() > 0){
+                  try {
+                    JSONObject jsonObject = new JSONObject(httpRequestParams.getJson());
+                      for (String key : defaultBusinessParams.keySet()) {
+                          //不顶掉已经有的参数，比如战队pk teamId
+                          if(jsonObject.has(key)){
+                              continue;
+                          }
+                          Object value = defaultBusinessParams.get(key);
+                          jsonObject.put(key,value);
+                      }
+                      httpRequestParams.setJson(jsonObject.toString());
+                  }catch (Exception e){
+                      e.printStackTrace();
+                  }
+              }
+          }
+    }
+
+
+
     public void setDefaultParameter(HttpRequestParams httpRequestParams) {
         for (String key : defaultKey.keySet()) {
             Map<String, String> bodyParams = httpRequestParams.getBodyParams();
@@ -101,11 +141,13 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
     }
 
     @Override
-    public void sendJsonPostDefault(String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
+    public void sendJsonPostDefault(String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack){
         setDefaultParameter(httpRequestParams);
         setDefaultHeaderParams(httpRequestParams);
+        setDefBusinessParams(httpRequestParams);
         sendJsonPost(url, httpRequestParams, httpCallBack);
     }
+
 
     @Override
     public void sendJsonPost(final String url, final Object paramObject, HttpCallBack httpCallBack) {
