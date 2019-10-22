@@ -166,8 +166,7 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                 if (videoView != null) {
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
-                                boolean isPlayerCreated = vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
-                                setVideoConfig();
+
                                 if (isChangeLine) {
                                     try {
                                         vPlayer.changeLine(changeLinePos, protocol);
@@ -184,6 +183,8 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                         }
                                     }
                                 } else {
+                                    boolean isPlayerCreated = vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                    setVideoConfig();
                                     String userName = null;
                                     String userId = null;
                                     try {

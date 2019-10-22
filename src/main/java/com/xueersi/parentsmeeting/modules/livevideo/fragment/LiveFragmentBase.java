@@ -459,7 +459,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
      */
     public abstract void changeLine(int pos);
 
-    public abstract void changeNextLine();
+//    public abstract void changeNextLine();
 
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
