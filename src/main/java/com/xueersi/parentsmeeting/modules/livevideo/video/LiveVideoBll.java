@@ -365,6 +365,13 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
                 mLogtf.d("onPlaying:startRemote");
                 stopPlay();
             }
+            if (isGroupClass()) {
+                int current = (int) currentPosition / 1000;
+                logger.d("onPlaying(): current = " + current + ", positon = " + positon);
+                if ((positon - current) > 3) {
+                    seekGroupClass();
+                }
+            }
         }
 
         @Override
@@ -402,19 +409,14 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
 
         @Override
         public void onOpenSuccess() {
+            isPlay = true;
             if (isGroupClass()) {
-                int duration = (int) videoFragment.getDuration() / 1000;
-                if (duration < positon) {
+                if (isClassEnd()) {
                     stopPlay();
-                    if (mVideoAction != null) {
-                        mVideoAction.onTeacherNotPresent(false);
-                    }
-                    isEnd = true;
                 } else {
-                    videoFragment.seekTo(positon * 1000);
+                    seekGroupClass();
                 }
             }
-            isPlay = true;
             VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);
             if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
                 mLogtf.d("onOpenSuccess:startRemote=true");
@@ -841,22 +843,12 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     }
 
     private int positon;
-    private boolean isEnd = false;
 
     @Override
     public void onProgressChanged(int progress) {
         positon = progress;
         if (positon == 0) {
             playGroupClassVideo();
-        }
-
-        //追播
-        if (isPlay && !isEnd) {
-            int currentPosition = (int) (videoFragment.getCurrentPosition() / 1000);
-            logger.d("onProgressChanged : " + positon + "; currentPosition : " + currentPosition);
-            if ((progress - currentPosition) > 10) {
-                videoFragment.seekTo(positon * 1000);
-            }
         }
     }
 
@@ -869,12 +861,25 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     }
 
     private void playGroupClassVideo() {
+        logger.d("playGroupClassVideo()");
         //英语1v2录直播 播放网络文件
         String videoPath = mGetInfo.getRecordStandliveEntity().getVideoPath();
         videoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
     }
 
+    private void seekGroupClass() {
+        logger.d("seekGroupClass()");
+        videoFragment.seekTo(positon * 1000);
+    }
+
     private boolean isGroupClass() {
+        logger.d("isGroupClass()");
         return mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS;
+    }
+
+    private boolean isClassEnd() {
+        int duration = (int) vPlayer.getDuration() / 1000;
+        logger.d("isGroupClassEnd(): duration = " + duration + ", positon = " + positon);
+        return duration < positon;
     }
 }
