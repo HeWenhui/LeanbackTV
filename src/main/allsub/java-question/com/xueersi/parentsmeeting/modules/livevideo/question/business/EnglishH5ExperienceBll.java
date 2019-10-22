@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -15,11 +16,19 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerContro
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.http.ExperCourseWareHttpManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by：WangDe on 2018/8/30 11:22
@@ -27,6 +36,8 @@ import java.util.HashMap;
 public class EnglishH5ExperienceBll extends LiveBackBaseBll {
 
     EnglishH5CoursewareBll englishH5CoursewareBll;
+    private ExperCourseWareHttpManager courseWareHttpManager;
+    int isArts;
 
     public EnglishH5ExperienceBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -51,7 +62,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new
                 LiveBackBaseEnglishH5CoursewareCreat();
         liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(liveGetInfo);
-        int isArts = liveBackBll.getIsArts();
+        isArts = liveBackBll.getIsArts();
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
@@ -134,6 +145,13 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         return videoQuestionLiveEntity;
     }
 
+    public ExperCourseWareHttpManager getCourseWareHttpManager() {
+        if (courseWareHttpManager == null) {
+            courseWareHttpManager = new ExperCourseWareHttpManager(getmHttpManager());
+        }
+        return courseWareHttpManager;
+    }
+
     class NewCourse extends EnglishH5CoursewareImpl implements EnglishH5CoursewareSecHttp {
 
         @Override
@@ -141,9 +159,51 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
             logger.d("getCourseWareTests");
         }
 
+        private String[] getSrcType(EnglishH5Entity englishH5Entity) {
+            String[] res = new String[2];
+            String srcTypes = "";
+            String testIds = "";
+            try {
+                JSONArray array = new JSONArray(englishH5Entity.getReleasedPageInfos());
+                int length = array.length();
+                for (int i = 0; i < length; i++) {
+                    JSONObject jsonObject = array.getJSONObject(i);
+                    Iterator<String> keys = jsonObject.keys();
+                    while (keys.hasNext()) {
+                        String key = keys.next();
+                        JSONArray value = jsonObject.getJSONArray(key);
+                        srcTypes += value.getString(0);
+                        testIds += value.getString(1);
+                        if (i != length - 1) {
+                            srcTypes += ",";
+                            testIds += ",";
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                logger.e("getCourseWareTests", e);
+            }
+            res[0] = srcTypes;
+            res[1] = testIds;
+            return res;
+        }
+
         @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
             logger.d("getCourseWareTests");
+            if (isArts == LiveVideoSAConfig.ART_EN) {
+                if (LiveQueConfig.isGroupGame(detailInfo.type)) {
+                    getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, liveGetInfo.getStuId(), detailInfo.type, callBack);
+                } else {
+                    getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
+                }
+            } else {
+                EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+                String classId = liveGetInfo.getStudentLiveInfo().getClassId();
+                String[] res = getSrcType(englishH5Entity);
+                getCourseWareHttpManager().getCourseWareTests(detailInfo, liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                        englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce, liveGetInfo.getIsAllowTeamPk(), callBack);
+            }
         }
 
         @Override
