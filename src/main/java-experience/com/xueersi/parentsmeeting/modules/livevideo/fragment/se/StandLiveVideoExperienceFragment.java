@@ -680,11 +680,10 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     /**
      * PSIJK改变线路播放
      */
-    protected void changeLine() {
-        liveBackVideoBll.changePlayLine();
+//    protected void changeLine() {
+//        liveBackVideoBll.changePlayLine();
 //        liveBackPlayVideoFragment.changeLine(pos);
-    }
-
+//    }
     @Override
     public void release() {
         if (mMediaController != null) {
@@ -1273,11 +1272,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         ProxUtil.getProxUtil().clear(activity);
         if (liveStandFrameAnim != null) {
             liveStandFrameAnim.onDestroy();
-            liveStandFrameAnim = null;
-        }
-        if (experienceIrcBll != null) {
-            experienceIrcBll.onDestory();
-            experienceIrcBll = null;
         }
     }
 
@@ -1308,11 +1302,11 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         if (LiveAppBll.getInstance().isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
             logger.d("onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
-            if (MediaPlayer.getIsNewIJK()) {
-                liveBackVideoBll.changePlayLine();
-            } else {
-                playNewVideo();
-            }
+//            if (MediaPlayer.getIsNewIJK()) {
+//                liveBackVideoBll.changePlayLine();
+//            } else {
+            playNewVideo();
+//            }
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
 //            loadView(mLayoutVideo);

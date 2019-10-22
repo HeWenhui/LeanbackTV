@@ -501,8 +501,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 if (rlFirstBackgroundView.getVisibility() != View.VISIBLE) {
                     rlFirstBackgroundView.setVisibility(View.VISIBLE);
                 }
-                changeNextLine();
-//                playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
+                //                changeNextLine();
+                playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
             }
         }
 

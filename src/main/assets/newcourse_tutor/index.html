@@ -1,4 +1,14 @@
-<!DOCTYPE html><html><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><meta http-equiv=X-UA-Compatible content="ie=edge"><meta name=apple-mobile-web-app-capable content=yes><meta name=apple-mobile-web-app-status-bar-style content=black-translucent><title>出门测app结果页</title><script>function _fn_ (props) {
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>出门测Android版本结果页</title>
+  <script>
+    function _fn_ (props) {
       var docEle = document.documentElement
       var radio = window.devicePixelRatio
       var scale = 1 / radio
@@ -13,8 +23,6 @@
       }
 
       refreshRem()
-
-      window.refreshRem = refreshRem
 
       setTimeout(refreshRem, 800)
 
@@ -33,114 +41,14 @@
       window.addEventListener('load', refreshRem, false)
     }
     _fn_({ fontSize: 100, width: 1334 });
-
-    //域名池
-    window.cdnChangeListNames = {
-      'res': ['res11.xesimg.com', 'res12.xesimg.com', 'res13.xesimg.com', 'res14.xesimg.com', 'res15.xesimg.com', 'res16.xesimg.com', 'res17.xesimg.com', 'res18.xesimg.com'],
-      'static': ['res11.xesimg.com/live/like', 'res12.xesimg.com/live/like', 'res13.xesimg.com/live/like', 'res14.xesimg.com/live/like', 'res15.xesimg.com/live/like', 'res16.xesimg.com/live/like', 'res17.xesimg.com/live/like', 'res18.xesimg.com/live/like'],
-      'lib': ['lib01.xesimg.com', 'lib02.xesimg.com', 'lib03.xesimg.com', 'lib04.xesimg.com'],
-      'js': ['js01.xesimg.com', 'js02.xesimg.com', 'js03.xesimg.com', 'js04.xesimg.com']
-    }
-    //临时存日志
-    window.logParamsContent = [];
-    //随机字符串,记录日志
-    window.cdnChangeParamPvid = Math.random().toString(36).substr(2);
-    /**
-    *确定域名池的key值
-    *@param:oldSrc原地址链接
-    */
-    function domainNanmeKey(oldSrc) {
-        var name = oldSrc.match(/\/\/[\w|.]+\//)[0].replace('//','')
-        var key = ''
-        if(/^(res)|(fcdn)/.test(name)){
-            key = 'res';
-        }
-        if(/^lib/.test(name)){
-            key = 'lib';
-        }
-        if(/^js/.test(name)){
-            key = 'js';
-        }
-        if ( /^scistatic/.test(name)) {
-          key = 'static'
-        }
-        return key;
-    }
-
-    /**域名切换成功之后方法
-     * 1、将成功的域名放到cdnChangeListNames的第一位，降低重试次数
-     * 2、日志上报，证明本次容错有效性, 应该做成延迟上报
-     * @param dom事件源对象
-     * @param index次数
-     */
-    function handleCDNErrorSuccess(dom, index) {
-      if (index !== 0 && cdnDomainNanmeKey) {
-        var temp = cdnChangeListNames[cdnDomainNanmeKey][0]
-        cdnChangeListNames[cdnDomainNanmeKey][0] = cdnChangeListNames[cdnDomainNanmeKey][index]
-        cdnChangeListNames[cdnDomainNanmeKey][index] = temp
-      }
-      var testid, planid, userid;
-
-      //日志上传
-      var param = {
-        data: {
-          "appid": "1000033", // 同现有规范
-          "eventid": "h5_cdn", // 同现有规范
-          "pvid": cdnChangeParamPvid,
-          "cdnchangelog": {
-            "index": index,
-            "successsrc": encodeURIComponent(dom.getAttribute('src')),
-            "failsrc": encodeURIComponent(window.cdnOldSrcSource),
-            "url": encodeURIComponent(window.location.href),
-            "modulekey": "outDoorTestResult-app", // 比eventid更细粒度的模块关键标识
-            "moduleid": "", // 模块关键ID，跟具体业务绑定的唯一ID
-          }
-        }
-      }
-      logParamsContent.push(param)
-    }
-    /**
-     *加载失败切换域名方法
-    * @param dom事件源对象
-    * @param index次数
-    */
-    function handleCDNError(dom, index) {
-      var index = index || 0;
-      var oldSrc = dom.getAttribute('src');
-      var key = '';
-      key = domainNanmeKey(oldSrc)
-      if (!key) return false;//域名可匹配上
-      var newsrc = oldSrc.replace(/\/\/[\w|.]+\//, '//' + cdnChangeListNames[key][index] + '/');
-      window.cdnOldSrcSource = oldSrc;
-      window.cdnDomainNanmeKey = key;
-      if (index < cdnChangeListNames[key].length - 1) {
-        document.write('<script src="' + newsrc + ' "onerror = "handleCDNError(this, ' + (index + 1) +
-          ')" onload = "handleCDNErrorSuccess(this, ' + index + ')" ><\/script>');
-      } else {
-        document.write('<script src="' + newsrc + '"> <\/script>');
-      }
-    }
-    /**
-    *延迟上报日志(请忽略下面的注释部分)
-    *需要引入李博的打日志的sdk(http://wiki.xesv5.com/pages/viewpage.action?pageId=7057220)
-    */
-    window.addEventListener('load', function () {
-      if (!window.xesWeb_eventLog) return;
-      for (var i = 0; i < logParamsContent.length; i++) {
-        var systemData = {
-              'newLogid': '',
-              'systemError': 'CDNError',
-              'systemParams': 'CDNChangeParams='+JSON.stringify(logParamsContent[i]),
-            };
-        window.xesWeb_eventLog && window.xesWeb_eventLog.xesEventLog('systemLog', systemData)
-      }
-      // 清除全局变量
-      delete window.cdnOldSrcSource;
-      delete window.cdnDomainNanmeKey;
-      delete window.cdnChangeListNames;
-      delete window.logParamsContent;
-      delete window.cdnChangeParamPvid;
-    })</script><link href=assets/style/main.7421fa1393a8acea3b62.css rel=stylesheet></head><body><div id=root><p id=__x__ style="width: 80%;position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);font-size: 0.3rem;margin: 0;text-align: center;">资源加载中，请稍后...</p></div><script id=__e__>;!function () {
+  </script>
+<link href="assets/style/main.2917bab4ebea74b8e607.css" rel="stylesheet"></head>
+<body>
+  <div id="root">
+    <p id="__x__" style="width: 80%;position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);font-size: 0.3rem;margin: 0;text-align: center;">资源加载中，请稍后...</p>
+  </div>
+  <script id="__e__">
+    ;!function () {
       var defaultInfo = document.getElementById('__x__')
       var errorScript = document.getElementById('__e__')
       if (!defaultInfo) return document.body.removeChild(errorScript)
@@ -153,4 +61,7 @@
         defaultInfo.innerHTML = '加载失败了，建议更新软件到最新版本或重新安装~'
         document.body.removeChild(errorScript)
       }, 8000)
-    }();</script><script type=text/javascript src=assets/script/manifest.04b252d43a773e7487cf.js onerror=handleCDNError(this)></script><script type=text/javascript src=assets/script/vendors~main.67428c5a8370a78e85a3.js onerror=handleCDNError(this)></script><script type=text/javascript src=assets/script/main.20813ef6cbd785cbbc12.js onerror=handleCDNError(this)></script></body></html>
+    }();
+  </script>
+<script type="text/javascript" src="assets/script/manifest.7e11f76f368f2698bfa5.js"></script><script type="text/javascript" src="assets/script/vendors~main.b181d4df239de71b36bc.js"></script><script type="text/javascript" src="assets/script/main.97ef0a3ac5e0803bc33c.js"></script></body>
+</html>
