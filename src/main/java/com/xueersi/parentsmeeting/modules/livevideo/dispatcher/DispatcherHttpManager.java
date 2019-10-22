@@ -67,7 +67,7 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
 //        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
-        sendPost(DispatcherConfig.URL_BIGLIVE_LIVE_GARY, params, requestCallBack);
+        sendPost(DispatcherConfig.URL_BIGLIVE_BIG_LIVE_BUSINESS_TEST, params, requestCallBack);
     }
 
     /**
