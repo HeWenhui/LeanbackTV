@@ -171,21 +171,35 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
     public void postMessage(String methodName) {
         if (methodName != null) {
             if (methodName.equals("setTeacherInfo")) {
-                JsonObject jsonObject1 = getTeacherInfo();
-                webView.loadUrl("javascript:transmitToWeb({type:'setTeacherInfo',data:" + jsonObject1 + "})");
+                final JsonObject jsonObject1 = getTeacherInfo();
+                if(isInMainThread()){
+                    webView.loadUrl("javascript:transmitToWeb({type:'setTeacherInfo',data:" + jsonObject1 + "})");
+                }else {
+                    if (mHandler == null) {
+                        mHandler = new Handler(Looper.getMainLooper());
+                    }
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            webView.loadUrl("javascript:transmitToWeb({type:'setTeacherInfo',data:" + jsonObject1 +
+                                    "})");
+                        }
+                    });
+                }
+
             } else if (methodName.equals("close")) {
                 if(isInMainThread()){
                     onClose();
                 }else {
-                    if(mHandler == null){
+                    if (mHandler == null) {
                         mHandler = new Handler(Looper.getMainLooper());
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                onClose();
-                            }
-                        });
                     }
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            onClose();
+                        }
+                    });
                 }
 
             }
