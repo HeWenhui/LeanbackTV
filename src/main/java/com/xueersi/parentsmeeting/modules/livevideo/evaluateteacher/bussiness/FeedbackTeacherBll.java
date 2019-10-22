@@ -98,7 +98,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
                     int is_trigger = jsonObject.optInt("isTrigger");
                     String url = null;
                     if (is_trigger == 1) {
-                        if (mGetInfo.getEducationStage().equals("4")) {
+                        if (mGetInfo.getEducationStage().equals("4") || mGetInfo.getEducationStage().equals("3")) {
                             //高中
                             url = jsonObject.getJSONObject("app").optString("highSchool");
                         } else {
