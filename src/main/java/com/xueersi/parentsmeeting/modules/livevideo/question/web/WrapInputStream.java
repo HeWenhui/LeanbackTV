@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.question.web;
+ package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 
 import android.content.Context;
 import android.os.SystemClock;
@@ -128,3 +128,4 @@ public class WrapInputStream extends InputStream {
     }
 
 }
+

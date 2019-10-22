@@ -30,6 +30,7 @@ import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -96,9 +97,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     private static final Object mIjkLock2 = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
     /** 缓冲超时 */
-    private final long mBufferTimeout = 5000;
+//    private final long mBufferTimeout = 5000;
     /** 打开超时 */
-    private final long mOpenTimeOut = 15000;
+//    private final long mOpenTimeOut = 15000;
     private AuditClassLiveBll mLiveBll;
     private AuditClassAction auditClassBll;
     /** 直播缓存打开统计 */
@@ -237,7 +238,14 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH, (int) VIDEO_HEIGHT, VIDEO_RATIO);
     }
 
-
+    //
+//    @Subscribe(threadMode = ThreadMode.POSTING)
+//    public void onEvent(AppEvent event) {
+//        if (event.getClass() == AppEvent.class) {
+//            logger.i("onEvent:netWorkType=" + event.netWorkType);
+////            mLiveVideoBll.onNetWorkChange(event.netWorkType);
+//        }
+//    }
     private void initListener() {
         AtomicBoolean mIsLand = new AtomicBoolean(false);
         xv_livevideo_student.setIsLand(mIsLand);
@@ -667,8 +675,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
         @Override
         public void onPlaybackComplete() {
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             mPlayStatistics.onPlaybackComplete();
             mLogtf.d("onPlaybackComplete");
         }
@@ -676,8 +684,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         @Override
         public void onPlayError() {
             isPlay = false;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             mPlayStatistics.onPlayError();
         }
 
@@ -689,7 +697,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 stopPlay();
                 return;
             }
-            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
             mPlayStatistics.onOpenSuccess();
             mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
@@ -699,31 +707,31 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         public void onOpenStart() {
             mLogtf.d("onOpenStart");
             openStartTime = System.currentTimeMillis();
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            postDelayedIfNotFinish(mOpenTimeOutRun, mOpenTimeOut);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            postDelayedIfNotFinish(mOpenTimeOutRun, mOpenTimeOut);
             mPlayStatistics.onOpenStart();
         }
 
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             isPlay = false;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             mPlayStatistics.onOpenFailed(arg1, arg2);
             mLogtf.d("onOpenFailed");
         }
 
         @Override
         public void onBufferStart() {
-            mHandler.removeCallbacks(mBufferTimeOutRun);
-            postDelayedIfNotFinish(mBufferTimeOutRun, mBufferTimeout);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            postDelayedIfNotFinish(mBufferTimeOutRun, mBufferTimeout);
             mPlayStatistics.onBufferStart();
             mLogtf.d("onBufferStart");
         }
 
         @Override
         public void onBufferComplete() {
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             mPlayStatistics.onBufferComplete();
             mLogtf.d("onBufferComplete");
         }
@@ -752,17 +760,16 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     /**
      * 缓冲超时
      */
-    private Runnable mBufferTimeOutRun = new Runnable() {
-
-        @Override
-        public void run() {
-            mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
-            mLiveBll.repair(true);
-//            mLiveBll.liveGetPlayServer(false);
-            changeNextLine();
-        }
-    };
-
+//    private Runnable mBufferTimeOutRun = new Runnable() {
+//
+//        @Override
+//        public void run() {
+//            mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
+//            mLiveBll.repair(true);
+////            mLiveBll.liveGetPlayServer(false);
+//            changeNextLine();
+//        }
+//    };
     protected void changeNextLine() {
         this.nowPos++;
         if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
@@ -783,18 +790,17 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     /**
      * 打开超时
      */
-    private Runnable mOpenTimeOutRun = new Runnable() {
-
-        @Override
-        public void run() {
-            long openTimeOut = System.currentTimeMillis() - openStartTime;
-            mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
-            mLiveBll.repair(false);
-//            mLiveBll.liveGetPlayServer(false);
-            changeNextLine();
-        }
-    };
-
+//    private Runnable mOpenTimeOutRun = new Runnable() {
+//
+//        @Override
+//        public void run() {
+//            long openTimeOut = System.currentTimeMillis() - openStartTime;
+//            mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
+//            mLiveBll.repair(false);
+////            mLiveBll.liveGetPlayServer(false);
+//            changeNextLine();
+//        }
+//    };
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
         mHandler.post(new Runnable() {
@@ -1695,6 +1701,13 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             }
             break;
             default:
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+//                        playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                        mLiveBll.liveGetPlayServer(false);
+                    }
+                }, 1000);
                 //除了这四种情况，还有播放完成的情况
                 break;
         }
@@ -1720,10 +1733,20 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         }
     }
 
+    private boolean lastNowNetWork = true;
+
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
         logger.i("onEvent:netWorkType=" + event.netWorkType);
         mLiveBll.onNetWorkChange(event.netWorkType);
+        if (event.netWorkType != NetWorkHelper.NO_NETWORK) {
+            if (xv_livevideo_student != null && playUrl != null && mGetInfo.getName() != null && lastNowNetWork) {
+                xv_livevideo_student.playNewVideo(Uri.parse(playUrl), mGetInfo.getName());
+                lastNowNetWork = false;
+            }
+        } else {
+            lastNowNetWork = true;
+        }
     }
 
     /**

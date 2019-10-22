@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.JsResult;
+import com.tencent.smtt.export.external.interfaces.SslError;
+import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
@@ -16,6 +18,7 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -29,6 +32,18 @@ public class BaseCoursewareNativePager extends LiveBasePager {
     protected WebView wvSubjectWeb;
     /** 失败地址 */
     protected String failingUrl = null;
+    public static String XES_LOADING_X5_ERROR_COUNT = "xes_loading_x5_error_count";
+
+
+    /**
+     * 是否第一次
+     */
+    boolean isSubtraction = false;
+
+    /**
+     * 是否第一次
+     */
+    boolean isAdd = false;
 
     public BaseCoursewareNativePager(Context context) {
         super(context);
@@ -136,6 +151,12 @@ public class BaseCoursewareNativePager extends LiveBasePager {
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
             BaseCoursewareNativePager.this.onReceivedTitle(view, title);
+            if(!isSubtraction()) {
+                setSubtraction(true);
+                int count = UmsAgentTrayPreference.getInstance().getInt(XES_LOADING_X5_ERROR_COUNT, 0);
+
+                UmsAgentTrayPreference.getInstance().put(XES_LOADING_X5_ERROR_COUNT, count - 1);
+            }
         }
     }
 
@@ -160,6 +181,12 @@ public class BaseCoursewareNativePager extends LiveBasePager {
             BaseCoursewareNativePager.this.failingUrl = null;
             super.onPageStarted(view, url, favicon);
             BaseCoursewareNativePager.this.onPageStarted(view, url, favicon);
+
+            if(!isAdd()) {
+                setAdd(true);
+                int count = UmsAgentTrayPreference.getInstance().getInt(XES_LOADING_X5_ERROR_COUNT, 0);
+                UmsAgentTrayPreference.getInstance().put(XES_LOADING_X5_ERROR_COUNT, count + 1);
+            }
         }
 
         @Override
@@ -198,5 +225,21 @@ public class BaseCoursewareNativePager extends LiveBasePager {
 
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         return false;
+    }
+
+    public boolean isSubtraction() {
+        return isSubtraction;
+    }
+
+    public void setSubtraction(boolean subtraction) {
+        isSubtraction = subtraction;
+    }
+
+    public boolean isAdd() {
+        return isAdd;
+    }
+
+    public void setAdd(boolean add) {
+        isAdd = add;
     }
 }
