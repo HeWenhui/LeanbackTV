@@ -755,6 +755,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                         break;
                     }
                     default: {
+                        errorInfo.setText("视频播放失败[" + mediaErrorInfo.mErrorCode + "],请点击重试");
                         break;
                     }
                 }
