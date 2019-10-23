@@ -13,16 +13,19 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.item.BigResultAdapter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.item.ExperCourseResultAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by linyuqiang on 2019/4/15.  大题互动结果页
  */
 public class ExperCourseResultPager extends LiveBasePager {
-    private BigResultEntity bigResultEntitie;
-    private ArrayList<BigResultItemEntity> bigResultItemEntities = new ArrayList<>();
+    private  PrimaryScienceAnswerResultEntity entity;
+    List<PrimaryScienceAnswerResultEntity.Answer> answerList;
     /** 结果页上边金币标题 */
     private ImageView ivBigqueResultTitle;
     /** 结果页上边金币数量标题 */
@@ -34,12 +37,12 @@ public class ExperCourseResultPager extends LiveBasePager {
     private LiveViewAction liveViewAction;
     private ImageView ivResultTitleLight;
 
-    public ExperCourseResultPager(Context context, LiveViewAction liveViewAction, BigResultEntity bigResultEntitie) {
+    public ExperCourseResultPager(Context context, LiveViewAction liveViewAction, PrimaryScienceAnswerResultEntity entity) {
         super(context, false);
         this.liveViewAction = liveViewAction;
         mView = initView();
-        this.bigResultEntitie = bigResultEntitie;
-        bigResultItemEntities = bigResultEntitie.getBigResultItemEntityArrayList();
+        this.entity = entity;
+        answerList = entity.getAnswerList();
         initData();
         initListener();
     }
@@ -61,21 +64,21 @@ public class ExperCourseResultPager extends LiveBasePager {
     @Override
     public void initData() {
         super.initData();
-        int isRight = bigResultEntitie.getIsRight();
-        if (isRight == LiveQueConfig.DOTTYPE_RESULT_WRONG) {
+        int isRight = entity.getType();
+        if (isRight == PrimaryScienceAnswerResultEntity.ABSLUTELY_WRONG) {
             tvBigqueResultTitle.setText("很遗憾答错了");
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_wrong_title);
             ivResultTitleLight.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title_light_grey);
-        } else if (isRight == LiveQueConfig.DOTTYPE_ITEM_RIGHT) {
-            tvBigqueResultTitle.setText("恭喜你答对了    金币+" + bigResultEntitie.getGold());
+        } else if (isRight == PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT) {
+            tvBigqueResultTitle.setText("恭喜你答对了    金币+" + entity.getGold());
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title);
             ivResultTitleLight.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title_light);
-        } else if (isRight == LiveQueConfig.DOTTYPE_ITEM_PART_RIGHT) {
-            tvBigqueResultTitle.setText("部分正确    金币+" + bigResultEntitie.getGold());
+        } else if (isRight == PrimaryScienceAnswerResultEntity.PARTIALLY_RIGHT) {
+            tvBigqueResultTitle.setText("部分正确    金币+" + entity.getGold());
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_part_title);
             ivResultTitleLight.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title_light);
         }
-        BigResultAdapter bigResultAdapter = new BigResultAdapter(bigResultItemEntities);
+        ExperCourseResultAdapter bigResultAdapter = new ExperCourseResultAdapter(answerList);
         rvBigqueResultList.setAdapter(bigResultAdapter);
     }
 

@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
@@ -58,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessag
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.MiddleResult;
@@ -1251,7 +1253,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         XESToastUtils.showToastAtCenter("该题已作答过~");
                     }
                 }
-                showScienceAnswerResult(isforce);
+                if (detailInfo.isExper()) {
+                    showScienceAnswerResultExper(isforce);
+                } else {
+                    showScienceAnswerResult(isforce);
+                }
                 onSubmitSuccess(isforce);
             }
 
@@ -1911,6 +1917,37 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             }, "xesApp");
             wvSubjectWeb.loadUrl(url);
         }
+    }
+
+    private void showScienceAnswerResultExper(final int isforce) {
+        rlCourseControl.setVisibility(View.GONE);
+        //小学理科 走原生结果页
+        mLogtf.d(SysLogLable.fetchAnswerStart, "showScienceAnswerResult:isforce=" + isforce);
+        englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0, new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                loadResult = true;
+                PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
+                mGoldNum = entity.getGold();
+                if (allowTeamPk) {
+                    mEnergyNum = isforce == 0 ? entity.getEnergy() : 0;
+                }
+                mLogtf.d(SysLogLable.fetchAnswerSuccess, "showScienceAnswerResult:mGoldNum=" + mGoldNum + ",mEnergyNum=" + mEnergyNum);
+                // 对外暴露答题结果
+                broadCastAnswerRestult(entity);
+
+                int isGame = newCourseSec.getIsGame();
+                ExperCourseResultPager primaryScienceAnserResultPager = new ExperCourseResultPager(mContext, liveViewAction, entity);
+                primaryScienceAnserResultPager.setOnPagerClose(new OnPagerClose() {
+                    @Override
+                    public void onClose(LiveBasePager basePager) {
+                        onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity());
+                    }
+                });
+                ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, 0, detailInfo.isTUtor());
+            }
+        });
     }
 
     /**

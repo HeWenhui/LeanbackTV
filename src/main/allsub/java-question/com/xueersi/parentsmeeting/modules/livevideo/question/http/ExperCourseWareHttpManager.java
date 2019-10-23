@@ -163,7 +163,7 @@ public class ExperCourseWareHttpManager {
         httpRequestParams.addBodyParam("classTestId", "" + classTestId);
         httpRequestParams.addBodyParam("packageId", "" + packageId);
         httpRequestParams.addBodyParam("packageAttr", "" + packageAttr);
-        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
+        httpRequestParams.addBodyParam("isPlayBack", "0");
         HttpCallBack httpCallBack = new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

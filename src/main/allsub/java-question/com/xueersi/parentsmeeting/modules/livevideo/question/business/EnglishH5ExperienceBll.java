@@ -122,6 +122,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 englishH5Entity.setNewEnglishH5(true);
 //                liveGetInfo.setEducationStage(LiveVideoConfig.EDUCATION_STAGE_3);
                 videoQuestionLiveEntity.setEducationstage(LiveVideoConfig.EDUCATION_STAGE_1);
+                videoQuestionLiveEntity.setExper(true);
                 try {
                     JSONObject jsonObject = new JSONObject(questionEntity.getName());
                     String classTestId = jsonObject.optString("ctId");

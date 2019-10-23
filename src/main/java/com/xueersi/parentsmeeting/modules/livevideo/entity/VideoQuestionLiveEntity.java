@@ -64,7 +64,10 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private String answerDay;
     /** 体验课订单ID */
     private String termId;
+    /** 直播还是回放*/
     private boolean isLive = true;
+    /** 体验课题目*/
+    private boolean isExper = false;
     /** H5语音答题的题型*/
     public String voiceType;
     /**
@@ -250,6 +253,14 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setLive(boolean live) {
         isLive = live;
+    }
+
+    public void setExper(boolean exper) {
+        isExper = exper;
+    }
+
+    public boolean isExper() {
+        return isExper;
     }
 
     public void setOnlineTechEntity(H5OnlineTechEntity onlineTechEntity) {
