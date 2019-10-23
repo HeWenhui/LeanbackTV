@@ -80,6 +80,7 @@ import static com.xueersi.common.sharedata.ShareDataManager.SHAREDATA_NOT_CLEAR;
  * created  at 2018/6/20 10:32
  */
 public class LiveBll2 extends BaseBll implements TeacherIsPresent {
+
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /**
      * 需处理 topic 业务集合
