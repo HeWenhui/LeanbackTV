@@ -112,7 +112,7 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         webSetting.setUseWideViewPort(true);
         webSetting.setJavaScriptEnabled(true);
         webSetting.setDatabaseEnabled(true);
-        webSetting.setDomStorageEnabled(false);
+        webSetting.setDomStorageEnabled(true);
         webSetting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setBlockNetworkImage(false);
