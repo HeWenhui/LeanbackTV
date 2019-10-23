@@ -22,4 +22,7 @@ public class ExperLiveQueHttpConfig {
 
     /** 课件结果页-小学理科 */
     public static String LIVE_GET_STU_TESTS_RESULT = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/getStuTestResult";
+
+    /** 获取回放events */
+    public static String LIVE_GET_ENG_EVNET = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/getEngPlaybackEvents";
 }

@@ -483,6 +483,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                                 LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == videoQuestionEntity.getvCategory()) {
                             onOnPointClick(videoQuestionEntity, i);
                             break;
+                        } else if (LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == videoQuestionEntity.getvCategory() ||
+                                LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()) {
+                            onOnPointClick(videoQuestionEntity, i);
+                            break;
+
                         }
                     }
                 }
