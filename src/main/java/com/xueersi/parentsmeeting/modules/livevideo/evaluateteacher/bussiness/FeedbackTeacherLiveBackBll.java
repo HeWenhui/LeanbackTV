@@ -114,7 +114,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
 
     }
     private void checkIfShowFeedback(){
-        mHttpManager.checkFeedBack(liveGetInfo.getId(), liveGetInfo.getStudentLiveInfo().getCourseId(), new HttpCallBack(true) {
+        mHttpManager.checkFeedBack(liveGetInfo.getId(), liveGetInfo.getStudentLiveInfo().getCourseId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 int status = responseEntity.getmStatus();
