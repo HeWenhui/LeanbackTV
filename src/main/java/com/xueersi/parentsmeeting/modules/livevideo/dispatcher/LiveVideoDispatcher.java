@@ -449,6 +449,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             videoEntity.setGetChatRecordUrl(entity.getConfigs().getGetChatRecordUrl());
             videoEntity.setGetMetadataUrl(entity.getConfigs().getGetMetadataUrl());
             videoEntity.setInitModuleUrl(entity.getConfigs().getInitModuleUrl());
+            videoEntity.setIrcRoomsJson(entity.getConfigs().getIrcRoomsJson());
         }
 
         if (entity.getPlanInfo().getSubjectIds() != null && entity.getPlanInfo().getSubjectIds().size() > 0) {
