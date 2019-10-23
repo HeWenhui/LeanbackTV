@@ -149,7 +149,9 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
             } else if (isArts == LiveVideoSAConfig.ART_SEC) {
                 if (englishH5Entity.getNewEnglishH5()) {
                     String educationstage = liveGetInfo.getEducationStage();
-                    videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
+                    if (educationstage != null) {
+                        videoQuestionH5Entity.setEducationstage(educationstage);
+                    }
                     englishH5Entity.setDynamicurl(LiveHttpConfig.LIVE_HOST_SCIENCE + "/LiveExam/getCourseWareTestHtml");
                     if (LiveQueConfig.CHI_COURESWARE_TYPE_SPEAKING_CHINESE.equals(videoQuestionH5Entity.englishH5Entity.getPackageAttr())
                             && LiveVideoConfig.LIVE_TYPE_HALFBODY == liveGetInfo.getPattern()) {
@@ -164,7 +166,9 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
             if (liveGetInfo.isNewCourse()) {
                 if (isArts == LiveVideoSAConfig.ART_SEC) {
                     String educationstage = liveGetInfo.getEducationStage();
-                    videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
+                    if (educationstage != null) {
+                        videoQuestionH5Entity.setEducationstage(educationstage);
+                    }
                     if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
                         englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlZhongXueUrl());
                         if (englishH5Entity.getNewEnglishH5()) {
@@ -281,7 +285,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                         groupGameMultNativePager.setLivePagerBack(livePagerBack);
                         return groupGameMultNativePager;
 
-                    }else if(LiveQueConfig.EN_COURSE_TYPE_21.equals(type)){
+                    } else if (LiveQueConfig.EN_COURSE_TYPE_21.equals(type)) {
                         CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
                                 , isArts, false);

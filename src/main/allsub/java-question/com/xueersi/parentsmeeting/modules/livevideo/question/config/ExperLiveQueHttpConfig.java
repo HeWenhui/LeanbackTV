@@ -19,4 +19,7 @@ public class ExperLiveQueHttpConfig {
 
     /** 提交课件-理科 */
     public static String LIVE_SUBMIT_COURSEWARE = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/submitCourseWareTest";
+
+    /** 课件结果页-小学理科 */
+    public static String LIVE_GET_STU_TESTS_RESULT = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/getStuTestResult";
 }

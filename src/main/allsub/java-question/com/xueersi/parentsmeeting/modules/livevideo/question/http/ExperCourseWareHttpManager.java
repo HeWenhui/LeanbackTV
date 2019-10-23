@@ -188,18 +188,8 @@ public class ExperCourseWareHttpManager {
                 callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
         };
-        String url = "";
-        if (isTutor) {
-            url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TUTOR_RESULT;
-            liveHttpManager.sendPostDefault(url, httpRequestParams, httpCallBack);
-        } else if (arts == LiveVideoSAConfig.ART_SEC) {
-            url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT;
-            liveHttpManager.sendPostDefault(url, httpRequestParams, httpCallBack);
-        } else {
-            url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT_CN;
-            liveHttpManager.sendPostDefault(url, httpRequestParams, httpCallBack);
-
-        }
+        String url = ExperLiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT;
+        liveHttpManager.sendPostDefault(url, httpRequestParams, httpCallBack);
     }
 
     //语文主观题

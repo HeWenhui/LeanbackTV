@@ -120,6 +120,8 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 EnglishH5Entity englishH5Entity =
                         videoQuestionLiveEntity.englishH5Entity;
                 englishH5Entity.setNewEnglishH5(true);
+//                liveGetInfo.setEducationStage(LiveVideoConfig.EDUCATION_STAGE_3);
+                videoQuestionLiveEntity.setEducationstage(LiveVideoConfig.EDUCATION_STAGE_1);
                 try {
                     JSONObject jsonObject = new JSONObject(questionEntity.getName());
                     String classTestId = jsonObject.optString("ctId");
@@ -270,6 +272,16 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         @Override
         public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isPlayBack, AbstractBusinessDataCallBack callBack) {
             logger.d("getStuTestResult");
+            EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+            String[] res = getSrcType(englishH5Entity);
+            if ((LiveVideoConfig.EDUCATION_STAGE_3.equals(detailInfo.getEducationstage()) || LiveVideoConfig.EDUCATION_STAGE_4.equals(detailInfo.getEducationstage()))
+                    && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(englishH5Entity.getPackageAttr())) {
+                getCourseWareHttpManager().getStuChiAITestResult(liveGetInfo.getId(), liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
+                        englishH5Entity.getPackageAttr(), isPlayBack, liveGetInfo.getStudentLiveInfo().getClassId(), callBack);
+            } else {
+                getCourseWareHttpManager().getStuTestResult(liveGetInfo.getId(), liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
+                        englishH5Entity.getPackageAttr(), isPlayBack, callBack, detailInfo.isTUtor());
+            }
         }
     }
 
