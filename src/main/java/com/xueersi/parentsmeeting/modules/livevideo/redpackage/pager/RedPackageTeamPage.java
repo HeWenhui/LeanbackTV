@@ -17,11 +17,13 @@ import android.widget.TextView;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.RTCVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 
@@ -202,6 +204,11 @@ public class RedPackageTeamPage extends LiveBasePager {
                             redPackageAction.onPackageClose(operateId);
                         }
                     }, 4000);
+                }
+
+                RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(mContext, RTCVideoAction.class);
+                if (rtcVideoAction != null) {
+                    rtcVideoAction.updateGold(0,0,0);
                 }
             }
 

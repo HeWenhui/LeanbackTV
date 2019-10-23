@@ -368,7 +368,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
             if (isGroupClass()) {
                 int current = (int) currentPosition / 1000;
                 logger.d("onPlaying(): current = " + current + ", positon = " + positon);
-                if ((positon - current) > 3) {
+                if ((positon - current) > 10) {
                     seekGroupClass();
                 }
             }
