@@ -234,10 +234,11 @@ public class ExperCourseWareHttpManager {
 
     }
 
-    public void getTestInfos(String testIds, final AbstractBusinessDataCallBack callBack) {
+    public void getTestInfos(String stuId, String testIds, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.addBodyParam("testIds", testIds);
-        String url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS_EN;
+        httpRequestParams.addBodyParam("stuId", stuId);
+        String url = ExperLiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS_EN;
         liveHttpManager.sendPostDefault(url, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -269,7 +270,7 @@ public class ExperCourseWareHttpManager {
         httpRequestParams.addBodyParam("answers", answers);
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("isForce", "" + isForce);
-        liveHttpManager.sendPostDefault(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_EN, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(ExperLiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_EN, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getTestInfos:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());

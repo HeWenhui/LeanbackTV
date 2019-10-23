@@ -203,7 +203,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                             // 人为的划分H5Bll和QuestionBll: type为{"4", "0", "1", "2", "8", "5", "6"}的题型走QuestionBll,
                             // 将他们的category置为1001
                             if (questiongtype.contains(releasedArray.getJSONObject(0).optString("type"))) {
-                                questionEntity.setvCategory(1001);
+                                questionEntity.setvCategory(LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE);
                             }
                             // 设置QuestionType,文科回放打点中使用
                             questionEntity.setvQuestionType(releasedArray.getJSONObject(0).optString("type"));

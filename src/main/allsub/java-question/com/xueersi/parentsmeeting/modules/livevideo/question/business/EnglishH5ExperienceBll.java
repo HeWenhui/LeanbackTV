@@ -1,7 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -9,7 +11,9 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -20,24 +24,38 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.IntelligentRecognitionRecord;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.ExperCourseWareHttpManager;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTIONS_SHOW;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.PROCESS_RECORD_SIGN;
+import static com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig.EN_INTELLIGENT_EVALUTION;
 
 /**
  * Created by：WangDe on 2018/8/30 11:22
  */
 public class EnglishH5ExperienceBll extends LiveBackBaseBll {
-
+    String[] filters = {"4", "0", "1", "2", "8", "5", "6"};
+    /**
+     * ptType 过滤器
+     */
+    private List<String> ptTypeFilters = Arrays.asList(filters);
     EnglishH5CoursewareBll englishH5CoursewareBll;
     private ExperCourseWareHttpManager courseWareHttpManager;
     int isArts;
@@ -79,7 +97,8 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
 
     @Override
     public int[] getCategorys() {
-        return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE, LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE};
+        return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE, LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE,
+                LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE};
     }
 
     @Override
@@ -90,6 +109,15 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
                 englishH5CoursewareBll.onH5Courseware("off", videoQuestionLiveEntity);//关闭答题
             }
+            break;
+            case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE: {
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
+                videoQuestionLiveEntity.setExper(true);
+                EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+                englishH5Entity.setNewEnglishH5(true);
+                englishH5CoursewareBll.onH5Courseware("off", videoQuestionLiveEntity);
+            }
+            break;
         }
     }
 
@@ -140,6 +168,37 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 }
                 englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                 showQuestion.onShow(true, videoQuestionLiveEntity);
+            }
+            break;
+            case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
+                //LiveVideoConfig.isNewArts = true;
+                questionEntity.setNewArtsCourseware(true);
+                // mCurrentQuestionEntity.setNewArtsCourseware(true);
+                questionEntity.setAnswered(true);
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
+                        (questionEntity, vCategory);
+                if (ptTypeFilters.contains(videoQuestionLiveEntity.type) && !"1".equals(videoQuestionLiveEntity
+                        .getIsVoice())) {
+                    Loger.e("EnglishH5back", "====> return h5back");
+                    return;
+                }
+                videoQuestionLiveEntity.englishH5Entity.setArtsNewH5Courseware(true);
+                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTIONS_SHOW, videoQuestionLiveEntity));
+                englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
+                showQuestion.onShow(true, videoQuestionLiveEntity);
+                if (EN_INTELLIGENT_EVALUTION.equals(videoQuestionLiveEntity.type)) {
+                    Bundle bundle = new Bundle();
+                    IntelligentRecognitionRecord intelligentRecognitionRecord = new IntelligentRecognitionRecord();
+//                intelligentRecognitionRecord.setAnswerTime(questionEntity.get);
+                    intelligentRecognitionRecord.setStuId(liveGetInfo.getStuId());
+                    intelligentRecognitionRecord.setStuCouId(liveGetInfo.getStuCouId());
+                    intelligentRecognitionRecord.setLiveId(liveGetInfo.getId());
+                    intelligentRecognitionRecord.setMaterialId(videoQuestionLiveEntity.id);
+                    intelligentRecognitionRecord.setIsPlayBack("1");
+                    bundle.putParcelable(PROCESS_RECORD_SIGN, intelligentRecognitionRecord);
+                    XueErSiRouter.startModule(activity, "/aievaluation/intelligent_recognition", bundle);
+                    return;
+                }
             }
             break;
             default:
@@ -219,7 +278,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 if (LiveQueConfig.isGroupGame(detailInfo.type)) {
                     getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, liveGetInfo.getStuId(), detailInfo.type, callBack);
                 } else {
-                    getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
+                    getCourseWareHttpManager().getTestInfos(LiveAppUserInfo.getInstance().getStuId(),detailInfo.id, callBack);
                 }
             } else {
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
