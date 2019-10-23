@@ -15,5 +15,8 @@ public class ExperLiveQueHttpConfig {
     public static String LIVE_GET_COURSEWARE_TESTS_CN = LiveHttpConfig.HTTP_LIVE_CHINESE_HOST + "/LiveExam/getCourseWareTests";
     /** 获得课件-文理 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=30434055 */
     public static String LIVE_GET_COURSEWARE_TESTS_EN = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/v2/commonTestInfo/getTestInfos";
+//    http://student.xueersi.com/science/AutoLive/submitCourseWareTest
 
+    /** 提交课件-理科 */
+    public static String LIVE_SUBMIT_COURSEWARE = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/submitCourseWareTest";
 }

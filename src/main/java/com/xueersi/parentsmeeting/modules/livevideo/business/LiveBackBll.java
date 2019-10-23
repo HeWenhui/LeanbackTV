@@ -12,6 +12,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.AppMainHandler;
 import com.xueersi.lib.framework.utils.JsonUtil;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpAutoLive;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
@@ -271,6 +272,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
             mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         }
         mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
+        if (isExperience) {
+            Object obj = intent.getExtras().getSerializable("expAutoLive");
+            if (obj instanceof ExpAutoLive) {
+                ExpAutoLive expAutoLive = (ExpAutoLive) obj;
+                mHttpManager.addBodyParam("termId", expAutoLive.getTermId());
+            }
+        }
         if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {
             try {
                 HashMap<String, String> hashMap = new HashMap();

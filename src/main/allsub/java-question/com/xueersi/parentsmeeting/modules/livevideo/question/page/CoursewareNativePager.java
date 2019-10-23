@@ -1233,9 +1233,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime, testInfos.toString(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                JSONObject jsonObject = (JSONObject) objData[0];
-                if (jsonObject != null && jsonObject.optInt("toAnswered", 0) == 1) {
-                    XESToastUtils.showToastAtCenter("该题已作答过~");
+                Object object = objData[0];
+                //直播是json，体验课是true
+                if (object instanceof JSONObject) {
+                    JSONObject jsonObject = (JSONObject) object;
+                    if (jsonObject.optInt("toAnswered", 0) == 1) {
+                        XESToastUtils.showToastAtCenter("该题已作答过~");
+                    }
                 }
                 showScienceAnswerResult(isforce);
                 onSubmitSuccess(isforce);

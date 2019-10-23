@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -229,6 +230,30 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         @Override
         public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
             logger.d("submitCourseWareTests");
+            if (isArts == LiveVideoSAConfig.ART_EN && !detailInfo.isTUtor()) {
+//                if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
+//                    getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.voiceType, mGetInfo.getStuId(), 1, isforce, callBack);
+//                } else {
+//                    if (LiveQueConfig.getSubmitH5Types().contains(detailInfo.type)) {
+//                        getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.voiceType, mGetInfo.getStuId(), 1, isforce, callBack);
+//                    } else {
+//                        getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+//                    }
+//                }
+                if (LiveQueConfig.getSubmitMultiTestTypes().contains(detailInfo.getArtType())) {
+                    getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+                } else if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
+                    getCourseWareHttpManager().isSubmitH5Vote("" + testInfos, detailInfo.id, liveGetInfo.getStudentLiveInfo().getClassId(), liveGetInfo.getStuId(), 1, isforce, callBack);
+                } else {
+                    getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.getArtType(), liveGetInfo.getStuId(), 1, isforce, callBack);
+                }
+            } else {
+                EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+                String classId = liveGetInfo.getStudentLiveInfo().getClassId();
+                String[] res = getSrcType(englishH5Entity);
+                getCourseWareHttpManager().submitCourseWareTests(detailInfo, liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                        englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), nonce, testInfos, isforce, entranceTime, callBack);
+            }
         }
 
         @Override

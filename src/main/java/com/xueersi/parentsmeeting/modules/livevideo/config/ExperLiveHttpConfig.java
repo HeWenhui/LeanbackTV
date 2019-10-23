@@ -7,7 +7,7 @@ import com.xueersi.common.config.AppConfig;
 
 public class ExperLiveHttpConfig {
     /** live 域 */
-    public static String STUDENT_HOST = "http://student.xueersi.com/";
+    public static String STUDENT_HOST = "http://student.xueersi.com";
     /** live 域理科 */
     public static String LIVE_HOST_SCIENCE = STUDENT_HOST + "/" + ShareBusinessConfig.LIVE_SCIENCE;
     /** live 域文科 */
