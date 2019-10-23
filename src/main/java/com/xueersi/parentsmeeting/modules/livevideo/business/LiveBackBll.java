@@ -7,8 +7,10 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.AppMainHandler;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
@@ -138,12 +140,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
      */
     private Boolean isExperience;
     LiveDebugBigClassIml liveAndBackDebugIml;
+
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity);
         logger.setLogMethod(false);
         this.activity = activity;
         this.mVideoEntity = mVideoEntity;
-        if(!mVideoEntity.isBigLive()) {
+        if (!mVideoEntity.isBigLive()) {
             ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, this);
         }
         Intent intent = activity.getIntent();
@@ -245,8 +248,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                 }
             }
         }
-        if(mVideoEntity.isBigLive()) {
-            liveAndBackDebugIml  = new LiveDebugBigClassIml(activity, mLiveType, mVideoEntity.getLiveId(), mVideoEntity.getCourseId());
+        if (mVideoEntity.isBigLive()) {
+            liveAndBackDebugIml = new LiveDebugBigClassIml(activity, mLiveType, mVideoEntity.getLiveId(), mVideoEntity.getCourseId());
 
             ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, liveAndBackDebugIml);
 
@@ -342,8 +345,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
     public void onCreate() {
         LiveGetInfo liveGetInfo = new LiveGetInfo(new LiveTopic());
         mGetInfo = liveGetInfo;
-        if(liveAndBackDebugIml!=null) {
-            liveAndBackDebugIml.onGetInfo(mGetInfo,UmsConstants.LIVE_BUSINESS_APP_ID);
+        if (liveAndBackDebugIml != null) {
+            liveAndBackDebugIml.onGetInfo(mGetInfo, UmsConstants.LIVE_BUSINESS_APP_ID);
         }
         liveGetInfo.setId(mVideoEntity.getLiveId());
         liveGetInfo.setUname(LiveAppUserInfo.getInstance().getChildName());
@@ -380,11 +383,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         try {
             String[] subjectIds = new String[]{mVideoEntity.getSubjectId()};
             liveGetInfo.setSubjectIds(subjectIds);
-           String gradeIdStr =  mVideoEntity.getGradId();
-           if(!TextUtils.isEmpty(gradeIdStr)){
-               liveGetInfo.setGrade(Integer.parseInt(gradeIdStr));
-           }
-        }catch (Exception e){
+            String gradeIdStr = mVideoEntity.getGradId();
+            if (!TextUtils.isEmpty(gradeIdStr)) {
+                liveGetInfo.setGrade(Integer.parseInt(gradeIdStr));
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -439,6 +442,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                 }
                 mCourseHttpResponseParser.parseLiveGetInfo(liveInfo, liveGetInfo, mLiveType, isArts);
             }
+            boolean newCourse = mBaseActivity.getIntent().getBooleanExtra("newCourse", false);
+            if (newCourse) {
+                liveGetInfo.setNewCourse(true);
+            }
         } catch (Exception e) {
             logger.e("onCreate", e);
         }
@@ -454,13 +461,31 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         liveUidRx.setLiveGetInfo(liveGetInfo);
         liveUidRx.onCreate();
         addCommonData(true);
-
+        if (AppConfig.DEBUG) {
+            AppMainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+                    if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
+                        return;
+                    }
+                    for (int i = 0; i < lstVideoQuestion.size(); i++) {
+                        VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
+                        if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory() ||
+                                LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == videoQuestionEntity.getvCategory()) {
+                            onOnPointClick(videoQuestionEntity, i);
+                            break;
+                        }
+                    }
+                }
+            }, 1200);
+        }
     }
 
-    public void addCommonData(boolean isBase){
+    public void addCommonData(boolean isBase) {
         ArrayList<LiveBackBaseBll> templiveBackBaseBlls = new ArrayList<>(liveBackBaseBlls);
         for (LiveBackBaseBll liveBackBaseBll : templiveBackBaseBlls) {
-            if(liveBackBaseBll.getPluginId()==-1 && !isBase) {
+            if (liveBackBaseBll.getPluginId() == -1 && !isBase) {
                 continue;
             }
             liveBackBaseBll.onCreateF(mVideoEntity, mGetInfo, businessShareParamMap);
@@ -469,19 +494,19 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
     }
 
 
-
     /**
      * 大班整合添加 header 公共参数
+     *
      * @param liveGetInfo
      */
     private void addHttpDefaultParams(LiveGetInfo liveGetInfo) {
 
-        Log.e("ckTrac","=====>LiveBackBll_addHttpDefaultParams:"+liveGetInfo.isBigLive());
-        if(liveGetInfo != null && mHttpManager != null && liveGetInfo.isBigLive()){
-            mHttpManager.addHeaderParams("switch-grade",liveGetInfo.getGrade()+"");
-            String subjectId = (liveGetInfo.getSubjectIds()!= null && liveGetInfo.getSubjectIds().length >0)? liveGetInfo.getSubjectIds()[0]:"";
-            mHttpManager.addHeaderParams("switch-subject",subjectId);
-            mHttpManager.addHeaderParams("bizId",mLiveType+"");
+        Log.e("ckTrac", "=====>LiveBackBll_addHttpDefaultParams:" + liveGetInfo.isBigLive());
+        if (liveGetInfo != null && mHttpManager != null && liveGetInfo.isBigLive()) {
+            mHttpManager.addHeaderParams("switch-grade", liveGetInfo.getGrade() + "");
+            String subjectId = (liveGetInfo.getSubjectIds() != null && liveGetInfo.getSubjectIds().length > 0) ? liveGetInfo.getSubjectIds()[0] : "";
+            mHttpManager.addHeaderParams("switch-subject", subjectId);
+            mHttpManager.addHeaderParams("bizId", mLiveType + "");
         }
 
     }
@@ -1067,20 +1092,20 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         return mGetInfo;
     }
 
-    public void getGrayControl(LivePluginRequestParam param, final AbstractBusinessDataCallBack requestCallBack){
-        if(mGetInfo!=null && !TextUtils.isEmpty(mGetInfo.getInitModuleUrl())) {
+    public void getGrayControl(LivePluginRequestParam param, final AbstractBusinessDataCallBack requestCallBack) {
+        if (mGetInfo != null && !TextUtils.isEmpty(mGetInfo.getInitModuleUrl())) {
             param.url = mGetInfo.getInitModuleUrl();
         }
         mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                logger.d("getLivePluingConfigInfo"+responseEntity.getJsonObject().toString());
+                logger.d("getLivePluingConfigInfo" + responseEntity.getJsonObject().toString());
                 if (responseEntity != null) {
 
                     JSONObject json = (JSONObject) responseEntity.getJsonObject();
                     String jsonString = (String) responseEntity.getJsonObject().toString();
                     if (json != null) {
-                        LiveModuleConfigInfo  mLiveModuleConfigInfo = (LiveModuleConfigInfo) JsonUtil.jsonToObject(jsonString, LiveModuleConfigInfo.class);
+                        LiveModuleConfigInfo mLiveModuleConfigInfo = (LiveModuleConfigInfo) JsonUtil.jsonToObject(jsonString, LiveModuleConfigInfo.class);
                         mGetInfo.setLiveModuleConfigInfo(mLiveModuleConfigInfo);
                         if (!isEmpty(mLiveModuleConfigInfo)) {
                             requestCallBack.onDataSucess(mLiveModuleConfigInfo);

@@ -17,6 +17,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -76,7 +78,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
 
     @Override
     public int[] getCategorys() {
-        return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE};
+        return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE, LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE};
     }
 
     @Override
@@ -114,6 +116,24 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 LiveVideoConfig.LIVEPLAYBACKTEAMID = mVideoEntity.getTeamId();
                 LiveVideoConfig.LIVEPLAYBACKSTAGE = mVideoEntity.getEdustage();
                 VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
+                EnglishH5Entity englishH5Entity =
+                        videoQuestionLiveEntity.englishH5Entity;
+                englishH5Entity.setNewEnglishH5(true);
+                try {
+                    JSONObject jsonObject = new JSONObject(questionEntity.getName());
+                    String classTestId = jsonObject.optString("ctId");
+                    String packageAttr = jsonObject.optString("pAttr");
+                    String packageId = jsonObject.optString("pId");
+                    String packageSource = jsonObject.optString("pSrc");
+                    englishH5Entity.setReleasedPageInfos(questionEntity.getUrl());
+                    englishH5Entity.setClassTestId(classTestId);
+                    englishH5Entity.setPackageAttr(packageAttr);
+                    englishH5Entity.setPackageId(packageId);
+                    englishH5Entity.setPackageSource(packageSource);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                 showQuestion.onShow(true, videoQuestionLiveEntity);
             }

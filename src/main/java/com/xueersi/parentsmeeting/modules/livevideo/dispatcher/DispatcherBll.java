@@ -20,6 +20,7 @@ import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.AppMainHandler;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
@@ -300,7 +301,9 @@ public class DispatcherBll extends BaseBll {
                         bundle.putString("sex", entity.getSex());
                         bundle.putInt("pattern", videoEntity.getPattern());
                         bundle.putBoolean("isExperience", true);
-
+                        if (AppConfig.DEBUG) {
+                            bundle.putBoolean("newCourse", true);
+                        }
                         if (!"".equals(entity.getExamPaperUrl())) {
                             if (entity.getIsArts() == 1) {
                                 mShareDataManager.put(ShareBusinessConfig.SP_LIVE_EXAM_URL_LIBARTS, entity
@@ -497,31 +500,28 @@ public class DispatcherBll extends BaseBll {
 
     public void getPublic(final String courseName, final String courseId, final String teacherId,
                           final String gotoClassTime,
-                          final AbstractBusinessDataCallBack callBack,DataLoadEntity dataLoadEntity) {
+                          final AbstractBusinessDataCallBack callBack, DataLoadEntity dataLoadEntity) {
         if (dataLoadEntity == null) {
             dataLoadEntity = new DataLoadEntity(mContext);
         }
         postDataLoadEvent(dataLoadEntity.beginLoading());
         dispatcherHttpManager.publicLiveCourseQuestion(courseId, teacherId, gotoClassTime,
                 new HttpCallBack(dataLoadEntity) {
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                PublicEntity publicLiveCourseEntity =
-                        dispatcherHttpResponseParser.publicLiveCourseQuestionParser(responseEntity);
-                if (publicLiveCourseEntity != null) {
-                    publicLiveCourseEntity.setCourseId(courseId);
-                    publicLiveCourseEntity.setCourseName(courseName);
-                    publicLiveCourseEntity.setTeacherId(teacherId);
-                    if (!TextUtils.isEmpty(gotoClassTime) && TextUtils.isDigitsOnly(gotoClassTime)) {
-                        publicLiveCourseEntity.setGotoClassTime(Long.parseLong(gotoClassTime));
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        PublicEntity publicLiveCourseEntity =
+                                dispatcherHttpResponseParser.publicLiveCourseQuestionParser(responseEntity);
+                        if (publicLiveCourseEntity != null) {
+                            publicLiveCourseEntity.setCourseId(courseId);
+                            publicLiveCourseEntity.setCourseName(courseName);
+                            publicLiveCourseEntity.setTeacherId(teacherId);
+                            if (!TextUtils.isEmpty(gotoClassTime) && TextUtils.isDigitsOnly(gotoClassTime)) {
+                                publicLiveCourseEntity.setGotoClassTime(Long.parseLong(gotoClassTime));
+                            }
+                        }
+                        callBack.onDataSucess(publicLiveCourseEntity);
                     }
-                }
-                callBack.onDataSucess(publicLiveCourseEntity);
-            }
-        });
+                });
     }
-
-
-
 
 
     /**
@@ -532,8 +532,8 @@ public class DispatcherBll extends BaseBll {
      * @param stuCouId
      */
     public void getBigLivePublic(String planId, String bizeId, String
-            stuCouId, final AbstractBusinessDataCallBack callBack,DataLoadEntity dataLoadEntity) {
-        if(dataLoadEntity ==null) {
+            stuCouId, final AbstractBusinessDataCallBack callBack, DataLoadEntity dataLoadEntity) {
+        if (dataLoadEntity == null) {
             dataLoadEntity = new DataLoadEntity(mContext);
         }
         postDataLoadEvent(dataLoadEntity.beginLoading());
@@ -544,54 +544,55 @@ public class DispatcherBll extends BaseBll {
 
         dispatcherHttpManager.publicBigLivePlayBackEnter(iPlanId, iBizeId, iStuCouId,
                 new HttpCallBack(dataLoadEntity) {
-            public void onPmSuccess(ResponseEntity responseEntity) {
+                    public void onPmSuccess(ResponseEntity responseEntity) {
 
-                BigLivePlayBackEntity bigLivePlayBackEntity = dispatcherHttpResponseParser
-                        .praseBigLiveEnterPlayBack(responseEntity);
+                        BigLivePlayBackEntity bigLivePlayBackEntity = dispatcherHttpResponseParser
+                                .praseBigLiveEnterPlayBack(responseEntity);
 
-                if(bigLivePlayBackEntity != null){
-                    callBack.onDataSucess(bigLivePlayBackEntity);
-                }else{
-                    callBack.onDataFail(0,"数据解析失败");
-                }
+                        if (bigLivePlayBackEntity != null) {
+                            callBack.onDataSucess(bigLivePlayBackEntity);
+                        } else {
+                            callBack.onDataFail(0, "数据解析失败");
+                        }
 
-            }
-        });
+                    }
+                });
     }
 
     /**
      * 直播灰度场次
+     *
      * @param liveId
      * @param callBack
      */
-    public void publicLiveIsGrayLecture(final String liveId , final boolean isLive,
-                                        final AbstractBusinessDataCallBack callBack,final DataLoadEntity   dataLoadEntity) {
-            postDataLoadEvent(dataLoadEntity.beginLoading());
+    public void publicLiveIsGrayLecture(final String liveId, final boolean isLive,
+                                        final AbstractBusinessDataCallBack callBack, final DataLoadEntity dataLoadEntity) {
+        postDataLoadEvent(dataLoadEntity.beginLoading());
         //请求查询数据
-        dispatcherHttpManager.publicLiveIsGrayLecture( liveId,
+        dispatcherHttpManager.publicLiveIsGrayLecture(liveId,
                 new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         PublicLiveGrayEntity entity = new PublicLiveGrayEntity();
-                        int status =  dispatcherHttpResponseParser.parserPublicResult(responseEntity);
+                        int status = dispatcherHttpResponseParser.parserPublicResult(responseEntity);
                         entity.setStatus(status);
                         entity.setLive(isLive);
                         callBack.onDataSucess(entity);
-                        if(isLive) {
+                        if (isLive) {
                             EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataSuccess()));
                         }
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        callBack.onDataFail(-1,msg);
-                            EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataSuccess()));
+                        callBack.onDataFail(-1, msg);
+                        EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataSuccess()));
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        callBack.onDataFail(-1,responseEntity.getErrorMsg());
-                            EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataSuccess()));
+                        callBack.onDataFail(-1, responseEntity.getErrorMsg());
+                        EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(dataLoadEntity.webDataSuccess()));
                     }
                 });
 

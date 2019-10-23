@@ -707,6 +707,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     questionEntity.setvQuestionInsretTime(questionJson.optInt("begintime"));
                     questionEntity.setAnswerDay(questionJson.optString("date"));
                     questionEntity.setvEndTime(questionJson.optInt("endtime"));
+                    questionEntity.setUrl(questionJson.optString("url"));
+                    questionEntity.setName(questionJson.optString("type"));
                     questionEntity.setvQuestionType(questionJson.optString("type"));
                     questionEntity.setCourseExtInfo(questionJson.optString("type"));
                     questionEntity.setReleasedPageInfos(questionJson.optString("url"));
