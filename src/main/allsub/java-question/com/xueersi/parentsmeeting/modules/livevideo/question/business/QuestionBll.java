@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
@@ -788,7 +787,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                                                         baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
                                         rlQuestionContent.removeView(baseEnglishH5CoursewarePager.getRootView());
                                     }
-                                }, "0", LiveVideoSAConfig.ART_EN, false);
+                                }, "0", LiveVideoSAConfig.ART_EN, false, liveViewAction);
                                 if (questionHttp instanceof EnglishH5CoursewareSecHttp) {
                                     questionWebPager.setEnglishH5CoursewareSecHttp((EnglishH5CoursewareSecHttp)
                                             questionHttp);

@@ -551,7 +551,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
             }
         };
         h5CoursewarePager = baseEnglishH5CoursewareCreat.creat(context, videoQuestionH5Entity, onH5ResultClose,
-                mVSectionID);
+                mVSectionID, liveViewAction);
         if (h5CoursewarePager != null && !(h5CoursewarePager instanceof IntelligentEvaluationH5Pager)) {
             h5CoursewarePager.setEnglishH5CoursewareBll(this);
             if (mLiveBll instanceof EnglishH5CoursewareSecHttp) {
