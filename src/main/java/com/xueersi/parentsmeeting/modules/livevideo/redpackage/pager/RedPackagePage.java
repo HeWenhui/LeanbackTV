@@ -53,6 +53,7 @@ public class RedPackagePage extends LiveBasePager {
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
     private ImageView rlLivevideoRedpackageBg;
     private ImageView ivLivevideoRedpackageBg;
+    private ImageView ivClickArea;
     private RelativeLayout rlLivevideoRedpackageTeams;
     GoldTeamStatus goldTeamStatus;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
@@ -105,6 +106,7 @@ public class RedPackagePage extends LiveBasePager {
         rlLivevideoRedpackageBg = mView.findViewById(R.id.rl_livevideo_redpackage_bg);
         LayoutParamsUtil.setViewFullScreen(rlLivevideoRedpackageBg);
         ivLivevideoRedpackageBg = mView.findViewById(R.id.iv_livevideo_redpackage_bg);
+        ivClickArea = mView.findViewById(R.id.iv_livevideo_redpackage_click_area);
         rlLivevideoRedpackageTeams = mView.findViewById(R.id.rl_livevideo_redpackage_teams);
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
@@ -232,6 +234,18 @@ public class RedPackagePage extends LiveBasePager {
                             public void onAnimationStart() {
                                 StandLiveMethod.voiceSiu(soundPool);
                                 redPackageAction.onPackageRight(operateId);
+                            }
+
+                            @Override
+                            public void onAnimationEnd() {
+                                rlLivevideoRedpackageBg.setVisibility(View.GONE);
+//                                        initResult2();
+                                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivLivevideoRedpackageBg.getLayoutParams();
+                                lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                                lp.rightMargin = 40;
+                                LayoutParamsUtil.setViewLayoutParams(ivLivevideoRedpackageBg, lp);
+                                btframeAnimationFile7 = createFromAees(file7, true);
+                                frameAnimations.add(btframeAnimationFile7);
                                 ivLivevideoRedpackageBg.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -255,29 +269,17 @@ public class RedPackagePage extends LiveBasePager {
                             }
 
                             @Override
-                            public void onAnimationEnd() {
-                                rlLivevideoRedpackageBg.setVisibility(View.GONE);
-//                                        initResult2();
-                                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivLivevideoRedpackageBg.getLayoutParams();
-                                lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                                lp.rightMargin = 40;
-                                LayoutParamsUtil.setViewLayoutParams(ivLivevideoRedpackageBg, lp);
-                                btframeAnimationFile7 = createFromAees(file7, true);
-                                frameAnimations.add(btframeAnimationFile7);
-                            }
-
-                            @Override
                             public void onAnimationRepeat() {
 
                             }
                         });
                     }
-                }, 3400);
-                ivLivevideoRedpackageBg.setOnClickListener(new View.OnClickListener() {
+                }, 8400);
+                ivClickArea.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         click.set(true);
-                        ivLivevideoRedpackageBg.setOnClickListener(null);
+                        ivClickArea.setOnClickListener(null);
                         logger.d("onPackageClick:operateId=" + operateId);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
