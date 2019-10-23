@@ -172,6 +172,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             // addView(pager.getRootView(), params);
             addView(pagerNew.getRootView(), params);
+            pagerNew.startLoading();
             return true;
         } else {
             return false;
