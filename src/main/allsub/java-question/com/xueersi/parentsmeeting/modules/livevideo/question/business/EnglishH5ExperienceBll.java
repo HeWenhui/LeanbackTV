@@ -429,7 +429,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                         englishH5Entity.getPackageAttr(), isPlayBack, liveGetInfo.getStudentLiveInfo().getClassId(), callBack);
             } else {
                 getCourseWareHttpManager().getStuTestResult(liveGetInfo.getId(), liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
-                        englishH5Entity.getPackageAttr(), isPlayBack, callBack, detailInfo.isTUtor());
+                        englishH5Entity.getPackageAttr(), englishH5Entity.getPackageSource(), isPlayBack, callBack, detailInfo.isTUtor());
             }
         }
     }

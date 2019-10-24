@@ -479,21 +479,28 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
                         return;
                     }
+                    int count = 0;
                     for (int i = 0; i < lstVideoQuestion.size(); i++) {
                         VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
                         if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory() ||
                                 LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == videoQuestionEntity.getvCategory()) {
-                            onOnPointClick(videoQuestionEntity, i);
-                            break;
+                            count++;
+                            if (count == 21) {
+                                onOnPointClick(videoQuestionEntity, i);
+                                break;
+                            }
                         } else if (LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == videoQuestionEntity.getvCategory() ||
                                 LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()) {
                             List<ReleaseedInfos> releaseInfos = videoQuestionEntity.getReleaseInfos();
                             if (!releaseInfos.isEmpty()) {
                                 ReleaseedInfos releaseedInfos = releaseInfos.get(0);
                                 String type = releaseedInfos.getType();
-                                if ("12".equals(type)) {
-                                    onOnPointClick(videoQuestionEntity, i);
-                                    break;
+                                if (LiveQueConfig.EN_COURSE_TYPE_SPEECH.equals(type)) {
+                                    count++;
+                                    if (count == 2) {
+                                        onOnPointClick(videoQuestionEntity, i);
+                                        break;
+                                    }
                                 }
                             }
 //                            onOnPointClick(videoQuestionEntity, i);

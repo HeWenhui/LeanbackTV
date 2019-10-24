@@ -155,7 +155,7 @@ public class ExperCourseWareHttpManager {
      * <p>
      * 请求学生作答情况列表
      */
-    public void getStuTestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
+    public void getStuTestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, String packageSource, int isPlayBack,
                                  final AbstractBusinessDataCallBack callBack, boolean isTutor) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.addBodyParam("liveId", liveId);
@@ -165,6 +165,7 @@ public class ExperCourseWareHttpManager {
         httpRequestParams.addBodyParam("classTestId", "" + classTestId);
         httpRequestParams.addBodyParam("packageId", "" + packageId);
         httpRequestParams.addBodyParam("packageAttr", "" + packageAttr);
+        httpRequestParams.addBodyParam("packageSource", packageSource);
         httpRequestParams.addBodyParam("isPlayBack", "0");
         HttpCallBack httpCallBack = new HttpCallBack(false) {
             @Override

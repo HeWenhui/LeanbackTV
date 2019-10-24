@@ -1171,7 +1171,21 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                                 jsonObject.put("userAnswerContent", array);
                             }
                         } else {
-                            jsonObject.put("userAnswerContent", jsonObject.get("userAnswerContent"));
+                            Object obiect = jsonObject.get("userAnswerContent");
+                            if (detailInfo.isExper()) {
+                                if ("".equals(obiect)) {
+                                    JSONArray array = new JSONArray();
+                                    JSONObject emptyJson = new JSONObject();
+                                    emptyJson.put("id", "");
+                                    emptyJson.put("text", "");
+                                    array.put(emptyJson);
+                                    jsonObject.put("userAnswerContent", array);
+                                } else {
+                                    jsonObject.put("userAnswerContent", obiect);
+                                }
+                            } else {
+                                jsonObject.put("userAnswerContent", obiect);
+                            }
                         }
                         if (!jsonObject.has("rightnum")) {
                             jsonObject.put("rightnum", 0);
@@ -1404,10 +1418,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
                 newCourseSec = (NewCourseSec) objData[0];
                 logger.d("onDataSucess:time=" + (newCourseSec.getEndTime() - newCourseSec.getReleaseTime()));
-                if (newCourseSec.getIsAnswer() == 1 && !isPlayBack) {
+                if (newCourseSec.getIsAnswer() == 1 && (!isPlayBack || detailInfo.isExper())) {
                     rlSubjectLoading.setVisibility(View.GONE);
                     preLoad.onStop();
-                    showScienceAnswerResult(0);
+                    if (detailInfo.isExper()) {
+                        showScienceAnswerResultExper(0);
+                    } else {
+                        showScienceAnswerResult(0);
+                    }
                 } else {
                     tests = newCourseSec.getTests();
                     if (tests.isEmpty()) {
