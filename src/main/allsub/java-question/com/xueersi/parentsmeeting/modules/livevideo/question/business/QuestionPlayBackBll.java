@@ -9,7 +9,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -213,7 +212,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
                 if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !"1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                     logger.i("走人机start,拉取试题");
-                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), liveBackBll, liveGetInfo, false);
+                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), liveBackBll, liveGetInfo, false, getLiveHttpAction());
                     questionBll.setRolePlayMachineAction(rolePlayerBll, null);
 
                 }
@@ -304,7 +303,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         logger.i("yzl_showQuestion type = " + videoQuestionLiveEntity.type);
                         if (LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY.equals(videoQuestionLiveEntity.type)) {
                             logger.i("yzl_init new rolePlay bll");
-                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), liveBackBll, liveGetInfo, false);
+                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), liveBackBll, liveGetInfo, false, getLiveHttpAction());
                             questionBll.setRolePlayMachineAction(rolePlayerBll, null);
                         }
                         videoQuestionLiveEntity.setNewArtsCourseware(true);

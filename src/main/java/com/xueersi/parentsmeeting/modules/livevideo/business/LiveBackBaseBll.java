@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePlu
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
@@ -115,6 +116,14 @@ public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
 
     public LiveHttpManager getmHttpManager() {
         return liveBackBll.getmHttpManager();
+    }
+
+    /**
+     * 获取网络请求对象
+     */
+    protected final LiveHttpAction getLiveHttpAction() {
+        LiveHttpAction liveHttpAction = liveBackBll.getmHttpManager();
+        return liveHttpAction;
     }
 
     protected void onRestart() {

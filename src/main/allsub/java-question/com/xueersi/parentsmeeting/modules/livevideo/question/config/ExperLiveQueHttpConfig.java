@@ -26,9 +26,11 @@ public class ExperLiveQueHttpConfig {
     /** 获取回放events */
     public static String LIVE_GET_ENG_EVNET = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/getEngPlaybackEvents";
 
-    /** 提交课件-英语*/
+    /** 提交课件-英语 */
     public static String LIVE_SUBMIT_COURSEWARE_EN = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/commonSubmitMultiTest";
 
-    /** 文科新课件平台RolePlay获取题目信息 */
+    /** 文科新课件平台RolePlay获取题目信息 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=30434055 */
     public static String URL_ROLEPLAY_NEWARTS_TESTINFOS = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/getRolePlayEng";
+    /** 文科新课件平台提交接口 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=30434055 */
+    public static String URL_ROLEPLAY_NEWARTS_RESULT = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/submitRolePlayEng";
 }

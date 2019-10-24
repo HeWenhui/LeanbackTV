@@ -385,10 +385,11 @@ public class QuestionExperienceBll extends LiveBackBaseBll {
                 logger.i("yzl_showQuestion type = " + videoQuestionLiveEntity.type);
                 if ("5".equals(videoQuestionLiveEntity.type)) {
                     logger.i("yzl_init new rolePlay bll");
-                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), liveBackBll, liveGetInfo, false);
+                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), liveBackBll, liveGetInfo, false, getLiveHttpAction());
                     questionBll.setRolePlayMachineAction(rolePlayerBll, null);
                 }
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
+                videoQuestionLiveEntity.setExper(true);
                 videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 videoQuestionLiveEntity.setLive(false);
