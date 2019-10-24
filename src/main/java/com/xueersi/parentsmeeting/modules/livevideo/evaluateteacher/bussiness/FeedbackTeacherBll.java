@@ -98,19 +98,27 @@ public class FeedbackTeacherBll extends LiveBaseBll {
                     int is_trigger = jsonObject.optInt("isTrigger");
                     String url = null;
                     if (is_trigger == 1) {
-                        if (mGetInfo.getEducationStage() != null && (mGetInfo.getEducationStage().equals("4") || mGetInfo.getEducationStage().equals("3"))) {
-                            //高中
-                            url = jsonObject.getJSONObject("app").optString("highSchool");
-                        } else {
-                            if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
-                                //英语
+                        url = jsonObject.getJSONObject("app").optString("highSchool");
+
+                        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
+                            //英语
+                            if (mGetInfo.getSmallEnglish()) {
+                                //小学英语
                                 url = jsonObject.getJSONObject("app").optString("english");
-                            } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
-                                //理科
-                                url = jsonObject.getJSONObject("app").optString("science");
-                            } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
-                                //语文
+                            }
+
+
+                        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
+                            //语文
+                            if (mGetInfo.getUseSkin() == 2) {
                                 url = jsonObject.getJSONObject("app").optString("chinese");
+                            }
+                        } else {
+                            if (mGetInfo.getUseSkin() == 2) {
+                                url = jsonObject.getJSONObject("app").optString("chinese");
+                            } else if (mGetInfo.getIsPrimarySchool() == 1) {
+                                //小学理科
+                                url = jsonObject.getJSONObject("app").optString("science");
                             }
                         }
                         url = url+"?courseId="+mGetInfo.getStudentLiveInfo().getCourseId()+"&planId="+mLiveId;

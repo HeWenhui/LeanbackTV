@@ -124,21 +124,30 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
                     int is_trigger = jsonObject.optInt("isTrigger");
                     String url = null;
                     if (is_trigger == 1) {
-                        if (liveGetInfo.getEducationStage() != null && (liveGetInfo.getEducationStage().equals("4") || liveGetInfo.getEducationStage().equals("3"))) {
-                            //高中,初中
-                            url = jsonObject.getJSONObject("app").optString("highSchool");
-                        } else {
-                            if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
-                                //英语
+                        url = jsonObject.getJSONObject("app").optString("highSchool");
+
+                        if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
+                            //英语
+                            if (liveGetInfo.getSmallEnglish()) {
+                                //小学英语
                                 url = jsonObject.getJSONObject("app").optString("english");
-                            } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
-                                //理科
-                                url = jsonObject.getJSONObject("app").optString("science");
-                            } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
-                                //语文
+                            }
+
+
+                        } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
+                            //语文
+                            if (liveGetInfo.getUseSkin() == 2) {
                                 url = jsonObject.getJSONObject("app").optString("chinese");
                             }
+                        } else {
+                            if (liveGetInfo.getUseSkin() == 2) {
+                                url = jsonObject.getJSONObject("app").optString("chinese");
+                            } else if (liveGetInfo.getIsPrimarySchool() == 1) {
+                                //小学理科
+                                url = jsonObject.getJSONObject("app").optString("science");
+                            }
                         }
+
                         url = url+"?courseId="+liveGetInfo.getStudentLiveInfo().getCourseId()+"&planId="+liveGetInfo.getId();
                         pagerNew = new LiveFeedBackSecondPager(mContext, liveGetInfo, url);
                         pagerNew.setOnPagerClose(onPagerClose);
