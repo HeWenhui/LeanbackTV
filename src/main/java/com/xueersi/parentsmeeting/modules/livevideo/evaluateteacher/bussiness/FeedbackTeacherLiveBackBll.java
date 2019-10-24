@@ -114,7 +114,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
 
     }
     private void checkIfShowFeedback(){
-        mHttpManager.checkFeedBack(liveGetInfo.getId(), liveGetInfo.getStudentLiveInfo().getCourseId(), new HttpCallBack(true) {
+        mHttpManager.checkFeedBack(liveGetInfo.getId(), liveGetInfo.getStudentLiveInfo().getCourseId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 int status = responseEntity.getmStatus();
@@ -124,7 +124,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
                     int is_trigger = jsonObject.optInt("isTrigger");
                     String url = null;
                     if (is_trigger == 1) {
-                        if (liveGetInfo.getEducationStage().equals("4") || liveGetInfo.getEducationStage().equals("3")) {
+                        if (liveGetInfo.getEducationStage() != null && (liveGetInfo.getEducationStage().equals("4") || liveGetInfo.getEducationStage().equals("3"))) {
                             //高中,初中
                             url = jsonObject.getJSONObject("app").optString("highSchool");
                         } else {
