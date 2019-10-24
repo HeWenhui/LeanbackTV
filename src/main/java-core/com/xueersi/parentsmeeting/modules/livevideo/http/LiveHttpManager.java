@@ -17,6 +17,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
@@ -55,7 +56,7 @@ import okhttp3.Response;
 /**
  * 直播网络访问类
  */
-public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction {
+public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,LiveHttpDelayAction{
     String TAG = "LiveHttpManager";
     private final Logger logger = LoggerFactory.getLogger(TAG);
     HashMap<String, String> defaultKey = new HashMap<>();
@@ -67,6 +68,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
 
     LiveVideoSAConfig.Inner liveVideoSAConfigInner;
     private LiveVideoSAConfig liveVideoSAConfig;
+    private Handler mDelayHandler = new Handler();
 
     public LiveHttpManager(Context context) {
         super(context);
@@ -154,6 +156,79 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.setJson(JsonUtil.toJson(paramObject));
         sendJsonPostDefault(url,httpRequestParams,httpCallBack);
+    }
+
+
+    /**
+     * 延迟发送请求
+     *
+     * @param url
+     * @param httpRequestParams
+     * @param delayTime         延迟时间 毫秒
+     * @param httpCallBack
+     */
+    @Override
+    public void sendPostDefault(final String url, final HttpRequestParams httpRequestParams, final long delayTime,
+                                final HttpCallBack httpCallBack) {
+        if (delayTime > 0) {
+            mDelayHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    sendPostDefault(url,httpRequestParams,httpCallBack);
+                }
+            }, delayTime);
+        }else {
+            sendPostDefault(url,httpRequestParams,httpCallBack);
+        }
+
+    }
+
+    /**
+     * 延迟发送请求
+     *
+     * @param url
+     * @param paramObject
+     * @param delayTime    延迟时间 毫秒为单位
+     * @param httpCallBack
+     */
+    @Override
+    public void sendJsonPost(final String url, final Object paramObject, long delayTime,
+                             final HttpCallBack httpCallBack) {
+        if (delayTime > 0) {
+            mDelayHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    sendJsonPost(url,paramObject,httpCallBack);
+                }
+            }, delayTime);
+        }else {
+            sendJsonPost(url,paramObject,httpCallBack);
+        }
+
+    }
+
+    /**
+     * 延迟发送请求
+     *
+     * @param url
+     * @param httpRequestParams
+     * @param delayTime   延迟时间 毫秒
+     * @param httpCallBack
+     */
+    @Override
+    public void sendJsonPostDefault(final String url, final HttpRequestParams httpRequestParams,
+                                    long delayTime, final HttpCallBack httpCallBack) {
+        if (delayTime > 0) {
+            mDelayHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    sendJsonPostDefault(url,httpRequestParams,httpCallBack);
+                }
+            }, delayTime);
+        }else {
+            sendJsonPostDefault(url,httpRequestParams,httpCallBack);
+        }
+
     }
 
     /**
