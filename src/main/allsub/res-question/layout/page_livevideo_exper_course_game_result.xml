@@ -6,10 +6,9 @@
 
     <ImageView
         android:id="@id/iv_livevideo_expe_course_game_result"
-        android:layout_width="wrap_content"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/bg_livevideo_expe_course_game_result_right" />
+        android:layout_centerInParent="true" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_expe_course_game_result"
@@ -33,6 +32,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="奖励1金币" />
+            android:text="奖励1金币"
+            android:textSize="18dp" />
     </RelativeLayout>
 </RelativeLayout>

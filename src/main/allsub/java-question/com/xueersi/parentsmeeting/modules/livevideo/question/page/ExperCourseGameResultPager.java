@@ -27,6 +27,7 @@ public class ExperCourseGameResultPager extends LiveBasePager {
     private PrimaryScienceAnswerResultEntity entity;
     List<PrimaryScienceAnswerResultEntity.Answer> answerList;
     private LiveViewAction liveViewAction;
+    private ImageView iv_livevideo_expe_course_game_result;
     private TextView tv_livevideo_expe_course_game_result;
 
     public ExperCourseGameResultPager(Context context, LiveViewAction liveViewAction, PrimaryScienceAnswerResultEntity entity) {
@@ -42,6 +43,7 @@ public class ExperCourseGameResultPager extends LiveBasePager {
     @Override
     public View initView() {
         mView = liveViewAction.inflateView(R.layout.page_livevideo_exper_course_game_result);
+        iv_livevideo_expe_course_game_result = mView.findViewById(R.id.iv_livevideo_expe_course_game_result);
         tv_livevideo_expe_course_game_result = mView.findViewById(R.id.tv_livevideo_expe_course_game_result);
         return mView;
     }
@@ -51,9 +53,11 @@ public class ExperCourseGameResultPager extends LiveBasePager {
         super.initData();
         int isRight = entity.getType();
         if (isRight == PrimaryScienceAnswerResultEntity.ABSLUTELY_WRONG) {
+            iv_livevideo_expe_course_game_result.setImageResource(R.drawable.bg_livevideo_expe_course_game_result_wrong);
             tv_livevideo_expe_course_game_result.setText("下次记得提交哟");
             tv_livevideo_expe_course_game_result.setTextColor(0xff666666);
         } else if (isRight == PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT) {
+            iv_livevideo_expe_course_game_result.setImageResource(R.drawable.bg_livevideo_expe_course_game_result_right);
             tv_livevideo_expe_course_game_result.setTextColor(0xff666666);
             SpannableStringBuilder total = new SpannableStringBuilder("奖励");
             SpannableString daySpan = new SpannableString(entity.getGold() + "");

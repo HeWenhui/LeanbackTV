@@ -453,7 +453,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                 mCourseHttpResponseParser.parseLiveGetInfo(liveInfo, liveGetInfo, mLiveType, isArts);
             }
             boolean newCourse = mBaseActivity.getIntent().getBooleanExtra("newCourse", false);
-            if (newCourse) {
+            if (newCourse || isExperience) {
                 liveGetInfo.setNewCourse(true);
             }
         } catch (Exception e) {
@@ -491,7 +491,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                             if (!releaseInfos.isEmpty()) {
                                 ReleaseedInfos releaseedInfos = releaseInfos.get(0);
                                 String type = releaseedInfos.getType();
-                                if ("15".equals(type)) {
+                                if ("12".equals(type)) {
                                     onOnPointClick(videoQuestionEntity, i);
                                     break;
                                 }

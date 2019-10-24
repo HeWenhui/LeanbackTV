@@ -185,6 +185,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                     Loger.e("EnglishH5back", "====> return h5back");
                     return;
                 }
+                videoQuestionLiveEntity.setExper(true);
                 videoQuestionLiveEntity.englishH5Entity.setArtsNewH5Courseware(true);
                 EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTIONS_SHOW, videoQuestionLiveEntity));
                 englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);

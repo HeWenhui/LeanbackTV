@@ -1014,62 +1014,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime, "" + userAnswerArray, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                JSONObject jsonObject = (JSONObject) objData[0];
                 rlCourseControl.setVisibility(View.GONE);
                 loadResult = true;
-                JSONObject jsonObject1 = new JSONObject();
-                try {
-                    jsonObject1.put("stat", 1);
-                    jsonObject1.put("data", jsonObject);
-                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
-                        Boolean isSubmitVote = (Boolean) objData[1];
-                        if (isSubmitVote && !isPlayBack) {
-                            String msg = jsonObject.optString("msg");
-                            if (!TextUtils.isEmpty(msg))
-                                XESToastUtils.showToast(mContext, msg);
-                            jsonObject1.put("gold", 0);
-                        } else {
-                            jsonObject1.put("gold", detailInfo.gold);
-                        }
-                        jsonObject1.put("answerData", userAnswerArray);
-                        jsonObject1.put("optionTitle", optionTitle);
-                        jsonObject1.put("isForce", isforce);
-                        jsonObject1.put("isPlayBack", isPlayBack);
-                    }
-                    ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
-                    artsAnswerResultEvent.setDetailInfo(detailInfo);
-                    artsAnswerResultEvent.setIspreload(ispreload);
-                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
-                        if (isPlayBack) {
-                            ViewGroup group = (ViewGroup) mView.getParent();
-                            artsAnswerResultEvent.setAnswerResultStateListener(new AnswerResultStateListener() {
-                                @Override
-                                public void onCompeletShow() {
-
-                                }
-
-                                @Override
-                                public void onAutoClose(BasePager basePager) {
-                                    onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
-                                }
-
-                                @Override
-                                public void onCloseByUser() {
-                                    onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
-                                }
-
-                                @Override
-                                public void onUpdateVoteFoldCount(String count) {
-
-                                }
-                            });
-                        } else {
-                            onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
-                        }
-                    }
-                    EventBus.getDefault().post(artsAnswerResultEvent);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (detailInfo.isExper()) {
+                    showEngAnswerResultExper(isforce, userAnswerArray, objData);
+                } else {
+                    showEngAnswerResult(isforce, userAnswerArray, objData);
                 }
                 onSubmitSuccess(isforce);
             }
@@ -1270,6 +1220,89 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 //                wvSubjectWeb.loadUrl(url);
             }
         });
+    }
+
+    private void showEngAnswerResultExper(final int isforce, JSONArray userAnswerArray, Object... objData) {
+        if (LiveQueConfig.EN_COURSE_TYPE_GAME.equals(detailInfo.getArtType())) {
+            JSONObject jsonObject = (JSONObject) objData[0];
+            PrimaryScienceAnswerResultEntity entity = new PrimaryScienceAnswerResultEntity();
+            try {
+                JSONObject totalObj = jsonObject.getJSONObject("total");
+                int gold = totalObj.getInt("gold");
+                entity.setGold(gold);
+                entity.setType(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ExperCourseGameResultPager experCourseGameResultPager = new ExperCourseGameResultPager(mContext, liveViewAction, entity);
+            experCourseGameResultPager.setOnPagerClose(new OnPagerClose() {
+                @Override
+                public void onClose(LiveBasePager basePager) {
+                    liveViewAction.removeView(basePager.getRootView());
+                }
+            });
+            liveViewAction.addView(experCourseGameResultPager.getRootView());
+        } else {
+
+        }
+    }
+
+    private void showEngAnswerResult(final int isforce, JSONArray userAnswerArray, Object... objData) {
+        JSONObject jsonObject = (JSONObject) objData[0];
+        JSONObject jsonObject1 = new JSONObject();
+        try {
+            jsonObject1.put("stat", 1);
+            jsonObject1.put("data", jsonObject);
+            if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
+                Boolean isSubmitVote = (Boolean) objData[1];
+                if (isSubmitVote && !isPlayBack) {
+                    String msg = jsonObject.optString("msg");
+                    if (!TextUtils.isEmpty(msg))
+                        XESToastUtils.showToast(mContext, msg);
+                    jsonObject1.put("gold", 0);
+                } else {
+                    jsonObject1.put("gold", detailInfo.gold);
+                }
+                jsonObject1.put("answerData", userAnswerArray);
+                jsonObject1.put("optionTitle", optionTitle);
+                jsonObject1.put("isForce", isforce);
+                jsonObject1.put("isPlayBack", isPlayBack);
+            }
+            ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
+            artsAnswerResultEvent.setDetailInfo(detailInfo);
+            artsAnswerResultEvent.setIspreload(ispreload);
+            if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
+                if (isPlayBack) {
+                    ViewGroup group = (ViewGroup) mView.getParent();
+                    artsAnswerResultEvent.setAnswerResultStateListener(new AnswerResultStateListener() {
+                        @Override
+                        public void onCompeletShow() {
+
+                        }
+
+                        @Override
+                        public void onAutoClose(BasePager basePager) {
+                            onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                        }
+
+                        @Override
+                        public void onCloseByUser() {
+                            onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                        }
+
+                        @Override
+                        public void onUpdateVoteFoldCount(String count) {
+
+                        }
+                    });
+                } else {
+                    onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                }
+            }
+            EventBus.getDefault().post(artsAnswerResultEvent);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
