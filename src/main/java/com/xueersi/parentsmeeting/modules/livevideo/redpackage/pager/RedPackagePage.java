@@ -23,6 +23,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.RTCVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -30,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
@@ -468,6 +470,11 @@ public class RedPackagePage extends LiveBasePager {
                         redPackageAction.onPackageClose(operateId);
                     }
                 }, 3000);
+
+                RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(mContext, RTCVideoAction.class);
+                if (rtcVideoAction != null) {
+                    rtcVideoAction.updateGold(entity.getGoldNum(), 0, 0, RTCVideoAction.GOLD_TYPE_REDPACKAGE);
+                }
             }
 
             @Override

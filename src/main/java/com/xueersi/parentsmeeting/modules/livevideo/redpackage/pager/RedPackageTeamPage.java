@@ -58,7 +58,8 @@ public class RedPackageTeamPage extends LiveBasePager {
      */
     LiveSoundPool.SoundPlayTask shipFloatSoundId;
 
-    public RedPackageTeamPage(Context context, int operateId, boolean isLive, GoldTeamStatus goldTeamStatus, RedPackagePage.RedPackagePageAction redPackageAction) {
+    public RedPackageTeamPage(Context context, int operateId, boolean isLive, GoldTeamStatus goldTeamStatus,
+                              RedPackagePage.RedPackagePageAction redPackageAction) {
         super(context);
         this.operateId = operateId;
         this.isLive = isLive;
@@ -96,7 +97,8 @@ public class RedPackageTeamPage extends LiveBasePager {
             addStudents.add(student);
             ImageView imageView = new ImageView(mContext);
             boolean center = student.isMe();
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                    .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             if (center) {
                 lp.addRule(RelativeLayout.CENTER_IN_PARENT);
             } else {
@@ -111,12 +113,12 @@ public class RedPackageTeamPage extends LiveBasePager {
             imageView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View v) {
-                    logger.d( "onGetTeamPackage:Attached");
+                    logger.d("onGetTeamPackage:Attached");
                 }
 
                 @Override
                 public void onViewDetachedFromWindow(View v) {
-                    logger.d( "onGetTeamPackage:Detached:Animations=" + frameAnimations2.size());
+                    logger.d("onGetTeamPackage:Detached:Animations=" + frameAnimations2.size());
                     for (int i = 0; i < frameAnimations2.size(); i++) {
                         FrameAnimation frameAnimation = frameAnimations2.get(i);
                         frameAnimation.destory();
@@ -126,18 +128,19 @@ public class RedPackageTeamPage extends LiveBasePager {
             rl_livevideo_redpackage_teams.addView(imageView, lp);
         }
         final ImageView imageView = new ImageView(mContext);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
         rl_livevideo_redpackage_teams.addView(imageView, lp);
         final ArrayList<FrameAnimation> frameAnimations2 = initTeamAllResult(otherStudents, imageView);
         imageView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                logger.d( "onGetTeamPackage:Attached");
+                logger.d("onGetTeamPackage:Attached");
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                logger.d( "onGetTeamPackage:Detached:Animations=" + frameAnimations2.size());
+                logger.d("onGetTeamPackage:Detached:Animations=" + frameAnimations2.size());
                 for (int i = 0; i < frameAnimations2.size(); i++) {
                     FrameAnimation frameAnimation = frameAnimations2.get(i);
                     frameAnimation.destory();
@@ -166,11 +169,13 @@ public class RedPackageTeamPage extends LiveBasePager {
         btframeAnimation1.setBitmapCreate(new FrameAnimation.BitmapCreate() {
             @Override
             public Bitmap onAnimationCreate(String file) {
-                if (file.contains("HSchuchang_00169") || file.contains("HSchuchang_00170") || file.contains("HSchuchang_00171")) {
+                if (file.contains("HSchuchang_00169") || file.contains("HSchuchang_00170") || file.contains
+                        ("HSchuchang_00171")) {
                     return null;
                 }
                 boolean havename = false;
-                if (file.contains("HSchuchang_00178") || file.contains("HSchuchang_00179") || file.contains("HSchuchang_00180")
+                if (file.contains("HSchuchang_00178") || file.contains("HSchuchang_00179") || file.contains
+                        ("HSchuchang_00180")
                         || file.contains("HSchuchang_00181") || file.contains("HSchuchang_00182")) {
                     havename = true;
                 }
@@ -202,13 +207,17 @@ public class RedPackageTeamPage extends LiveBasePager {
                         @Override
                         public void run() {
                             redPackageAction.onPackageClose(operateId);
+                            RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(mContext, RTCVideoAction.class);
+                            if (rtcVideoAction != null) {
+                                try {
+                                    int goldNum = Integer.valueOf(entity.getGold());
+                                    rtcVideoAction.updateGold(goldNum, 0, 0, RTCVideoAction.GOLD_TYPE_REDPACKAGE);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     }, 4000);
-                }
-
-                RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(mContext, RTCVideoAction.class);
-                if (rtcVideoAction != null) {
-                    rtcVideoAction.updateGold(0,0,0);
                 }
             }
 
@@ -226,7 +235,8 @@ public class RedPackageTeamPage extends LiveBasePager {
      * @param entity
      * @param imageView
      */
-    private ArrayList<FrameAnimation> initTeamAllResult(final ArrayList<GoldTeamStatus.Student> entitys, final ImageView imageView) {
+    private ArrayList<FrameAnimation> initTeamAllResult(final ArrayList<GoldTeamStatus.Student> entitys, final
+    ImageView imageView) {
         final ArrayList<FrameAnimation> frameAnimations2 = new ArrayList<>();
         final String path = file12;
         final FrameAnimation btframeAnimation1 =
@@ -350,7 +360,8 @@ public class RedPackageTeamPage extends LiveBasePager {
      * @param upFrameAnimation
      * @return
      */
-    private Bitmap initTeamHeadAndGold(Bitmap backBitmap, final GoldTeamStatus.Student entity, final String file, boolean havename, final FrameAnimation upFrameAnimation) {
+    private Bitmap initTeamHeadAndGold(Bitmap backBitmap, final GoldTeamStatus.Student entity, final String file,
+                                       boolean havename, final FrameAnimation upFrameAnimation) {
         InputStream inputStream = null;
         try {
             Bitmap bitmap;
@@ -379,7 +390,8 @@ public class RedPackageTeamPage extends LiveBasePager {
                 float scaleWidth = 70f / head.getHeight();
                 Matrix matrix = new Matrix();
                 matrix.postScale(scaleWidth, scaleWidth);
-                Bitmap scalHeadBitmap = Bitmap.createBitmap(head, 0, 0, head.getWidth(), head.getHeight(), matrix, true);
+                Bitmap scalHeadBitmap = Bitmap.createBitmap(head, 0, 0, head.getWidth(), head.getHeight(), matrix,
+                        true);
                 scalHeadBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
                 float left = (bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
                 float top;
@@ -400,7 +412,8 @@ public class RedPackageTeamPage extends LiveBasePager {
                             ImageLoader.with(mContext).load(entity.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                                 @Override
                                 public void onSuccess(Drawable drawable) {
-                                    Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "initTeamHeadAndGold", entity.getAvatar_path());
+                                    Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf,
+                                            "initTeamHeadAndGold", entity.getAvatar_path());
                                     if (headBitmap == null) {
                                         return;
                                     }
@@ -426,10 +439,13 @@ public class RedPackageTeamPage extends LiveBasePager {
             //画名字和金币数量
             if (havename) {
                 String gold = "+" + entity.getGold();
-                View layoutLiveStandRedMine1 = LayoutInflater.from(mContext).inflate(R.layout.layout_live_stand_red_mine2, null);
-                TextView tvLivevideoRedpackageName = layoutLiveStandRedMine1.findViewById(R.id.tv_livevideo_redpackage_name);
+                View layoutLiveStandRedMine1 = LayoutInflater.from(mContext).inflate(R.layout
+                        .layout_live_stand_red_mine2, null);
+                TextView tvLivevideoRedpackageName = layoutLiveStandRedMine1.findViewById(R.id
+                        .tv_livevideo_redpackage_name);
                 tvLivevideoRedpackageName.setText("" + entity.getShowName());
-                TextView tvLivevideoRedpackageNum = layoutLiveStandRedMine1.findViewById(R.id.tv_livevideo_redpackage_num);
+                TextView tvLivevideoRedpackageNum = layoutLiveStandRedMine1.findViewById(R.id
+                        .tv_livevideo_redpackage_num);
                 tvLivevideoRedpackageNum.setText(gold);
                 int width;
                 int height;
@@ -491,7 +507,7 @@ public class RedPackageTeamPage extends LiveBasePager {
         //切图标准宽1334，高750
         float scaleX = (float) screenHeight / 750.0f;
         float scaleY = (float) screenWidth / 1334.0f;
-        logger.d( "initPos:scaleX=" + scaleX + ",scaleY=" + scaleY);
+        logger.d("initPos:scaleX=" + scaleX + ",scaleY=" + scaleY);
         teamLeftAndTops.add(new Point(313, 263));//左
         teamLeftAndTops.add(new Point(904, 271));//右
         teamLeftAndTops.add(new Point(472, 72));//左上
@@ -509,7 +525,7 @@ public class RedPackageTeamPage extends LiveBasePager {
         float chax = (width - width3) * scaleX / 2;
         float chay = (height - height3) * scaleX / 2;
 
-        logger.d( "initPos:chax=" + chax + ",chay=" + chay);
+        logger.d("initPos:chax=" + chax + ",chay=" + chay);
         for (int i = 0; i < teamLeftAndTops.size(); i++) {
             Point point = teamLeftAndTops.get(i);
             point.x = (point.x * scaleX - chax);
