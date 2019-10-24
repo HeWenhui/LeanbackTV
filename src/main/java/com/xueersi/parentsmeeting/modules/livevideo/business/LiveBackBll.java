@@ -477,25 +477,21 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
      */
     private void addHttpDefaultParams(LiveGetInfo liveGetInfo) {
 
-        Log.e("ckTrac","=====>LiveBackBll_addHttpDefaultParams:"+liveGetInfo.isBigLive());
         if(liveGetInfo != null && mHttpManager != null && liveGetInfo.isBigLive()){
             mHttpManager.addHeaderParams("switch-grade",liveGetInfo.getGrade()+"");
             String subjectId = (liveGetInfo.getSubjectIds()!= null && liveGetInfo.getSubjectIds().length >0)? liveGetInfo.getSubjectIds()[0]:"";
             mHttpManager.addHeaderParams("switch-subject",subjectId);
             mHttpManager.addHeaderParams("bizId",mLiveType+"");
             String calssId = (liveGetInfo.getStudentLiveInfo() != null)?liveGetInfo.getStudentLiveInfo().getClassId():"0";
-            String stuCouId = liveGetInfo.getStuCouId();
+            String stuCouId = TextUtils.isEmpty(liveGetInfo.getStuCouId())?"":liveGetInfo.getStuCouId();
             int iClassId = 0;
-            int iStuCouId = 0;
             try {
                 iClassId = Integer.parseInt(calssId);
-                iStuCouId = Integer.parseInt(stuCouId);
-
             }catch (Exception e){
                 e.printStackTrace();
             }
             mHttpManager.addBusinessParams("classId", iClassId);
-            mHttpManager.addBusinessParams("stuCouId", iStuCouId);
+            mHttpManager.addBusinessParams("stuCouId", stuCouId);
             mHttpManager.addBusinessParams("isPlayback",1);
         }
     }
