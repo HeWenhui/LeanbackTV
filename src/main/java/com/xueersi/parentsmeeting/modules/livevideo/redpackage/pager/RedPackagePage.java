@@ -223,7 +223,7 @@ public class RedPackagePage extends LiveBasePager {
                             return;
                         }
                         logger.d("onPackageClick(timeout):operateId=" + operateId);
-                        ivLivevideoRedpackageBg.setOnClickListener(null);
+                        ivClickArea.setOnClickListener(null);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
                         }
