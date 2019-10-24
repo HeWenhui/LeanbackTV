@@ -491,7 +491,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                             if (!releaseInfos.isEmpty()) {
                                 ReleaseedInfos releaseedInfos = releaseInfos.get(0);
                                 String type = releaseedInfos.getType();
-                                if (LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY.equals(type)) {
+                                if ("15".equals(type)) {
                                     onOnPointClick(videoQuestionEntity, i);
                                     break;
                                 }

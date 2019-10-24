@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -33,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 直播回放总bll
  */
 public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
-    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
     protected LiveBackBll liveBackBll;
     protected Activity activity;
     protected RelativeLayout mRootViewBottom;

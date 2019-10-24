@@ -12,6 +12,7 @@ import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
@@ -20,6 +21,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -38,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -175,7 +178,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 questionEntity.setNewArtsCourseware(true);
                 // mCurrentQuestionEntity.setNewArtsCourseware(true);
                 questionEntity.setAnswered(true);
-                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntityNewCourse
                         (questionEntity, vCategory);
                 if (ptTypeFilters.contains(videoQuestionLiveEntity.type) && !"1".equals(videoQuestionLiveEntity
                         .getIsVoice())) {
@@ -228,6 +231,91 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         return videoQuestionLiveEntity;
     }
 
+    protected VideoQuestionLiveEntity getVideoQuestionLiveEntityNewCourse(VideoQuestionEntity questionEntity, int vCategory) {
+        VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+        if (vCategory == LocalCourseConfig.CATEGORY_TUTOR_EVENT_35) {
+            videoQuestionLiveEntity.setTUtor(true);
+        }
+        videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
+        videoQuestionLiveEntity.englishH5Entity = questionEntity.getEnglishH5Entity();
+        String isVoice = questionEntity.getIsVoice();
+        videoQuestionLiveEntity.setIsVoice(isVoice);
+        if ("1".equals(isVoice)) {
+            videoQuestionLiveEntity.type = questionEntity.getVoiceQuestiontype();
+        }
+        videoQuestionLiveEntity.setArtType(questionEntity.getVoiceQuestiontype());
+        videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
+        if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE) {
+            List<String> testIds = new ArrayList<>();
+            if (testIds.size() > 0) {
+                testIds.clear();
+            }
+            String type = "";
+            String isVoices = "";
+            String assess = "";
+            for (int i = 0; i < questionEntity.getReleaseInfos().size(); i++) {
+                testIds.add(questionEntity.getReleaseInfos().get(i).getId());
+                type = questionEntity.getReleaseInfos().get(0).getType();
+                isVoices = questionEntity.getReleaseInfos().get(0).getIsVoice();
+                assess = questionEntity.getReleaseInfos().get(0).getAssess_ref();
+                videoQuestionLiveEntity.id = questionEntity.getReleaseInfos().get(0).getId();
+            }
+            if (LiveQueConfig.EN_COURSE_TYPE_NEW_GAME.equals(type)) {
+                videoQuestionLiveEntity.setUrl(buildCourseH5Url(getTestIdS(testIds)));
+            } else {
+                videoQuestionLiveEntity.setUrl(buildCourseUrl(getTestIdS(testIds)));
+            }
+            videoQuestionLiveEntity.setIsVoice(isVoices);
+            videoQuestionLiveEntity.assess_ref = assess;
+            videoQuestionLiveEntity.type = type;
+            videoQuestionLiveEntity.courseware_type = type;
+        } else {
+            videoQuestionLiveEntity.setUrl(questionEntity.getEnglishH5Play_url());
+            videoQuestionLiveEntity.courseware_type = questionEntity.getvQuestionType();
+        }
+        videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
+        videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+        videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
+        return videoQuestionLiveEntity;
+    }
+
+    private String buildCourseUrl(String testIds) {
+        StringBuilder sb = new StringBuilder();
+        String falseStr = Base64.encodeBytes("false".getBytes());
+        sb.append(LiveHttpConfig.URL_ARTS_H5_URL).append("?liveId=").append(mVideoEntity.getLiveId())
+                .append("&testIds=").append(testIds).append("&isPlayBack=").append("2")
+                .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&stuId=").append(LiveAppUserInfo.getInstance().getStuId())
+                .append("&stuClientPath=").append(falseStr)
+                .append("&fontDir=").append(falseStr);
+        return sb.toString();
+    }
+
+    private String buildCourseH5Url(String testIds) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(LiveHttpConfig.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(LiveAppUserInfo.getInstance().getStuId())
+                .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&liveId=").append(mVideoEntity.getLiveId())
+                .append("&testId=").append(testIds).append("&type=").append(17).append("&isPlayBack=1");
+        return sb.toString();
+    }
+
+    private String getTestIdS(List<String> testIds) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            if (testIds != null) {
+                for (int i = 0; i < testIds.size(); i++) {
+                    if (i < (testIds.size() - 1)) {
+                        stringBuilder.append(testIds.get(i)).append(",");
+                    } else {
+                        stringBuilder.append(testIds.get(i));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
+    }
+
     public ExperCourseWareHttpManager getCourseWareHttpManager() {
         if (courseWareHttpManager == null) {
             courseWareHttpManager = new ExperCourseWareHttpManager(getmHttpManager());
@@ -278,7 +366,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 if (LiveQueConfig.isGroupGame(detailInfo.type)) {
                     getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, liveGetInfo.getStuId(), detailInfo.type, callBack);
                 } else {
-                    getCourseWareHttpManager().getTestInfos(LiveAppUserInfo.getInstance().getStuId(),detailInfo.id, callBack);
+                    getCourseWareHttpManager().getTestInfos(LiveAppUserInfo.getInstance().getStuId(), detailInfo.id, callBack);
                 }
             } else {
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
@@ -383,45 +471,59 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
             String stuId = LiveAppUserInfo.getInstance().getStuId();
             String userMode = "1";
             String isArts = String.valueOf(liveBackBll.getIsArts());
-            getCourseHttpManager().submitExperienceCourseWareH5(
-                    mVideoEntity.getSubmitCourseWareH5AnswerUseVoiceUrl()
-                    , mVideoEntity.getLiveId(),
-                    videoQuestionLiveEntity.id,
-                    mVideoEntity.getChapterId(),
-                    testAnswer, voiceTime,
-                    isRight, isArts,
-                    new HttpCallBack() {
+            HttpCallBack callBack = new HttpCallBack() {
 
-                        @Override
-                        public void onPmSuccess(ResponseEntity responseEntity) {
-                            VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer
-                                    (responseEntity,
-                                            true);
-                            entity.setVoice(true);
-                            if (StringUtils.isSpace(entity.getTestId())) {
-                                entity.setTestId(videoQuestionLiveEntity.id);
-                            }
-                            if (onAnswerReslut != null) {
-                                onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
-                            }
-                        }
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer
+                            (responseEntity,
+                                    true);
+                    entity.setVoice(true);
+                    if (StringUtils.isSpace(entity.getTestId())) {
+                        entity.setTestId(videoQuestionLiveEntity.id);
+                    }
+                    if (onAnswerReslut != null) {
+                        onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
+                    }
+                }
 
-                        @Override
-                        public void onPmFailure(Throwable error, String msg) {
-                            if (onAnswerReslut != null) {
-                                onAnswerReslut.onAnswerFailure();
-                            }
-                        }
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    if (onAnswerReslut != null) {
+                        onAnswerReslut.onAnswerFailure();
+                    }
+                }
 
-                        @Override
-                        public void onPmError(ResponseEntity responseEntity) {
-                            if (!responseEntity.isJsonError()) {
-                                if (onAnswerReslut != null) {
-                                    onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
-                                }
-                            }
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    if (!responseEntity.isJsonError()) {
+                        if (onAnswerReslut != null) {
+                            onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
                         }
-                    });
+                    }
+                }
+            };
+            if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
+                getCourseWareHttpManager().sumitCourseWareH5(
+                        videoQuestionLiveEntity.id,
+                        testAnswer,
+                        videoQuestionLiveEntity.getAnswerDay(),
+                        mVideoEntity.getLiveId(),
+                        videoQuestionLiveEntity.courseware_type,
+                        isSubmit,
+                        voiceTime,
+                        isRight,
+                        callBack);
+            } else {
+                getCourseHttpManager().submitExperienceCourseWareH5(
+                        mVideoEntity.getSubmitCourseWareH5AnswerUseVoiceUrl()
+                        , mVideoEntity.getLiveId(),
+                        videoQuestionLiveEntity.id,
+                        mVideoEntity.getChapterId(),
+                        testAnswer, voiceTime,
+                        isRight, isArts,
+                        callBack);
+            }
         }
     }
 }

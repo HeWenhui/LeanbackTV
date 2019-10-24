@@ -4,9 +4,11 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
@@ -300,7 +302,7 @@ public class ExperCourseWareHttpManager {
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("isSubmit", "" + isSubmit);
         httpRequestParams.addBodyParam("stuId", "" + stu_id);
-        liveHttpManager.sendPostDefault(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOICE_EN, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(ExperLiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOICE_EN, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("submitH5:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -544,4 +546,35 @@ public class ExperCourseWareHttpManager {
             }
         });
     }
+
+    public void sumitCourseWareH5(String testId, String testResult, String testDay,
+                                  String classId, String type, String isSubmit,
+                                  double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
+        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(type) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(type)) {
+            HttpRequestParams params = new HttpRequestParams();
+            String url = ExperLiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOICE_EN;
+            params.addBodyParam("testId", testId);
+            params.addBodyParam("liveId", classId);
+            params.addBodyParam("type", type);
+            params.addBodyParam("isRight", isRight ? "1" : "0");
+            params.addBodyParam("isPlayBack", "1");
+            params.addBodyParam("isSubmit", isSubmit);
+            params.addBodyParam("voiceUrl", "");
+            params.addBodyParam("voiceTime", "" + voiceTime);
+            params.addBodyParam("url", "");
+            params.addBodyParam("imageUrl", "");
+            params.addBodyParam("userAnswer", LiveVideoConfig.userAnswer);
+            params.addBodyParam("answer", LiveVideoConfig.answer);
+            liveHttpManager.sendPostDefault(url, params, requestCallBack);
+        } else {
+            HttpRequestParams params = new HttpRequestParams();
+            String url = LiveHttpConfig.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
+            params.addBodyParam("liveId", classId);
+            params.addBodyParam("answers", testResult);
+            params.addBodyParam("isPlayBack", "2");
+            params.addBodyParam("isForce", isSubmit);
+            liveHttpManager.sendPostDefault(url, params, requestCallBack);
+        }
+    }
+
 }
