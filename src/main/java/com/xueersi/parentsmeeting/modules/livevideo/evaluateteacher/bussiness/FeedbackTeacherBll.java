@@ -98,37 +98,20 @@ public class FeedbackTeacherBll extends LiveBaseBll {
                     int is_trigger = jsonObject.optInt("isTrigger");
                     String url = null;
                     if (is_trigger == 1) {
-
-                        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
-                            //英语
-                            if (mGetInfo.getSmallEnglish()) {
-                                // 英语小学
+                        if (mGetInfo.getEducationStage() != null && (mGetInfo.getEducationStage().equals("4") || mGetInfo.getEducationStage().equals("3"))) {
+                            //高中
+                            url = jsonObject.getJSONObject("app").optString("highSchool");
+                        } else {
+                            if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
+                                //英语
                                 url = jsonObject.getJSONObject("app").optString("english");
-                            } else {
-                                //英语高中，初中
-                                url = jsonObject.getJSONObject("app").optString("highSchool");
-                            }
-
-                        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
-                            //理科
-                            if (mGetInfo.getEducationStage() != null && (mGetInfo.getEducationStage().equals("4") ||
-                                    mGetInfo.getEducationStage().equals("3"))) {
-                                //高中，初中
-                                url = jsonObject.getJSONObject("app").optString("highSchool");
-                            } else {
+                            } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
+                                //理科
                                 url = jsonObject.getJSONObject("app").optString("science");
-                            }
-                        } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
-                            //语文 初中
-                            if (mGetInfo.getEducationStage() != null && (mGetInfo.getEducationStage().equals("4") ||
-                                    mGetInfo.getEducationStage().equals("3"))) {
-                                //高中，初中
-                                url = jsonObject.getJSONObject("app").optString("highSchool");
-                            } else {
-
+                            } else if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
+                                //语文
                                 url = jsonObject.getJSONObject("app").optString("chinese");
                             }
-
                         }
                         url = url+"?courseId="+mGetInfo.getStudentLiveInfo().getCourseId()+"&planId="+mLiveId;
                         pagerNew = new LiveFeedBackSecondPager(mContext, mGetInfo, url);
