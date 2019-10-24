@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.ExperCourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
@@ -45,7 +46,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
  */
 public class QuestionExperienceBll extends LiveBackBaseBll {
     QuestionBll questionBll;
-    String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
+    String[] ptTypeFilters = {"4", "0", "1", "2", "8", LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY, "6"};
     private List<String> questiongtype = Arrays.asList(ptTypeFilters);
     private ExperCourseWareHttpManager courseWareHttpManager;
 
@@ -392,6 +393,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll {
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 videoQuestionLiveEntity.setLive(false);
                 videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
+                videoQuestionLiveEntity.setTermId(mVideoEntity.getChapterId());
                 if (questiongtype.contains(videoQuestionLiveEntity.type)) {
                     EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTIONS_SHOW, videoQuestionLiveEntity));
                     questionBll.showQuestion(videoQuestionLiveEntity);

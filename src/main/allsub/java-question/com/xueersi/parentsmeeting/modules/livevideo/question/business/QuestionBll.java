@@ -56,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.create.BigQueCreate;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
@@ -812,7 +813,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             activity.getWindow().getDecorView().invalidate();
                         }
                     });
-                } else if ("4".equals(videoQuestionLiveEntity.type) || "5".equals(videoQuestionLiveEntity.type) ||
+                } else if ("4".equals(videoQuestionLiveEntity.type) || LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY.equals(videoQuestionLiveEntity.type) ||
                         "6".equals(videoQuestionLiveEntity.type)) {
                     String id = videoQuestionLiveEntity.id;
                     if (speechAssessmentPager != null && id.equals(speechAssessmentPager.getId())) {

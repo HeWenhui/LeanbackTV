@@ -8,6 +8,7 @@ import android.util.SparseArray;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.common.entity.ReleaseedInfos;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.AppMainHandler;
@@ -49,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerActi
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -485,8 +487,17 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                             break;
                         } else if (LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == videoQuestionEntity.getvCategory() ||
                                 LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()) {
-                            onOnPointClick(videoQuestionEntity, i);
-                            break;
+                            List<ReleaseedInfos> releaseInfos = videoQuestionEntity.getReleaseInfos();
+                            if (!releaseInfos.isEmpty()) {
+                                ReleaseedInfos releaseedInfos = releaseInfos.get(0);
+                                String type = releaseedInfos.getType();
+                                if (LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY.equals(type)) {
+                                    onOnPointClick(videoQuestionEntity, i);
+                                    break;
+                                }
+                            }
+//                            onOnPointClick(videoQuestionEntity, i);
+//                            break;
 
                         }
                     }

@@ -35,6 +35,7 @@ public class LiveQueConfig {
      */
     public static final String EN_COURSE_TYPE_BLANK = "1";
     public static final String EN_COURSE_TYPE_CHOICE = "2";
+    public static final String EN_COURSE_TYPE_ROLEPLAY = "5";
     public static final String EN_COURSE_TYPE_COMMON = "7";
     public static final String EN_COURSE_TYPE_BEF = "9";
     public static final String EN_COURSE_TYPE_MID = "10";

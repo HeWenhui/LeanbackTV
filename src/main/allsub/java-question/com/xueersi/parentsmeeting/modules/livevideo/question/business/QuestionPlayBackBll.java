@@ -302,7 +302,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         }
                         //非常重要，不然新课件平台，roleplay无法进入
                         logger.i("yzl_showQuestion type = " + videoQuestionLiveEntity.type);
-                        if ("5".equals(videoQuestionLiveEntity.type)) {
+                        if (LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY.equals(videoQuestionLiveEntity.type)) {
                             logger.i("yzl_init new rolePlay bll");
                             RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), liveBackBll, liveGetInfo, false);
                             questionBll.setRolePlayMachineAction(rolePlayerBll, null);
