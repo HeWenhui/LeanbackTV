@@ -982,7 +982,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         }
                         userAnswer.put("isright", isRight);
                     }
-                    userAnswer.put("times", "" + answer.optInt("times", -1));
+                    JSONArray times = answer.getJSONArray("times");
+                    if(times.length()>0){
+                        userAnswer.put("times", "" + times.optInt(0));
+                    }else {
+                        userAnswer.put("times", -1);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     MobAgent.httpResponseParserError(TAG, "submitVoice2", e.getMessage());
