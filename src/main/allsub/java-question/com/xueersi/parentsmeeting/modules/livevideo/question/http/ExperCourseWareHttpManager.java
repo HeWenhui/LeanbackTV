@@ -585,7 +585,7 @@ public class ExperCourseWareHttpManager {
         params.addBodyParam("isSubmit", "" + isSubmit);
         params.addBodyParam("answers", "" + stuAnswer);
         params.addBodyParam("type", "1");
-        params.addBodyParam("isPlayBack", "1");
+        params.addBodyParam("isPlayBack", "0");
         liveHttpManager.sendPostDefault(ExperLiveQueHttpConfig.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
     }
 }
