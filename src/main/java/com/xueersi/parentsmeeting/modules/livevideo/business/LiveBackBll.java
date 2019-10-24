@@ -484,11 +484,18 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
             mHttpManager.addHeaderParams("switch-subject",subjectId);
             mHttpManager.addHeaderParams("bizId",mLiveType+"");
             String calssId = (liveGetInfo.getStudentLiveInfo() != null)?liveGetInfo.getStudentLiveInfo().getClassId():"0";
+            String stuCouId = liveGetInfo.getStuCouId();
+            int iClassId = 0;
+            int iStuCouId = 0;
             try {
-                mHttpManager.addBusinessParams("classId", Integer.parseInt(calssId));
+                iClassId = Integer.parseInt(calssId);
+                iStuCouId = Integer.parseInt(stuCouId);
+
             }catch (Exception e){
                 e.printStackTrace();
             }
+            mHttpManager.addBusinessParams("classId", iClassId);
+            mHttpManager.addBusinessParams("stuCouId", iStuCouId);
             mHttpManager.addBusinessParams("isPlayback",1);
         }
     }
