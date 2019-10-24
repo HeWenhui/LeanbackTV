@@ -185,28 +185,48 @@ public class QuestionExperienceBll extends LiveBackBaseBll {
         @Override
         public void sendSpeechEvalResult2(boolean isNewArt, String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
             String liveid = mVideoEntity.getLiveId();
-            String stuId = LiveAppUserInfo.getInstance().getStuId();
             String termId = mVideoEntity.getChapterId();
-            String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
-            getCourseHttpManager().sendExpSpeechEvalResult(mVideoEntity
-                    .getSpeechEvalSubmitUrl(), liveid, id, termId, isArts, stuAnswer, new HttpCallBack(false) {
+            if (isNewArt) {
+                getCourseWareHttpManager().sendSpeechEvalResultNewArts(liveid, id, stuAnswer, isSubmit, new HttpCallBack(false) {
 
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) {
-                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                    callBack.onDataSucess(jsonObject);
-                }
+                    @Override
+                    public void onPmSuccess(final ResponseEntity responseEntity) {
+                        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                        callBack.onDataSucess(jsonObject);
+                    }
 
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
-                }
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+                    }
 
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
-                }
-            });
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+                    }
+                });
+            } else {
+                String isArts = questionBll.IS_SCIENCE ? "0" : "1";
+                getCourseHttpManager().sendExpSpeechEvalResult(mVideoEntity
+                        .getSpeechEvalSubmitUrl(), liveid, id, termId, isArts, stuAnswer, new HttpCallBack(false) {
+
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                        callBack.onDataSucess(jsonObject);
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+                    }
+                });
+            }
         }
 
 

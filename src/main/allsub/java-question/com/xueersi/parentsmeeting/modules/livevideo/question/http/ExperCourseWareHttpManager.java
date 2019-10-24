@@ -577,4 +577,15 @@ public class ExperCourseWareHttpManager {
         }
     }
 
+    public void sendSpeechEvalResultNewArts(String liveId, String id, String stuAnswer, String isSubmit, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("testId", id);
+        params.addBodyParam("isRejected", "");
+        params.addBodyParam("isSubmit", "" + isSubmit);
+        params.addBodyParam("answers", "" + stuAnswer);
+        params.addBodyParam("type", "1");
+        params.addBodyParam("isPlayBack", "1");
+        liveHttpManager.sendPostDefault(ExperLiveQueHttpConfig.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
+    }
 }

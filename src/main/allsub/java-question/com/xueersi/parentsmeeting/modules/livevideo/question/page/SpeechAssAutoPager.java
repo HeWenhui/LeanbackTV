@@ -490,23 +490,25 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             errorSetVisible();
             tvSpeectevalError.setText("题目已作答");
         } else {
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    speechEvalAction.speechIsAnswered(isNewArts, id, new AbstractBusinessDataCallBack() {
-                        @Override
-                        public void onDataSucess(Object... objData) {
-                            boolean answer = (boolean) objData[0];
-                            SpeechAssAutoPager.this.haveAnswer = answer;
-                            if (answer) {
-                                ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
-                                errorSetVisible();
-                                tvSpeectevalError.setText("题目已作答");
+            if (!baseVideoQuestionEntity.isExper()) {
+                mView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        speechEvalAction.speechIsAnswered(isNewArts, id, new AbstractBusinessDataCallBack() {
+                            @Override
+                            public void onDataSucess(Object... objData) {
+                                boolean answer = (boolean) objData[0];
+                                SpeechAssAutoPager.this.haveAnswer = answer;
+                                if (answer) {
+                                    ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
+                                    errorSetVisible();
+                                    tvSpeectevalError.setText("题目已作答");
+                                }
                             }
-                        }
-                    });
-                }
-            }, random.nextInt(2000));
+                        });
+                    }
+                }, random.nextInt(2000));
+            }
         }
     }
 

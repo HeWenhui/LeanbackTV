@@ -33,4 +33,5 @@ public class ExperLiveQueHttpConfig {
     public static String URL_ROLEPLAY_NEWARTS_TESTINFOS = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/getRolePlayEng";
     /** 文科新课件平台提交接口 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=30434055 */
     public static String URL_ROLEPLAY_NEWARTS_RESULT = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/submitRolePlayEng";
+    public static String URL_LIVE_SEND_SPEECHEVALUATEARTS = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/submitSpeechEval42";
 }
