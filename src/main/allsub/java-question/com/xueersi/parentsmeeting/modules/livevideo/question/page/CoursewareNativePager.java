@@ -1935,16 +1935,28 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 mLogtf.d(SysLogLable.fetchAnswerSuccess, "showScienceAnswerResult:mGoldNum=" + mGoldNum + ",mEnergyNum=" + mEnergyNum);
                 // 对外暴露答题结果
                 broadCastAnswerRestult(entity);
-
                 int isGame = newCourseSec.getIsGame();
-                ExperCourseResultPager primaryScienceAnserResultPager = new ExperCourseResultPager(mContext, liveViewAction, entity);
-                primaryScienceAnserResultPager.setOnPagerClose(new OnPagerClose() {
-                    @Override
-                    public void onClose(LiveBasePager basePager) {
-                        onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity());
-                    }
-                });
-                ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                BasePager basePager;
+                if (isGame == 1) {
+                    ExperCourseGameResultPager experCourseGameResultPager = new ExperCourseGameResultPager(mContext, liveViewAction, entity);
+                    experCourseGameResultPager.setOnPagerClose(new OnPagerClose() {
+                        @Override
+                        public void onClose(LiveBasePager basePager) {
+                            onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity());
+                        }
+                    });
+                    basePager = experCourseGameResultPager;
+                } else {
+                    ExperCourseResultPager primaryScienceAnserResultPager = new ExperCourseResultPager(mContext, liveViewAction, entity);
+                    primaryScienceAnserResultPager.setOnPagerClose(new OnPagerClose() {
+                        @Override
+                        public void onClose(LiveBasePager basePager) {
+                            onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity());
+                        }
+                    });
+                    basePager = primaryScienceAnserResultPager;
+                }
+                ((RelativeLayout) mView).addView(basePager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, 0, detailInfo.isTUtor());
             }
         });

@@ -49,7 +49,7 @@ public class ExperCourseResultPager extends LiveBasePager {
 
     @Override
     public View initView() {
-        mView = liveViewAction.inflateView(R.layout.page_livevideo_bigques_result);
+        mView = liveViewAction.inflateView(R.layout.page_livevideo_exper_course_result);
         ivBigqueResultTitle = mView.findViewById(R.id.iv_livevideo_bigque_result_title);
         tvBigqueResultTitle = mView.findViewById(R.id.tv_livevideo_bigque_result_title);
         rvBigqueResultList = mView.findViewById(R.id.rv_livevideo_bigque_result_list);
