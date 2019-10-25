@@ -1373,9 +1373,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         if (StringUtils.isEmpty(detailInfo.getArtType()) || "0".equals(detailInfo.getArtType())) {
                             detailInfo.setArtType(test.getTestType());
                         }
-                    } else if (isArts == LiveVideoSAConfig.ART_SEC) {
-                        newCourseCache.add(newCourseCache.new FutureCourse());
                     }
+                    newCourseCache.add(newCourseCache.new FutureCourse());
                     showControl();
                     if (quesJson != null) {
                         for (int i = 0; i < tests.size(); i++) {
