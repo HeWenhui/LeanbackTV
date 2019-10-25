@@ -2334,14 +2334,18 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param testId
      * @param callBack
      */
-    public void getSelfUploadEvenDriveNum(String stuCouId, String planId, String stuId, String testId, HttpCallBack callBack) {
+    public void getSelfUploadEvenDriveNum(int isArts, String stuCouId, String planId, String stuId, String testId, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("liveId", planId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("testId", testId);
-        sendPost(LiveHttpConfig.URL_CHINESE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG, params, callBack);
+        if (isArts == 2) {
+            sendPost(LiveHttpConfig.URL_CHINESE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG, params, callBack);
+        } else {
+            sendPost(LiveHttpConfig.URL_SCIENCE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG, params, callBack);
+        }
     }
 
     /**
@@ -2353,14 +2357,18 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
      * @param stuId
      * @param callBack
      */
-    public void getNewPlatformEvenDriveNum(String classId, String liveId, String teamId, String stuId, HttpCallBack callBack) {
+    public void getNewPlatformEvenDriveNum(int isArts, String classId, String liveId, String teamId, String stuId, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         params.addBodyParam("classId", classId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        sendPost(LiveHttpConfig.URL_CHINESE_NEW_ARTS_EVEN_DRIVE_MSG, params, callBack);
+        if (isArts == 2) {
+            sendPost(LiveHttpConfig.URL_CHINESE_NEW_ARTS_EVEN_DRIVE_MSG, params, callBack);
+        } else {
+            sendPost(LiveHttpConfig.URL_SCIENCE_NEW_ARTS_EVEN_DRIVE_MSG, params, callBack);
+        }
     }
 
     /**

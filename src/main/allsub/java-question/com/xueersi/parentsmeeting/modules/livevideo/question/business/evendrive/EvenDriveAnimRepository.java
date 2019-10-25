@@ -17,7 +17,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 public class EvenDriveAnimRepository implements TasksDataSource {
     Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
@@ -95,24 +94,27 @@ public class EvenDriveAnimRepository implements TasksDataSource {
     private void showAnima(String num) {
         if (liveViewAction != null) {
             if (evenDrivePager == null) {
-                evenDrivePager = new QuestionResultEvenDrivePager(context);
+                evenDrivePager = new QuestionResultEvenDrivePager(context, getInfo);
             }
             final int mNum = Integer.valueOf(num);
+
+            doShowAnim(mNum);
+
             Observable.just(true).
-                    delay(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).
-                    doOnNext(new Consumer<Boolean>() {
-                        @Override
-                        public void accept(Boolean aBoolean) throws Exception {
-                            if (mNum >= 2) {
-                                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                                liveViewAction.addView(evenDrivePager.getRootView(), layoutParams);
-                                evenDrivePager.showNum(mNum);
-                                logger.i("add lottie view");
-                            }
-                        }
-                    }).
-                    delay(3, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).
+//                    delay(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).
+//                    doOnNext(new Consumer<Boolean>() {
+//                        @Override
+//                        public void accept(Boolean aBoolean) throws Exception {
+//                            if (mNum >= 2) {
+//                                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+//                                liveViewAction.addView(evenDrivePager.getRootView(), layoutParams);
+//                                evenDrivePager.showNum(mNum);
+//                                logger.i("add lottie view");
+//                            }
+//                        }
+//                    }).
+        delay(3, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).
                     subscribe(new RxjavaUtils.CommonRxObserver() {
                         @Override
                         public void onSubscribe(Disposable d) {
@@ -135,6 +137,16 @@ public class EvenDriveAnimRepository implements TasksDataSource {
         if (evenDrivePager != null && evenDrivePager.getRootView().getParent() != null) {
             logger.i("remove lottie view");
             ((ViewGroup) evenDrivePager.getRootView().getParent()).removeView(evenDrivePager.getRootView());
+        }
+    }
+
+    private void doShowAnim(int mNum) {
+        if (mNum >= 2) {
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+            liveViewAction.addView(evenDrivePager.getRootView(), layoutParams);
+            evenDrivePager.showNum(mNum);
+            logger.i("add lottie view");
         }
     }
 }

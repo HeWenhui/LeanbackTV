@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.lottie.AssertUtil;
@@ -19,6 +20,7 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 
 import java.io.IOException;
@@ -26,19 +28,26 @@ import java.io.IOException;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentConstants.INTELLIGENT_LOTTIE_PATH;
 import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveConstants.EVEN_DRIVE_FAT_AHEAD_LOTTIE_PATH;
 import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveConstants.EVEN_DRIVE_KING_LOTTIE_PATH;
+import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveConstants.EVEN_DRIVE_LEVEL1_LOTTIE_PATH;
+import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveConstants.EVEN_DRIVE_LEVEL2_LOTTIE_PATH;
+import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveConstants.EVEN_DRIVE_LEVEL3_LOTTIE_PATH;
+import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveConstants.EVEN_DRIVE_LEVEL4_LOTTIE_PATH;
 import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveConstants.EVEN_DRIVE_SHARP_LOTTIE_PATH;
 import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveConstants.EVEN_DRIVE_TOP_LOTTIE_PATH;
 import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveConstants.EVEN_DRIVE_UNSTOPPABLE_LOTTIE_PATH;
 
 public class QuestionResultEvenDrivePager extends BasePager {
-//    Context context;
+    private LiveGetInfo getInfo;
+    protected static final String ANIM_ROOT_DIR = "contiright_anim";
 
-    public QuestionResultEvenDrivePager(Context context) {
+
+    public QuestionResultEvenDrivePager(Context context, LiveGetInfo liveGetInfo) {
         super(context);
+        this.getInfo = liveGetInfo;
 //        this.context = context;
     }
 
-    private LottieAnimationView scoreLottieView;
+    protected LottieAnimationView scoreLottieView;
 
     @Override
     public View initView() {
@@ -50,12 +59,18 @@ public class QuestionResultEvenDrivePager extends BasePager {
 
     @Override
     public void initData() {
+//        int contiRihts = arguments.getInt("contiRights");
 
     }
 
-    public void showNum(final int num) {
-        String resPath = EVEN_DRIVE_TOP_LOTTIE_PATH + "images",
-                jsonPath = EVEN_DRIVE_TOP_LOTTIE_PATH + "data.json";
+    private boolean isPrimarySchool() {
+        return getInfo != null && (getInfo.getSmallEnglish() ||
+                getInfo.isPrimaryChinese() || getInfo.getIsPrimarySchool() == 1 || getInfo.getUseSkin() == 2);
+    }
+
+    private void showPriAnimaNum(final int num) {
+        String resPath = EVEN_DRIVE_TOP_LOTTIE_PATH + "images";
+        String jsonPath = EVEN_DRIVE_TOP_LOTTIE_PATH + "data.json";
         if (num >= 2 && num <= 3) {//锋芒毕露
             resPath = EVEN_DRIVE_SHARP_LOTTIE_PATH + "images";
             jsonPath = EVEN_DRIVE_SHARP_LOTTIE_PATH + "data.json";
@@ -73,10 +88,7 @@ public class QuestionResultEvenDrivePager extends BasePager {
         }
 
         final LottieEffectInfo effectInfo = new LottieEffectInfo(resPath, jsonPath);
-        scoreLottieView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext), null);
-
-//        scoreLottieView.setImageAssetsFolder(resPath);
-//        scoreLottieView.setAnimation(jsonPath);
+        scoreLottieView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext), resPath);
         //替换json资源文件
         ImageAssetDelegate delegate = new ImageAssetDelegate() {
             @Override
@@ -126,6 +138,83 @@ public class QuestionResultEvenDrivePager extends BasePager {
             }
         };
         scoreLottieView.setImageAssetDelegate(delegate);
+        doShowAnima();
+    }
+
+    private void showMiddleNum(final int num) {
+
+        String replaceFileName = ANIM_ROOT_DIR + "/public/live_business_contiright_" + num + ".png";
+
+        String resPath = EVEN_DRIVE_LEVEL1_LOTTIE_PATH + "images",
+                jsonPath = EVEN_DRIVE_LEVEL1_LOTTIE_PATH + "data.json";
+        int animLevel = 0;
+
+        if (num >= 2 && num <= 3) {//锋芒毕露
+            resPath = EVEN_DRIVE_LEVEL1_LOTTIE_PATH + "images";
+            jsonPath = EVEN_DRIVE_LEVEL1_LOTTIE_PATH + "data.json";
+            animLevel = 1;
+        } else if (num >= 4 && num <= 5) {
+            //无人能挡
+            resPath = EVEN_DRIVE_LEVEL2_LOTTIE_PATH + "images";
+            jsonPath = EVEN_DRIVE_LEVEL2_LOTTIE_PATH + "data.json";
+            animLevel = 2;
+        } else if (num >= 6 && num <= 7) {
+            //遥遥领先
+            resPath = EVEN_DRIVE_LEVEL3_LOTTIE_PATH + "images";
+            jsonPath = EVEN_DRIVE_LEVEL3_LOTTIE_PATH + "data.json";
+            animLevel = 3;
+        } else if (num >= 8 && num <= 24) {
+            resPath = EVEN_DRIVE_LEVEL4_LOTTIE_PATH + "images";
+            jsonPath = EVEN_DRIVE_LEVEL4_LOTTIE_PATH + "data.json";
+            animLevel = 4;
+        }
+
+        String targetFileName = getTargetFileName(animLevel);
+        ContiRightEffectInfo effectInfo = null;
+        if (!TextUtils.isEmpty(targetFileName)) {
+            effectInfo = new ContiRightEffectInfo(resPath, jsonPath, targetFileName);
+        } else {
+            effectInfo = new ContiRightEffectInfo(resPath, jsonPath);
+        }
+
+        effectInfo.setReplaceFileName(replaceFileName);
+//        xesLottieAnimView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
+//        final LottieEffectInfo effectInfo = new LottieEffectInfo(resPath, jsonPath);
+        scoreLottieView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext), null);
+
+//        scoreLottieView.setImageAssetDelegate(delegate);
+        final ContiRightEffectInfo finalEffectInfo = effectInfo;
+        scoreLottieView.setImageAssetDelegate(new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return finalEffectInfo.fetchBitmapFromAssets(scoreLottieView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                        mContext);
+            }
+        });
+        scoreLottieView.setMaxFrame(90);
+        doShowAnima();
+    }
+
+    private String getTargetFileName(int animLevel) {
+        String fileName = null;
+        switch (animLevel) {
+            case 1:
+            case 2:
+                fileName = "img_46.png";
+                break;
+            case 3:
+            case 4:
+                fileName = "img_6.png";
+                break;
+            default:
+                break;
+        }
+        return fileName;
+
+    }
+
+    protected void doShowAnima() {
         scoreLottieView.useHardwareAcceleration();
         scoreLottieView.playAnimation();
         if (scoreLottieView.getVisibility() != View.VISIBLE) {
@@ -133,7 +222,18 @@ public class QuestionResultEvenDrivePager extends BasePager {
         }
     }
 
-    private int dra[] = new int[]{
+    public void showNum(final int num) {
+        if (num >= 2) {
+            if (isPrimarySchool()) {
+                showPriAnimaNum(num);
+            } else {
+                showMiddleNum(num);
+            }
+        }
+    }
+
+
+    private int primarySchoolDra[] = new int[]{
             R.drawable.bg_livevideo_even_drive_anim_2,
             R.drawable.bg_livevideo_even_drive_anim_3,
             R.drawable.bg_livevideo_even_drive_anim_4,
@@ -156,26 +256,30 @@ public class QuestionResultEvenDrivePager extends BasePager {
             R.drawable.bg_livevideo_even_drive_anim_21,
             R.drawable.bg_livevideo_even_drive_anim_22,
             R.drawable.bg_livevideo_even_drive_anim_23,
-            R.drawable.bg_livevideo_even_drive_anim_24};
+            R.drawable.bg_livevideo_even_drive_anim_24
+    };
 
+    private int middleSchoolDra[] = new int[]{
+
+    };
 //    private Bitmap getEvenDriveBp(int num){
 //        mContext.getResources().getDrawable()
 //        if (num > 1 && num < 25) {
-//            return mContext.getResources().getDrawable(dra[num - 2]);
-////            return context.getDrawable(dra[num - 2]);
+//            return mContext.getResources().getDrawable(primarySchoolDra[num - 2]);
+////            return context.getDrawable(primarySchoolDra[num - 2]);
 //        }
 //        return null;
 //    }
 
-    private Drawable getEvenDrive(int num) {
+    protected Drawable getEvenDrive(int num) {
         if (num > 1 && num < 25) {
-            return mContext.getResources().getDrawable(dra[num - 2]);
-//            return context.getDrawable(dra[num - 2]);
+            return mContext.getResources().getDrawable(primarySchoolDra[num - 2]);
+//            return context.getDrawable(primarySchoolDra[num - 2]);
         }
         return null;
     }
 
-    private Bitmap getEvenDriveBt(Drawable drawable, String lottieFilPath, String lottieFileName) {
+    protected Bitmap getEvenDriveBt(Drawable drawable, String lottieFilPath, String lottieFileName) {
         try {
             if (drawable instanceof NinePatchDrawable) {
                 NinePatchDrawable npd = (NinePatchDrawable) drawable;

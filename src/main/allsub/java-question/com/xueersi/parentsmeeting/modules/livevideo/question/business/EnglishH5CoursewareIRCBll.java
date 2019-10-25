@@ -989,7 +989,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             } else {
                 getCourseWareHttpManager().getStuTestResult(mGetInfo.getId(), mGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
                         englishH5Entity.getPackageAttr(), isPlayBack,
-                        new EvenDriveAnimHttpCallBackProxy(callBack, !detailInfo.isTUtor() && isPlayBack == 1,
+                        new EvenDriveAnimHttpCallBackProxy(callBack, !detailInfo.isTUtor() && isPlayBack == 0,
                                 EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_NEW_PLAYFROM,
                                 detailInfo.id)
                         , detailInfo.isTUtor());

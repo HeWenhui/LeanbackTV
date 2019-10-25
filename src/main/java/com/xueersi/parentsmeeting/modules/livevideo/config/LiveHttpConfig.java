@@ -297,9 +297,12 @@ public class LiveHttpConfig {
     public final static String UEL_ENGLISH_EVEN_DRIVE_MSG = "https://app.arts.xueersi.com/v2/stimulation/getRightNums";
     //chs新课件获取连对数量
     public final static String URL_CHINESE_NEW_ARTS_EVEN_DRIVE_MSG = "https://student.chs.xueersi.com/Stimulation/getRightNums";
+    //science新课件获取连对数量
+    public final static String URL_SCIENCE_NEW_ARTS_EVEN_DRIVE_MSG = "https://student.xueersi.com/science/Stimulation/getRightNums";
     //chs新课件获取自传互动题连对数量
     public final static String URL_CHINESE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "http://student.chs.xueersi.com/Stimulation/getTestRightNum";
-
+    //science新课件获取自传互动题连对数量
+    public final static String URL_SCIENCE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "http://student.xueersi.com/science/Stimulation/getRightNums";
     public static int HTTP_ERROR_ERROR = 1;
     public static int HTTP_ERROR_FAIL = 2;
     public static int HTTP_ERROR_NULL = 3;
