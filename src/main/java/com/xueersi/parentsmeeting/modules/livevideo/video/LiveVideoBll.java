@@ -412,7 +412,16 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
             isPlay = true;
             if (isGroupClass()) {
                 if (isClassEnd()) {
-                    stopPlay();
+                    release();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            videoFragment.playComplete();
+                            if (mVideoAction != null) {
+                                mVideoAction.onTeacherNotPresent(false);
+                            }
+                        }
+                    });
                 } else {
                     seekGroupClass();
                 }
@@ -665,7 +674,13 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
                 case MediaErrorInfo.PLAY_COMPLETE: {
 //                    playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
 //                    liveGetPlayServer.liveGetPlayServer(false);
-                    psRePlay(false);
+                    if (isGroupClass()) {
+                        if (mVideoAction != null) {
+                            mVideoAction.onTeacherNotPresent(false);
+                        }
+                    } else {
+                        psRePlay(false);
+                    }
                 }
                 break;
                 default:

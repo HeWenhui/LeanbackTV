@@ -53,6 +53,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIm
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback.SuperSpeakerBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -250,8 +251,16 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         this.mMediaController = mPlayBackMediaController;
         liveBackPlayVideoFragment.setMediaController(mMediaController);
         rl_course_video_live_controller_content.removeAllViews();
-        rl_course_video_live_controller_content.addView(mPlayBackMediaController, new ViewGroup.LayoutParams(ViewGroup
-                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        if (mVideoEntity.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+            liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, mPlayBackMediaController, new ViewGroup.LayoutParams
+                    (ViewGroup
+                    .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        } else {
+            rl_course_video_live_controller_content.addView(mPlayBackMediaController, new ViewGroup.LayoutParams
+                    (ViewGroup
+                    .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+
         if (mLiveRemarkBll == null || mVideoEntity.getIsAllowMarkpoint() != 1) {
             mMediaController.getTitleRightBtn().setVisibility(View.GONE);
         } else {

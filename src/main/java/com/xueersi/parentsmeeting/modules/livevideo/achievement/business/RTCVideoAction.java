@@ -17,6 +17,9 @@ public interface RTCVideoAction {
 
     void updateGold(int gold, float x, float y, int type);
 
+    void onMediaControllerShow();
+
+    void onMediaControllerHide();
 
     int GOLD_TYPE_QUESTION = 1;
     int GOLD_TYPE_REDPACKAGE = 2;

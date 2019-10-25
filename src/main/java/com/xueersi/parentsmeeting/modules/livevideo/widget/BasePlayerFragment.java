@@ -569,6 +569,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             return true;
         }
     };
+
     protected WeakHandler vPlayerHandler = new WeakHandler(callback);
 
     @Nullable
@@ -1035,7 +1036,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     /** 当前视频播放完毕 */
-    protected void playComplete() {
+    public void playComplete() {
 
     }
 
