@@ -56,9 +56,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExperCourseGameResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExperCourseResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoteAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
@@ -109,6 +112,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     /**
      * 答题全对
      */
+    private static final int ANSWER_RESULT_HALF_RIGHT = 1;
+    /**
+     * 答题全对
+     */
     private static final int ANSWER_RESULT_ALL_RIGHT = 2;
 
     private IArtsAnswerRsultDisplayer mDsipalyer;
@@ -155,6 +162,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     private String testId;
     private static final int VOTE_TYPE = 21;
+
     /**
      * @param context
      * @param liveBll
@@ -205,6 +213,77 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         // logger.e( "==========> ArtsAnswerResultBll addPager called:");
     }
 
+    private void addPagerExper(ArtsAnswerResultEvent event) {
+        //logger.e("ArtsAnswerResultBll:addPager:" + mDsipalyer);
+
+        if (mDsipalyer != null) {
+            return;
+        }
+
+        if (mAnswerReulst.getType() == LiveQueConfig.TYPE_GAME) {
+            PrimaryScienceAnswerResultEntity primaryScienceAnswerResultEntity = new PrimaryScienceAnswerResultEntity();
+            primaryScienceAnswerResultEntity.setGold(mAnswerReulst.getGold());
+            int isRight = mAnswerReulst.getIsRight();
+            if (isRight == ANSWER_RESULT_ALL_RIGHT) {
+                primaryScienceAnswerResultEntity.setType(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
+            }
+            ExperCourseGameResultPager resultPager = new ExperCourseGameResultPager(mContext, getLiveViewAction(), primaryScienceAnswerResultEntity);
+            resultPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+                @Override
+                public void onClose(LiveBasePager basePager) {
+                    onCloseByUser();
+                }
+            });
+            mDsipalyer = resultPager;
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                    (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            addView(mDsipalyer.getRootLayout(), layoutParams);
+        } else {
+            UmsAgentManager.umsAgentDebug(mContext, "createViceResultView_result", JSON.toJSONString(mAnswerResultList));
+            PrimaryScienceAnswerResultEntity primaryScienceAnswerResultEntity = new PrimaryScienceAnswerResultEntity();
+            primaryScienceAnswerResultEntity.setGold(mAnswerReulst.getGold());
+            int isRight = mAnswerReulst.getIsRight();
+            if (isRight == ANSWER_RESULT_ALL_RIGHT) {
+                primaryScienceAnswerResultEntity.setType(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
+            } else if (isRight == ANSWER_RESULT_HALF_RIGHT) {
+                primaryScienceAnswerResultEntity.setType(PrimaryScienceAnswerResultEntity.PARTIALLY_RIGHT);
+            }
+            List<PrimaryScienceAnswerResultEntity.Answer> answerList = primaryScienceAnswerResultEntity.getAnswerList();
+            List<AnswerResultEntity.Answer> answerListArts = mAnswerReulst.getAnswerList();
+            if (answerListArts != null && !answerListArts.isEmpty()) {
+                AnswerResultEntity.Answer answerArts = answerListArts.get(0);
+                List<String> rightAnswers = answerArts.getRightAnswers();
+                if (rightAnswers != null) {
+                    for (int i = 0; i < rightAnswers.size(); i++) {
+                        PrimaryScienceAnswerResultEntity.Answer answer = new PrimaryScienceAnswerResultEntity.Answer();
+                        answer.setRightAnswer(rightAnswers.get(i));
+                        if (answerArts.getTestType() == 2) {
+                            List<String> choiceList = answerArts.getChoiceList();
+                            answer.setMyAnswer(choiceList.get(i));
+                        } else {
+                            List<String> blankList = answerArts.getBlankList();
+                            answer.setMyAnswer(blankList.get(i));
+                        }
+                        answerList.add(answer);
+                    }
+                }
+            }
+            ExperCourseResultPager experCourseResultPager = new ExperCourseResultPager(mContext, getLiveViewAction(), primaryScienceAnswerResultEntity);
+            experCourseResultPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+                @Override
+                public void onClose(LiveBasePager basePager) {
+                    onCloseByUser();
+                }
+            });
+            mDsipalyer = experCourseResultPager;
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                    (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            addView(mDsipalyer.getRootLayout(), layoutParams);
+        }
+
+        // logger.e( "==========> ArtsAnswerResultBll addPager called:");
+    }
+
     /**
      * 展示答题结果
      */
@@ -212,20 +291,24 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         post(new Runnable() {
             @Override
             public void run() {
-                if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
-                    showH5Result(mAnswerReulst);
-                    close = false;
+                if (event.isExper()) {
+                    addPagerExper(event);
                 } else {
-                    closeRemindUI();
-                    addPager(event);
-                }
-                try {
-                    VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
-                    if (detailInfo != null) {
-                        NewCourseLog.sno8(contextLiveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0, detailInfo.isTUtor());
+                    if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
+                        showH5Result(mAnswerReulst);
+                        close = false;
+                    } else {
+                        closeRemindUI();
+                        addPager(event);
                     }
-                } catch (Exception e) {
-                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    try {
+                        VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
+                        if (detailInfo != null) {
+                            NewCourseLog.sno8(contextLiveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0, detailInfo.isTUtor());
+                        }
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
                 }
             }
         });
@@ -457,14 +540,17 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             answer.setCreateTime(answerObject.optLong("createTime"));
 
                             choiceArray = answerObject.optJSONArray("choice");
-                            for (int i1 = 0; i1 < choiceArray.length(); i1++) {
-                                choiceList.add(choiceArray.getString(i1));
+                            if (choiceArray != null) {
+                                for (int i1 = 0; i1 < choiceArray.length(); i1++) {
+                                    choiceList.add(choiceArray.getString(i1));
+                                }
                             }
                             answer.setChoiceList(choiceList);
                             blankArray = answerObject.optJSONArray("blank");
-
-                            for (int i1 = 0; i1 < blankArray.length(); i1++) {
-                                blankList.add(blankArray.getString(i1));
+                            if (blankArray != null) {
+                                for (int i1 = 0; i1 < blankArray.length(); i1++) {
+                                    blankList.add(blankArray.getString(i1));
+                                }
                             }
                             answer.setBlankList(blankList);
                             rightAnswerArray = answerObject.optJSONArray("rightAnswer");
@@ -995,11 +1081,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         return;
                     }
                 boolean resultFromVoice = event.getType() == ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK;
-                onAnswerResult(event, event.getDataStr(), resultFromVoice);
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("ArtsAnswerResult_:").append(event.getDataStr());
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), "ArtsAnswerResultBll", stringBuilder.toString());
-
+                try {
+                    onAnswerResult(event, event.getDataStr(), resultFromVoice);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append("ArtsAnswerResult_:").append(event.getDataStr());
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), "ArtsAnswerResultBll", stringBuilder.toString());
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(TAG, e);
+                }
             } else if (ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()) {
                 onRolePlayAnswerResult(event.getDataStr(), event.getSpeechResultEntity());
                 StringBuilder stringBuilder = new StringBuilder();

@@ -8,12 +8,14 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.item.ExperCourseResultAdapter;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
@@ -23,7 +25,7 @@ import java.util.List;
 /**
  * Created by linyuqiang on 2019/4/15.  大题互动结果页
  */
-public class ExperCourseGameResultPager extends LiveBasePager {
+public class ExperCourseGameResultPager extends LiveBasePager implements IArtsAnswerRsultDisplayer {
     private PrimaryScienceAnswerResultEntity entity;
     List<PrimaryScienceAnswerResultEntity.Answer> answerList;
     private LiveViewAction liveViewAction;
@@ -79,5 +81,32 @@ public class ExperCourseGameResultPager extends LiveBasePager {
     @Override
     public void initListener() {
         super.initListener();
+    }
+
+    @Override
+    public void showAnswerReuslt() {
+
+    }
+
+    @Override
+    public void close() {
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mView.getParent() != null) {
+                    ((ViewGroup) mView.getParent()).removeView(mView);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void remindSubmit() {
+
+    }
+
+    @Override
+    public View getRootLayout() {
+        return getRootView();
     }
 }

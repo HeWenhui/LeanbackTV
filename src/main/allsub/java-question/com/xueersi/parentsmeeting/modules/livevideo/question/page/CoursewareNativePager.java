@@ -1016,11 +1016,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             public void onDataSucess(Object... objData) {
                 rlCourseControl.setVisibility(View.GONE);
                 loadResult = true;
-                if (detailInfo.isExper()) {
-                    showEngAnswerResultExper(isforce, userAnswerArray, objData);
-                } else {
-                    showEngAnswerResult(isforce, userAnswerArray, objData);
-                }
+                showEngAnswerResult(isforce, userAnswerArray, objData);
                 onSubmitSuccess(isforce);
             }
 
@@ -1098,6 +1094,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
                     artsAnswerResultEvent.setDetailInfo(detailInfo);
                     artsAnswerResultEvent.setIspreload(ispreload);
+                    artsAnswerResultEvent.setExper(detailInfo.isExper());
                     EventBus.getDefault().post(artsAnswerResultEvent);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1285,6 +1282,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
             artsAnswerResultEvent.setDetailInfo(detailInfo);
             artsAnswerResultEvent.setIspreload(ispreload);
+            artsAnswerResultEvent.setExper(detailInfo.isExper());
             if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
                 if (isPlayBack) {
                     ViewGroup group = (ViewGroup) mView.getParent();

@@ -54,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfi
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.utils.LiveWebLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.OnPointClick;
 
@@ -279,6 +280,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
             if (obj instanceof ExpAutoLive) {
                 ExpAutoLive expAutoLive = (ExpAutoLive) obj;
                 mHttpManager.addBodyParam("termId", expAutoLive.getTermId());
+            } else {
+                String termId = mVideoEntity.getChapterId();
+                mHttpManager.addBodyParam("termId", termId);
             }
         }
         if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {
@@ -480,34 +484,31 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                         return;
                     }
                     int count = 0;
-                    for (int i = 0; i < lstVideoQuestion.size(); i++) {
-                        VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
-                        if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory() ||
-                                LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == videoQuestionEntity.getvCategory()) {
-                            count++;
-                            if (count == 21) {
-                                onOnPointClick(videoQuestionEntity, i);
-                                break;
-                            }
-                        } else if (LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == videoQuestionEntity.getvCategory() ||
-                                LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()) {
-                            List<ReleaseedInfos> releaseInfos = videoQuestionEntity.getReleaseInfos();
-                            if (!releaseInfos.isEmpty()) {
-                                ReleaseedInfos releaseedInfos = releaseInfos.get(0);
-                                String type = releaseedInfos.getType();
-                                if (LiveQueConfig.EN_COURSE_TYPE_SPEECH.equals(type)) {
-                                    count++;
-                                    if (count == 2) {
-                                        onOnPointClick(videoQuestionEntity, i);
-                                        break;
-                                    }
-                                }
-                            }
-//                            onOnPointClick(videoQuestionEntity, i);
-//                            break;
-
-                        }
-                    }
+//                    for (int i = 0; i < lstVideoQuestion.size(); i++) {
+//                        VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
+//                        if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory() ||
+//                                LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == videoQuestionEntity.getvCategory()) {
+//                            count++;
+//                            if (count == 21) {
+//                                onOnPointClick(videoQuestionEntity, i);
+//                                break;
+//                            }
+//                        } else if (LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == videoQuestionEntity.getvCategory() ||
+//                                LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()) {
+//                            List<ReleaseedInfos> releaseInfos = videoQuestionEntity.getReleaseInfos();
+//                            if (!releaseInfos.isEmpty()) {
+//                                ReleaseedInfos releaseedInfos = releaseInfos.get(0);
+//                                String type = releaseedInfos.getType();
+//                                if (LiveQueConfig.EN_COURSE_TYPE_BLANK.equals(type)) {
+//                                    count++;
+//                                    if (count == 2) {
+//                                        onOnPointClick(videoQuestionEntity, i);
+//                                        break;
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
                 }
             }, 1200);
         }
@@ -880,6 +881,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         void onShow(boolean isShow, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
         void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity);
+
     }
 
     /**

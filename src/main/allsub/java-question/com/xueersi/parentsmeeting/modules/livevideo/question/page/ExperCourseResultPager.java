@@ -4,12 +4,14 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
@@ -23,7 +25,7 @@ import java.util.List;
 /**
  * Created by linyuqiang on 2019/4/15.  大题互动结果页
  */
-public class ExperCourseResultPager extends LiveBasePager {
+public class ExperCourseResultPager extends LiveBasePager implements IArtsAnswerRsultDisplayer {
     private  PrimaryScienceAnswerResultEntity entity;
     List<PrimaryScienceAnswerResultEntity.Answer> answerList;
     /** 结果页上边金币标题 */
@@ -93,5 +95,32 @@ public class ExperCourseResultPager extends LiveBasePager {
                 }
             }
         });
+    }
+
+    @Override
+    public void showAnswerReuslt() {
+
+    }
+
+    @Override
+    public void close() {
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mView.getParent() != null) {
+                    ((ViewGroup) mView.getParent()).removeView(mView);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void remindSubmit() {
+
+    }
+
+    @Override
+    public View getRootLayout() {
+        return getRootView();
     }
 }

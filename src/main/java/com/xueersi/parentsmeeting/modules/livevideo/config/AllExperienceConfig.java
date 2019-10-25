@@ -15,6 +15,7 @@ public class AllExperienceConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll",
     };
     private static String[] experienceHalfClassPath = {
             "com.xueersi.parentsmeeting.modules.livevideo.business.ExperHalfbodyIRCMessBll",

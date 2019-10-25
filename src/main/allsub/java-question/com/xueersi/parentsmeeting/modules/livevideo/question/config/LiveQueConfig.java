@@ -43,6 +43,8 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_OUT = "11";
     /** 直播- 本地上传游戏 */
     public static final String EN_COURSE_TYPE_GAME = "12";
+    /** 游戏试题类型 */
+    public static final int TYPE_GAME = 12;
     /** 直播- 本地上传互动题 */
     public static final String EN_COURSE_TYPE_QUE = "13";
     /** 直播- 本地上传-语音答题填空 */
