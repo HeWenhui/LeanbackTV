@@ -252,25 +252,45 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             List<PrimaryScienceAnswerResultEntity.Answer> answerList = primaryScienceAnswerResultEntity.getAnswerList();
             List<AnswerResultEntity.Answer> answerListArts = mAnswerReulst.getAnswerList();
             if (answerListArts != null && !answerListArts.isEmpty()) {
-                AnswerResultEntity.Answer answerArts = answerListArts.get(0);
-                List<String> rightAnswers = answerArts.getRightAnswers();
-                if (rightAnswers != null) {
-                    for (int i = 0; i < rightAnswers.size(); i++) {
-                        PrimaryScienceAnswerResultEntity.Answer answer = new PrimaryScienceAnswerResultEntity.Answer();
-                        answer.setRightAnswer(rightAnswers.get(i));
-                        if (answerArts.getTestType() == 2) {
-                            List<String> choiceList = answerArts.getChoiceList();
-                            String myAnswer = choiceList.get(i);
-                            if (StringUtils.isEmpty(myAnswer)) {
-                                myAnswer = "空";
+                for (int a = 0; a < answerListArts.size(); a++) {
+                    AnswerResultEntity.Answer answerArts = answerListArts.get(a);
+                    List<String> rightAnswers = answerArts.getRightAnswers();
+                    String rights = "";
+                    if (rightAnswers != null) {
+                        for (int i = 0; i < rightAnswers.size(); i++) {
+                            rights += rightAnswers.get(i);
+                            if (i != rightAnswers.size() - 1) {
+                                rights += ",";
                             }
-                            answer.setMyAnswer(myAnswer);
-                        } else {
-                            List<String> blankList = answerArts.getBlankList();
-                            answer.setMyAnswer(blankList.get(i));
                         }
-                        answerList.add(answer);
                     }
+                    String myAnswer = "";
+                    if (answerArts.getTestType() == AnswerResultEntity.TEST_TYPE_2) {
+                        List<String> choiceList = answerArts.getChoiceList();
+                        for (int i = 0; i < choiceList.size(); i++) {
+                            myAnswer += choiceList.get(i);
+                            if (i != choiceList.size() - 1) {
+                                myAnswer += ",";
+                            }
+                        }
+                    } else {
+                        List<String> blankList = answerArts.getBlankList();
+                        for (int i = 0; i < blankList.size(); i++) {
+                            myAnswer += blankList.get(i);
+                            if (i != blankList.size() - 1) {
+                                myAnswer += ",";
+                            }
+                        }
+                    }
+                    PrimaryScienceAnswerResultEntity.Answer answer = new PrimaryScienceAnswerResultEntity.Answer();
+                    if (answerArts.getIsRight() == ArtsAnswerResultPager.RESULT_TYPE_CORRECT) {
+                        answer.setRight(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
+                    } else if (answerArts.getIsRight() == ArtsAnswerResultPager.RESULT_TYPE_PART_CORRECT){
+                        answer.setRight(PrimaryScienceAnswerResultEntity.PARTIALLY_RIGHT);
+                    }
+                    answer.setRightAnswer(rights);
+                    answer.setMyAnswer(myAnswer);
+                    answerList.add(answer);
                 }
             }
             ExperCourseResultPager experCourseResultPager = new ExperCourseResultPager(mContext, getLiveViewAction(), primaryScienceAnswerResultEntity);

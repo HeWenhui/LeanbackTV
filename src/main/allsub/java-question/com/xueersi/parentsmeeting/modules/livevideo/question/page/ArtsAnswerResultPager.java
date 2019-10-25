@@ -230,7 +230,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
         /** 是否是填空题 */
         private boolean isSelect(AnswerResultEntity.Answer data) {
-            return data.getTestType() == 2;
+            return data.getTestType() == AnswerResultEntity.TEST_TYPE_2;
         }
 
         /**
