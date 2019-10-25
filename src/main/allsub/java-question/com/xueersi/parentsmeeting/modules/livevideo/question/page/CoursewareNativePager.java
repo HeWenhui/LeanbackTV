@@ -1255,7 +1255,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     liveViewAction.removeView(basePager.getRootView());
                 }
             });
-            liveViewAction.addView(experCourseGameResultPager.getRootView());
+            ((ViewGroup) mView).addView(experCourseGameResultPager.getRootView());
         } else {
 
         }
