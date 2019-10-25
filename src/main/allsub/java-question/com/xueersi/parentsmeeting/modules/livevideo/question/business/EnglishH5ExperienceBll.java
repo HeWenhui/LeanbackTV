@@ -81,7 +81,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, englishH5CoursewareBll.new
                 LiveQuestionSwitchImpl());
         englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(wrapQuestionSwitch,
-                englishH5CoursewareBll, liveGetInfo));
+                englishH5CoursewareBll, liveGetInfo).setExperience(true));
 
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new
                 LiveBackBaseEnglishH5CoursewareCreat();

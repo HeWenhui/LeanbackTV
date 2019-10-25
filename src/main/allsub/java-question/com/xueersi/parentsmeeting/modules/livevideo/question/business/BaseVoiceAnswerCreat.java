@@ -104,14 +104,14 @@ public interface BaseVoiceAnswerCreat {
         void initFillinAnswerRightResultVoice(VideoResultEntity entity);
 
         /**
-         * 选择题错误
+         * 语音答题选择题错误
          *
          * @param entity
          */
         void initSelectAnswerWrongResultVoice(VideoResultEntity entity);
 
         /**
-         * 填空题错误
+         * 语音答题填空题错误
          *
          * @param entity
          */

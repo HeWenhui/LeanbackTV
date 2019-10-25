@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,7 +27,7 @@ import java.util.List;
  * Created by linyuqiang on 2019/4/15.  大题互动结果页
  */
 public class ExperCourseResultPager extends LiveBasePager implements IArtsAnswerRsultDisplayer {
-    private  PrimaryScienceAnswerResultEntity entity;
+    private PrimaryScienceAnswerResultEntity entity;
     List<PrimaryScienceAnswerResultEntity.Answer> answerList;
     /** 结果页上边金币标题 */
     private ImageView ivBigqueResultTitle;
@@ -51,7 +52,11 @@ public class ExperCourseResultPager extends LiveBasePager implements IArtsAnswer
 
     @Override
     public View initView() {
-        mView = liveViewAction.inflateView(R.layout.page_livevideo_exper_course_result);
+        if (liveViewAction != null) {
+            mView = liveViewAction.inflateView(R.layout.page_livevideo_exper_course_result);
+        } else {
+            mView = LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_exper_course_result, null);
+        }
         ivBigqueResultTitle = mView.findViewById(R.id.iv_livevideo_bigque_result_title);
         tvBigqueResultTitle = mView.findViewById(R.id.tv_livevideo_bigque_result_title);
         rvBigqueResultList = mView.findViewById(R.id.rv_livevideo_bigque_result_list);

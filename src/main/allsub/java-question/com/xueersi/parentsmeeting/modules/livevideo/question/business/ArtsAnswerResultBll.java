@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.util.FontCache;
@@ -259,7 +260,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         answer.setRightAnswer(rightAnswers.get(i));
                         if (answerArts.getTestType() == 2) {
                             List<String> choiceList = answerArts.getChoiceList();
-                            answer.setMyAnswer(choiceList.get(i));
+                            String myAnswer = choiceList.get(i);
+                            if (StringUtils.isEmpty(myAnswer)) {
+                                myAnswer = "空";
+                            }
+                            answer.setMyAnswer(myAnswer);
                         } else {
                             List<String> blankList = answerArts.getBlankList();
                             answer.setMyAnswer(blankList.get(i));
