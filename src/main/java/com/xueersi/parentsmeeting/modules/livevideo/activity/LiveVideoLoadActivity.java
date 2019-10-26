@@ -23,6 +23,7 @@ import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.common.util.XrsBroswer;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.FileLogger;
@@ -207,6 +208,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
             @Override
             public void onInstallFinish(int i) {
+                StableLogHashMap logHashMap = new StableLogHashMap("onInstallFinish");
+                logHashMap.put("code", "" + i);
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
                 initData2();
             }
 
@@ -218,6 +222,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
             }
         });
+        StableLogHashMap logHashMap = new StableLogHashMap("init");
+        logHashMap.put("status", "" + init);
+        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
         if (!init) {
             return;
         }
