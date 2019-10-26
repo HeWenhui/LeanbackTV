@@ -78,8 +78,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        QbSdk.clearAllWebViewCache(getApplicationContext(), true);
-        QbSdk.reset(getApplicationContext());
         String token = LiveAppUserInfo.getInstance().getTalToken();
         //如果没有token，只能重新点击进入了
         if (StringUtils.isEmpty(token)) {
