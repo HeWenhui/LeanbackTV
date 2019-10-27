@@ -158,5 +158,12 @@
             android:layout_marginLeft="10dp"
             android:background="@drawable/bg_groupclass_setting_english_conform" />
     </LinearLayout>
-
+    <ImageButton
+        android:id="@+id/imgbtn_live_setting_english_name_close"
+        android:layout_marginTop="33dp"
+        android:layout_marginRight="70dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/selector_page_livevideo_praise_list_lovely_close_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </RelativeLayout>

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,9 +36,11 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.business.EnglishNameBusiness;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.config.EnglishNameConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.englishname.dialog.EnglishNameConfirmDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.entity.EngLishNameEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.item.SettingEnglishNameBarItem;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.item.SettingEnglishNameIndexItem;
@@ -58,6 +61,10 @@ import java.util.List;
  */
 @Route(path = "/groupclass/englishname")
 public class SettingEnglishLandActivity extends XesActivity {
+    /**
+     * 播放器请求
+     */
+    public static final int VIDEO_REQUEST = 210;
     /** 版本号 */
     private TextView tvVersion;
 
@@ -104,6 +111,13 @@ public class SettingEnglishLandActivity extends XesActivity {
 
     String selectName = "";
     int sex = 0;
+
+    EnglishNameConfirmDialog englishNameConfirmDialog;
+
+    ImageButton imgBtnClose;
+
+    boolean isLive = true;
+    String where = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,26 +127,44 @@ public class SettingEnglishLandActivity extends XesActivity {
         setContentView(R.layout.layout_live_group_class_setting_english_name);
         englishNameBll = new EnglishNameBusiness(mContext);
 
-
-        testData();
+        //testData();
         initView();
         startLottie();
-       // initData();
+        initData();
         initListener();
     }
 
     private void initData() {
-        fillData();
+
+        isLive = getIntent().getExtras().getBoolean("engish1v2Type",true);
+        where= getIntent().getExtras().getString("where");
     }
 
+    private void continueToVideo(){
+        if(isLive) {
+            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(SettingEnglishLandActivity.this, getIntent().getExtras());
+        } else {
+            com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(SettingEnglishLandActivity.this, getIntent().getExtras(),
+
+                    where, VIDEO_REQUEST);
+        }
+    }
 
     private void initListener(){
+        imgBtnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                continueToVideo();
+                finish();
+            }
+        });
         // 男孩选择
         ivBoy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sexSelect();
                 sex = LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY;
+                testData();
             }
         });
         // 女孩选择
@@ -141,6 +173,7 @@ public class SettingEnglishLandActivity extends XesActivity {
             public void onClick(View view) {
                 sexSelect();
                 sex = LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_GIRL;
+                testData();
             }
         });
         // 返回性别选择
@@ -156,10 +189,9 @@ public class SettingEnglishLandActivity extends XesActivity {
             public void onClick(View view) {
               //  finish();
                 if(TextUtils.isEmpty(selectName)) {
-                 //   XESToastUtils.showToast("");
+                 showDialog();
+                 return;
                 }
-                XESToastUtils.showToast(selectName);
-
                 TalAccReq.EditUserInfoReq req=new TalAccReq.EditUserInfoReq();
                 req.sex = sex+"";
                 req.en_name = selectName;
@@ -167,6 +199,8 @@ public class SettingEnglishLandActivity extends XesActivity {
                     @Override
                     public void onSuccess(TalAccResp.StringResp stringResp) {
                         XESToastUtils.showToast(stringResp.result);
+                        continueToVideo();
+                        finish();
                     }
 
                     @Override
@@ -176,6 +210,14 @@ public class SettingEnglishLandActivity extends XesActivity {
                 });
             }
         });
+    }
+
+    private void showDialog(){
+        if(englishNameConfirmDialog==null) {
+            englishNameConfirmDialog = new EnglishNameConfirmDialog(mContext,mBaseApplication,false);
+        }
+        englishNameConfirmDialog.initData("jack",englishNameListener);
+        englishNameConfirmDialog.showDialog();
     }
     private void secShow(){
         ivBoy.setVisibility(View.VISIBLE);
@@ -213,6 +255,12 @@ public class SettingEnglishLandActivity extends XesActivity {
                 selectSerch(position,text);
             }
         }
+
+        @Override
+        public void dialogCancel() {
+            continueToVideo();
+            finish();
+        }
     };
 
 
@@ -232,7 +280,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         etSearch = findViewById(R.id.et_groupclass_setting_english_name_search);
         recyclerSearch= findViewById(R.id.rv_setting_english_name_search_list);
         tvRecommendHint = findViewById(R.id.tv_setting_english_name_recommend_hint);
-
+        imgBtnClose = findViewById(R.id.imgbtn_live_setting_english_name_close);
         rvRecommend.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
         recyclerViewIndex.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
         //      areaIndexBarView = findViewById(R.id.aiv_setting_english_name_list_index);
@@ -421,6 +469,9 @@ public class SettingEnglishLandActivity extends XesActivity {
     public class GridSpanSearchSizeLookup extends GridLayoutManager.SpanSizeLookup {
         @Override
         public int getSpanSize(int position) {
+            if(listSearchName.size()==0){
+                return 0;
+            }
             return listSearchName.get(position).getSpanNum();
         }
     }
@@ -428,6 +479,9 @@ public class SettingEnglishLandActivity extends XesActivity {
     public class GridSpanSizeLookup extends GridLayoutManager.SpanSizeLookup {
         @Override
         public int getSpanSize(int position) {
+            if(listName.size()==0){
+                return 0;
+            }
             return listName.get(position).getSpanNum();
         }
     }
@@ -499,7 +553,21 @@ public class SettingEnglishLandActivity extends XesActivity {
         @Override
         public void onDataSucess(Object... objData) {
             listName = (List<EngLishNameEntity>) objData[0];
-            initData();
+            EngLishNameEntity recommendName = null;
+
+            if(listName!=null && listName.size()>0) {
+                for (int i = 0; i < listName.size(); i++) {
+                    if(listRecommendName.size()==4) {
+                        break;
+                    }
+                    if(!TextUtils.isEmpty(listName.get(i).getName())) {
+                        recommendName = new EngLishNameEntity();
+                        recommendName.setName(listName.get(i).getName());
+                        listRecommendName.add(recommendName);
+                    }
+                }
+            }
+            fillData();
         }
     };
     private void testData() {
@@ -513,7 +581,6 @@ public class SettingEnglishLandActivity extends XesActivity {
         listWord = new ArrayList<>();
         listRecommendName = new ArrayList<>();
         EngLishNameEntity index = null;
-        EngLishNameEntity recommendName = null;
 
         int indexPosition = 0;
         for (int j = 0; j < word.length; j++) {
@@ -522,11 +589,7 @@ public class SettingEnglishLandActivity extends XesActivity {
             index.setWordIndex(word[j]);
 
             listIndex.add(index);
-            if (j<3) {
-                recommendName = new EngLishNameEntity();
-                recommendName.setName("aaa");
-                listRecommendName.add(recommendName);
-            }
+
             if(true) {
                 continue;
             }
@@ -549,7 +612,7 @@ public class SettingEnglishLandActivity extends XesActivity {
             }
             // lstIndexEntity.add(indexEntity);
         }
-        englishNameBll.getDefaultName(listIndex,businessDataCallBack);
+        englishNameBll.getDefaultName(listIndex,sex,businessDataCallBack);
     }
 
 

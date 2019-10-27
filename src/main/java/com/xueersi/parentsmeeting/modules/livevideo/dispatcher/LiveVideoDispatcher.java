@@ -12,6 +12,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.route.module.moduleInterface.AbsDispatcher;
 import com.xueersi.common.route.module.startParam.ParamKey;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -26,6 +27,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.json.JSONObject;
+
+import ren.yale.android.cachewebviewlib.config.CacheConfig;
 
 import static com.xueersi.common.sharedata.ShareDataManager.SHAREDATA_USER;
 
@@ -80,7 +83,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         if (bundle == null) {
             return;
         }
-
         if (bundle.containsKey(ParamKey.EXTRAKEY_JSONPARAM)) {
             activity = srcActivity;
             dispatcherBll = new DispatcherBll(srcActivity);

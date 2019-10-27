@@ -25,7 +25,7 @@ public class EnglishNameBusiness {
      *
      * @return
      */
-    public void getDefaultName(final List<EngLishNameEntity> indexList, final AbstractBusinessDataCallBack cityCallBack) {
+    public void getDefaultName(final List<EngLishNameEntity> indexList,final int sexType, final AbstractBusinessDataCallBack cityCallBack) {
         new XSAsykTask() {
             @Override
             public void preTask() {
@@ -35,7 +35,7 @@ public class EnglishNameBusiness {
             public void postTask() {
                 String areaText = getStringFromAssets("generate.txt");
                // CityEntity entity = mPsswordSettingHttpResponseParser.getCityLst(areaText);
-                List<EngLishNameEntity> nameList = mEnlishNameParser.pareseEnglishName(areaText,1,indexList);
+                List<EngLishNameEntity> nameList = mEnlishNameParser.pareseEnglishName(areaText,sexType,indexList);
                 cityCallBack.onDataSucess(nameList);
             }
 

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.toast.XesToast;
 import com.xueersi.common.util.LoadFileCallBack;
@@ -456,8 +457,13 @@ public class LiveVideoEnter {
 
             @Override
             public void success() {
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
-                        where, VIDEO_REQUEST);
+                if(bundle.getInt("pattern") ==8) {
+                    start1v2PlayBack(context,bundle,where);
+                } else {
+                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
+
+                            where, VIDEO_REQUEST);
+                }
             }
 
             @Override
@@ -474,6 +480,12 @@ public class LiveVideoEnter {
         return true;
 
 
+    }
+
+    private static void start1v2PlayBack(final Activity context, final Bundle bundle, final String where) {
+        bundle.putBoolean("engish1v2Type",false);
+        bundle.putString("where",where);
+        XueErSiRouter.startModule(context, "/groupclass/englishname", bundle);
     }
 
     /**

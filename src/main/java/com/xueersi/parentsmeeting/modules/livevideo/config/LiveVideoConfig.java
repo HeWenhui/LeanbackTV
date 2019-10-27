@@ -390,4 +390,9 @@ public class LiveVideoConfig {
     public static final int LIVE_GROUP_CLASS_USER_SEX_BOY = 1;
     /** 性别-女 */
     public static final int LIVE_GROUP_CLASS_USER_SEX_GIRL = 2;
+
+    /** 默认英文名-男 */
+    public static final String ENGLISH_NAME_DEFAULT_BOY = "jike";
+    /** 默认英文名-女 */
+    public static final String ENGLISH_NAME_DEFAULT_GRIL = "girl";
 }
