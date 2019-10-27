@@ -32,6 +32,7 @@ import com.tal.user.fusion.http.TalAccApiCallBack;
 import com.tal.user.fusion.manager.TalAccApiFactory;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.XesActivity;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 
@@ -126,18 +127,21 @@ public class SettingEnglishLandActivity extends XesActivity {
         getWindow().setAttributes(lp);
         setContentView(R.layout.layout_live_group_class_setting_english_name);
         englishNameBll = new EnglishNameBusiness(mContext);
+         initData();
+            //testData();
+            initView();
+            startLottie();
+            initListener();
 
-        //testData();
-        initView();
-        startLottie();
-        initData();
-        initListener();
     }
 
     private void initData() {
-
         isLive = getIntent().getExtras().getBoolean("engish1v2Type",true);
         where= getIntent().getExtras().getString("where");
+        boolean isNeed =mShareDataManager.getBoolean(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK,false,ShareDataManager.SHAREDATA_USER);
+        if(isNeed) {
+            continueToVideo();
+        }
     }
 
     private void continueToVideo(){
@@ -148,6 +152,7 @@ public class SettingEnglishLandActivity extends XesActivity {
 
                     where, VIDEO_REQUEST);
         }
+        finish();
     }
 
     private void initListener(){
@@ -155,7 +160,7 @@ public class SettingEnglishLandActivity extends XesActivity {
             @Override
             public void onClick(View view) {
                 continueToVideo();
-                finish();
+
             }
         });
         // 男孩选择
@@ -200,7 +205,7 @@ public class SettingEnglishLandActivity extends XesActivity {
                     public void onSuccess(TalAccResp.StringResp stringResp) {
                         XESToastUtils.showToast(stringResp.result);
                         continueToVideo();
-                        finish();
+
                     }
 
                     @Override
@@ -259,7 +264,8 @@ public class SettingEnglishLandActivity extends XesActivity {
         @Override
         public void dialogCancel() {
             continueToVideo();
-            finish();
+
+
         }
     };
 
