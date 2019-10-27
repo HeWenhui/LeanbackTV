@@ -46,8 +46,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
  */
 public class QuestionExperienceBll extends LiveBackBaseBll {
     QuestionBll questionBll;
-    String[] ptTypeFilters = {"4", "0", "1", "2", "8", LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY, "6"};
-    private List<String> questiongtype = Arrays.asList(ptTypeFilters);
+    private List<String> questiongtype = Arrays.asList(LiveQueConfig.ptTypeFilters);
     private ExperCourseWareHttpManager courseWareHttpManager;
 
     public QuestionExperienceBll(Activity activity, LiveBackBll liveBackBll) {

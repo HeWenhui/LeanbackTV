@@ -56,8 +56,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
  */
 public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp, QuestionSecHttp, EnglishH5CoursewareSecHttp {
     QuestionBll questionBll;
-    String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
-    private List<String> questiongtype = Arrays.asList(ptTypeFilters);
+    private List<String> questiongtype = Arrays.asList(LiveQueConfig.ptTypeFilters);
     private CourseWareHttpManager courseWareHttpManager;
 
     public QuestionPlayBackBll(Activity activity, LiveBackBll liveBackBll) {

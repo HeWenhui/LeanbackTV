@@ -54,11 +54,10 @@ import static com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQ
  * Created by：WangDe on 2018/8/30 11:22
  */
 public class EnglishH5ExperienceBll extends LiveBackBaseBll {
-    String[] filters = {"4", "0", "1", "2", "8", "5", "6"};
     /**
      * ptType 过滤器
      */
-    private List<String> ptTypeFilters = Arrays.asList(filters);
+    private List<String> ptTypeFilters = Arrays.asList(LiveQueConfig.ptTypeFilters);
     EnglishH5CoursewareBll englishH5CoursewareBll;
     private ExperCourseWareHttpManager courseWareHttpManager;
     int isArts;

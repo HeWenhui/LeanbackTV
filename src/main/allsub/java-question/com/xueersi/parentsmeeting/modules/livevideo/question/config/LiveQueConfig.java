@@ -35,7 +35,9 @@ public class LiveQueConfig {
      */
     public static final String EN_COURSE_TYPE_BLANK = "1";
     public static final String EN_COURSE_TYPE_CHOICE = "2";
+    /** 直播-语音评测 */
     public static final String EN_COURSE_TYPE_SPEECH = "4";
+    /** 直播- roleplay */
     public static final String EN_COURSE_TYPE_ROLEPLAY = "5";
     public static final String EN_COURSE_TYPE_COMMON = "7";
     public static final String EN_COURSE_TYPE_BEF = "9";
@@ -55,11 +57,11 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_NEW_GAME = "17";
     public static final String EN_COURSE_TYPE_18 = "18";
     public static final String EN_COURSE_TYPE_19 = "19";
-    /** 投票题*/
+    /** 投票题 */
     public static final String EN_COURSE_TYPE_21 = "21";
-    /** 语文AI主观题*/
+    /** 语文AI主观题 */
     public static final String CHI_COURESWARE_TYPE_AISUBJECTIVE = "17";
-    /** 开讲吧*/
+    /** 开讲吧 */
     public static final String CHI_COURESWARE_TYPE_SPEAKING_CHINESE = "19";
     /** 直播- voice cannon */
     public static final String EN_COURSE_TYPE_VOICE_CANNON = "22";
@@ -69,7 +71,7 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_HOT_AIR_BALLON = "24";
     /** 英语智能评测 */
     public static final String EN_INTELLIGENT_EVALUTION = "30";
-    /**直播-语音开宝箱**/
+    /** 直播-语音开宝箱 **/
     public static final String EN_COURSE_TYPE_VOICE_TREASURE_BOX = "25";
     /** 直播- what's missing */
     public static final String EN_COURSE_TYPE_WHAT_IS_MISSING = "26";
@@ -85,15 +87,18 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_33 = "33";
     /** 直播- 普通互动题-排序题 */
     public static final String EN_COURSE_TYPE_34 = "34";
+    /** 直播-QuestionBll需要，EnglishH5PlayBackBll不需要的*/
+    public static String[] ptTypeFilters = {"4", "0", "1", "2", "8", LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY, "6"};;
+
     /** 直播-小组互动语音炮弹 */
     public static final int EN_COURSE_GAME_TYPE_1 = 1;
     /** 直播-小组互动Cleaning up */
     public static final int EN_COURSE_GAME_TYPE_2 = 2;
     /** 直播-小组互动what's missing */
     public static final int EN_COURSE_GAME_TYPE_3 = 3;
-    /** 直播-小组互动接龙*/
+    /** 直播-小组互动接龙 */
     public static final int EN_COURSE_GAME_TYPE_4 = 4;
-    /** 直播-小组互动get it*/
+    /** 直播-小组互动get it */
     public static final int EN_COURSE_GAME_TYPE_5 = 5;
 
     /** 游戏模式1 */
@@ -215,11 +220,12 @@ public class LiveQueConfig {
     public static boolean isGroupGame(String type) {
         if (EN_COURSE_TYPE_VOICE_CANNON.equals(type) || EN_COURSE_TYPE_CLEANING_UP.equals(type)
                 || EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type) || EN_COURSE_TYPE_WHAT_IS_MISSING.equals(type)
-                ||EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(type)|| EN_COURSE_TYPE_SOLITAIRE.equals(type)) {
+                || EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(type) || EN_COURSE_TYPE_SOLITAIRE.equals(type)) {
             return true;
         }
         return false;
     }
+
     public static boolean isTypeOfCannon(String type) {
         if (EN_COURSE_TYPE_VOICE_CANNON.equals(type) || EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type) || EN_COURSE_TYPE_WHAT_IS_MISSING.equals(type) || EN_COURSE_TYPE_SOLITAIRE.equals(type)) {
             return true;
