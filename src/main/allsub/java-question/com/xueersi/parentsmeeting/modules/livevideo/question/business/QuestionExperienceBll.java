@@ -232,7 +232,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll {
 
         @Override
         public void speechEval42IsAnswered(boolean isNewArt, String mVSectionID, String num, final AbstractBusinessDataCallBack callBack) {
-            getCourseHttpManager().speechEval42IsAnswered(mVSectionID, num, new HttpCallBack(false) {
+            getCourseWareHttpManager().speechEval42IsAnswered(mVSectionID, num, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(final ResponseEntity responseEntity) {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();

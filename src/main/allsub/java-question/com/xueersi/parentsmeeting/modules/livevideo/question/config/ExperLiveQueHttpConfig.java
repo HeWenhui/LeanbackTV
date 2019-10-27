@@ -35,4 +35,7 @@ public class ExperLiveQueHttpConfig {
     /** 文科新课件平台提交接口 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=30434055 */
     public static String URL_ROLEPLAY_NEWARTS_RESULT = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/submitRolePlayEng";
     public static String URL_LIVE_SEND_SPEECHEVALUATEARTS = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/submitSpeechEval42";
+
+    /** 发送语音评测答案-二期，是否作答 */
+    public static String URL_LIVE_SEND_SPEECHEVAL42_ANSWER = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/speechEval42IsAnswered";
 }

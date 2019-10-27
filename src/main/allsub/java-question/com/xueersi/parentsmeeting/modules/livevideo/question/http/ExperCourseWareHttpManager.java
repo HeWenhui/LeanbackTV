@@ -589,4 +589,13 @@ public class ExperCourseWareHttpManager {
         params.addBodyParam("isPlayBack", "0");
         liveHttpManager.sendPostDefault(ExperLiveQueHttpConfig.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
     }
+
+    //判断语音评测2期是否作答
+    public void speechEval42IsAnswered(String liveId, String id, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("testId", id);
+        params.addBodyParam("type", "1");
+        liveHttpManager.sendPostDefault(ExperLiveQueHttpConfig.URL_LIVE_SEND_SPEECHEVAL42_ANSWER, params, requestCallBack);
+    }
 }
