@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -200,33 +201,35 @@ public class LiveVideoLoadActivity extends BaseActivity {
             finish();
             return;
         }
-        boolean init = XrsBroswer.init(this, new TbsListener() {
-            @Override
-            public void onDownloadFinish(int i) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            boolean init = XrsBroswer.init(this, new TbsListener() {
+                @Override
+                public void onDownloadFinish(int i) {
 
-            }
+                }
 
-            @Override
-            public void onInstallFinish(int i) {
-                StableLogHashMap logHashMap = new StableLogHashMap("onInstallFinish");
-                logHashMap.put("code", "" + i);
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
-                initData2();
-            }
+                @Override
+                public void onInstallFinish(int i) {
+                    StableLogHashMap logHashMap = new StableLogHashMap("onInstallFinish");
+                    logHashMap.put("code", "" + i);
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+                    initData2();
+                }
 
-            @Override
-            public void onDownloadProgress(int i) {
-                mDataLoadEntity.setProgressTip("下载中" + (i * 100 / 120) + "%");
-                mDataLoadEntity.beginLoading();
-                mDataLoadEntity.setCurrentLoadingStatus(DataLoadEntity.DATA_PROGRESS);
-                DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
+                @Override
+                public void onDownloadProgress(int i) {
+                    mDataLoadEntity.setProgressTip("下载中" + (i * 100 / 120) + "%");
+                    mDataLoadEntity.beginLoading();
+                    mDataLoadEntity.setCurrentLoadingStatus(DataLoadEntity.DATA_PROGRESS);
+                    DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
+                }
+            });
+            StableLogHashMap logHashMap = new StableLogHashMap("init");
+            logHashMap.put("status", "" + init);
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+            if (!init) {
+                return;
             }
-        });
-        StableLogHashMap logHashMap = new StableLogHashMap("init");
-        logHashMap.put("status", "" + init);
-        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
-        if (!init) {
-            return;
         }
         initData2();
     }
