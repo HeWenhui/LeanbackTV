@@ -303,7 +303,7 @@ public class ExperCourseWareHttpManager {
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("isSubmit", "" + isSubmit);
         httpRequestParams.addBodyParam("stuId", "" + stu_id);
-        liveHttpManager.sendPostDefault(ExperLiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOICE_EN, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPostDefault(ExperLiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_H5_EN, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("submitH5:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());

@@ -939,7 +939,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     String useranswer = "";
                     for (int k = 0; k < userAnswerContent2.length(); k++) {
                         JSONObject userAnswerContent3 = userAnswerContent2.getJSONObject(k);
-                        String id = userAnswerContent3.getString("id");
+                        Object id;
+                        //体验课使用go，强类型
+                        if (detailInfo.isExper()) {
+                            id = userAnswerContent3.getInt("id");
+                        } else {
+                            id = userAnswerContent3.getString("id");
+                        }
                         userAnswer.put("id", id);
                         if (k < (userAnswerContent2.length() - 1)) {
                             useranswer += userAnswerContent3.optString("text") + ",";
@@ -958,10 +964,18 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         }
                     }
                     userAnswer.put("answer", rightanswer);
-                    userAnswer.put("type", "" + answer.optString("type"));
-                    userAnswer.put("rightnum", "" + answer.optString("rightnum"));
-                    userAnswer.put("wrongnum", "" + answer.optString("wrongnum"));
-                    userAnswer.put("answernums", "" + rightAnswerContent2.length());
+                    //体验课使用go，强类型
+                    if (detailInfo.isExper()) {
+                        userAnswer.put("type", answer.optInt("type"));
+                        userAnswer.put("rightnum", answer.optInt("rightnum"));
+                        userAnswer.put("wrongnum", answer.optInt("wrongnum"));
+                        userAnswer.put("answernums", rightAnswerContent2.length());
+                    } else {
+                        userAnswer.put("type", "" + answer.optString("type"));
+                        userAnswer.put("rightnum", "" + answer.optString("rightnum"));
+                        userAnswer.put("wrongnum", "" + answer.optString("wrongnum"));
+                        userAnswer.put("answernums", "" + rightAnswerContent2.length());
+                    }
                     if (LiveQueConfig.EN_COURSE_TYPE_GAME.equals(detailInfo.getArtType())) {
                         userAnswer.put("isright", 2);
                     } else {
@@ -994,7 +1008,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         }
                         userAnswer.put("isright", isRight);
                     }
-                    userAnswer.put("times", "" + answer.optInt("times", -1));
+                    if (detailInfo.isExper()) {
+                        userAnswer.put("times", answer.optInt("times", -1));
+                    } else {
+                        userAnswer.put("times", "" + answer.optInt("times", -1));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     MobAgent.httpResponseParserError(TAG, "submitVoice2", e.getMessage());

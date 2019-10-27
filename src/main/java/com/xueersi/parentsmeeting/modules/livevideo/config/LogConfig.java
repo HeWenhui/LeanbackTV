@@ -51,4 +51,6 @@ public class LogConfig {
     public static String LIVE_AGORA_UPLOAD = "live_agora_upload";
     /** 直播业务加载时间 */
     public static String LIVE_BUSINESS_TIME = "live_business_time";
+    /** x5日志 */
+    public static String LIVE_X5_LOG = "live_x5_log";
 }

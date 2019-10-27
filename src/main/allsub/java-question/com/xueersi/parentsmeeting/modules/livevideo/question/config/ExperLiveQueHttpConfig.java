@@ -28,6 +28,7 @@ public class ExperLiveQueHttpConfig {
 
     /** 提交课件-英语 */
     public static String LIVE_SUBMIT_COURSEWARE_EN = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/commonSubmitMultiTest";
+    public static String LIVE_SUBMIT_COURSEWARE_H5_EN = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/submitH5Eng";
     public static String LIVE_SUBMIT_COURSEWARE_VOICE_EN = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/submitH5VoiceEng";
     /** 文科新课件平台RolePlay获取题目信息 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=30434055 */
     public static String URL_ROLEPLAY_NEWARTS_TESTINFOS = ExperLiveHttpConfig.LIVE_HOST_SCIENCE + "/AutoLive/getRolePlayEng";
