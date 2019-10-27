@@ -32,6 +32,7 @@ import com.tal.user.fusion.http.TalAccApiCallBack;
 import com.tal.user.fusion.manager.TalAccApiFactory;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.XesActivity;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -204,7 +205,10 @@ public class SettingEnglishLandActivity extends XesActivity {
                     @Override
                     public void onSuccess(TalAccResp.StringResp stringResp) {
                         XESToastUtils.showToast(stringResp.result);
+                        UserBll.getInstance().setUserEnglishInfo(selectName,sex);
                         continueToVideo();
+
+
 
                     }
 
