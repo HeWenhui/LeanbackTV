@@ -131,6 +131,7 @@ dependencies {
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
     implementation rootProject.ext.thirdlibraries.ticker
     implementation rootProject.ext.thirdlibraries.tray
+    implementation rootProject.ext.thirdlibraries.design
 
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
@@ -157,4 +158,5 @@ dependencies {
     implementation(rootProject.ext.thirdlibraries.gson){
         changing = true
     }
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.talaccsdk)
 }

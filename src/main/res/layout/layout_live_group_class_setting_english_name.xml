@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lav_groupclass_setting_english_name_backgroud"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:lottie_fileName="subgroup/loading/data.json"
+        app:lottie_imageAssetsFolder="subgroup/grouping/images"
+        app:lottie_loop="true" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lav_groupclass_setting_english_name_sex"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_fileName="english_name/data.json"
+        app:lottie_imageAssetsFolder="english_name/images"
+        app:lottie_loop="false" />
+
+    <LinearLayout
+        android:id="@+id/lv_groupclass_setting_english_name_sex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/lv_groupclass_setting_english_name_sex_boy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_group_class_sex_boy" />
+
+        <ImageView
+            android:id="@+id/lv_groupclass_setting_english_name_sex_girl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_group_class_sex_girl" />
+
+    </LinearLayout>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/cdl_groupclass_setting_english_name_content"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="68dp">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:background="@null"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="5dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanEditText
+                    android:id="@+id/et_groupclass_setting_english_name_search"
+                    android:layout_width="186dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="38dp"
+                    android:paddingRight="20dp"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:paddingLeft="20dp"
+                    android:hint="搜索名字"
+                    android:textSize="14sp"
+                    android:textColorHint="@color/COLOR_FD963E"
+                    android:textColor="@color/COLOR_FD963E"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_groupclass_setting_english_search" />
+
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@+id/tv_setting_english_name_recommend_hint"
+                    android:text="推荐名字"
+                    android:textColor="@color/COLOR_E65C00"
+                    android:textSize="16sp"
+                    android:paddingLeft="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_setting_english_name_recommend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp" />
+
+                <TextView
+                    android:background="@drawable/bg_group_class_grouping_line"
+                    android:layout_width="158dp"
+                    android:layout_height="1dp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_setting_english_name_index_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp" />
+            </RelativeLayout>
+        </android.support.design.widget.AppBarLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="5dp"
+            android:id="@+id/rv_setting_english_name_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_setting_english_name_search_list"
+        android:layout_width="511dp"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="110dp"
+        android:layout_marginBottom="68dp"
+        android:layout_marginLeft="5dp" />
+    <LinearLayout
+        android:id="@+id/ll_groupclass_setting_english_name_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:id="@+id/tv_groupclass_setting_english_name_pre_sex"
+            android:layout_width="106dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_groupclass_setting_english_pre" />
+
+        <TextView
+            android:id="@+id/tv_groupclass_setting_english_name_sumit_data"
+            android:layout_width="106dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/bg_groupclass_setting_english_conform" />
+    </LinearLayout>
+
+</RelativeLayout>

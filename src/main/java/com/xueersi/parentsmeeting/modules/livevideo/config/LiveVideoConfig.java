@@ -384,5 +384,10 @@ public class LiveVideoConfig {
     }
 
     public final static String LIVE_PLAY_BACK_TUTOR_FLAGE = "_t";
-
+    /** 性别-未知 */
+    public static final int LIVE_GROUP_CLASS_USER_SEX_NONE = 3;
+    /** 性别-男 */
+    public static final int LIVE_GROUP_CLASS_USER_SEX_BOY = 1;
+    /** 性别-女 */
+    public static final int LIVE_GROUP_CLASS_USER_SEX_GIRL = 2;
 }
