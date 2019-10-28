@@ -466,7 +466,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         @Override
         public void liveSubmitTestH5Answer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID,
                                            String testAnswer, String courseware_type, String isSubmit, double
-                                                   voiceTime, boolean isRight, final QuestionSwitch
+                                                   voiceTime, final boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
             String stuId = LiveAppUserInfo.getInstance().getStuId();
             String userMode = "1";
@@ -479,8 +479,12 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                             (responseEntity,
                                     true);
                     entity.setVoice(true);
+                    entity.setExperience(true);
                     if (StringUtils.isSpace(entity.getTestId())) {
                         entity.setTestId(videoQuestionLiveEntity.id);
+                    }
+                    if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
+                        entity.setResultType(isRight ? 2 : 0);
                     }
                     if (onAnswerReslut != null) {
                         onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);

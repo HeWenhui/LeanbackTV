@@ -59,6 +59,9 @@ public class QuestionResultView {
 //            }
 //        });
 //        return popupWindow_view;
+        if (entity.isExperience()) {
+            return createViceResultViewExper(context, entity);
+        }
         return createViceResultView(context, entity);
 
     }
@@ -84,6 +87,9 @@ public class QuestionResultView {
 //            }
 //        });
 //        return popupWindow_view;
+        if (entity.isExperience()) {
+            return createViceResultViewExper(context, entity);
+        }
         return createViceResultView(context, entity);
 
     }
@@ -230,14 +236,14 @@ public class QuestionResultView {
         if (entity.isNewArt()) {
             if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE2) {
                 primaryScienceAnswerResultEntity.setType(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
-                answer.setRight(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
+                answer.setRight(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
             } else {
                 resultEntity.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
             }
         } else {
             if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
                 primaryScienceAnswerResultEntity.setType(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
-                answer.setRight(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
+                answer.setRight(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
             } else {
                 resultEntity.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
             }

@@ -173,7 +173,11 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.addBodyParam("type", "" + type);
         params.addBodyParam("data", answer);
         params.setWriteAndreadTimeOut(5);
-        setDefaultParameter(params);
-        sendPost(ExperLiveQueHttpConfig.URL_ROLEPLAY_NEWARTS_RESULT, params, requestCallBack);
+        if (liveHttpAction != null) {
+            liveHttpAction.sendPostDefault(ExperLiveQueHttpConfig.URL_ROLEPLAY_NEWARTS_RESULT, params, requestCallBack);
+        } else {
+            setDefaultParameter(params);
+            sendPost(ExperLiveQueHttpConfig.URL_ROLEPLAY_NEWARTS_RESULT, params, requestCallBack);
+        }
     }
 }
