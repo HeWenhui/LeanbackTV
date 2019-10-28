@@ -239,4 +239,9 @@ public class LiveAppUserInfo {
         return mShareDataManager.getInt(LoginRegistersConfig.SP_USER_SEX, 3,
                 ShareDataManager.SHAREDATA_USER);
     }
+    public String getHeadImageProcess(){
+       return mShareDataManager.getString(LoginRegistersConfig.SP_USER_MOBILE_PHONE, "",
+               ShareDataManager
+                       .SHAREDATA_USER);
+    }
 }
