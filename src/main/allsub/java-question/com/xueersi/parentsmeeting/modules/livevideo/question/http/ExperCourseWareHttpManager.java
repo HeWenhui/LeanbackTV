@@ -558,7 +558,7 @@ public class ExperCourseWareHttpManager {
             params.addBodyParam("liveId", classId);
             params.addBodyParam("type", type);
             params.addBodyParam("isRight", isRight ? "1" : "0");
-            params.addBodyParam("isPlayBack", "1");
+            params.addBodyParam("isPlayBack", "0");
             params.addBodyParam("isSubmit", isSubmit);
             params.addBodyParam("voiceUrl", "");
             params.addBodyParam("voiceTime", "" + voiceTime);
@@ -573,7 +573,7 @@ public class ExperCourseWareHttpManager {
             String url = ExperLiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_EN;
             params.addBodyParam("liveId", classId);
             params.addBodyParam("answers", testResult);
-            params.addBodyParam("isPlayBack", "2");
+            params.addBodyParam("isPlayBack", "0");
             params.addBodyParam("isForce", isSubmit);
             liveHttpManager.sendPostDefault(url, params, requestCallBack);
         }
