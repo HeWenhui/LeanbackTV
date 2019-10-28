@@ -168,13 +168,13 @@
             android:id="@+id/tv_groupclass_setting_english_name_pre_sex"
             android:layout_width="106dp"
             android:layout_height="40dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/bg_groupclass_setting_english_pre" />
 
         <TextView
             android:id="@+id/tv_groupclass_setting_english_name_sumit_data"
             android:layout_width="106dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
             android:background="@drawable/bg_groupclass_setting_english_conform" />
     </LinearLayout>
     <LinearLayout

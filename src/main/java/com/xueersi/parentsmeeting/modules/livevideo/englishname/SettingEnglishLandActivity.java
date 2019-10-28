@@ -51,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.englishname.item.SettingEngl
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.item.SettingEnglishNameSearchItem;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.item.SettingEnglishRemmondItem;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.utils.EnglishNameListener;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.RecyclerViewSpacesItemDecoration;
 import com.xueersi.ui.adapter.RCommonAdapter;
@@ -130,9 +131,10 @@ public class SettingEnglishLandActivity extends XesActivity {
         getWindow().setAttributes(lp);
         setContentView(R.layout.layout_live_group_class_setting_english_name);
         englishNameBll = new EnglishNameBusiness(mContext);
+        initView();
         initData();
         //testData();
-        initView();
+
         startLottie();
         initListener();
 
@@ -145,6 +147,13 @@ public class SettingEnglishLandActivity extends XesActivity {
                 ShareDataManager.SHAREDATA_USER);
         if (isNeed) {
             continueToVideo();
+        }
+        int sexDfault = LiveAppUserInfo.getInstance().getSexProcess();
+        if(sexDfault==LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_GIRL || sexDfault==LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY) {
+            sex = sexDfault;
+            sexSelect();
+            tvPreSex.setVisibility(View.GONE);
+            defaultData();
         }
     }
 
@@ -174,7 +183,7 @@ public class SettingEnglishLandActivity extends XesActivity {
             public void onUnDoubleClick(View v) {
                 sexSelect();
                 sex = LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY;
-                testData();
+                defaultData();
             }
         });
 
@@ -184,7 +193,7 @@ public class SettingEnglishLandActivity extends XesActivity {
             public void onUnDoubleClick(View v) {
                 sexSelect();
                 sex = LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_GIRL;
-                testData();
+                defaultData();
             }
         });
         // 返回性别选择
@@ -440,18 +449,6 @@ public class SettingEnglishLandActivity extends XesActivity {
         mLottieView.loop(true);
         mLottieView.playAnimation();
         lottieViewSex.useHardwareAcceleration(true);
-        lottieViewSex.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                lottieViewSex.playAnimation();
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    lottieViewSex.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    lottieViewSex.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-        });
 
     }
 
@@ -620,48 +617,21 @@ public class SettingEnglishLandActivity extends XesActivity {
         }
     };
 
-    private void testData() {
-
-        // lstIndexEntity = new ArrayList<>();
-        //   AreaIndexBarView.IndexEntity indexEntity = null;
+    private void defaultData() {
         listName = new ArrayList<>();
         listIndex = new ArrayList<>();
-        EngLishNameEntity entity = null;
         String[] word = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
                 "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
         listWord = new ArrayList<>();
         listRecommendName = new ArrayList<>();
         EngLishNameEntity index = null;
 
-        int indexPosition = 0;
         for (int j = 0; j < word.length; j++) {
             listWord.add(word[j]);
             index = new EngLishNameEntity();
             index.setWordIndex(word[j]);
-
             listIndex.add(index);
 
-            if (true) {
-                continue;
-            }
-            //  indexEntity = new AreaIndexBarView.IndexEntity();
-            //  indexEntity.setAreaBarIndex(j);
-            for (int i = 0; i < 60; i++) {
-                entity = new EngLishNameEntity();
-                entity.setIndexPostion(j);
-                if (i == 0) {
-                    index.setIndexPostion(indexPosition);
-                    //indexEntity.setAreaListIndex(j+listName.size());
-                    entity.setIndex(true);
-                    entity.setSpanNum(4);
-                    entity.setWordIndex(word[j]);
-                } else {
-                    entity.setName("tom" + i);
-                }
-                listName.add(entity);
-                indexPosition++;
-            }
-            // lstIndexEntity.add(indexEntity);
         }
         englishNameBll.getDefaultName(listIndex, sex, businessDataCallBack);
     }
