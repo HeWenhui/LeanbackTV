@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
@@ -233,7 +234,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     }
 
     private void switchQuestion(String method) {
-        mLogtf.d("switchQuestion:method=" + method + ",isEnd=" + isEnd);
+        mLogtf.d(SysLogLable.switchQuestion, "switchQuestion:method=" + method + ",isEnd=" + isEnd);
         if (isEnd) {
             return;
         }
@@ -339,7 +340,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         isEnd = true;
         endnonce = nonce;
         ViewGroup group = (ViewGroup) mView.getParent();
-        logger.d("examSubmitAll:method=" + method + ",group=" + (group == null) + ",error=" + isSpeechError + "," +
+        mLogtf.d(SysLogLable.examSubmitAll,"examSubmitAll:method=" + method + ",group=" + (group == null) + ",error=" + isSpeechError + "," +
                 "success=" + isSpeechSuccess);
         if (isSpeechError || isSpeechSuccess) {
             questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
@@ -420,7 +421,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     VoiceEvaluatorListener listener = new VoiceEvaluatorListener();
 
     private void onEvaluatorError(final ResultEntity resultEntity) {
-        mLogtf.d("onEvaluatorError:userSwitch=" + userSwitch + ",userBack=" + userBack + ",isEnd=" + isEnd + ",errorNo=" + resultEntity.getErrorNo());
+        mLogtf.d(SysLogLable.voiceError, "onEvaluatorError:userSwitch=" + userSwitch + ",userBack=" + userBack + ",isEnd=" + isEnd + ",errorNo=" + resultEntity.getErrorNo());
         isSpeechError = true;
         if (userSwitch || userBack) {
             return;
@@ -534,9 +535,6 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         if (phoneScores.isEmpty()) {
             logger.d("onResult(SUCCESS):phoneScores.isEmpty");
         } else {
-            double speechDuration = resultEntity.getSpeechDuration();
-            EnglishSpeekAction englishSpeekAction = ProxUtil.getProxUtil().get(mContext,EnglishSpeekAction.class);
-
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(type)) {
                 logger.e("选择题！！！" + "type:" + type);
                 int rightIndex = -1;
@@ -552,7 +550,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                         rightCount++;
                     }
                 }
-                logger.d("onResult(SUCCESS):scores=" + sss + ",rightIndex=" + rightIndex + ",rightCount=" +
+                mLogtf.d(SysLogLable.voiceSelectResult, "onResult(SUCCESS):scores=" + sss + ",rightIndex=" + rightIndex + ",rightCount=" +
                         rightCount + ",isEnd=" + isEnd);
                 if (rightCount > 1) {
                     rlSpeectevalTip.setVisibility(View.VISIBLE);
@@ -626,7 +624,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 logger.e("  填空题！！！" + "type:" + type);
                 int score = phoneScores.get(0).getScore();
                 boolean isRight = score > 0;
-                logger.d("onResult(SUCCESS):score=" + score);
+                mLogtf.d(SysLogLable.voiceFillinResult, "onResult(SUCCESS):score=" + score + ",curstatus=" + resultEntity.getCurStatus());
                 if (!isEnd && !isRight && resultEntity.getCurStatus() == 5) {
                     rlSpeectevalTip.setVisibility(View.VISIBLE);
                     tvSpeectevalTip.setText("认真些，\n再来一次吧");

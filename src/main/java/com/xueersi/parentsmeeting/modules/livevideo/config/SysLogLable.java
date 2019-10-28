@@ -5,6 +5,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.SysLogEntity;
 /**
  * 系统日志埋点
  * http://wiki.xesv5.com/pages/viewpage.action?pageId=18910075
+ * https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=31222797
  */
 public class SysLogLable {
     /** IRC lable */
@@ -52,5 +53,18 @@ public class SysLogLable {
     public static SysLogEntity backButtonClick = new SysLogEntity(ShellingScienceWebViewLog, "backButtonClick");
     /** 三端协议日志 */
     public static SysLogEntity xesWebLog = new SysLogEntity(ShellingScienceWebViewLog, "xesWebLog");
-
+    /** 语音答题 lable */
+    private static String voiceanswer = "WXMutVoiceAnswer";
+    /** 选择题结果 */
+    public static SysLogEntity voiceSelectResult = new SysLogEntity(voiceanswer, "voiceSelectResult");
+    /** 填空题结果 */
+    public static SysLogEntity voiceFillinResult = new SysLogEntity(voiceanswer, "voiceFillinResult");
+    /** 加载去壳课件开始 */
+    public static SysLogEntity voiceCommit = new SysLogEntity(voiceanswer, "voicecommit");
+    /** 切手动 */
+    public static SysLogEntity switchQuestion = new SysLogEntity(voiceanswer, "switchQuestion");
+    /** 评测失败 */
+    public static SysLogEntity voiceError = new SysLogEntity(voiceanswer, "voiceError");
+    /** 强制提交 */
+    public static SysLogEntity examSubmitAll = new SysLogEntity(voiceanswer, "examSubmitAll");
 }
