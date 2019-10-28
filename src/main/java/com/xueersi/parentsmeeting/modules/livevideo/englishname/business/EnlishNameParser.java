@@ -29,31 +29,35 @@ public class EnlishNameParser extends HttpResponseParser {
             listName = new ArrayList<>();
             EngLishNameEntity entity;
             JSONArray wordArray = null;
+            EngLishNameEntity entityIndex;
             int indexPosition = 0;
             for (int i = 0; i < indexList.size(); i++) {
                 wordArray = nameJson.optJSONArray(indexList.get(i).getWordIndex());
+                indexList.get(i).setIndexPostion(indexPosition);
                 if (wordArray == null || wordArray.length() == 0) {
                     continue;
                 }
-
-                entity = new EngLishNameEntity();
-
-                indexList.get(i).setIndexPostion(indexPosition);
+                entityIndex = new EngLishNameEntity();
+                if(i==0) {
+                    entityIndex.setSelect(true);
+                }
                 //indexEntity.setAreaListIndex(j+listName.size());
-                entity.setIndex(true);
-                entity.setSpanNum(4);
-                entity.setWordIndex(indexList.get(i).getWordIndex());
-
-                listName.add(entity);
+                entityIndex.setIndex(true);
+                entityIndex.setSpanNum(4);
+                entityIndex.setWordIndex(indexList.get(i).getWordIndex());
+                entityIndex.setIndexPostion(i);
+                listName.add(entityIndex);
+                indexPosition++;
                 for (int j = 0; j < wordArray.length(); j++) {
                     entity = new EngLishNameEntity();
                     JSONObject wordJson = wordArray.optJSONObject(j);
                     entity.setSpanNum(1);
                     entity.setName(wordJson.optString("name"));
+                    entity.setIndexPostion(i);
                     listName.add(entity);
+                    indexPosition++;
                 }
 
-                indexPosition++;
 
             }
             return listName;

@@ -160,6 +160,10 @@ public class SettingEnglishLandActivity extends XesActivity {
         imgBtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(TextUtils.isEmpty(selectName)) {
+                    showDialog();
+                    return;
+                }
                 continueToVideo();
 
             }
@@ -186,6 +190,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         tvPreSex.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setSearchData("");
                 secShow();
             }
         });
@@ -198,34 +203,38 @@ public class SettingEnglishLandActivity extends XesActivity {
                  showDialog();
                  return;
                 }
-                TalAccReq.EditUserInfoReq req=new TalAccReq.EditUserInfoReq();
-                req.sex = sex+"";
-                req.en_name = selectName;
-                TalAccApiFactory.getTalAccRequestApi().editUserInfo(req, new TalAccApiCallBack<TalAccResp.StringResp>() {
-                    @Override
-                    public void onSuccess(TalAccResp.StringResp stringResp) {
-                        XESToastUtils.showToast(stringResp.result);
-                        UserBll.getInstance().setUserEnglishInfo(selectName,sex);
-                        continueToVideo();
-
-
-
-                    }
-
-                    @Override
-                    public void onError(TalAccErrorMsg resp) {
-                        super.onError(resp);
-                    }
-                });
+                saveEnglishName();
             }
         });
     }
 
+    private void saveEnglishName(){
+        TalAccReq.EditUserInfoReq req=new TalAccReq.EditUserInfoReq();
+        req.sex = sex+"";
+        req.en_name = selectName;
+        TalAccApiFactory.getTalAccRequestApi().editUserInfo(req, new TalAccApiCallBack<TalAccResp.StringResp>() {
+            @Override
+            public void onSuccess(TalAccResp.StringResp stringResp) {
+                XESToastUtils.showToast(stringResp.result);
+                UserBll.getInstance().setUserEnglishInfo(selectName,sex);
+                continueToVideo();
+            }
+
+            @Override
+            public void onError(TalAccErrorMsg resp) {
+                super.onError(resp);
+            }
+        });
+    }
     private void showDialog(){
         if(englishNameConfirmDialog==null) {
             englishNameConfirmDialog = new EnglishNameConfirmDialog(mContext,mBaseApplication,false);
         }
-        englishNameConfirmDialog.initData("jack",englishNameListener);
+        String defaultName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_BOY;
+        if(sex == LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_GIRL) {
+            defaultName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_GRIL;
+        }
+        englishNameConfirmDialog.initData(defaultName,englishNameListener);
         englishNameConfirmDialog.showDialog();
     }
     private void secShow(){
@@ -267,9 +276,12 @@ public class SettingEnglishLandActivity extends XesActivity {
 
         @Override
         public void dialogCancel() {
+            selectName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_BOY;
+            if(sex == LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_GIRL) {
+                selectName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_GRIL;
+            }
+            saveEnglishName();
             continueToVideo();
-
-
         }
     };
 
@@ -321,7 +333,7 @@ public class SettingEnglishLandActivity extends XesActivity {
                     int position = manager.findFirstVisibleItemPosition();
                     EngLishNameEntity engLishNameEntity = listName.get(position);
                     //   areaIndexBarView.selectIndex(engLishNameEntity.getBarIndex());
-                    selectIndex(engLishNameEntity.getIndexPostion(),"");
+                    scrollIndex(engLishNameEntity.getIndexPostion(),"");
                 }
             }
 
@@ -530,6 +542,19 @@ public class SettingEnglishLandActivity extends XesActivity {
         contentAdapter.updateData(listName);
 
     }
+
+    private void scrollIndex(int positon,String text) {
+        for(int i=0;i<listIndex.size();i++) {
+            if(i==positon){
+                listIndex.get(i).setSelect(true);
+            } else {
+                listIndex.get(i).setSelect(false);
+            }
+        }
+        contentAdapterIndex.updateData(listIndex);
+    }
+
+
     private void selectIndex(int positon,String text) {
         for(int i=0;i<listIndex.size();i++) {
             if(i==positon){
@@ -542,8 +567,6 @@ public class SettingEnglishLandActivity extends XesActivity {
 
         int areaListIndex = listIndex.get(positon).getIndexPostion();
         manager.scrollToPositionWithOffset(areaListIndex, areaListIndex);
-
-
     }
     private void selectName(int positon,String text) {
         for(int i=0;i<listName.size();i++) {
@@ -567,7 +590,7 @@ public class SettingEnglishLandActivity extends XesActivity {
 
             if(listName!=null && listName.size()>0) {
                 for (int i = 0; i < listName.size(); i++) {
-                    if(listRecommendName.size()==4) {
+                    if(listRecommendName.size()==3) {
                         break;
                     }
                     if(!TextUtils.isEmpty(listName.get(i).getName())) {
