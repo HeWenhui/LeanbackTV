@@ -38,7 +38,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.HalfBodyLiveCommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -449,6 +448,8 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
                 drawable = dwSysIcon;//tvMsg.getResources().getDrawable(R.drawable.icon_live_sys_msg);
             } else if (LiveMessageEntity.MESSAGE_TEACHER == data.getType()) {
                 drawable = dwTeacherIcon;//tvMsg.getResources().getDrawable(R.drawable.icon_live_teacher_msg);
+            } else if (LiveMessageEntity.MESSAGE_COUN_TEACHER == data.getType()) {
+                drawable = dwCounTeacherIcon;//tvMsg.getResources().getDrawable(R.drawable.icon_live_teacher_msg);
             }
             if (drawable != null) {
                 tvMsg.setVisibility(View.INVISIBLE);
@@ -505,6 +506,7 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
 
     private Drawable dwSysIcon;
     private Drawable dwTeacherIcon;
+    private Drawable dwCounTeacherIcon;
 
     /**
      * 初始化 联通信息
@@ -560,6 +562,7 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
 
         dwSysIcon = mView.getResources().getDrawable(R.drawable.icon_live_sys_msg);
         dwTeacherIcon = mView.getResources().getDrawable(R.drawable.icon_live_teacher_msg);
+        dwCounTeacherIcon = mView.getResources().getDrawable(R.drawable.icon_live_coun_teacher_msg);
         initReclItemState();
     }
 
@@ -811,10 +814,11 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         if (sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
             sender = "主讲老师";
+            addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
         } else if (sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             sender = "辅导老师";
+            addMessage(sender, LiveMessageEntity.MESSAGE_COUN_TEACHER, text, headurl);
         }
-        addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
     }
 
     @Override
