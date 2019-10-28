@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTIONS_SHOW;
+import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTION_CLOSE;
 
 /**
  * Created by：WangDe on 2018/8/28 11:44
@@ -311,6 +312,12 @@ public class QuestionExperienceBll extends LiveBackBaseBll {
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
                 questionBll.onExamStop(questionEntity.getvQuestionID());
+            }
+            break;
+            case LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE: {
+                VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
+                questionBll.onStopQuestion("PlayBack:onQuestionEnd3", questionEntity.getvQuestionType(), "");
             }
             break;
         }
