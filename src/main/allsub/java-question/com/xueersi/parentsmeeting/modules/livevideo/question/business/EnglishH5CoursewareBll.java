@@ -1123,7 +1123,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                 JSONObject answerdetail = new JSONObject();
                 JSONArray blanks = new JSONArray();
                 JSONArray choices = new JSONArray();
-                if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
+                if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)||LiveQueConfig.EN_COURSE_TYPE_18.equals(videoQuestionLiveEntity1.type)) {
                     try {
                         if (isRight) {
                             blanks.put(0, result);
