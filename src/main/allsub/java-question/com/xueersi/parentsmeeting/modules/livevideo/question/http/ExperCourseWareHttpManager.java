@@ -568,8 +568,9 @@ public class ExperCourseWareHttpManager {
             params.addBodyParam("answer", LiveVideoConfig.answer);
             liveHttpManager.sendPostDefault(url, params, requestCallBack);
         } else {
+            //类型18 19
             HttpRequestParams params = new HttpRequestParams();
-            String url = LiveHttpConfig.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
+            String url = ExperLiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_EN;
             params.addBodyParam("liveId", classId);
             params.addBodyParam("answers", testResult);
             params.addBodyParam("isPlayBack", "2");

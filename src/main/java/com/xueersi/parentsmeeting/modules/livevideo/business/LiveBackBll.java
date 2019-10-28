@@ -799,7 +799,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
                     index = i;
-                    Log.e("Duncan", "i:" + i + "playPosition:" + playPosition);
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()) {
@@ -810,7 +809,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
                     index = i;
-                    Log.e("Duncan", "i:" + i + "playPosition:" + playPosition);
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_UNDERSTAND == videoQuestionEntity.getvCategory()) {//懂了吗

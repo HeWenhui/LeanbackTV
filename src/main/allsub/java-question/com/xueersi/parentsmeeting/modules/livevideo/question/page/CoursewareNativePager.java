@@ -214,7 +214,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.e("CoursewareNativePager", e);
+            if (!(e instanceof JSONException)) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
         }
         this.liveId = liveId;
         this.englishH5Entity = englishH5Entity;
