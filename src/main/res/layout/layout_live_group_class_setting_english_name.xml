@@ -12,16 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:lottie_fileName="subgroup/loading/data.json"
-        app:lottie_imageAssetsFolder="subgroup/grouping/images"
         app:lottie_loop="true" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lav_groupclass_setting_english_name_sex"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:lottie_fileName="english_name/data.json"
-        app:lottie_imageAssetsFolder="english_name/images"
         app:lottie_loop="false" />
 
     <LinearLayout

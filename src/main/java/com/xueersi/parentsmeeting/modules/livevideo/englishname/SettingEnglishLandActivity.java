@@ -201,14 +201,13 @@ public class SettingEnglishLandActivity extends XesActivity {
             @Override
             public void onClick(View view) {
                 setSearchData("");
-                secShow();
+                sexShow();
             }
         });
         // 提交名字选择
-        tvSubmit.setOnClickListener(new View.OnClickListener() {
+        tvSubmit.setOnClickListener(new OnUnDoubleClickListener() {
             @Override
-            public void onClick(View view) {
-                //  finish();
+            public void onUnDoubleClick(View v) {
                 if (TextUtils.isEmpty(selectName)) {
                     showDialog();
                     return;
@@ -249,13 +248,14 @@ public class SettingEnglishLandActivity extends XesActivity {
         englishNameConfirmDialog.showDialog();
     }
 
-    private void secShow() {
+    private void sexShow() {
         ivBoy.setVisibility(View.VISIBLE);
         ivGirl.setVisibility(View.VISIBLE);
         lottieViewSex.playAnimation();
         clNameContent.setVisibility(View.GONE);
         etSearch.setVisibility(View.GONE);
         llControl.setVisibility(View.GONE);
+        startNameLottie(true);
     }
 
     private void sexSelect() {
@@ -265,6 +265,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         clNameContent.setVisibility(View.VISIBLE);
         etSearch.setVisibility(View.VISIBLE);
         llControl.setVisibility(View.VISIBLE);
+        startNameLottie(false);
     }
 
 
@@ -427,6 +428,34 @@ public class SettingEnglishLandActivity extends XesActivity {
         }
     }
 
+    private void startNameLottie(boolean isSex) {
+        String dir = "english_name/images_name";
+        String catheKey = "english_name_lottie";
+        if(isSex) {
+            dir = "english_name/images";
+            catheKey = "english_sex_lottie" ;
+        }
+        final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(dir,
+                "english_name/data.json");
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return bubbleEffectInfo.fetchBitmapFromAssets(
+                        mLottieView,
+                        lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(),
+                        lottieImageAsset.getWidth(),
+                        lottieImageAsset.getHeight(),
+                        mContext);
+            }
+        };
+        lottieViewSex.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext), catheKey);
+        lottieViewSex.setImageAssetDelegate(imageAssetDelegate);
+        lottieViewSex.loop(false);
+        lottieViewSex.useHardwareAcceleration(true);
+        lottieViewSex.playAnimation();
+
+    }
 
     private void startLottie() {
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo("liveroom_background/images",
