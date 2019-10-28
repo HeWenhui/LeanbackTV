@@ -13,6 +13,8 @@ public interface RTCVideoAction {
 
     void show();
 
+    void close();
+
     void updateSpread(boolean isSpread);
 
     void updateGold(int gold, float x, float y, int type);

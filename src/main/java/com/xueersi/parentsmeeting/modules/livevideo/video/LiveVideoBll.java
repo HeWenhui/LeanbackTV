@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.RTCVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -419,6 +420,11 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
                             videoFragment.playComplete();
                             if (mVideoAction != null) {
                                 mVideoAction.onTeacherNotPresent(false);
+                            }
+                            //关闭1v2真流
+                            RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(activity,RTCVideoAction.class);
+                            if (rtcVideoAction != null) {
+                                rtcVideoAction.close();
                             }
                         }
                     });
