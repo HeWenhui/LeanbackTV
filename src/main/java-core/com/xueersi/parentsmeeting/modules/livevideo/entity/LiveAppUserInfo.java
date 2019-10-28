@@ -1,7 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import com.xueersi.common.base.BaseActivity;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.LoginRegistersConfig;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -15,7 +19,10 @@ public class LiveAppUserInfo {
     private String mPsimId;
     private String mPsimPwd;
     private String mIrcNick;
-
+    ShareDataManager mShareDataManager;
+    private LiveAppUserInfo(){
+        init();
+    }
     public static synchronized LiveAppUserInfo getInstance() {
         if (mInstance == null) {
             synchronized (LiveAppUserInfo.class) {
@@ -26,7 +33,10 @@ public class LiveAppUserInfo {
         }
         return mInstance;
     }
-
+    public void init(){
+        BaseApplication  mBaseApplication = (BaseApplication) BaseApplication.getContext().getApplicationContext();
+        mShareDataManager = mBaseApplication.getShareDataManager();
+    }
     public String getStuId() {
         return UserBll.getInstance().getMyUserInfoEntity().getStuId();
     }
@@ -221,4 +231,12 @@ public class LiveAppUserInfo {
         return mIrcNick;
     }
 
+    public String getEnglishNameProcess() {
+        return mShareDataManager.getString(LoginRegistersConfig.SP_USER_ENGLISH_NAME, "",
+                ShareDataManager.SHAREDATA_USER);
+    }
+    public int getSexProcess() {
+        return mShareDataManager.getInt(LoginRegistersConfig.SP_USER_SEX, 3,
+                ShareDataManager.SHAREDATA_USER);
+    }
 }

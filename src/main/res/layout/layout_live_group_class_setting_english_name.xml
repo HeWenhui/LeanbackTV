@@ -45,15 +45,46 @@
             android:background="@drawable/bg_group_class_sex_girl" />
 
     </LinearLayout>
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanEditText
+        android:id="@+id/et_groupclass_setting_english_name_search"
+        android:layout_width="186dp"
+        android:layout_marginTop="58dp"
+        android:layout_gravity="center_horizontal"
+        android:imeOptions="flagNoExtractUi"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_height="38dp"
+        android:paddingRight="20dp"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        android:paddingLeft="20dp"
+        android:hint="搜索名字"
+        android:textSize="14sp"
+        android:textColorHint="@color/COLOR_FD963E"
+        android:textColor="@color/COLOR_FD963E"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_groupclass_setting_english_search" />
 
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@+id/tv_groupclass_setting_english_name_search_empty"
+        android:layout_below="@id/et_groupclass_setting_english_name_search"
+        android:layout_marginTop="28dp"
+        android:text="没有搜到哦，试试别的吧"
+        android:layout_centerHorizontal="true"
+        android:textSize="18sp"
+        android:textColor="@color/COLOR_756565"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <android.support.design.widget.CoordinatorLayout
+        android:layout_below="@id/et_groupclass_setting_english_name_search"
         android:id="@+id/cdl_groupclass_setting_english_name_content"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:visibility="gone"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="68dp">
+
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -68,20 +99,6 @@
                 android:layout_marginBottom="5dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanEditText
-                    android:id="@+id/et_groupclass_setting_english_name_search"
-                    android:layout_width="186dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_height="38dp"
-                    android:paddingRight="20dp"
-                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    android:paddingLeft="20dp"
-                    android:hint="搜索名字"
-                    android:textSize="14sp"
-                    android:textColorHint="@color/COLOR_FD963E"
-                    android:textColor="@color/COLOR_FD963E"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/bg_groupclass_setting_english_search" />
 
                 <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:id="@+id/tv_setting_english_name_recommend_hint"
@@ -105,6 +122,7 @@
 
             <RelativeLayout
                 android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -118,13 +136,14 @@
 
 
         <android.support.v7.widget.RecyclerView
-            android:layout_marginTop="5dp"
             android:id="@+id/rv_setting_english_name_list"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </android.support.design.widget.CoordinatorLayout>
+
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_setting_english_name_search_list"
