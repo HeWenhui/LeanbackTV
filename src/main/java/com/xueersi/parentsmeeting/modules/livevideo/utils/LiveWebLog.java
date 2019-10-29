@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.utils;
 
 import android.content.Context;
 
-import com.xueersi.common.broswer.XrsX5Broswer;
+import com.xueersi.common.util.XrsBroswer;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -33,7 +33,7 @@ public class LiveWebLog {
         LiveThreadPoolExecutor.getInstance().execute(new Runnable() {
             @Override
             public void run() {
-                XrsX5Broswer.XrsTbsLogClient tbsLogClient = XrsX5Broswer.getTbsLogClient();
+                XrsBroswer.XrsTbsLogClient tbsLogClient = XrsBroswer.getTbsLogClient();
                 if (tbsLogClient != null) {
                     File dir = LiveCacheFile.geCacheFile(ContextManager.getContext(), "tbslog");
                     File uploadfile = new File(dir, "uploald_" + System.currentTimeMillis() + ".txt");
