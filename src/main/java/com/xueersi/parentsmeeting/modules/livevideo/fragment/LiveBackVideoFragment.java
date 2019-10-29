@@ -593,10 +593,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 }
             }
             if (!islocal) {
-                EvaluateTeacherPlayBackBll evaluateTeacherPlayBackBll = new EvaluateTeacherPlayBackBll(activity,
-                        liveBackBll);
-                evaluateTeacherPlayBackBll.setLiveFragmentBase(liveBackPlayVideoFragment);
-                liveBackBll.addBusinessBll(evaluateTeacherPlayBackBll);
+//                EvaluateTeacherPlayBackBll evaluateTeacherPlayBackBll = new EvaluateTeacherPlayBackBll(activity,
+//                        liveBackBll);
+//                evaluateTeacherPlayBackBll.setLiveFragmentBase(liveBackPlayVideoFragment);
+//                liveBackBll.addBusinessBll(evaluateTeacherPlayBackBll);
 
                 FeedbackTeacherLiveBackBll feedbackTeacherLiveBackBll = new FeedbackTeacherLiveBackBll(activity, liveBackBll);
                 feedbackTeacherLiveBackBll.setLiveFragment(liveBackPlayVideoFragment);

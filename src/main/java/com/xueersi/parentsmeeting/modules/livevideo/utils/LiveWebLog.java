@@ -112,7 +112,7 @@ public class LiveWebLog {
                     StableLogHashMap stableLogHashMap = new StableLogHashMap("uploadsuc");
                     stableLogHashMap.put("savefile", "" + saveFile);
                     stableLogHashMap.put("httppath", httpPath);
-                    UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_X5_LOG, stableLogHashMap.getData());
+                    UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_X5_ERROR_LOG, stableLogHashMap.getData());
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
@@ -127,7 +127,7 @@ public class LiveWebLog {
                     stableLogHashMap.put("savefile", "" + saveFile);
                     stableLogHashMap.put("errorCode", "" + result.getErrorCode());
                     stableLogHashMap.put("errorMsg", "" + result.getErrorMsg());
-                    UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_X5_LOG, stableLogHashMap.getData());
+                    UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_X5_ERROR_LOG, stableLogHashMap.getData());
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
