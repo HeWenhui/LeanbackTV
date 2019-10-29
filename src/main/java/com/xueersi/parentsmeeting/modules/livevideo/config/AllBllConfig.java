@@ -64,7 +64,9 @@ public class AllBllConfig {
             //教师反馈
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll",
             //语文半身直播超级演讲秀
-            "com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll"
+            "com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll",
+
+            "com.xueersi.parentsmeeting.modules.livevideo.business.foruminteraction.ForumInteractionIRCBll"
     };
     private static String[] engClassPath = {
             //弹幕
