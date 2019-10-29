@@ -35,13 +35,15 @@ public class UserOnlineLog {
         }
     }
 
-    public static void sno3(String params, String status, String errmsg, LiveAndBackDebug liveAndBackDebug) {
+    public static void sno3(String params, String status, String errmsg, int heartTimes, int mHbCount, LiveAndBackDebug liveAndBackDebug) {
         try {
             StableLogHashMap logHashMap = new StableLogHashMap("uploadHeartbeatTime");
             logHashMap.put("livetimes", "" + LiveLog.LIVE_TIME);
             logHashMap.put("params", "" + params);
             logHashMap.put("status", "" + status);
             logHashMap.put("errmsg", "" + errmsg);
+            logHashMap.put("heartTimes", "" + heartTimes);
+            logHashMap.put("mHbCount", "" + mHbCount);
             logHashMap.put("inittime", "" + LiveVideoConfig.LIVE_HB_TIME);
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         } catch (Exception e) {
@@ -49,19 +51,24 @@ public class UserOnlineLog {
         }
     }
 
-    public static void sno4(boolean send, int mLiveType, LiveAndBackDebug liveAndBackDebug) {
+    public static void sno4(boolean send, int mLiveType, int heartTimes, int mHbCount, LiveAndBackDebug liveAndBackDebug) {
         StableLogHashMap logHashMap = new StableLogHashMap("heartbeatTimerPost");
         logHashMap.put("livetimes", "" + LiveLog.LIVE_TIME);
         logHashMap.put("inittime", "" + LiveVideoConfig.LIVE_HB_TIME);
         logHashMap.put("send", "" + send);
         logHashMap.put("onlinetype", "" + mLiveType);
+        logHashMap.put("heartTimes", "" + heartTimes);
+        logHashMap.put("mHbCount", "" + mHbCount);
         liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
     }
 
-    public static void sno5(long oldTime, LiveAndBackDebug liveAndBackDebug) {
+    public static void sno5(long oldTime, int heartTimes, int mHbCount, LiveAndBackDebug liveAndBackDebug) {
         try {
             StableLogHashMap logHashMap = new StableLogHashMap("heartbeatTimerStop");
             logHashMap.put("livetimes", "" + LiveLog.LIVE_TIME);
+            logHashMap.put("oldTime", "" + oldTime);
+            logHashMap.put("heartTimes", "" + heartTimes);
+            logHashMap.put("mHbCount", "" + mHbCount);
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));

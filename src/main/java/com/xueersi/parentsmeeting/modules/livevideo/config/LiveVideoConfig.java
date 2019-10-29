@@ -292,7 +292,7 @@ public class LiveVideoConfig {
     }
 
     /** 直播心跳时长 */
-    public static int LIVE_HB_TIME = 300;
+    public static final int LIVE_HB_TIME = 300;
 
     /** 教育阶段1 */
     public final static String EDUCATION_STAGE_1 = "1";
