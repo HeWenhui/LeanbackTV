@@ -16,7 +16,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.StandExperienceRecommondBll;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -198,11 +197,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     }
 
     public void onResume() {
-        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-            if (liveBackBaseBll instanceof StandExperienceRecommondBll) {
-                ((StandExperienceRecommondBll) liveBackBaseBll).onResume();
-            }
-        }
+
     }
 
     /**
