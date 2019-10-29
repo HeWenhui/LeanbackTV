@@ -729,7 +729,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                     Log.d("Duncan", "onPutQuestionResultNewArts4");
 
                                     showEvenDriveAnima(mContext, mGetInfo, getHttpManager(),
-                                            getLiveViewAction(), QUES_TYPE_ENGLISH_NEW_PLATFORM, videoQuestionLiveEntity.id);
+                                            getLiveViewAction(), QUES_TYPE_ENGLISH_NEW_PLATFORM,
+                                            videoQuestionLiveEntity.id);
 
                                     mLogtf.d("liveSubmitTestH5Answer:onPmSuccess=" + responseEntity.getJsonObject()
                                             .toString() +
@@ -786,7 +787,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                             .toString() +
                                             "," + videoQuestionLiveEntity);
                                     showEvenDriveAnima(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
-                                            QUES_TYPE_ENGLISH_NEW_PLATFORM, videoQuestionLiveEntity.id);
+                                            QUES_TYPE_ENGLISH_NEW_PLATFORM,
+                                            videoQuestionLiveEntity.id);
 //                                    if (animRepo == null) {
 //                                        animRepo = new EvenDriveAnimRepository(mContext, mGetInfo, getHttpManager(), getLiveViewAction());
 //                                    }
@@ -899,7 +901,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 //        } else {
 //            questionType = EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_NEW_PLAYFROM;
 //        }
-        animRepo.getDataSource(questionType, "", null);
+        animRepo.getDataSource(questionType, testId, null);
 
     }
 
