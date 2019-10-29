@@ -117,6 +117,7 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
                 LiveFeedBackSecondPager.this.onKeyboardShowing(isShowing);
             }
         };
+        KeyboardUtil.registKeyboardShowingListener(mKeyboardListener);
         webSetting.setSupportZoom(false);
         webSetting.setBuiltInZoomControls(false);
 
@@ -322,6 +323,9 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         }
         if (feedBackTeacherInterface != null) {
             feedBackTeacherInterface.onClose();
+        }
+        if (mKeyboardListener != null) {
+            KeyboardUtil.unRegistKeyboardShowingListener(mKeyboardListener);
         }
     }
     CountDownTimer timer = new CountDownTimer(2000, 1000) {
