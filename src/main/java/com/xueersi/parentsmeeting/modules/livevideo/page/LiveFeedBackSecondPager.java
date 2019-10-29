@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -39,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussin
 import org.json.JSONObject;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
+import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 import pl.droidsonroids.gif.GifDrawable;
 
 /**
@@ -111,13 +113,14 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         // webSetting.setSupportMultipleWindows(true); 如果有这行代码会导致页面中含有
         // target="_blank"的超链接失效
         webView.setInitialScale(0);
-        mKeyboardListener = new KeyboardUtil.OnKeyboardShowingListener() {
+
+
+        KeyboardUtil.attach((Activity) mContext, new KPSwitchFSPanelLinearLayout(mContext), new KeyboardUtil.OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
                 LiveFeedBackSecondPager.this.onKeyboardShowing(isShowing);
             }
-        };
-        KeyboardUtil.registKeyboardShowingListener(mKeyboardListener);
+        });
         webSetting.setSupportZoom(false);
         webSetting.setBuiltInZoomControls(false);
 
