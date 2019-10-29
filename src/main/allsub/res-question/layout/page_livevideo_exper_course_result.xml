@@ -47,10 +47,20 @@
             android:layout_marginTop="20dp">
 
             <TextView
+                android:id="@id/tv_livevideo_bigque_result_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:includeFontPadding="false"
+                android:text="题号"
+                android:textColor="@color/COLOR_666666" />
+
+            <TextView
                 android:id="@id/tv_livevideo_bigque_result_stand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
+                android:layout_toRightOf="@id/tv_livevideo_bigque_result_num"
                 android:includeFontPadding="false"
                 android:text="正确答案"
                 android:textColor="@color/COLOR_666666" />

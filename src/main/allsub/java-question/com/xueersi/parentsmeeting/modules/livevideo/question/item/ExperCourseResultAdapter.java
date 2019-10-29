@@ -60,7 +60,7 @@ public class ExperCourseResultAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_livevideo_bigques_result, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_livevideo_exper_course_result, parent, false);
         return new ItemHolder(itemView);
     }
 
@@ -72,16 +72,18 @@ public class ExperCourseResultAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return  answerList.size();
+        return answerList.size();
     }
 
     private class ItemHolder extends RecyclerView.ViewHolder {
+        TextView tv_livevideo_bigque_result_num;
         TextView tv_livevideo_bigque_result_stand;
         TextView tv_livevideo_bigque_result_your;
         ImageView iv_livevideo_bigque_result_type;
 
         public ItemHolder(View itemView) {
             super(itemView);
+            tv_livevideo_bigque_result_num = itemView.findViewById(R.id.tv_livevideo_bigque_result_num);
             tv_livevideo_bigque_result_stand = itemView.findViewById(R.id.tv_livevideo_bigque_result_stand);
             if (standAnswerLeft) {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_bigque_result_stand.getLayoutParams();
@@ -102,6 +104,7 @@ public class ExperCourseResultAdapter extends RecyclerView.Adapter {
         }
 
         public void bindData(PrimaryScienceAnswerResultEntity.Answer answer, int position) {
+            tv_livevideo_bigque_result_num.setText("" + (position + 1));
             tv_livevideo_bigque_result_stand.setText(answer.getRightAnswer());
             tv_livevideo_bigque_result_your.setText(answer.getMyAnswer());
             if (answer.getRight() == PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT) {
