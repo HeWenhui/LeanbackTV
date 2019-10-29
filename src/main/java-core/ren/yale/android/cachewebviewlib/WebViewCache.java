@@ -75,7 +75,7 @@ public class WebViewCache {
     }
 
     public void setNeedHttpDns(boolean needHttpDns) {
-        this.needHttpDns = needHttpDns;
+        this.needHttpDns = false;
     }
 
     public void setIsScience(boolean isScience) {

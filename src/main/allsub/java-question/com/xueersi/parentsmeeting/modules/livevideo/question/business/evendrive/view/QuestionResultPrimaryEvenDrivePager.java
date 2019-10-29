@@ -22,7 +22,7 @@ public class QuestionResultPrimaryEvenDrivePager extends QuestionResultEvenDrive
 
     @Override
     public void showNum(int num) {
-        super.showNum(num);
+        showPriAnimaNum(num);
 
     }
 
@@ -46,7 +46,7 @@ public class QuestionResultPrimaryEvenDrivePager extends QuestionResultEvenDrive
         }
 
         final LottieEffectInfo effectInfo = new LottieEffectInfo(resPath, jsonPath);
-        scoreLottieView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext), null);
+        scoreLottieView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext), resPath);
         //替换json资源文件
         ImageAssetDelegate delegate = new ImageAssetDelegate() {
             @Override

@@ -16,6 +16,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
@@ -43,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveAnimRepository;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.TasksDataSource;
 import com.xueersi.parentsmeeting.modules.livevideo.question.create.LiveBigQueCreate;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.irc.QueIrcParse;
@@ -360,6 +362,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             videoQuestionLiveEntity.speechContent = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
                             videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
+                            videoQuestionLiveEntity.setTestsProtocal(onlineTechObj.optString("testsProtocal"));
                             videoQuestionLiveEntity.num = 1;
                             if ("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)) {
                                 videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(onlineTechObj.optJSONArray("id")), videoQuestionLiveEntity.type));
@@ -607,6 +610,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                Loger.e("yzl_roleplay","走人机 end");
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
+                videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                 if ("1".equals(isVoice)) {
                     videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                     videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
@@ -658,6 +662,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
+                videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                 //构建 H5 url
                 if ("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)) {
                     videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(object.optJSONArray("id")), videoQuestionLiveEntity.type));
@@ -815,7 +820,28 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //        } else {
 //            questionType = EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_NEW_PLAYFROM;
 //        }
-        animRepo.getDataSource(questionType, testId, null);
+        animRepo.getDataSource(questionType, testId, new TasksDataSource.LoadAnimCallBack() {
+            @Override
+            public void onDataNotAvailable() {
+
+            }
+
+            @Override
+            public void onDatasLoaded(String num) {
+                final AllLiveBasePagerInter liveBasePagerInter = mLiveBll.getAllLiveBasePagerIml();
+                if (liveBasePagerInter != null) {
+                    liveBasePagerInter.addViewRemoveObserver(new AllLiveBasePagerInter.ViewRemoveObserver() {
+                        @Override
+
+                        public void removeView(LiveBasePager basePager) {
+                            //因为这个页面是互动题结果页显示后才显示激励动画，所以这个时候结束的pager肯定是结果页
+                            animRepo.removeViewAndAnima();
+                            liveBasePagerInter.removeViewRemoveObserver(this);
+                        }
+                    });
+                }
+            }
+        });
 
     }
 

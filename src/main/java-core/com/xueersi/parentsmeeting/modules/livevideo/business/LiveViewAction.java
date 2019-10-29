@@ -5,6 +5,8 @@ import android.view.ViewGroup;
 
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 
+import java.util.Observer;
+
 public interface LiveViewAction {
     void addView(View child);
 
@@ -25,4 +27,5 @@ public interface LiveViewAction {
     View inflateView(int resource);
 
     <T extends View> T findViewById(int id);
+
 }

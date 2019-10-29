@@ -4,14 +4,15 @@ import android.content.Context;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.pager.ExperienceQuitFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by linyuqiang on 2018/7/30.
@@ -21,6 +22,8 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private ArrayList<LiveBasePager> liveBasePagers = new ArrayList<>();
     Context context;
+
+    private List<ViewRemoveObserver> unAttachViewObservers;
 
     public AllLiveBasePagerIml(Context context) {
         this.context = context;
@@ -58,11 +61,35 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     @Override
     public void removeLiveBasePager(LiveBasePager liveBasePager) {
         liveBasePagers.remove(liveBasePager);
+        if (unAttachViewObservers != null) {
+            for (ViewRemoveObserver viewRemoveObserver : unAttachViewObservers) {
+                if (viewRemoveObserver != null) {
+                    viewRemoveObserver.removeView(liveBasePager);
+                }
+            }
+        }
         if (liveBasePager.getLivePagerBack() != null) {
             LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
             if (showQuestion != null) {
                 showQuestion.onHide(liveBasePager.getBaseVideoQuestionEntity());
             }
+        }
+    }
+
+    @Override
+    public void addViewRemoveObserver(ViewRemoveObserver viewRemoveObserver) {
+        if (unAttachViewObservers == null) {
+            unAttachViewObservers = new ArrayList<>();
+        }
+        if (!unAttachViewObservers.contains(viewRemoveObserver)) {
+            unAttachViewObservers.add(viewRemoveObserver);
+        }
+    }
+
+    @Override
+    public void removeViewRemoveObserver(ViewRemoveObserver viewRemoveObserver) {
+        if (unAttachViewObservers != null) {
+            unAttachViewObservers.remove(viewRemoveObserver);
         }
     }
 

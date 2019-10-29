@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
@@ -70,9 +69,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNati
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.BigResultLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.BigResultLog;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -697,23 +696,25 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             mQueAndBool.clear();
             mQueAndBool.add(key);
             BigResultLog.sno3("true", videoQuestionLiveEntity, getLiveAndBackDebug());
-            final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, liveViewAction, new LiveBasePager.OnPagerClose() {
-                @Override
-                public void onClose(LiveBasePager basePager) {
-                    basePager.onDestroy();
-                    rlQuestionContent.removeView(basePager.getRootView());
-                    if (basePager == baseLiveBigQuestionPager) {
-                        baseLiveBigQuestionPager = null;
-                    }
-                }
-            }, new BigQueCreate.OnSubmit() {
-                @Override
-                public void onSubmit(LiveBasePager basePager) {
-                    basePager.onDestroy();
-                    rlQuestionContent.removeView(basePager.getRootView());
-                    onQuestionShow(videoQuestionLiveEntity, false, "showBigQuestion:onClose");
-                }
-            });
+            final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, liveViewAction,
+                    new LiveBasePager.OnPagerClose() {
+                        @Override
+                        public void onClose(LiveBasePager basePager) {
+                            basePager.onDestroy();
+                            rlQuestionContent.removeView(basePager.getRootView());
+                            if (basePager == baseLiveBigQuestionPager) {
+                                baseLiveBigQuestionPager = null;
+                            }
+                        }
+                    },
+                    new BigQueCreate.OnSubmit() {
+                        @Override
+                        public void onSubmit(LiveBasePager basePager) {
+                            basePager.onDestroy();
+                            rlQuestionContent.removeView(basePager.getRootView());
+                            onQuestionShow(videoQuestionLiveEntity, false, "showBigQuestion:onClose");
+                        }
+                    });
             if (bigQuestionPager != null) {
                 //延迟两秒显示题目
                 baseLiveBigQuestionPager = bigQuestionPager;

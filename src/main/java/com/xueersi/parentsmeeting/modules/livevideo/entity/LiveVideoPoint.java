@@ -3,13 +3,16 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,13 +71,35 @@ public class LiveVideoPoint {
         return info;
     }
 
+    private static boolean min = true;
+
+    static {
+        try {
+            ArrayList<String> devices = new ArrayList<>();
+            devices.add("PCAM10");//oppo
+            String model = DeviceUtils.getModel();
+            for (int i = 0; i < devices.size(); i++) {
+                if (TextUtils.equals(model, devices.get(i))) {
+                    min = false;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException("LiveVideoPoint", e);
+        }
+    }
+
     public static boolean initLiveVideoPoint(Activity activity, LiveVideoPoint liveVideoPoint, ViewGroup.LayoutParams lp) {
         final View contentView = activity.findViewById(android.R.id.content);
         final View actionBarOverlayLayout = (View) contentView.getParent();
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        //int screenWidth = (r.right - r.left);
-        int screenWidth = Math.min((r.right - r.left), ScreenUtils.getScreenWidth());
+        int screenWidth;
+        if (min) {
+            screenWidth = Math.min((r.right - r.left), ScreenUtils.getScreenWidth());
+        } else {
+            screenWidth = (r.right - r.left);
+        }
         int screenHeight = ScreenUtils.getScreenHeight();
         if (liveVideoPoint.screenWidth == screenWidth && liveVideoPoint.videoWidth == lp.width && liveVideoPoint.videoHeight == lp.height) {
             return false;

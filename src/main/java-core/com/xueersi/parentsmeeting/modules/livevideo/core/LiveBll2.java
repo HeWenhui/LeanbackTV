@@ -1867,4 +1867,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl) {
         this.grayControl = grayControl;
     }
+
+    public AllLiveBasePagerIml getAllLiveBasePagerIml() {
+        return allLiveBasePagerIml;
+    }
 }

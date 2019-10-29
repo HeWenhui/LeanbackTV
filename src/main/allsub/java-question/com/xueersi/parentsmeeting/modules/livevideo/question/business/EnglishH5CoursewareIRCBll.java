@@ -18,6 +18,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
@@ -38,7 +39,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveAnimRepository;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.TasksDataSource;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
@@ -209,6 +212,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.type = coursewareH5.optString("ptype");
                 videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                 String status = coursewareH5.optString("status", "off");
+                videoQuestionLiveEntity.setTestsProtocal(coursewareH5.optString("testsProtocal"));
                 if (videoQuestionLiveEntity.type.equals(LiveQueConfig.EN_INTELLIGENT_EVALUTION)) {
                     stopIntelligentRecognitionSpeech(jsonObject.toString());
                     return;
@@ -254,6 +258,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         h5OnlineTechEntity.setAnswer(onlineTechObj.optString("answer"));
                         videoQuestionLiveEntity.assess_ref = onlineTechObj.optString("assess_ref");
                         videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
+                        videoQuestionLiveEntity.setTestsProtocal(onlineTechObj.optString("testsProtocal"));
                         // 09.03 拼接和前端交互的URL
                         JSONArray jsonArray = onlineTechObj.optJSONArray("id");
                         String testIds = getIdStr(jsonArray);
@@ -346,6 +351,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 englishH5Entity.setNewEnglishH5(true);
                                 try {
                                     JSONObject objects = new JSONObject();
+                                    videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                                     objects.put("packageId", object.getString("pId"));
                                     englishH5Entity.setPackageId(object.getString("pId"));
                                     objects.put("packageSource", object.getString("pSrc"));
@@ -442,6 +448,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             videoQuestionLiveEntity.nonce = nonce;
                             String isVoice = object.optString("isVoice");
                             videoQuestionLiveEntity.setIsVoice(isVoice);
+                            videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                             if ("1".equals(isVoice)) {
                                 videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = object
                                         .optString("questiontype");
@@ -515,6 +522,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.noticeType = XESCODE.ARTS_H5_COURSEWARE;
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String artStatus = object.optString("status", "off");
+                videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
                 if ("on".equals(artStatus)) {
                     videoQuestionLiveEntity.gold = object.optDouble("gold");
                     videoQuestionLiveEntity.type = object.optString("ptype");
@@ -564,6 +572,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             openStatus.set(object.optBoolean("open"));
 //                    String status = object.optString("status", "off");
             String nonce = object.optString("nonce");
+            videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
             LiveVideoConfig.nonce = nonce;
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             String teamId = studentLiveInfo.getTeamId();
@@ -901,7 +910,28 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 //        } else {
 //            questionType = EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_NEW_PLAYFROM;
 //        }
-        animRepo.getDataSource(questionType, testId, null);
+        animRepo.getDataSource(questionType, testId, new TasksDataSource.LoadAnimCallBack() {
+            @Override
+            public void onDataNotAvailable() {
+
+            }
+
+            @Override
+            public void onDatasLoaded(String num) {
+                final AllLiveBasePagerInter liveBasePagerInter = mLiveBll.getAllLiveBasePagerIml();
+                if (liveBasePagerInter != null) {
+                    liveBasePagerInter.addViewRemoveObserver(new AllLiveBasePagerInter.ViewRemoveObserver() {
+                        @Override
+
+                        public void removeView(LiveBasePager basePager) {
+                            //因为这个页面是互动题结果页显示后才显示激励动画，所以这个时候结束的pager肯定是结果页
+                            animRepo.removeViewAndAnima();
+                            liveBasePagerInter.removeViewRemoveObserver(this);
+                        }
+                    });
+                }
+            }
+        });
 
     }
 

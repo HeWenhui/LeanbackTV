@@ -41,11 +41,17 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
+                            if (callBack != null) {
+                                callBack.onDataNotAvailable();
+                            }
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
+                            if (callBack != null) {
+                                callBack.onDataNotAvailable();
+                            }
                         }
                     });
         } else if (question_type == EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_SELF_UPLOAD) {
@@ -63,13 +69,16 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
                             if (callBack != null) {
-
+                                callBack.onDataNotAvailable();
                             }
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
+                            if (callBack != null) {
+                                callBack.onDataNotAvailable();
+                            }
                         }
                     });
         } else if (question_type == EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_NEW_PLAYFROM) {
@@ -88,11 +97,17 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
+                            if (callBack != null) {
+                                callBack.onDataNotAvailable();
+                            }
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
+                            if (callBack != null) {
+                                callBack.onDataNotAvailable();
+                            }
                         }
                     });
         } else if (question_type == EvenDriveAnimRepository.EvenDriveQuestionType.INIT_EVEN_NUM) {
@@ -111,11 +126,17 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                                 @Override
                                 public void onPmError(ResponseEntity responseEntity) {
                                     super.onPmError(responseEntity);
+                                    if (callBack != null) {
+                                        callBack.onDataNotAvailable();
+                                    }
                                 }
 
                                 @Override
                                 public void onPmFailure(Throwable error, String msg) {
                                     super.onPmFailure(error, msg);
+                                    if (callBack != null) {
+                                        callBack.onDataNotAvailable();
+                                    }
                                 }
                             });
                 } else {
@@ -134,11 +155,17 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                                 @Override
                                 public void onPmError(ResponseEntity responseEntity) {
                                     super.onPmError(responseEntity);
+                                    if (callBack != null) {
+                                        callBack.onDataNotAvailable();
+                                    }
                                 }
 
                                 @Override
                                 public void onPmFailure(Throwable error, String msg) {
                                     super.onPmFailure(error, msg);
+                                    if (callBack != null) {
+                                        callBack.onDataNotAvailable();
+                                    }
                                 }
                             });
                 }

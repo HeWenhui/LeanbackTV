@@ -9,6 +9,8 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.view.QuestionResultMiddleEvenDrivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.view.QuestionResultPrimaryEvenDrivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.utils.RxjavaUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -26,8 +28,6 @@ public class EvenDriveAnimRepository implements TasksDataSource {
 
     private Context context;
     private LiveViewAction liveViewAction;
-
-//    private TasksDataSource mTasksDataSource;
 
     private TasksDataSource evenDriveAnimDataSource;
 
@@ -53,8 +53,6 @@ public class EvenDriveAnimRepository implements TasksDataSource {
         QUES_TYPE_CHS_NEW_PLAYFROM
     }
 
-//    private static int iTime = 2;
-
     private void getResultSuccess(final EvenDriveQuestionType question_type, String testId,
                                   final LoadAnimCallBack loadAnimCallBack) {
 
@@ -77,12 +75,10 @@ public class EvenDriveAnimRepository implements TasksDataSource {
                         @Override
                         public void onDatasLoaded(String num) {
                             if (question_type != EvenDriveQuestionType.INIT_EVEN_NUM) {
-//                                showAnima(String.valueOf(iTime++));
                                 showAnima(num);
-                            } else {
-                                if (loadAnimCallBack != null) {
-                                    loadAnimCallBack.onDatasLoaded(num);
-                                }
+                            }
+                            if (loadAnimCallBack != null) {
+                                loadAnimCallBack.onDatasLoaded(num);
                             }
                         }
                     });
@@ -91,16 +87,27 @@ public class EvenDriveAnimRepository implements TasksDataSource {
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    private boolean isPrimarySchool() {
+        return getInfo != null && (getInfo.getSmallEnglish() ||
+                getInfo.isPrimaryChinese() || getInfo.getIsPrimarySchool() == 1 || getInfo.getUseSkin() == 2);
+    }
+
     private void showAnima(String num) {
-        if (liveViewAction != null) {
-            if (evenDrivePager == null) {
-                evenDrivePager = new QuestionResultEvenDrivePager(context, getInfo);
-            }
-            final int mNum = Integer.valueOf(num);
+        final int mNum = Integer.valueOf(num);
+        if (mNum >= 2) {
+            if (liveViewAction != null) {
+                if (evenDrivePager == null) {
 
-            doShowAnim(mNum);
+                    if (isPrimarySchool()) {
+                        evenDrivePager = new QuestionResultPrimaryEvenDrivePager(context, getInfo);
+                    } else {
+                        evenDrivePager = new QuestionResultMiddleEvenDrivePager(context, getInfo);
+                    }
+                }
 
-            Observable.just(true).
+                doShowAnim(mNum);
+
+                Observable.just(true).
 //                    delay(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).
 //                    doOnNext(new Consumer<Boolean>() {
 //                        @Override
@@ -115,27 +122,29 @@ public class EvenDriveAnimRepository implements TasksDataSource {
 //                        }
 //                    }).
         delay(3, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).
-                    subscribe(new RxjavaUtils.CommonRxObserver() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            super.onSubscribe(d);
-                            compositeDisposable.dispose();
-                        }
+                        subscribe(new RxjavaUtils.CommonRxObserver() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                super.onSubscribe(d);
+                                compositeDisposable.dispose();
+                            }
 
-                        @Override
-                        public void onComplete() {
-                            super.onComplete();
-                            disposable.dispose();
-                            evenDrivePager.rmLottieView();
-                            removeAnima();
-                        }
-                    });
+                            @Override
+                            public void onComplete() {
+                                super.onComplete();
+                                disposable.dispose();
+                                evenDrivePager.rmLottieView();
+                                removeViewAndAnima();
+                            }
+                        });
+            }
         }
     }
 
-    private void removeAnima() {
+    public void removeViewAndAnima() {
         if (evenDrivePager != null && evenDrivePager.getRootView().getParent() != null) {
             logger.i("remove lottie view");
+            evenDrivePager.onDestroy();
             ((ViewGroup) evenDrivePager.getRootView().getParent()).removeView(evenDrivePager.getRootView());
         }
     }

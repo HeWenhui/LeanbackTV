@@ -23,7 +23,7 @@ public class QuestionResultMiddleEvenDrivePager extends QuestionResultEvenDriveP
 
     @Override
     public void showNum(int num) {
-        super.showNum(num);
+        showMiddleNum(num);
     }
 
 
@@ -66,7 +66,7 @@ public class QuestionResultMiddleEvenDrivePager extends QuestionResultEvenDriveP
         effectInfo.setReplaceFileName(replaceFileName);
 //        xesLottieAnimView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
 //        final LottieEffectInfo effectInfo = new LottieEffectInfo(resPath, jsonPath);
-        scoreLottieView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext), null);
+        scoreLottieView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext), resPath);
 
 //        scoreLottieView.setImageAssetDelegate(delegate);
         final ContiRightEffectInfo finalEffectInfo = effectInfo;

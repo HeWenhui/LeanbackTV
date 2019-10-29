@@ -5,7 +5,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/** PSIJK使用的参数 */
+/** PSIJK使用的参数,包括打日志使用的参数 */
 public class VideoConfigEntity {
     private long waterMark;
     private long duration;
@@ -19,6 +19,40 @@ public class VideoConfigEntity {
     private String userName;
 
     private String userId;
+
+    private int changeLinePos;
+
+    public int getChangeLinePos() {
+        return changeLinePos;
+    }
+
+    public int getProtocol() {
+        return protocol;
+    }
+
+    public String getStreamId() {
+        return streamId;
+    }
+
+    public void setStreamId(String streamId) {
+        this.streamId = streamId;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    public void setProtocol(int protocol) {
+        this.protocol = protocol;
+    }
+
+    public void setChangeLinePos(int changeLinePos) {
+        this.changeLinePos = changeLinePos;
+    }
 
     public long getWaterMark() {
         return waterMark;
