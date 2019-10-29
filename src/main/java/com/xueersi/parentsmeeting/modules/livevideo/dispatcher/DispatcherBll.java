@@ -129,7 +129,7 @@ public class DispatcherBll extends BaseBll {
 //        DataLoadEntity dataLoadEntity = new DataLoadEntity(mContext);
 //        postDataLoadEvent(dataLoadEntity.beginLoading());
         // 网络加载数据
-        liveTransferHttpManager.experartscoursewarenewpoint(entity.getTermId(), new HttpCallBack(dataLoadEntity) {
+        liveTransferHttpManager.experartscoursewarenewpoint(entity.getTermId(), new HttpCallBack(dataLoadEntity, false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -150,6 +150,7 @@ public class DispatcherBll extends BaseBll {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 Loger.e("Duncan", "onPmErrorresponseEntity:" + responseEntity);
+                initToExper(sectionEntity, entity, expliveresponseEntity);
             }
         });
     }
