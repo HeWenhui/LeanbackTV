@@ -11,10 +11,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
@@ -31,10 +33,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
 
 import org.json.JSONObject;
 
+import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import pl.droidsonroids.gif.GifDrawable;
 
 /**
@@ -58,6 +62,8 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
     private MiddleSchool preLoad;
     FeedBackTeacherInterface feedBackTeacherInterface;
     Handler mHandler;
+    private ScrollView svSubjectWeb;
+    private KeyboardUtil.OnKeyboardShowingListener mKeyboardListener;
     public LiveFeedBackSecondPager(Context context) {
         super(context);
     }
@@ -82,6 +88,7 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
     public View initView() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.layout_live_video_feed_back_second, null);
         webView = view.findViewById(R.id.wv_livevideo_feedback_second);
+        svSubjectWeb = view.findViewById(R.id.sv_livevideo_web);
         webViewConfig();
         webView.addJavascriptInterface(this, "xesAppStudyCenter");
         mView = view;
@@ -104,7 +111,12 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         // webSetting.setSupportMultipleWindows(true); 如果有这行代码会导致页面中含有
         // target="_blank"的超链接失效
         webView.setInitialScale(0);
-
+        mKeyboardListener = new KeyboardUtil.OnKeyboardShowingListener() {
+            @Override
+            public void onKeyboardShowing(boolean isShowing) {
+                LiveFeedBackSecondPager.this.onKeyboardShowing(isShowing);
+            }
+        };
         webSetting.setSupportZoom(false);
         webSetting.setBuiltInZoomControls(false);
 
@@ -127,7 +139,29 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         }
 
     }
-
+    public void onKeyboardShowing(boolean isShowing) {
+        ViewGroup.MarginLayoutParams lpsc = (ViewGroup.MarginLayoutParams) svSubjectWeb.getLayoutParams();
+        svSubjectWeb.post(new Runnable() {
+            @Override
+            public void run() {
+                svSubjectWeb.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+        int bottomMargin;
+        if (isShowing) {
+            int panelHeight = KeyboardUtil.getValidPanelHeight(mContext);
+            bottomMargin = panelHeight;
+        } else {
+            bottomMargin = 0;
+        }
+        if (bottomMargin != lpsc.bottomMargin) {
+            lpsc.bottomMargin = bottomMargin;
+//            wvSubjectWeb.setLayoutParams(lp);
+//            lp.setMargins(0,-bottomMargin,0,bottomMargin);
+            lpsc.setMargins(0, 0, 0, bottomMargin);
+            LayoutParamsUtil.setViewLayoutParams(svSubjectWeb, lpsc);
+        }
+    }
     class MyWebChromeClient extends WebChromeClient{
         @Override
         public void onProgressChanged(WebView var1, int newProgress) {
