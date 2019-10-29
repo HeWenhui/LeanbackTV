@@ -2,11 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import com.tencent.smtt.sdk.TbsListener;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -19,8 +21,10 @@ import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
+import com.xueersi.common.util.XrsBroswer;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.FileLogger;
@@ -59,7 +63,7 @@ import java.util.List;
  * 直播中间的loading
  */
 public class LiveVideoLoadActivity extends BaseActivity {
-    String TAG = "LiveVideoLoadActivity";
+    String TAG = "LiveVideoLoadActivityLog";
     public static HashMap<String, LiveGetInfo> getInfos = new HashMap();
     /**
      * Activity创建次数
@@ -199,6 +203,41 @@ public class LiveVideoLoadActivity extends BaseActivity {
             finish();
             return;
         }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            boolean init = XrsBroswer.init(this, new TbsListener() {
+                @Override
+                public void onDownloadFinish(int i) {
+
+                }
+
+                @Override
+                public void onInstallFinish(int i) {
+                    StableLogHashMap logHashMap = new StableLogHashMap("onInstallFinish");
+                    logHashMap.put("code", "" + i);
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+                    initData2();
+                }
+
+                @Override
+                public void onDownloadProgress(int i) {
+                    mDataLoadEntity.setProgressTip("下载中" + (i * 100 / 120) + "%");
+                    mDataLoadEntity.beginLoading();
+                    mDataLoadEntity.setCurrentLoadingStatus(DataLoadEntity.DATA_PROGRESS);
+                    DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
+                }
+            });
+            StableLogHashMap logHashMap = new StableLogHashMap("init");
+            logHashMap.put("status", "" + init);
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+            if (!init) {
+                return;
+            }
+        }
+        initData2();
+    }
+
+    private void initData2() {
+
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
         final String vSectionID = intent.getStringExtra("vSectionID");

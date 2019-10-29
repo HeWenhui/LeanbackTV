@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
@@ -46,14 +45,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.liveLog.LiveLogBill;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.utils.PlayerLogUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 //import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
@@ -77,7 +74,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     /** 所在的Activity是否已经onCreated */
     private boolean mCreated = false;
     /** 播放器核心服务 */
-    protected PlayerService vPlayer;
+    protected volatile PlayerService vPlayer;
     /** 播放服务是否已连接 */
     protected boolean mServiceConnected = false;
     /** 播放器的Surface是否创建 */
@@ -183,8 +180,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     public void playNewVideo(Uri uri, String displayName) {
         logger.d("playNewVideo:uri=" + uri);
         if (isInitialized()) {
-            vPlayer.release();
-            vPlayer.releaseContext();
+            playerReleaseAndStopSync();
         }
         mDisplayName = "";
         mIsHWCodec = false;
@@ -381,8 +377,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                 if (vPlayer.isInitialized()) {
                                     Uri olduri = vPlayer.getUri();
                                     logger.d("playNewVideo:olduri=" + olduri);
-                                    vPlayer.release();
-                                    vPlayer.releaseContext();
+                                    playerReleaseAndStopLock();
                                 }
 
                                 if (videoView != null) {
@@ -398,24 +393,19 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     logger.i("setDisplay  ");
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
-                                boolean isPlayerCreated = vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
-                                setVideoConfig();
                                 if (isChangeLine) {
                                     try {
                                         vPlayer.changeLine(changeLinePos, protocol);
                                     } catch (Exception e) {
                                         e.printStackTrace();
-                                        Map<String, String> map = new HashMap<>();
-                                        map.put("changeLinePos", changeLinePos + "");
-                                        map.put("protocol", protocol + "");
-                                        map.put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
-                                        map.put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.CHANGE_LINE_EXCEPTION);
-                                        if (getActivity() != null) {
-                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map);
-                                        }
+                                        videoConfigEntity.setProtocol(protocol);
+                                        videoConfigEntity.setChangeLinePos(changeLinePos);
+                                        PlayerLogUtils.changPlayLineLog(videoConfigEntity, getActivity(), e);
                                     }
                                     isChangeLine = false;
                                 } else {
+                                    boolean isPlayerCreated = vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                    setVideoConfig();
                                     String userName = "", userId = null;
                                     try {
                                         userName = LiveAppUserInfo.getInstance().getChildName();
@@ -437,36 +427,51 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         }
                                     } catch (IOException e) {
                                         vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
-                                        StableLogHashMap map = new StableLogHashMap();
-                                        map.put("userName", userName).
-                                                put("userId", userId + "").
-                                                put("streamId", streamId).
-                                                put("protocol", String.valueOf(protocol)).
-                                                put("isPlayerCreated", String.valueOf(isPlayerCreated)).
-                                                put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
-                                                put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
-                                                put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
-                                        if (getActivity() != null) {
-                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
+//                                        StableLogHashMap map = new StableLogHashMap();
+//                                        map.put("userName", userName).
+//                                                put("userId", userId + "").
+//                                                put("streamId", streamId).
+//                                                put("protocol", String.valueOf(protocol)).
+//                                                put("isPlayerCreated", String.valueOf(isPlayerCreated)).
+//                                                put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
+//                                                put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
+//                                                put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
+//                                        if (getActivity() != null) {
+//                                            UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
+//                                        }
+                                        if (videoConfigEntity != null) {
+                                            videoConfigEntity.setStreamId(streamId);
+                                            videoConfigEntity.setProtocol(protocol);
+                                            videoConfigEntity.setUserName(userName);
+                                            videoConfigEntity.setUserId(userId);
                                         }
+                                        PlayerLogUtils.playerError(videoConfigEntity, isPlayerCreated, vPlayer.checkNotNull(), e, getActivity());
                                         e.printStackTrace();
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                         if (videoConfigEntity != null) {
                                             recordFailData(videoConfigEntity.addPlayException().toString());
                                         } else {
-                                            StableLogHashMap map = new StableLogHashMap();
-                                            map.put("userName", userName).
-                                                    put("userId", userId).
-                                                    put("streamId", streamId).
-                                                    put("protocol", String.valueOf(protocol)).
-                                                    put("isPlayerCreated", String.valueOf(isPlayerCreated)).
-                                                    put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
-                                                    put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
-                                                    put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
-                                            if (getActivity() != null) {
-                                                UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
+                                            if (videoConfigEntity != null) {
+                                                videoConfigEntity.setStreamId(streamId);
+                                                videoConfigEntity.setProtocol(protocol);
+                                                videoConfigEntity.setUserName(userName);
+                                                videoConfigEntity.setUserId(userId);
                                             }
+                                            PlayerLogUtils.playerError(videoConfigEntity, isPlayerCreated, vPlayer.checkNotNull(), e, getActivity());
+//                                            StableLogHashMap map = new StableLogHashMap();
+//                                            map.put("userName", userName).
+//                                                    put("userId", userId).
+//                                                    put("streamId", streamId).
+//                                                    put("protocol", String.valueOf(protocol)).
+//                                                    put("isPlayerCreated", String.valueOf(isPlayerCreated)).
+//                                                    put("initPlayer", String.valueOf(vPlayer.checkNotNull())).
+//                                                    put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_EXCEPTION).
+//                                                    put(LiveLogUtils.EXCEPTION_MESSAGE, Log.getStackTraceString(e));
+//                                            if (getActivity() != null) {
+//                                                UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map.getData());
+//                                            }
+
                                         }
                                         LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
@@ -645,10 +650,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         this.url = url;
         mStartPos = startPos;
         liveType = PLAY_TUTORIAL;
-        if (mCreated && vPlayer != null) {
-            vPlayer.release();
-            vPlayer.psStop();
-        }
+        psPlayerReleaseAndStopSync();
 
         mDisplayName = "";
         mIsHWCodec = false;
@@ -690,7 +692,6 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             this.videoConfigEntity = videoConfigEntity;
             vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
         }
-
     }
 
     /**
@@ -708,14 +709,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         } else if (protocol == MediaPlayer.VIDEO_PROTOCOL_MP4 || protocol == MediaPlayer.VIDEO_PROTOCOL_M3U8) {
             this.liveType = PLAY_BACK;
         }
-        if (mCreated && vPlayer != null) {
-//        if (vPlayer != null) {
-            vPlayer.release();
-            vPlayer.psStop();
-        }
-//        }
         //初始化
-
         mDisplayName = "";
         mIsHWCodec = false;
         mFromStart = false;
@@ -754,13 +748,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         } else if (protocol == MediaPlayer.VIDEO_PROTOCOL_MP4 || protocol == MediaPlayer.VIDEO_PROTOCOL_M3U8) {
             this.liveType = PLAY_BACK;
         }
-        if (mCreated && vPlayer != null) {
-//        if (vPlayer != null) {
-            vPlayer.release();
-            vPlayer.psStop();
-        }
-//        }
-
+        psPlayerReleaseAndStopSync();
         mDisplayName = "";
         mIsHWCodec = false;
         mFromStart = false;
@@ -781,6 +769,33 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     /** 设置视频名称 */
     public void setmDisplayName(String displayName) {
         this.mDisplayName = displayName;
+    }
+
+    private void playerReleaseAndStopSync() {
+        synchronized (mOpenLock) {
+            playerReleaseAndStopLock();
+        }
+    }
+
+    private void playerReleaseAndStopLock() {
+        vPlayer.release();
+        vPlayer.releaseContext();
+    }
+
+    /**
+     * psijk使用的释放资源
+     */
+    private void psPlayerReleaseAndStopSync() {
+        if (mCreated && vPlayer != null) {
+            synchronized (mOpenLock) {
+                psPlayerReleaseAndStopLock();
+            }
+        }
+    }
+
+    private void psPlayerReleaseAndStopLock() {
+        vPlayer.release();
+        vPlayer.psStop();
     }
 
     protected VPlayerCallBack.VPlayerListener vPlayerServiceListener = new VPlayerCallBack.VPlayerListener() {
@@ -1112,11 +1127,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     public void release() {
         if (vPlayer != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                vPlayer.release();
-                vPlayer.releaseContext();
+                playerReleaseAndStopSync();
             } else {
-                vPlayer.release();
-                vPlayer.releaseContext();
+                playerReleaseAndStopSync();
             }
         }
     }
