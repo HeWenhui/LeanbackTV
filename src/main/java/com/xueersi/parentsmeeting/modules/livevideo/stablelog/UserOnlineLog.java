@@ -42,17 +42,21 @@ public class UserOnlineLog {
             logHashMap.put("params", "" + params);
             logHashMap.put("status", "" + status);
             logHashMap.put("errmsg", "" + errmsg);
+            logHashMap.put("inittime", "" + LiveVideoConfig.LIVE_HB_TIME);
             liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 
-//    public static void sno4(long oldTime, LiveAndBackDebug liveAndBackDebug) {
-//        StableLogHashMap logHashMap = new StableLogHashMap("playbackrateDidChange");
-//        logHashMap.put("livetimes", "" + LiveLog.LIVE_TIME);
-//        liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
-//    }
+    public static void sno4(boolean send, int mLiveType, LiveAndBackDebug liveAndBackDebug) {
+        StableLogHashMap logHashMap = new StableLogHashMap("heartbeatTimerPost");
+        logHashMap.put("livetimes", "" + LiveLog.LIVE_TIME);
+        logHashMap.put("inittime", "" + LiveVideoConfig.LIVE_HB_TIME);
+        logHashMap.put("send", "" + send);
+        logHashMap.put("onlinetype", "" + mLiveType);
+        liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
+    }
 
     public static void sno5(long oldTime, LiveAndBackDebug liveAndBackDebug) {
         try {

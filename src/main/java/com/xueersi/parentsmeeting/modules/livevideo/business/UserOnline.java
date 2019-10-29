@@ -8,6 +8,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.UserOnlineLog;
@@ -36,6 +37,8 @@ public class UserOnline {
     private ContextLiveAndBackDebug contextLiveAndBackDebug;
     private long startHeart;
     private long delayHeart;
+    /** 开始心跳 */
+    private boolean start = false;
 
     public UserOnline(Activity activity, int mLiveType, String mLiveId) {
         this.activity = activity;
@@ -66,11 +69,13 @@ public class UserOnline {
     };
 
     public void start() {
+        start = true;
         UserOnlineLog.sno2(0, contextLiveAndBackDebug);
         mainHandler.postDelayed(mUserOnlineCall, mHbTime * 1000);
     }
 
     public void stop() {
+        start = false;
         long oldTime = System.currentTimeMillis() - startHeart;
         UserOnlineLog.sno5(oldTime, contextLiveAndBackDebug);
         mainHandler.removeCallbacks(mUserOnlineCall);
@@ -86,7 +91,7 @@ public class UserOnline {
         }
         final String finalTeacherId = teacherId;
         mHbCount++;
-        mHttpManager.liveUserOnline(mLiveType, mLiveId, teacherId, mCurrentDutyId, mHbTime, new HttpCallBack() {
+        boolean online = mHttpManager.liveUserOnline(mLiveType, mLiveId, teacherId, mCurrentDutyId, mHbTime, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -155,11 +160,15 @@ public class UserOnline {
                 postDelayedIfNotFinish(mUserOnlineCall, mHbTime * 1000);
             }
         });
+        UserOnlineLog.sno4(online, mLiveType, contextLiveAndBackDebug);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
-        if (activity.isFinishing()) {
+        if (!start) {
             return;
+        }
+        if (activity.isFinishing()) {
+            LiveCrashReport.postCatchedException(TAG, new Exception());
         }
         mainHandler.postDelayed(r, delayMillis);
     }
