@@ -85,21 +85,19 @@ public class ExperCourseResultAdapter extends RecyclerView.Adapter {
             super(itemView);
             tv_livevideo_bigque_result_num = itemView.findViewById(R.id.tv_livevideo_bigque_result_num);
             tv_livevideo_bigque_result_stand = itemView.findViewById(R.id.tv_livevideo_bigque_result_stand);
-            if (standAnswerLeft) {
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_bigque_result_stand.getLayoutParams();
-                lp.width = SizeUtils.Dp2Px(itemView.getContext(), 140);
-                LayoutParamsUtil.setViewLayoutParams(tv_livevideo_bigque_result_stand, lp);
-                tv_livevideo_bigque_result_stand.setGravity(Gravity.LEFT);
-            } else {
-
-            }
+//            if (standAnswerLeft) {
+//                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_bigque_result_stand.getLayoutParams();
+//                lp.width = SizeUtils.Dp2Px(itemView.getContext(), 140);
+//                LayoutParamsUtil.setViewLayoutParams(tv_livevideo_bigque_result_stand, lp);
+//                tv_livevideo_bigque_result_stand.setGravity(Gravity.LEFT);
+//            }
             tv_livevideo_bigque_result_your = itemView.findViewById(R.id.tv_livevideo_bigque_result_your);
-            if (youAnswerLeft) {
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_bigque_result_your.getLayoutParams();
-                lp.width = SizeUtils.Dp2Px(itemView.getContext(), 140);
-                lp.addRule(RelativeLayout.ALIGN_LEFT, R.id.tv_livevideo_bigque_result_your_hind);
-                LayoutParamsUtil.setViewLayoutParams(tv_livevideo_bigque_result_your, lp);
-            }
+//            if (youAnswerLeft) {
+//                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_bigque_result_your.getLayoutParams();
+//                lp.width = SizeUtils.Dp2Px(itemView.getContext(), 140);
+//                lp.addRule(RelativeLayout.ALIGN_LEFT, R.id.tv_livevideo_bigque_result_your_hind);
+//                LayoutParamsUtil.setViewLayoutParams(tv_livevideo_bigque_result_your, lp);
+//            }
             iv_livevideo_bigque_result_type = itemView.findViewById(R.id.iv_livevideo_bigque_result_type);
         }
 
