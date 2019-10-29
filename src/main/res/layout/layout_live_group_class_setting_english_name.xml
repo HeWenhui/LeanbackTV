@@ -88,7 +88,7 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/toolbar"
+                android:id="@+id/toolbar_group_class_english_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -107,27 +107,33 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_setting_english_name_recommend"
                     android:layout_width="wrap_content"
+                    android:layout_marginBottom="5dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="8dp" />
 
-                <TextView
-                    android:background="@drawable/bg_group_class_grouping_line"
-                    android:layout_width="158dp"
-                    android:layout_height="1dp" />
+
             </LinearLayout>
 
-            <RelativeLayout
-                android:layout_marginTop="5dp"
+            <LinearLayout
+                android:layout_marginTop="1dp"
                 android:layout_marginBottom="5dp"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <View
+                    android:layout_marginLeft="5dp"
+                    android:layerType="software"
+                    android:background="@drawable/bg_group_class_grouping_line"
+                    android:layout_width="490dp"
+                    android:layout_height="2dp" />
 
                 <android.support.v7.widget.RecyclerView
+                    android:layout_marginTop="4dp"
                     android:id="@+id/rv_setting_english_name_index_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp" />
-            </RelativeLayout>
+            </LinearLayout>
         </android.support.design.widget.AppBarLayout>
 
 
@@ -186,4 +192,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     </LinearLayout>
+
 </RelativeLayout>
