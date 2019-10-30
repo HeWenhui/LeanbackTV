@@ -368,7 +368,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         liveGetInfo.setStuCouId(stuCourId);
         if (liveVideoSAConfig != null) {
             liveGetInfo.setSubjectiveTestAnswerResult(
-                    (isArts == 2) ?
+                    (isArts == LiveVideoSAConfig.ART_CH) ?
                             LiveHttpConfig.chsSubjectiveTestAnswerResult :
                             LiveHttpConfig.subjectiveTestAnswerResult);
         }
