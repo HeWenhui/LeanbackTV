@@ -10,7 +10,6 @@ import android.text.style.ImageSpan;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuPro;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.BaseEvenDriveCommonPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 
@@ -19,7 +18,7 @@ import master.flame.danmaku.danmaku.danmaku.model.BaseDanmaku;
 /**
  * 小学语文礼物弹幕，同小英三分屏的鲜花弹幕
  */
-public abstract class BaseSmallChineseLiveMessagePager extends BaseEvenDriveCommonPager {
+public abstract class BaseSmallChineseLiveMessagePager extends LiveMessageCommonMessagePager {
 
     //    private int DANMU_RADIUS = 20;//圆角半径
     public int DANMU_PADDING = 0;//弹幕之间的间距
