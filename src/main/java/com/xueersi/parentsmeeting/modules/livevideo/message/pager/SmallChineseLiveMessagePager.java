@@ -23,7 +23,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -32,14 +31,10 @@ import android.widget.TextView;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
@@ -52,14 +47,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
@@ -89,21 +81,17 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     ListView lvCommonWord;
     /** 献花(送礼物)，默认关闭 */
     private Button btMessageFlowers;
-    /** 聊天，默认打开 */
-    private CheckBox cbMessageClock;
     /** 聊天人数 */
 //    private TextView tvMessageCount;
     /** 聊天IRC一下状态，正在连接，在线等 */
 //    private ImageView ivMessageOnline;
-    private View rlInfo;
+
     //输入聊天信息时软键盘上面的显示框
     private View rlMessageContent;
     //确定献花的按钮
     private Button btMessageSend;
     //聊天表情的表情包
     private Button btMessageExpress;
-
-
 
 
     private String goldNum;
@@ -308,68 +296,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 
                     @Override
                     public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
-                        String sender = entity.getSender();
-                        SpannableString spanttt = new SpannableString(sender + ": ");
-                        int color, messageColor;
-                        switch (entity.getType()) {
-                            case LiveMessageEntity.MESSAGE_MINE:
-                                color = nameColors[entity.getType()];
-                                messageColor = messageColors[entity.getType()];
-//                                Log.w(TAG, "1:" + messageColor);
-                                break;
-                            case LiveMessageEntity.MESSAGE_TEACHER:
-                                color = nameColors[entity.getType()];
-                                messageColor = messageColors[entity.getType()];
-//                                Log.w(TAG, "2:" + messageColor);
-                                break;
-                            case LiveMessageEntity.MESSAGE_TIP:
-                                color = nameColors[entity.getType()];
-                                messageColor = messageColors[entity.getType()];
-//                                Log.w(TAG, "3:" + messageColor);
-                                break;
-                            case LiveMessageEntity.MESSAGE_CLASS:
-                                color = nameColors[entity.getType()];
-                                messageColor = messageColors[entity.getType()];
-//                                Log.w(TAG, "4:" + messageColor);
-                                break;
-                            default:
-                                color = nameColors[0];
-                                messageColor = messageColors[entity.getType()];
-//                                Log.w(TAG, "5:" + messageColor);
-                                break;
-                        }
-                        SpannableStringBuilder messageSpan = new SpannableStringBuilder(entity.getText());
-                        CharacterStyle characterStyle = new ForegroundColorSpan(color);
-                        CharacterStyle messageStyle = new ForegroundColorSpan(messageColor);
-                        spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        messageSpan.setSpan(messageStyle, 0, entity.getText().length(), Spanned
-                                .SPAN_INCLUSIVE_EXCLUSIVE);
-                        if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
-                            tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
-                            tvMessageItem.setText(entity.getText());
-                            urlClick(tvMessageItem);
-//                            CharSequence text = tvMessageItem.getText();
-                            tvMessageItem.setText(spanttt);
-                            tvMessageItem.append(messageSpan);
-                        } else if (isOpenStimulation()) {
-                            tvMessageItem.setAutoLinkMask(0);
-                            SpannableString itemSpan;
-                            SpannableString evenSpan = new SpannableString(EVEN_DRIVE_ICON);
-                            itemSpan = addEvenDriveMessageNum(evenSpan, entity.getEvenNum(), entity.getType());
-                            if (itemSpan != null) {
-                                tvMessageItem.setText(itemSpan);
-                                tvMessageItem.append(spanttt);
-                            } else {
-                                tvMessageItem.setText(spanttt);
-                            }
-                            tvMessageItem.append(entity.getText());
-                            logger.i(tvMessageItem.getText());
-                        } else {
-                            tvMessageItem.setAutoLinkMask(0);
-                            tvMessageItem.setText(spanttt);
-                            tvMessageItem.append(messageSpan);
-//                            Log.w(TAG, "7:" + messageColor + " " + entity.getText());
-                        }
+                        handleUpdateMessage(tvMessageItem, entity, position, objTag);
                     }
                 };
             }
@@ -390,6 +317,70 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         before = System.currentTimeMillis();
     }
 
+    private void handleUpdateMessage(FangZhengCuYuanTextView tvMessageItem, LiveMessageEntity entity, int position, Object objTag) {
+        String sender = entity.getSender();
+        SpannableString spanttt = new SpannableString(sender + ": ");
+        int color, messageColor;
+        switch (entity.getType()) {
+            case LiveMessageEntity.MESSAGE_MINE:
+                color = nameColors[entity.getType()];
+                messageColor = messageColors[entity.getType()];
+//                                Log.w(TAG, "1:" + messageColor);
+                break;
+            case LiveMessageEntity.MESSAGE_TEACHER:
+                color = nameColors[entity.getType()];
+                messageColor = messageColors[entity.getType()];
+//                                Log.w(TAG, "2:" + messageColor);
+                break;
+            case LiveMessageEntity.MESSAGE_TIP:
+                color = nameColors[entity.getType()];
+                messageColor = messageColors[entity.getType()];
+//                                Log.w(TAG, "3:" + messageColor);
+                break;
+            case LiveMessageEntity.MESSAGE_CLASS:
+                color = nameColors[entity.getType()];
+                messageColor = messageColors[entity.getType()];
+//                                Log.w(TAG, "4:" + messageColor);
+                break;
+            default:
+                color = nameColors[0];
+                messageColor = messageColors[entity.getType()];
+//                                Log.w(TAG, "5:" + messageColor);
+                break;
+        }
+        SpannableStringBuilder messageSpan = new SpannableStringBuilder(entity.getText());
+        CharacterStyle characterStyle = new ForegroundColorSpan(color);
+        CharacterStyle messageStyle = new ForegroundColorSpan(messageColor);
+        spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        messageSpan.setSpan(messageStyle, 0, entity.getText().length(), Spanned
+                .SPAN_INCLUSIVE_EXCLUSIVE);
+        if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
+            tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
+            tvMessageItem.setText(entity.getText());
+            urlClick(tvMessageItem);
+//                            CharSequence text = tvMessageItem.getText();
+            tvMessageItem.setText(spanttt);
+            tvMessageItem.append(messageSpan);
+        } else if (isOpenStimulation()) {
+            tvMessageItem.setAutoLinkMask(0);
+            SpannableString itemSpan;
+            SpannableString evenSpan = new SpannableString(EVEN_DRIVE_ICON);
+            itemSpan = addEvenDriveMessageNum(evenSpan, entity.getEvenNum(), entity.getType());
+            if (itemSpan != null) {
+                tvMessageItem.setText(itemSpan);
+                tvMessageItem.append(spanttt);
+            } else {
+                tvMessageItem.setText(spanttt);
+            }
+            tvMessageItem.append(entity.getText());
+            logger.i(tvMessageItem.getText());
+        } else {
+            tvMessageItem.setAutoLinkMask(0);
+            tvMessageItem.setText(spanttt);
+            tvMessageItem.append(messageSpan);
+//                            Log.w(TAG, "7:" + messageColor + " " + entity.getText());
+        }
+    }
 
     private boolean commonWordInited = false;
 
@@ -437,7 +428,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         });
         commonWordInited = true;
     }
-
 
 
     @Override
@@ -690,48 +680,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         return cbMessageClock.isChecked();
     }
 
-    @Override
-    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
-        {
-            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
-                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
-                // + ",wradio=" + wradio + "," + params.width);
-                params.width = wradio;
-                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
-//                rlInfo.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-            }
-            if (cbMessageClock != null) {
-                int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
-                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-                if (params.rightMargin != rightMargin) {
-                    params.rightMargin = rightMargin;
-//                cbMessageClock.setLayoutParams(params);
-                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
-                }
-            }
-        }
-        {
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
-            int topMargin = liveVideoPoint.y3;
-            if (topMargin != params.topMargin) {
-                params.topMargin = topMargin;
-//                rlInfo.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-                logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
-            }
-            int bottomMargin = liveVideoPoint.y2;
-            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
-            if (params.bottomMargin != bottomMargin) {
-                params.bottomMargin = bottomMargin;
-//                lvMessage.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
-            }
-        }
-    }
 
     /** 聊天开始连接 */
     @Override
@@ -1373,7 +1321,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     public void onOpenVoiceNotic(boolean openVoice, String type) {
 
     }
-
 
 
     @Override

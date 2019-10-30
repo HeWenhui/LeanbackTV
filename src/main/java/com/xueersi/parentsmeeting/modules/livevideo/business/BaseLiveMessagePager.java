@@ -163,12 +163,6 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
 
     }
 
-    protected boolean isOpenStimulation() {
-        return EvenDriveUtils.isOpenStimulation(getInfo);
-//        return getInfo != null &&
-//                getInfo.getEvenDriveInfo() != null &&
-//                OPEN_STIMULATION == getInfo.getEvenDriveInfo().getIsOpenStimulation();
-    }
 
     public void setGetInfo(final LiveGetInfo getInfo) {
         this.getInfo = getInfo;

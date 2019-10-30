@@ -42,6 +42,13 @@ public abstract class BaseEvenDriveCommonPager extends BaseLiveMessagePager {
         }
     }
 
+    protected boolean isOpenStimulation() {
+        return EvenDriveUtils.isOpenStimulation(getInfo);
+//        return getInfo != null &&
+//                getInfo.getEvenDriveInfo() != null &&
+//                OPEN_STIMULATION == getInfo.getEvenDriveInfo().getIsOpenStimulation();
+    }
+
     protected SpannableString addEvenDriveMessageNum(SpannableString spannableString, String evenNum, int type) {
         if (isOpenStimulation()) {
             return StringDrawableUtils.addEvenDriveMessageNum(mContext, spannableString, evenNum, type);

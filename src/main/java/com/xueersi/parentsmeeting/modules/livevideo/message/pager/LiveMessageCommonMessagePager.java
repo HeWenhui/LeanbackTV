@@ -2,7 +2,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
 import android.content.Context;
 import android.text.SpannableStringBuilder;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
@@ -11,9 +15,11 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.BaseEvenDriveCommonPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.ui.adapter.CommonAdapter;
 
 import java.util.ArrayList;
@@ -40,6 +46,11 @@ public abstract class LiveMessageCommonMessagePager extends BaseEvenDriveCommonP
     protected ListView lvMessage;
 
     protected LiveAndBackDebug liveAndBackDebug;
+
+    protected View rlInfo;
+
+    /** 聊天，默认打开 */
+    protected CheckBox cbMessageClock;
 
     public LiveMessageCommonMessagePager(Context context) {
         super(context);
@@ -154,4 +165,46 @@ public abstract class LiveMessageCommonMessagePager extends BaseEvenDriveCommonP
 //        Loger.e("Duncan", "sender:" + sender);
     }
 
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        {
+            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
+            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                // + ",wradio=" + wradio + "," + params.width);
+                params.width = wradio;
+                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+            }
+            if (cbMessageClock != null) {
+                int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+                if (params.rightMargin != rightMargin) {
+                    params.rightMargin = rightMargin;
+//                cbMessageClock.setLayoutParams(params);
+                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+                }
+            }
+        }
+        {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
+            int topMargin = liveVideoPoint.y3;
+            if (topMargin != params.topMargin) {
+                params.topMargin = topMargin;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+                logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
+            }
+            int bottomMargin = liveVideoPoint.y2;
+            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
+            if (params.bottomMargin != bottomMargin) {
+                params.bottomMargin = bottomMargin;
+//                lvMessage.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+            }
+        }
+    }
 }
