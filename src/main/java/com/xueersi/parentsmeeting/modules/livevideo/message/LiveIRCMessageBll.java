@@ -204,7 +204,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         }
         //中学连对激励系统，教师广播发送学报消息
-        if (getInfo.getIsOpenNewCourseWare() == 1) {
+        if (EvenDriveUtils.getOldEvenDrive(getInfo)) {
+
             getHttpManager().getEvenLikeData(
 //                "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
                     mGetInfo.getGetEvenPairListUrl(),
@@ -219,6 +220,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     });
         }
     }
+
 
     String currentMode;
 
@@ -1416,7 +1418,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getEvenDrive(EvenDriveEvent evenDriveEvent) {
         if (evenDriveEvent.getStatus() == EvenDriveEvent.CLOSE_H5
-                && mGetInfo.getIsOpenNewCourseWare() == 1) {
+                && EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
             //老师收题之后，更新聊天区连对榜
             getHttpManager().getEvenLikeData(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
