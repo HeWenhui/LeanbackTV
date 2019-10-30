@@ -231,7 +231,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         TalAccApiFactory.getTalAccRequestApi().editUserInfo(req, new TalAccApiCallBack<TalAccResp.StringResp>() {
             @Override
             public void onSuccess(TalAccResp.StringResp stringResp) {
-                XESToastUtils.showToast(stringResp.result);
+              //  XESToastUtils.showToast(stringResp.result);
                 UserBll.getInstance().setUserEnglishInfo(selectName, sex);
                 continueToVideo();
             }
