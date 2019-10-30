@@ -681,9 +681,19 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
 //                    playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
 //                    liveGetPlayServer.liveGetPlayServer(false);
                     if (isGroupClass()) {
-                        if (mVideoAction != null) {
-                            mVideoAction.onTeacherNotPresent(false);
-                        }
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mVideoAction != null) {
+                                    mVideoAction.onTeacherNotPresent(false);
+                                }
+                                //关闭1v2真流
+                                RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(activity,RTCVideoAction.class);
+                                if (rtcVideoAction != null) {
+                                    rtcVideoAction.close();
+                                }
+                            }
+                        });
                     } else {
                         psRePlay(false);
                     }
