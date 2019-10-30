@@ -87,10 +87,6 @@ public class SettingEnglishLandActivity extends XesActivity {
     ImageView ivBoy, ivGirl;
 
     /** 名字导航 */
-    // AreaIndexBarView areaIndexBarView;
-    List<String> listWord;
-//    List<AreaIndexBarView.IndexEntity> lstIndexEntity;
-
     LottieAnimationView mLottieView;
     LottieAnimationView lottieViewSex;
     RecyclerView recyclerViewIndex;
@@ -134,6 +130,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         getWindow().setAttributes(lp);
         setContentView(R.layout.layout_live_group_class_setting_english_name);
         englishNameBll = new EnglishNameBusiness(mContext);
+        setIndexData();
         initView();
         initData();
         //testData();
@@ -665,22 +662,21 @@ public class SettingEnglishLandActivity extends XesActivity {
     };
 
     private void defaultData() {
+        englishNameBll.getDefaultName(listIndex, sex, businessDataCallBack);
+    }
+
+    private void setIndexData(){
         listName = new ArrayList<>();
         listIndex = new ArrayList<>();
+        listRecommendName = new ArrayList<>();
         String[] word = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
                 "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-        listWord = new ArrayList<>();
-        listRecommendName = new ArrayList<>();
         EngLishNameEntity index = null;
-
         for (int j = 0; j < word.length; j++) {
-            listWord.add(word[j]);
             index = new EngLishNameEntity();
             index.setWordIndex(word[j]);
             listIndex.add(index);
-
         }
-        englishNameBll.getDefaultName(listIndex, sex, businessDataCallBack);
     }
 
 
