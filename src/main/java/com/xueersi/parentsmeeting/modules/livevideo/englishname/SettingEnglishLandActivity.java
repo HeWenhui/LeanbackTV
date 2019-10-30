@@ -154,6 +154,8 @@ public class SettingEnglishLandActivity extends XesActivity {
             sexSelect();
             tvPreSex.setVisibility(View.GONE);
             defaultData();
+        } else {
+            lottieViewSex.playAnimation();
         }
     }
 
