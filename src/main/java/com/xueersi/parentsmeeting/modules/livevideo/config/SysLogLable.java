@@ -66,5 +66,22 @@ public class SysLogLable {
     /** 评测失败 */
     public static SysLogEntity voiceError = new SysLogEntity(voiceanswer, "voiceError");
     /** 强制提交 */
-    public static SysLogEntity examSubmitAll = new SysLogEntity(voiceanswer, "examSubmitAll");
+    public static SysLogEntity voiceAnswerExamSubmitAll = new SysLogEntity(voiceanswer, "examSubmitAll");
+
+    /** roleplay lable */
+    private static String roleplayMachine = "roleplayMachine";
+    /** 启动评测 */
+    public static SysLogEntity roleplayStartRecog = new SysLogEntity(roleplayMachine, "startRecog");
+    /** 评测开始 */
+    public static SysLogEntity roleplayRecogBegin = new SysLogEntity(roleplayMachine, "recogBegin");
+    /** 评测成功 */
+    public static SysLogEntity roleplayRecogSuccess = new SysLogEntity(roleplayMachine, "recogSuccess");
+    /** 评测失败 */
+    public static SysLogEntity roleplayRecogError = new SysLogEntity(roleplayMachine, "recogError");
+    /** 准备读下一条 */
+    public static SysLogEntity roleplayNextRead = new SysLogEntity(roleplayMachine, "roleplayNextRead");
+    /** 开始提交 */
+    public static SysLogEntity roleplaySubmit = new SysLogEntity(roleplayMachine, "recogSubmit");
+    /** 强制提交 */
+    public static SysLogEntity roleplayexamSubmitAll = new SysLogEntity(roleplayMachine, "examSubmitAll");
 }

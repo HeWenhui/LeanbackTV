@@ -10,6 +10,7 @@ import com.xueersi.common.permission.PermissionItem;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -389,8 +390,8 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
             });
         } catch (JSONException e) {
             e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG, e);
         }
-
     }
 
     /**
@@ -485,6 +486,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG, e);
         }
 
     }
