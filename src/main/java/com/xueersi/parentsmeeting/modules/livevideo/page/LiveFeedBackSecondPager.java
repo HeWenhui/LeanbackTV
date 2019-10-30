@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -65,7 +66,8 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
     FeedBackTeacherInterface feedBackTeacherInterface;
     Handler mHandler;
     private ScrollView svSubjectWeb;
-    private KeyboardUtil.OnKeyboardShowingListener mKeyboardListener;
+    ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener;
+    boolean mKeyboardShow = false;
     public LiveFeedBackSecondPager(Context context) {
         super(context);
     }
@@ -115,12 +117,17 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         webView.setInitialScale(0);
 
 
-        KeyboardUtil.attach((Activity) mContext, new KPSwitchFSPanelLinearLayout(mContext), new KeyboardUtil.OnKeyboardShowingListener() {
-            @Override
-            public void onKeyboardShowing(boolean isShowing) {
-                LiveFeedBackSecondPager.this.onKeyboardShowing(isShowing);
-            }
-        });
+        onGlobalLayoutListener = KeyboardUtil.attach((Activity) mContext, new KPSwitchFSPanelLinearLayout(mContext),
+                new KeyboardUtil.OnKeyboardShowingListener() {
+                    @Override
+                    public void onKeyboardShowing(boolean isShowing) {
+                        if(mKeyboardShow !=isShowing){
+                            LiveFeedBackSecondPager.this.onKeyboardShowing(isShowing);
+                            mKeyboardShow = isShowing;
+                        }
+
+                    }
+                });
         webSetting.setSupportZoom(false);
         webSetting.setBuiltInZoomControls(false);
 
@@ -144,13 +151,18 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
 
     }
     public void onKeyboardShowing(boolean isShowing) {
+
         ViewGroup.MarginLayoutParams lpsc = (ViewGroup.MarginLayoutParams) svSubjectWeb.getLayoutParams();
-        svSubjectWeb.post(new Runnable() {
-            @Override
-            public void run() {
-                svSubjectWeb.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });
+       // if (isShowing) {
+//            svSubjectWeb.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    svSubjectWeb.fullScroll(ScrollView.FOCUS_DOWN);
+//                }
+//            });
+
+           // svSubjectWeb.fullScroll(ScrollView.FOCUS_DOWN);
+        //}
         int bottomMargin;
         if (isShowing) {
             int panelHeight = KeyboardUtil.getValidPanelHeight(mContext);
@@ -160,10 +172,9 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         }
         if (bottomMargin != lpsc.bottomMargin) {
             lpsc.bottomMargin = bottomMargin;
-//            wvSubjectWeb.setLayoutParams(lp);
-//            lp.setMargins(0,-bottomMargin,0,bottomMargin);
-            lpsc.setMargins(0, 0, 0, bottomMargin);
-            LayoutParamsUtil.setViewLayoutParams(svSubjectWeb, lpsc);
+
+            svSubjectWeb.setLayoutParams(lpsc);
+
         }
     }
     class MyWebChromeClient extends WebChromeClient{
@@ -327,8 +338,8 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         if (feedBackTeacherInterface != null) {
             feedBackTeacherInterface.onClose();
         }
-        if (mKeyboardListener != null) {
-            KeyboardUtil.unRegistKeyboardShowingListener(mKeyboardListener);
+        if (onGlobalLayoutListener != null) {
+            KeyboardUtil.detach((Activity)mContext,onGlobalLayoutListener);
         }
     }
     CountDownTimer timer = new CountDownTimer(2000, 1000) {
