@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -122,6 +123,8 @@ public class SettingEnglishLandActivity extends XesActivity {
 
     boolean isLive = true;
     String where = "";
+    AppBarLayout mAppBarLayout;
+    AppBarLayout.Behavior appBarLayoutBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +158,7 @@ public class SettingEnglishLandActivity extends XesActivity {
             tvPreSex.setVisibility(View.GONE);
             defaultData();
         } else {
-            lottieViewSex.playAnimation();
+            startNameLottie(true);
         }
     }
 
@@ -173,6 +176,8 @@ public class SettingEnglishLandActivity extends XesActivity {
     }
 
     private void initListener() {
+
+
         imgBtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -263,7 +268,6 @@ public class SettingEnglishLandActivity extends XesActivity {
     private void sexSelect() {
         ivBoy.setVisibility(View.GONE);
         ivGirl.setVisibility(View.GONE);
-        lottieViewSex.playAnimation();
         clNameContent.setVisibility(View.VISIBLE);
         etSearch.setVisibility(View.VISIBLE);
         llControl.setVisibility(View.VISIBLE);
@@ -280,8 +284,12 @@ public class SettingEnglishLandActivity extends XesActivity {
                 selectRecomand(position, text);
                 // 导航选中
             } else if (EnglishNameConfig.GROUP_CLASS_ENGLISH_NAME_BAR == type) {
+                //快速滑动实现吸顶效果
+                int hight= mAppBarLayout.getHeight();
+                if(appBarLayoutBehavior!=null) {
+                    appBarLayoutBehavior.setTopAndBottomOffset(-hight);
+                }
                 selectIndex(position, text);
-
                 // 名字选中
             } else if (EnglishNameConfig.GROUP_CLASS_ENGLISH_NAME_SELECT == type) {
                 selectName(position, text);
@@ -320,6 +328,14 @@ public class SettingEnglishLandActivity extends XesActivity {
         tvRecommendHint = findViewById(R.id.tv_setting_english_name_recommend_hint);
         imgBtnClose = findViewById(R.id.imgbtn_live_setting_english_name_close);
         tvSearchEmpty =  findViewById(R.id.tv_groupclass_setting_english_name_search_empty);
+        mAppBarLayout  =  findViewById(R.id.abl_groupclass_setting_english_name_title);
+
+        CoordinatorLayout.Behavior behavior =
+                ((CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams()).getBehavior();
+        if (behavior instanceof AppBarLayout.Behavior) {
+            appBarLayoutBehavior = (AppBarLayout.Behavior) behavior;
+        }
+
 
         rvRecommend.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewIndex.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
