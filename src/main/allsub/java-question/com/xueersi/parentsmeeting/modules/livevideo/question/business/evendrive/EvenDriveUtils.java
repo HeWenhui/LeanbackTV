@@ -6,7 +6,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.question.business.eve
 
 public class EvenDriveUtils {
     /**
-     * 连读激励是否打开
+     * 新连读激励是否打开
      *
      * @param getInfo
      * @return
@@ -26,5 +26,14 @@ public class EvenDriveUtils {
     public static boolean getOldEvenDrive(LiveGetInfo getInfo) {
         return getInfo != null && getInfo.getIsOpenNewCourseWare() == 1
                 && getInfo.getIsPrimarySchool() != 1 && getInfo.getIsArts() == 0;
+    }
+
+    /**
+     * 所有连对激励是否打开
+     *
+     * @return
+     */
+    public static boolean getAllEvenDriveOpen(LiveGetInfo getInfo) {
+        return isOpenStimulation(getInfo) || getOldEvenDrive(getInfo);
     }
 }
