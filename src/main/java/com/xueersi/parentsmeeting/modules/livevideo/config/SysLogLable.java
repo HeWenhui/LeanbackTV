@@ -84,4 +84,19 @@ public class SysLogLable {
     public static SysLogEntity roleplaySubmit = new SysLogEntity(roleplayMachine, "recogSubmit");
     /** 强制提交 */
     public static SysLogEntity roleplayexamSubmitAll = new SysLogEntity(roleplayMachine, "examSubmitAll");
+
+    /** roleplay lable */
+    private static String speechEvaluating = "speechEvaluating";
+    /** 评测成功 */
+    public static SysLogEntity speechCreate = new SysLogEntity(speechEvaluating, "speechcreate");
+    /** 评测成功 */
+    public static SysLogEntity speechSuccess = new SysLogEntity(speechEvaluating, "recogSuccess");
+    /** 评测成功 */
+    public static SysLogEntity speechError = new SysLogEntity(speechEvaluating, "recogError");
+    /** 强制提交 */
+    public static SysLogEntity speechExamSubmitAll = new SysLogEntity(roleplayMachine, "examSubmitAll");
+    /** 强制提交 */
+    public static SysLogEntity speechStartSubmit = new SysLogEntity(roleplayMachine, "startSubmit");
+    /** 强制提交 */
+    public static SysLogEntity speechSubmitFail= new SysLogEntity(roleplayMachine, "submitFail");
 }
