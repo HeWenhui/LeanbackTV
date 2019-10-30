@@ -282,7 +282,7 @@
         android:id="@id/iv_course_video_teacher_notpresent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"></ImageView>
+        android:visibility="gone"/>
 
     <!-- 互动题显示的界面位置,下层 -->
     <RelativeLayout
