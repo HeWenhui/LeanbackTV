@@ -184,6 +184,11 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
         //addPagerToWindow();
     }
 
+    /**roleplay接口失败重试*/
+    public void reTry(){
+        teacherPushTest(videoQuestionLiveEntity);
+    }
+
     /**
      * 获取分组信息后去请求试题
      */
@@ -232,6 +237,10 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
                         logger.i("onPmFailure:人机" + msg);
+                        XESToastUtils.showToast(""+msg);
+                        if (mRolePlayMachinePager != null) {
+                            mRolePlayMachinePager.onPmFail(msg);
+                        }
                         mLogtf.d(SysLogLable.rolePlayRequestTestInfoErr, "onPmFailure:msg=" + msg);
                     }
                 });
@@ -302,6 +311,10 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
                             logger.i("onPmFailure: 新课件平台人机分组和试题" + msg);
+                            XESToastUtils.showToast(""+msg);
+                            if (mRolePlayMachinePager != null) {
+                                mRolePlayMachinePager.onPmFail(msg);
+                            }
                             mLogtf.d(SysLogLable.rolePlayRequestTestInfoErr, "onPmFailure:msg=" + msg);
                         }
                     };
@@ -496,7 +509,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
-        mLogtf.i("onStopQuestion 老师收题了,断开socket,this=" + hashCode());
+        mLogtf.i(SysLogLable.roleplaStopQues, "onStopQuestion:this=" + hashCode());
         if (mRolePlayMachinePager != null) {
             mRolePlayMachinePager.stopSpeech();
         }
@@ -513,7 +526,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
     @Override
     public void closeCurPage() {
-        mLogtf.i(SysLogLable.roleplayClosePager,"closeCurPage:bottomContent=null?" + (mBottomContent == null) + ",pager=null?" + (mRolePlayMachinePager == null) + "," + (mRolePlayStandMachinePager == null));
+        mLogtf.i(SysLogLable.roleplayClosePager, "closeCurPage:bottomContent=null?" + (mBottomContent == null) + ",pager=null?" + (mRolePlayMachinePager == null) + "," + (mRolePlayStandMachinePager == null));
         if (mBottomContent != null && mRolePlayMachinePager != null) {
             logger.i("onStopQuestion 关闭当前页面 ");
             //让pager自己移除

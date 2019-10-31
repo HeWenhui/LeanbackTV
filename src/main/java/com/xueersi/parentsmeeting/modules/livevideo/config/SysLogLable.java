@@ -76,6 +76,8 @@ public class SysLogLable {
     public static SysLogEntity rolePlayRequestTestInfoErr = new SysLogEntity(roleplayMachine, "requestTestInfoErr");
     /** 拉题 */
     public static SysLogEntity rolePlayGetTest = new SysLogEntity(roleplayMachine, "getTest");
+    /** 拉题 */
+    public static SysLogEntity rolePlayWait = new SysLogEntity(roleplayMachine, "waitRoleplay");
     /** 启动评测 */
     public static SysLogEntity roleplayStartRecog = new SysLogEntity(roleplayMachine, "startRecog");
     /** 评测开始 */
@@ -90,6 +92,8 @@ public class SysLogLable {
     public static SysLogEntity roleplaySubmit = new SysLogEntity(roleplayMachine, "recogSubmit");
     /** 强制提交 */
     public static SysLogEntity roleplayexamSubmitAll = new SysLogEntity(roleplayMachine, "examSubmitAll");
+    /** 关闭页面 */
+    public static SysLogEntity roleplaStopQues = new SysLogEntity(roleplayMachine, "stopQues");
     /** 关闭页面 */
     public static SysLogEntity roleplayClosePager = new SysLogEntity(roleplayMachine, "closePager");
 

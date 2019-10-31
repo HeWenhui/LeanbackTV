@@ -1121,6 +1121,21 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         }, MATCH_WAIT_SECOND);
     }
 
+    public void onPmFail(String msg) {
+        if (tvBeginTipMsg != null && mRolePlayBll != null) {
+            rlMatchPager.setVisibility(View.GONE);
+            tvBeginTipMsg.setText(msg + ",点击重试");
+            tvBeginTipMsg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    rlMatchPager.setVisibility(View.VISIBLE);
+                    tvBeginTipMsg.setOnClickListener(null);
+                    mRolePlayBll.reTry();
+                }
+            });
+        }
+    }
+
     /**
      * 确定角色准备开始RolePlayer
      */
@@ -1155,18 +1170,16 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         if (mEntity == null) {
             return;
         }
-
         RolePlayerEntity.RolePlayerMessage rolePlayerMessages = mEntity.getLstRolePlayerMessage().get(0);
         if (rolePlayerMessages == null) {
             return;
         }
-
         ///获取当前应该走的离线模型
 
         final int curSubModEva = ShareDataManager.getInstance().getInt(RolePlayConfig
                 .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
                 .SHAREDATA_NOT_CLEAR);
-
+        mLogtf.d(SysLogLable.rolePlayWait, "waitRolePlayer:curSubModEva=" + curSubModEva);
 
         rlMatchPager.setVisibility(View.GONE);
         rlRoleReadMain.setVisibility(View.VISIBLE);
