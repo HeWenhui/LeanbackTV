@@ -102,9 +102,9 @@ public class SysLogLable {
     /** 评测成功 */
     public static SysLogEntity speechError = new SysLogEntity(speechEvaluating, "recogError");
     /** 强制提交 */
-    public static SysLogEntity speechExamSubmitAll = new SysLogEntity(roleplayMachine, "examSubmitAll");
+    public static SysLogEntity speechExamSubmitAll = new SysLogEntity(speechEvaluating, "examSubmitAll");
     /** 强制提交 */
-    public static SysLogEntity speechStartSubmit = new SysLogEntity(roleplayMachine, "startSubmit");
+    public static SysLogEntity speechStartSubmit = new SysLogEntity(speechEvaluating, "startSubmit");
     /** 强制提交 */
-    public static SysLogEntity speechSubmitFail= new SysLogEntity(roleplayMachine, "submitFail");
+    public static SysLogEntity speechSubmitFail= new SysLogEntity(speechEvaluating, "submitFail");
 }
