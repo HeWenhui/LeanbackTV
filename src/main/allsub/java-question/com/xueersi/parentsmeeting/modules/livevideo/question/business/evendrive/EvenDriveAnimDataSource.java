@@ -26,7 +26,8 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
 
     @Override
     public void getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType question_type, String testId, final LoadAnimCallBack callBack) {
-        if (getInfo != null) {
+        if (EvenDriveUtils.isOpenStimulation(getInfo)) {
+//            if () {
             if (getInfo.getIsArts() == 1) {
                 liveHttpManager.getEnglishEvenDriveNum(null, getInfo.getId(),
                         getInfo.getStuCouId(),
@@ -111,65 +112,65 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             }
                         });
             } else if (question_type == EvenDriveAnimRepository.EvenDriveQuestionType.INIT_EVEN_NUM) {
-                if (EvenDriveUtils.isOpenStimulation(getInfo)) {
-                    if (getInfo.getIsArts() == 1) {
-                        liveHttpManager.getEnglishEvenDriveNum(null, getInfo.getId(),
-                                getInfo.getStuCouId(),
-                                getInfo.getStudentLiveInfo().getClassId(),
-                                getInfo.getStudentLiveInfo().getTeamId(),
-                                new HttpCallBack() {
-                                    @Override
-                                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                        parseEvenDriveNum(responseEntity, callBack);
-                                    }
 
-                                    @Override
-                                    public void onPmError(ResponseEntity responseEntity) {
-                                        super.onPmError(responseEntity);
-                                        if (callBack != null) {
-                                            callBack.onDataNotAvailable();
-                                        }
-                                    }
+                if (getInfo.getIsArts() == 1) {
+                    liveHttpManager.getEnglishEvenDriveNum(null, getInfo.getId(),
+                            getInfo.getStuCouId(),
+                            getInfo.getStudentLiveInfo().getClassId(),
+                            getInfo.getStudentLiveInfo().getTeamId(),
+                            new HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    parseEvenDriveNum(responseEntity, callBack);
+                                }
 
-                                    @Override
-                                    public void onPmFailure(Throwable error, String msg) {
-                                        super.onPmFailure(error, msg);
-                                        if (callBack != null) {
-                                            callBack.onDataNotAvailable();
-                                        }
+                                @Override
+                                public void onPmError(ResponseEntity responseEntity) {
+                                    super.onPmError(responseEntity);
+                                    if (callBack != null) {
+                                        callBack.onDataNotAvailable();
                                     }
-                                });
-                    } else {
-                        liveHttpManager.getNewPlatformEvenDriveNum(
-                                getInfo.getIsArts(),
-                                getInfo.getStudentLiveInfo().getClassId(),
-                                getInfo.getId(),
-                                getInfo.getStudentLiveInfo().getTeamId(),
-                                getInfo.getStuId(),
-                                new HttpCallBack() {
-                                    @Override
-                                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                        parseEvenDriveNum(responseEntity, callBack);
-                                    }
+                                }
 
-                                    @Override
-                                    public void onPmError(ResponseEntity responseEntity) {
-                                        super.onPmError(responseEntity);
-                                        if (callBack != null) {
-                                            callBack.onDataNotAvailable();
-                                        }
+                                @Override
+                                public void onPmFailure(Throwable error, String msg) {
+                                    super.onPmFailure(error, msg);
+                                    if (callBack != null) {
+                                        callBack.onDataNotAvailable();
                                     }
+                                }
+                            });
+                } else {
+                    liveHttpManager.getNewPlatformEvenDriveNum(
+                            getInfo.getIsArts(),
+                            getInfo.getStudentLiveInfo().getClassId(),
+                            getInfo.getId(),
+                            getInfo.getStudentLiveInfo().getTeamId(),
+                            getInfo.getStuId(),
+                            new HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    parseEvenDriveNum(responseEntity, callBack);
+                                }
 
-                                    @Override
-                                    public void onPmFailure(Throwable error, String msg) {
-                                        super.onPmFailure(error, msg);
-                                        if (callBack != null) {
-                                            callBack.onDataNotAvailable();
-                                        }
+                                @Override
+                                public void onPmError(ResponseEntity responseEntity) {
+                                    super.onPmError(responseEntity);
+                                    if (callBack != null) {
+                                        callBack.onDataNotAvailable();
                                     }
-                                });
-                    }
+                                }
+
+                                @Override
+                                public void onPmFailure(Throwable error, String msg) {
+                                    super.onPmFailure(error, msg);
+                                    if (callBack != null) {
+                                        callBack.onDataNotAvailable();
+                                    }
+                                }
+                            });
                 }
+//                }
             }
         }
     }

@@ -218,6 +218,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
                         }
                     });
+        } else if (getInfo != null && getInfo.getIsArts() != 1) {
+            getEvenDriveAnim(getInfo);
         }
     }
 
@@ -727,7 +729,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.SENDQUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
-                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                     userLikeList.clear();
                     isMiddleScienceEvenDriveH5Open = true;
                 }
@@ -735,7 +737,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.STOPQUESTION: {
                 mRoomAction.onOpenVoiceNotic(false, "STOPQUESTION");
-                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                     isMiddleScienceEvenDriveH5Open = false;
                     endTime = System.currentTimeMillis();
                     postDelayed(new Runnable() {
@@ -788,7 +790,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
 //                            }
 //                        });
-                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                     postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -815,7 +817,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
                 boolean isOpen = object.optBoolean("open");
-                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                     if (!isOpen) {
                         //老师收题之后，更新聊天区连对榜
                         postDelayed(new Runnable() {
@@ -853,7 +855,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT: {
                 //点赞
-                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                     logger.i("receive Appreciate message");
                     String senderId = object.optString("from");
                     if (isInLikeTime() && !userLikeList.contains(senderId)) {
@@ -905,7 +907,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 break;
             }
             case XESCODE.EvenDrive.BROADCAST_STUDY_REPORT: {
-                if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                     //获取学报
                     logger.i("获取学报");
                     //中学连对激励系统，教师广播发送学报消息
@@ -1402,6 +1404,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
      * @param getInfo
      */
     public void onArtsExtLiveInited(LiveGetInfo getInfo) {
+        getEvenDriveAnim(getInfo);
+    }
+
+    private void getEvenDriveAnim(LiveGetInfo getInfo) {
         if (EvenDriveUtils.isOpenStimulation(getInfo)) {
             EvenDriveAnimRepository animRepositor = new EvenDriveAnimRepository(
                     mContext, getInfo, mHttpManager, null);

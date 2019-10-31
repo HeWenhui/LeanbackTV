@@ -23,7 +23,7 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     private ArrayList<LiveBasePager> liveBasePagers = new ArrayList<>();
     Context context;
 
-    private List<ViewRemoveObserver> unAttachViewObservers;
+    private volatile List<ViewRemoveObserver> unAttachViewObservers;
 
     public AllLiveBasePagerIml(Context context) {
         this.context = context;
@@ -61,13 +61,7 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     @Override
     public void removeLiveBasePager(LiveBasePager liveBasePager) {
         liveBasePagers.remove(liveBasePager);
-        if (unAttachViewObservers != null) {
-            for (ViewRemoveObserver viewRemoveObserver : unAttachViewObservers) {
-                if (viewRemoveObserver != null) {
-                    viewRemoveObserver.removeView(liveBasePager);
-                }
-            }
-        }
+        notifyUnAttachPager(liveBasePager);
         if (liveBasePager.getLivePagerBack() != null) {
             LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
             if (showQuestion != null) {
@@ -76,8 +70,18 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
         }
     }
 
+    private synchronized void notifyUnAttachPager(LiveBasePager liveBasePager) {
+        if (unAttachViewObservers != null) {
+            for (ViewRemoveObserver viewRemoveObserver : unAttachViewObservers) {
+                if (viewRemoveObserver != null) {
+                    viewRemoveObserver.removeViewCallBack(liveBasePager);
+                }
+            }
+        }
+    }
+
     @Override
-    public void addViewRemoveObserver(ViewRemoveObserver viewRemoveObserver) {
+    public synchronized void addViewRemoveObserver(ViewRemoveObserver viewRemoveObserver) {
         if (unAttachViewObservers == null) {
             unAttachViewObservers = new ArrayList<>();
         }
@@ -87,7 +91,7 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     }
 
     @Override
-    public void removeViewRemoveObserver(ViewRemoveObserver viewRemoveObserver) {
+    public synchronized void removeViewRemoveObserver(ViewRemoveObserver viewRemoveObserver) {
         if (unAttachViewObservers != null) {
             unAttachViewObservers.remove(viewRemoveObserver);
         }
