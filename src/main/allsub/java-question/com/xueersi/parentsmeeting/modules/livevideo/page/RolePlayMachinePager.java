@@ -973,12 +973,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 //                rlResultRole3.setVisibility(View.INVISIBLE);
 //            }
             ViewGroup group = (ViewGroup) mView;
-            if (!mLiveGetInfo.getSmallEnglish()) {
-                //初中结果页
-                RolePlayResultPager rolePlayResultPager = new RolePlayResultPager(mContext, mEntity, group);
-                group.addView(rolePlayResultPager.getRootView());
-                resultPager = rolePlayResultPager;
-            } else {
+            if (mLiveGetInfo.getSmallEnglish() ||videoQuestionLiveEntity.isExper()) {
                 //小学结果页
                 SpeechResultEntity speechResultEntity = new SpeechResultEntity();
                 speechResultEntity.score = head.getSpeechScore();
@@ -1000,6 +995,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 SpeechResultPager resultPager = new SpeechResultPager(mContext, group, speechResultEntity, mLiveGetInfo);
                 group.addView(resultPager.getRootView());
                 RolePlayMachinePager.this.resultPager = resultPager;
+            } else {
+                //初中结果页
+                RolePlayResultPager rolePlayResultPager = new RolePlayResultPager(mContext, mEntity, group);
+                group.addView(rolePlayResultPager.getRootView());
+                resultPager = rolePlayResultPager;
             }
         }
 
