@@ -273,7 +273,7 @@ public class DispatcherBll extends BaseBll {
                         entity.setTermId(termId);
                         entity.setLiveId(liveId);
 
-                        if (entity.getIsArts() == LiveVideoSAConfig.ART_EN) {
+                        if (entity.getIsArts() == LiveVideoSAConfig.ART_EN && entity.getIsNewCourseWare()) {
                             experartscoursewarenewpoint(sectionEntity, entity, responseEntity, mDataLoadEntity);
                             return;
                         }

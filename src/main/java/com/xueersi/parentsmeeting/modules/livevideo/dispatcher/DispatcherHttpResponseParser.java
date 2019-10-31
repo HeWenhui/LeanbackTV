@@ -571,6 +571,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         resultEntity.setLiveType(jsonObject.optInt("liveType"));
         int isArts = jsonObject.optInt("isArts");
         resultEntity.setIsArts(isArts);
+        resultEntity.setIsNewCourseWare(jsonObject.optBoolean("isNewCourseWare",false));
         resultEntity.setClassId(jsonObject.optString("classId"));
         String videoPath = jsonObject.optString("videoPath");
         JSONArray pathArray = jsonObject.optJSONArray("hostPath");
