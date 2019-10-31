@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.RedPackagePage;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -54,6 +55,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         this.activity = activity;
         this.isLive = isLive;
         this.liveAndBackDebug = liveAndBackDebug;
+        ProxUtil.getProxUtil().put(activity,RedPackageAction.class,RedPackageStandBll.this);
     }
 
     public void setReceiveGold(ReceiveGoldStand receiveGold) {
@@ -85,6 +87,13 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                 showRedPacket(operateId, onReceivePackage);
             }
         });
+    }
+
+    @Override
+    public void onRemoveRedPackage() {
+        if (liveViewAction != null && redPackagePage != null) {
+            liveViewAction.removeView(redPackagePage.getRootView());
+        }
     }
 
     private void onGetPackage(VideoResultEntity entity) {

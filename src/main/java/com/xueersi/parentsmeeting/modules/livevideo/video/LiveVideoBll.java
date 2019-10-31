@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
@@ -691,6 +692,11 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
                                 RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(activity,RTCVideoAction.class);
                                 if (rtcVideoAction != null) {
                                     rtcVideoAction.close();
+                                }
+                                //关闭红包
+                                RedPackageAction redPackageAction = ProxUtil.getProxUtil().get(activity,RedPackageAction.class);
+                                if (redPackageAction != null) {
+                                    redPackageAction.onRemoveRedPackage();
                                 }
                             }
                         });
