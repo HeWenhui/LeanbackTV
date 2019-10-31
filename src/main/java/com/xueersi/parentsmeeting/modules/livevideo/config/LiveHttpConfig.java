@@ -154,8 +154,8 @@ public class LiveHttpConfig {
 
     /** 课后评价教师文案获取 */
     public static String URL_LIVE_COURSE_GETEVALUATE = AppConfig.HTTP_HOST + "/science/LiveCourse/getEvaluateContentNew";
-    /** 新需求评价h5页面类型的，判断是否下发课后评价 */
-    public static String URL_COURSE_EVALUATE = "http://npsopenapi.xueersi.com/App/nps/isRuleTrigger";
+    /**新需求评价h5页面类型的，判断是否下发课后评价*/
+    public static String URL_COURSE_EVALUATE= "http://npsopenapi.xueersi.com/App/nps/isRuleTrigger";
     /** 语文H5默认新地址 */
     public final static String URL_DEFAULT_CHS_H5 = HTTP_LIVE_CHINESE_HOST + "/Live/coursewareH5/";
     public final static String SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE = "sp_en_english_stand_summercours_ewaresize";
@@ -294,9 +294,9 @@ public class LiveHttpConfig {
     //英語获取连对数接口
     public final static String UEL_ENGLISH_EVEN_DRIVE_MSG = "https://app.arts.xueersi.com/v2/stimulation/getRightNums";
     //chs新课件获取连对数量
-    public final static String URL_CHINESE_NEW_ARTS_EVEN_DRIVE_MSG = "https://student.chs.xueersi.com/Stimulation/getRightNums";
+    public final static String URL_CHINESE_NEW_ARTS_EVEN_DRIVE_MSG = "https://student.chs.xueersi.com/Stimulation/getEvenPairInfo";
     //science新课件获取连对数量
-    public final static String URL_SCIENCE_NEW_ARTS_EVEN_DRIVE_MSG = "https://student.xueersi.com/science/Stimulation/getRightNums";
+    public final static String URL_SCIENCE_NEW_ARTS_EVEN_DRIVE_MSG = "https://student.xueersi.com/science/Stimulation/getEvenPairInfo";
     //chs新课件获取自传互动题连对数量
     public final static String URL_CHINESE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "http://student.chs.xueersi.com/Stimulation/getTestRightNum";
     //science新课件获取自传互动题连对数量
