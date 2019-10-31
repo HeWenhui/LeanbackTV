@@ -121,6 +121,7 @@ public class SettingEnglishLandActivity extends XesActivity {
     String where = "";
     AppBarLayout mAppBarLayout;
     AppBarLayout.Behavior appBarLayoutBehavior;
+    ImageView ivLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -257,15 +258,19 @@ public class SettingEnglishLandActivity extends XesActivity {
         ivGirl.setVisibility(View.VISIBLE);
         lottieViewSex.playAnimation();
         clNameContent.setVisibility(View.GONE);
+        ivLine.setVisibility(View.GONE);
         etSearch.setVisibility(View.GONE);
         llControl.setVisibility(View.GONE);
+        tvSearchEmpty.setVisibility(View.GONE);
         startNameLottie(true);
     }
 
     private void sexSelect() {
+        etSearch.setText("");
         ivBoy.setVisibility(View.GONE);
         ivGirl.setVisibility(View.GONE);
         clNameContent.setVisibility(View.VISIBLE);
+        ivLine.setVisibility(View.VISIBLE);
         etSearch.setVisibility(View.VISIBLE);
         llControl.setVisibility(View.VISIBLE);
         startNameLottie(false);
@@ -326,7 +331,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         imgBtnClose = findViewById(R.id.imgbtn_live_setting_english_name_close);
         tvSearchEmpty =  findViewById(R.id.tv_groupclass_setting_english_name_search_empty);
         mAppBarLayout  =  findViewById(R.id.abl_groupclass_setting_english_name_title);
-
+        ivLine =  findViewById(R.id.v_group_class_grouping_line);
         CoordinatorLayout.Behavior behavior =
                 ((CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams()).getBehavior();
         if (behavior instanceof AppBarLayout.Behavior) {
@@ -404,8 +409,10 @@ public class SettingEnglishLandActivity extends XesActivity {
             recyclerViewIndex.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
             recyclerSearch.setVisibility(View.GONE);
+            ivLine.setVisibility(View.VISIBLE);
         } else {
             listSearchName.clear();
+            ivLine.setVisibility(View.GONE);
             tvRecommendHint.setVisibility(View.GONE);
             rvRecommend.setVisibility(View.GONE);
             recyclerViewIndex.setVisibility(View.GONE);
@@ -662,6 +669,8 @@ public class SettingEnglishLandActivity extends XesActivity {
     };
 
     private void defaultData() {
+        manager.scrollToPositionWithOffset(0, 0);
+        setIndexData();
         englishNameBll.getDefaultName(listIndex, sex, businessDataCallBack);
     }
 

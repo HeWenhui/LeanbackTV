@@ -121,9 +121,9 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <View
+                <ImageView
+                    android:id="@+id/v_group_class_grouping_line"
                     android:layout_marginLeft="5dp"
-                    android:layerType="software"
                     android:background="@drawable/bg_group_class_grouping_line"
                     android:layout_width="490dp"
                     android:layout_height="2dp" />
