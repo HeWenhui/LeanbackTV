@@ -973,7 +973,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 //                rlResultRole3.setVisibility(View.INVISIBLE);
 //            }
             ViewGroup group = (ViewGroup) mView;
-            if (mLiveGetInfo.getSmallEnglish() ||videoQuestionLiveEntity.isExper()) {
+            if (mLiveGetInfo.getSmallEnglish()) {
                 //小学结果页
                 SpeechResultEntity speechResultEntity = new SpeechResultEntity();
                 speechResultEntity.score = head.getSpeechScore();
@@ -1088,13 +1088,10 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             @Override
             public void run() {
                 mEntity = mRolePlayBll.getRoleEntry();
+                mLogtf.d(SysLogLable.rolePlayGetTest, "getRoleEntry:mEntity=" + (mEntity == null));
                 if (mEntity != null) {
-
                     List<RolePlayerEntity.RolePlayerHead> rolePlayerHeads = mEntity.getLstRoleInfo();
                     List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages = mEntity.getLstRolePlayerMessage();
-                    if (rolePlayerHeads.size() == 0) {
-
-                    }
                     if (rolePlayerHeads != null && rolePlayerHeads.size() > 0 && rolePlayerMessages != null &&
                             rolePlayerMessages.size() > 0) {
                         logger.i("开始匹配");

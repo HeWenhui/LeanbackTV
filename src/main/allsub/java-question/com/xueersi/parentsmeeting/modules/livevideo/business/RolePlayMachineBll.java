@@ -10,6 +10,7 @@ import com.xueersi.common.permission.PermissionItem;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
@@ -211,7 +212,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                                 mRolePlayStandMachinePager.initData();
                             }
                         }
-
+                        mLogtf.d(SysLogLable.rolePlayRequestTestInfoSuc, "onPmSuccess:mRolePlayerEntity=" + mRolePlayerEntity);
                     }
 
                     @Override
@@ -219,18 +220,19 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                         super.onPmError(responseEntity);
                         if (responseEntity != null) {
                             logger.i("onPmError:人机" + responseEntity.getErrorMsg());
+                            mLogtf.d(SysLogLable.rolePlayRequestTestInfoErr, "onPmError:err=" + responseEntity.getErrorMsg());
                         }
                         if (mRolePlayerEntity == null) {
                             //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
                             pmErrorAfterpmSuccess();
                         }
-
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
                         logger.i("onPmFailure:人机" + msg);
+                        mLogtf.d(SysLogLable.rolePlayRequestTestInfoErr, "onPmFailure:msg=" + msg);
                     }
                 });
     }
@@ -277,11 +279,10 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                                     if (mRolePlayMachinePager != null) {
                                         mRolePlayMachinePager.initData();
                                     }
-
                                 }
-
                             }
                             logger.i("onPmSuccess" + mRolePlayerEntity + ":" + responseEntity);
+                            mLogtf.d(SysLogLable.rolePlayRequestTestInfoSuc, "onPmSuccess:mRolePlayerEntity=" + mRolePlayerEntity);
                         }
 
                         @Override
@@ -289,18 +290,19 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                             super.onPmError(responseEntity);
                             if (responseEntity != null) {
                                 logger.i("onPmError: 新课件平台人机分组和试题" + responseEntity.getErrorMsg());
+                                mLogtf.d(SysLogLable.rolePlayRequestTestInfoErr, "onPmError:err=" + responseEntity.getErrorMsg());
                             }
                             if (mRolePlayerEntity == null) {
                                 //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
                                 pmErrorAfterpmSuccess();
                             }
-
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
                             logger.i("onPmFailure: 新课件平台人机分组和试题" + msg);
+                            mLogtf.d(SysLogLable.rolePlayRequestTestInfoErr, "onPmFailure:msg=" + msg);
                         }
                     };
             if (videoQuestionLiveEntity.isExper()) {
@@ -511,7 +513,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
     @Override
     public void closeCurPage() {
-        mLogtf.i("closeCurPage:bottomContent=null?" + (mBottomContent == null) + ",pager=null?" + (mRolePlayMachinePager == null) + "," + (mRolePlayStandMachinePager == null));
+        mLogtf.i(SysLogLable.roleplayClosePager,"closeCurPage:bottomContent=null?" + (mBottomContent == null) + ",pager=null?" + (mRolePlayMachinePager == null) + "," + (mRolePlayStandMachinePager == null));
         if (mBottomContent != null && mRolePlayMachinePager != null) {
             logger.i("onStopQuestion 关闭当前页面 ");
             //让pager自己移除

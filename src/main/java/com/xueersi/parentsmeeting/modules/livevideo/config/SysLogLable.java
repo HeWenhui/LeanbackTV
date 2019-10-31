@@ -70,6 +70,12 @@ public class SysLogLable {
 
     /** roleplay lable */
     private static String roleplayMachine = "roleplayMachine";
+    /** 拉题成功 */
+    public static SysLogEntity rolePlayRequestTestInfoSuc = new SysLogEntity(roleplayMachine, "requestTestInfoSuc");
+    /** 拉题失败 */
+    public static SysLogEntity rolePlayRequestTestInfoErr = new SysLogEntity(roleplayMachine, "requestTestInfoErr");
+    /** 拉题 */
+    public static SysLogEntity rolePlayGetTest = new SysLogEntity(roleplayMachine, "getTest");
     /** 启动评测 */
     public static SysLogEntity roleplayStartRecog = new SysLogEntity(roleplayMachine, "startRecog");
     /** 评测开始 */
@@ -84,8 +90,10 @@ public class SysLogLable {
     public static SysLogEntity roleplaySubmit = new SysLogEntity(roleplayMachine, "recogSubmit");
     /** 强制提交 */
     public static SysLogEntity roleplayexamSubmitAll = new SysLogEntity(roleplayMachine, "examSubmitAll");
+    /** 关闭页面 */
+    public static SysLogEntity roleplayClosePager = new SysLogEntity(roleplayMachine, "closePager");
 
-    /** roleplay lable */
+    /** 语音答题 lable */
     private static String speechEvaluating = "speechEvaluating";
     /** 评测成功 */
     public static SysLogEntity speechCreate = new SysLogEntity(speechEvaluating, "speechcreate");

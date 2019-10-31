@@ -753,7 +753,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         speechResultEntity.energy = energy;
         speechResultEntity.fluency = resultEntity.getContScore();
         speechResultEntity.accuracy = resultEntity.getPronScore();
-        if (smallEnglish == 1 || baseVideoQuestionEntity.isExper()) {
+        if (smallEnglish == 1) {
             SpeechResultPager speechResultPager = new SpeechResultPager(mContext, group, speechResultEntity, liveGetInfo);
             group.addView(speechResultPager.getRootView());
             speechResultPager.setOnPagerClose(new OnPagerClose() {
