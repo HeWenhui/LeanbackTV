@@ -21,7 +21,7 @@ public class AllExperienceConfig {
     private static String[] experienceHalfClassPath = {
             "com.xueersi.parentsmeeting.modules.livevideo.business.ExperHalfbodyIRCMessBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5HalfBodyExperienceBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll",
             "com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.HalfBodyRedPackageExperienceBll",
     };
