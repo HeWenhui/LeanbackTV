@@ -184,7 +184,12 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
 
     private void parseEvenDriveNum(ResponseEntity responseEntity, LoadAnimCallBack callBack) {
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-        String num = jsonObject.optString("num");
+        String num;
+        if (jsonObject.has("num")) {
+            num = jsonObject.optString("num");
+        } else {
+            num = jsonObject.optString("evenPairNum");
+        }
         if (TextUtils.isEmpty(num)) {
             num = "0";
         }
