@@ -671,7 +671,8 @@ public class SettingEnglishLandActivity extends XesActivity {
     private void defaultData() {
         manager.scrollToPositionWithOffset(0, 0);
         setIndexData();
-        englishNameBll.getDefaultName(listIndex, sex, businessDataCallBack);
+        englishNameBll.getNameList(listIndex,sex,businessDataCallBack);
+       // englishNameBll.getDefaultName(listIndex, sex, businessDataCallBack);
     }
 
     private void setIndexData(){
