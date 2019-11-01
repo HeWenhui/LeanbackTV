@@ -69,7 +69,7 @@ public class SysLogLable {
     public static SysLogEntity voiceAnswerExamSubmitAll = new SysLogEntity(voiceanswer, "examSubmitAll");
 
     /** roleplay lable */
-    private static String roleplayMachine = "roleplayMachine";
+    private static String roleplayMachine = "roleplayMachineFlow";
     /** 拉题成功 */
     public static SysLogEntity rolePlayRequestTestInfoSuc = new SysLogEntity(roleplayMachine, "requestTestInfoSuc");
     /** 拉题失败 */
