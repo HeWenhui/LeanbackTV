@@ -125,7 +125,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                             // 设置QuestionType,文科回放打点中使用
                             questionEntity.setvQuestionType(releasedArray.getJSONObject(0).optString("type"));
                             // 新增一个判断是否是新课件平台的字段
-                            if (1000 == questionEntity.getvCategory() || 1001 == questionEntity.getvCategory()) {
+                            if (1000 == questionEntity.getvCategory() || 1001 == questionEntity.getvCategory() ||
+                                    LocalCourseConfig.CATEGORY_GROUP_GAME == questionEntity.getvCategory()) {
                                 isNewArtsPlatForm = true;
                             } else {
                                 isNewArtsPlatForm = false;
