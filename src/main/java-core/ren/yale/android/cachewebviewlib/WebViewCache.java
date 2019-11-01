@@ -233,6 +233,7 @@ public class WebViewCache {
     }
 
     public InputStream httpRequest(CacheWebViewClient client, CacheStrategy cacheStrategy, String url, IP ip) {
+        String oldUrlStr = url;
         HttpURLConnection httpURLConnection = null;
         boolean isFail = false;
         Exception dnsException = new Exception();
@@ -340,7 +341,8 @@ public class WebViewCache {
             } else {
                 mData.put("message", Log.getStackTraceString(dnsException));
             }
-            mData.put("url", url);
+            mData.put("url1", oldUrlStr);
+            mData.put("url2", url);
             mData.put("isScience", "" + isScience);
             mData.put("needHttpDns", "" + needHttpDns);
             try {
@@ -645,8 +647,8 @@ public class WebViewCache {
                         if (map != null && header != null) {
                             map.putAll(header);
                         }
-                    }catch (Exception e){
-                        LiveCrashReport.postCatchedException(new LiveException(TAG,e));
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                     webResourceResponse.setResponseHeaders(map);
                 }
