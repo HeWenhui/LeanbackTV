@@ -48,7 +48,6 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
 
     public SuperSpeakerBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
-
     }
 
     @Override
@@ -67,8 +66,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
 //                subscribe(new Consumer<Boolean>() {
 //                    @Override
 //                    public void accept(Boolean aBoolean) throws Exception {
-//                        if (aBoolean
-//                                && mGetInfo.getLiveTopic().getMode().equals(LiveTopic.MODE_CLASS)) {//主讲态) {
+//                        if (aBoolean) {//主讲态) {
 //                            logger.i("accept");
 //                            mGetInfo.setId(String.valueOf(454400));
 //                            courseWareId = String.valueOf(1);
