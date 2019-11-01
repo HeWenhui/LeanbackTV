@@ -763,7 +763,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             totalQuestion = data.optInt("totalQuestion", -1);
             optionTitle = data.optJSONArray("optionTitle");
         } catch (JSONException e) {
-            e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG,e);
         }
     }
 
