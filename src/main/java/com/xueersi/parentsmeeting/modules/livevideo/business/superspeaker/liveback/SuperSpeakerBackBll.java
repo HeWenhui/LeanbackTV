@@ -89,8 +89,10 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                 performLoadOver();
             } else {
                 if (AppConfig.DEBUG) {
-                    if (isServiceAlive() &&
-                            UploadVideoService.getUploadingList().contains(StorageUtils.getVideoPath())) {
+                    if (
+//                            isServiceAlive() &&
+                            UploadVideoService.getUploadingList().contains(
+                                    StorageUtils.getVideoPath(liveGetInfo.getId(), courseWareId))) {
                         performShowInLoad();
                     } else {
                         performStartRecord();

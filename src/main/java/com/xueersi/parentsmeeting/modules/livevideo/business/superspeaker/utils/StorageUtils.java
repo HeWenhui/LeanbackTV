@@ -17,6 +17,10 @@ public class StorageUtils {
         videoPath = LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + coursewareId + ".mp4";
     }
 
+    public static String getVideoPath(String liveId, String coursewareId) {
+        return LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + coursewareId + ".mp4";
+    }
+
     public static String getAudioUrl() {
         return audioPath;
 //        return LiveHttpConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + coursewareId + "audio.mp3";
