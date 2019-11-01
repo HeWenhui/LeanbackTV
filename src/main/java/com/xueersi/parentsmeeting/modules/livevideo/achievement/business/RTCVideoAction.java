@@ -1,7 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
-import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
-
 /**
  * @Date on 2019/10/15 19:44
  * @Author zhangyuansun
@@ -22,10 +20,6 @@ public interface RTCVideoAction {
     void onMediaControllerShow();
 
     void onMediaControllerHide();
-
-    void onStartVoiceExamine();
-
-    void onFinishVoiceExamine();
 
     int GOLD_TYPE_QUESTION = 1;
     int GOLD_TYPE_REDPACKAGE = 2;
