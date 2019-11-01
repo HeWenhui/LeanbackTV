@@ -1,17 +1,25 @@
 package com.xueersi.parentsmeeting.modules.livevideo.englishname.business;
 
 import android.content.Context;
+import android.os.Environment;
 import android.text.TextUtils;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.http.DownloadCallBack;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XSAsykTask;
+import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.englishname.config.EnglishNameConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.entity.EngLishNameEntity;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +29,76 @@ import io.agora.rtc.internal.RtcEngineMessage;
 public class EnglishNameBusiness extends BaseBll {
 
     Context mContext;
-
+    SettingEnglishNameHttpManager mSettingEnglishNameHttpManager;
     EnlishNameParser mEnlishNameParser;
+    File fileDir;
     public EnglishNameBusiness (Context mContext){
         super(mContext);
     this.mContext = mContext;
         mEnlishNameParser = new EnlishNameParser();
+        mSettingEnglishNameHttpManager = new SettingEnglishNameHttpManager(mContext);
+        getFilePath();
     }
+
+    public void getFilePath(){
+        mSettingEnglishNameHttpManager.getDownLoadPath(new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                String url = mEnlishNameParser.parseDownLoadUrl(responseEntity);
+            }
+        });
+    }
+
+    /**
+     * 下载资源
+     *
+     * @param context
+     * @param resourceCallback
+     */
+    public void downloadResource(final Context context, final AbstractBusinessDataCallBack resourceCallback, String url) {
+        String mathGamePath = mShareDataManager.getString(EnglishNameConfig.GROUP_CLASS_SUB_NAME_LIST_TXT, "", ShareDataManager.SHAREDATA_NOT_CLEAR);
+        try {
+            if (!TextUtils.isEmpty(mathGamePath)) {
+                File file = new File(mathGamePath);
+                if (file.exists()) {
+                    return;
+                } else {
+                    mShareDataManager.put(EnglishNameConfig.GROUP_CLASS_SUB_NAME_LIST_TXT, "", ShareDataManager.SHAREDATA_NOT_CLEAR);
+                }
+            }
+
+            if (fileDir == null) {
+                fileDir = new File(EnglishNameConfig.LIVE_UNITI_NET_PATH_L);
+            }
+            if (!fileDir.exists()) {
+                fileDir.mkdirs();
+            }
+            // 最终文件
+            final File fileUpload = new File(fileDir, "generate.text");
+
+
+            mSettingEnglishNameHttpManager.downloadRenew(url, fileUpload, new DownloadCallBack() {
+                @Override
+                protected void onDownloadSuccess() {
+
+                }
+
+                @Override
+                protected void onDownloadFailed() {
+
+                }
+
+                @Override
+                protected void onDownloading(int progress) {
+                    super.onDownloading(progress);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
+
 
     /**
      * 读取地区信息
