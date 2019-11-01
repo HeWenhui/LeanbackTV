@@ -94,6 +94,10 @@ public class SysLogLable {
     public static SysLogEntity roleplayNextRead = new SysLogEntity(roleplayMachine, "roleplayNextRead");
     /** 开始提交 */
     public static SysLogEntity roleplaySubmit = new SysLogEntity(roleplayMachine, "recogSubmit");
+    /** 显示结果页 */
+    public static SysLogEntity roleplayEndRoleplay = new SysLogEntity(roleplayMachine, "endRoleplay");
+    /** 显示结果页 */
+    public static SysLogEntity roleplayShowResult = new SysLogEntity(roleplayMachine, "showResult");
     /** 强制提交 */
     public static SysLogEntity roleplayexamSubmitAll = new SysLogEntity(roleplayMachine, "examSubmitAll");
     /** 关闭页面 */

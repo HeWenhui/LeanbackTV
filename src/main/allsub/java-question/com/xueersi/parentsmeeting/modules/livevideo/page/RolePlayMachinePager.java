@@ -50,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResult
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -790,9 +791,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      */
     private void endRolePlayer() {
         if (mEntity == null) {
+            mLogtf.d(SysLogLable.roleplayEndRoleplay, "endRolePlayer:entity=null");
             logger.i("roleplay界面的数据已经销毁，不再向下执行");
             return;
         }
+        mLogtf.d(SysLogLable.roleplayEndRoleplay, "endRolePlayer:entity=" + mEntity.isResult());
         if (!mEntity.isResult()) {
             logger.i("结束RolePlayer,结果还未提交，再次提交结果");
             if (mEntity.isNewArts()) {
@@ -802,7 +805,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             }
 
         } else {
-            new Handler().postDelayed(new Runnable() {
+            LiveMainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     showResult();//延迟2秒显示结果页
@@ -842,6 +845,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
         if (mEntity == null) {
             logger.i("需要显示结果弹窗，可是数据为空,不再往下执行，恢复滑动，取消点赞，离开频道");
+            mLogtf.d(SysLogLable.roleplayShowResult, "showResult:mEntity=null");
             recoverListScrollAndCancelDZ();
             //leaveChannel();
             return;
@@ -1002,7 +1006,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 resultPager = rolePlayResultPager;
             }
         }
-
+        mLogtf.d(SysLogLable.roleplayShowResult, "showResult:gold=" + mEntity.getGoldCount());
         //结果弹窗5秒后消失
         mView.postDelayed(new Runnable() {
             @Override
