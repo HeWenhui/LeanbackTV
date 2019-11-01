@@ -1436,6 +1436,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                 }
                 newCourseSec = (NewCourseSec) objData[0];
+                detailInfo.setReleaseTime(newCourseSec.getReleaseTime());
                 logger.d("onDataSucess:time=" + (newCourseSec.getEndTime() - newCourseSec.getReleaseTime()));
                 if (newCourseSec.getIsAnswer() == 1 && (!isPlayBack || detailInfo.isExper())) {
                     rlSubjectLoading.setVisibility(View.GONE);
