@@ -19,4 +19,6 @@ public class EnglishNameConfig {
 
     public static final String LIVE_UNITI_NET_PATH_L  = "/parentsmeeting/subgroup/70601/generate.txt";
 
+
+    public static final String LIVE_GROUP_ENGLISH_NAME_NAME_AUDIO = "live_group_english_name_name_audio";
 }

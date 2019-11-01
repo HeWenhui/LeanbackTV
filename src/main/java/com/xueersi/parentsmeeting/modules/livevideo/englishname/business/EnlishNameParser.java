@@ -60,6 +60,7 @@ public class EnlishNameParser extends HttpResponseParser {
                     JSONObject wordJson = wordArray.optJSONObject(j);
                     entity.setSpanNum(1);
                     entity.setName(wordJson.optString("name"));
+                    entity.setAudioPath(wordJson.optString("audio"));
                     entity.setIndexPostion(i);
                     listName.add(entity);
                     indexPosition++;

@@ -112,7 +112,7 @@ public class SettingEnglishLandActivity extends XesActivity {
 
     String selectName = "";
     int sex = 0;
-
+    String audioPath = "";
     EnglishNameConfirmDialog englishNameConfirmDialog;
 
     ImageButton imgBtnClose;
@@ -231,6 +231,7 @@ public class SettingEnglishLandActivity extends XesActivity {
             public void onSuccess(TalAccResp.StringResp stringResp) {
               //  XESToastUtils.showToast(stringResp.result);
                 UserBll.getInstance().setUserEnglishInfo(selectName, sex);
+                LiveAppUserInfo.getInstance().setEnglishNameAudio(audioPath);
                 continueToVideo();
             }
 
@@ -279,8 +280,9 @@ public class SettingEnglishLandActivity extends XesActivity {
 
     EnglishNameListener englishNameListener = new EnglishNameListener() {
         @Override
-        public void select(int type, int position, String text) {
+        public void select(int type, int position, String text,String path) {
             selectName = text;
+            audioPath = path;
             // 推荐名字选中
             if (EnglishNameConfig.GROUP_CLASS_ENGLISH_NAME_RECOMMEND == type) {
                 selectRecomand(position, text);

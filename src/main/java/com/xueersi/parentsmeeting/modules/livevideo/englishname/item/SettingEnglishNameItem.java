@@ -60,7 +60,7 @@ public class SettingEnglishNameItem implements RItemViewInterface<EngLishNameEnt
         tvName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                englishNameListener.select(EnglishNameConfig.GROUP_CLASS_ENGLISH_NAME_SELECT,position,entity.getName());
+                englishNameListener.select(EnglishNameConfig.GROUP_CLASS_ENGLISH_NAME_SELECT,position,entity.getName(),entity.getAudioPath());
             }
         });
     }

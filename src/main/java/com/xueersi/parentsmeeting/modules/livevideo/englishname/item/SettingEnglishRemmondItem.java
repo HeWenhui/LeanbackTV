@@ -60,7 +60,7 @@ public class SettingEnglishRemmondItem implements RItemViewInterface<EngLishName
         tvName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                englishNameListener.select(EnglishNameConfig.GROUP_CLASS_ENGLISH_NAME_RECOMMEND,position,entity.getName());
+                englishNameListener.select(EnglishNameConfig.GROUP_CLASS_ENGLISH_NAME_RECOMMEND,position,entity.getName(),entity.getAudioPath());
             }
         });
     }

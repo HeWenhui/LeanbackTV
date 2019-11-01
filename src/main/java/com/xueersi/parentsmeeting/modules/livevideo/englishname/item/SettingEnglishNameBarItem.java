@@ -53,7 +53,7 @@ public class SettingEnglishNameBarItem implements RItemViewInterface<EngLishName
         tvIndex.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                englishNameListener.select(EnglishNameConfig.GROUP_CLASS_ENGLISH_NAME_BAR,position,entity.getWordIndex());
+                englishNameListener.select(EnglishNameConfig.GROUP_CLASS_ENGLISH_NAME_BAR,position,entity.getWordIndex(),entity.getAudioPath());
             }
         });
     }

@@ -9,6 +9,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.englishname.config.EnglishNameConfig;
 
 import java.security.PrivateKey;
 
@@ -243,5 +244,17 @@ public class LiveAppUserInfo {
        return mShareDataManager.getString(LoginRegistersConfig.SP_USER_MOBILE_PHONE, "",
                ShareDataManager
                        .SHAREDATA_USER);
+    }
+
+    public String getEnglishNameAudio() {
+        return mShareDataManager.getString(EnglishNameConfig.LIVE_GROUP_ENGLISH_NAME_NAME_AUDIO, "",
+                ShareDataManager
+                        .SHAREDATA_USER);
+    }
+
+    public void setEnglishNameAudio(String englishNameAudio) {
+        mShareDataManager.put(EnglishNameConfig.LIVE_GROUP_ENGLISH_NAME_NAME_AUDIO, englishNameAudio,
+                ShareDataManager
+                        .SHAREDATA_USER,true);
     }
 }

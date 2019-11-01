@@ -18,7 +18,8 @@ public class EngLishNameEntity {
     private boolean isIndex;
     /** 导航位置 */
     private int indexPostion;
-
+    /** 音频位置*/
+    private String audioPath;
 
     public String getName() {
         return name;
@@ -74,5 +75,13 @@ public class EngLishNameEntity {
 
     public void setIndexPostion(int indexPostion) {
         this.indexPostion = indexPostion;
+    }
+
+    public String getAudioPath() {
+        return audioPath;
+    }
+
+    public void setAudioPath(String audioPath) {
+        this.audioPath = audioPath;
     }
 }
