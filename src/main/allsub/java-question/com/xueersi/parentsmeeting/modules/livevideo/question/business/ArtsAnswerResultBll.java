@@ -211,7 +211,15 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             addView(mDsipalyer.getRootLayout(), layoutParams);
         }
-
+        try {
+            if (event.getDetailInfo() != null) {
+                mLogtf.d(SysLogLable.courseShowResult, "addPager:isPse=" + isPse + ",id=" + event.getDetailInfo().id);
+            } else {
+                mLogtf.d(SysLogLable.courseShowResult, "addPager:isPse=" + isPse);
+            }
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
         // logger.e( "==========> ArtsAnswerResultBll addPager called:");
     }
 
@@ -489,7 +497,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 }
             });
         }
-
     }
 
     private void closeRemindUI() {
@@ -672,6 +679,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         // 已展示过答题结果
         if (mDsipalyer != null) {
             mDsipalyer.close();
+            mLogtf.d(SysLogLable.courseCloseResult, "closeAnswerResult");
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent("closeAnswerResult1"));
         }
@@ -741,6 +749,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     public void onAutoClose(BasePager basePager) {
         if (mDsipalyer != null) {
             removeView(mDsipalyer.getRootLayout());
+            mLogtf.d(SysLogLable.courseCloseResult, "onAutoClose");
             mDsipalyer = null;
         }
     }

@@ -55,6 +55,8 @@ public class SysLogLable {
     public static SysLogEntity xesWebLog = new SysLogEntity(ShellingScienceWebViewLog, "xesWebLog");
     /** 显示结果页 */
     public static SysLogEntity courseShowResult = new SysLogEntity(ShellingScienceWebViewLog, "showResult");
+    /** 关闭结果页 */
+    public static SysLogEntity courseCloseResult = new SysLogEntity(ShellingScienceWebViewLog, "closeResult");
     /** 语音答题 lable */
     private static String voiceanswer = "WXMutVoiceAnswer";
     /** 选择题结果 */
