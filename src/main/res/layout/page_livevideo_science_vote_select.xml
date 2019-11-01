@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/rl_page_livevideo_science_vote_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="-8dp"
+        android:background="@drawable/bg_livevideo_science_vote_select">
+
+        <LinearLayout
+            android:id="@+id/ll_science_vote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/fv_science_vote_yes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/selector_livevideo_science_vote_option"
+                android:gravity="center"
+                android:text="是"
+                android:textColor="#9e4d1f"
+                android:textSize="25sp"
+                android:visibility="gone" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/fv_science_vote_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="100dp"
+                android:background="@drawable/selector_livevideo_science_vote_option"
+                android:gravity="center"
+                android:text="否"
+                android:textColor="#9e4d1f"
+                android:textSize="25sp"
+                android:visibility="gone" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/fv_science_vote_a"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/selector_livevideo_science_vote_option"
+                android:gravity="center"
+                android:text="A"
+                android:textColor="#9e4d1f"
+                android:textSize="25sp"
+                android:visibility="gone" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/fv_science_vote_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="9dp"
+                android:background="@drawable/selector_livevideo_science_vote_option"
+                android:gravity="center"
+                android:text="B"
+                android:textColor="#9e4d1f"
+                android:textSize="25sp"
+                android:visibility="gone" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/fv_science_vote_c"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="9dp"
+                android:background="@drawable/selector_livevideo_science_vote_option"
+                android:gravity="center"
+                android:text="C"
+                android:textColor="#9e4d1f"
+                android:textSize="25sp"
+                android:visibility="gone" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/fv_science_vote_d"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="9dp"
+                android:background="@drawable/selector_livevideo_science_vote_option"
+                android:gravity="center"
+                android:text="D"
+                android:textColor="#9e4d1f"
+                android:textSize="25sp"
+                android:visibility="gone" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/fv_science_vote_e"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="9dp"
+                android:background="@drawable/selector_livevideo_science_vote_option"
+                android:gravity="center"
+                android:text="E"
+                android:textColor="#9e4d1f"
+                android:textSize="25sp"
+                android:visibility="gone" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/fv_science_vote_f"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="9dp"
+                android:background="@drawable/selector_livevideo_science_vote_option"
+                android:gravity="center"
+                android:text="F"
+                android:textColor="#9e4d1f"
+                android:textSize="25sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/bt_livevideo_science_vote_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/selector_livevideo_science_vote_submit" />
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/iv_page_livevideo_science_vote_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rl_page_livevideo_science_vote_select"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/selector_livevideo_science_vote_up_down" />
+</RelativeLayout>

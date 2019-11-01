@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
@@ -736,6 +737,17 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                     NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid, (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime, detailInfo.isTUtor(),getProtocal());
                     isRefresh = 0;
+                }
+                try {
+                    JSONObject jsonData1 = new JSONObject();
+                    jsonData1.put("type", CourseMessage.SEND_courseInfo);
+                    JSONObject resultData = new JSONObject();
+                    resultData.put("liveId", liveId);
+                    resultData.put("userId", LiveAppUserInfo.getInstance().getStuId());
+                    jsonData1.put("data", resultData);
+                    staticWeb.sendToCourseware(jsonData1, "*", getProtocal());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 setViewEnable("onLoadComplete");
             }
