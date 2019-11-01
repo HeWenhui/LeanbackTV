@@ -273,7 +273,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll {
 
         @Override
         public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
-            getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+            getCourseWareHttpManager().submitMultiTest("" + testInfos, 0, isforce, callBack);
         }
 
         @Override
