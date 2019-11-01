@@ -184,8 +184,8 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
         //addPagerToWindow();
     }
 
-    /**roleplay接口失败重试*/
-    public void reTry(){
+    /** roleplay接口失败重试 */
+    public void reTry() {
         teacherPushTest(videoQuestionLiveEntity);
     }
 
@@ -237,7 +237,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
                         logger.i("onPmFailure:人机" + msg);
-                        XESToastUtils.showToast(""+msg);
+                        XESToastUtils.showToast("" + msg);
                         if (mRolePlayMachinePager != null) {
                             mRolePlayMachinePager.onPmFail(msg);
                         }
@@ -311,7 +311,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
                             logger.i("onPmFailure: 新课件平台人机分组和试题" + msg);
-                            XESToastUtils.showToast(""+msg);
+                            XESToastUtils.showToast("" + msg);
                             if (mRolePlayMachinePager != null) {
                                 mRolePlayMachinePager.onPmFail(msg);
                             }
@@ -494,7 +494,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
             };
             if (videoQuestionLiveEntity.isExper()) {
                 mRolePlayerHttpManager.requestExperNewArtsResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), roleName, obj
-                        .toString(), mIsLive ? 1 : 2, callBack);
+                        .toString(), mIsLive ? 1 : 2, mRolePlayerEntity.getRolePlayReleaseTime(), callBack);
             } else {
                 mRolePlayerHttpManager.requestNewArtsResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), roleName, obj
                         .toString(), mIsLive ? 1 : 2, callBack);

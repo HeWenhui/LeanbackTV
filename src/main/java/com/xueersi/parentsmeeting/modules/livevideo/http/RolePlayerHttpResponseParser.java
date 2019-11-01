@@ -239,6 +239,8 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
             String releaseRole = jsonObject.optString("releaseRole");
             releaseRole = releaseRole.replaceAll("\n","");
 
+            //发题时间，暂时体验课用
+            rolePlayerEntity.setRolePlayReleaseTime(jsonObject.optLong("rolePlayReleaseTime"));
             //对话信息的数据实体中需要存入试题id
             String test_id = jsonObject.optString("testId");
             rolePlayerEntity.setTestId(test_id);
