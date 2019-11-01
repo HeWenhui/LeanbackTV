@@ -630,7 +630,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         contentAdapterIndex.updateData(listIndex);
 
         int areaListIndex = listIndex.get(positon).getIndexPostion();
-        manager.scrollToPositionWithOffset(areaListIndex, areaListIndex);
+        manager.scrollToPositionWithOffset(areaListIndex, 0);
     }
 
     private void selectName(int positon, String text) {

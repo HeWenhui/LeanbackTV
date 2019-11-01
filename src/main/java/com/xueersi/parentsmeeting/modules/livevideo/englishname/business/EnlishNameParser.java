@@ -38,9 +38,12 @@ public class EnlishNameParser extends HttpResponseParser {
             JSONArray wordArray = null;
             EngLishNameEntity entityIndex;
             int indexPosition = 0;
+            indexList.get(0).setSelect(true);
             for (int i = 0; i < indexList.size(); i++) {
                 wordArray = nameJson.optJSONArray(indexList.get(i).getWordIndex());
-                indexList.get(i).setIndexPostion(indexPosition);
+                if (i != 0){
+                    indexList.get(i).setIndexPostion(indexPosition);
+            }
                 if (wordArray == null || wordArray.length() == 0) {
                     continue;
                 }
