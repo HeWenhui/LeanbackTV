@@ -55,6 +55,7 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
     /** 互动id*/
     private String interactionId;
     private boolean isOpenInteraction;
+    private boolean onShow;
 
 
     public ForumInteractionIRCBll(Activity context, LiveBll2 liveBll) {
@@ -95,11 +96,16 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
                 post(new Runnable() {
                     @Override
                     public void run() {
+                        if (onShow){
+                            return;
+                        }
+                        onShow = true;
                         ForumPraisePager praisePager = new ForumPraisePager(activity);
                         addView(praisePager.getRootView());
                         praisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                             @Override
                             public void onClose(LiveBasePager basePager) {
+                                onShow =false;
                                 removeView(basePager.getRootView());
                             }
                         });
