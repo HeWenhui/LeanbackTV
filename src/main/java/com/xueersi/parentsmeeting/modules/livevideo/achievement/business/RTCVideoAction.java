@@ -1,7 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
-import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
-
 /**
  * @Date on 2019/10/15 19:44
  * @Author zhangyuansun

@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.englishname.business;
 
+import com.google.gson.JsonObject;
 import com.xueersi.common.http.HttpResponseParser;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.entity.EngLishNameEntity;
 
@@ -14,6 +16,11 @@ public class EnlishNameParser extends HttpResponseParser {
 
     public EnlishNameParser() {
 
+    }
+
+    public String parseDownLoadUrl(ResponseEntity entity){
+        JSONObject jsonObject = (JSONObject) entity.getJsonObject();
+        return jsonObject.optString("url");
     }
 
     public List<EngLishNameEntity> pareseEnglishName(String nameString, int type, List<EngLishNameEntity> indexList) {
