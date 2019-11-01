@@ -762,7 +762,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     }, 5000);
                 } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
-                    getEvenDriveAnim(mGetInfo);
+                    delayGetEvenDriveAnim(mGetInfo);
                 }
                 break;
             }
@@ -815,7 +815,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     }, 5000);
                 } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
-                    getEvenDriveAnim(mGetInfo);
+                    delayGetEvenDriveAnim(mGetInfo);
                 }
                 break;
             }
@@ -855,7 +855,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         isMiddleScienceEvenDriveH5Open = true;
                     }
                 } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
-                    getEvenDriveAnim(mGetInfo);
+                    delayGetEvenDriveAnim(mGetInfo);
                 }
                 break;
             }
@@ -1396,6 +1396,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.onDestroy();
         onSendMsgs.clear();
         EventBus.getDefault().unregister(this);
+        if (evenDriveRunnable != null) {
+            removeCallbacks(evenDriveRunnable);
+        }
     }
 //
 //    protected boolean isOpenStimulation(LiveGetInfo getInfo) {
@@ -1424,6 +1427,53 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.INIT_EVEN_NUM, "",
                     null);
+        }
+    }
+
+    /**
+     * 老师收题时，如果用户属于强制提交，
+     * info接口必须在获取结果页接口请求之后调用，否者连对会被清零。
+     * 延迟3s钟，假设收题结果页一定已经返回
+     *
+     * @param getInfo
+     */
+    private void delayGetEvenDriveAnim(final LiveGetInfo getInfo) {
+        evenDriveRunnable = new EDRunnable(getInfo);
+        postDelayedIfNotFinish(evenDriveRunnable, 3000);
+//        Observable.
+//                just(true).
+//                delay(3, TimeUnit.SECONDS).
+//                subscribe(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//
+//                    }
+//                });
+//        if (EvenDriveUtils.isOpenStimulation(getInfo)) {
+//            if (animRepositor == null) {
+//                animRepositor = new EvenDriveAnimRepository(
+//                        mContext, getInfo, mHttpManager, null);
+//            }
+//            animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.INIT_EVEN_NUM, "",
+//                    null);
+//        }
+    }
+
+    private EDRunnable evenDriveRunnable;
+
+    /**
+     * 中学连对激励延迟使用的Run
+     */
+    private class EDRunnable implements Runnable {
+        private LiveGetInfo _getInfo;
+
+        public EDRunnable(LiveGetInfo _getInfo) {
+            this._getInfo = _getInfo;
+        }
+
+        @Override
+        public void run() {
+            getEvenDriveAnim(_getInfo);
         }
     }
 
