@@ -53,6 +53,8 @@ public class SysLogLable {
     public static SysLogEntity backButtonClick = new SysLogEntity(ShellingScienceWebViewLog, "backButtonClick");
     /** 三端协议日志 */
     public static SysLogEntity xesWebLog = new SysLogEntity(ShellingScienceWebViewLog, "xesWebLog");
+    /** 显示结果页 */
+    public static SysLogEntity courseShowResult = new SysLogEntity(ShellingScienceWebViewLog, "showResult");
     /** 语音答题 lable */
     private static String voiceanswer = "WXMutVoiceAnswer";
     /** 选择题结果 */

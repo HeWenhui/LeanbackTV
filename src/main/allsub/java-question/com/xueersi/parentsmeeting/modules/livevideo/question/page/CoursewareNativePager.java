@@ -1334,7 +1334,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             }
             EventBus.getDefault().post(artsAnswerResultEvent);
         } catch (JSONException e) {
-            e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG,e);
         }
     }
 
