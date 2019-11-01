@@ -14,6 +14,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEnvironment;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
@@ -68,6 +69,16 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
         mLogtf = new LogToFile(context, TAG);
     }
 
+    public LiveBaseBll(LiveEnvironment liveEnvironment, LiveBll2 liveBll) {
+        super(liveEnvironment.getActivity());
+        this.activity = liveEnvironment.getActivity();
+        contextLiveAndBackDebug = liveEnvironment.getLiveAndBackDebug();
+        mLiveBll = liveBll;
+        mLiveId = liveBll.getLiveId();
+        mLiveType = liveBll.getLiveType();
+        mLogtf = liveEnvironment.createLogToFile(TAG);
+    }
+
     /**
      * 为兼容 回放  新增此构造函数
      *
@@ -79,6 +90,22 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
         super(context);
         this.activity = context;
         contextLiveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
+        this.mLiveId = liveId;
+        this.mLiveType = liveType;
+        mLogtf = new LogToFile(TAG);
+    }
+
+    /**
+     * 为兼容 回放  新增此构造函数
+     *
+     * @param liveEnvironment
+     * @param liveId
+     * @param liveType
+     */
+    public LiveBaseBll(LiveEnvironment liveEnvironment, String liveId, int liveType) {
+        super(liveEnvironment.getActivity());
+        this.activity = liveEnvironment.getActivity();
+        contextLiveAndBackDebug = liveEnvironment.getLiveAndBackDebug();
         this.mLiveId = liveId;
         this.mLiveType = liveType;
         mLogtf = new LogToFile(TAG);
