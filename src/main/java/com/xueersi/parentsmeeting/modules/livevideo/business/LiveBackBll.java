@@ -423,6 +423,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
 //                }
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
                 liveGetInfo.setPrimaryChinese("2".equals(liveInfo.optString("useSkin")));
+                liveGetInfo.setUseSkin(Integer.valueOf(liveInfo.optString("useSkin", "0")));
                 liveGetInfo.setsTime(liveInfo.optLong("stime"));
                 if (liveGetInfo.getStudentLiveInfo() != null) {
                     liveGetInfo.getStudentLiveInfo().setClassId(liveInfo.optString("class_id"));

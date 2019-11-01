@@ -209,6 +209,12 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     }
 
     @Override
+    protected void createPlayer() {
+        MediaPlayer.setIsNewIJK(true);
+        super.createPlayer();
+    }
+
+    @Override
     protected void showRefresyLayout(int arg1, int arg2) {
         super.showRefresyLayout(arg1, arg2);
     }
