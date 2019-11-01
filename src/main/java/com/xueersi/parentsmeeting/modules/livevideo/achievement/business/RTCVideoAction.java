@@ -23,6 +23,10 @@ public interface RTCVideoAction {
 
     void onMediaControllerHide();
 
+    void onStartVoiceExamine();
+
+    void onFinishVoiceExamine();
+
     int GOLD_TYPE_QUESTION = 1;
     int GOLD_TYPE_REDPACKAGE = 2;
 }
