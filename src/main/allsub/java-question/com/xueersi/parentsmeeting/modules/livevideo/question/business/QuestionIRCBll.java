@@ -833,10 +833,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     liveBasePagerInter.addViewRemoveObserver(new AllLiveBasePagerInter.ViewRemoveObserver() {
                         @Override
 
-                        public void removeViewCallBack(LiveBasePager basePager) {
+                        public boolean removeViewCallBack(LiveBasePager basePager) {
                             //因为这个页面是互动题结果页显示后才显示激励动画，所以这个时候结束的pager肯定是结果页
                             animRepo.removeViewAndAnima();
-                            liveBasePagerInter.removeViewRemoveObserver(this);
+                            return true;
+//                            liveBasePagerInter.removeViewRemoveObserver(this);
                         }
                     });
                 }

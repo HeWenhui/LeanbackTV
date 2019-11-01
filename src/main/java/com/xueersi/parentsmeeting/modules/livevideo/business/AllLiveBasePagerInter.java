@@ -17,6 +17,6 @@ public interface AllLiveBasePagerInter extends LiveProvide {
     void removeViewRemoveObserver(ViewRemoveObserver viewRemoveObserver);
 
     interface ViewRemoveObserver {
-        void removeViewCallBack(LiveBasePager basePager);
+        boolean removeViewCallBack(LiveBasePager basePager);
     }
 }

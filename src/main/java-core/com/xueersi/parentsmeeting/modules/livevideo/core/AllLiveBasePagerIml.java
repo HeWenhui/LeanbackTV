@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -72,9 +73,12 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
 
     private synchronized void notifyUnAttachPager(LiveBasePager liveBasePager) {
         if (unAttachViewObservers != null) {
-            for (ViewRemoveObserver viewRemoveObserver : unAttachViewObservers) {
-                if (viewRemoveObserver != null) {
-                    viewRemoveObserver.removeViewCallBack(liveBasePager);
+
+            Iterator<ViewRemoveObserver> iterator = unAttachViewObservers.iterator();
+            while (iterator.hasNext()) {
+                ViewRemoveObserver viewRemoveObserver = iterator.next();
+                if (viewRemoveObserver.removeViewCallBack(liveBasePager)) {
+                    iterator.remove();
                 }
             }
         }
