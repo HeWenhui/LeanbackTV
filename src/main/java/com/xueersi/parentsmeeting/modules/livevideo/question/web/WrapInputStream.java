@@ -38,7 +38,7 @@ public class WrapInputStream extends InputStream {
     @Override
     public int read() throws IOException {
         if (startTime == -1) {
-            startTime = SystemClock.currentThreadTimeMillis();
+            startTime = SystemClock.elapsedRealtime();
             readMethod = "read1";
         }
         logger.d("read1");
@@ -53,7 +53,7 @@ public class WrapInputStream extends InputStream {
     @Override
     public int read(byte[] b) throws IOException {
         if (startTime == -1) {
-            startTime = SystemClock.currentThreadTimeMillis();
+            startTime = SystemClock.elapsedRealtime();
             readMethod = "read2";
         }
         logger.d("read2");
@@ -63,7 +63,7 @@ public class WrapInputStream extends InputStream {
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         if (startTime == -1) {
-            startTime = SystemClock.currentThreadTimeMillis();
+            startTime = SystemClock.elapsedRealtime();
             readMethod = "read3:off=" + off + ",len=" + len;
         }
         logger.d("read3:off=" + off + ",len=" + len);
@@ -82,14 +82,14 @@ public class WrapInputStream extends InputStream {
         try {
             inputStream.close();
             if (inputStreamClose != null) {
-                long readTime = SystemClock.currentThreadTimeMillis() - startTime;
+                long readTime = SystemClock.elapsedRealtime() - startTime;
                 inputStreamClose.onClose(readMethod, readTime);
             }
         } catch (IOException e) {
             logToFile.e("close", e);
             e.printStackTrace();
             if (inputStreamClose != null) {
-                long readTime = SystemClock.currentThreadTimeMillis() - startTime;
+                long readTime = SystemClock.elapsedRealtime() - startTime;
                 inputStreamClose.onClose(readMethod, readTime);
             }
             throw e;

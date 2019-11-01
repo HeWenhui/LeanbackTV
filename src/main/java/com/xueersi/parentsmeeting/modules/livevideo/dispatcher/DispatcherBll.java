@@ -7,20 +7,20 @@ import android.text.TextUtils;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.config.AppConfig;
-import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.network.IpAddressUtil;
+import com.xueersi.common.permission.PermissionCallback;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.lib.framework.utils.AppMainHandler;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
@@ -35,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveTransferHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -272,7 +273,7 @@ public class DispatcherBll extends BaseBll {
                         entity.setTermId(termId);
                         entity.setLiveId(liveId);
 
-                        if (entity.getIsArts() == LiveVideoSAConfig.ART_EN) {
+                        if (entity.getIsArts() == LiveVideoSAConfig.ART_EN && entity.getIsNewCourseWare()) {
                             experartscoursewarenewpoint(sectionEntity, entity, responseEntity, mDataLoadEntity);
                             return;
                         }
@@ -376,7 +377,36 @@ public class DispatcherBll extends BaseBll {
                 });
     }
 
-    private void initToExper(VideoSectionEntity sectionEntity, LiveExperienceEntity entity, ResponseEntity expliveresponseEntity) {
+    private void initToExper(final VideoSectionEntity sectionEntity, final LiveExperienceEntity entity, final ResponseEntity expliveresponseEntity) {
+        //英语需要录音权限
+        if (entity.getIsArts() == LiveVideoSAConfig.ART_EN) {
+            boolean have = XesPermission.checkPermission(mContext, new PermissionCallback() {
+
+                        @Override
+                        public void onFinish() {
+
+                        }
+
+                        @Override
+                        public void onDeny(String permission, int position) {
+
+                        }
+
+                        @Override
+                        public void onGuarantee(String permission, int position) {
+                            LiveMainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    initToExper(sectionEntity, entity, expliveresponseEntity);
+                                }
+                            });
+                        }
+                    },
+                    PermissionConfig.PERMISSION_CODE_AUDIO);
+            if (!have) {
+                return;
+            }
+        }
         // 播放数据设定
         VideoLivePlayBackEntity videoEntity = new VideoLivePlayBackEntity();
         videoEntity.setExpLiveType(entity.getExpLiveType());

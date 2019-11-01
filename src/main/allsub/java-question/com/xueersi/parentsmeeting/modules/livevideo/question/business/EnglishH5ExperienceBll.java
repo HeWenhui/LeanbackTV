@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -33,6 +35,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.ExperCourseWareHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -47,6 +51,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTIONS_SHOW;
+import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTION_CLOSE;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_FILTER_ACTION;
+import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_SIGN_KEY;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.PROCESS_RECORD_SIGN;
 import static com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig.EN_INTELLIGENT_EVALUTION;
 
@@ -117,6 +124,17 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 videoQuestionLiveEntity.setExper(true);
                 EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
                 englishH5Entity.setNewEnglishH5(true);
+                englishH5CoursewareBll.onH5Courseware("off", videoQuestionLiveEntity);
+            }
+            break;
+            case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
+                if (EN_INTELLIGENT_EVALUTION.equals(questionEntity.getvQuestionType())) {
+                    stopIntelligentActivity();
+                    return;
+                }
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
+                Log.e("mqtt", "关闭上一题" + "CATEGORY_H5COURSE_NEWARTSWARE");
+                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
                 englishH5CoursewareBll.onH5Courseware("off", videoQuestionLiveEntity);
             }
             break;
@@ -530,4 +548,40 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
             }
         }
     }
+
+    /**
+     * 终止智能测评的Activity
+     */
+    private void stopIntelligentActivity() {
+        setPauseNotStop(false);
+        Intent intent = new Intent(INTELLIGENT_RECOGNITION_FILTER_ACTION);
+        intent.putExtra(INTELLIGENT_RECOGNITION_SIGN_KEY, new JSONObject().toString());
+        activity.sendBroadcast(intent);
+    }
+
+    PauseNotStopVideoInter pauseNotStopVideoIml;
+
+    /** onPause状态不暂停视频 */
+//    AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(false);
+    private void setPauseNotStop(boolean pauseNotStop) {
+//        onPauseNotStopVideo.set(pauseNotStop);
+        pauseNotStopVideoIml = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class);
+//        if (pauseNotStopVideoIml == null) {
+//            pauseNotStopVideoIml = new PauseNotStopVideoIml(activity);
+//        } else {
+        if (pauseNotStopVideoIml != null) {
+            pauseNotStopVideoIml.setPause(pauseNotStop);
+        } else {
+//            Map<String, String> map = new HashMap<>();
+//            map.put("ProxUtil_getProxUtil", "PauseNotStopVideoInter.class is null");
+//            UmsAgentManager.umsAgentDebug();
+        }
+        //声音设置为0
+        BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
+        if (videoFragment != null) {
+            videoFragment.setVolume(0, 0);
+        }
+//        }
+    }
+
 }

@@ -66,5 +66,49 @@ public class SysLogLable {
     /** 评测失败 */
     public static SysLogEntity voiceError = new SysLogEntity(voiceanswer, "voiceError");
     /** 强制提交 */
-    public static SysLogEntity examSubmitAll = new SysLogEntity(voiceanswer, "examSubmitAll");
+    public static SysLogEntity voiceAnswerExamSubmitAll = new SysLogEntity(voiceanswer, "examSubmitAll");
+
+    /** roleplay lable */
+    private static String roleplayMachine = "roleplayMachineFlow";
+    /** 拉题成功 */
+    public static SysLogEntity rolePlayRequestTestInfoSuc = new SysLogEntity(roleplayMachine, "requestTestInfoSuc");
+    /** 拉题失败 */
+    public static SysLogEntity rolePlayRequestTestInfoErr = new SysLogEntity(roleplayMachine, "requestTestInfoErr");
+    /** 拉题 */
+    public static SysLogEntity rolePlayGetTest = new SysLogEntity(roleplayMachine, "getTest");
+    /** 拉题 */
+    public static SysLogEntity rolePlayWait = new SysLogEntity(roleplayMachine, "waitRoleplay");
+    /** 启动评测 */
+    public static SysLogEntity roleplayStartRecog = new SysLogEntity(roleplayMachine, "startRecog");
+    /** 评测开始 */
+    public static SysLogEntity roleplayRecogBegin = new SysLogEntity(roleplayMachine, "recogBegin");
+    /** 评测成功 */
+    public static SysLogEntity roleplayRecogSuccess = new SysLogEntity(roleplayMachine, "recogSuccess");
+    /** 评测失败 */
+    public static SysLogEntity roleplayRecogError = new SysLogEntity(roleplayMachine, "recogError");
+    /** 准备读下一条 */
+    public static SysLogEntity roleplayNextRead = new SysLogEntity(roleplayMachine, "roleplayNextRead");
+    /** 开始提交 */
+    public static SysLogEntity roleplaySubmit = new SysLogEntity(roleplayMachine, "recogSubmit");
+    /** 强制提交 */
+    public static SysLogEntity roleplayexamSubmitAll = new SysLogEntity(roleplayMachine, "examSubmitAll");
+    /** 关闭页面 */
+    public static SysLogEntity roleplaStopQues = new SysLogEntity(roleplayMachine, "stopQues");
+    /** 关闭页面 */
+    public static SysLogEntity roleplayClosePager = new SysLogEntity(roleplayMachine, "closePager");
+
+    /** 语音答题 lable */
+    private static String speechEvaluating = "speechEvaluating";
+    /** 评测成功 */
+    public static SysLogEntity speechCreate = new SysLogEntity(speechEvaluating, "speechcreate");
+    /** 评测成功 */
+    public static SysLogEntity speechSuccess = new SysLogEntity(speechEvaluating, "recogSuccess");
+    /** 评测成功 */
+    public static SysLogEntity speechError = new SysLogEntity(speechEvaluating, "recogError");
+    /** 强制提交 */
+    public static SysLogEntity speechExamSubmitAll = new SysLogEntity(speechEvaluating, "examSubmitAll");
+    /** 强制提交 */
+    public static SysLogEntity speechStartSubmit = new SysLogEntity(speechEvaluating, "startSubmit");
+    /** 强制提交 */
+    public static SysLogEntity speechSubmitFail= new SysLogEntity(speechEvaluating, "submitFail");
 }
