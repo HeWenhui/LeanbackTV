@@ -17,6 +17,6 @@ public class EnglishNameConfig {
 
     public static final String LIVE_UNITI_PATH_ENGLISH_VERSION = "70601";
 
-    public static final String LIVE_UNITI_NET_PATH_L  = Environment.getExternalStorageDirectory()+"/parentsmeeting/subgroup/"+LIVE_UNITI_PATH_ENGLISH_VERSION;
+    public static final String LIVE_UNITI_NET_PATH_L  = "/parentsmeeting/subgroup/70601/generate.txt";
 
 }

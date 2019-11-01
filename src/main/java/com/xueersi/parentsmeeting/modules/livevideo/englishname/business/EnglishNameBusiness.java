@@ -20,6 +20,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.englishname.entity.EngLishNa
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,23 +30,30 @@ import io.agora.rtc.internal.RtcEngineMessage;
 
 public class EnglishNameBusiness extends BaseBll {
 
-    Context mContext;
     SettingEnglishNameHttpManager mSettingEnglishNameHttpManager;
     EnlishNameParser mEnlishNameParser;
     File fileDir;
     public EnglishNameBusiness (Context mContext){
         super(mContext);
-    this.mContext = mContext;
         mEnlishNameParser = new EnlishNameParser();
         mSettingEnglishNameHttpManager = new SettingEnglishNameHttpManager(mContext);
-        getFilePath();
+        if (fileDir == null) {
+            fileDir = new File(getLocalPath());
+        }
+        getFilePath(mContext);
     }
 
-    public void getFilePath(){
+    public String getLocalPath(){
+        return  Environment.getExternalStorageDirectory()+EnglishNameConfig.LIVE_UNITI_NET_PATH_L;
+
+    }
+
+    public void getFilePath(final Context context){
         mSettingEnglishNameHttpManager.getDownLoadPath(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 String url = mEnlishNameParser.parseDownLoadUrl(responseEntity);
+                downloadResource(context,url);
             }
         });
     }
@@ -55,26 +64,21 @@ public class EnglishNameBusiness extends BaseBll {
      * @param context
      * @param resourceCallback
      */
-    public void downloadResource(final Context context, final AbstractBusinessDataCallBack resourceCallback, String url) {
-        String mathGamePath = mShareDataManager.getString(EnglishNameConfig.GROUP_CLASS_SUB_NAME_LIST_TXT, "", ShareDataManager.SHAREDATA_NOT_CLEAR);
+    public void downloadResource(final Context context ,String url) {
+        String mathGamePath = getLocalPath();
         try {
             if (!TextUtils.isEmpty(mathGamePath)) {
                 File file = new File(mathGamePath);
                 if (file.exists()) {
                     return;
-                } else {
-                    mShareDataManager.put(EnglishNameConfig.GROUP_CLASS_SUB_NAME_LIST_TXT, "", ShareDataManager.SHAREDATA_NOT_CLEAR);
                 }
             }
 
-            if (fileDir == null) {
-                fileDir = new File(EnglishNameConfig.LIVE_UNITI_NET_PATH_L);
-            }
             if (!fileDir.exists()) {
                 fileDir.mkdirs();
             }
             // 最终文件
-            final File fileUpload = new File(fileDir, "generate.text");
+            final File fileUpload = new File(fileDir, "generate.txt");
 
 
             mSettingEnglishNameHttpManager.downloadRenew(url, fileUpload, new DownloadCallBack() {
@@ -99,6 +103,20 @@ public class EnglishNameBusiness extends BaseBll {
         }
     }
 
+    public void getNameList(final List<EngLishNameEntity> indexList,final int sexType, final AbstractBusinessDataCallBack cityCallBack){
+        File fileUpload = new File(fileDir, "generate.txt");
+        if(fileUpload.exists()) {
+            String names = getStringFromFile(fileUpload.getAbsolutePath(),false);
+            List<EngLishNameEntity> nameList = mEnlishNameParser.pareseEnglishName(names,sexType,indexList);
+            cityCallBack.onDataSucess(nameList);
+            if(nameList==null || nameList.size()==0) {
+                getDefaultName(indexList,sexType,cityCallBack);
+            }
+        } else {
+            getDefaultName(indexList,sexType,cityCallBack);
+        }
+    }
+
 
     /**
      * 读取地区信息
@@ -113,7 +131,7 @@ public class EnglishNameBusiness extends BaseBll {
 
             @Override
             public void postTask() {
-                String areaText = getStringFromAssets("generate.txt");
+                String areaText = getStringFromFile("generate.txt",true);
                // CityEntity entity = mPsswordSettingHttpResponseParser.getCityLst(areaText);
                 List<EngLishNameEntity> nameList = mEnlishNameParser.pareseEnglishName(areaText,sexType,indexList);
                 cityCallBack.onDataSucess(nameList);
@@ -137,15 +155,21 @@ public class EnglishNameBusiness extends BaseBll {
         EngLishNameEntity entity = null;
         String[] word = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
         EngLishNameEntity index = null;
-        String areaText = getStringFromAssets("generate.txt");
+        File fileUpload = new File(fileDir, "generate.txt");
+        String nameString = "";
+        if(fileUpload.exists()) {
+             nameString = getStringFromFile(fileUpload.getAbsolutePath(), false);
+        } else {
+            nameString = getStringFromFile("generate.txt", true);
+        }
         int indexPosition = 0;
         for (int j = 0; j < word.length; j++) {
             index = new EngLishNameEntity();
             index.setWordIndex(word[j]);
             listIndex.add(index);
         }
-        List<EngLishNameEntity> nameList = mEnlishNameParser.pareseEnglishName(areaText,1,listIndex);
-        List<EngLishNameEntity> nameList2 = mEnlishNameParser.pareseEnglishName(areaText,2,listIndex);
+        List<EngLishNameEntity> nameList = mEnlishNameParser.pareseEnglishName(nameString,1,listIndex);
+        List<EngLishNameEntity> nameList2 = mEnlishNameParser.pareseEnglishName(nameString,2,listIndex);
         nameList.addAll(nameList2);
 
         for (int i = 0; i < nameList.size(); i++) {
@@ -164,9 +188,15 @@ public class EnglishNameBusiness extends BaseBll {
      * @param fileName
      * @return
      */
-    private String getStringFromAssets(String fileName) {
+    private String getStringFromFile(String fileName,boolean isAsset) {
         try {
-            InputStreamReader inputReader = new InputStreamReader(mContext.getResources().getAssets().open(fileName));
+            InputStream fileStream = null;
+            if(isAsset) {
+                fileStream = mContext.getResources().getAssets().open(fileName);
+            } else {
+                fileStream = new FileInputStream(new File(fileName));
+            }
+            InputStreamReader inputReader = new InputStreamReader(fileStream);
             BufferedReader bufReader = new BufferedReader(inputReader);
             String line = "";
             String Result = "";
