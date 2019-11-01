@@ -36,7 +36,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                         new HttpCallBack() {
                             @Override
                             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                parseEvenDriveNum(responseEntity, callBack);
+                                parseEvenDriveNum(responseEntity, callBack, url);
                             }
 
                             @Override
@@ -63,7 +63,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                         new HttpCallBack() {
                             @Override
                             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                parseEvenDriveNum(responseEntity, callBack);
+                                parseEvenDriveNum(responseEntity, callBack, url);
                             }
 
                             @Override
@@ -92,7 +92,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                         new HttpCallBack() {
                             @Override
                             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                parseEvenDriveNum(responseEntity, callBack);
+                                parseEvenDriveNum(responseEntity, callBack, url);
                             }
 
                             @Override
@@ -121,7 +121,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             new HttpCallBack() {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                    parseEvenDriveNum(responseEntity, callBack);
+                                    parseEvenDriveNum(responseEntity, callBack, url);
                                 }
 
                                 @Override
@@ -150,7 +150,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             new HttpCallBack() {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                    parseEvenDriveNum(responseEntity, callBack);
+                                    parseEvenDriveNum(responseEntity, callBack, url);
                                 }
 
                                 @Override
@@ -182,9 +182,10 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
         return myTest && AppConfig.DEBUG;
     }
 
-    private void parseEvenDriveNum(ResponseEntity responseEntity, LoadAnimCallBack callBack) {
+    private void parseEvenDriveNum(ResponseEntity responseEntity, LoadAnimCallBack callBack, String url) {
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
         String num;
+        logger.i("jsonObject: " + jsonObject + " url:" + url);
         if (jsonObject.has("num")) {
             num = jsonObject.optString("num");
         } else {

@@ -36,4 +36,8 @@ public class EvenDriveUtils {
     public static boolean getAllEvenDriveOpen(LiveGetInfo getInfo) {
         return isOpenStimulation(getInfo) || getOldEvenDrive(getInfo);
     }
+
+    public static boolean getIsChsAndSci(LiveGetInfo getInfo) {
+        return getInfo != null && getInfo.getIsArts() != 1;
+    }
 }

@@ -761,6 +761,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             );
                         }
                     }, 5000);
+                } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
+                    getEvenDriveAnim(mGetInfo);
                 }
                 break;
             }
@@ -812,6 +814,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             );
                         }
                     }, 5000);
+                } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
+                    getEvenDriveAnim(mGetInfo);
                 }
                 break;
             }
@@ -850,6 +854,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                    isHasReceiveLike = false;
                         isMiddleScienceEvenDriveH5Open = true;
                     }
+                } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
+                    getEvenDriveAnim(mGetInfo);
                 }
                 break;
             }
@@ -1398,6 +1404,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                OPEN_STIMULATION == getInfo.getEvenDriveInfo().getIsOpenStimulation();
 //    }
 
+
     /**
      * 英语成功之后请求
      *
@@ -1407,10 +1414,14 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         getEvenDriveAnim(getInfo);
     }
 
+    private EvenDriveAnimRepository animRepositor;
+
     private void getEvenDriveAnim(LiveGetInfo getInfo) {
         if (EvenDriveUtils.isOpenStimulation(getInfo)) {
-            EvenDriveAnimRepository animRepositor = new EvenDriveAnimRepository(
-                    mContext, getInfo, mHttpManager, null);
+            if (animRepositor == null) {
+                animRepositor = new EvenDriveAnimRepository(
+                        mContext, getInfo, mHttpManager, null);
+            }
             animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.INIT_EVEN_NUM, "",
                     null);
         }
