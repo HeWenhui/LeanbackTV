@@ -42,10 +42,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
@@ -181,93 +182,154 @@ public class UploadVideoService extends Service {
     private void decodeAudio() {
         try {
             mFileOutputStream = new FileOutputStream(new File(uploadVideoEntity.getAudioLocalUrl()));
+            performRxUploadAudio();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        final AudioMediaCodecUtils codecUtils = new AudioMediaCodecUtils(new AudioMediaCodecUtils.PCMDataListener() {
-            @Override
-            public void pcmData(byte[] bytes, int size) {
-//                short[] shorts = convertShort(bytes);
-                short[] shorts;
-                ByteBuffer byteBuffer = ByteBuffer.wrap(bytes, 0, size);
-                ShortBuffer shortBuffer = byteBuffer.order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
-                shorts = new short[size / 2];
-                shortBuffer.get(shorts, 0, size / 2);
-                byte[] mp3Buffer = new byte[16000 / 20 + 7200];
-                sampleTotal = new byte[16000 / 20 + 7200];
-                int sampleSize = LameUtil.encode(shorts, shorts, size / 2, mp3Buffer);
-                logger.i((num++) + " start decode audio to mp3 " + "buffer = " + sampleSize + " lenth = " + mp3Buffer.length);
-                if (sampleSize > 0) {
-                    System.arraycopy(mp3Buffer, 0, sampleTotal, 0, sampleSize);
-                    try {
-                        mFileOutputStream.write(sampleTotal, 0, sampleSize);
-                        logger.i("decode success");
-                    } catch (FileNotFoundException e) {
-                        logger.e(e);
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        logger.e(e);
-                        e.printStackTrace();
-                    }
-                }
-            }
 
-            @Override
-            public void pcmComplete(boolean success) {
-                uploadAudio(uploadVideoEntity.getAudioLocalUrl());
-            }
-        });
-        compositeDisposable.add(Observable.
-                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
-                subscribeOn(Schedulers.io()).
-                subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        logger.i("初始化 " + aBoolean);
-                        if (aBoolean) {
-                            logger.i("aac to pcm");
-                            codecUtils.aacToPCM();
-                        }
-                    }
-                }));
+//        final AudioMediaCodecUtils codecUtils = new AudioMediaCodecUtils(new AudioMediaCodecUtils.PCMDataListener() {
+//            @Override
+//            public void pcmData(byte[] bytes, int size) {
+////                short[] shorts = convertShort(bytes);
+//                short[] shorts;
+//                ByteBuffer byteBuffer = ByteBuffer.wrap(bytes, 0, size);
+//                ShortBuffer shortBuffer = byteBuffer.order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
+//                shorts = new short[size / 2];
+//                shortBuffer.get(shorts, 0, size / 2);
+//                byte[] mp3Buffer = new byte[16000 / 20 + 7200];
+//                sampleTotal = new byte[16000 / 20 + 7200];
+//                int sampleSize = LameUtil.encode(shorts, shorts, size / 2, mp3Buffer);
+//                logger.i((num++) + " start decode audio to mp3 " + "buffer = " + sampleSize + " lenth = " + mp3Buffer.length);
+//                if (sampleSize > 0) {
+//                    System.arraycopy(mp3Buffer, 0, sampleTotal, 0, sampleSize);
+//                    try {
+//                        mFileOutputStream.write(sampleTotal, 0, sampleSize);
+//                        logger.i("decode success");
+//                    } catch (FileNotFoundException e) {
+//                        logger.e(e);
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        logger.e(e);
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void pcmComplete(boolean success) {
+//                uploadAudio(uploadVideoEntity.getAudioLocalUrl());
+//            }
+//        });
+//        compositeDisposable.add(Observable.
+//                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
+//                subscribeOn(Schedulers.io()).
+//                subscribe(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//                        logger.i("初始化 " + aBoolean);
+//                        if (aBoolean) {
+//                            logger.i("aac to pcm");
+//                            codecUtils.aacToPCM();
+//                        }
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        logger.e(Log.getStackTraceString(throwable));
+//                        UmsAgentManager.umsAgentException(UploadVideoService.this, throwable);
+//                    }
+//                }));
 
     }
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+//    private ArrayCompositeSubscription
+
     /**
      * 使用rxjava方式解决pcm编码问题
-     *
-     * @param codecUtils
      */
-    private void performRxUploadAudio(final AudioMediaCodecUtils codecUtils) {
-        compositeDisposable.add(Flowable.
-                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
-                subscribeOn(Schedulers.io()).
-                filter(new Predicate<Boolean>() {
+    private void performRxUploadAudio() {
+        final AudioMediaCodecUtils codecUtils = new AudioMediaCodecUtils();
+        Observable.
+                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl()))
+                .subscribeOn(Schedulers.computation())
+                .filter(new Predicate<Boolean>() {
                     @Override
                     public boolean test(Boolean aBoolean) throws Exception {
                         return aBoolean;
                     }
-                }).
-                flatMap(new Function<Boolean, Flowable<AudioMediaCodecUtils.PCMEntity>>() {
+                })
+                .flatMap(new Function<Boolean, ObservableSource<AudioMediaCodecUtils.PCMEntity>>() {
+
                     @Override
-                    public Flowable<AudioMediaCodecUtils.PCMEntity> apply(Boolean aBoolean) throws Exception {
-                        return codecUtils.rxAACToPCM();
+                    public ObservableSource<AudioMediaCodecUtils.PCMEntity> apply(Boolean aBoolean) throws Exception {
+                        return codecUtils.rxObservableAACToPCM();
                     }
                 }).
-                doOnNext(new Consumer<AudioMediaCodecUtils.PCMEntity>() {
+                subscribe(new Observer<AudioMediaCodecUtils.PCMEntity>() {
+                    private Disposable disposable;
+
                     @Override
-                    public void accept(AudioMediaCodecUtils.PCMEntity pcmEntity) throws Exception {
+                    public void onSubscribe(Disposable d) {
+                        this.disposable = d;
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(AudioMediaCodecUtils.PCMEntity pcmEntity) {
                         handlePCM(pcmEntity);
                     }
-                }).
-                subscribe(new Consumer<AudioMediaCodecUtils.PCMEntity>() {
+
                     @Override
-                    public void accept(AudioMediaCodecUtils.PCMEntity pcmEntity) throws Exception {
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        disposable.dispose();
                         uploadAudio(uploadVideoEntity.getAudioLocalUrl());
                     }
-                }));
+                });
+//        compositeDisposable.add(
+//        Flowable.
+//                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
+//                subscribeOn(Schedulers.io()).
+//                filter(new Predicate<Boolean>() {
+//                    @Override
+//                    public boolean test(Boolean aBoolean) throws Exception {
+//                        return aBoolean;
+//                    }
+//                }).
+//                flatMap(new Function<Boolean, Flowable<AudioMediaCodecUtils.PCMEntity>>() {
+//                    @Override
+//                    public Flowable<AudioMediaCodecUtils.PCMEntity> apply(Boolean aBoolean) throws Exception {
+//                        return codecUtils.rxAACToPCM();
+//                    }
+//                }).
+//                subscribe(new Subscriber<AudioMediaCodecUtils.PCMEntity>() {
+//                    @Override
+//                    public void onSubscribe(Subscription s) {
+//                        compositeDisposable.add(s);
+//                    }
+//
+//                    @Override
+//                    public void onNext(AudioMediaCodecUtils.PCMEntity pcmEntity) {
+//                        handlePCM(pcmEntity);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        uploadAudio(uploadVideoEntity.getAudioLocalUrl());
+//                    }
+//                });
+//        );
 
     }
 
