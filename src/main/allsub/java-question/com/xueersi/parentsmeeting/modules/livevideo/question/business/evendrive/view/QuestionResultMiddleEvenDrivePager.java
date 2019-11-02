@@ -28,8 +28,12 @@ public class QuestionResultMiddleEvenDrivePager extends QuestionResultEvenDriveP
 
 
     private void showMiddleNum(final int num) {
-
-        String replaceFileName = ANIM_ROOT_DIR + "/public/live_business_contiright_" + num + ".png";
+        String replaceFileName;
+        if (num >= 2 && num <= 25) {
+            replaceFileName = ANIM_ROOT_DIR + "/public/live_business_contiright_" + num + ".png";
+        } else {
+            replaceFileName = ANIM_ROOT_DIR + "/public/live_business_contiright_" + 25 + ".png";
+        }
 
         String resPath = EVEN_DRIVE_LEVEL1_LOTTIE_PATH + "images",
                 jsonPath = EVEN_DRIVE_LEVEL1_LOTTIE_PATH + "data.json";
@@ -49,7 +53,7 @@ public class QuestionResultMiddleEvenDrivePager extends QuestionResultEvenDriveP
             resPath = EVEN_DRIVE_LEVEL3_LOTTIE_PATH + "images";
             jsonPath = EVEN_DRIVE_LEVEL3_LOTTIE_PATH + "data.json";
             animLevel = 3;
-        } else if (num >= 8 && num <= 24) {
+        } else if (num >= 8) {
             resPath = EVEN_DRIVE_LEVEL4_LOTTIE_PATH + "images";
             jsonPath = EVEN_DRIVE_LEVEL4_LOTTIE_PATH + "data.json";
             animLevel = 4;

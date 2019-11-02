@@ -194,6 +194,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
         if (TextUtils.isEmpty(num)) {
             num = "0";
         }
+//        num = "25";
         LiveGetInfo.EvenDriveInfo evenDriveInfo = getInfo.getEvenDriveInfo();
         try {
             if (getTest()) {
