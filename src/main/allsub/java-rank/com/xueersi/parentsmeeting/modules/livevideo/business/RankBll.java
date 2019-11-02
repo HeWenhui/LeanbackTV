@@ -179,7 +179,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                             /** 异步获取的实体数据，这个时候 */
                             allRankEntity = (AllRankEntity) objData[0];
 
-                            if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                            if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                                 //中学连对激励
 
                                 scienceEvenDrivePager.updataRankData(allRankEntity);
@@ -331,7 +331,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         this.mGetInfo = getInfo;
         if (mGetInfo != null) {
             isSmallEnglish = mGetInfo.getSmallEnglish();
-            if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+            if (EvenDriveUtils.getOldEvenDrive(getInfo)) {
                 setEvenDriveLayout();
             }
         }
@@ -482,7 +482,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 
         } else {
             //中学连对激励系统
-            if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+            if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                 scienceEvenDrivePager = new MiddleScienceEvenDrivePager(mContext);
 
                 scienceEvenDrivePager.setiNotice(new ItemMiddleSciencePager.INotice() {

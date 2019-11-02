@@ -56,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.question.create.BigQueCreate;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
@@ -629,7 +630,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), liveGetInfo.getIsArts
                                 (), stuCouId,
                                 "1".equals(liveGetInfo.getIsAllowTeamPk()));
-                        questionWebPager.setOpenNewCourseWare(liveGetInfo.getIsOpenNewCourseWare());
+                        questionWebPager.setOpenNewCourseWare(EvenDriveUtils.getOldEvenDrive(liveGetInfo) ? 1 : 0);
                         questionWebPager.setLivePagerBack(QuestionBll.this);
                         rlQuestionContent.addView(questionWebPager.getRootView());
                         questionWebPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {

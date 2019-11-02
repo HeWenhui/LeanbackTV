@@ -1502,6 +1502,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             //设置结束时间，判断是否显示XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT点赞消息
 //            endTime = System.currentTimeMillis();
 //            isHasReceiveLike = false;
+        } else if (EvenDriveUtils.isOpenStimulation(mGetInfo)) {
+            getEvenDriveAnim(mGetInfo);
         }
     }
+
+
 }

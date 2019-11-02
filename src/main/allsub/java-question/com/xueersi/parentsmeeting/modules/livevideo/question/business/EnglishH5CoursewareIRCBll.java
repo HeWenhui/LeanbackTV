@@ -66,6 +66,7 @@ import okhttp3.Response;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_FILTER_ACTION;
 import static com.xueersi.parentsmeeting.modules.livevideo.intelligent_recognition.IntelligentRecognitionContract.INTELLIGENT_RECOGNITION_SIGN_KEY;
+import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_NEW_PLAYFROM;
 import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_ENGLISH_NEW_PLATFORM;
 
 /**
@@ -1023,7 +1024,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 getCourseWareHttpManager().getStuTestResult(mGetInfo.getId(), mGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
                         englishH5Entity.getPackageAttr(), isPlayBack,
                         new EvenDriveAnimHttpCallBackProxy(callBack, !detailInfo.isTUtor() && isPlayBack == 0,
-                                EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_NEW_PLAYFROM,
+                                QUES_TYPE_CHS_NEW_PLAYFROM,
                                 detailInfo.id)
                         , detailInfo.isTUtor());
             }
@@ -1060,8 +1061,13 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                 String classId = mGetInfo.getStudentLiveInfo().getClassId();
                 String[] res = getSrcType(englishH5Entity);
-                getCourseWareHttpManager().submitCourseWareTests(detailInfo, mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                        englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), nonce, testInfos, isforce, entranceTime, callBack);
+                getCourseWareHttpManager().submitCourseWareTests(detailInfo, mGetInfo.getStuId(),
+                        englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(),
+                        englishH5Entity.getPackageAttr(), englishH5Entity.getReleasedPageInfos(),
+                        0, classId, englishH5Entity.getClassTestId(), res[0], res[1],
+                        mGetInfo.getEducationStage(), nonce, testInfos, isforce, entranceTime,
+                        new EvenDriveAnimHttpCallBackProxy(callBack, true,
+                                QUES_TYPE_CHS_NEW_PLAYFROM, detailInfo.id));
             }
         }
 
@@ -1129,8 +1135,11 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                 String classId = mGetInfo.getStudentLiveInfo().getClassId();
                 String[] res = getSrcType(englishH5Entity);
-                getCourseWareHttpManager().getCourseWareTests(detailInfo, mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                        englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), detailInfo.nonce, mGetInfo.getIsAllowTeamPk(), callBack);
+                getCourseWareHttpManager().getCourseWareTests(detailInfo, mGetInfo.getStuId(),
+                        englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(),
+                        englishH5Entity.getPackageAttr(), englishH5Entity.getReleasedPageInfos(),
+                        0, classId, englishH5Entity.getClassTestId(), res[0], res[1],
+                        mGetInfo.getEducationStage(), detailInfo.nonce, mGetInfo.getIsAllowTeamPk(), callBack);
             }
         }
 

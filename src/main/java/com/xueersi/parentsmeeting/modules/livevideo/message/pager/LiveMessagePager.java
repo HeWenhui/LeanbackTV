@@ -591,7 +591,7 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
             }
             View view = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
             if (view != null) {
-                view.setVisibility(getInfo.getIsOpenNewCourseWare() == 1 ? View.VISIBLE : View.GONE);
+                view.setVisibility(EvenDriveUtils.getOldEvenDrive(getInfo) ? View.VISIBLE : View.GONE);
             }
         }
     }

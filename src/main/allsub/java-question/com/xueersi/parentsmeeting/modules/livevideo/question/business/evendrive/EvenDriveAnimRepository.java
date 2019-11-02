@@ -37,6 +37,9 @@ public class EvenDriveAnimRepository implements TasksDataSource {
                                    LiveHttpManager liveHttpManager, LiveViewAction liveViewAction) {
         this.getInfo = getInfo;
         this.liveHttpManager = liveHttpManager;
+        if (liveHttpManager == null) {
+            this.liveHttpManager = new LiveHttpManager(context);
+        }
         this.context = context;
         this.liveViewAction = liveViewAction;
     }
