@@ -855,7 +855,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         isMiddleScienceEvenDriveH5Open = true;
                     }
                 } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
-                    delayGetEvenDriveAnim(mGetInfo);
+                    if (!isOpen) {
+                        delayGetEvenDriveAnim(mGetInfo);
+                    }
                 }
                 break;
             }
