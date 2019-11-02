@@ -12,6 +12,7 @@ public class AllBackBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll",
             "com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.ChsAnswerResultBackBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.business.ScienceVotePlayBackBll",
     };
 
     private static String[] standLiveClassPath = {

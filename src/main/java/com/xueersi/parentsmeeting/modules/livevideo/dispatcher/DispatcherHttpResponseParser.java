@@ -432,6 +432,12 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                         }
                     } else if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_H5COURSE_WARE) {
                         questionEntity.setH5Play_url(questionJson.optString("play_url"));
+                    } else if(questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_SCIENCE_VOTE){
+                        try {
+                            questionEntity.setOrgDataStr(questionJson.toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                     questionLst.add(questionEntity);
                 } catch (Exception e) {
