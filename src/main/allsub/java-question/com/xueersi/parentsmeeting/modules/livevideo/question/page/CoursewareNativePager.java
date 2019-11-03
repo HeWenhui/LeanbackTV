@@ -1886,7 +1886,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             });
         } else {
             //初高中互动题
-            String url = englishH5CoursewareSecHttp.getResu ltUrl(detailInfo, isforce, "");
+            String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
             loadResult = true;
             NewCourseLog.sno7(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, detailInfo.isTUtor());
             wvSubjectWeb.addJavascriptInterface(new MiddleResult(mContext) {
