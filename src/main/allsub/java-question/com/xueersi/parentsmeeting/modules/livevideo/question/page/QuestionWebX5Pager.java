@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
@@ -139,7 +140,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         this.isShowRanks = isShowRanks;
         this.stuCouId = stuCouId;
         this.allowTeamPk = allowTeamPk;
-        mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
+        mLogtf.addCommon("testId", "" + testId);
+        mLogtf.i(SysLogLable.receiveInteractTest, "QuestionWebX5Pager:isShowRanks=" + isShowRanks + ",allowTeamPk=" + allowTeamPk);
         header = new HashMap();
         header.put("Access-Control-Allow-Origin", "*");
         initData();
@@ -167,7 +169,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         testId = testInfo.getvQuestionID();
         type = testInfo.type;
         this.liveid = liveid;
-        mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
+        mLogtf.addCommon("testId", "" + testId);
+        mLogtf.i(SysLogLable.receiveInteractTest, "QuestionWebX5Pager:type=" + type);
         cacheFile = LiveCacheFile.geCacheFile(context, "webviewCache");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
@@ -241,7 +244,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void initData() {
-        newCourseCache = new NewCourseCache(mContext, liveid, "99999");
+        newCourseCache = new NewCourseCache(mContext, liveid, "" + testId);
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,7 +275,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
         // 文科新课件平台 填空选择题
         if (isNewArtsTest) {
-            logger.e("=======> loadUrl:" + examUrl);
+            mLogtf.d(SysLogLable.h5StartLoad, "initData:loadUrl=" + examUrl);
             wvSubjectWeb.loadUrl(examUrl);
         } else {
             ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
@@ -287,7 +290,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 //            examUrl += "&isPlayBack=" + (isLive ? "0" : "1");
             examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
             wvSubjectWeb.loadUrl(examUrl);
-            logger.e("======> loadUrl:" + examUrl);
+            mLogtf.d(SysLogLable.h5StartLoad, "initData:loadUrl=" + examUrl);
         }
         mGoldNum = -1;
         mEngerNum = -1;
@@ -387,6 +390,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void submitData() {
+        boolean oldIsEnd = isEnd;
         isForceSubmit = !isAnswerResultRecived;
         Map<String, String> mData = new HashMap<>();
         mData.put("testid", "" + testId);
@@ -395,7 +399,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
-        Log.e("QuestionX5Pager", "=======>examSubmitAll called:");
+        mLogtf.d(SysLogLable.h5SubmitData, "submitData:oldIsEnd=" + oldIsEnd);
     }
 
     @Override
@@ -549,11 +553,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            mLogtf.i("onPageFinished:url=" + url + ",failingUrl=" + failingUrl + ",isEnd=" + isEnd);
+            mLogtf.i(SysLogLable.h5OnPageFinished, "onPageFinished:url=" + url + ",failingUrl=" + failingUrl + ",isEnd=" + isEnd);
             if (!isNewArtsTest) {
                 if (isEnd && url.equals(examUrl)) {
                     wvSubjectWeb.loadUrl(jsExamSubmitAll);
-                    mLogtf.i("onPageFinished:examSubmitAll");
+                    mLogtf.d(SysLogLable.h5SubmitData, "onPageFinished");
                 }
             }
             if (failingUrl == null) {
@@ -571,9 +575,9 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            mLogtf.d(SysLogLable.h5OnPageStarted, "onPageStarted:url=" + url + ",fail=" + failingUrl);
             this.failingUrl = null;
 //            if (!url.equals(examUrl)) {
-//                mLogtf.i("onPageStarted:setInitialScale");
 //                int scale = ScreenUtils.getScreenWidth() * 100 / 878;
 //                wvSubjectWeb.setInitialScale(scale);
 //            }
@@ -605,9 +609,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            mLogtf.i("shouldOverrideUrlLoading:url=" + url);
-
-            logger.e("======> shouldOverrideUrlLoading:" + url);
+            mLogtf.i(SysLogLable.h5OverrideUrl, "shouldOverrideUrlLoading:url=" + url);
 
             if (url.contains("science/Live/getMultiTestResult")) {
                 if (onSubmit != null) {
