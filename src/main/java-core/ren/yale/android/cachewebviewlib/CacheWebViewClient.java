@@ -252,16 +252,16 @@ final class CacheWebViewClient extends ErrorWebViewClient {
         if (!mIsEnableCache) {
             return null;
         }
-        webResourceResponse = mWebViewCache.getWebResourceResponse(this, url, mCacheStrategy,
+        CacheWebResourceResponse cacheWebResourceResponse = mWebViewCache.getWebResourceResponse(this, url, mCacheStrategy,
                 mEncoding, mCacheInterceptor);
         if (mRequestIntercept != null) {
             try {
-                mRequestIntercept.onIntercept(url, webResourceResponse);
+                mRequestIntercept.onIntercept(url, cacheWebResourceResponse);
             } catch (Exception e) {
                 LiveCrashReport.postCatchedException("CacheWebViewClient", e);
             }
         }
-        return webResourceResponse;
+        return cacheWebResourceResponse;
 
     }
 
@@ -279,16 +279,16 @@ final class CacheWebViewClient extends ErrorWebViewClient {
         if (!mIsEnableCache) {
             return null;
         }
-        webResourceResponse = mWebViewCache.getWebResourceResponse(this, request.getUrl().toString(),
+        CacheWebResourceResponse cacheWebResourceResponse = mWebViewCache.getWebResourceResponse(this, request.getUrl().toString(),
                 mCacheStrategy, mEncoding, mCacheInterceptor);
         if (mRequestIntercept != null) {
             try {
-                mRequestIntercept.onIntercept("" + request.getUrl(), webResourceResponse);
+                mRequestIntercept.onIntercept("" + request.getUrl(), cacheWebResourceResponse);
             } catch (Exception e) {
                 LiveCrashReport.postCatchedException("CacheWebViewClient", e);
             }
         }
-        return webResourceResponse;
+        return cacheWebResourceResponse;
     }
 
     @Override

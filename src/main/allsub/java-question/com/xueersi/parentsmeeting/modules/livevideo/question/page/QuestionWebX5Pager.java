@@ -59,6 +59,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import ren.yale.android.cachewebviewlib.CacheWebResourceResponse;
 import ren.yale.android.cachewebviewlib.CacheWebView;
 import ren.yale.android.cachewebviewlib.RequestIntercept;
 import ren.yale.android.cachewebviewlib.WebViewCache;
@@ -387,9 +388,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             cacheWebView.getWebViewCache().setIsScience(isArts == 0);
             cacheWebView.setRequestIntercept(new RequestIntercept() {
                 @Override
-                public void onIntercept(final String url, WebResourceResponse webResourceResponse) {
+                public void onIntercept(final String url, CacheWebResourceResponse webResourceResponse) {
                     final int startProgress = newProgress;
-                    final boolean ispreload = webResourceResponse != null;
+                    final boolean isIntercept = webResourceResponse != null;
+                    final boolean ispreload = isIntercept && webResourceResponse.isFile();
                     threadPoolExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
@@ -403,6 +405,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                                 stableLogHashMap.put("startProgress", "" + startProgress);
                                 stableLogHashMap.put("liveId", liveid);
                                 stableLogHashMap.put("testid", testId);
+                                stableLogHashMap.put("isIntercept", "" + isIntercept);
                                 stableLogHashMap.put("ispreload", "" + ispreload);
                                 UmsAgentManager.umsAgentDebug(mContext, questionEventId, stableLogHashMap.getData());
                             } catch (Exception e) {

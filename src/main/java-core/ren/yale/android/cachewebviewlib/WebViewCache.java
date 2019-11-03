@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.util.WebTrustVerifier;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -538,7 +539,7 @@ public class WebViewCache {
         return inputStream;
     }
 
-    public WebResourceResponse getWebResourceResponse(CacheWebViewClient client, String url,
+    public CacheWebResourceResponse getWebResourceResponse(CacheWebViewClient client, String url,
                                                       CacheStrategy cacheStrategy,
                                                       String encoding, CacheInterceptor cacheInterceptor) {
 
@@ -623,8 +624,9 @@ public class WebViewCache {
                             + "ms " + url);
                 }
 //                resourseInputStream.setEncode(encode);
-                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, ""
+                CacheWebResourceResponse webResourceResponse = new CacheWebResourceResponse(mimeType, ""
                         , inputStream);
+                webResourceResponse.setFile(resourseInputStream.getInnerInputStream() instanceof FileInputStream);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     Map<String, String> map = resourseInputStream.getHttpCache().getResponseHeader();
                     if (map != null && header != null) {
@@ -641,7 +643,7 @@ public class WebViewCache {
 //                    encode = httpCacheFlag.getEncode();
 //                }
                 CacheWebViewLog.d(encode + " " + url);
-                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
+                CacheWebResourceResponse webResourceResponse = new CacheWebResourceResponse(mimeType, "", inputStream);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     try {
                         if (map != null && header != null) {
