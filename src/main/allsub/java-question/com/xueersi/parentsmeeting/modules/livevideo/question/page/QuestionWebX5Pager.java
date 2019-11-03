@@ -32,6 +32,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDrive
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
@@ -43,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -56,6 +60,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import ren.yale.android.cachewebviewlib.CacheWebView;
+import ren.yale.android.cachewebviewlib.RequestIntercept;
 import ren.yale.android.cachewebviewlib.WebViewCache;
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
@@ -114,6 +119,9 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private HashMap header;
     /** 新课件缓存 */
     private NewCourseCache newCourseCache;
+    private int newProgress;
+    private int urlindex = 0;
+    private LiveThreadPoolExecutor threadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
@@ -180,7 +188,6 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         mMorecacheout = new File(todayLiveCacheDir, liveid + "artschild");
         initData();
     }
-
 
     @Override
     public String getTestId() {
@@ -378,6 +385,33 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 cacheWebView.getWebViewCache().setNeedHttpDns(false);
             }
             cacheWebView.getWebViewCache().setIsScience(isArts == 0);
+            cacheWebView.setRequestIntercept(new RequestIntercept() {
+                @Override
+                public void onIntercept(final String url, WebResourceResponse webResourceResponse) {
+                    final int startProgress = newProgress;
+                    final boolean ispreload = webResourceResponse != null;
+                    threadPoolExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv1");
+                                stableLogHashMap.put("courseurl", "" + examUrl);
+                                stableLogHashMap.put("creattime", "" + creattime);
+                                stableLogHashMap.put("url", url);
+                                stableLogHashMap.put("urlindex", "" + (urlindex++));
+                                stableLogHashMap.put("newProgress", "" + newProgress);
+                                stableLogHashMap.put("startProgress", "" + startProgress);
+                                stableLogHashMap.put("liveId", liveid);
+                                stableLogHashMap.put("testid", testId);
+                                stableLogHashMap.put("ispreload", "" + ispreload);
+                                UmsAgentManager.umsAgentDebug(mContext, questionEventId, stableLogHashMap.getData());
+                            } catch (Exception e) {
+                                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                            }
+                        }
+                    });
+                }
+            });
         }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
@@ -438,6 +472,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
+            QuestionWebX5Pager.this.newProgress = newProgress;
             if (newProgress == 100) {
                 View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
                 if (loadView != null) {

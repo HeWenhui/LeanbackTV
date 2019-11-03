@@ -14,6 +14,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 
 import java.net.URL;
@@ -34,6 +35,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
     private WebViewCache.CacheStrategy mCacheStrategy = WebViewCache.CacheStrategy.NORMAL;
     private String mEncoding = "";
     private CacheInterceptor mCacheInterceptor;
+    private RequestIntercept mRequestIntercept;
     private Vector<String> mVisitVectorUrl = null;
     private String mUserAgent = "";
     private HashMap<String, Map> mHeaderMaps;
@@ -81,6 +83,10 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     public void setCacheInterceptor(CacheInterceptor interceptor) {
         mCacheInterceptor = interceptor;
+    }
+
+    public void setRequestIntercept(RequestIntercept requestIntercept) {
+        this.mRequestIntercept = requestIntercept;
     }
 
     public void addVisitUrl(String url) {
@@ -246,8 +252,16 @@ final class CacheWebViewClient extends ErrorWebViewClient {
         if (!mIsEnableCache) {
             return null;
         }
-        return mWebViewCache.getWebResourceResponse(this, url, mCacheStrategy,
+        webResourceResponse = mWebViewCache.getWebResourceResponse(this, url, mCacheStrategy,
                 mEncoding, mCacheInterceptor);
+        if (mRequestIntercept != null) {
+            try {
+                mRequestIntercept.onIntercept(url, webResourceResponse);
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException("CacheWebViewClient", e);
+            }
+        }
+        return webResourceResponse;
 
     }
 
@@ -265,8 +279,16 @@ final class CacheWebViewClient extends ErrorWebViewClient {
         if (!mIsEnableCache) {
             return null;
         }
-        return mWebViewCache.getWebResourceResponse(this,request.getUrl().toString(),
-                mCacheStrategy,mEncoding,mCacheInterceptor);
+        webResourceResponse = mWebViewCache.getWebResourceResponse(this, request.getUrl().toString(),
+                mCacheStrategy, mEncoding, mCacheInterceptor);
+        if (mRequestIntercept != null) {
+            try {
+                mRequestIntercept.onIntercept("" + request.getUrl(), webResourceResponse);
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException("CacheWebViewClient", e);
+            }
+        }
+        return webResourceResponse;
     }
 
     @Override
