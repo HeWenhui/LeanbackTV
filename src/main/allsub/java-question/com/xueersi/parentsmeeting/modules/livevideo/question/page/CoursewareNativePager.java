@@ -1860,7 +1860,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         rlCourseControl.setVisibility(View.GONE);
         //小学或者主讲
         if ((LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) && !detailInfo.isTUtor()) {
-            //小学理科 走原生结果页
+            //小学理科 走原生结果页,小学理科自传题走H5
             mLogtf.d(SysLogLable.fetchAnswerStart, "showScienceAnswerResult:isforce=" + isforce);
             englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0, new AbstractBusinessDataCallBack() {
                 @Override
@@ -1886,7 +1886,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             });
         } else {
             //初高中互动题
-            String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
+            String url = englishH5CoursewareSecHttp.getResu ltUrl(detailInfo, isforce, "");
             loadResult = true;
             NewCourseLog.sno7(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, detailInfo.isTUtor());
             wvSubjectWeb.addJavascriptInterface(new MiddleResult(mContext) {

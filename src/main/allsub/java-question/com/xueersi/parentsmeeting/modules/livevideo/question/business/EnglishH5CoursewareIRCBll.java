@@ -738,7 +738,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     Log.d("Duncan", "onPutQuestionResultNewArts4");
 
-                                    showEvenDriveAnima(mContext, mGetInfo, getHttpManager(),
+                                    handleShowEvenDriveAnim(mContext, mGetInfo, getHttpManager(),
                                             getLiveViewAction(), QUES_TYPE_ENGLISH_NEW_PLATFORM,
                                             videoQuestionLiveEntity.id);
 
@@ -796,7 +796,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                     mLogtf.d("liveSubmitTestH5Answer:onPmSuccess=" + responseEntity.getJsonObject()
                                             .toString() +
                                             "," + videoQuestionLiveEntity);
-                                    showEvenDriveAnima(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
+                                    handleShowEvenDriveAnim(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
                                             QUES_TYPE_ENGLISH_NEW_PLATFORM,
                                             videoQuestionLiveEntity.id);
 //                                    if (animRepo == null) {
@@ -898,7 +898,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
      * @param liveHttpManager
      * @param liveViewAction
      */
-    private void showEvenDriveAnima(Context context, LiveGetInfo getInfo, LiveHttpManager liveHttpManager,
+    private void handleShowEvenDriveAnim(Context context, LiveGetInfo getInfo, LiveHttpManager liveHttpManager,
                                     LiveViewAction liveViewAction, EvenDriveAnimRepository.EvenDriveQuestionType questionType,
                                     String testId) {
         if (animRepo == null) {
@@ -1061,13 +1061,22 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                 String classId = mGetInfo.getStudentLiveInfo().getClassId();
                 String[] res = getSrcType(englishH5Entity);
+//                if (isArts == 2) {
                 getCourseWareHttpManager().submitCourseWareTests(detailInfo, mGetInfo.getStuId(),
                         englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(),
                         englishH5Entity.getPackageAttr(), englishH5Entity.getReleasedPageInfos(),
                         0, classId, englishH5Entity.getClassTestId(), res[0], res[1],
                         mGetInfo.getEducationStage(), nonce, testInfos, isforce, entranceTime,
-                        new EvenDriveAnimHttpCallBackProxy(callBack, true,
+                        new EvenDriveAnimHttpCallBackProxy(callBack, isArts == 2,
                                 QUES_TYPE_CHS_NEW_PLAYFROM, detailInfo.id));
+//                } else {
+//                    getCourseWareHttpManager().submitCourseWareTests(detailInfo, mGetInfo.getStuId(),
+//                            englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(),
+//                            englishH5Entity.getPackageAttr(), englishH5Entity.getReleasedPageInfos(),
+//                            0, classId, englishH5Entity.getClassTestId(), res[0], res[1],
+//                            mGetInfo.getEducationStage(), nonce, testInfos, isforce, entranceTime,
+//                            callBack);
+//                }
             }
         }
 
@@ -1109,7 +1118,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             public void onDataSucess(Object... objData) {
                 if (realCallBack != null) {
                     if (isShowAnim) {
-                        showEvenDriveAnima(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
+                        handleShowEvenDriveAnim(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
                                 questionType, testId);
                     }
                     realCallBack.onDataSucess(objData);
