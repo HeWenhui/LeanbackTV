@@ -130,6 +130,8 @@ public class SysLogLable {
     public static SysLogEntity h5OnPageStarted = new SysLogEntity(live_h5test, "onPageStarted");
     /** 页面加载完成 */
     public static SysLogEntity h5OnPageFinished = new SysLogEntity(live_h5test, "onPageFinished");
+    /** 页面加载失败 */
+    public static SysLogEntity h5OnReceivedError = new SysLogEntity(live_h5test, "onReceivedError");
     /** 拦截网页 */
     public static SysLogEntity h5OverrideUrl = new SysLogEntity(live_h5test, "shouldOverrideUrlLoading");
     /** 提交 */

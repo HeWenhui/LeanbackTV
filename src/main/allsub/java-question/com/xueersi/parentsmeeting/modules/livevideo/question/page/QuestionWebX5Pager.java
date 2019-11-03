@@ -632,7 +632,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             this.failingUrl = failingUrl;
             UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
                     "&&," + description);
-            mLogtf.i("onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
+            mLogtf.i(SysLogLable.h5OnReceivedError, "onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode + ",description=" + description);
 //            super.onReceivedError(view, errorCode, description, failingUrl);
             wvSubjectWeb.setVisibility(View.INVISIBLE);
             errorView.setVisibility(View.VISIBLE);
