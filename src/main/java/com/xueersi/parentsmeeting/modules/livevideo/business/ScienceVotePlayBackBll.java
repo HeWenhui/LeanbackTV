@@ -54,7 +54,11 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
         if (questionStopTime > 0 && position >= questionStopTime) {
             questionStopTime = 0;
             // 分发互动题收题动作
-            closeView();
+            if (!TextUtils.isEmpty(getUserAnswer())) {
+                submitResult();
+            } else {
+                closeView();
+            }
         }
     }
 
