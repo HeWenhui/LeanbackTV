@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 
+import java.util.HashMap;
+
 /**
  * 理科接口请求
  *
@@ -26,4 +28,9 @@ public class LiveScienceHttpManager {
         liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost(liveHttpManager.liveVideoSAConfigInner.URL_LIVE_HANDADD, params, requestCallBack);
     }
+
+    public void sendMessageToTeacher(HttpRequestParams params,HttpCallBack requestCallBack){
+        liveHttpManager.sendPost(liveHttpManager.liveVideoSAConfigInner.URL_LIVE_FORUM_INTERACTION, params, requestCallBack);
+    }
+
 }

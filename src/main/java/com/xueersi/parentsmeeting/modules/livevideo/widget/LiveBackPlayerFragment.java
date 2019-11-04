@@ -25,6 +25,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.videoplayer.config.LogConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.IPlayBackMediaCtr;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -38,7 +39,7 @@ import java.util.HashMap;
  * @date 2018/6/22
  */
 public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoView.SurfaceCallback,
-        BackMediaPlayerControl {
+        BackMediaPlayerControl , LiveMediaController.MediaPlayerControl {
 
     /** 播放器的控制对象 */
     protected IPlayBackMediaCtr mMediaController;
@@ -424,6 +425,11 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     @Override
     public boolean isPlaying() {
         return isInitialized() && vPlayer.isPlaying();
+    }
+
+    @Override
+    public void onTitleShow(boolean show) {
+
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.dispatcher;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -23,6 +24,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSpeedEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 
 import org.json.JSONArray;
@@ -148,6 +150,84 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
 
         }
         return entity;
+    }
+
+    public VideoSectionEntity parseExperNewArtsEvent(ResponseEntity responseEntity) {
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        UmsAgentTrayPreference.getInstance().put(SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, jsonObject.optString("summerCourseWareSize"));
+        VideoSectionEntity section = new VideoSectionEntity();
+        List<VideoQuestionEntity> questionLst = new ArrayList<VideoQuestionEntity>();
+        VideoQuestionEntity questionEntity = null;
+        section.setVideoWebPath(videoPaths);
+        section.setVideoPath(videopath);
+        section.setHostPath(hostPath);
+        section.setExamPaperUrl(examPaperUrl);
+        section.setSpeechEvalUrl(speechEvalUrl);
+        section.setvCoursseID(courseId);
+        section.setvSectionID(sectionId);
+        section.setvSectionName(sectionName);
+        JSONArray questionArray = jsonObject.optJSONArray("events");
+        boolean isNewArtsPlatForm = false;
+        if (questionArray != null) {
+            for (int k = 0; k < questionArray.length(); k++) {
+                try {
+                    questionEntity = new VideoQuestionEntity();
+                    JSONObject questionJson = questionArray.getJSONObject(k);
+                    questionEntity.setvQuestionID(questionJson.optString("id"));
+                    questionEntity.setvCategory(questionJson.optInt("category"));
+                    questionEntity.setvQuestionInsretTime(questionJson.optInt("begintime"));
+                    questionEntity.setAnswerDay(questionJson.optString("date"));
+                    questionEntity.setvEndTime(questionJson.optInt("endtime"));
+                    questionEntity.setUrl(questionJson.optString("url"));
+                    questionEntity.setName(questionJson.optString("type"));
+                    questionEntity.setvQuestionType(questionJson.optString("type"));
+
+
+                    questionEntity.setSrcType(questionJson.optString("srcType"));
+                    questionEntity.setQuestionNum(questionJson.optInt("num", 1));
+                    JSONArray releasedArray = questionJson.optJSONArray("releaseInfos");
+                    List<ReleaseedInfos> releaseLst = new ArrayList<ReleaseedInfos>();
+                    ReleaseedInfos infos = null;
+                    if (releasedArray != null) {
+                        for (int i = 0; i < releasedArray.length(); i++) {
+                            infos = new ReleaseedInfos();
+                            JSONObject infoJson = releasedArray.getJSONObject(i);
+                            infos.setId(infoJson.optString("id"));
+                            infos.setType(infoJson.optString("type"));
+                            infos.setRole(infoJson.optString("role"));
+                            infos.setAnswer(infoJson.optString("answer"));
+                            infos.setEstimatedTime(infoJson.optString("estimatedTime"));
+                            infos.setAssess_ref(infoJson.optString("assess_ref"));
+                            infos.setIsVoice(infoJson.optString("isVoice"));
+                            infos.setTotalScore(infoJson.optString("totalScore"));
+                            // 人为的划分H5Bll和QuestionBll: type为{"4", "0", "1", "2", "8", "5", "6"}的题型走QuestionBll,
+                            // 将他们的category置为1001
+                            if (questiongtype.contains(releasedArray.getJSONObject(0).optString("type"))) {
+                                questionEntity.setvCategory(LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE);
+                            }
+                            // 设置QuestionType,文科回放打点中使用
+                            questionEntity.setvQuestionType(releasedArray.getJSONObject(0).optString("type"));
+                            // 新增一个判断是否是新课件平台的字段
+                            if (LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == questionEntity.getvCategory() || LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == questionEntity.getvCategory()) {
+                                isNewArtsPlatForm = true;
+                            } else {
+                                isNewArtsPlatForm = false;
+                            }
+                            releaseLst.add(infos);
+                        }
+                        questionEntity.setReleaseInfos(releaseLst);
+                    }
+                    questionLst.add(questionEntity);
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(TAG, e);
+                }
+            }
+            if (isNewArtsPlatForm) {
+                section.setLstVideoQuestionEntity(questionLst);
+                return section;
+            }
+        }
+        return null;
     }
 
     /**
@@ -491,6 +571,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         resultEntity.setLiveType(jsonObject.optInt("liveType"));
         int isArts = jsonObject.optInt("isArts");
         resultEntity.setIsArts(isArts);
+        resultEntity.setIsNewCourseWare(jsonObject.optBoolean("isNewCourseWare",false));
         resultEntity.setClassId(jsonObject.optString("classId"));
         String videoPath = jsonObject.optString("videoPath");
         JSONArray pathArray = jsonObject.optJSONArray("hostPath");
@@ -707,6 +788,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     questionEntity.setvQuestionInsretTime(questionJson.optInt("begintime"));
                     questionEntity.setAnswerDay(questionJson.optString("date"));
                     questionEntity.setvEndTime(questionJson.optInt("endtime"));
+                    questionEntity.setUrl(questionJson.optString("url"));
+                    questionEntity.setName(questionJson.optString("type"));
                     questionEntity.setvQuestionType(questionJson.optString("type"));
                     questionEntity.setCourseExtInfo(questionJson.optString("type"));
                     questionEntity.setReleasedPageInfos(questionJson.optString("url"));
@@ -991,7 +1074,6 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
     }
 
 
-
     /**
      * 解析大班整合回放
      *
@@ -1005,7 +1087,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             playBackEntity = new BigLivePlayBackEntity();
             playBackEntity.setNowTime(data.optLong("nowTime"));
             //解析学生基础信息
-            if(data.has("stuInfo")){
+            if (data.has("stuInfo")) {
                 JSONObject stuInfoJsonObj = data.optJSONObject("stuInfo");
                 BigLivePlayBackEntity.StuInfo stuInfo = new BigLivePlayBackEntity.StuInfo();
                 stuInfo.setId(stuInfoJsonObj.optString("id"));
@@ -1018,7 +1100,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 stuInfo.setGradeId(stuInfoJsonObj.optInt("gradeId"));
                 stuInfo.setAvatar(stuInfoJsonObj.optString("avatar"));
                 stuInfo.setGoldNum(stuInfoJsonObj.optLong("goldNum"));
-                if(stuInfoJsonObj.has("psim")){
+                if (stuInfoJsonObj.has("psim")) {
                     JSONObject psImJsonObj = stuInfoJsonObj.optJSONObject("psim");
                     stuInfo.setPsImId(psImJsonObj.optString("psId"));
                     stuInfo.setPsImPwd(psImJsonObj.optString("psPwd"));
@@ -1027,7 +1109,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             }
 
             //解析学生场次信息
-            if(data.has("stuLiveInfo")){
+            if (data.has("stuLiveInfo")) {
 
                 JSONObject stuLiveInfoJsonObj = data.getJSONObject("stuLiveInfo");
                 BigLivePlayBackEntity.StuLiveInfo stuLiveInfo = new BigLivePlayBackEntity.StuLiveInfo();
@@ -1036,16 +1118,16 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 playBackEntity.setStuLiveInfo(stuLiveInfo);
             }
 
-            if(data.has("teamStuIds")){
+            if (data.has("teamStuIds")) {
                 JSONArray teamStudIdsJsonArray = data.getJSONArray("teamStuIds");
-                if(teamStudIdsJsonArray.length() > 0){
+                if (teamStudIdsJsonArray.length() > 0) {
                     List<String> teamStuIdList = new ArrayList<>();
                     for (int i = 0; i < teamStudIdsJsonArray.length(); i++) {
                         teamStuIdList.add(teamStudIdsJsonArray.getString(i));
                     }
-                    if(playBackEntity.getStuLiveInfo() != null){
+                    if (playBackEntity.getStuLiveInfo() != null) {
                         playBackEntity.getStuLiveInfo().setTeamStudIds(teamStuIdList);
-                    }else{
+                    } else {
                         BigLivePlayBackEntity.StuLiveInfo stuLiveInfo = new BigLivePlayBackEntity.StuLiveInfo();
                         stuLiveInfo.setTeamStudIds(teamStuIdList);
                         playBackEntity.setStuLiveInfo(stuLiveInfo);
@@ -1054,7 +1136,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             }
 
             //解析课程场次信息
-            if(data.has("planInfo")){
+            if (data.has("planInfo")) {
                 JSONObject planInfoJsonObj = data.getJSONObject("planInfo");
                 BigLivePlayBackEntity.PlanInfo planInfo = new BigLivePlayBackEntity.PlanInfo();
                 planInfo.setId(planInfoJsonObj.optString("id"));
@@ -1065,17 +1147,17 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 planInfo.setsTime(planInfoJsonObj.optLong("stime"));
                 planInfo.seteTIme(planInfoJsonObj.optLong("etime"));
                 String subjectIdsStr = planInfoJsonObj.optString("subjectIds");
-                if(!StringUtils.isEmpty(subjectIdsStr)){
-                    String[]ids = subjectIdsStr.split(",");
-                    if(ids.length > 0){
+                if (!StringUtils.isEmpty(subjectIdsStr)) {
+                    String[] ids = subjectIdsStr.split(",");
+                    if (ids.length > 0) {
                         planInfo.setSubjectIds(Arrays.asList(ids));
                     }
                 }
 
                 String gradeIdsStr = planInfoJsonObj.optString("gradeIds");
-                if(!StringUtils.isEmpty(gradeIdsStr)){
-                    String []ids = gradeIdsStr.split(",");
-                    if(ids.length > 0){
+                if (!StringUtils.isEmpty(gradeIdsStr)) {
+                    String[] ids = gradeIdsStr.split(",");
+                    if (ids.length > 0) {
                         planInfo.setGradeIds(Arrays.asList(ids));
                     }
                 }
@@ -1084,7 +1166,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
 
 
             //解析主讲老师信息
-            if(data.has("teacherInfo")){
+            if (data.has("teacherInfo")) {
                 JSONObject teacherInfoJsonObj = data.getJSONObject("teacherInfo");
                 BigLivePlayBackEntity.TeacherInfo teacherInfo = new BigLivePlayBackEntity.TeacherInfo();
                 teacherInfo.setId(teacherInfoJsonObj.optString("id"));
@@ -1100,7 +1182,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             }
 
             // 解析辅导老师信息
-            if(data.has("counselorInfo")){
+            if (data.has("counselorInfo")) {
                 JSONObject counselorInfoJsonObj = data.getJSONObject("counselorInfo");
                 BigLivePlayBackEntity.TeacherInfo teacherInfo = new BigLivePlayBackEntity.TeacherInfo();
 
@@ -1117,7 +1199,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             }
 
             // 解析配置信息
-            if(data.has("configs")){
+            if (data.has("configs")) {
                 JSONObject configsJsonObj = data.getJSONObject("configs");
                 BigLivePlayBackEntity.Configs configs = new BigLivePlayBackEntity.Configs();
                 configs.setAppId(configsJsonObj.optString("appId"));
@@ -1125,7 +1207,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 configs.setVideoFile(configsJsonObj.optString("videoFile"));
                 JSONObject urlsJsonObj = configsJsonObj.optJSONObject("urls");
                 //解析回放 相关接口信息
-                if(urlsJsonObj != null){
+                if (urlsJsonObj != null) {
                     configs.setGetChatRecordUrl(urlsJsonObj.optString("getChatRecordUrl"));
                     configs.setGetMetadataUrl(urlsJsonObj.optString("getMetadataUrl"));
                     configs.setInitModuleUrl(urlsJsonObj.optString("initModuleUrl"));
@@ -1143,7 +1225,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
     }
 
     /**
-     * 直播灰度场次确认
+     * 大班整合-讲座灰度场次确认
+     *
      * @param responseEntity
      * @return
      */
@@ -1158,5 +1241,24 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         }
         return -1;
     }
+
+    /**
+     * 大班整合-直播 灰度场次确认
+     * @param responseEntity
+     * @return
+     */
+    public int parseBigLivePlanVersion(ResponseEntity responseEntity){
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        if (jsonObject != null) {
+            try {
+                return jsonObject.optInt("planVersion");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
+    }
+
+
 
 }

@@ -64,7 +64,10 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private String answerDay;
     /** 体验课订单ID */
     private String termId;
+    /** 直播还是回放*/
     private boolean isLive = true;
+    /** 体验课题目*/
+    private boolean isExper = false;
     /** H5语音答题的题型*/
     public String voiceType;
     /**
@@ -91,6 +94,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private String subjectiveItem2AIUrl;
     /** 辅导态 */
     private boolean isTUtor = false;
+    /** 发题时间 */
+    private long releaseTime;
 
     public String getTestsProtocal() {
         return testsProtocal;
@@ -252,6 +257,14 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         isLive = live;
     }
 
+    public void setExper(boolean exper) {
+        isExper = exper;
+    }
+
+    public boolean isExper() {
+        return isExper;
+    }
+
     public void setOnlineTechEntity(H5OnlineTechEntity onlineTechEntity) {
         this.onlineTechEntity = onlineTechEntity;
     }
@@ -313,5 +326,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setTUtor(boolean TUtor) {
         isTUtor = TUtor;
+    }
+
+    public void setReleaseTime(long releaseTime) {
+        this.releaseTime = releaseTime;
+    }
+
+    public long getReleaseTime() {
+        return releaseTime;
     }
 }
