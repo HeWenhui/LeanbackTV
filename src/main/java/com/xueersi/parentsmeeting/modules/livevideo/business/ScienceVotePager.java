@@ -35,7 +35,7 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
     ImageView ivScienceVoteOpen;
     Button btScienceVoteSubmit;
     LinearLayout llScienceVote;
-    RelativeLayout rlScienceVoteSelect;
+    LinearLayout llScienceVoteSelect;
     String userAnswer;
     JSONArray optionsJSONArray;
     ScienceVoteBll.ScienceVoteBllBack callback;
@@ -52,7 +52,7 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
         contentView = View.inflate(mContext, R.layout.page_livevideo_science_vote_select, null);
         ivScienceVoteOpen = contentView.findViewById(R.id.iv_page_livevideo_science_vote_open);
         btScienceVoteSubmit = contentView.findViewById(R.id.bt_livevideo_science_vote_select);
-        rlScienceVoteSelect = contentView.findViewById(R.id.rl_page_livevideo_science_vote_select);
+        llScienceVoteSelect = contentView.findViewById(R.id.ll_page_livevideo_science_vote_select);
         llScienceVote = contentView.findViewById(R.id.ll_science_vote);
         ivScienceVoteOpen.setOnClickListener(this);
         btScienceVoteSubmit.setOnClickListener(this);
@@ -80,15 +80,9 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
                         (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 if(optionsJSONArray.length()==2){
-                    params.setMargins(dp2px(20, mContext), 0, dp2px(20, mContext), 0);
+                    params.setMargins(dp2px(30, mContext), 0, dp2px(30, mContext), 0);
                 }else if(optionsJSONArray.length()==3){
-                    params.setMargins(dp2px(15, mContext), 0, dp2px(15, mContext), 0);
-                }else if(optionsJSONArray.length()==6){
-                    if(i==0){
-                        params.setMargins(0, 0, dp2px(6, mContext), 0);
-                    }else {
-                        params.setMargins(dp2px(6, mContext), 0, dp2px(6, mContext), 0);
-                    }
+                    params.setMargins(dp2px(20, mContext), 0, dp2px(20, mContext), 0);
                 }else {
                     params.setMargins(dp2px(10, mContext), 0, dp2px(10, mContext), 0);
                 }
@@ -107,7 +101,7 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
             if (ivScienceVoteOpen.isSelected()) {
                 ivScienceVoteOpen.setSelected(false);
                 if (animationUp == null) {
-                    span = rlScienceVoteSelect.getHeight() - dp2px(9, mContext);
+                    span = llScienceVoteSelect.getHeight() - dp2px(9, mContext);
                     animationUp = ObjectAnimator.ofFloat(contentView, View.TRANSLATION_Y, span, 0);
                     animationUp.setDuration(200);
                     animation = animationUp;
@@ -117,7 +111,7 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
             } else {
                 ivScienceVoteOpen.setSelected(true);
                 if (animationDown == null) {
-                    span = rlScienceVoteSelect.getHeight() - dp2px(9, mContext);
+                    span = llScienceVoteSelect.getHeight() - dp2px(9, mContext);
                     animationDown = ObjectAnimator.ofFloat(contentView, View.TRANSLATION_Y, 0, span);
                     animationDown.setDuration(200);
                     animation = animationDown;

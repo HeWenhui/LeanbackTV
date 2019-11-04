@@ -29,7 +29,6 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
     ScienceVotePager scienceVotePager;
     String liveId;
     String nickname;
-    private ContextLiveAndBackDebug liveAndBackDebug;
     private static String eventId = "p-quickchoice";
 
     public ScienceVotePlayBackBll(Activity activity, LiveBackBll liveBackBll) {
@@ -46,7 +45,6 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
         liveId = mVideoEntity.getLiveId();
         nickname = "s_" + liveGetInfo.getLiveType() + "_"
                 + liveGetInfo.getId() + "_" + liveGetInfo.getStuId() + "_" + liveGetInfo.getStuSex();
-        liveAndBackDebug = new ContextLiveAndBackDebug(mContext);
     }
 
     @Override
@@ -172,22 +170,22 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
      * @param logType
      */
     public void liveLogInteractive(String sno, String table, String logType,String interactionId) {
-        if (liveAndBackDebug != null) {
+        if (contextLiveAndBackDebug != null) {
             StableLogHashMap logHashMap = new StableLogHashMap(logType);
             logHashMap.addSno(sno).addStable(table);
             logHashMap.addInteractionId(interactionId);
             logHashMap.put("","");
-            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            contextLiveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
         }
     }
 
     public void liveLogInteractive(String sno, String table, String logType,String interactionId,String isRight) {
-        if (liveAndBackDebug != null) {
+        if (contextLiveAndBackDebug != null) {
             StableLogHashMap logHashMap = new StableLogHashMap(logType);
             logHashMap.addSno(sno).addStable(table);
             logHashMap.addInteractionId(interactionId);
             logHashMap.put("isRight",isRight);
-            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            contextLiveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
         }
     }
 }

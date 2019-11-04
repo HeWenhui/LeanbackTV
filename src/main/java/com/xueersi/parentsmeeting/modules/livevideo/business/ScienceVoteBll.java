@@ -86,6 +86,9 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
         post(new Runnable() {
             @Override
             public void run() {
+                if (scienceVotePager != null) {
+                    scienceVotePager = null;
+                }
                 if (liveMediaControllerBottom.getController() != null &&
                         liveMediaControllerBottom instanceof LiveMediaControllerBottom) {
                     ((LiveMediaControllerBottom) liveMediaControllerBottom).interceptHideBtmMediaCtr(true);
@@ -206,6 +209,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                     rightAnswer = "";
                     scienceVotePager.destroyView();
                     removeView(scienceVotePager.getRootView());
+                    scienceVotePager = null;
                     if (liveMediaControllerBottom.getController() != null &&
                             liveMediaControllerBottom instanceof LiveMediaControllerBottom) {
                         ((LiveMediaControllerBottom) liveMediaControllerBottom).interceptHideBtmMediaCtr(false);
