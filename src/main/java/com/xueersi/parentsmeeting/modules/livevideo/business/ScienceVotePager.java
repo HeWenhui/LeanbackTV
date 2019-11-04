@@ -79,7 +79,19 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
                 optionView.setOnClickListener(this);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
                         (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.setMargins(dp2px(10, mContext), 0, dp2px(10, mContext), 0);
+                if(optionsJSONArray.length()==2){
+                    params.setMargins(dp2px(20, mContext), 0, dp2px(20, mContext), 0);
+                }else if(optionsJSONArray.length()==3){
+                    params.setMargins(dp2px(15, mContext), 0, dp2px(15, mContext), 0);
+                }else if(optionsJSONArray.length()==6){
+                    if(i==0){
+                        params.setMargins(0, 0, dp2px(6, mContext), 0);
+                    }else {
+                        params.setMargins(dp2px(6, mContext), 0, dp2px(6, mContext), 0);
+                    }
+                }else {
+                    params.setMargins(dp2px(10, mContext), 0, dp2px(10, mContext), 0);
+                }
                 optionView.setLayoutParams(params);
                 llScienceVote.addView(optionView, params);
             }

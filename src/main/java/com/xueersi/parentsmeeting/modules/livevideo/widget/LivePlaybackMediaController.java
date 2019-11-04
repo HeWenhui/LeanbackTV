@@ -174,9 +174,6 @@ public class LivePlaybackMediaController extends MediaController2 {
                 if (videoQuestionEntity.isAnswered()) {
                     continue;
                 }
-                if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_SCIENCE_VOTE_END) {
-                    continue;
-                }
                 //添加外面点击区域 和SeekBar的原点一样大
                 int width = bitmap.getWidth();
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, RelativeLayout.LayoutParams

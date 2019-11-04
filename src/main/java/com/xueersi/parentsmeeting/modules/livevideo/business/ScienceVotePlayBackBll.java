@@ -25,7 +25,6 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
     private static final String VOTE_STATE_CLOSE = "close";
     private String rightAnswer;
     private String interactionId;
-    private boolean isAnswer = false;
     ScienceVotePager scienceVotePager;
     String liveId;
     String nickname;
@@ -65,7 +64,7 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
         try {
             String orgDataStr = questionEntity.getOrgDataStr();
             JSONObject data = new JSONObject(orgDataStr);
-            questionStopTime = questionEntity.getEndtime();
+            questionStopTime = data.optInt("endtime");
 
             String open = data.optString("open");
             interactionId = data.optString("id");
@@ -116,7 +115,6 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("ScienceVoteCommit:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
-                isAnswer = true;
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                 if (jsonObject.optBoolean("isRepeat")) {
                     XESToastUtils.showToast(mContext, "已作答");
@@ -147,7 +145,6 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
             @Override
             public void run() {
                 if (scienceVotePager != null) {
-                    isAnswer = false;
                     rightAnswer = "";
                     scienceVotePager.destroyView();
                     removeView(scienceVotePager.getRootView());
