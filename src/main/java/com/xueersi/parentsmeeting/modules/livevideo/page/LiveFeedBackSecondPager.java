@@ -96,7 +96,7 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         webViewConfig();
         webView.addJavascriptInterface(this, "xesAppStudyCenter");
         mView = view;
-        rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
+        rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading_feedback_second);
         preLoad = new MiddleSchool();
         return mView;
     }
@@ -364,9 +364,9 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         private TextView tvDataLoadingTip;
 
         public void onStart() {
-            ivLoading = mView.findViewById(R.id.iv_data_loading_show);
-            pgCourseProg = mView.findViewById(R.id.pg_livevideo_new_course_prog);
-            tvDataLoadingTip = mView.findViewById(R.id.tv_data_loading_tip);
+            ivLoading = mView.findViewById(R.id.iv_data_loading_show_feedback_second);
+            pgCourseProg = mView.findViewById(R.id.pg_livevideo_new_course_prog_feedback_second);
+            tvDataLoadingTip = mView.findViewById(R.id.tv_data_loading_tip_feedback_second);
             logger.d("MiddleSchool:onStart");
             try {
                 Drawable drawable = mContext.getResources().getDrawable(R.drawable.animlst_app_loading);
@@ -380,8 +380,17 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         }
 
         public void onProgressChanged(WebView view, int newProgress) {
-            pgCourseProg.setProgress(newProgress);
-            tvDataLoadingTip.setText("加载中 " + newProgress + "%");
+            if (pgCourseProg != null) {
+                pgCourseProg.setProgress(newProgress);
+            } else {
+                logger.d("MiddleSchool:pgCourseProg =null");
+            }
+            if (tvDataLoadingTip != null) {
+                tvDataLoadingTip.setText("加载中 " + newProgress + "%");
+            } else {
+                logger.d("MiddleSchool:tvDataLoadingTip =null");
+            }
+
         }
 
         public void onStop() {
