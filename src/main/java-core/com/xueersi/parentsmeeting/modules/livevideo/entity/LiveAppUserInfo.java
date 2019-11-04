@@ -247,14 +247,12 @@ public class LiveAppUserInfo {
     }
 
     public String getEnglishNameAudio() {
-        return mShareDataManager.getString(EnglishNameConfig.LIVE_GROUP_ENGLISH_NAME_NAME_AUDIO, "",
+        return mShareDataManager.getString(LoginRegistersConfig.SP_USER_ENGLISH_NAME_AUDIO_PATH, "",
                 ShareDataManager
                         .SHAREDATA_USER);
     }
 
     public void setEnglishNameAudio(String englishNameAudio) {
-        mShareDataManager.put(EnglishNameConfig.LIVE_GROUP_ENGLISH_NAME_NAME_AUDIO, englishNameAudio,
-                ShareDataManager
-                        .SHAREDATA_USER,true);
+        UserBll.getInstance().saveUserNameAudio(englishNameAudio);
     }
 }
