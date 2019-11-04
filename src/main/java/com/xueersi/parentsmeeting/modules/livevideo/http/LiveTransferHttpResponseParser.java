@@ -168,6 +168,18 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
         VideoQuestionEntity questionEntity = null;
 
         if (questionArray != null) {
+            HashMap<String,Integer> map = new HashMap();
+            for (int i = 0; i < questionArray.length(); i++) {
+                JSONObject questionJson = null;
+                try {
+                    questionJson = questionArray.getJSONObject(i);
+                    if(questionJson.optInt("category") == LocalCourseConfig.CATEGORY_SCIENCE_VOTE_END){
+                        map.put(questionJson.optString("id"),questionJson.optInt("begintime"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             for (int k = 0; k < questionArray.length(); k++) {
                 try {
                     questionEntity = new VideoQuestionEntity();
@@ -310,6 +322,13 @@ public class LiveTransferHttpResponseParser extends HttpResponseParser {
                         }
                     } else if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_H5COURSE_WARE) {
                         questionEntity.setH5Play_url(questionJson.optString("play_url"));
+                    } else if(questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_SCIENCE_VOTE){
+                        try {
+                            questionEntity.setOrgDataStr(questionJson.toString());
+                            questionEntity.setEndtime(map.get(questionJson.optString("id")));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                     questionLst.add(questionEntity);
                 } catch (Exception e) {

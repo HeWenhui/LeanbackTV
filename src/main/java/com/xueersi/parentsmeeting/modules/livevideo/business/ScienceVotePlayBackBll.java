@@ -48,11 +48,11 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
 
     @Override
     public void onPositionChanged(long position) {
-//        if (questionStopTime > 0 && position >= questionStopTime) {
-//            questionStopTime = 0;
-//            // 分发互动题收题动作
-//            closeView();
-//        }
+        if (questionStopTime > 0 && position >= questionStopTime) {
+            questionStopTime = 0;
+            // 分发互动题收题动作
+            closeView();
+        }
     }
 
     @Override
@@ -65,8 +65,7 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
         try {
             String orgDataStr = questionEntity.getOrgDataStr();
             JSONObject data = new JSONObject(orgDataStr);
-//            JSONObject properties = data.getJSONObject("properties");
-//            questionStopTime = data.optInt("endTime");
+            questionStopTime = questionEntity.getEndtime();
 
             String open = data.optString("open");
             interactionId = data.optString("id");

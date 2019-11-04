@@ -3,14 +3,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.text.TextUtils;
+import android.graphics.Color;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -34,14 +34,7 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
     View contentView;
     ImageView ivScienceVoteOpen;
     Button btScienceVoteSubmit;
-    FangZhengCuYuanTextView fvScienceVoteA;
-    FangZhengCuYuanTextView fvScienceVoteB;
-    FangZhengCuYuanTextView fvScienceVoteC;
-    FangZhengCuYuanTextView fvScienceVoteD;
-    FangZhengCuYuanTextView fvScienceVoteE;
-    FangZhengCuYuanTextView fvScienceVoteF;
-    FangZhengCuYuanTextView fvScienceVoteYes;
-    FangZhengCuYuanTextView fvScienceVoteNo;
+    LinearLayout llScienceVote;
     RelativeLayout rlScienceVoteSelect;
     String userAnswer;
     JSONArray optionsJSONArray;
@@ -57,111 +50,41 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
     @Override
     public View initView() {
         contentView = View.inflate(mContext, R.layout.page_livevideo_science_vote_select, null);
-//        contentView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                return true;
-//            }
-//        });
         ivScienceVoteOpen = contentView.findViewById(R.id.iv_page_livevideo_science_vote_open);
         btScienceVoteSubmit = contentView.findViewById(R.id.bt_livevideo_science_vote_select);
-        fvScienceVoteA = contentView.findViewById(R.id.fv_science_vote_a);
-        fvScienceVoteB = contentView.findViewById(R.id.fv_science_vote_b);
-        fvScienceVoteC = contentView.findViewById(R.id.fv_science_vote_c);
-        fvScienceVoteD = contentView.findViewById(R.id.fv_science_vote_d);
-        fvScienceVoteE = contentView.findViewById(R.id.fv_science_vote_e);
-        fvScienceVoteF = contentView.findViewById(R.id.fv_science_vote_f);
-        fvScienceVoteYes = contentView.findViewById(R.id.fv_science_vote_yes);
-        fvScienceVoteNo = contentView.findViewById(R.id.fv_science_vote_no);
         rlScienceVoteSelect = contentView.findViewById(R.id.rl_page_livevideo_science_vote_select);
+        llScienceVote = contentView.findViewById(R.id.ll_science_vote);
         ivScienceVoteOpen.setOnClickListener(this);
         btScienceVoteSubmit.setOnClickListener(this);
-        fvScienceVoteA.setOnClickListener(this);
-        fvScienceVoteB.setOnClickListener(this);
-        fvScienceVoteC.setOnClickListener(this);
-        fvScienceVoteD.setOnClickListener(this);
-        fvScienceVoteE.setOnClickListener(this);
-        fvScienceVoteF.setOnClickListener(this);
-        fvScienceVoteYes.setOnClickListener(this);
-        fvScienceVoteNo.setOnClickListener(this);
         btScienceVoteSubmit.setEnabled(false);
         return contentView;
     }
 
     @Override
     public void initData() {
+        initOptionView();
+    }
+
+    private void initOptionView() {
         try {
-            if (optionsJSONArray.length() == 2) {
-                JSONObject optionsJSONObject = optionsJSONArray.getJSONObject(0);
-                if (TextUtils.equals(optionsJSONObject.optString("option"), "A")) {
-                    showChoice(0);
-                } else {
-                    showChoice(optionsJSONArray.length());
-                }
-            } else {
-                showChoice(optionsJSONArray.length());
+            for (int i = 0; i < optionsJSONArray.length(); i++) {
+                JSONObject optionsJSONObject = optionsJSONArray.getJSONObject(i);
+                FangZhengCuYuanTextView optionView = new FangZhengCuYuanTextView(mContext);
+                optionView.setText(optionsJSONObject.optString("option"));
+                int color = Color.parseColor("#9e4d1f");
+                optionView.setTextColor(color);
+                optionView.setTextSize(25);
+                optionView.setBackgroundResource(R.drawable.selector_livevideo_science_vote_option);
+                optionView.setGravity(Gravity.CENTER);
+                optionView.setOnClickListener(this);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
+                        (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.setMargins(dp2px(10, mContext), 0, dp2px(10, mContext), 0);
+                optionView.setLayoutParams(params);
+                llScienceVote.addView(optionView, params);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-    }
-
-    private void showChoice(int length) {
-        if (length == 0) {
-            fvScienceVoteYes.setVisibility(View.GONE);
-            fvScienceVoteNo.setVisibility(View.GONE);
-            fvScienceVoteA.setVisibility(View.VISIBLE);
-            fvScienceVoteB.setVisibility(View.VISIBLE);
-            fvScienceVoteC.setVisibility(View.GONE);
-            fvScienceVoteD.setVisibility(View.GONE);
-            fvScienceVoteE.setVisibility(View.GONE);
-            fvScienceVoteF.setVisibility(View.GONE);
-        } else if (length == 2) {
-            fvScienceVoteYes.setVisibility(View.VISIBLE);
-            fvScienceVoteNo.setVisibility(View.VISIBLE);
-            fvScienceVoteA.setVisibility(View.GONE);
-            fvScienceVoteB.setVisibility(View.GONE);
-            fvScienceVoteC.setVisibility(View.GONE);
-            fvScienceVoteD.setVisibility(View.GONE);
-            fvScienceVoteE.setVisibility(View.GONE);
-            fvScienceVoteF.setVisibility(View.GONE);
-        } else if (length == 3) {
-            fvScienceVoteYes.setVisibility(View.GONE);
-            fvScienceVoteNo.setVisibility(View.GONE);
-            fvScienceVoteA.setVisibility(View.VISIBLE);
-            fvScienceVoteB.setVisibility(View.VISIBLE);
-            fvScienceVoteC.setVisibility(View.VISIBLE);
-            fvScienceVoteD.setVisibility(View.GONE);
-            fvScienceVoteE.setVisibility(View.GONE);
-            fvScienceVoteF.setVisibility(View.GONE);
-        } else if (length == 4) {
-            fvScienceVoteYes.setVisibility(View.GONE);
-            fvScienceVoteNo.setVisibility(View.GONE);
-            fvScienceVoteA.setVisibility(View.VISIBLE);
-            fvScienceVoteB.setVisibility(View.VISIBLE);
-            fvScienceVoteC.setVisibility(View.VISIBLE);
-            fvScienceVoteD.setVisibility(View.VISIBLE);
-            fvScienceVoteE.setVisibility(View.GONE);
-            fvScienceVoteF.setVisibility(View.GONE);
-        } else if (length == 5) {
-            fvScienceVoteYes.setVisibility(View.GONE);
-            fvScienceVoteNo.setVisibility(View.GONE);
-            fvScienceVoteA.setVisibility(View.VISIBLE);
-            fvScienceVoteB.setVisibility(View.VISIBLE);
-            fvScienceVoteC.setVisibility(View.VISIBLE);
-            fvScienceVoteD.setVisibility(View.VISIBLE);
-            fvScienceVoteE.setVisibility(View.VISIBLE);
-            fvScienceVoteF.setVisibility(View.GONE);
-        } else if (length == 6) {
-            fvScienceVoteYes.setVisibility(View.GONE);
-            fvScienceVoteNo.setVisibility(View.GONE);
-            fvScienceVoteA.setVisibility(View.VISIBLE);
-            fvScienceVoteB.setVisibility(View.VISIBLE);
-            fvScienceVoteC.setVisibility(View.VISIBLE);
-            fvScienceVoteD.setVisibility(View.VISIBLE);
-            fvScienceVoteE.setVisibility(View.VISIBLE);
-            fvScienceVoteF.setVisibility(View.VISIBLE);
         }
     }
 
@@ -195,118 +118,23 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
             }
         } else if (view.getId() == R.id.bt_livevideo_science_vote_select) {
             callback.submit();
-        } else if (view.getId() == R.id.fv_science_vote_a) {
-            if (fvScienceVoteA.isSelected()) {
-                userAnswer = "";
-                fvScienceVoteA.setSelected(false);
-                btScienceVoteSubmit.setEnabled(false);
-            } else {
-                userAnswer = "A";
-                fvScienceVoteA.setSelected(true);
-                btScienceVoteSubmit.setEnabled(true);
+        } else {
+            for (int i = 0; i < llScienceVote.getChildCount(); i++) {
+                FangZhengCuYuanTextView fv = (FangZhengCuYuanTextView) llScienceVote.getChildAt(i);
+                if (view == fv) {
+                    if (fv.isSelected()) {
+                        userAnswer = "";
+                        fv.setSelected(false);
+                        btScienceVoteSubmit.setEnabled(false);
+                    } else {
+                        userAnswer = fv.getText().toString();
+                        fv.setSelected(true);
+                        btScienceVoteSubmit.setEnabled(true);
+                    }
+                } else {
+                    fv.setSelected(false);
+                }
             }
-            fvScienceVoteB.setSelected(false);
-            fvScienceVoteC.setSelected(false);
-            fvScienceVoteD.setSelected(false);
-            fvScienceVoteE.setSelected(false);
-            fvScienceVoteF.setSelected(false);
-        } else if (view.getId() == R.id.fv_science_vote_b) {
-            if (fvScienceVoteB.isSelected()) {
-                userAnswer = "";
-                fvScienceVoteB.setSelected(false);
-                btScienceVoteSubmit.setEnabled(false);
-            } else {
-                userAnswer = "B";
-                fvScienceVoteB.setSelected(true);
-                btScienceVoteSubmit.setEnabled(true);
-            }
-            fvScienceVoteA.setSelected(false);
-            fvScienceVoteC.setSelected(false);
-            fvScienceVoteD.setSelected(false);
-            fvScienceVoteE.setSelected(false);
-            fvScienceVoteF.setSelected(false);
-        } else if (view.getId() == R.id.fv_science_vote_c) {
-            if (fvScienceVoteC.isSelected()) {
-                userAnswer = "";
-                fvScienceVoteC.setSelected(false);
-                btScienceVoteSubmit.setEnabled(false);
-            } else {
-                userAnswer = "C";
-                fvScienceVoteC.setSelected(true);
-                btScienceVoteSubmit.setEnabled(true);
-            }
-            fvScienceVoteA.setSelected(false);
-            fvScienceVoteB.setSelected(false);
-            fvScienceVoteD.setSelected(false);
-            fvScienceVoteE.setSelected(false);
-            fvScienceVoteF.setSelected(false);
-        } else if (view.getId() == R.id.fv_science_vote_d) {
-            if (fvScienceVoteD.isSelected()) {
-                userAnswer = "";
-                fvScienceVoteD.setSelected(false);
-                btScienceVoteSubmit.setEnabled(false);
-            } else {
-                userAnswer = "D";
-                fvScienceVoteD.setSelected(true);
-                btScienceVoteSubmit.setEnabled(true);
-            }
-            fvScienceVoteA.setSelected(false);
-            fvScienceVoteB.setSelected(false);
-            fvScienceVoteC.setSelected(false);
-            fvScienceVoteE.setSelected(false);
-            fvScienceVoteF.setSelected(false);
-        } else if (view.getId() == R.id.fv_science_vote_e) {
-            if (fvScienceVoteE.isSelected()) {
-                userAnswer = "";
-                fvScienceVoteE.setSelected(false);
-                btScienceVoteSubmit.setEnabled(false);
-            } else {
-                userAnswer = "E";
-                fvScienceVoteE.setSelected(true);
-                btScienceVoteSubmit.setEnabled(true);
-            }
-            fvScienceVoteA.setSelected(false);
-            fvScienceVoteB.setSelected(false);
-            fvScienceVoteC.setSelected(false);
-            fvScienceVoteD.setSelected(false);
-            fvScienceVoteF.setSelected(false);
-        } else if (view.getId() == R.id.fv_science_vote_f) {
-            if (fvScienceVoteF.isSelected()) {
-                userAnswer = "";
-                fvScienceVoteF.setSelected(false);
-                btScienceVoteSubmit.setEnabled(false);
-            } else {
-                userAnswer = "F";
-                fvScienceVoteF.setSelected(true);
-                btScienceVoteSubmit.setEnabled(true);
-            }
-            fvScienceVoteA.setSelected(false);
-            fvScienceVoteB.setSelected(false);
-            fvScienceVoteC.setSelected(false);
-            fvScienceVoteD.setSelected(false);
-            fvScienceVoteE.setSelected(false);
-        } else if (view.getId() == R.id.fv_science_vote_yes) {
-            if (fvScienceVoteYes.isSelected()) {
-                userAnswer = "";
-                fvScienceVoteYes.setSelected(false);
-                btScienceVoteSubmit.setEnabled(false);
-            } else {
-                userAnswer = "是";
-                fvScienceVoteYes.setSelected(true);
-                btScienceVoteSubmit.setEnabled(true);
-            }
-            fvScienceVoteNo.setSelected(false);
-        } else if (view.getId() == R.id.fv_science_vote_no) {
-            if (fvScienceVoteNo.isSelected()) {
-                userAnswer = "";
-                fvScienceVoteNo.setSelected(false);
-                btScienceVoteSubmit.setEnabled(false);
-            } else {
-                userAnswer = "否";
-                fvScienceVoteNo.setSelected(true);
-                btScienceVoteSubmit.setEnabled(true);
-            }
-            fvScienceVoteYes.setSelected(false);
         }
     }
 
