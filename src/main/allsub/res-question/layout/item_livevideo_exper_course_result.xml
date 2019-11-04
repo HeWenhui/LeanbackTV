@@ -48,7 +48,7 @@
     <ImageView
         android:id="@id/iv_livevideo_bigque_result_type"
         android:layout_width="56dp"
-        android:layout_height="13dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="40dp"
         android:includeFontPadding="false" />

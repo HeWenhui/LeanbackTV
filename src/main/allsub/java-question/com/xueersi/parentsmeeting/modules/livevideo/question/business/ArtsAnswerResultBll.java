@@ -282,7 +282,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         for (int i = 0; i < rightAnswers.size(); i++) {
                             rights += rightAnswers.get(i);
                             if (i != rightAnswers.size() - 1) {
-                                rights += ",";
+                                rights += " ";
                             }
                         }
                     }
@@ -292,7 +292,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         for (int i = 0; i < choiceList.size(); i++) {
                             myAnswer += choiceList.get(i);
                             if (i != choiceList.size() - 1) {
-                                myAnswer += ",";
+                                myAnswer += " ";
                             }
                         }
                     } else {
@@ -300,7 +300,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         for (int i = 0; i < blankList.size(); i++) {
                             myAnswer += blankList.get(i);
                             if (i != blankList.size() - 1) {
-                                myAnswer += ",";
+                                myAnswer += " ";
                             }
                         }
                     }
