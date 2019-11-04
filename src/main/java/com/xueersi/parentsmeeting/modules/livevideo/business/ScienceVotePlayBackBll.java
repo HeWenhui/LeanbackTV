@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,6 +29,8 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
     ScienceVotePager scienceVotePager;
     String liveId;
     String nickname;
+    private ContextLiveAndBackDebug liveAndBackDebug;
+    private static String eventId = "p-quickchoice";
 
     public ScienceVotePlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -43,6 +46,7 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
         liveId = mVideoEntity.getLiveId();
         nickname = "s_" + liveGetInfo.getLiveType() + "_"
                 + liveGetInfo.getId() + "_" + liveGetInfo.getStuId() + "_" + liveGetInfo.getStuSex();
+        liveAndBackDebug = new ContextLiveAndBackDebug(mContext);
     }
 
     @Override
@@ -71,6 +75,7 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
             if (TextUtils.equals(VOTE_STATE_OPEN, open)) {
                 JSONArray optionsJSONArray = data.optJSONArray("options");
                 showChoice(optionsJSONArray);
+                liveLogInteractive("1","1","receivequickchoice",interactionId);
                 for (int i = 0; i < optionsJSONArray.length(); i++) {
                     JSONObject optionsJSONObject = optionsJSONArray.getJSONObject(i);
                     if (TextUtils.equals(optionsJSONObject.optString("right"), "1")) {
@@ -122,15 +127,18 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
                     if (TextUtils.isEmpty(rightAnswer)) {
                         if (scienceVotePager != null) {
                             scienceVotePager.submitSuccess(0);
+                            liveLogInteractive("2","2","submitquickchoice",interactionId,"");
                         }
                     } else {
                         if (TextUtils.equals(getUserAnswer(), rightAnswer)) {
                             if (scienceVotePager != null) {
                                 scienceVotePager.submitSuccess(1);
+                                liveLogInteractive("2","2","submitquickchoice",interactionId,"right");
                             }
                         } else {
                             if (scienceVotePager != null) {
                                 scienceVotePager.submitSuccess(2);
+                                liveLogInteractive("2","2","submitquickchoice",interactionId,"wrong");
                             }
                         }
                     }
@@ -151,5 +159,31 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
                 }
             }
         });
+    }
+
+    /**
+     * 日志
+     * @param sno
+     * @param table
+     * @param logType
+     */
+    public void liveLogInteractive(String sno, String table, String logType,String interactionId) {
+        if (liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap(logType);
+            logHashMap.addSno(sno).addStable(table);
+            logHashMap.addInteractionId(interactionId);
+            logHashMap.put("","");
+            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+        }
+    }
+
+    public void liveLogInteractive(String sno, String table, String logType,String interactionId,String isRight) {
+        if (liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap(logType);
+            logHashMap.addSno(sno).addStable(table);
+            logHashMap.addInteractionId(interactionId);
+            logHashMap.put("isRight",isRight);
+            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+        }
     }
 }

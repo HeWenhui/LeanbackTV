@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 
@@ -29,17 +30,21 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
     private boolean isAnswer = false;
     ScienceVotePager scienceVotePager;
     BaseLiveMediaControllerBottom liveMediaControllerBottom;
+    private ContextLiveAndBackDebug liveAndBackDebug;
+    private static String eventId = "quickchoice";
+
     public ScienceVoteBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         liveMediaControllerBottom = getInstance(BaseLiveMediaControllerBottom.class);
+        liveAndBackDebug = new ContextLiveAndBackDebug(context);
     }
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         logger.e("=====>onNotice =:" + data.toString());
-        if(LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())){
+        if (LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())) {
             closeView();
-        }else {
+        } else {
             try {
                 switch (type) {
                     case XESCODE.SCIENCE_VOTE:
@@ -49,6 +54,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                         if (TextUtils.equals(VOTE_STATE_OPEN, open)) {
                             JSONArray optionsJSONArray = data.optJSONArray("options");
                             showChoice(optionsJSONArray);
+                            liveLogInteractive("1", "1", "receivequickchoice", interactionId);
                             for (int i = 0; i < optionsJSONArray.length(); i++) {
                                 JSONObject optionsJSONObject = optionsJSONArray.getJSONObject(i);
                                 if (TextUtils.equals(optionsJSONObject.optString("right"), "1")) {
@@ -109,9 +115,9 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         logger.e("=====>onTopic =:" + jsonObject.toString());
         if (!hasNotice) {
-            if(LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())){
+            if (LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())) {
                 closeView();
-            }else {
+            } else {
                 try {
                     JSONObject room_1 = jsonObject.optJSONObject("room_1");
                     if (room_1 != null) {
@@ -134,7 +140,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 } else {
                                     if (!TextUtils.isEmpty(getUserAnswer())) {
                                         submitResult();
-                                    }else {
+                                    } else {
                                         closeView();
                                     }
                                 }
@@ -150,7 +156,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
         hasNotice = false;
     }
 
-    private String getUserAnswer(){
+    private String getUserAnswer() {
         if (scienceVotePager != null) {
             return scienceVotePager.userAnswer;
         }
@@ -164,21 +170,24 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logger.d("ScienceVoteCommit:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
                 isAnswer = true;
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                if(jsonObject.optBoolean("isRepeat")){
+                if (jsonObject.optBoolean("isRepeat")) {
                     XESToastUtils.showToast(mContext, "已作答");
-                }else {
+                } else {
                     if (TextUtils.isEmpty(rightAnswer)) {
                         if (scienceVotePager != null) {
                             scienceVotePager.submitSuccess(0);
+                            liveLogInteractive("2", "2", "submitquickchoice", interactionId, "");
                         }
                     } else {
                         if (TextUtils.equals(getUserAnswer(), rightAnswer)) {
                             if (scienceVotePager != null) {
                                 scienceVotePager.submitSuccess(1);
+                                liveLogInteractive("2", "2", "submitquickchoice", interactionId, "right");
                             }
                         } else {
                             if (scienceVotePager != null) {
                                 scienceVotePager.submitSuccess(2);
+                                liveLogInteractive("2", "2", "submitquickchoice", interactionId, "wrong");
                             }
                         }
                     }
@@ -208,5 +217,32 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     public interface ScienceVoteBllBack {
         void submit();
+    }
+
+    /**
+     * 日志
+     *
+     * @param sno
+     * @param table
+     * @param logType
+     */
+    public void liveLogInteractive(String sno, String table, String logType, String interactionId) {
+        if (liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap(logType);
+            logHashMap.addSno(sno).addStable(table);
+            logHashMap.addInteractionId(interactionId);
+            logHashMap.put("", "");
+            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+        }
+    }
+
+    public void liveLogInteractive(String sno, String table, String logType, String interactionId, String isRight) {
+        if (liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap(logType);
+            logHashMap.addSno(sno).addStable(table);
+            logHashMap.addInteractionId(interactionId);
+            logHashMap.put("isRight", isRight);
+            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+        }
     }
 }
