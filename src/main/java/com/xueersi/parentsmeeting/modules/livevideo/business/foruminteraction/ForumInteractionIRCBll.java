@@ -118,6 +118,10 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
 
     private void onSendMsg(String msg){
 //        getHttpManager().sendPost();
+        if (LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())){
+            isOpenInteraction = false;
+            return;
+        }
         if (isOpenInteraction){
             params.addBodyParam("interactionId",interactionId);
             params.addBodyParam("message",msg);
