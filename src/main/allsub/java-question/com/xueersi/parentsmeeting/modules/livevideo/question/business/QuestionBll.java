@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
@@ -57,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.create.BigQueCreate;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
@@ -788,7 +788,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                                                         baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
                                         rlQuestionContent.removeView(baseEnglishH5CoursewarePager.getRootView());
                                     }
-                                }, "0", LiveVideoSAConfig.ART_EN, false);
+                                }, "0", LiveVideoSAConfig.ART_EN, false, liveViewAction);
                                 if (questionHttp instanceof EnglishH5CoursewareSecHttp) {
                                     questionWebPager.setEnglishH5CoursewareSecHttp((EnglishH5CoursewareSecHttp)
                                             questionHttp);
@@ -813,7 +813,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             activity.getWindow().getDecorView().invalidate();
                         }
                     });
-                } else if ("4".equals(videoQuestionLiveEntity.type) || "5".equals(videoQuestionLiveEntity.type) ||
+                } else if ("4".equals(videoQuestionLiveEntity.type) || LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY.equals(videoQuestionLiveEntity.type) ||
                         "6".equals(videoQuestionLiveEntity.type)) {
                     String id = videoQuestionLiveEntity.id;
                     if (speechAssessmentPager != null && id.equals(speechAssessmentPager.getId())) {

@@ -121,11 +121,11 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     LinearLayout llRewardInfo;
 
     /** 金币数量 */
-    FangZhengCuYuanTextView  tvGoldCount;
+    FangZhengCuYuanTextView tvGoldCount;
     /** 能量值 */
-    FangZhengCuYuanTextView  tvEnergyCount;
+    FangZhengCuYuanTextView tvEnergyCount;
 
-    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity,AnswerResultStateListener stateListener) {
+    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity, AnswerResultStateListener stateListener) {
         super(context);
         mData = entity;
         this.mStateListener = stateListener;
@@ -180,8 +180,8 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             animationView.setImageAssetDelegate(null);
             animationView.removeAllAnimatorListeners();
             animationView.removeAllUpdateListeners();
-            tvEnergyCount.setText("+"+mData.getEnergy());
-            tvGoldCount.setText("+"+mData.getGold());
+            tvEnergyCount.setText("+" + mData.getEnergy());
+            tvGoldCount.setText("+" + mData.getGold());
             displayDetailUi();
 
             return;
@@ -235,13 +235,13 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 animationView.setImageAssetDelegate(null);
                 animationView.removeAllAnimatorListeners();
                 animationView.removeAllUpdateListeners();
-                    //游戏答题结果 只展示金币UI
-                    if (getRootView() != null && getRootView().getParent() != null) {
-                        ((ViewGroup) getRootView().getParent()).removeView(getRootView());
-                    }
-                    if (mStateListener != null) {
-                        mStateListener.onCompeletShow();
-                    }
+                //游戏答题结果 只展示金币UI
+                if (getRootView() != null && getRootView().getParent() != null) {
+                    ((ViewGroup) getRootView().getParent()).removeView(getRootView());
+                }
+                if (mStateListener != null) {
+                    mStateListener.onCompeletShow();
+                }
 
             }
         });
@@ -293,7 +293,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                     float scaleY = (resultAnimeView.getMeasuredHeight() * 1.0f) / designHeight;
                     float scale = Math.min(scaleX, scaleY);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) closeBtn.getLayoutParams();
-                    if(params == null){
+                    if (params == null) {
                         params = new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH), SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT));
                     }
                     int offset = (int) ((1.0f - scale) * SizeUtils.Dp2Px(resultAnimeView.getContext(), 35f));
@@ -302,13 +302,13 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                     params.addRule(RelativeLayout.ALIGN_TOP, R.id.lv_arts_answer_result_pse);
                     params.addRule(RelativeLayout.ALIGN_RIGHT, R.id.lv_arts_answer_result_pse);
 
-                    if(closeBtn.getParent() == null){
-                        rlAnswerRootLayout.addView(closeBtn,params);
+                    if (closeBtn.getParent() == null) {
+                        rlAnswerRootLayout.addView(closeBtn, params);
                         ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R
                                 .anim.anim_livevideo_close_btn_in);
                         scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
                         closeBtn.startAnimation(scaleAnimation);
-                    }else{
+                    } else {
                         LayoutParamsUtil.setViewLayoutParams(closeBtn, params);
                     }
                     //语音答题倒计时按钮位置
@@ -355,11 +355,11 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     /**
      * 设置能量和金币位置
      */
-    private void setRewardInfoPosition(float scale){
-        RelativeLayout.LayoutParams params =  (RelativeLayout.LayoutParams)llRewardInfo.getLayoutParams();
-        float scan = LiveVideoPoint.getInstance().screenHeight*SizeUtils.Dp2Px(mContext,97)/SizeUtils.Dp2Px(mContext,360);
+    private void setRewardInfoPosition(float scale) {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) llRewardInfo.getLayoutParams();
+        float scan = LiveVideoPoint.getInstance().screenHeight * SizeUtils.Dp2Px(mContext, 97) / SizeUtils.Dp2Px(mContext, 360);
 
-        params.topMargin = (int)scan ;
+        params.topMargin = (int) scan;
 
         llRewardInfo.setLayoutParams(params);
 
@@ -477,11 +477,11 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             if (answer.getIsRight() == 0) {
 //                spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFFE65453), 5, spannableStringBuilder.length
 //                        (), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                myAnswerBuffer.append("<font color='#FFE65453'>"+myAnswer+" </font>");
+                myAnswerBuffer.append("<font color='#FFE65453'>" + myAnswer + " </font>");
             } else {
 //                spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFF77AF1F), 5, spannableStringBuilder.length
 //                        (), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                myAnswerBuffer.append("<font color='#FF77AF1F'>"+myAnswer+" </font>");
+                myAnswerBuffer.append("<font color='#FF77AF1F'>" + myAnswer + " </font>");
 
             }
             tv_arts_answer_result_voice_my.setText(Html.fromHtml(myAnswerBuffer.toString()));
@@ -496,7 +496,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 //            spannableStringBuilder = new SpannableString("正确答案：" + rightAnswer);
 //            spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFF77AF1F), 5, spannableStringBuilder.length(),
 //                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            userBuffer.append("<font color='#ff756565'>"+rightAnswer+" </font>");
+            userBuffer.append("<font color='#ff756565'>" + rightAnswer + " </font>");
             tv_arts_answer_result_voice_right.setText(Html.fromHtml(userBuffer.toString()));
         }
         if (mStateListener != null) {
@@ -529,8 +529,8 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 .anim_livevido_arts_answer_result_alpha_in);
         recyclerView.setLayoutManager(new GridLayoutManager(mContext, SPAN_COUNT, LinearLayoutManager.VERTICAL,
                 false));
-        final RCommonAdapter<AnswerResultEntity.Answer > mAdapter = new RCommonAdapter(mContext,mData.getAnswerList());
-        mAdapter.addItemViewDelegate(1,new ItemHolder());
+        final RCommonAdapter<AnswerResultEntity.Answer> mAdapter = new RCommonAdapter(mContext, mData.getAnswerList());
+        mAdapter.addItemViewDelegate(1, new ItemHolder());
         recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
 
@@ -560,11 +560,11 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             }
         });
         //RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-       // Point point = new Point();
-       // ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
+        // Point point = new Point();
+        // ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
         // int realY = Math.min(point.x, point.y);
-      //  params.topMargin = (int) (realY * 0.30);
-      //  recyclerView.setLayoutParams(params);
+        //  params.topMargin = (int) (realY * 0.30);
+        //  recyclerView.setLayoutParams(params);
         recyclerView.startAnimation(alphaAnimation);
         if (mStateListener != null) {
 
@@ -578,6 +578,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             revealAnswerResult();
         }
     }
+
     private final int STATE_CODE_RIGHT = 2;
     private final int STATE_CODE_PARTRIGHT = 1;
     private final int STATE_CODE_WRONG = 0;
@@ -588,7 +589,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         private FangZhengCuYuanTextView tvRightAnswer;
         private FangZhengCuYuanTextView tvUserAnswer;
 
-       private FangZhengCuYuanTextView tvIndex;
+        private FangZhengCuYuanTextView tvIndex;
 
         ImageView ivAnswerIcon;
 
@@ -622,10 +623,10 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             //int color = getColor(R.color.COLOR_726665);
             String color = "'#726665'";
             // 语音题目
-            if (mData.isVoice==1) {
+            if (mData.isVoice == 1) {
                 if (data.getIsRight() == 0) {
                     iconResId = R.drawable.icon_livevideo_result_answer_wrong;
-              //      color = getColor(R.color.COLOR_D45E58);
+                    //      color = getColor(R.color.COLOR_D45E58);
                     color = "'#D45E58'";
                     ivAnswerIcon.setVisibility(View.VISIBLE);
 
@@ -636,42 +637,41 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                     ivAnswerIcon.setVisibility(View.VISIBLE);
                 }
 
-            }  else {
+            } else {
                 if (data.getIsRight() == STATE_CODE_RIGHT) {
-                //    color = getColor(R.color.COLOR_84AD3D);
+                    //    color = getColor(R.color.COLOR_84AD3D);
                     color = "'#84AD3D'";
                     ivAnswerIcon.setVisibility(View.VISIBLE);
                     iconResId = R.drawable.icon_livevideo_result_answer_right;
                 } else if (data.getIsRight() == STATE_CODE_PARTRIGHT) {
                     iconResId = R.drawable.icon_livevideo_result_answer_half_right;
-                   // color = getColor(R.color.COLOR_726665);
+                    // color = getColor(R.color.COLOR_726665);
                     color = "'#726665'";
                     ivAnswerIcon.setVisibility(View.VISIBLE);
 
-                } else  if (data.getIsRight() == STATE_CODE_WRONG) {
+                } else if (data.getIsRight() == STATE_CODE_WRONG) {
                     iconResId = R.drawable.icon_livevideo_result_answer_wrong;
-                  //  color = getColor(R.color.COLOR_D45E58);
+                    //  color = getColor(R.color.COLOR_D45E58);
                     color = "'#D45E58'";
                     ivAnswerIcon.setVisibility(View.VISIBLE);
 
                 } else {
-                   // color = getColor(R.color.COLOR_84AD3D);
+                    // color = getColor(R.color.COLOR_84AD3D);
                     color = "'#84AD3D'";
                     ivAnswerIcon.setVisibility(View.INVISIBLE);
                 }
             }
-            if (iconResId !=0) {
+            if (iconResId != 0) {
                 ImageLoader.with(mContext).load(iconResId).diskCacheStrategy(DiskCacheStrategy.NONE).into(ivAnswerIcon);
             }
-
 
 
             StringBuffer stringBuffer = new StringBuffer("<font color='#726665'>你的答案：</font>");
             if (TextUtils.isEmpty(myAnswerText) || "空".equals(myAnswerText)) {
                 myAnswerText = "空";
             }
-            stringBuffer.append("<font color=" +color+">");
-            stringBuffer.append(myAnswerText+" </font>");
+            stringBuffer.append("<font color=" + color + ">");
+            stringBuffer.append(myAnswerText + " </font>");
 //            span = new SpannableString(myAnswerText);
 //            span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 //            stringBuilder.append(span);
@@ -679,20 +679,17 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             tvUserAnswer.setText(Html.fromHtml(stringBuffer.toString()));
 
 
-            String titleFont = "<font color='#726665'>正确答案："+ standerAnswerText+" </font>";
+            String titleFont = "<font color='#726665'>正确答案：" + standerAnswerText + " </font>";
             tvRightAnswer.setText(Html.fromHtml(titleFont));
         }
 
-        private void setHtml(String text){
+        private void setHtml(String text) {
 
         }
-
 
         private boolean isSelect(AnswerResultEntity.Answer data) {
-
-            return data.getTestType() == 2;
+            return data.getTestType() == AnswerResultEntity.TEST_TYPE_2;
         }
-
 
         /**
          * @param data
@@ -710,13 +707,13 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                     } else {
                         isAllSpace = false;
                     }
-                    if ( i != 0 && !TextUtils.isEmpty(splitStr)){
+                    if (i != 0 && !TextUtils.isEmpty(splitStr)) {
                         stringBuilder.append(splitStr);
                     }
                     stringBuilder.append(answer);
                 }
                 if (isAllSpace) {
-                    return  "空";
+                    return "空";
                 }
             }
             return stringBuilder.toString();
@@ -735,12 +732,12 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
             tvRightAnswer = itemView.getView(R.id.tv_arts_answer_result_item_muti_right_answer);
             ivAnswerIcon = itemView.getView(R.id.iv_arts_answer_result_item_muti_icon);
-            tvIndex  = itemView.getView(R.id.tv_arts_answer_result_item_muti_index);
+            tvIndex = itemView.getView(R.id.tv_arts_answer_result_item_muti_index);
         }
 
         @Override
         public void convert(ViewHolder holder, AnswerResultEntity.Answer answer, int position) {
-                bindData(answer,position);
+            bindData(answer, position);
         }
     }
 

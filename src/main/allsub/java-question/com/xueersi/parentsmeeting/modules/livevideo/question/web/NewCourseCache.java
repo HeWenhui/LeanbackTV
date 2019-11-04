@@ -173,7 +173,8 @@ public class NewCourseCache {
 
     public WebResourceResponse interceptIndexRequest(WebView view, final String url) {
         courseUrl = url;
-        final File file = getCourseWareFile(url);
+        final int startProgress = newProgress;
+        final File file = getIndexFile(url);
         InputStream inputStream = null;
         final boolean ispreload;
         if (file != null) {
@@ -202,11 +203,12 @@ public class NewCourseCache {
                         @Override
                         public void run() {
                             try {
-                                StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequesthtml");
+                                StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequesthtmlv3");
                                 stableLogHashMap.put("courseurl", "" + courseUrl);
                                 stableLogHashMap.put("url", url);
                                 stableLogHashMap.put("urlindex", "" + (urlindex++));
                                 stableLogHashMap.put("newProgress", "" + newProgress);
+                                stableLogHashMap.put("startProgress", "" + startProgress);
                                 stableLogHashMap.put("reload", "" + reload);
                                 stableLogHashMap.put("liveId", liveId);
                                 stableLogHashMap.put("testid", testid);
@@ -234,23 +236,31 @@ public class NewCourseCache {
         return null;
     }
 
+    private File getIndexFile(String url) {
+        File file = getCourseWareFile(coursewarePages, url);
+        if (file == null) {
+            file = getCourseWareFile(XESlides, url);
+        }
+        return file;
+    }
+
     /**
      * 新课件地址都带courseware_pages，和本地文件对比
      *
      * @param url
      * @return
      */
-    private File getCourseWareFile(String url) {
+    private File getCourseWareFile(String mark, String url) {
         File file = null;
-        int index = url.indexOf(coursewarePages);
+        int index = url.indexOf(mark);
         if (index != -1) {
-            String url2 = url.substring(index + coursewarePages.length());
+            String url2 = url.substring(index + mark.length());
             int index2 = url2.indexOf("?");
             if (index2 != -1) {
                 url2 = url2.substring(0, index2);
             }
             file = new File(mMorecacheout, url2);
-            logger.d("getCourseWareFile:file=" + file + ",file=" + file.exists());
+            logger.d("getCourseWareFile:mark=" + mark + ",file=" + file + ",file=" + file.exists());
             if (!file.exists()) {
                 return null;
             }
@@ -272,6 +282,7 @@ public class NewCourseCache {
     }
 
     public WebResourceResponse shouldInterceptRequest(WebView view, final String s) {
+        final int startProgress = newProgress;
         final Thread thread = Thread.currentThread();
         File file = null;
         int index = s.indexOf(coursewarePages);
@@ -323,11 +334,12 @@ public class NewCourseCache {
                                 @Override
                                 public void run() {
                                     try {
-                                        StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv2");
+                                        StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv3");
                                         stableLogHashMap.put("courseurl", "" + courseUrl);
                                         stableLogHashMap.put("url", s);
                                         stableLogHashMap.put("urlindex", "" + (urlindex++));
                                         stableLogHashMap.put("newProgress", "" + newProgress);
+                                        stableLogHashMap.put("startProgress", "" + startProgress);
                                         stableLogHashMap.put("reload", "" + reload);
                                         stableLogHashMap.put("liveId", liveId);
                                         stableLogHashMap.put("testid", testid);
@@ -362,11 +374,12 @@ public class NewCourseCache {
                 @Override
                 public void run() {
                     try {
-                        StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv2");
+                        StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv3");
                         stableLogHashMap.put("courseurl", "" + courseUrl);
                         stableLogHashMap.put("url", s);
                         stableLogHashMap.put("urlindex", "" + (urlindex++));
                         stableLogHashMap.put("newProgress", "" + newProgress);
+                        stableLogHashMap.put("startProgress", "" + startProgress);
                         stableLogHashMap.put("reload", "" + reload);
                         stableLogHashMap.put("liveId", liveId);
                         stableLogHashMap.put("testid", testid);

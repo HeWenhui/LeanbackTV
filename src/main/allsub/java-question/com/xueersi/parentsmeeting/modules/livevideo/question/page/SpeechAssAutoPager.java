@@ -28,6 +28,8 @@ import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.tal.speech.utils.SpeechUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.util.FontCache;
@@ -142,7 +144,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     /** 用户按了返回 */
     boolean userBack = false;
     /** 已经作答 */
-    boolean haveAnswer;
+    private boolean haveAnswer;
     String learning_stage;
     private LiveGetInfo liveGetInfo;
     private SpeechParamEntity mParam;
@@ -161,7 +163,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.liveGetInfo = liveGetInfo;
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
-        mLogtf.i("SpeechAssessmentPager:id=" + id);
         mLogtf.addCommon("testid", id);
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
@@ -171,6 +172,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //        content = "welcome to my home";
 //        this.content = "C" + content.substring(1);
         this.content = content;
+        mLogtf.i(SysLogLable.speechCreate, "SpeechAssessmentPager:content=" + content);
         this.time = time;
         entranceTime = System.currentTimeMillis();
         this.livePagerBack = livePagerBack;
@@ -186,15 +188,16 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = false;
         this.id = testId;
+        mLogtf.addCommon("testid", id);
         this.liveGetInfo = liveGetInfo;
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
-        mLogtf.i("SpeechAssessmentPager:id=" + id);
         startProgColor = context.getResources().getColor(R.color.COLOR_6462A2);
         progColor = 0;
 //        content = "You are very good,You are very good";
 //        this.content = "C" + content.substring(1);
         this.content = content;
+        mLogtf.i(SysLogLable.speechCreate, "SpeechAssessmentPager:content=" + content);
         this.time = time;
         this.examSubmit = examSubmit;
         this.learning_stage = learning_stage;
@@ -609,20 +612,11 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }
         }
         try {
-            int wordChangeColor = wordChangeColor(score, lstPhonemeScore);
-            if (wordChangeColor != 0) {
-                if (speechEvaluatorInter == null) {
-                    mLogtf.d("onEvaluatorSuccess:Inter=null,sid=" + resultEntity.getSid() + ",score=" + score + "," +
-                            "error=" + content + "-" + nbest);
-                } else {
-                    mLogtf.d("onEvaluatorSuccess:Inter=" + speechEvaluatorInter.getClass().getSimpleName() + ",sid="
-                            + resultEntity.getSid() + ",score=" + score + ",error=" + content + "-" + nbest);
-                }
-            }
+            wordChangeColor(score, lstPhonemeScore);
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(new Error(content + "-" + nbest, e));
         }
-        mLogtf.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + "," +
+        mLogtf.d(SysLogLable.speechSuccess, "onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + "," +
                 "haveAnswer=" + haveAnswer + ",nbest=" + nbest);
         if (haveAnswer) {
             onSpeechEvalSuccess(resultEntity, 0, 0);
@@ -693,6 +687,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
                     @Override
                     public void onDataFail(int errStatus, String failMsg) {
+                        XESToastUtils.showToast("" + failMsg);
+                        mLogtf.d(SysLogLable.speechSubmitFail, "onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
                         if (errStatus == LiveHttpConfig.HTTP_ERROR_FAIL) {
                             logger.d("sendSpeechEvalResult2:onPmFailure:msg=" + failMsg);
                             if (isEnd) {
@@ -706,6 +702,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                                 }, 1000);
                             }
                         } else {
+                            speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                             logger.d("sendSpeechEvalResult2:onPmError:error=" + failMsg);
                         }
                     }
@@ -798,7 +795,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
-        mLogtf.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + mIse
+        mLogtf.d(SysLogLable.speechError, "onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + mIse
                 .isOfflineFail());
         removeCallbacks(autoUploadRunnable);
         ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
@@ -926,7 +923,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //            EventBus.getDefault().post(new ArtsAnswerResultEvent(id, ArtsAnswerResultEvent
 //                    .TYPE_NATIVE_ANSWERRESULT));
                 String isSubmit = EngForceSubmit.getSubmit(isNewArts, true);
-                speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, new AbstractBusinessDataCallBack() {
+                speechEvalAction.sendSpeechEvalResult2(id, baseVideoQuestionEntity, answers.toString(), isSubmit, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
                         final JSONObject jsonObject = (JSONObject) objData[0];
@@ -936,7 +933,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
                     @Override
                     public void onDataFail(int errStatus, String failMsg) {
-                        logger.d("sendSpeechEvalResult2:onPmFailure:msg=" + failMsg);
+                        mLogtf.d(SysLogLable.speechSubmitFail, "onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
                         speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                     }
                 });
@@ -945,6 +942,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }
         }
     }
+
+    private String lastnbest = "";
 
     private void onEvaluatorIng(ResultEntity resultEntity) {
         List<PhoneScore> lstPhonemeScore = resultEntity.getLstPhonemeScore();
@@ -962,7 +961,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
             }
             if (count90 <= 3) {
-                mLogtf.d("onEvaluatorIng:nbest=" + nbest);
+                if (!lastnbest.equals(nbest)) {
+                    mLogtf.d("onEvaluatorIng:nbest=" + nbest);
+                }
+                lastnbest = nbest;
                 return;
             }
             Point90 point90_6 = null;
@@ -1183,7 +1185,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public void examSubmitAll() {
         isEnd = true;
         ViewGroup group = (ViewGroup) mView.getParent();
-        mLogtf.d("examSubmitAll:mIse=" + (mIse != null) + ",Start=" + isSpeechStart + ",error=" + isSpeechError + ",Result=" + isSpeechResult + ",group=" + (group == null));
+        mLogtf.d(SysLogLable.speechExamSubmitAll, "examSubmitAll:mIse=" + (mIse != null) + ",Start=" + isSpeechStart + ",error=" + isSpeechError + ",Result=" + isSpeechResult + ",group=" + (group == null));
         if (group == null) {
             return;
         }

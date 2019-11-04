@@ -138,6 +138,9 @@ public class LiveLog implements LiveOnLineLogs {
                 Map<String, String> mData = stableLogHashMap.getData();
                 Set<String> keys = mData.keySet();
                 String common = "";
+                if (logEntity != null) {
+                    common += "eventid=" + logEntity.liveEventId + ",lable=" + logEntity.lable + ",";
+                }
                 for (String key : keys) {
                     common += key + "=" + mData.get(key) + ",";
                 }
@@ -196,6 +199,9 @@ public class LiveLog implements LiveOnLineLogs {
                 Map<String, String> mData = stableLogHashMap.getData();
                 Set<String> keys = mData.keySet();
                 String common = "";
+                if (logEntity != null) {
+                    common += "eventid=" + logEntity.liveEventId + ",lable=" + logEntity.lable + ",";
+                }
                 for (String key : keys) {
                     common += key + "=" + mData.get(key) + ",";
                 }

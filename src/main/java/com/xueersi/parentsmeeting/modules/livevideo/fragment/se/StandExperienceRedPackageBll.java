@@ -34,7 +34,7 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
     RedPackageAction redPackageAction;
     int pattern = 0;
 
-    public StandExperienceRedPackageBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public StandExperienceRedPackageBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
     }
 
