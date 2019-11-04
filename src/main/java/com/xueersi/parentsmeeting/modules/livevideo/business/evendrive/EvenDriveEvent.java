@@ -11,6 +11,7 @@ public class EvenDriveEvent {
     //更新互动题的正确率
     public static final int UPDATE_EVEN_RIGHT = 1;
     private int status;
+    private String testId;
 
     public EvenDriveEvent(int status) {
         this.status = status;
@@ -18,5 +19,14 @@ public class EvenDriveEvent {
 
     public int getStatus() {
         return status;
+    }
+
+    public EvenDriveEvent setTestId(String testId) {
+        this.testId = testId;
+        return this;
+    }
+
+    public String getTestId() {
+        return testId;
     }
 }

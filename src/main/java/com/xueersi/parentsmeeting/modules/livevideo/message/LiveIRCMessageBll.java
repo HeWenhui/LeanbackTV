@@ -762,8 +762,13 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     }, 5000);
                 } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
-                    selfUploadRunnable = new SelfUploadRunnable(mGetInfo);
-                    postDelayedIfNotFinish(evenDriveRunnable, 6000);
+                    try {
+                        String test_id = object.getString("test_id");
+                        selfUploadRunnable = new SelfUploadRunnable(mGetInfo, test_id);
+                        postDelayedIfNotFinish(selfUploadRunnable, 6000);
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(TAG, e);
+                    }
                 }
                 break;
             }
@@ -1436,13 +1441,13 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
     }
 
-    private void getEvenDriveUploadAnim(LiveGetInfo getInfo) {
+    private void getEvenDriveUploadAnim(LiveGetInfo getInfo, String testId) {
         if (EvenDriveUtils.isOpenStimulation(getInfo)) {
             if (animRepositor == null) {
                 animRepositor = new EvenDriveAnimRepository(
                         mContext, getInfo, mHttpManager, null);
             }
-            animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_SELF_UPLOAD, "",
+            animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_SELF_UPLOAD, testId,
                     null);
         }
     }
@@ -1503,9 +1508,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
      */
     private class SelfUploadRunnable implements Runnable {
         private LiveGetInfo _getInfo;
+        private String testId;
 
-        public SelfUploadRunnable(LiveGetInfo _getInfo) {
+        public SelfUploadRunnable(LiveGetInfo _getInfo, String testId) {
             this._getInfo = _getInfo;
+            this.testId = testId;
         }
 
         @Override
@@ -1513,7 +1520,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             if (selfUploadRunnable == this) {
                 selfUploadRunnable = null;
             }
-            getEvenDriveUploadAnim(_getInfo);
+            getEvenDriveUploadAnim(_getInfo, testId);
         }
     }
 
@@ -1544,7 +1551,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //            isHasReceiveLike = false;
         } else if (EvenDriveUtils.isOpenStimulation(mGetInfo)) {
             if (evenDriveEvent.getStatus() == EvenDriveEvent.CLOSE_SELF_H5) {
-                getEvenDriveUploadAnim(mGetInfo);
+                getEvenDriveUploadAnim(mGetInfo, evenDriveEvent.getTestId());
             } else {
                 getEvenDriveAnim(mGetInfo);
             }
