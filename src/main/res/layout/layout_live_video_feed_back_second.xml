@@ -7,12 +7,19 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <com.tencent.smtt.sdk.WebView
-        android:id="@+id/wv_livevideo_feedback_second"
+    <ScrollView
+        android:id="@+id/sv_livevideo_web"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    </com.tencent.smtt.sdk.WebView>
+        <com.tencent.smtt.sdk.WebView
+            android:id="@+id/wv_livevideo_feedback_second"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </com.tencent.smtt.sdk.WebView>
+    </ScrollView>
 
     <RelativeLayout
         android:id="@id/rl_livevideo_subject_loading"

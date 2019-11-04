@@ -26,14 +26,15 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
     private String appID;
     private String mLiveId;
     private String mCourseId;
-
+    private boolean playBack;
     LiveBusiLogEntity logEntity = new LiveBusiLogEntity();
 
-    public LiveDebugBigClassIml(Context mContext, int liveType, String liveId, String courseId) {
+    public LiveDebugBigClassIml(Context mContext, int liveType, String liveId, String courseId,boolean playBack) {
         this.mContext = mContext;
         mLiveType = liveType;
         mLiveId = liveId;
         mCourseId = courseId;
+        this.playBack = playBack;
     }
 
     @Override
@@ -111,7 +112,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
     }
 
     private String getMode() {
-        return null;
+        return LiveTopic.MODE_CLASS;
     }
 
     @Override
@@ -136,6 +137,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
     private void setLogParam(String eventtype, Map<String, String> mData) {
         mData.put("userid", mGetInfo.getStuId());
         mData.put("uname", mGetInfo.getUname());
+        mData.put("playBack",playBack?"1":"0");
         LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
             mData.put("classid", studentLiveInfo.getClassId());
@@ -150,9 +152,14 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
         } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
             mData.put("gradejudgment", "middle");
         }
-        mData.put("subject", "" + mGetInfo.getSubject_digits());
+        String subjectId = "";
+        if(mGetInfo.getSubjectIds() != null && mGetInfo.getSubjectIds().length > 0){
+            subjectId = mGetInfo.getSubjectIds()[0];
+        }
+        mData.put("subject", "" + subjectId);
         mData.put("ip", "" + IpAddressUtil.USER_IP);
         mData.put("liveid", mLiveId);
+        mData.put("grade",mGetInfo.getGrade()+"");
         mData.put("livetype", "" + mLiveType);
         mData.put("eventtype", "" + eventtype);
         mData.put("clits", "" + System.currentTimeMillis());

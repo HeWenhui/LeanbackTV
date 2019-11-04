@@ -41,23 +41,24 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
 
 
     /**
-     * 大班整合讲座回放入口接口
+     * 大班整合回放入口接口
      * @param planId
      * @param bizId
      * @param stuCouId
      * @param requestCallBack
      */
-    public void publicBigLivePlayBackEnter(int planId, int bizId, int stuCouId, HttpCallBack requestCallBack){
+    public void publicBigLivePlayBackEnter(int planId, int bizId, int stuCouId,int acceptPlanVersion, HttpCallBack requestCallBack){
 
         BigLiveEnterParam param = new BigLiveEnterParam();
         param.setBizId(bizId);
         param.setPlanId(planId);
         param.setStuCouId(stuCouId);
+        param.setAcceptPlanVersion(acceptPlanVersion);
         sendJsonPost(LiveIntegratedCfg.LIVE_PLAY_BACK_ENTER,param,requestCallBack);
     }
 
     /**
-     * 是否大班场次
+     * 讲座是否大班场次
      * @param liveId
      * @param requestCallBack
      */
@@ -67,6 +68,19 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
 //        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("liveId", liveId);
         sendPost(DispatcherConfig.URL_BIGLIVE_BIG_LIVE_BUSINESS_TEST, params, requestCallBack);
+    }
+
+    /**
+     *  直播 是否是大班直播场次
+     * @param planId
+     * @param bizId
+     * @param callBack
+     */
+    public void bigLivePlanVersion(int planId,int bizId,HttpCallBack callBack){
+        BigLivePlanVersionParam param = new BigLivePlanVersionParam();
+        param.setBizId(bizId);
+        param.setPlanId(planId);
+        sendJsonPost(DispatcherConfig.URL_BIGLIVE_LIVE_GARY,param,callBack);
     }
 
 }
