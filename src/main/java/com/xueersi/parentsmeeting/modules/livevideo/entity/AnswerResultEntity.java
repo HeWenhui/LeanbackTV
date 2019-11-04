@@ -21,6 +21,8 @@ public class AnswerResultEntity {
     public static final int RESULT_TYPE_OLD_COURSE_WARE = 1;
     /** 文科课件平台 新课件 */
     public static final int RESULT_TYPE_NEW_COURSE_WARE = 2;
+    //英语1v2语音评测结果页
+    public static final int RESULT_TYPE_YINYU_1V2_VOICE_TEST= 3;
     public int isVoice = 0;
     private String liveId;
     private String stuId;
@@ -39,6 +41,17 @@ public class AnswerResultEntity {
     private long createTime;
     /** 答题结果对应的试题类型 */
     private int type;
+
+    //得分
+    private int score;
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 
     public int getType() {
         return type;
