@@ -571,6 +571,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         resultEntity.setLiveType(jsonObject.optInt("liveType"));
         int isArts = jsonObject.optInt("isArts");
         resultEntity.setIsArts(isArts);
+        resultEntity.setIsNewCourseWare(jsonObject.optBoolean("isNewCourseWare",false));
         resultEntity.setClassId(jsonObject.optString("classId"));
         String videoPath = jsonObject.optString("videoPath");
         JSONArray pathArray = jsonObject.optJSONArray("hostPath");
@@ -1073,7 +1074,6 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
     }
 
 
-
     /**
      * 解析大班整合回放
      *
@@ -1087,7 +1087,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             playBackEntity = new BigLivePlayBackEntity();
             playBackEntity.setNowTime(data.optLong("nowTime"));
             //解析学生基础信息
-            if(data.has("stuInfo")){
+            if (data.has("stuInfo")) {
                 JSONObject stuInfoJsonObj = data.optJSONObject("stuInfo");
                 BigLivePlayBackEntity.StuInfo stuInfo = new BigLivePlayBackEntity.StuInfo();
                 stuInfo.setId(stuInfoJsonObj.optString("id"));
@@ -1100,7 +1100,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 stuInfo.setGradeId(stuInfoJsonObj.optInt("gradeId"));
                 stuInfo.setAvatar(stuInfoJsonObj.optString("avatar"));
                 stuInfo.setGoldNum(stuInfoJsonObj.optLong("goldNum"));
-                if(stuInfoJsonObj.has("psim")){
+                if (stuInfoJsonObj.has("psim")) {
                     JSONObject psImJsonObj = stuInfoJsonObj.optJSONObject("psim");
                     stuInfo.setPsImId(psImJsonObj.optString("psId"));
                     stuInfo.setPsImPwd(psImJsonObj.optString("psPwd"));
@@ -1109,7 +1109,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             }
 
             //解析学生场次信息
-            if(data.has("stuLiveInfo")){
+            if (data.has("stuLiveInfo")) {
 
                 JSONObject stuLiveInfoJsonObj = data.getJSONObject("stuLiveInfo");
                 BigLivePlayBackEntity.StuLiveInfo stuLiveInfo = new BigLivePlayBackEntity.StuLiveInfo();
@@ -1118,16 +1118,16 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 playBackEntity.setStuLiveInfo(stuLiveInfo);
             }
 
-            if(data.has("teamStuIds")){
+            if (data.has("teamStuIds")) {
                 JSONArray teamStudIdsJsonArray = data.getJSONArray("teamStuIds");
-                if(teamStudIdsJsonArray.length() > 0){
+                if (teamStudIdsJsonArray.length() > 0) {
                     List<String> teamStuIdList = new ArrayList<>();
                     for (int i = 0; i < teamStudIdsJsonArray.length(); i++) {
                         teamStuIdList.add(teamStudIdsJsonArray.getString(i));
                     }
-                    if(playBackEntity.getStuLiveInfo() != null){
+                    if (playBackEntity.getStuLiveInfo() != null) {
                         playBackEntity.getStuLiveInfo().setTeamStudIds(teamStuIdList);
-                    }else{
+                    } else {
                         BigLivePlayBackEntity.StuLiveInfo stuLiveInfo = new BigLivePlayBackEntity.StuLiveInfo();
                         stuLiveInfo.setTeamStudIds(teamStuIdList);
                         playBackEntity.setStuLiveInfo(stuLiveInfo);
@@ -1136,7 +1136,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             }
 
             //解析课程场次信息
-            if(data.has("planInfo")){
+            if (data.has("planInfo")) {
                 JSONObject planInfoJsonObj = data.getJSONObject("planInfo");
                 BigLivePlayBackEntity.PlanInfo planInfo = new BigLivePlayBackEntity.PlanInfo();
                 planInfo.setId(planInfoJsonObj.optString("id"));
@@ -1147,17 +1147,17 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 planInfo.setsTime(planInfoJsonObj.optLong("stime"));
                 planInfo.seteTIme(planInfoJsonObj.optLong("etime"));
                 String subjectIdsStr = planInfoJsonObj.optString("subjectIds");
-                if(!StringUtils.isEmpty(subjectIdsStr)){
-                    String[]ids = subjectIdsStr.split(",");
-                    if(ids.length > 0){
+                if (!StringUtils.isEmpty(subjectIdsStr)) {
+                    String[] ids = subjectIdsStr.split(",");
+                    if (ids.length > 0) {
                         planInfo.setSubjectIds(Arrays.asList(ids));
                     }
                 }
 
                 String gradeIdsStr = planInfoJsonObj.optString("gradeIds");
-                if(!StringUtils.isEmpty(gradeIdsStr)){
-                    String []ids = gradeIdsStr.split(",");
-                    if(ids.length > 0){
+                if (!StringUtils.isEmpty(gradeIdsStr)) {
+                    String[] ids = gradeIdsStr.split(",");
+                    if (ids.length > 0) {
                         planInfo.setGradeIds(Arrays.asList(ids));
                     }
                 }
@@ -1166,7 +1166,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
 
 
             //解析主讲老师信息
-            if(data.has("teacherInfo")){
+            if (data.has("teacherInfo")) {
                 JSONObject teacherInfoJsonObj = data.getJSONObject("teacherInfo");
                 BigLivePlayBackEntity.TeacherInfo teacherInfo = new BigLivePlayBackEntity.TeacherInfo();
                 teacherInfo.setId(teacherInfoJsonObj.optString("id"));
@@ -1182,7 +1182,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             }
 
             // 解析辅导老师信息
-            if(data.has("counselorInfo")){
+            if (data.has("counselorInfo")) {
                 JSONObject counselorInfoJsonObj = data.getJSONObject("counselorInfo");
                 BigLivePlayBackEntity.TeacherInfo teacherInfo = new BigLivePlayBackEntity.TeacherInfo();
 
@@ -1199,7 +1199,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             }
 
             // 解析配置信息
-            if(data.has("configs")){
+            if (data.has("configs")) {
                 JSONObject configsJsonObj = data.getJSONObject("configs");
                 BigLivePlayBackEntity.Configs configs = new BigLivePlayBackEntity.Configs();
                 configs.setAppId(configsJsonObj.optString("appId"));
@@ -1207,7 +1207,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 configs.setVideoFile(configsJsonObj.optString("videoFile"));
                 JSONObject urlsJsonObj = configsJsonObj.optJSONObject("urls");
                 //解析回放 相关接口信息
-                if(urlsJsonObj != null){
+                if (urlsJsonObj != null) {
                     configs.setGetChatRecordUrl(urlsJsonObj.optString("getChatRecordUrl"));
                     configs.setGetMetadataUrl(urlsJsonObj.optString("getMetadataUrl"));
                     configs.setInitModuleUrl(urlsJsonObj.optString("initModuleUrl"));
@@ -1226,6 +1226,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
 
     /**
      * 大班整合-讲座灰度场次确认
+     *
      * @param responseEntity
      * @return
      */
