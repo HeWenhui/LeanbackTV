@@ -221,6 +221,8 @@ public class CacheWebView extends WebView {
 
         webSettings.setDefaultTextEncodingName("UTF-8");
 
+        webSettings.setTextZoom(100);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             webSettings.setAllowFileAccessFromFileURLs(true);
             webSettings.setAllowUniversalAccessFromFileURLs(true);
