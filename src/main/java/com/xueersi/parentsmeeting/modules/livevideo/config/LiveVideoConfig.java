@@ -123,6 +123,10 @@ public class LiveVideoConfig {
     public static String LIVE_LINK_MIRCO = "live_selectmic";
     /** 直播-H5题库互动题 */
     public static String LIVE_H5_TEST = "live_h5test";
+    /** 直播-H5题库互动题-预加载 */
+    public static String LIVE_H5_TEST_PRELOAD = "live_h5test_preload";
+    /** 直播-H5题库互动题-试题中拦截 */
+    public static String LIVE_H5_TEST_INTER = "live_h5test_inter";
     /** 直播-h5测试卷 */
     public static String LIVE_H5_EXAM = "live_exam";
     /** 直播-语音评测 */

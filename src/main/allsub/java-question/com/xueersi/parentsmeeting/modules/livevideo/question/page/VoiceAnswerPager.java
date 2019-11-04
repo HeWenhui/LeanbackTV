@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
@@ -100,6 +101,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         this.type = type;
         this.assess_ref = assess_ref;
         isNewArts = mDetail.isNewArtsH5Courseware();
+        String select = null;
         if (isNewArts) {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(mDetail.getVoiceType()) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(mDetail.getVoiceType())) {
                 try {
@@ -110,15 +112,22 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
             } else if (LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(type)) {
                 try {
                     answer = assess_ref.getJSONArray("answer").getString(0);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    JSONArray array = assess_ref.getJSONArray("options");
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject jsonObject = array.getJSONObject(i);
+                        if (answer.equals(jsonObject.getString("option"))) {
+                            select = jsonObject.getJSONArray("content").getString(0);
+                        }
+                    }
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(TAG, e);
                 }
             } else {
                 try {
                     JSONArray array = assess_ref.getJSONArray("options");
                     answer = array.getJSONObject(0).getJSONArray("content").getString(0);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    LiveCrashReport.postCatchedException(TAG, e);
                 }
             }
         } else {
@@ -126,19 +135,23 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 try {
                     answer = assess_ref.getJSONArray("answer").getString(0);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    LiveCrashReport.postCatchedException(TAG, e);
                 }
             } else {
                 try {
                     JSONArray array = assess_ref.getJSONArray("options");
                     answer = array.getJSONObject(0).getJSONArray("content").getString(0);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    LiveCrashReport.postCatchedException(TAG, e);
                 }
             }
         }
         mLogtf.addCommon("testid", mDetail.getvQuestionID());
-        mLogtf.d("VoiceAnswerPager:answer=" + answer);
+        if (select == null) {
+            mLogtf.d("VoiceAnswerPager:answer=" + answer);
+        } else {
+            mLogtf.d("VoiceAnswerPager:answer=" + answer + "，select=" + select);
+        }
         initListener();
         initData();
     }
@@ -340,7 +353,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         isEnd = true;
         endnonce = nonce;
         ViewGroup group = (ViewGroup) mView.getParent();
-        mLogtf.d(SysLogLable.voiceAnswerExamSubmitAll,"examSubmitAll:method=" + method + ",group=" + (group == null) + ",error=" + isSpeechError + "," +
+        mLogtf.d(SysLogLable.voiceAnswerExamSubmitAll, "examSubmitAll:method=" + method + ",group=" + (group == null) + ",error=" + isSpeechError + "," +
                 "success=" + isSpeechSuccess);
         if (isSpeechError || isSpeechSuccess) {
             questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);

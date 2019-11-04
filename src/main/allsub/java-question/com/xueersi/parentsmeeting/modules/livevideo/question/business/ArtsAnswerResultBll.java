@@ -30,6 +30,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.util.FontCache;
@@ -210,17 +211,37 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             addView(mDsipalyer.getRootLayout(), layoutParams);
         }
-
+        try {
+            if (event.getDetailInfo() != null) {
+                mLogtf.d(SysLogLable.courseShowResult, "addPager:isPse=" + isPse + ",id=" + event.getDetailInfo().id);
+            } else {
+                mLogtf.d(SysLogLable.courseShowResult, "addPager:isPse=" + isPse);
+            }
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
         // logger.e( "==========> ArtsAnswerResultBll addPager called:");
     }
 
     private void addPagerExper(ArtsAnswerResultEvent event) {
         //logger.e("ArtsAnswerResultBll:addPager:" + mDsipalyer);
-
         if (mDsipalyer != null) {
+            try {
+                if (mDsipalyer instanceof LiveBasePager) {
+                    LiveBasePager liveBasePager = (LiveBasePager) mDsipalyer;
+                    if (liveBasePager.getBaseVideoQuestionEntity() != null) {
+                        mLogtf.d(SysLogLable.courseShowResult, "addPagerExper:oldid=" + liveBasePager.getBaseVideoQuestionEntity().getvQuestionID());
+                    } else {
+                        mLogtf.d(SysLogLable.courseShowResult, "addPagerExper:mDsipalyer=" + mDsipalyer);
+                    }
+                } else {
+                    mLogtf.d(SysLogLable.courseShowResult, "addPagerExper:mDsipalyer=" + mDsipalyer);
+                }
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
             return;
         }
-
         if (mAnswerReulst.getType() == LiveQueConfig.TYPE_GAME) {
             PrimaryScienceAnswerResultEntity primaryScienceAnswerResultEntity = new PrimaryScienceAnswerResultEntity();
             primaryScienceAnswerResultEntity.setGold(mAnswerReulst.getGold());
@@ -229,6 +250,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 primaryScienceAnswerResultEntity.setType(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
             }
             ExperCourseGameResultPager resultPager = new ExperCourseGameResultPager(mContext, getLiveViewAction(), primaryScienceAnswerResultEntity);
+            resultPager.setBaseVideoQuestionEntity(event.getDetailInfo());
             resultPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                 @Override
                 public void onClose(LiveBasePager basePager) {
@@ -285,7 +307,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     PrimaryScienceAnswerResultEntity.Answer answer = new PrimaryScienceAnswerResultEntity.Answer();
                     if (answerArts.getIsRight() == ArtsAnswerResultPager.RESULT_TYPE_CORRECT) {
                         answer.setRight(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
-                    } else if (answerArts.getIsRight() == ArtsAnswerResultPager.RESULT_TYPE_PART_CORRECT){
+                    } else if (answerArts.getIsRight() == ArtsAnswerResultPager.RESULT_TYPE_PART_CORRECT) {
                         answer.setRight(PrimaryScienceAnswerResultEntity.PARTIALLY_RIGHT);
                     }
                     answer.setRightAnswer(rights);
@@ -294,6 +316,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 }
             }
             ExperCourseResultPager experCourseResultPager = new ExperCourseResultPager(mContext, getLiveViewAction(), primaryScienceAnswerResultEntity);
+            experCourseResultPager.setBaseVideoQuestionEntity(event.getDetailInfo());
             experCourseResultPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                 @Override
                 public void onClose(LiveBasePager basePager) {
@@ -305,7 +328,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             addView(mDsipalyer.getRootLayout(), layoutParams);
         }
-
+        if (event.getDetailInfo() != null) {
+            mLogtf.d(SysLogLable.courseShowResult, "addPagerExper:id=" + event.getDetailInfo().id);
+        } else {
+            mLogtf.d(SysLogLable.courseShowResult, "addPagerExper");
+        }
         // logger.e( "==========> ArtsAnswerResultBll addPager called:");
     }
 
@@ -470,7 +497,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 }
             });
         }
-
     }
 
     private void closeRemindUI() {
@@ -653,6 +679,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         // 已展示过答题结果
         if (mDsipalyer != null) {
             mDsipalyer.close();
+            mLogtf.d(SysLogLable.courseCloseResult, "closeAnswerResult");
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent("closeAnswerResult1"));
         }
@@ -722,6 +749,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     public void onAutoClose(BasePager basePager) {
         if (mDsipalyer != null) {
             removeView(mDsipalyer.getRootLayout());
+            mLogtf.d(SysLogLable.courseCloseResult, "onAutoClose");
             mDsipalyer = null;
         }
     }

@@ -763,7 +763,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             totalQuestion = data.optInt("totalQuestion", -1);
             optionTitle = data.optJSONArray("optionTitle");
         } catch (JSONException e) {
-            e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG,e);
         }
     }
 
@@ -1334,7 +1334,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             }
             EventBus.getDefault().post(artsAnswerResultEvent);
         } catch (JSONException e) {
-            e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG,e);
         }
     }
 
@@ -1436,6 +1436,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                 }
                 newCourseSec = (NewCourseSec) objData[0];
+                detailInfo.setReleaseTime(newCourseSec.getReleaseTime());
                 logger.d("onDataSucess:time=" + (newCourseSec.getEndTime() - newCourseSec.getReleaseTime()));
                 if (newCourseSec.getIsAnswer() == 1 && (!isPlayBack || detailInfo.isExper())) {
                     rlSubjectLoading.setVisibility(View.GONE);
@@ -1923,7 +1924,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         protected void otherMsg(StableLogHashMap logHashMap, String loadUrl) {
             logHashMap.put("testid", NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts));
             logHashMap.put("ispreload", "" + ispreload);
-            logHashMap.put("testsource", "" + ispreload);
+            logHashMap.put("liveId", "" + liveId);
             logHashMap.put("errtype", "webView");
             logHashMap.put("subtestid", getSubtestid());
             if (XESCODE.ARTS_SEND_QUESTION == detailInfo.noticeType) {

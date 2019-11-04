@@ -94,6 +94,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private String subjectiveItem2AIUrl;
     /** 辅导态 */
     private boolean isTUtor = false;
+    /** 发题时间 */
+    private long releaseTime;
 
     public String getTestsProtocal() {
         return testsProtocal;
@@ -324,5 +326,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setTUtor(boolean TUtor) {
         isTUtor = TUtor;
+    }
+
+    public void setReleaseTime(long releaseTime) {
+        this.releaseTime = releaseTime;
+    }
+
+    public long getReleaseTime() {
+        return releaseTime;
     }
 }

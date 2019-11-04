@@ -90,6 +90,10 @@ public class CacheWebView extends WebView {
         mCacheWebViewClient.setCacheInterceptor(interceptor);
     }
 
+    public void setRequestIntercept(RequestIntercept requestIntercept) {
+        mCacheWebViewClient.setRequestIntercept(requestIntercept);
+    }
+
     public static CacheConfig getCacheConfig() {
         return CacheConfig.getInstance();
     }

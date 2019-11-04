@@ -53,6 +53,10 @@ public class SysLogLable {
     public static SysLogEntity backButtonClick = new SysLogEntity(ShellingScienceWebViewLog, "backButtonClick");
     /** 三端协议日志 */
     public static SysLogEntity xesWebLog = new SysLogEntity(ShellingScienceWebViewLog, "xesWebLog");
+    /** 显示结果页 */
+    public static SysLogEntity courseShowResult = new SysLogEntity(ShellingScienceWebViewLog, "showResult");
+    /** 关闭结果页 */
+    public static SysLogEntity courseCloseResult = new SysLogEntity(ShellingScienceWebViewLog, "closeResult");
     /** 语音答题 lable */
     private static String voiceanswer = "WXMutVoiceAnswer";
     /** 选择题结果 */
@@ -90,6 +94,10 @@ public class SysLogLable {
     public static SysLogEntity roleplayNextRead = new SysLogEntity(roleplayMachine, "roleplayNextRead");
     /** 开始提交 */
     public static SysLogEntity roleplaySubmit = new SysLogEntity(roleplayMachine, "recogSubmit");
+    /** 显示结果页 */
+    public static SysLogEntity roleplayEndRoleplay = new SysLogEntity(roleplayMachine, "endRoleplay");
+    /** 显示结果页 */
+    public static SysLogEntity roleplayShowResult = new SysLogEntity(roleplayMachine, "showResult");
     /** 强制提交 */
     public static SysLogEntity roleplayexamSubmitAll = new SysLogEntity(roleplayMachine, "examSubmitAll");
     /** 关闭页面 */
@@ -110,5 +118,22 @@ public class SysLogLable {
     /** 强制提交 */
     public static SysLogEntity speechStartSubmit = new SysLogEntity(speechEvaluating, "startSubmit");
     /** 强制提交 */
-    public static SysLogEntity speechSubmitFail= new SysLogEntity(speechEvaluating, "submitFail");
+    public static SysLogEntity speechSubmitFail = new SysLogEntity(speechEvaluating, "submitFail");
+
+    /** 语音答题 lable */
+    private static String live_h5test = "liveH5testSys";
+    /** 页面创建 */
+    public static SysLogEntity receiveInteractTest = new SysLogEntity(live_h5test, "receiveInteractTest");
+    /** 调用浏览器加载 */
+    public static SysLogEntity h5StartLoad = new SysLogEntity(live_h5test, "h5StartLoad");
+    /** 页面加载开始 */
+    public static SysLogEntity h5OnPageStarted = new SysLogEntity(live_h5test, "onPageStarted");
+    /** 页面加载完成 */
+    public static SysLogEntity h5OnPageFinished = new SysLogEntity(live_h5test, "onPageFinished");
+    /** 页面加载失败 */
+    public static SysLogEntity h5OnReceivedError = new SysLogEntity(live_h5test, "onReceivedError");
+    /** 拦截网页 */
+    public static SysLogEntity h5OverrideUrl = new SysLogEntity(live_h5test, "shouldOverrideUrlLoading");
+    /** 提交 */
+    public static SysLogEntity h5SubmitData = new SysLogEntity(live_h5test, "h5SubmitData");
 }

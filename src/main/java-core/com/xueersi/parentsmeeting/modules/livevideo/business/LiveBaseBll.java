@@ -92,7 +92,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
         contextLiveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         this.mLiveId = liveId;
         this.mLiveType = liveType;
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(context,TAG);
     }
 
     /**
@@ -108,7 +108,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
         contextLiveAndBackDebug = liveEnvironment.getLiveAndBackDebug();
         this.mLiveId = liveId;
         this.mLiveType = liveType;
-        mLogtf = new LogToFile(TAG);
+        mLogtf = liveEnvironment.createLogToFile(TAG);
     }
 
     public LiveAndBackDebug getLiveAndBackDebug() {
