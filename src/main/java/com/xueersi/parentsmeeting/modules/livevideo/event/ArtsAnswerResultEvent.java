@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.event;
 
 
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
@@ -12,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResult
  * created  at 2018/9/6 14:07
  */
 public class ArtsAnswerResultEvent {
+
     /** h5 js回调待会的原始数据 */
     private String dataStr;
     SpeechResultEntity speechResultEntity;
@@ -30,6 +32,9 @@ public class ArtsAnswerResultEvent {
     private VideoQuestionLiveEntity detailInfo;
     /** 新课件是否是预加载 */
     private boolean ispreload;
+
+    private  AnswerResultEntity mAnswerResultEntity;
+
     /** js回调 传回答案 */
     public static final int TYPE_H5_ANSWERRESULT = 1;
 
@@ -54,6 +59,11 @@ public class ArtsAnswerResultEvent {
     public ArtsAnswerResultEvent(String dataStr, int type) {
         this.dataStr = dataStr;
         this.mType = type;
+    }
+
+
+    public ArtsAnswerResultEvent(AnswerResultEntity answerResultEntity) {
+        this.mAnswerResultEntity=answerResultEntity;
     }
 
     public SpeechResultEntity getSpeechResultEntity() {
