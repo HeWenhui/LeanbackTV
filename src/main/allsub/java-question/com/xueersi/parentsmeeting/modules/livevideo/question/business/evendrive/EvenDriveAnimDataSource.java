@@ -7,6 +7,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
@@ -28,7 +29,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
     public void getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType question_type, String testId, final LoadAnimCallBack callBack) {
         if (EvenDriveUtils.isOpenStimulation(getInfo)) {
 //            if () {
-            if (getInfo.getIsArts() == 1) {
+            if (getInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
                 liveHttpManager.getEnglishEvenDriveNum(null, getInfo.getId(),
                         getInfo.getStuCouId(),
                         getInfo.getStudentLiveInfo().getClassId(),
@@ -113,7 +114,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                         });
             } else if (question_type == EvenDriveAnimRepository.EvenDriveQuestionType.INIT_EVEN_NUM) {
 
-                if (getInfo.getIsArts() == 1) {
+                if (getInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
                     liveHttpManager.getEnglishEvenDriveNum(null, getInfo.getId(),
                             getInfo.getStuCouId(),
                             getInfo.getStudentLiveInfo().getClassId(),

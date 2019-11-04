@@ -2358,7 +2358,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         params.addBodyParam("liveId", planId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("testId", testId);
-        if (isArts == 2) {
+        if (isArts == LiveVideoSAConfig.ART_CH) {
             sendPost(LiveHttpConfig.URL_CHINESE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG, params, callBack);
         } else {
             sendPost(LiveHttpConfig.URL_SCIENCE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG, params, callBack);

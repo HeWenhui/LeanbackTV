@@ -762,7 +762,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     }, 5000);
                 } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
-                    delayGetEvenDriveAnim(mGetInfo);
+                    selfUploadRunnable = new SelfUploadRunnable(mGetInfo);
+                    postDelayedIfNotFinish(evenDriveRunnable, 6000);
                 }
                 break;
             }
@@ -1401,6 +1402,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (evenDriveRunnable != null) {
             removeCallbacks(evenDriveRunnable);
         }
+        if (selfUploadRunnable != null) {
+            removeCallbacks(selfUploadRunnable);
+        }
     }
 //
 //    protected boolean isOpenStimulation(LiveGetInfo getInfo) {
@@ -1432,6 +1436,17 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
     }
 
+    private void getEvenDriveUploadAnim(LiveGetInfo getInfo) {
+        if (EvenDriveUtils.isOpenStimulation(getInfo)) {
+            if (animRepositor == null) {
+                animRepositor = new EvenDriveAnimRepository(
+                        mContext, getInfo, mHttpManager, null);
+            }
+            animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_SELF_UPLOAD, "",
+                    null);
+        }
+    }
+
     /**
      * 老师收题时，如果用户属于强制提交，
      * info接口必须在获取结果页接口请求之后调用，否者连对会被清零。
@@ -1441,7 +1456,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
      */
     private void delayGetEvenDriveAnim(final LiveGetInfo getInfo) {
         evenDriveRunnable = new EDRunnable(getInfo);
-        postDelayedIfNotFinish(evenDriveRunnable, 3000);
+        postDelayedIfNotFinish(evenDriveRunnable, 6000);
 //        Observable.
 //                just(true).
 //                delay(3, TimeUnit.SECONDS).
@@ -1462,6 +1477,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     private EDRunnable evenDriveRunnable;
+    private SelfUploadRunnable selfUploadRunnable;
 
     /**
      * 中学连对激励延迟使用的Run
@@ -1475,7 +1491,29 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
         @Override
         public void run() {
+            if (evenDriveRunnable == this) {
+                evenDriveRunnable = null;
+            }
             getEvenDriveAnim(_getInfo);
+        }
+    }
+
+    /**
+     * 中学连对激励延迟使用的Run
+     */
+    private class SelfUploadRunnable implements Runnable {
+        private LiveGetInfo _getInfo;
+
+        public SelfUploadRunnable(LiveGetInfo _getInfo) {
+            this._getInfo = _getInfo;
+        }
+
+        @Override
+        public void run() {
+            if (selfUploadRunnable == this) {
+                selfUploadRunnable = null;
+            }
+            getEvenDriveUploadAnim(_getInfo);
         }
     }
 
@@ -1505,7 +1543,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //            endTime = System.currentTimeMillis();
 //            isHasReceiveLike = false;
         } else if (EvenDriveUtils.isOpenStimulation(mGetInfo)) {
-            getEvenDriveAnim(mGetInfo);
+            if (evenDriveEvent.getStatus() == EvenDriveEvent.CLOSE_SELF_H5) {
+                getEvenDriveUploadAnim(mGetInfo);
+            } else {
+                getEvenDriveAnim(mGetInfo);
+            }
         }
     }
 

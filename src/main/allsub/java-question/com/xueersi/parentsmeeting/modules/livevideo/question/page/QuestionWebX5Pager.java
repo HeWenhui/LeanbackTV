@@ -651,6 +651,9 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 if (isOpenNewCourseWare == 1) {
                     //中学连对激励
                     EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
+                } else {
+                    //连对激励
+                    EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_SELF_H5));
                 }
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {
