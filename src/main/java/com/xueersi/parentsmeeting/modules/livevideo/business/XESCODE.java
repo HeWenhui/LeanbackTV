@@ -322,4 +322,8 @@ public interface XESCODE {
     /** 大班整合 感谢学生*/
     int LIVE_BUSINESS_GIFT_THANK_STUDENT = 10110;
 
+    /** 英语1v2 小组互动+上台发题+语音测评 开始*/
+    int GROUPCLASS_EVENTS_START = -10000;
+    /** 英语1v2 小组互动+上台发题+语音测评 结束*/
+    int GROUPCLASS_EVENTS_END = -10001;
 }
