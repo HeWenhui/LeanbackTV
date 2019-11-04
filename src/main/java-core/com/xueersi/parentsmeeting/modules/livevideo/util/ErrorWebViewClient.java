@@ -62,15 +62,15 @@ public class ErrorWebViewClient extends WebViewClient {
     }
 
 
-
     @Override
     public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
 
-        if(sslErrorHandler!=null) {
+        if (sslErrorHandler != null) {
             sslErrorHandler.proceed();
         }
-        onReceivedHttpError(webView,"xes_err_web_onReceivedSslError",1,sslError.getCertificate().toString());
+        onReceivedHttpError(webView, "xes_err_web_onReceivedSslError", 1, sslError.getCertificate().toString());
     }
+
     public void onError(WebView webView, String url, int statusCode, String reasonPhrase) {
         HashMap<String, String> logHashMap = new HashMap<>();
         logHashMap.put("tag", TAG);
@@ -81,7 +81,7 @@ public class ErrorWebViewClient extends WebViewClient {
         logHashMap.put("errmsg", "" + reasonPhrase);
         logHashMap.put("userip", "" + IpAddressUtil.USER_IP);
         logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
-        UmsAgentManager.umsAgentDebug(webView.getContext(),"webError:", JSON.toJSONString(logHashMap));
+        UmsAgentManager.umsAgentDebug(webView.getContext(), "webError:", JSON.toJSONString(logHashMap));
     }
 
 
@@ -131,6 +131,9 @@ public class ErrorWebViewClient extends WebViewClient {
                     logHashMap.put("txdns", TxHttpDns.getInstance().getTxEnterpriseDns(url));
                     otherMsg(logHashMap, loadUrl);
                     String enentId = logHashMap.getData().get("eventid");
+                    if (url.endsWith("index_files/data2.js") || url.endsWith("assets/images/startBg.jpg")) {
+                        enentId = LiveVideoConfig.LIVE_WEBVIEW_ERROR;
+                    }
                     if (enentId != null) {
                         LiveAndBackDebug liveAndBackDebug = ProxUtil.getProxUtil().get(webView.getContext(), LiveAndBackDebug.class);
                         if (liveAndBackDebug != null) {
