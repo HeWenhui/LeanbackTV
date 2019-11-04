@@ -407,7 +407,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                                 stableLogHashMap.put("testid", testId);
                                 stableLogHashMap.put("isIntercept", "" + isIntercept);
                                 stableLogHashMap.put("ispreload", "" + ispreload);
-                                UmsAgentManager.umsAgentDebug(mContext, questionEventId, stableLogHashMap.getData());
+                                UmsAgentManager.umsAgentDebug(mContext, LiveVideoConfig.LIVE_H5_TEST_INTER, stableLogHashMap.getData());
                             } catch (Exception e) {
                                 LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                             }
