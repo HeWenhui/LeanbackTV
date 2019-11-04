@@ -171,6 +171,9 @@ public class ErrorWebViewClient extends WebViewClient {
         logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
         otherMsg(logHashMap, loadUrl);
         String enentId = logHashMap.getData().get("eventid");
+        if (("" + url).endsWith("index_files/data2.js") || ("" + url).endsWith("assets/images/startBg.jpg")) {
+            enentId = LiveVideoConfig.LIVE_WEBVIEW_ERROR;
+        }
         if (enentId != null) {
             LiveAndBackDebug liveAndBackDebug = ProxUtil.getProxUtil().get(webView.getContext(), LiveAndBackDebug.class);
             if (liveAndBackDebug != null) {
