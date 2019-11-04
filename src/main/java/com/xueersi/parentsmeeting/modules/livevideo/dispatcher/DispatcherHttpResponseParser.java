@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.dispatcher;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -23,6 +24,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSpeedEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 
 import org.json.JSONArray;
@@ -148,6 +150,84 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
 
         }
         return entity;
+    }
+
+    public VideoSectionEntity parseExperNewArtsEvent(ResponseEntity responseEntity) {
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        UmsAgentTrayPreference.getInstance().put(SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, jsonObject.optString("summerCourseWareSize"));
+        VideoSectionEntity section = new VideoSectionEntity();
+        List<VideoQuestionEntity> questionLst = new ArrayList<VideoQuestionEntity>();
+        VideoQuestionEntity questionEntity = null;
+        section.setVideoWebPath(videoPaths);
+        section.setVideoPath(videopath);
+        section.setHostPath(hostPath);
+        section.setExamPaperUrl(examPaperUrl);
+        section.setSpeechEvalUrl(speechEvalUrl);
+        section.setvCoursseID(courseId);
+        section.setvSectionID(sectionId);
+        section.setvSectionName(sectionName);
+        JSONArray questionArray = jsonObject.optJSONArray("events");
+        boolean isNewArtsPlatForm = false;
+        if (questionArray != null) {
+            for (int k = 0; k < questionArray.length(); k++) {
+                try {
+                    questionEntity = new VideoQuestionEntity();
+                    JSONObject questionJson = questionArray.getJSONObject(k);
+                    questionEntity.setvQuestionID(questionJson.optString("id"));
+                    questionEntity.setvCategory(questionJson.optInt("category"));
+                    questionEntity.setvQuestionInsretTime(questionJson.optInt("begintime"));
+                    questionEntity.setAnswerDay(questionJson.optString("date"));
+                    questionEntity.setvEndTime(questionJson.optInt("endtime"));
+                    questionEntity.setUrl(questionJson.optString("url"));
+                    questionEntity.setName(questionJson.optString("type"));
+                    questionEntity.setvQuestionType(questionJson.optString("type"));
+
+
+                    questionEntity.setSrcType(questionJson.optString("srcType"));
+                    questionEntity.setQuestionNum(questionJson.optInt("num", 1));
+                    JSONArray releasedArray = questionJson.optJSONArray("releaseInfos");
+                    List<ReleaseedInfos> releaseLst = new ArrayList<ReleaseedInfos>();
+                    ReleaseedInfos infos = null;
+                    if (releasedArray != null) {
+                        for (int i = 0; i < releasedArray.length(); i++) {
+                            infos = new ReleaseedInfos();
+                            JSONObject infoJson = releasedArray.getJSONObject(i);
+                            infos.setId(infoJson.optString("id"));
+                            infos.setType(infoJson.optString("type"));
+                            infos.setRole(infoJson.optString("role"));
+                            infos.setAnswer(infoJson.optString("answer"));
+                            infos.setEstimatedTime(infoJson.optString("estimatedTime"));
+                            infos.setAssess_ref(infoJson.optString("assess_ref"));
+                            infos.setIsVoice(infoJson.optString("isVoice"));
+                            infos.setTotalScore(infoJson.optString("totalScore"));
+                            // 人为的划分H5Bll和QuestionBll: type为{"4", "0", "1", "2", "8", "5", "6"}的题型走QuestionBll,
+                            // 将他们的category置为1001
+                            if (questiongtype.contains(releasedArray.getJSONObject(0).optString("type"))) {
+                                questionEntity.setvCategory(LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE);
+                            }
+                            // 设置QuestionType,文科回放打点中使用
+                            questionEntity.setvQuestionType(releasedArray.getJSONObject(0).optString("type"));
+                            // 新增一个判断是否是新课件平台的字段
+                            if (LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == questionEntity.getvCategory() || LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == questionEntity.getvCategory()) {
+                                isNewArtsPlatForm = true;
+                            } else {
+                                isNewArtsPlatForm = false;
+                            }
+                            releaseLst.add(infos);
+                        }
+                        questionEntity.setReleaseInfos(releaseLst);
+                    }
+                    questionLst.add(questionEntity);
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(TAG, e);
+                }
+            }
+            if (isNewArtsPlatForm) {
+                section.setLstVideoQuestionEntity(questionLst);
+                return section;
+            }
+        }
+        return null;
     }
 
     /**
@@ -707,6 +787,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     questionEntity.setvQuestionInsretTime(questionJson.optInt("begintime"));
                     questionEntity.setAnswerDay(questionJson.optString("date"));
                     questionEntity.setvEndTime(questionJson.optInt("endtime"));
+                    questionEntity.setUrl(questionJson.optString("url"));
+                    questionEntity.setName(questionJson.optString("type"));
                     questionEntity.setvQuestionType(questionJson.optString("type"));
                     questionEntity.setCourseExtInfo(questionJson.optString("type"));
                     questionEntity.setReleasedPageInfos(questionJson.optString("url"));
@@ -1143,7 +1225,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
     }
 
     /**
-     * 直播灰度场次确认
+     * 大班整合-讲座灰度场次确认
      * @param responseEntity
      * @return
      */
@@ -1158,5 +1240,24 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         }
         return -1;
     }
+
+    /**
+     * 大班整合-直播 灰度场次确认
+     * @param responseEntity
+     * @return
+     */
+    public int parseBigLivePlanVersion(ResponseEntity responseEntity){
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        if (jsonObject != null) {
+            try {
+                return jsonObject.optInt("planVersion");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
+    }
+
+
 
 }

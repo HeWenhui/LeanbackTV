@@ -1,15 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,7 +17,6 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -29,12 +25,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassView;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewCn;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewSec;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewSecPx;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ImageScale;
 
 /**
  * 半身直播 UI 管理器
@@ -138,7 +132,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
      * @param liveVideoPoint
      */
     private void showSupportTeacherUI(LiveVideoPoint liveVideoPoint) {
-        showVedioLoading(View.INVISIBLE);
+        showVideoLoading(View.INVISIBLE);
         ivTecherState.setVisibility(View.INVISIBLE);
         if (!mInited) {
             //辅导模式去掉外层的FrameLayout
@@ -225,7 +219,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
                     flFirstBackgroundContent.addView(childView);
                 }
             }
-            showVedioLoading(View.VISIBLE);
+            showVideoLoading(View.VISIBLE);
         }
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
         //主讲模式铺满屏幕，等比例缩放
@@ -293,7 +287,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             ivTeacherNotpresent.setVisibility(View.GONE);
             ivTecherState.setVisibility(View.INVISIBLE);
             rl_course_video_novideo.setVisibility(View.GONE);
-            //showVedioLoading(visible);
+            //showVideoLoading(visible);
             if (ivVodeoLoading != null) {
                 ivVodeoLoading.setVisibility(View.INVISIBLE);
             }
@@ -569,12 +563,12 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
-        showVedioLoading(View.VISIBLE);
+        showVideoLoading(View.VISIBLE);
     }
 
     private View bufferView;
 
-    private void showVedioLoading(final int visible) {
+    private void showVideoLoading(final int visible) {
 
         if (LiveTopic.MODE_CLASS.equals(mode) && ivVodeoLoading != null && visible != ivVodeoLoading.getVisibility()) {
             mHandler.post(new Runnable() {
@@ -603,41 +597,41 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     @Override
     public void onLiveDontAllow(String msg) {
         super.onLiveDontAllow(msg);
-        showVedioLoading(View.INVISIBLE);
+        showVideoLoading(View.INVISIBLE);
     }
 
     @Override
     public void onPlayError() {
         super.onPlayError();
-        showVedioLoading(View.INVISIBLE);
+        showVideoLoading(View.INVISIBLE);
 
     }
 
     @Override
     public void onPlayError(int errorCode, PlayErrorCode playErrorCode) {
         super.onPlayError(errorCode, playErrorCode);
-        showVedioLoading(View.INVISIBLE);
+        showVideoLoading(View.INVISIBLE);
 
     }
 
     @Override
     public void playComplete() {
         super.playComplete();
-        showVedioLoading(View.INVISIBLE);
+        showVideoLoading(View.INVISIBLE);
 
     }
 
     @Override
     public void onFail(int arg1, int arg2) {
         super.onFail(arg1, arg2);
-        showVedioLoading(View.INVISIBLE);
+        showVideoLoading(View.INVISIBLE);
 
     }
 
     @Override
     public void onLiveError(ResponseEntity responseEntity) {
         super.onLiveError(responseEntity);
-        showVedioLoading(View.INVISIBLE);
+        showVideoLoading(View.INVISIBLE);
 
     }
 
@@ -648,7 +642,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
 
     @Override
     public void onClassTimoOut() {
-        showVedioLoading(View.INVISIBLE);
+        showVideoLoading(View.INVISIBLE);
         super.onClassTimoOut();
     }
 }

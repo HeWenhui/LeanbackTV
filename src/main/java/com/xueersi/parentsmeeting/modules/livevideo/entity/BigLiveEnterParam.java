@@ -16,6 +16,8 @@ public class BigLiveEnterParam {
     /**课程id:讲座课  可不传**/
     private int stuCouId;
 
+    private int acceptPlanVersion;
+
     public BigLiveEnterParam(){}
 
 
@@ -47,5 +49,13 @@ public class BigLiveEnterParam {
 
     public void setStuCouId(int stuCouId) {
         this.stuCouId = stuCouId;
+    }
+
+    public int getAcceptPlanVersion() {
+        return acceptPlanVersion;
+    }
+
+    public void setAcceptPlanVersion(int acceptPlanVersion) {
+        this.acceptPlanVersion = acceptPlanVersion;
     }
 }

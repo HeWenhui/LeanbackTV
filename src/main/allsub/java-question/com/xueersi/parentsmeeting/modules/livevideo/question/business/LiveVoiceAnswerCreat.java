@@ -41,11 +41,17 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     Logger logger = LoggerFactory.getLogger("LiveVoiceAnswerCreat");
     LivePagerBack livePagerBack;
     LiveGetInfo getInfo;
+    private boolean isExperience = false;
 
     public LiveVoiceAnswerCreat(QuestionSwitch questionSwitch, LivePagerBack livePagerBack, LiveGetInfo getInfo) {
         this.questionSwitch = questionSwitch;
         this.livePagerBack = livePagerBack;
         this.getInfo = getInfo;
+    }
+
+    public BaseVoiceAnswerCreat setExperience(boolean experience) {
+        isExperience = experience;
+        return this;
     }
 
     @Override
@@ -81,6 +87,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     @Override
     public CreateAnswerReslutEntity onAnswerReslut(Context context, AnswerRightResultVoice answerRightResultVoice, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
         CreateAnswerReslutEntity createAnswerReslutEntity = new CreateAnswerReslutEntity();
+        entity.setExperience(isExperience);
         boolean isSuccess = false;
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {

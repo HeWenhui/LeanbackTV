@@ -77,11 +77,10 @@ import static com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQ
 public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     EnglishH5CoursewareBll englishH5CoursewareBll;
     private EnglishH5Cache englishH5Cache;
-    String[] filters = {"4", "0", "1", "2", "8", "5", "6"};
     /**
      * ptType 过滤器
      */
-    private List<String> ptTypeFilters = Arrays.asList(filters);
+    private List<String> ptTypeFilters = Arrays.asList(LiveQueConfig.ptTypeFilters);
     private CourseWareHttpManager courseWareHttpManager;
     private VideoQuestionEntity mCurrentQuestionEntity;
 
