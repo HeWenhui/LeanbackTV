@@ -867,6 +867,48 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 }
                 break;
             }
+            case XESCODE.QUES_BIG: {
+                boolean isOpen = object.optBoolean("isOpen");
+                if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
+                    if (!isOpen) {
+                        //老师收题之后，更新聊天区连对榜
+                        postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                getHttpManager().getEvenPairInfo(
+                                        mGetInfo.getStudentLiveInfo().getClassId(),
+                                        mGetInfo.getId(),
+                                        mGetInfo.getStudentLiveInfo().getTeamId(),
+                                        mGetInfo.getStuId(),
+                                        new HttpCallBack() {
+                                            @Override
+                                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                                                mRoomAction.setEvenNum(
+                                                        jsonObject.optString("evenPairNum"),
+                                                        jsonObject.optString("highestRightNum")
+                                                );
+                                            }
+                                        }
+                                );
+                            }
+                        }, 5000);
+                        //设置结束时间，判断是否显示XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT点赞消息
+                        endTime = System.currentTimeMillis();
+//                    isHasReceiveLike = false;
+                        isMiddleScienceEvenDriveH5Open = false;
+                    } else {
+                        userLikeList.clear();
+//                    isHasReceiveLike = false;
+                        isMiddleScienceEvenDriveH5Open = true;
+                    }
+                } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
+                    if (!isOpen) {
+                        delayGetEvenDriveAnim(mGetInfo);
+                    }
+                }
+                break;
+            }
             case XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT: {
                 //点赞
                 if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
@@ -999,7 +1041,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 XESCODE.ARTS_WORD_DICTATION, XESCODE.RAISE_HAND, XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE, XESCODE
                 .RAISE_HAND_SELF, XESCODE.ENGLISH_H5_COURSEWARE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.SENDQUESTION,
                 XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START, XESCODE.STOPQUESTION, XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION,
-                XESCODE.EvenDrive.BROADCAST_STUDY_REPORT, XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT, XESCODE.MULTIPLE_H5_COURSEWARE
+                XESCODE.EvenDrive.BROADCAST_STUDY_REPORT, XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT, XESCODE.MULTIPLE_H5_COURSEWARE,XESCODE.QUES_BIG,
         };
     }
 
