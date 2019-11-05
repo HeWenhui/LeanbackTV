@@ -2462,6 +2462,24 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
     }
 
     /**
+     * 理科投票新提交
+     *
+     * @param requestCallBack
+     */
+    public void ScienceVoteCommit(String planId, String classId, String interactionId, String option, String stuIRCId,String stuName,HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("bizId", "3");
+        params.addBodyParam("planId", planId);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("interactionId", interactionId);
+        params.addBodyParam("option", option);
+        params.addBodyParam("stuIRCId", stuIRCId);
+        params.addBodyParam("stuName", stuName);
+        setDefaultParameter(params);
+        sendPost(LiveQueHttpConfig.LIVE_SCIENCE_VOTE_SUBMIT, params, requestCallBack);
+    }
+
+    /**
      * 语文理科自传互动题连对结果显示
      *
      * @param stuCouId
