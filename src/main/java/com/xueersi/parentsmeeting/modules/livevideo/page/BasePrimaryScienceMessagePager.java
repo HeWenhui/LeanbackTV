@@ -11,39 +11,20 @@ import android.text.TextPaint;
 import android.text.style.ImageSpan;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
-import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuPro;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.BaseEvenDriveCommonPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 
-import java.io.InputStream;
-import java.util.HashMap;
-
-import master.flame.danmaku.danmaku.controller.DrawHandler;
-import master.flame.danmaku.danmaku.controller.IDanmakuView;
-import master.flame.danmaku.danmaku.danmaku.loader.ILoader;
-import master.flame.danmaku.danmaku.danmaku.loader.IllegalDataException;
-import master.flame.danmaku.danmaku.danmaku.loader.android.DanmakuLoaderFactory;
 import master.flame.danmaku.danmaku.danmaku.model.BaseDanmaku;
-import master.flame.danmaku.danmaku.danmaku.model.DanmakuTimer;
-import master.flame.danmaku.danmaku.danmaku.model.IDanmakus;
-import master.flame.danmaku.danmaku.danmaku.model.IDisplayer;
-import master.flame.danmaku.danmaku.danmaku.model.android.BaseCacheStuffer;
-import master.flame.danmaku.danmaku.danmaku.model.android.DanmakuContext;
-import master.flame.danmaku.danmaku.danmaku.model.android.Danmakus;
 import master.flame.danmaku.danmaku.danmaku.model.android.SpannedCacheStuffer;
-import master.flame.danmaku.danmaku.danmaku.parser.BaseDanmakuParser;
-import master.flame.danmaku.danmaku.danmaku.parser.IDataSource;
-import master.flame.danmaku.danmaku.danmaku.parser.android.BiliDanmukuParser;
 
 /**
  * Created by David on 2018/8/12.
  */
 
-public abstract class BasePrimaryScienceMessagePager extends BaseLiveMessagePager {
+public abstract class BasePrimaryScienceMessagePager extends BaseEvenDriveCommonPager {
     //    private int DANMU_RADIUS = 20;//圆角半径
     public int DANMU_PADDING = 0;
 

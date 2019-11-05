@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class EvenDriveLiveMessagePager extends LiveMessagePager {
      */
     @Override
     protected SpannableString addEvenDriveMessageNum(SpannableString spanttt, String sEvenNum, int type) {
-        VerticalImageSpan verticalImageSpan = null;
+        CenterAlignImageSpan verticalImageSpan = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             int evenNum = 0;
             try {
@@ -71,15 +72,15 @@ public class EvenDriveLiveMessagePager extends LiveMessagePager {
 //                                    evenDrawa = mContext.getDrawable(evenNum);
                         drawable = mContext.getResources().getDrawable(evenDriveNumDrawable[evenNum]);
                         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                        verticalImageSpan = new VerticalImageSpan(drawable);
+                        verticalImageSpan = new CenterAlignImageSpan(drawable);
                     } else if (8 <= evenNum && evenNum <= 24) {
                         drawable = mContext.getResources().getDrawable(evenDriveNumDrawable[8]);
                         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                        verticalImageSpan = new VerticalImageSpan(drawable);
+                        verticalImageSpan = new CenterAlignImageSpan(drawable);
                     } else if (evenNum > 24) {
                         drawable = mContext.getResources().getDrawable(evenDriveNumDrawable[9]);
                         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                        verticalImageSpan = new VerticalImageSpan(drawable);
+                        verticalImageSpan = new CenterAlignImageSpan(drawable);
                     }
                 }
             } catch (Exception e) {

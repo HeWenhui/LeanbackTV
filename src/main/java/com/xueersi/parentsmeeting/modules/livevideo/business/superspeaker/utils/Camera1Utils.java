@@ -1,9 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils;
 
+import android.app.job.JobScheduler;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.Handler;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.xueersi.lib.log.LoggerFactory;
@@ -23,14 +23,15 @@ public class Camera1Utils implements IRecordVideoView {
     private Camera.Size cameraSize = null;
     private MediaRecorder mediarecorder;// 录制视频的类
 
-//    private SurfaceView mSurfaceView;
+    private SurfaceView mSurfaceView;
 
-    private SurfaceHolder surfaceHolder;
+    private static final int INVALID_CAMERA_ID = -1;
+//    private SurfaceHolder surfaceHolder;
 
     public Camera1Utils(SurfaceView mSurfaceView) {
-//        this.mSurfaceView = mSurfaceView;
+        this.mSurfaceView = mSurfaceView;
 
-        surfaceHolder = mSurfaceView.getHolder();
+//        surfaceHolder = mSurfaceView.getHolder();
         // setType必须设置，要不出错.
 //        surfaceHolder.addCallback(callback2);
 //        mFormatBuilder = new StringBuilder();
@@ -44,45 +45,24 @@ public class Camera1Utils implements IRecordVideoView {
 
     private boolean isFacingBack;
 
+    Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+
     public boolean initCamera(boolean isFacingBack, int width, int height, String videoPath) {
         if (camera != null) {
             releaseCamera();
         }
         this.isFacingBack = isFacingBack;
-//        camera.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
-//            @Override
-//            public void onPreviewFrame(byte[] data, Camera camera) {
-//                try {
-//                    MediaCodec codec = MediaCodec.createByCodecName("1234");
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
 
-
-//        int num = Camera.getNumberOfCameras();
         this.videoPath = videoPath;
-//        logger.d("NUM:" + num);
-
-
-//        Camera camera = Camera.open(MediaRecorder.VideoSource.CAMERA);
-//        camera = Camera.open(isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT);
         try {
-            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-            int numberOfCameras = Camera.getNumberOfCameras();
-            for (int i = 0; i < numberOfCameras; i++) {
-                Camera.getCameraInfo(i, cameraInfo);
-                if (cameraInfo.facing == (isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT)) {
-                    camera = Camera.open(cameraInfo.facing);
-                }
-            }
+            camera = Camera.open(chooseCamera(
+                    isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK :
+                            Camera.CameraInfo.CAMERA_FACING_FRONT));
             //魅族手机如果禁止权限，不会再次申请权限。
             if (camera == null) {
                 return false;
             }
-            camera.lock();
+//            camera.lock();
             Camera.Parameters parameters = camera.getParameters();
             //有些手机不支持自动连续对焦
             //Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO设置出错
@@ -100,34 +80,47 @@ public class Camera1Utils implements IRecordVideoView {
             return false;
         }
         return true;
-        // Log.d(TAG,"size:height="+cameraSize.height+"   width="+cameraSize.width);
-
-        // int num = Camera.getNumberOfCameras();
-        //  Log.d(TAG,"size:"+parameters.toString());
     }
+
+    /**
+     *
+     */
+    private int chooseCamera(int mFacing) {
+        for (int i = 0, count = Camera.getNumberOfCameras(); i < count; i++) {
+            Camera.getCameraInfo(i, cameraInfo);
+            if (cameraInfo.facing == mFacing) {
+                return i;
+//                return;
+            }
+        }
+//        return -1;
+        return INVALID_CAMERA_ID;
+    }
+
+    private boolean startPreview = false;
 
     public void startPreView() {
         if (camera == null) {
             return;
         }
         try {
-            camera.setPreviewDisplay(surfaceHolder);
+            if (startPreview) {
+                camera.stopPreview();
+            }
+            camera.setPreviewDisplay(mSurfaceView.getHolder());
+            startPreview = true;
             camera.startPreview();
-            camera.unlock();
         } catch (Exception e) {
             e.printStackTrace();
+            logger.e(e.getMessage());
+        } finally {
+//            camera.unlock();
         }
     }
 
     // FIXME: 2019/5/14
     //https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/1120?pid=1  1120
     public void releaseCamera() {
-//        Observable.
-//                just(true).
-//                subscribeOn(Schedulers.io()).
-//                subscribe(new Consumer<Boolean>() {
-//                    @Override
-//                    public void accept(Boolean aBoolean) throws Exception {
         if (camera != null) {
             try {
                 //停掉原来摄像头的预览
@@ -143,6 +136,7 @@ public class Camera1Utils implements IRecordVideoView {
                 logger.e(e);
             }
         }
+        startPreview = false;
         if (mediarecorder != null) {
             try {
                 mediarecorder.stop();
@@ -154,18 +148,10 @@ public class Camera1Utils implements IRecordVideoView {
             }
 
         }
-//                    }
-//                }, new Consumer<Throwable>() {
-//                    @Override
-//                    public void accept(Throwable throwable) throws Exception {
-//                        logger.i(throwable);
-//                    }
-//                });
-//        try {
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+    }
+
+    public boolean isStartPreview() {
+        return startPreview;
     }
 
     private Camera.Size getFitSize(List<Camera.Size> sizes, int realWidth, int realHeight) {
@@ -207,12 +193,13 @@ public class Camera1Utils implements IRecordVideoView {
 //            mediarecorder.setProfile(profile);
 //        }
 //    }
+
     @Override
     public boolean startRecordVideo() {
         if (camera == null) {
             return false;
         }
-//        camera.release();
+
         volum = volumSum = volumNum = 0;
         mediarecorder = new MediaRecorder();// 创建mediarecorder对象
 //        mMediaRecorder.setCamera(mCamera);
@@ -239,34 +226,25 @@ public class Camera1Utils implements IRecordVideoView {
         logger.i("start Record:camera.width = " + cameraSize.width + " height =" + cameraSize.height);
         // 设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
         // mediarecorder.setVideoFrameRate(20);
-        mediarecorder.setPreviewDisplay(surfaceHolder.getSurface());
+        mediarecorder.setPreviewDisplay(mSurfaceView.getHolder().getSurface());
 
         String path = videoPath;
         File file = new File(path);
         if (file != null && !file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
-//        if (!file.exists()) {
-//            try {
-//                file.mkdirs();
-//                file.createNewFile();
         logger.i("create " + path + " success");
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                logger.i("create " + path + " fail");
-//            }
-//        }
         mediarecorder.setMaxDuration(MAX_LENGTH);
         // 设置视频文件输出的路径
         mediarecorder.setOutputFile(path);
         try {
-//            camera.lock();
-//            camera.unlock();
+            camera.lock();
+            camera.unlock();
             // 准备录制
             mediarecorder.prepare();
 
             // 开始录制
-            mediarecorder.start();
+            mediarecorder.start();//必须要lock
             isStop.set(false);
             updateMicStatus();
         } catch (IllegalStateException e) {
@@ -304,7 +282,6 @@ public class Camera1Utils implements IRecordVideoView {
                 logger.i(System.currentTimeMillis());
                 releaseCamera();
                 logger.i(System.currentTimeMillis());
-
             } catch (Exception e) {
                 logger.e(e.toString());
                 e.printStackTrace();

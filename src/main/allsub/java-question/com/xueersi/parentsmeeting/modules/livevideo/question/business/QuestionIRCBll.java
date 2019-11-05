@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.content.Context;
 import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
@@ -15,8 +16,10 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayActionEnd;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineAction;
@@ -37,8 +40,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveAnimRepository;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.TasksDataSource;
 import com.xueersi.parentsmeeting.modules.livevideo.question.create.LiveBigQueCreate;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.irc.QueIrcParse;
@@ -56,6 +62,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Call;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_NEW_PLAYFROM;
 
 /**
  * 互动题
@@ -790,6 +798,55 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
 
+    private EvenDriveAnimRepository animRepo;
+
+    /**
+     * 显示连对激励动画
+     *
+     * @param context
+     * @param getInfo
+     * @param liveHttpManager
+     * @param liveViewAction
+     */
+    private void showEvenDriveAnima(Context context, LiveGetInfo getInfo, LiveHttpManager liveHttpManager, LiveViewAction liveViewAction, EvenDriveAnimRepository.EvenDriveQuestionType questionType, String testId) {
+        if (animRepo == null) {
+            animRepo = new EvenDriveAnimRepository(context, getInfo, liveHttpManager, liveViewAction);
+        }
+//        ;
+//        if (getInfo.getIsArts() == 1) {
+//            questionType = EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_ENGLISH_NEW_PLATFORM;
+//        } else if (getInfo.getIsArts() == 2) {
+//            questionType = EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_SELF_UPLOAD;
+//        } else {
+//            questionType = EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_NEW_PLAYFROM;
+//        }
+        animRepo.getDataSource(questionType, testId, new TasksDataSource.LoadAnimCallBack() {
+            @Override
+            public void onDataNotAvailable() {
+
+            }
+
+            @Override
+            public void onDatasLoaded(String num, boolean numChange) {
+                final AllLiveBasePagerInter liveBasePagerInter = mLiveBll.getAllLiveBasePagerIml();
+                if (liveBasePagerInter != null) {
+                    liveBasePagerInter.addViewRemoveObserver(new AllLiveBasePagerInter.ViewRemoveObserver() {
+                        @Override
+
+                        public boolean removeViewCallBack(LiveBasePager basePager) {
+                            //因为这个页面是互动题结果页显示后才显示激励动画，所以这个时候结束的pager肯定是结果页
+                            animRepo.removeViewAndAnima();
+                            return true;
+//                            liveBasePagerInter.removeViewRemoveObserver(this);
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+
     private String getIdStr(JSONArray jsonArray) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
@@ -873,9 +930,77 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void getStuInteractionResult(VideoQuestionLiveEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
-            getCourseWareHttpManager().getStuInteractionResult(mGetInfo.getStuId(), videoQuestionLiveEntity.id, videoQuestionLiveEntity.getSrcType(), videoQuestionLiveEntity.getDotId(), 0, callBack);
+            //新课件平台
+            getCourseWareHttpManager().getStuInteractionResult(mGetInfo.getStuId(),
+                    videoQuestionLiveEntity.id,
+                    videoQuestionLiveEntity.getSrcType(), videoQuestionLiveEntity.getDotId(),
+                    0,
+                    new EvenDriveAnimHttpCallBackProxy(callBack, true, QUES_TYPE_CHS_NEW_PLAYFROM,
+                            videoQuestionLiveEntity.getvQuestionID()));
         }
     }
+
+    /**
+     * 连对激励，拦截http请求结果，做连对动画显示
+     */
+    private class EvenDriveAnimHttpCallBackProxy extends AbstractBusinessDataCallBack {
+        private AbstractBusinessDataCallBack realCallBack;
+        private boolean isShowAnim;
+        private EvenDriveAnimRepository.EvenDriveQuestionType questionType;
+        private String testId;
+
+        private EvenDriveAnimHttpCallBackProxy(AbstractBusinessDataCallBack httpCallBack,
+                                               boolean isShowAnim, EvenDriveAnimRepository.EvenDriveQuestionType questionType,
+                                               String testId) {
+            this.realCallBack = httpCallBack;
+            this.isShowAnim = isShowAnim;
+            this.questionType = questionType;
+            this.testId = testId;
+        }
+
+        @Override
+        public void onDataFail(int errStatus, String failMsg, int code) {
+            super.onDataFail(errStatus, failMsg, code);
+            if (realCallBack != null) {
+                realCallBack.onDataFail(errStatus, failMsg, code);
+            }
+        }
+
+        @Override
+        public void onDataFail(int errStatus, String failMsg) {
+            super.onDataFail(errStatus, failMsg);
+            if (realCallBack != null) {
+                realCallBack.onDataFail(errStatus, failMsg);
+            }
+        }
+
+        @Override
+        public void onDataSucess(Object... objData) {
+            if (realCallBack != null) {
+                if (isShowAnim) {
+                    showEvenDriveAnima(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
+                            questionType, testId);
+                }
+                realCallBack.onDataSucess(objData);
+            }
+        }
+    }
+
+    /**
+     * 显示连对激励动画
+     * <p>
+     * //     * @param context
+     * //     * @param getInfo
+     * //     * @param liveHttpManager
+     * //     * @param liveViewAction
+     */
+//    private void showEvenDriveAnima(Context context, LiveGetInfo getInfo, LiveHttpManager liveHttpManager, LiveViewAction liveViewAction) {
+//        if (animRepo == null) {
+//            animRepo = new EvenDriveAnimRepository(context, getInfo, liveHttpManager, liveViewAction);
+//        }
+//        animRepo.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_ENGLISH_NEW_PLATFORM, "", null);
+//
+//    }
 
     class QueIrcHttp implements QuestionHttp {
         @Override
@@ -989,6 +1114,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             }
                         });
             } else {
+                //自传互动题
                 getHttpManager().liveSubmitTestAnswer(mLiveType, videoQuestionLiveEntity.srcType,
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
 
@@ -997,6 +1123,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 mLogtf.d("liveSubmitTestAnswer:onPmSuccess=" + responseEntity.getJsonObject().toString() + "," +
                                         videoQuestionLiveEntity);
                                 VideoResultEntity entity = getHttpResponseParser().parseQuestionAnswer(responseEntity, isVoice);
+                                if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE && !isVoice) {
+                                    showEvenDriveAnima(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
+                                            EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_SELF_UPLOAD,
+                                            videoQuestionLiveEntity.getvQuestionID());
+                                }
                                 entity.setVoice(isVoice);
                                 if (StringUtils.isSpace(entity.getTestId())) {
                                     entity.setTestId(videoQuestionLiveEntity.id);
@@ -1037,6 +1168,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         });
             }
         }
+
         @Override
         public void sendSpeechEvalResult2(boolean isNewArt, String id, String stuAnswer, String isSubmit, final AbstractBusinessDataCallBack callBack) {
             String liveid = mGetInfo.getId();
@@ -1210,7 +1342,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
-            getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+            getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce,
+                    new EvenDriveAnimHttpCallBackProxy(callBack, true, EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_ENGLISH_NEW_PLATFORM,
+                            detailInfo.getvQuestionID()));
         }
 
         @Override
