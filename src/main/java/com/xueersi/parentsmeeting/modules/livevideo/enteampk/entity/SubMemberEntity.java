@@ -15,6 +15,8 @@ public class SubMemberEntity {
 
     /** 头像地址 */
     private String iconUrl;
+    private int sex;
+
     /** 是否是自己 */
     boolean isMy;
 

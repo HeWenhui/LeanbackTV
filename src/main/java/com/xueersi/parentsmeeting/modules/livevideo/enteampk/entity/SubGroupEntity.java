@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity;
 
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,8 @@ public class SubGroupEntity {
     private int groupId;
     /** 声网token */
     private String token;
+
+    LiveAppUserInfo virStuInfo;
 
     /** 分组信息 */
     private List<SubMemberEntity> groupList = new ArrayList<>();
