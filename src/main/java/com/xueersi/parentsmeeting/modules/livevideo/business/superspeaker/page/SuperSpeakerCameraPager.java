@@ -298,6 +298,9 @@ public abstract class SuperSpeakerCameraPager extends SuperSpeakerCameraInflateP
             isHasRecordView = false;
             return;
         }
+        if (recordTimeDispo != null && !recordTimeDispo.isDisposed()) {
+            recordTimeDispo.dispose();
+        }
         long nowTime = System.currentTimeMillis();
 //        recordTimerDisposable.dispose();
 //        mView.removeCallbacks(recordVideoTimer);
@@ -436,6 +439,7 @@ public abstract class SuperSpeakerCameraPager extends SuperSpeakerCameraInflateP
                         public void onSubscribe(Disposable d) {
                             super.onSubscribe(d);
                             compositeDisposable.add(d);
+                            recordTimeDispo = d;
 //                            recordTimerDisposable.add(d);
                             isInRecord = true;
                         }
@@ -450,6 +454,7 @@ public abstract class SuperSpeakerCameraPager extends SuperSpeakerCameraInflateP
         }
     }
 
+    private Disposable recordTimeDispo;
 //    private CompositeDisposable recordTimerDisposable = new CompositeDisposable(compositeDisposable);
 
     //初始化变量
