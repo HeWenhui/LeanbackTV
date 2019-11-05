@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -15,14 +16,14 @@ import android.view.ViewGroup;
 import com.czt.mp3recorder.util.LameUtil;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 
 import java.io.IOException;
 
@@ -348,11 +349,23 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
             redPackageView.getView().setVisibility(View.VISIBLE);
         }
         redPackageView.updateNum(num);
-        UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
-        if (updateAchievement != null) {
-            logger.i("super speaker请求增加金币的网络接口");
-            updateAchievement.getStuGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION);
+//        UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+//        if (updateAchievement != null) {
+//            logger.i("super speaker请求增加金币的网络接口");
+//            updateAchievement.getStuGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION);
+//        }
+        //增加Pk金币数量
+        try {
+            TeamPkStateLayout teamPKStateLayout = ((Activity) mContext).findViewById(R.id.tpkL_teampk_pkstate_root);
+            if (teamPKStateLayout == null) {
+                return;
+            }
+            teamPKStateLayout.updateData(0, 0, Integer.valueOf(num));
+        } catch (Exception e) {
+            logger.e(e.getStackTrace());
+            e.printStackTrace();
         }
+
 //        if (iView != null) {
 //            iView.updateNum(num);
 //        }
