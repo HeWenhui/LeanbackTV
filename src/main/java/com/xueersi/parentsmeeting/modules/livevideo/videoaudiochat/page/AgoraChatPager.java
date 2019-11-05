@@ -250,7 +250,7 @@ public class AgoraChatPager extends LiveBasePager implements AgoraVideoChatInter
         mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
             @Override
             public void onEngineCreate(final RtcEngine mRtcEngine) {
-                mRtcEngine.enableAudioVolumeIndication(500, 3);
+                mRtcEngine.enableAudioVolumeIndication(500, 3,false);
                 if (video) {
                     VideoEncoderConfiguration.VideoDimensions dimensions = VideoEncoderConfiguration.VD_320x240;
                     VideoEncoderConfiguration configuration = new VideoEncoderConfiguration(dimensions,
