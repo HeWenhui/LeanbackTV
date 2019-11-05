@@ -15,6 +15,15 @@ public class ArtsExtLiveInfo {
     private String summerCourseWareSize;
 
     private int bolockChinese ;
+    private int evenDriveRightEvenNumUrl;
+
+    public int getEvenDriveRightEvenNumUrl() {
+        return evenDriveRightEvenNumUrl;
+    }
+
+    public void setEvenDriveRightEvenNumUrl(int evenDriveRightEvenNumUrl) {
+        this.evenDriveRightEvenNumUrl = evenDriveRightEvenNumUrl;
+    }
 
     public int getBolockChinese() {
         return bolockChinese;
