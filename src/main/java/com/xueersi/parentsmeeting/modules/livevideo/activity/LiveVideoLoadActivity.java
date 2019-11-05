@@ -251,7 +251,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             if (isBigLiveRoom()) {
                 enterBigLive(bundle, vSectionID, liveType, from,"0", httpManager);
             } else {
-                httpManager.liveLectureGetInfo(vSectionID, new HttpCallBack(mDataLoadEntity) {
+                httpManager.liveLectureGetInfo(vSectionID, new HttpCallBack(mDataLoadEntity,false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         LiveHttpResponseParser mHttpResponseParser =
@@ -272,7 +272,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        XESToastUtils.showToast(LiveVideoLoadActivity.this, "初始化失败");
+                        XESToastUtils.showToast( "初始化失败");
                         finish();
                     }
 
@@ -286,6 +286,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                        setResult(ShareBusinessConfig.LIVE_APP_UPDATE, data);
 //                        finish();
                         } else {
+                            XESToastUtils.showToast( responseEntity.getErrorMsg());
                             finishAndExit();
                         }
                     }
@@ -303,7 +304,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 httpManager.addBodyParam("stuCouId", vStuCourseID);
                 httpManager.addBodyParam("liveId", vSectionID);
                 httpManager.addBodyParam("from", "" + from);
-                httpManager.liveGetInfo(courseId, vSectionID, 0, new HttpCallBack(mDataLoadEntity) {
+                httpManager.liveGetInfo(courseId, vSectionID, 0, new HttpCallBack(mDataLoadEntity,false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);
@@ -368,7 +369,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        XESToastUtils.showToast(LiveVideoLoadActivity.this, "初始化失败");
+                        XESToastUtils.showToast( "初始化失败");
                         finish();
                     }
 
@@ -382,6 +383,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                        setResult(ShareBusinessConfig.LIVE_APP_UPDATE, data);
 //                        finish();
                         } else {
+                            XESToastUtils.showToast( responseEntity.getErrorMsg());
                             finishAndExit();
                         }
                     }
@@ -433,7 +435,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             public void onPmError(ResponseEntity responseEntity) {
                 int status = responseEntity.getmStatus();
                 if(10 != status){
-                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity.getErrorMsg());
+                    XESToastUtils.showToast( responseEntity.getErrorMsg());
                     finishAndExit();
                 }
             }

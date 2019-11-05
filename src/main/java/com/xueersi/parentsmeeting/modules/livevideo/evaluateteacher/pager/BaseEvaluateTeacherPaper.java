@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.IS
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.entity.EvaluateOptionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.page.FirstPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.util.Collections;
@@ -33,7 +34,7 @@ import java.util.Map;
  * Created by：WangDe on 2018/11/30 18:27
  */
 
-public class BaseEvaluateTeacherPaper extends LiveBasePager {
+public class BaseEvaluateTeacherPaper extends LiveBasePager implements FirstPager {
     protected RelativeLayout rlBackground;
     /** 关闭 */
     protected ImageView ivCloseClass;
@@ -166,14 +167,14 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
 
     @Override
     public void initListener() {
-        cbMainOpt1.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
-        cbMainOpt2.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
-        cbMainOpt3.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
-        cbMainOpt4.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
-        cbTutorOpt1.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
-        cbTutorOpt2.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
-        cbTutorOpt3.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
-        cbTutorOpt4.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
+        cbMainOpt1.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor, submitAlpha));
+        cbMainOpt2.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor, submitAlpha));
+        cbMainOpt3.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor, submitAlpha));
+        cbMainOpt4.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor, submitAlpha));
+        cbTutorOpt1.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor, submitAlpha));
+        cbTutorOpt2.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor, submitAlpha));
+        cbTutorOpt3.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor, submitAlpha));
+        cbTutorOpt4.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor, submitAlpha));
         rbMainUnSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, scoreUncheckColor));
         rbMainSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, scoreUncheckColor));
         rbMainVerySat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, scoreUncheckColor));
@@ -321,9 +322,11 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
         tvResultCountDown.setVisibility(View.GONE);
         rlReSubmit.setVisibility(View.VISIBLE);
     }
-    public void setReUpload(){
+
+    public void setReUpload() {
         rlReSubmit.setEnabled(true);
     }
+
     public interface CountDownCallback {
         void finishVideo();
     }
@@ -358,7 +361,7 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
         int uncheckColor;
         float submitAlpha;
 
-        MainOptListener(int checkColor, int uncheckColor,float submitAlpha) {
+        MainOptListener(int checkColor, int uncheckColor, float submitAlpha) {
             this.checkColor = checkColor;
             this.uncheckColor = uncheckColor;
             this.submitAlpha = submitAlpha;
@@ -392,7 +395,7 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
         int uncheckColor;
         float submitAlpha;
 
-        TutorOptListener(int checkColor, int uncheckColor,float submitAlpha) {
+        TutorOptListener(int checkColor, int uncheckColor, float submitAlpha) {
             this.checkColor = checkColor;
             this.uncheckColor = uncheckColor;
             this.submitAlpha = submitAlpha;

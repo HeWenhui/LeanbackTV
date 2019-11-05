@@ -87,7 +87,7 @@ public class NewIRCMessage implements IIRCMessage {
         this.classId = classId;
         mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
-        mLogtf.d("IRCMessage:channel=" + channel + ",nickname=" + nickname);
+        mLogtf.d("NewIRCMessage:channel=" + channel + ",nickname=" + nickname);
     }
 
     /**

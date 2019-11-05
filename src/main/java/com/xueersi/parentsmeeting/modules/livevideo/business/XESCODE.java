@@ -324,4 +324,6 @@ public interface XESCODE {
     /** 大班整合 感谢学生*/
     int LIVE_BUSINESS_GIFT_THANK_STUDENT = 10110;
 
+    int FORUM_INTERACTION = 412;
+    int FORUM_INTERACTION_PRAISE = 10105;
 }

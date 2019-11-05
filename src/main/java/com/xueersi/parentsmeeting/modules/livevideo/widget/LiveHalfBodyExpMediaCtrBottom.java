@@ -7,6 +7,7 @@ import android.view.View;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateReg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -21,8 +22,9 @@ import java.util.ArrayList;
 *version 1.0
 */
 
-public class LiveHalfBodyExpMediaCtrBottom extends BaseLiveMediaControllerBottom {
+public class LiveHalfBodyExpMediaCtrBottom extends BaseLiveMediaControllerBottom implements LiveUIStateReg {
 
+    /**半身直播体验课只有主讲*/
     private String mode = LiveTopic.MODE_TRANING;
     private static final String TAG = "LiveHalfBodyExpMediaCtrBottom";
     ArrayList<LiveUIStateListener> liveUIStateListeners = new ArrayList<>();
@@ -67,9 +69,8 @@ public class LiveHalfBodyExpMediaCtrBottom extends BaseLiveMediaControllerBottom
     /**
      * 根据不同直播流切换不同 底部控制栏
      * @param mode
-     * @param getInfo
      */
-    public void onModeChange(String mode,LiveGetInfo getInfo){
+    public void onModeChange(String mode){
         this.mode = mode;
        // removeAllViews();
         removeAllViewsInLayout();

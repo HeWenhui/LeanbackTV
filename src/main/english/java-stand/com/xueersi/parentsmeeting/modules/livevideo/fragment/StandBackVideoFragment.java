@@ -80,6 +80,7 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
         super.onDestroy();
         if (liveStandFrameAnim != null) {
             liveStandFrameAnim.onDestroy();
+            liveStandFrameAnim = null;
         }
     }
 

@@ -42,8 +42,6 @@ import java.util.List;
  */
 
 public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsultDisplayer {
-    /** 游戏试题类型 */
-    private static final int TYPE_GAME = 12;
     private View resultStateRootView;
     private View resultDetailRootView;
     private static final long ANSWER_DETAIL_SHOW_DELAY = 3000;
@@ -183,7 +181,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
             }
             int iconResId = 0;
-          //  int color = getColor(R.color.COLOR_5DA741);
+            //  int color = getColor(R.color.COLOR_5DA741);
             String color = "'#5DA741'";
             if (data.getIsRight() == RESULT_TYPE_ERRRO) {
 //                color = getColor(R.color.COLOR_E34949);
@@ -193,7 +191,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 iconResId = R.drawable.icon_live_wrong;
             } else if (data.getIsRight() == RESULT_TYPE_PART_CORRECT) {
                 iconResId = R.drawable.icon_live_prart_correct;
-             //   color = getColor(R.color.COLOR_333333);
+                //   color = getColor(R.color.COLOR_333333);
                 color = "'#333333'";
                 ivAnswerIcon.setVisibility(View.VISIBLE);
 
@@ -204,7 +202,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 iconResId = R.drawable.icon_live_correct;
             } else {
                 ivAnswerIcon.setVisibility(View.INVISIBLE);
-               // color = getColor(R.color.COLOR_333333);
+                // color = getColor(R.color.COLOR_333333);
                 color = "'#333333'";
             }
             if (iconResId != 0) {
@@ -212,18 +210,18 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
             }
 
             StringBuffer stringBuilder = new StringBuffer("<font color='#333333'>你的答案：</font>");
-         //   SpannableString span = null;
+            //   SpannableString span = null;
             if (TextUtils.isEmpty(myAnswerText) || "空".equals(myAnswerText)) {
                 myAnswerText = "空";
             }
 //            span = new SpannableString(myAnswerText);
 //            span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            stringBuilder.append("<font color="+color+">");
-            stringBuilder.append(myAnswerText+" </font>");
+            stringBuilder.append("<font color=" + color + ">");
+            stringBuilder.append(myAnswerText + " </font>");
 
             tvUserAnswer.setText(Html.fromHtml(stringBuilder.toString()));
 
-            String titleFont = "<font color='#333333'>正确答案："+ standerAnswerText+" </font>";
+            String titleFont = "<font color='#333333'>正确答案：" + standerAnswerText + " </font>";
 
             tvRightAnswer.setText(Html.fromHtml(titleFont));
 
@@ -232,7 +230,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
         /** 是否是填空题 */
         private boolean isSelect(AnswerResultEntity.Answer data) {
-            return data.getTestType() == 2;
+            return data.getTestType() == AnswerResultEntity.TEST_TYPE_2;
         }
 
         /**
@@ -253,13 +251,13 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
                     } else {
                         isAllSpace = false;
                     }
-                    if ( i != 0 && !TextUtils.isEmpty(spiltStr)){
+                    if (i != 0 && !TextUtils.isEmpty(spiltStr)) {
                         stringBuilder.append(spiltStr);
                     }
                     stringBuilder.append(answer);
                 }
                 if (isAllSpace) {
-                    return  "空";
+                    return "空";
                 }
             }
             return stringBuilder.toString();
@@ -315,7 +313,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
      */
     private void disPlayDetailUI() {
         // 游戏题不展示 统计面板 只展示 获得金币UI
-        if (isGameResult()||isNewEnType()) {
+        if (isGameResult() || isNewEnType()) {
             if (getRootView() != null && getRootView().getParent() != null) {
                 ((ViewGroup) getRootView().getParent()).removeView(getRootView());
             }
@@ -404,11 +402,11 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
     }
 
     private boolean isGameResult() {
-        return mData != null && mData.getType() == TYPE_GAME;
+        return mData != null && mData.getType() == LiveQueConfig.TYPE_GAME;
     }
 
     private boolean isNewEnType() {
-        if(mData != null){
+        if (mData != null) {
             if (mData.getAnswerList().size() > 0) {
                 for (int i = 0; i < mData.getAnswerList().size(); i++) {
                     if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_31, String.valueOf(mData.getAnswerList().get(i).getTestType()))) {
@@ -449,7 +447,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
         // 测试代码
         mReusltType = mData.getIsRight();
 
-        if (!isGameResult()&&!isNewEnType()) {
+        if (!isGameResult() && !isNewEnType()) {
             disPlayDetailUI();
             return;
         }

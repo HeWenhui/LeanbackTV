@@ -143,13 +143,12 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
     }
 
     @Override
-    public void sendJsonPostDefault(String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack){
+    public void sendJsonPostDefault(String url, final HttpRequestParams httpRequestParams, HttpCallBack httpCallBack) {
         setDefaultParameter(httpRequestParams);
         setDefaultHeaderParams(httpRequestParams);
         setDefBusinessParams(httpRequestParams);
         sendJsonPost(url, httpRequestParams, httpCallBack);
     }
-
 
     @Override
     public void sendJsonPost(final String url, final Object paramObject, HttpCallBack httpCallBack) {
@@ -526,7 +525,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      * @param hbTime          观看时长
      * @param requestCallBack
      */
-    public void liveUserOnline(int type, String liveId, String teacherId, String currentDutyId, int
+    public boolean liveUserOnline(int type, String liveId, String teacherId, String currentDutyId, int
             hbTime, HttpCallBack requestCallBack) {
         String url;
         HttpRequestParams params = new HttpRequestParams();
@@ -543,12 +542,13 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
             url = LiveHttpConfig.URL_LIVE_LECTURE_USER_ONLINE;
             params.addBodyParam("liveId", liveId);
         } else {
-            return;
+            return false;
         }
 //        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("hbTime", "" + hbTime);
         params.addBodyParam("fromType", "4");
         sendPost(url, params, requestCallBack);
+        return true;
     }
 
     /**

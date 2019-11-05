@@ -3,11 +3,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.UserOnlineLog;
@@ -36,13 +38,17 @@ public class UserOnline {
     private ContextLiveAndBackDebug contextLiveAndBackDebug;
     private long startHeart;
     private long delayHeart;
+    /** 开始心跳 */
+    private boolean start = false;
+    /** 心跳次数 */
+    private int heartTimes = 0;
 
     public UserOnline(Activity activity, int mLiveType, String mLiveId) {
         this.activity = activity;
         this.mLiveType = mLiveType;
         this.mLiveId = mLiveId;
         mLogtf = new LogToFile(activity, TAG);
-        startHeart = System.currentTimeMillis();
+        startHeart = SystemClock.elapsedRealtime();
         contextLiveAndBackDebug = new ContextLiveAndBackDebug(activity);
     }
 
@@ -66,13 +72,15 @@ public class UserOnline {
     };
 
     public void start() {
+        start = true;
         UserOnlineLog.sno2(0, contextLiveAndBackDebug);
         mainHandler.postDelayed(mUserOnlineCall, mHbTime * 1000);
     }
 
     public void stop() {
-        long oldTime = System.currentTimeMillis() - startHeart;
-        UserOnlineLog.sno5(oldTime, contextLiveAndBackDebug);
+        start = false;
+        long oldTime = SystemClock.elapsedRealtime() - startHeart;
+        UserOnlineLog.sno5(oldTime, heartTimes, mHbCount, contextLiveAndBackDebug);
         mainHandler.removeCallbacks(mUserOnlineCall);
     }
 
@@ -86,26 +94,28 @@ public class UserOnline {
         }
         final String finalTeacherId = teacherId;
         mHbCount++;
-        mHttpManager.liveUserOnline(mLiveType, mLiveId, teacherId, mCurrentDutyId, mHbTime, new HttpCallBack() {
+        boolean online = mHttpManager.liveUserOnline(mLiveType, mLiveId, teacherId, mCurrentDutyId, mHbTime, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                heartTimes++;
                 onFinished();
                 startHeart = System.currentTimeMillis();
-                UserOnlineLog.sno3("", "1", "", contextLiveAndBackDebug);
+                UserOnlineLog.sno3("", "1", "", heartTimes, mHbCount, contextLiveAndBackDebug);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                UserOnlineLog.sno3("", "0", "" + msg, contextLiveAndBackDebug);
+                UserOnlineLog.sno3("", "0", "" + msg, heartTimes, mHbCount, contextLiveAndBackDebug);
                 onFinished();
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                UserOnlineLog.sno3("", "0", "" + responseEntity.getErrorMsg(), contextLiveAndBackDebug);
+                String msg = "" + responseEntity.getErrorMsg();
+                UserOnlineLog.sno3("", "0", "" + msg, heartTimes, mHbCount, contextLiveAndBackDebug);
                 onFinished();
             }
 
@@ -155,11 +165,15 @@ public class UserOnline {
                 postDelayedIfNotFinish(mUserOnlineCall, mHbTime * 1000);
             }
         });
+        UserOnlineLog.sno4(online, mLiveType, heartTimes, mHbCount, contextLiveAndBackDebug);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
-        if (activity.isFinishing()) {
+        if (!start) {
             return;
+        }
+        if (activity.isFinishing()) {
+            LiveCrashReport.postCatchedException(TAG, new Exception());
         }
         mainHandler.postDelayed(r, delayMillis);
     }

@@ -9,7 +9,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -57,8 +56,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
  */
 public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp, QuestionSecHttp, EnglishH5CoursewareSecHttp {
     QuestionBll questionBll;
-    String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
-    private List<String> questiongtype = Arrays.asList(ptTypeFilters);
+    private List<String> questiongtype = Arrays.asList(LiveQueConfig.ptTypeFilters);
     private CourseWareHttpManager courseWareHttpManager;
 
     public QuestionPlayBackBll(Activity activity, LiveBackBll liveBackBll) {
@@ -213,7 +211,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
                 if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !"1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                     logger.i("走人机start,拉取试题");
-                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), liveBackBll, liveGetInfo, false);
+                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), liveBackBll, liveGetInfo, false, getLiveHttpAction());
                     questionBll.setRolePlayMachineAction(rolePlayerBll, null);
 
                 }
@@ -302,9 +300,9 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         }
                         //非常重要，不然新课件平台，roleplay无法进入
                         logger.i("yzl_showQuestion type = " + videoQuestionLiveEntity.type);
-                        if ("5".equals(videoQuestionLiveEntity.type)) {
+                        if (LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY.equals(videoQuestionLiveEntity.type)) {
                             logger.i("yzl_init new rolePlay bll");
-                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), liveBackBll, liveGetInfo, false);
+                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), liveBackBll, liveGetInfo, false, getLiveHttpAction());
                             questionBll.setRolePlayMachineAction(rolePlayerBll, null);
                         }
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
