@@ -174,6 +174,7 @@ public class EnglishNameBusiness extends BaseBll {
 
         for (int i = 0; i < nameList.size(); i++) {
             if(TextUtils.equals(nameList.get(i).getName(),userName)) {
+                UserBll.getInstance().saveUserNameAudio(nameList.get(i).getAudioPath());
                 mShareDataManager.put(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK,true,ShareDataManager.SHAREDATA_USER);
                 return;
             }
