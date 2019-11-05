@@ -65,6 +65,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent.CALL_BACK_UPDATE_EVEN_RIGHT;
+
 //import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 
 /**
@@ -1566,6 +1568,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             //设置结束时间，判断是否显示XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT点赞消息
 //            endTime = System.currentTimeMillis();
 //            isHasReceiveLike = false;
+        } else if (evenDriveEvent.getStatus() == CALL_BACK_UPDATE_EVEN_RIGHT) {
+            if (mRoomAction != null && mGetInfo != null && mGetInfo.getEvenDriveInfo() != null) {
+                mRoomAction.setEvenNum(mGetInfo.getEvenDriveInfo().getEvenNum() + "", mGetInfo.getEvenDriveInfo().getHighestNum() + "");
+            }
         } else if (EvenDriveUtils.isOpenStimulation(mGetInfo)) {
             if (evenDriveEvent.getStatus() == EvenDriveEvent.CLOSE_SELF_H5) {
                 getEvenDriveUploadAnim(mGetInfo, evenDriveEvent.getTestId());
@@ -1574,6 +1580,4 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         }
     }
-
-
 }

@@ -23,6 +23,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
     public EvenDriveAnimDataSource(LiveHttpManager liveHttpManager, LiveGetInfo liveGetInfo) {
         this.liveHttpManager = liveHttpManager;
         this.getInfo = liveGetInfo;
+
     }
 
     @Override
