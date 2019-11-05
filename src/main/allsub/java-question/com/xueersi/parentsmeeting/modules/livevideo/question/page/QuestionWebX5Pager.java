@@ -31,6 +31,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
@@ -42,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -54,7 +59,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import ren.yale.android.cachewebviewlib.CacheWebResourceResponse;
 import ren.yale.android.cachewebviewlib.CacheWebView;
+import ren.yale.android.cachewebviewlib.RequestIntercept;
 import ren.yale.android.cachewebviewlib.WebViewCache;
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
@@ -113,6 +120,9 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private HashMap header;
     /** 新课件缓存 */
     private NewCourseCache newCourseCache;
+    private int newProgress;
+    private int urlindex = 0;
+    private LiveThreadPoolExecutor threadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
@@ -139,7 +149,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         this.isShowRanks = isShowRanks;
         this.stuCouId = stuCouId;
         this.allowTeamPk = allowTeamPk;
-        mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
+        mLogtf.addCommon("testId", "" + testId);
+        mLogtf.i(SysLogLable.receiveInteractTest, "QuestionWebX5Pager:isShowRanks=" + isShowRanks + ",allowTeamPk=" + allowTeamPk);
         header = new HashMap();
         header.put("Access-Control-Allow-Origin", "*");
         initData();
@@ -167,7 +178,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         testId = testInfo.getvQuestionID();
         type = testInfo.type;
         this.liveid = liveid;
-        mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
+        mLogtf.addCommon("testId", "" + testId);
+        mLogtf.i(SysLogLable.receiveInteractTest, "QuestionWebX5Pager:type=" + type);
         cacheFile = LiveCacheFile.geCacheFile(context, "webviewCache");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
@@ -177,7 +189,6 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         mMorecacheout = new File(todayLiveCacheDir, liveid + "artschild");
         initData();
     }
-
 
     @Override
     public String getTestId() {
@@ -241,7 +252,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void initData() {
-        newCourseCache = new NewCourseCache(mContext, liveid, "99999");
+        newCourseCache = new NewCourseCache(mContext, liveid, "" + testId);
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,7 +283,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
         // 文科新课件平台 填空选择题
         if (isNewArtsTest) {
-            logger.e("=======> loadUrl:" + examUrl);
+            mLogtf.d(SysLogLable.h5StartLoad, "initData:loadUrl=" + examUrl);
             wvSubjectWeb.loadUrl(examUrl);
         } else {
             ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
@@ -287,7 +298,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 //            examUrl += "&isPlayBack=" + (isLive ? "0" : "1");
             examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
             wvSubjectWeb.loadUrl(examUrl);
-            logger.e("======> loadUrl:" + examUrl);
+            mLogtf.d(SysLogLable.h5StartLoad, "initData:loadUrl=" + examUrl);
         }
         mGoldNum = -1;
         mEngerNum = -1;
@@ -375,6 +386,35 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 cacheWebView.getWebViewCache().setNeedHttpDns(false);
             }
             cacheWebView.getWebViewCache().setIsScience(isArts == 0);
+            cacheWebView.setRequestIntercept(new RequestIntercept() {
+                @Override
+                public void onIntercept(final String url, CacheWebResourceResponse webResourceResponse) {
+                    final int startProgress = newProgress;
+                    final boolean isIntercept = webResourceResponse != null;
+                    final boolean ispreload = isIntercept && webResourceResponse.isFile();
+                    threadPoolExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv1");
+                                stableLogHashMap.put("courseurl", "" + examUrl);
+                                stableLogHashMap.put("creattime", "" + creattime);
+                                stableLogHashMap.put("url", url);
+                                stableLogHashMap.put("urlindex", "" + (urlindex++));
+                                stableLogHashMap.put("newProgress", "" + newProgress);
+                                stableLogHashMap.put("startProgress", "" + startProgress);
+                                stableLogHashMap.put("liveId", liveid);
+                                stableLogHashMap.put("testid", testId);
+                                stableLogHashMap.put("isIntercept", "" + isIntercept);
+                                stableLogHashMap.put("ispreload", "" + ispreload);
+                                UmsAgentManager.umsAgentDebug(mContext, LiveVideoConfig.LIVE_H5_TEST_INTER, stableLogHashMap.getData());
+                            } catch (Exception e) {
+                                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                            }
+                        }
+                    });
+                }
+            });
         }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
@@ -387,6 +427,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void submitData() {
+        boolean oldIsEnd = isEnd;
         isForceSubmit = !isAnswerResultRecived;
         Map<String, String> mData = new HashMap<>();
         mData.put("testid", "" + testId);
@@ -395,7 +436,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
-        Log.e("QuestionX5Pager", "=======>examSubmitAll called:");
+        mLogtf.d(SysLogLable.h5SubmitData, "submitData:oldIsEnd=" + oldIsEnd);
     }
 
     @Override
@@ -434,6 +475,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
+            QuestionWebX5Pager.this.newProgress = newProgress;
             if (newProgress == 100) {
                 View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
                 if (loadView != null) {
@@ -549,11 +591,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            mLogtf.i("onPageFinished:url=" + url + ",failingUrl=" + failingUrl + ",isEnd=" + isEnd);
+            mLogtf.i(SysLogLable.h5OnPageFinished, "onPageFinished:url=" + url + ",failingUrl=" + failingUrl + ",isEnd=" + isEnd);
             if (!isNewArtsTest) {
                 if (isEnd && url.equals(examUrl)) {
                     wvSubjectWeb.loadUrl(jsExamSubmitAll);
-                    mLogtf.i("onPageFinished:examSubmitAll");
+                    mLogtf.d(SysLogLable.h5SubmitData, "onPageFinished");
                 }
             }
             if (failingUrl == null) {
@@ -571,9 +613,9 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            mLogtf.d(SysLogLable.h5OnPageStarted, "onPageStarted:url=" + url + ",fail=" + failingUrl);
             this.failingUrl = null;
 //            if (!url.equals(examUrl)) {
-//                mLogtf.i("onPageStarted:setInitialScale");
 //                int scale = ScreenUtils.getScreenWidth() * 100 / 878;
 //                wvSubjectWeb.setInitialScale(scale);
 //            }
@@ -590,7 +632,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             this.failingUrl = failingUrl;
             UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
                     "&&," + description);
-            mLogtf.i("onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
+            mLogtf.i(SysLogLable.h5OnReceivedError, "onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode + ",description=" + description);
 //            super.onReceivedError(view, errorCode, description, failingUrl);
             wvSubjectWeb.setVisibility(View.INVISIBLE);
             errorView.setVisibility(View.VISIBLE);
@@ -605,9 +647,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            mLogtf.i("shouldOverrideUrlLoading:url=" + url);
-
-            logger.e("======> shouldOverrideUrlLoading:" + url);
+            mLogtf.i(SysLogLable.h5OverrideUrl, "shouldOverrideUrlLoading:url=" + url);
 
             if (url.contains("science/Live/getMultiTestResult")) {
                 if (onSubmit != null) {

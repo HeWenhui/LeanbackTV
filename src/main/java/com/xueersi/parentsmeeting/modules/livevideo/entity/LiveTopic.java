@@ -220,6 +220,11 @@ public class LiveTopic {
          */
         private String onGroupSpeech;
 
+        /** 讨论区互动ID*/
+        private String chatInteractionId;
+        /** 讨论区互动开关 open/close*/
+        private String onChatInteract;
+
         public RoomStatusEntity() {
             classbegin = false;
             openbarrage = false;
@@ -256,6 +261,22 @@ public class LiveTopic {
             openlike = roomStatusEntity.openlike;
             groupSpeechRoom = roomStatusEntity.groupSpeechRoom;
             onGroupSpeech = roomStatusEntity.onGroupSpeech;
+        }
+
+        public String getChatInteractionId() {
+            return chatInteractionId;
+        }
+
+        public void setChatInteractionId(String chatInteractionId) {
+            this.chatInteractionId = chatInteractionId;
+        }
+
+        public String getOnChatInteract() {
+            return onChatInteract;
+        }
+
+        public void setOnChatInteract(String onChatInteract) {
+            this.onChatInteract = onChatInteract;
         }
 
         public boolean isOnbreak() {
@@ -510,6 +531,7 @@ public class LiveTopic {
         public void setOnGroupSpeech(String onGroupSpeech) {
             this.onGroupSpeech = onGroupSpeech;
         }
+
     }
 
     /**

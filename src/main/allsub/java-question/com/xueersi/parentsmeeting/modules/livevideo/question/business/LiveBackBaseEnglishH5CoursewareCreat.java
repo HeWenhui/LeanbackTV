@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -122,7 +123,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
 //    }
 
     @Override
-    public BaseEnglishH5CoursewarePager creat(Context context, VideoQuestionLiveEntity videoQuestionH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose, String mVSectionID) {
+    public BaseEnglishH5CoursewarePager creat(Context context, VideoQuestionLiveEntity videoQuestionH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose, String mVSectionID, LiveViewAction liveViewAction) {
         wrapOnH5ResultClose.setOnH5ResultClose(onH5ResultClose);
         wrapOnH5ResultClose.setVideoQuestionH5Entity(videoQuestionH5Entity);
         int isArts = mIsArts;
@@ -149,7 +150,9 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
             } else if (isArts == LiveVideoSAConfig.ART_SEC) {
                 if (englishH5Entity.getNewEnglishH5()) {
                     String educationstage = liveGetInfo.getEducationStage();
-                    videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
+                    if (educationstage != null) {
+                        videoQuestionH5Entity.setEducationstage(educationstage);
+                    }
                     englishH5Entity.setDynamicurl(LiveHttpConfig.LIVE_HOST_SCIENCE + "/LiveExam/getCourseWareTestHtml");
                     if (LiveQueConfig.CHI_COURESWARE_TYPE_SPEAKING_CHINESE.equals(videoQuestionH5Entity.englishH5Entity.getPackageAttr())
                             && LiveVideoConfig.LIVE_TYPE_HALFBODY == liveGetInfo.getPattern()) {
@@ -164,12 +167,14 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
             if (liveGetInfo.isNewCourse()) {
                 if (isArts == LiveVideoSAConfig.ART_SEC) {
                     String educationstage = liveGetInfo.getEducationStage();
-                    videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
+                    if (educationstage != null) {
+                        videoQuestionH5Entity.setEducationstage(educationstage);
+                    }
                     if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
                         englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlZhongXueUrl());
                         if (englishH5Entity.getNewEnglishH5()) {
                             CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
-                                    videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", isArts, false);
+                                    videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", isArts, false, liveViewAction);
                             h5CoursewarePager.setLivePagerBack(livePagerBack);
                             return h5CoursewarePager;
                         }
@@ -193,7 +198,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                         if (englishH5Entity.getNewEnglishH5()) {
                             CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                     videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
-                                    , isArts, false);
+                                    , isArts, false, liveViewAction);
                             h5CoursewarePager.setLivePagerBack(livePagerBack);
                             return h5CoursewarePager;
                         }
@@ -213,7 +218,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                         }
                         CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
-                                , isArts, false);
+                                , isArts, false, liveViewAction);
                         h5CoursewarePager.setLivePagerBack(livePagerBack);
                         return h5CoursewarePager;
                     }
@@ -232,7 +237,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
 
                         } else {
                             CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
-                                    videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", isArts, false);
+                                    videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", isArts, false, liveViewAction);
                             coursewareNativePager.setLivePagerBack(livePagerBack);
                             h5CoursewarePager = coursewareNativePager;
                         }
@@ -281,10 +286,10 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                         groupGameMultNativePager.setLivePagerBack(livePagerBack);
                         return groupGameMultNativePager;
 
-                    }else if(LiveQueConfig.EN_COURSE_TYPE_21.equals(type)){
+                    } else if (LiveQueConfig.EN_COURSE_TYPE_21.equals(type)) {
                         CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0"
-                                , isArts, false);
+                                , isArts, false, liveViewAction);
                         h5CoursewarePager.setLivePagerBack(livePagerBack);
                         return h5CoursewarePager;
                     }

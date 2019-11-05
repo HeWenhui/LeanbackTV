@@ -427,13 +427,13 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                             if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles)) {
                                 if (rolePlayMachineAction == null) {
-                                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo, true);
+                                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo, true, getLiveHttpAction());
                                     rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
                                 }
 
                                 //多人的回调
                                 if (rolePlayAction == null) {
-                                    RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo);
+                                    RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo,getLiveHttpAction());
                                     rolePlayAction = rolePlayerBll;
                                 }
                                 mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction, rolePlayActionEnd);
@@ -555,13 +555,13 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private void enterLiveRplayAfterTeacherRead(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) || "5".equals(videoQuestionLiveEntity.type)) {
             if (rolePlayMachineAction == null) {
-                RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo, true);
+                RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo, true, getLiveHttpAction());
                 rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
             }
 
             //多人的回调
             if (rolePlayAction == null) {
-                RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo);
+                RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo,getLiveHttpAction());
                 rolePlayAction = rolePlayerBll;
             }
             mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction, rolePlayActionEnd);
@@ -621,7 +621,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     //设置action的方法要在showQuestion之前
                     if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
                         logger.i("走人机start,拉取试题");
-                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo, true);
+                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo, true, getLiveHttpAction());
                         mQuestionAction.setRolePlayMachineAction(rolePlayerBll, rolePlayActionEnd);
                         rolePlayMachineAction = rolePlayerBll;
 
@@ -680,7 +680,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     //设置action的方法要在showQuestion之前
                     if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
                         logger.i("onNotice 新课件平台，走人机start,拉取试题");
-                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo, true);
+                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo, true, getLiveHttpAction());
                         mQuestionAction.setRolePlayMachineAction(rolePlayerBll, rolePlayActionEnd);
                         rolePlayMachineAction = rolePlayerBll;
 
@@ -765,14 +765,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             case XESCODE.XCR_ROOM_ROLE_READ: {
                 logger.i("onNotice XCR_ROOM_ROLE_READ ");
                 if (rolePlayAction == null) {
-                    RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo);
+                    RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo,getLiveHttpAction());
                     mQuestionAction.setRolePlayAction(rolePlayerBll, rolePlayActionEnd);
                     rolePlayAction = rolePlayerBll;
                 }
 
                 //在多人的时候，同时设置人机的roleplayaction
                 if (rolePlayMachineAction == null) {
-                    RolePlayMachineBll rolePlayerMachineBll = new RolePlayMachineBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo, true);
+                    RolePlayMachineBll rolePlayerMachineBll = new RolePlayMachineBll(activity, getLiveViewAction(), contextLiveAndBackDebug, mGetInfo, true, getLiveHttpAction());
                     mQuestionAction.setRolePlayMachineAction(rolePlayerMachineBll, rolePlayActionEnd);
                     rolePlayMachineAction = (RolePlayMachineAction) rolePlayerMachineBll;
 
