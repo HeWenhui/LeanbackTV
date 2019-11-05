@@ -918,7 +918,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             }
 
             @Override
-            public void onDatasLoaded(String num) {
+            public void onDatasLoaded(String num,boolean numChange) {
                 final AllLiveBasePagerInter liveBasePagerInter = mLiveBll.getAllLiveBasePagerIml();
                 if (liveBasePagerInter != null) {
                     liveBasePagerInter.addViewRemoveObserver(new AllLiveBasePagerInter.ViewRemoveObserver() {

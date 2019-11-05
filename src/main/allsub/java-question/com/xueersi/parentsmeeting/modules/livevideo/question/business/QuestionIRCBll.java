@@ -827,7 +827,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
 
             @Override
-            public void onDatasLoaded(String num) {
+            public void onDatasLoaded(String num, boolean numChange) {
                 final AllLiveBasePagerInter liveBasePagerInter = mLiveBll.getAllLiveBasePagerIml();
                 if (liveBasePagerInter != null) {
                     liveBasePagerInter.addViewRemoveObserver(new AllLiveBasePagerInter.ViewRemoveObserver() {

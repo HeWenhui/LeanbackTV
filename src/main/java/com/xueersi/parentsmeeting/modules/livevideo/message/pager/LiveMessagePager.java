@@ -1873,6 +1873,7 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
      * @param highestRightNum 当前最高连对数
      */
     public void setEvenText(String nowEvenNum, String highestRightNum) {
+        logger.i("evendrive: nowEvenNum:" + nowEvenNum + " highestRightNum:" + highestRightNum);
         if (tvNowEvenNum == null || tvHighestEvenNum == null) {
             return;
         }

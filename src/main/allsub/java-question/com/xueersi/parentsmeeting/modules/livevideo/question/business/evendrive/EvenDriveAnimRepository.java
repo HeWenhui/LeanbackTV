@@ -76,12 +76,12 @@ public class EvenDriveAnimRepository implements TasksDataSource {
                         }
 
                         @Override
-                        public void onDatasLoaded(String num) {
-                            if (question_type != EvenDriveQuestionType.INIT_EVEN_NUM) {
+                        public void onDatasLoaded(String num, boolean numChange) {
+                            if (question_type != EvenDriveQuestionType.INIT_EVEN_NUM && numChange) {
                                 showAnima(num);
                             }
                             if (loadAnimCallBack != null) {
-                                loadAnimCallBack.onDatasLoaded(num);
+                                loadAnimCallBack.onDatasLoaded(num, numChange);
                             }
                         }
                     });

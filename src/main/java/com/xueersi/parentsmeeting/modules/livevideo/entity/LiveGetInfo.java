@@ -344,9 +344,18 @@ public class LiveGetInfo {
     public static class EvenDriveInfo {
         private int isOpenStimulation;
         private int evenNum;
+        private int highestNum;
 
         public int getIsOpenStimulation() {
             return isOpenStimulation;
+        }
+
+        public int getHighestNum() {
+            return highestNum;
+        }
+
+        public void setHighestNum(int highestNum) {
+            this.highestNum = highestNum;
         }
 
         public void setIsOpenStimulation(int isOpenStimulation) {

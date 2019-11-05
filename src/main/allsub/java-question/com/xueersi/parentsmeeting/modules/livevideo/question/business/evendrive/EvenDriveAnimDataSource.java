@@ -185,23 +185,31 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
 
     private void parseEvenDriveNum(ResponseEntity responseEntity, LoadAnimCallBack callBack, String url) {
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-        String num;
+        String num, highNum;
         logger.i("jsonObject: " + jsonObject + " url:" + url);
         if (jsonObject.has("num")) {
             num = jsonObject.optString("num");
+            highNum = jsonObject.optString("highestRightNum");
         } else {
             num = jsonObject.optString("evenPairNum");
+            highNum = jsonObject.optString("highestRightNum");
         }
         if (TextUtils.isEmpty(num)) {
             num = "0";
         }
 //        num = "25";
         LiveGetInfo.EvenDriveInfo evenDriveInfo = getInfo.getEvenDriveInfo();
+        int oldNum = evenDriveInfo.getEvenNum();
+        int newNum = 0;//= Integer.valueOf(num);
         try {
+            newNum = Integer.valueOf(num);
             if (getTest()) {
                 evenDriveInfo.setEvenNum(mNum);
             } else {
                 evenDriveInfo.setEvenNum(Integer.valueOf(num));
+            }
+            if (!TextUtils.isEmpty(highNum)) {
+                evenDriveInfo.setHighestNum(Integer.valueOf(highNum));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -210,9 +218,9 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
 
         if (callBack != null) {
             if (getTest()) {
-                callBack.onDatasLoaded("" + mNum);
+                callBack.onDatasLoaded("" + mNum, newNum != oldNum);
             } else {
-                callBack.onDatasLoaded(num);
+                callBack.onDatasLoaded(num, newNum != oldNum);
             }
         }
         if (getTest()) {

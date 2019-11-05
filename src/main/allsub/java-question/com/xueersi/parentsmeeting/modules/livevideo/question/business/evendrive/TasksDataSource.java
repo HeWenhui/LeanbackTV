@@ -4,7 +4,7 @@ public interface TasksDataSource {
     interface LoadAnimCallBack {
         void onDataNotAvailable();
 
-        void onDatasLoaded(String num);
+        void onDatasLoaded(String num,boolean numChange);
     }
 
     void getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType question_type,

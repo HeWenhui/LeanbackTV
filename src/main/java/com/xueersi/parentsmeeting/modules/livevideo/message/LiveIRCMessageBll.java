@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishSho
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveAnimRepository;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.TasksDataSource;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
@@ -764,7 +765,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
                     try {
                         String test_id = object.getString("test_id");
-                        selfUploadRunnable = new SelfUploadRunnable(mGetInfo, test_id);
+                        if (selfUploadRunnable == null) {
+                            selfUploadRunnable = new SelfUploadRunnable(mGetInfo, test_id);
+                        }
                         postDelayedIfNotFinish(selfUploadRunnable, 6000);
                     } catch (Exception e) {
                         LiveCrashReport.postCatchedException(TAG, e);
@@ -786,18 +789,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.EXAM_STOP: {
                 mRoomAction.onOpenVoiceNotic(false, "EXAM_STOP");
-//                getHttpManager().getEvenLikeData(
-////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
-//                        mGetInfo.getGetEvenPairListUrl(),
-//                        mGetInfo.getStudentLiveInfo().getClassId(),
-//                        mGetInfo.getId(),
-//                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-//                            @Override
-//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
-//                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
-//                            }
-//                        });
                 if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                     postDelayed(new Runnable() {
                         @Override
@@ -924,42 +915,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         logger.i("超过时间或者senderId重复");
                     }
                 }
-//                logger.i("获取学报");
-//                getHttpManager().getJournalUrl(
-//                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/getJournal",
-////                        mGetInfo.getGetJournalUrl(),
-//                        mGetInfo.getStudentLiveInfo().getClassId(),
-//                        mGetInfo.getId(),
-//                        mGetInfo.getStudentLiveInfo().getTeamId(),
-//                        mGetInfo.getStuId(),
-//                        new HttpCallBack() {
-//                            @Override
-//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-//                                String message = jsonObject.getString("message");
-//                                logger.i(message);
-//                                if (!TextUtils.isEmpty(message)) {
-//                                    mRoomAction.addMessage("提示", LiveMessageEntity.EVEN_DRIVE_REPORT, message);
-//                                }
-//                            }
-//                        });
-//
-//
-//                //中学连对激励系统，教师广播发送学报消息
-//                logger.i("中学连对激励系统，教师广播发送学报消息");
-//                getHttpManager().getEvenLikeData(
-////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
-//                        mGetInfo.getGetEvenPairListUrl(),
-//                        mGetInfo.getStudentLiveInfo().getClassId(),
-//                        mGetInfo.getId(),
-//                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-//                            @Override
-//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
-//                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
-//                            }
-//                        });
-
                 break;
             }
             case XESCODE.EvenDrive.BROADCAST_STUDY_REPORT: {
@@ -986,18 +941,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                     }
                                 }
                             });
-//                getHttpManager().getEvenLikeData(
-////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
-//                        mGetInfo.getGetEvenPairListUrl(),
-//                        mGetInfo.getStudentLiveInfo().getClassId(),
-//                        mGetInfo.getId(),
-//                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-//                            @Override
-//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
-//                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
-//                            }
-//                        });
                 }
                 break;
             }
@@ -1041,7 +984,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 XESCODE.ARTS_WORD_DICTATION, XESCODE.RAISE_HAND, XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE, XESCODE
                 .RAISE_HAND_SELF, XESCODE.ENGLISH_H5_COURSEWARE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.SENDQUESTION,
                 XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START, XESCODE.STOPQUESTION, XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION,
-                XESCODE.EvenDrive.BROADCAST_STUDY_REPORT, XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT, XESCODE.MULTIPLE_H5_COURSEWARE,XESCODE.QUES_BIG,
+                XESCODE.EvenDrive.BROADCAST_STUDY_REPORT, XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT, XESCODE.MULTIPLE_H5_COURSEWARE, XESCODE.QUES_BIG,
         };
     }
 
@@ -1472,25 +1415,57 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
     private EvenDriveAnimRepository animRepositor;
 
-    private void getEvenDriveAnim(LiveGetInfo getInfo) {
+    private void getEvenDriveAnim(final LiveGetInfo getInfo) {
         if (EvenDriveUtils.isOpenStimulation(getInfo)) {
             if (animRepositor == null) {
                 animRepositor = new EvenDriveAnimRepository(
                         mContext, getInfo, mHttpManager, null);
             }
             animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.INIT_EVEN_NUM, "",
-                    null);
+                    new TasksDataSource.LoadAnimCallBack() {
+                        @Override
+                        public void onDataNotAvailable() {
+
+                        }
+
+                        @Override
+                        public void onDatasLoaded(String num, boolean numChange) {
+                            mRoomAction.setEvenNum(
+                                    getInfo.getEvenDriveInfo().getEvenNum() + "",
+                                    getInfo.getEvenDriveInfo().getHighestNum() + ""
+                            );
+                        }
+                    });
         }
     }
 
-    private void getEvenDriveUploadAnim(LiveGetInfo getInfo, String testId) {
-        if (EvenDriveUtils.isOpenStimulation(getInfo)) {
+    /**
+     * 自传互动题
+     *
+     * @param _getInfo
+     * @param testId
+     */
+    private void getEvenDriveUploadAnim(final LiveGetInfo _getInfo, String testId) {
+        if (EvenDriveUtils.isOpenStimulation(_getInfo)) {
             if (animRepositor == null) {
                 animRepositor = new EvenDriveAnimRepository(
-                        mContext, getInfo, mHttpManager, null);
+                        mContext, _getInfo, mHttpManager, null);
             }
             animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_SELF_UPLOAD, testId,
-                    null);
+                    new TasksDataSource.LoadAnimCallBack() {
+                        @Override
+                        public void onDataNotAvailable() {
+
+                        }
+
+                        @Override
+                        public void onDatasLoaded(String num, boolean numChange) {
+                            mRoomAction.setEvenNum(
+                                    _getInfo.getEvenDriveInfo().getEvenNum() + "",
+                                    _getInfo.getEvenDriveInfo().getHighestNum() + ""
+                            );
+                        }
+                    });
         }
     }
 
