@@ -9,6 +9,8 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.IS_LIVE;
+
 public class SuperSpeakerCameraBackPager extends BasePager {
 
     private ImageView ivYes;
@@ -17,13 +19,11 @@ public class SuperSpeakerCameraBackPager extends BasePager {
 
     private TextView tvTittle;
     //1直播,2回放
-    private int livevideo;
-//    private ISuperSpeakerContract.ICameraBackPresenter presenter;
+    private String livevideo;
 
-    public SuperSpeakerCameraBackPager(Context context, int livevieo) {
+    public SuperSpeakerCameraBackPager(Context context, String livevieo) {
         super(context);
         this.livevideo = livevieo;
-//        this.presenter = presenter;
     }
 
     @Override
@@ -48,13 +48,13 @@ public class SuperSpeakerCameraBackPager extends BasePager {
 //                }
                 //预览页面退出
                 if (mContext.getString(R.string.super_speaker_back_camera_content_tip).equals(tvContentTip)) {
-                    if (livevideo == 1) {
+                    if (IS_LIVE.equals(livevideo)) {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715011));
                     } else {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716011));
                     }
                 } else {//录制前
-                    if (livevideo == 1) {
+                    if (IS_LIVE.equals(livevideo)) {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715009));
                     } else {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716009));
@@ -74,13 +74,13 @@ public class SuperSpeakerCameraBackPager extends BasePager {
 //                }
                 //预览页面退出
                 if (mContext.getString(R.string.super_speaker_back_camera_content_tip).equals(tvContentTip)) {
-                    if (livevideo == 1) {
+                    if (IS_LIVE.equals(livevideo)) {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715010));
                     } else {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716010));
                     }
                 } else {
-                    if (livevideo == 1) {
+                    if (IS_LIVE.equals(livevideo)) {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715008));
                     } else {
                         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716008));

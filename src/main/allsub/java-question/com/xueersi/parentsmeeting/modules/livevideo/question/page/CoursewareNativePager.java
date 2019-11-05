@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -1961,8 +1962,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
      */
     private void showScienceAnswerResult(final int isforce) {
         rlCourseControl.setVisibility(View.GONE);
+        //小学或者主讲
         if ((LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) && !detailInfo.isTUtor()) {
-            //小学理科 走原生结果页
+            //小学理科 走原生结果页,小学理科自传题走H5
             mLogtf.d(SysLogLable.fetchAnswerStart, "showScienceAnswerResult:isforce=" + isforce);
             englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0, new AbstractBusinessDataCallBack() {
                 @Override
@@ -1988,6 +1990,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
             });
         } else {
+            //初高中互动题
             String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
             loadResult = true;
             NewCourseLog.sno7(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, detailInfo.isTUtor());
@@ -1995,6 +1998,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 @Override
                 public void onResultPageLoaded(String data) {
                     NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, (System.currentTimeMillis() - pagerStart), detailInfo.isTUtor());
+                    //初高中理科结果页，采用本地加载H5(走拦截)的方式，所以需要主动更新H5
+//                    EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.UPDATE_EVEN_RIGHT));
                 }
             }, "xesApp");
             wvSubjectWeb.loadUrl(url);

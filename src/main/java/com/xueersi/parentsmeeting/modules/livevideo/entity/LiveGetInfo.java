@@ -7,8 +7,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEn
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -405,6 +403,83 @@ public class LiveGetInfo {
     /**大班整合 直播间状态**/
     private LiveStatus liveStatus = new LiveStatus();
 
+    private EvenDriveInfo evenDriveInfo;
+
+    public static class EvenDriveInfo {
+        private int isOpenStimulation;
+        private int evenNum;
+        private int highestNum;
+
+        public int getIsOpenStimulation() {
+            return isOpenStimulation;
+        }
+
+        public int getHighestNum() {
+            return highestNum;
+        }
+
+        public void setHighestNum(int highestNum) {
+            this.highestNum = highestNum;
+        }
+
+        public void setIsOpenStimulation(int isOpenStimulation) {
+            this.isOpenStimulation = isOpenStimulation;
+        }
+
+        public int getEvenNum() {
+            return evenNum;
+        }
+
+        public void setEvenNum(int evenNum) {
+            this.evenNum = evenNum;
+        }
+    }
+
+    public EvenDriveInfo getEvenDriveInfo() {
+        return evenDriveInfo;
+    }
+
+    public void setEvenDriveInfo(EvenDriveInfo evenDriveEntity) {
+        this.evenDriveInfo = evenDriveEntity;
+    }
+
+    //    private int isOpenStimulation;
+
+//    public int getIsOpenStimulation() {
+//        return isOpenStimulation;
+//    }
+
+
+//    private AObservable aObservable = new AObservable();
+
+
+//    public static class AObservable extends Observable {
+//        private int isOpenStimulation;
+//
+//        public void setIsOpenStimulation(int isOpenStimulation) {
+//            this.isOpenStimulation = isOpenStimulation;
+//            setChanged();
+//        }
+//
+//        public int getIsOpenStimulation() {
+//            return isOpenStimulation;
+//        }
+//    }
+
+//    public void addAObserver(Observer ab) {
+//        if (aObservable != null && ab != null) {
+//            aObservable.addObserver(ab);
+//        }
+//    }
+
+//    public void setIsOpenStimulation(int isOpenStimulation) {
+//        this.isOpenStimulation = isOpenStimulation;
+//        if (aObservable != null) {
+//            aObservable.setIsOpenStimulation(isOpenStimulation);
+//            aObservable.notifyObservers();
+//            aObservable.deleteObservers();
+//        }
+//    }
 
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
