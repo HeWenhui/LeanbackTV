@@ -61,6 +61,7 @@
     <item name="rv_livevideo_bigque_result_list" type="id" />
     <item name="rl_livevideo_bigque_result_item_title" type="id" />
     <!--大题互动结果页-item-->
+    <item name="tv_livevideo_bigque_result_num" type="id" />
     <item name="tv_livevideo_bigque_result_stand" type="id" />
     <item name="tv_livevideo_bigque_result_your" type="id" />
     <item name="tv_livevideo_bigque_result_your_hind" type="id" />

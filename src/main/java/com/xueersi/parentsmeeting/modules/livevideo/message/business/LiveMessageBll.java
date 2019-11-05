@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallChineseLi
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -71,7 +72,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     private BaseLiveMediaControllerTop baseLiveMediaControllerTop;
 
     private Activity activity;
-    private Handler mHandler = new Handler();
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     private RelativeLayout rlLiveMessageContent;
     private IRCState mLiveBll;
     private boolean openchat;

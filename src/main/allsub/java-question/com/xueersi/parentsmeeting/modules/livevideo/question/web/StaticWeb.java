@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -66,6 +67,19 @@ public class StaticWeb {
         }
     }
 
+    @JavascriptInterface
+    public void postMessage(String coursewareToNative,String jsonStr) {
+        if (!("" + jsonStr).contains("errorInfo")) {
+            logToFile.d(SysLogLable.courseMessage, "postMessage:jsonStr=" + jsonStr);
+        }
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            onMessage.postMessage("postMessage", jsonObject, jsonStr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public interface OnMessage {
 
         /**
@@ -100,12 +114,44 @@ public class StaticWeb {
         });
     }
 
+    public void sendToCourseware(final JSONObject type, String data,String coursewareType) {
+        final int old = CALL_TIMES;
+        if(TextUtils.equals("2",coursewareType)){
+            wvSubjectWeb.loadUrl("javascript:transmitToCourseware(" + type + ",'" + data + "')");
+        }else {
+            wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
+        }
+        wvSubjectWeb.post(new Runnable() {
+            @Override
+            public void run() {
+                logToFile.d("sendToCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
+            }
+        });
+    }
+
     /**直接使用对象调用。日志更全*/
     @Deprecated
     public static void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data) {
         final LogToFile logToFile = new LogToFile(wvSubjectWeb.getContext(), TAG);
         final int old = CALL_TIMES;
         wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
+        wvSubjectWeb.post(new Runnable() {
+            @Override
+            public void run() {
+                logToFile.d("sendToCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
+            }
+        });
+    }
+
+    @Deprecated
+    public static void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data,String coursewareType) {
+        final LogToFile logToFile = new LogToFile(wvSubjectWeb.getContext(), TAG);
+        final int old = CALL_TIMES;
+        if(TextUtils.equals("2",coursewareType)){
+            wvSubjectWeb.loadUrl("javascript:transmitToCourseware(" + type + ",'" + data + "')");
+        }else {
+            wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
+        }
         wvSubjectWeb.post(new Runnable() {
             @Override
             public void run() {

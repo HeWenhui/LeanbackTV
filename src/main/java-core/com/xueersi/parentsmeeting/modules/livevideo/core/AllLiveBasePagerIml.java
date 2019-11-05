@@ -4,10 +4,9 @@ import android.content.Context;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.experience.pager.ExperienceQuitFeedbackPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.FirstPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -72,13 +71,13 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     private void sortPager(ArrayList<LiveBasePager> liveBasePagersTemp) {
         LiveBasePager liveBasePager;
         for (int i = 0; i < liveBasePagersTemp.size(); i++) {
-            if (liveBasePagersTemp.get(i) instanceof BaseEvaluateTeacherPaper || liveBasePagersTemp.get(i) instanceof
-                    ExperienceQuitFeedbackPager) {
-                liveBasePager = liveBasePagersTemp.get(i);
-                for (int j = i - 1; j >= 0; j--) {
-                    liveBasePagersTemp.set(j + 1, liveBasePagersTemp.get(j));
-                }
-                liveBasePagersTemp.set(0, liveBasePager);
+            liveBasePager = liveBasePagersTemp.get(i);
+            if (liveBasePager instanceof FirstPager) {
+//                for (int j = i - 1; j >= 0; j--) {
+//                    liveBasePagersTemp.set(j + 1, liveBasePagersTemp.get(j));
+//                }
+                liveBasePagersTemp.remove(i);
+                liveBasePagersTemp.add(0, liveBasePager);
                 break;
             }
         }

@@ -15,10 +15,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveFeedBackSecondPager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -31,6 +34,10 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
     LiveFeedBackPager pager = null;
     LiveHttpManager mHttpManager;
     EvaluateResponseParser mParser;
+    /**
+     * 所有教师评价是h5页面
+     */
+    LiveFeedBackSecondPager pagerNew = null;
 
     VideoLivePlayBackEntity mVideoEntity;
     public FeedbackTeacherLiveBackBll(Activity context, LiveBackBll liveBll) {
@@ -45,12 +52,16 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
         mHttpManager = liveBackBll.getmHttpManager();
         this.mVideoEntity = mVideoEntity;
         mParser = new EvaluateResponseParser();
-        if (liveGetInfo != null && liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
+        if (liveGetInfo != null && liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC ||
+                liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN || liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH
+                || liveGetInfo.getEducationStage().equals("4")) {
 //      if (liveGetInfo != null){
             new android.os.Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    showFeedBack(bottomContent);
+                   // showFeedBack(bottomContent);
+
+                    checkIfShowFeedback();
                 }
             }, 10000);
         }
@@ -102,11 +113,59 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
                 });
 
     }
+    private void checkIfShowFeedback(){
+        mHttpManager.checkFeedBack(liveGetInfo.getId(), liveGetInfo.getStudentLiveInfo().getCourseId(), new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                int status = responseEntity.getmStatus();
+                if (status == 1) {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    //is_trigger 是否触发，1：可以，0：不可以
+                    int is_trigger = jsonObject.optInt("isTrigger");
+                    String url = null;
+                    if (is_trigger == 1) {
+                        url = jsonObject.getJSONObject("app").optString("highSchool");
 
+                        if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
+                            //英语
+                            if (liveGetInfo.getSmallEnglish()) {
+                                //小学英语
+                                url = jsonObject.getJSONObject("app").optString("english");
+                            }
+
+
+                        } else if (liveGetInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
+                            //语文
+                            if (liveGetInfo.getUseSkin() == 2) {
+                                url = jsonObject.getJSONObject("app").optString("chinese");
+                            }
+                        } else {
+                            if (liveGetInfo.getUseSkin() == 2) {
+                                url = jsonObject.getJSONObject("app").optString("chinese");
+                            } else if (liveGetInfo.getIsPrimarySchool() == 1) {
+                                //小学理科
+                                url = jsonObject.getJSONObject("app").optString("science");
+                            }
+                        }
+
+                        url = url+"?courseId="+liveGetInfo.getStudentLiveInfo().getCourseId()+"&planId="+liveGetInfo.getId();
+                        pagerNew = new LiveFeedBackSecondPager(mContext, liveGetInfo, url);
+                        pagerNew.setOnPagerClose(onPagerClose);
+                        pagerNew.setFeedbackSelectInterface(feedBackTeacherInterface);
+
+                    }
+                }
+
+
+
+            }
+        });
+
+    }
     LiveBasePager.OnPagerClose onPagerClose = new LiveBasePager.OnPagerClose() {
         @Override
         public void onClose(LiveBasePager basePager) {
-            mRootView.removeView(basePager.getRootView());
+            removeView(basePager.getRootView());
         }
     };
 
@@ -126,14 +185,16 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
 
     public boolean showFeedbackPager() {
 //        if(pager != null){
-        if (pager != null && 0 != mFeedBackEntity.getEvaluateTimePer() && ((liveBackBll.getvPlayer().getCurrentPosition() + 0.0) /
-                liveBackBll.getvPlayer().getDuration()) > mFeedBackEntity.getEvaluateTimePer()){
+
+        if (pagerNew != null && ((liveBackBll.getvPlayer().getCurrentPosition() + 0.0) /
+                liveBackBll.getvPlayer().getDuration()) > 0.7){
             logger.i("showEvaluateTeacher");
             liveBackBll.getvPlayer().stop();
             liveBackBll.getvPlayer().release();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mRootView.addView(pager.getRootView(), params);
+            addView(pagerNew.getRootView(), params);
+            pagerNew.startLoading();
             return true;
         } else{
             return false;

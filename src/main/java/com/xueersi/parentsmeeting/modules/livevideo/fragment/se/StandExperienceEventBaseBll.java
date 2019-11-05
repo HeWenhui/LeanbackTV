@@ -3,12 +3,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.se;
 import android.app.Activity;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 
 public class StandExperienceEventBaseBll extends LiveBackBaseBll {
     //视频是否完成
     private boolean isResultComplete = false;
 
-    public StandExperienceEventBaseBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public StandExperienceEventBaseBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
     }
 

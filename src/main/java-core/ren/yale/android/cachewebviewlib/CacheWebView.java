@@ -90,6 +90,10 @@ public class CacheWebView extends WebView {
         mCacheWebViewClient.setCacheInterceptor(interceptor);
     }
 
+    public void setRequestIntercept(RequestIntercept requestIntercept) {
+        mCacheWebViewClient.setRequestIntercept(requestIntercept);
+    }
+
     public static CacheConfig getCacheConfig() {
         return CacheConfig.getInstance();
     }
@@ -216,6 +220,8 @@ public class CacheWebView extends WebView {
         webSettings.setDisplayZoomControls(false);
 
         webSettings.setDefaultTextEncodingName("UTF-8");
+
+        webSettings.setTextZoom(100);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             webSettings.setAllowFileAccessFromFileURLs(true);

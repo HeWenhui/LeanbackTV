@@ -6,7 +6,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.xueersi.common.base.BaseApplication;
+import com.tencent.bugly.crashreport.BuglyLog;
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -39,6 +40,33 @@ public class RaiseHandDialog extends BaseAlertDialog {
 
     public RaiseHandDialog(Context context, Application application) {
         super(context, application, false);
+    }
+
+    private static int showCount = 0;
+
+    @Override
+    public void showDialog() {
+        showDialog("");
+    }
+
+    public void showDialog(String method) {
+        super.showDialog();
+        BuglyLog.d(TAG, "showDialog:showCount=" + showCount + ",method=" + method);
+        showCount++;
+    }
+
+    @Override
+    public void cancelDialog() {
+        cancelDialog("");
+    }
+
+    public void cancelDialog(String method) {
+        super.cancelDialog();
+        BuglyLog.d(TAG, "cancelDialog:showCount=" + showCount + ",method=" + method);
+        showCount--;
+        if (showCount != 0) {
+            XrsCrashReport.postCatchedException(new Exception());
+        }
     }
 
     @Override
@@ -87,7 +115,7 @@ public class RaiseHandDialog extends BaseAlertDialog {
     }
 
     public boolean setFail() {
-        logger.i( "setFail:status=" + status);
+        logger.i("setFail:status=" + status);
         int oldStatus = status;
         status = FAIL;
         flRaiseHandsContent.removeView(rlRaiseHandsWait);
@@ -98,7 +126,7 @@ public class RaiseHandDialog extends BaseAlertDialog {
     }
 
     public boolean setSuccess() {
-        logger.i( "setSuccess:status=" + status);
+        logger.i("setSuccess:status=" + status);
         int oldStatus = status;
         status = SUCCESS;
         flRaiseHandsContent.removeView(rlRaiseHandsWait);

@@ -3,29 +3,37 @@ package com.xueersi.parentsmeeting.modules.livevideo;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.tencent.smtt.sdk.TbsListener;
+import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.event.AppEvent;
+import com.xueersi.common.route.ReflexCenter;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.toast.XesToast;
 import com.xueersi.common.util.LoadFileCallBack;
+import com.xueersi.common.util.XrsBroswer;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.AIExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceThreeScreenActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
+import com.xueersi.ui.dataload.DataLoadEntity;
+import com.xueersi.ui.dataload.DataLoadManager;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -140,7 +148,7 @@ public class LiveVideoEnter {
      * @param from       入口
      */
     public static boolean intentToLiveVideoActivity(final Activity context, final String vStuCourseID, final String
-            courseId, final String vSectionID, final int from) {
+            courseId, final String vSectionID, final int from,boolean isBigLive) {
 
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
@@ -154,6 +162,7 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putBoolean("loadAsserts", false);
+        bundle.putBoolean("isBigLive",isBigLive);
         bundle.putInt(ENTER_ROOM_FROM, from);
         LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
 
@@ -456,8 +465,7 @@ public class LiveVideoEnter {
 
             @Override
             public void success() {
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
-                        where, VIDEO_REQUEST);
+                android5X5Check(context,bundle,where);
             }
 
             @Override
@@ -476,6 +484,55 @@ public class LiveVideoEnter {
 
     }
 
+    private static void android5X5Check(final Activity context, final Bundle bundle, final String where){
+        final DataLoadEntity mDataLoadEntity= new DataLoadEntity(context);
+
+        try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            boolean init = XrsBroswer.init(context, new TbsListener() {
+                @Override
+                public void onDownloadFinish(int i) {
+
+                }
+
+                @Override
+                public void onInstallFinish(int i) {
+                    StableLogHashMap logHashMap = new StableLogHashMap("onInstallFinish_back");
+                    logHashMap.put("code", "" + i);
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+                    EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(mDataLoadEntity.webDataSuccess()));
+                    intentToPlayback(context,bundle,where);
+                }
+
+                @Override
+                public void onDownloadProgress(int i) {
+                    mDataLoadEntity.setProgressTip("下载中" + (i * 100 / 120) + "%");
+                    mDataLoadEntity.beginLoading();
+                    DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
+                    BaseBll.postDataLoadEvent(mDataLoadEntity);
+                }
+            });
+            StableLogHashMap logHashMap = new StableLogHashMap("init_back");
+            logHashMap.put("status", "" + init);
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+            if (!init) {
+                return;
+            }
+        }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(mDataLoadEntity.webDataSuccess()));
+        }
+       intentToPlayback(context,bundle,where);
+
+    }
+
+    private static void intentToPlayback( Activity context,  Bundle bundle,  String where){
+        com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
+                where, VIDEO_REQUEST);
+    }
+
     /**
      * 跳转到三分屏体验直播播放器
      *
@@ -483,29 +540,9 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentToExperience(final Activity context, final Bundle bundle, final String where) {
-
-
-        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
-            @Override
-            public void start() {
-
-            }
-
-            @Override
-            public void success() {
-                ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-            }
-
-            @Override
-            public void progress(float progress, int type) {
-
-            }
-
-            @Override
-            public void fail(int errorCode, String errorMsg) {
-
-            }
-        });
+//        ExperEnter.intentToExperience(context, bundle, where);
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
+                "intentToExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
         return true;
     }
 
@@ -517,54 +554,16 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentToHalfBodyExperience(final Activity context, final Bundle bundle, final String where) {
-
-
-        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
-            @Override
-            public void start() {
-
-            }
-
-            @Override
-            public void success() {
-                HalfBodyLiveExperienceActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-            }
-
-            @Override
-            public void progress(float progress, int type) {
-
-            }
-
-            @Override
-            public void fail(int errorCode, String errorMsg) {
-
-            }
-        });
+//        ExperEnter.intentToHalfBodyExperience(context, bundle, where);
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
+                "intentToHalfBodyExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
         return true;
     }
 
     public static boolean intentToLiveBackExperience(final Activity context, final Bundle bundle, final String where) {
-        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
-            @Override
-            public void start() {
-
-            }
-
-            @Override
-            public void success() {
-                ExperienceThreeScreenActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-            }
-
-            @Override
-            public void progress(float progress, int type) {
-
-            }
-
-            @Override
-            public void fail(int errorCode, String errorMsg) {
-
-            }
-        });
+//        ExperEnter.intentToLiveBackExperience(context, bundle, where);
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
+                "intentToLiveBackExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
         return true;
     }
 
@@ -575,29 +574,9 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentToAIExperience(final Activity context, final Bundle bundle, final String where) {
-
-        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
-            @Override
-            public void start() {
-
-            }
-
-            @Override
-            public void success() {
-                AIExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-            }
-
-            @Override
-            public void progress(float progress, int type) {
-
-            }
-
-            @Override
-            public void fail(int errorCode, String errorMsg) {
-
-            }
-        });
-
+//        ExperEnter.intentToAIExperience(context, bundle, where);
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
+                "intentToAIExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
         return true;
     }
 
@@ -610,8 +589,6 @@ public class LiveVideoEnter {
      * @return
      */
     public static boolean intentToStandExperience(final Activity activity, final Bundle bundle, final String where) {
-
-
         LiveAssetsLoadUtil.loadAssertsResource(activity, new LoadFileCallBack() {
             @Override
             public void start() {

@@ -1,16 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpRequestParams;
-import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
@@ -38,8 +35,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
@@ -279,30 +274,30 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     /**
      * PSIJK 自动切换线路
-     * 缓冲超时{@link #mBufferTimeOutRun}
+     * //     * 缓冲超时{@link #mBufferTimeOutRun}
      * <p>
-     * 起播超时{@link #mOpenTimeOutRun}
+     * //     * 起播超时{@link #mOpenTimeOutRun}
      * <p>
      * 视频播放失败有很多种情况，目前只有鉴权失败和调度失败需要playLive，其他全部都是changLive
      */
-    public void changeNextLine() {
-        this.nowPos++;
-        if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
-            //初始化
-            nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
-//            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
-            liveGetPlayServer.liveGetPlayServer(false);
-            return;
-        }
-        //当前线路小于总线路数
-        if (this.nowPos < total) {
-            videoFragment.changePlayLive(this.nowPos, nowProtol);
-        } else {
-            nowProtol = changeProtol(nowProtol);
-//            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
-            liveGetPlayServer.liveGetPlayServer(false);
-        }
-    }
+//    public void changeNextLine() {
+//        this.nowPos++;
+//        if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
+//            //初始化
+//            nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+////            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+//            liveGetPlayServer.liveGetPlayServer(false);
+//            return;
+//        }
+//        //当前线路小于总线路数
+//        if (this.nowPos < total) {
+//            videoFragment.changePlayLive(this.nowPos, nowProtol);
+//        } else {
+//            nowProtol = changeProtol(nowProtol);
+////            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+//            liveGetPlayServer.liveGetPlayServer(false);
+//        }
+//    }
 
     /**
      * 切换到当前线路，用于接麦
@@ -366,8 +361,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void onPlaybackComplete() {
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             mHandler.removeCallbacks(mPlayDuration);
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onPlaybackComplete();
@@ -385,8 +380,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
         public void onPlayError() {
             mLogtf.d("onPlayError");
             isPlay = false;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             mHandler.removeCallbacks(mPlayDuration);
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onPlayError();
@@ -410,7 +405,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             reportPlayStarTime = System.currentTimeMillis();
             openSuccess = true;
             MediaPlayer.setLastDispatchTimeBlanking();
-            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onOpenSuccess();
             }
@@ -426,8 +421,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
             mLogtf.d("onOpenStart:url=" + vPlayer.getUri());
             openStartTime = System.currentTimeMillis();
             openSuccess = false;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            postDelayedIfNotFinish(mOpenTimeOutRun, mOpenTimeOut);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            postDelayedIfNotFinish(mOpenTimeOutRun, mOpenTimeOut);
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onOpenStart();
             }
@@ -440,8 +435,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 playTime += (System.currentTimeMillis() - lastPlayTime);
             }
             openSuccess = false;
-            mHandler.removeCallbacks(mOpenTimeOutRun);
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mOpenTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             mHandler.removeCallbacks(mPlayDuration);
             onFail(arg1, arg2);
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
@@ -449,14 +444,14 @@ public class LiveVideoBll implements VPlayerListenerReg {
             }
             mLogtf.d("onOpenFailed:url=" + vPlayer.getUri() + ",arg2=" + arg2);
             if (lastPlayserverEntity != null) {
-                 reportPlayStarTime = System.currentTimeMillis();
+                reportPlayStarTime = System.currentTimeMillis();
             }
         }
 
         @Override
         public void onBufferStart() {
-            mHandler.removeCallbacks(mBufferTimeOutRun);
-            postDelayedIfNotFinish(mBufferTimeOutRun, mBufferTimeout);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            postDelayedIfNotFinish(mBufferTimeOutRun, mBufferTimeout);
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onBufferStart();
             }
@@ -465,7 +460,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void onBufferComplete() {
-            mHandler.removeCallbacks(mBufferTimeOutRun);
+//            mHandler.removeCallbacks(mBufferTimeOutRun);
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onBufferComplete();
             }
@@ -488,29 +483,29 @@ public class LiveVideoBll implements VPlayerListenerReg {
     /**
      * 打开超时,也就是起播超时
      */
-    private Runnable mOpenTimeOutRun = new Runnable() {
-
-        @Override
-        public void run() {
-            if (isInitialized()) {
-                vPlayer.releaseSurface();
-                vPlayer.stop();
-            }
-            mVideoAction.onPlayError(0, PlayErrorCode.PLAY_TIMEOUT_300);
-            long openTimeOut = System.currentTimeMillis() - openStartTime;
-            mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
-
-            Map<String, String> map = new HashMap<>();
-            map.put("param", "openTimeOut");
-            map.put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_VIDEO_FAIL);
-            UmsAgentManager.umsAgentDebug(activity, LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map);
-            if (MediaPlayer.getIsNewIJK()) {
-                changeNextLine();
-            } else {
-                liveGetPlayServer.liveGetPlayServer(false);
-            }
-        }
-    };
+//    private Runnable mOpenTimeOutRun = new Runnable() {
+//
+//        @Override
+//        public void run() {
+//            if (isInitialized()) {
+//                vPlayer.releaseSurface();
+//                vPlayer.stop();
+//            }
+//            mVideoAction.onPlayError(0, PlayErrorCode.PLAY_TIMEOUT_300);
+//            long openTimeOut = System.currentTimeMillis() - openStartTime;
+//            mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
+//
+//            Map<String, String> map = new HashMap<>();
+//            map.put("param", "openTimeOut");
+//            map.put(LiveLogUtils.PLAYER_OPERATING_KEY, LiveLogUtils.PLAY_VIDEO_FAIL);
+//            UmsAgentManager.umsAgentDebug(activity, LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, map);
+//            if (MediaPlayer.getIsNewIJK()) {
+//                changeNextLine();
+//            } else {
+//                liveGetPlayServer.liveGetPlayServer(false);
+//            }
+//        }
+//    };
 
 //    public void liveGetPlayServer() {
 //        liveGetPlayServer.liveGetPlayServer(false);
@@ -519,31 +514,30 @@ public class LiveVideoBll implements VPlayerListenerReg {
     /**
      * 缓冲超时
      */
-    private Runnable mBufferTimeOutRun = new Runnable() {
-
-        @Override
-        public void run() {
-            if (isInitialized()) {
-                vPlayer.releaseSurface();
-                vPlayer.stop();
-            }
-            long openTime = System.currentTimeMillis() - openStartTime;
-            mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
-            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
-                if (vPlayerListener instanceof LiveVPlayerListener) {
-                    LiveVPlayerListener vPlayerListener1 = (LiveVPlayerListener) vPlayerListener;
-                    vPlayerListener1.onBufferTimeOutRun();
-                }
-            }
-            if (!MediaPlayer.getIsNewIJK()) {
-                liveGetPlayServer.liveGetPlayServer(false);
-            } else {
-//                changeLine(nowPos + 1);
-                changeNextLine();
-            }
-        }
-    };
-
+//    private Runnable mBufferTimeOutRun = new Runnable() {
+//
+//        @Override
+//        public void run() {
+//            if (isInitialized()) {
+//                vPlayer.releaseSurface();
+//                vPlayer.stop();
+//            }
+//            long openTime = System.currentTimeMillis() - openStartTime;
+//            mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
+//            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
+//                if (vPlayerListener instanceof LiveVPlayerListener) {
+//                    LiveVPlayerListener vPlayerListener1 = (LiveVPlayerListener) vPlayerListener;
+//                    vPlayerListener1.onBufferTimeOutRun();
+//                }
+//            }
+//            if (!MediaPlayer.getIsNewIJK()) {
+//                liveGetPlayServer.liveGetPlayServer(false);
+//            } else {
+////                changeLine(nowPos + 1);
+//                changeNextLine();
+//            }
+//        }
+//    };
     public void stopPlayDuration() {
         mHandler.removeCallbacks(mPlayDuration);
         playTime += (System.currentTimeMillis() - lastPlayTime);
@@ -613,25 +607,24 @@ public class LiveVideoBll implements VPlayerListenerReg {
             });
             switch (arg2) {
                 case MediaErrorInfo.PSPlayerError: {
-                    mVideoAction.onPlayError(MediaErrorInfo.PSPlayerError,PlayErrorCode.PLAY_SERVER_CODE_101);
+                    mVideoAction.onPlayError(MediaErrorInfo.PSPlayerError, PlayErrorCode.PLAY_SERVER_CODE_101);
                     //播放器错误
-                    autoChangeNextLine();
+//                    autoChangeNextLine();
+                    scheduleRePlay(1000);
                     break;
                 }
                 case MediaErrorInfo.PSDispatchFailed: {
                     //调度失败，建议重新访问playLive或者playVod频道不存在
                     //调度失败，延迟1s再次访问调度
 
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-//                            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
-//                            liveGetPlayServer.liveGetPlayServer(false);
-                            nowProtol = changeProtol(nowProtol);
-                            psRePlay(false);
-                        }
-                    }, 1000);
-
+//                    mHandler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            nowProtol = changeProtol(nowProtol);
+//                            psRePlay(false);
+//                        }
+//                    }, 1000);
+                    scheduleRePlay(1000);
                 }
                 break;
 
@@ -655,7 +648,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 break;
                 default:
                     //除了这四种情况，还有播放失败的情况
-                    autoChangeNextLine();
+//                    autoChangeNextLine();
+                    scheduleRePlay(1000);
                     break;
             }
         }
@@ -664,28 +658,14 @@ public class LiveVideoBll implements VPlayerListenerReg {
 //        }
     }
 
-    /**
-     * 播放失败，走自动切换线路
-     */
-    private void autoChangeNextLine() {
-        this.nowPos++;
-//        if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
-//            //初始化
-//            nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
-////            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
-//            liveGetPlayServer.liveGetPlayServer(false);
-//            return;
-//        }
-        //当前线路小于总线路数
-        if (this.nowPos < total) {
-            videoFragment.changePlayLive(this.nowPos, nowProtol);
-        } else {
-            nowProtol = changeProtol(nowProtol);
-            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
-            if (mGetInfo.getVideoConfigEntity() != null) {
-                videoFragment.enableAutoSpeedPlay(getVideoConfigEntity());
+    private void scheduleRePlay(int ms) {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                nowProtol = changeProtol(nowProtol);
+                psRePlay(false);
             }
-        }
+        }, ms);
     }
 
     /**
