@@ -232,6 +232,7 @@ public class QuestionResultView {
             answer.setRightAnswer(entity.getStandardAnswer());
         }
         PrimaryScienceAnswerResultEntity primaryScienceAnswerResultEntity = new PrimaryScienceAnswerResultEntity();
+        primaryScienceAnswerResultEntity.setGold(entity.getGoldNum());
         // 如果是文科平台
         if (entity.isNewArt()) {
             if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE2) {
