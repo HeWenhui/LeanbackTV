@@ -662,6 +662,7 @@ public class SettingEnglishLandActivity extends XesActivity {
                     if (!TextUtils.isEmpty(listName.get(i).getName())) {
                         recommendName = new EngLishNameEntity();
                         recommendName.setName(listName.get(i).getName());
+                        recommendName.setAudioPath(listName.get(i).getAudioPath());
                         listRecommendName.add(recommendName);
                     }
                 }

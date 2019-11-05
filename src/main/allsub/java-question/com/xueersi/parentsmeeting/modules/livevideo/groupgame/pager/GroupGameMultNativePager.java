@@ -15,7 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.core.io.JsonEOFException;
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -1082,7 +1081,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
 
         @Override
-        public void onRemoteVideoStateChanged(int uid, final int state) {
+        public void onRemoteVideoStateChanged(int uid, final int state, int reason, int elapsed) {
             final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
             mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state + ",courseGroupItem=null?" + (courseGroupItem == null));
             if (courseGroupItem != null) {

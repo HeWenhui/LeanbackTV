@@ -2,9 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
@@ -20,11 +18,9 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
@@ -170,7 +166,7 @@ public class AgoraChatPager extends LiveBasePager implements AgoraVideoChatInter
         }
 
         @Override
-        public void onRemoteVideoStateChanged(int uid, int state) {
+        public void onRemoteVideoStateChanged(int uid, int state, int reason, int elapsed) {
 
         }
 
@@ -250,7 +246,7 @@ public class AgoraChatPager extends LiveBasePager implements AgoraVideoChatInter
         mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
             @Override
             public void onEngineCreate(final RtcEngine mRtcEngine) {
-                mRtcEngine.enableAudioVolumeIndication(500, 3);
+                mRtcEngine.enableAudioVolumeIndication(500, 3,false);
                 if (video) {
                     VideoEncoderConfiguration.VideoDimensions dimensions = VideoEncoderConfiguration.VD_320x240;
                     VideoEncoderConfiguration configuration = new VideoEncoderConfiguration(dimensions,
