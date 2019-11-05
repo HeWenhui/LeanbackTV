@@ -32,6 +32,8 @@ public class FeedbackTeacherBll extends LiveBaseBll {
      */
     LiveFeedBackSecondPager pagerNew = null;
 
+    Runnable mRunableHttp;
+
     public FeedbackTeacherBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
@@ -52,16 +54,24 @@ public class FeedbackTeacherBll extends LiveBaseBll {
         if (getInfo != null && (getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC ||
                 getInfo.getIsArts() == LiveVideoSAConfig.ART_EN || getInfo.getIsArts() == LiveVideoSAConfig.ART_CH
                 || getInfo.getEducationStage().equals("4"))) {
-            postDelayed(new Runnable() {
+
+            mRunableHttp = new Runnable() {
                 @Override
                 public void run() {
                     long before = System.currentTimeMillis();
                     //耗时20-100ms
-                   // showFeedBack();
-                    checkIfShowFeedback();
+                    // showFeedBack();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            checkIfShowFeedback();
+                        }
+                    }).start();
+
                     logger.d("onLiveInited:showFeedBack:time=" + (System.currentTimeMillis() - before));
                 }
-            }, 500);
+            };
+            postDelayed(mRunableHttp, 500);
         }
     }
 
@@ -207,4 +217,11 @@ public class FeedbackTeacherBll extends LiveBaseBll {
 
     };
 
+    @Override
+    public void onDestroy() {
+        if(mRunableHttp!=null){
+            removeCallbacks(mRunableHttp);
+        }
+        super.onDestroy();
+    }
 }
