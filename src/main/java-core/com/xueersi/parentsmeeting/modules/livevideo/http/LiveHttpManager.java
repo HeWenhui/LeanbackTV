@@ -19,6 +19,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveCoreConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveIntegratedCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
@@ -27,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLiveEnterParam;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePostEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
@@ -2349,5 +2351,15 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_GET_SERVER_TIME, params, requestCallBack);
+    }
+
+    /**
+     * 获取直播Plugin配置信息
+     *
+     * @param requestCallBack
+     */
+    public void get1V2VirtualStuData(LivePostEntity param, HttpCallBack requestCallBack) {
+
+        sendJsonPost(LiveCoreConfig.URL_LIVE_GROUP_CLASS_VIRTUAL, param, requestCallBack);
     }
 }

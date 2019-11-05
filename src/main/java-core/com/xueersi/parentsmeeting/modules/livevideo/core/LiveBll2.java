@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.text.TextUtils;
@@ -47,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePostEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveBusinessResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
@@ -1756,6 +1758,24 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
 
+    public void get1V2VirtualStuData(){
+        if(mGetInfo==null || mGetInfo.getPattern()==8) {
+            return;
+        }
+        LivePostEntity entity = new LivePostEntity();
+        entity.bizId = 3;
+        if(!TextUtils.isEmpty(mGetInfo.getId())) {
+            entity.planId = Integer.valueOf(mGetInfo.getId());
+        }
+        entity.gender = LiveAppUserInfo.getInstance().getSexProcess();
+        mHttpManager.get1V2VirtualStuData(entity, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+
+            }
+        });
+    }
     /**
      * 设置直播Plugin配置信息
      *
