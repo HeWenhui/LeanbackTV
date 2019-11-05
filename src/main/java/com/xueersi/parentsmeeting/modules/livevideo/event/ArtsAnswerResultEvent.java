@@ -66,6 +66,14 @@ public class ArtsAnswerResultEvent {
         this.mAnswerResultEntity=answerResultEntity;
     }
 
+    public AnswerResultEntity getAnswerResultEntity() {
+        return mAnswerResultEntity;
+    }
+
+    public void setAnswerResultEntity(AnswerResultEntity mAnswerResultEntity) {
+        this.mAnswerResultEntity = mAnswerResultEntity;
+    }
+
     public SpeechResultEntity getSpeechResultEntity() {
         return speechResultEntity;
     }
