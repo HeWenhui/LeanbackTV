@@ -298,9 +298,9 @@ public class LiveHttpConfig {
     //science新课件获取连对数量
     public final static String URL_SCIENCE_NEW_ARTS_EVEN_DRIVE_MSG = "https://student.xueersi.com/science/Stimulation/getEvenPairInfo";
     //chs新课件获取自传互动题连对数量
-    public final static String URL_CHINESE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "http://student.chs.xueersi.com/Stimulation/getTestRightNum";
+    public final static String URL_CHINESE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "https://student.chs.xueersi.com/Stimulation/getTestRightNum";
     //science新课件获取自传互动题连对数量
-    public final static String URL_SCIENCE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "http://student.xueersi.com/science/Stimulation/getTestRightNum";
+    public final static String URL_SCIENCE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "https://student.xueersi.com/science/Stimulation/getTestRightNum";
     /**
      * 中学激励系统获取当前连对和最高连对
      */
