@@ -1,18 +1,26 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.animation.Animator;
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.airbnb.lottie.ImageAssetDelegate;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -21,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAction {
-
     private static final String VOTE_STATE_OPEN = "open";
     private static final String VOTE_STATE_CLOSE = "close";
     private String rightAnswer;
@@ -32,6 +39,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
     BaseLiveMediaControllerBottom liveMediaControllerBottom;
     private ContextLiveAndBackDebug liveAndBackDebug;
     private static String eventId = "quickchoice";
+    private LottieAnimationView lottieAnimationView;
 
     public ScienceVoteBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -177,21 +185,15 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                     XESToastUtils.showToast(mContext, "已作答");
                 } else {
                     if (TextUtils.isEmpty(rightAnswer)) {
-                        if (scienceVotePager != null) {
-                            scienceVotePager.submitSuccess(0);
-                            liveLogInteractive("2", "2", "submitquickchoice", interactionId, "");
-                        }
+                        submitSuccess(0);
+                        liveLogInteractive("2", "2", "submitquickchoice", interactionId, "");
                     } else {
                         if (TextUtils.equals(getUserAnswer(), rightAnswer)) {
-                            if (scienceVotePager != null) {
-                                scienceVotePager.submitSuccess(1);
-                                liveLogInteractive("2", "2", "submitquickchoice", interactionId, "right");
-                            }
+                            submitSuccess(1);
+                            liveLogInteractive("2", "2", "submitquickchoice", interactionId, "right");
                         } else {
-                            if (scienceVotePager != null) {
-                                scienceVotePager.submitSuccess(2);
-                                liveLogInteractive("2", "2", "submitquickchoice", interactionId, "wrong");
-                            }
+                            submitSuccess(2);
+                            liveLogInteractive("2", "2", "submitquickchoice", interactionId, "wrong");
                         }
                     }
                 }
@@ -221,6 +223,66 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     public interface ScienceVoteBllBack {
         void submit();
+    }
+
+
+    public void submitSuccess(int type) {
+        final RelativeLayout relativeLayout =
+                (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_science_vote_submit, null);
+        lottieAnimationView = relativeLayout.findViewById(R.id.livevideo_science_vote_lottie);
+        String resPath = "";
+        String jsonPath = "";
+        if (type == 0) {
+            resPath = "vote_submit_success/images";
+            jsonPath = "vote_submit_success/data.json";
+        } else if (type == 1) {
+            resPath = "vote_submit_thumb_up/images";
+            jsonPath = "vote_submit_thumb_up/data.json";
+        } else if (type == 2) {
+            resPath = "vote_submit_come_on/images";
+            jsonPath = "vote_submit_come_on/data.json";
+        }
+        final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(resPath, jsonPath);
+        lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext));
+        lottieAnimationView.useHardwareAcceleration(true);
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                String fileName = lottieImageAsset.getFileName();
+                Bitmap bitmap = bubbleEffectInfo.fetchBitmapFromAssets(lottieAnimationView, fileName,
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                        mContext);
+                return bitmap;
+            }
+        };
+        lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
+        RelativeLayout.LayoutParams layoutParams =
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                        RelativeLayout.LayoutParams.MATCH_PARENT);
+        addView(relativeLayout, layoutParams);
+        lottieAnimationView.playAnimation();
+        lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                removeView(relativeLayout);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
     }
 
     /**

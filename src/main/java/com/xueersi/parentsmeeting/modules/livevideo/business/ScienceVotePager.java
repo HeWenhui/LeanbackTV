@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -26,8 +27,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ScienceVotePager extends BasePager implements View.OnClickListener {
-    private Toast toast_submit;
-    private LottieAnimationView lottieAnimationView;
     private ObjectAnimator animation;
     private ObjectAnimator animationDown;
     private ObjectAnimator animationUp;
@@ -80,7 +79,7 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
                         (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 if(optionsJSONArray.length()==2){
-                    params.setMargins(dp2px(30, mContext), 0, dp2px(30, mContext), 0);
+                    params.setMargins(dp2px(60, mContext), 0, dp2px(60, mContext), 0);
                 }else if(optionsJSONArray.length()==3){
                     params.setMargins(dp2px(20, mContext), 0, dp2px(20, mContext), 0);
                 }else {
@@ -144,50 +143,6 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
         }
     }
 
-    public void submitSuccess(int type) {
-        if (toast_submit == null) {
-            RelativeLayout relativeLayout =
-                    (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_science_vote_submit, null);
-            lottieAnimationView = relativeLayout.findViewById(R.id.livevideo_science_vote_lottie);
-            toast_submit = new Toast(mContext);
-            toast_submit.setView(relativeLayout);
-            toast_submit.setGravity(Gravity.CENTER, 0, 0);
-
-            String resPath = "";
-            String jsonPath = "";
-            if (type == 0) {
-                resPath = "vote_submit_success/images";
-                jsonPath = "vote_submit_success/data.json";
-            } else if (type == 1) {
-                resPath = "vote_submit_thumb_up/images";
-                jsonPath = "vote_submit_thumb_up/data.json";
-            } else if (type == 2) {
-                resPath = "vote_submit_come_on/images";
-                jsonPath = "vote_submit_come_on/data.json";
-            }
-            final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(resPath, jsonPath);
-            lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext));
-            lottieAnimationView.useHardwareAcceleration(true);
-            ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
-                @Override
-                public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                    String fileName = lottieImageAsset.getFileName();
-                    Bitmap bitmap = bubbleEffectInfo.fetchBitmapFromAssets(lottieAnimationView, fileName,
-                            lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
-                            mContext);
-                    return bitmap;
-                }
-            };
-            lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
-            toast_submit.show();
-            lottieAnimationView.playAnimation();
-
-        } else {
-            toast_submit.show();
-            lottieAnimationView.playAnimation();
-        }
-    }
-
     private static int dp2px(int value, Context context) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value,
                 context.getResources().getDisplayMetrics());
@@ -199,6 +154,5 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
         animationUp = null;
         animationDown = null;
         userAnswer = "";
-        toast_submit = null;
     }
 }
