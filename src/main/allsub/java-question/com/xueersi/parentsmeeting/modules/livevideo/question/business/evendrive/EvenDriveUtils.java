@@ -40,4 +40,8 @@ public class EvenDriveUtils {
     public static boolean getIsChsAndSci(LiveGetInfo getInfo) {
         return getInfo != null && getInfo.getIsArts() != 1;
     }
+
+    public static boolean getIsArts(LiveGetInfo getInfo) {
+        return getInfo != null && getInfo.getIsArts() != 0;
+    }
 }

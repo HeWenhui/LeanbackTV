@@ -164,6 +164,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 LiveVideoConfig.LIVEPLAYBACKCLASSID = mVideoEntity.getClassId();
                 LiveVideoConfig.LIVEPLAYBACKTEAMID = mVideoEntity.getTeamId();
                 LiveVideoConfig.LIVEPLAYBACKSTAGE = mVideoEntity.getEdustage();
+                LiveVideoConfig.LIVEPLAYBACKTYPE = questionEntity.getName();
                 VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
                 EnglishH5Entity englishH5Entity =
                         videoQuestionLiveEntity.englishH5Entity;

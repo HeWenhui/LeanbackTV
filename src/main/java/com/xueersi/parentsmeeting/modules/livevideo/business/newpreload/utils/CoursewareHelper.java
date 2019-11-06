@@ -5,13 +5,13 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.InfoUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.FileDownLoadManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.LiveVideoDownLoadUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.listener.NoZipDownloadListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.listener.ZipDownloadListener;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 
@@ -209,11 +209,11 @@ public class CoursewareHelper {
                 final String resourceName = MD5.md5(coursewareInfo.getResourceUrl()) + ".zip";
                 File resourceSave = new File(mMorecachein, resourceName);
                 boolean equals = false;
-                if (fileIsExists(resourceSave.getAbsolutePath())) {
+                if (InfoUtils.fileIsExists(resourceSave.getAbsolutePath())) {
                     String filemd5 = FileUtils.getFileMD5ToString(resourceSave);
                     equals = coursewareInfo.getResourceMd5().equalsIgnoreCase(filemd5);
                 }
-                if (!fileIsExists(resourceSave.getAbsolutePath()) || (fileIsExists(resourceSave.getAbsolutePath()) && !equals)) {
+                if (!InfoUtils.fileIsExists(resourceSave.getAbsolutePath()) || (InfoUtils.fileIsExists(resourceSave.getAbsolutePath()) && !equals)) {
                     LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder builder = new LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder();
                     builder.setUrl(ip + coursewareInfo.getResourceUrl())
                             .setMd5(coursewareInfo.getResourceMd5())
@@ -271,7 +271,7 @@ public class CoursewareHelper {
                 //下载模板资源
                 final String templateName = MD5.md5(coursewareInfo.getTemplateUrl()) + ".zip";
                 File templateSave = new File(mMorecachein, templateName);
-                if (!fileIsExists(templateSave.getAbsolutePath())) {
+                if (!InfoUtils.fileIsExists(templateSave.getAbsolutePath())) {
                     LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder builder = new LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder();
                     builder.setUrl(ip + coursewareInfo.getTemplateUrl())
                             .setInDirPath(mMorecachein.getAbsolutePath())
@@ -369,7 +369,7 @@ public class CoursewareHelper {
             final String resourceName = coursewareInfo.getSourceId() + ".zip";
 
             File resourceSave = new File(mMorecachein, resourceName);
-            if (!fileIsExists(resourceSave.getAbsolutePath())) {
+            if (!InfoUtils.fileIsExists(resourceSave.getAbsolutePath())) {
                 logger.i("T_T" + ip + coursewareInfo.getIntelligentEntity().getResource());
                 DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(
                         ip + coursewareInfo.getIntelligentEntity().getResource(),
@@ -533,14 +533,14 @@ public class CoursewareHelper {
                     fileName = MD5Utils.getMD5(url);
                 }
                 save = new File(mPublicCacheout, fileName);
-                if (!fileIsExists(save.getAbsolutePath())) {
+                if (!InfoUtils.fileIsExists(save.getAbsolutePath())) {
 //                if (!fileIsExists(save.getAbsolutePath())) {
                     logger.d("resource zip url path:  " + ip + url + "   file name:" + fileName + ".zip");
                     LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder builder =
                             new LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder();
                     builder.setInFileName(fileName + ".temp")
-                            .setUrl(ip + url).
-                            setInDirPath(mPublicCacheout.getAbsolutePath())
+                            .setUrl(ip + url)
+                            .setInDirPath(mPublicCacheout.getAbsolutePath())
                             .setDownloadListener(new ZipDownloadListener(
                                     mPublicCacheout,
                                     mPublicCacheout,
@@ -594,7 +594,7 @@ public class CoursewareHelper {
                     fileName = MD5Utils.getMD5(url);
                 }
                 save = new File(mPublicCacheout, fileName);
-                if (!fileIsExists(save.getPath())) {
+                if (!InfoUtils.fileIsExists(save.getPath())) {
                     logger.d("resource ttf url path:  " + ip + url + "   file name:" + fileName + ".nozip");
                     LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder builder =
                             new LiveVideoDownLoadUtils.LiveVideoDownLoadFile.Builder();
@@ -617,23 +617,6 @@ public class CoursewareHelper {
                                     CoursewareHelper.this.decrementDocument();
                                 }
                             }).build();
-//                    LiveVideoDownLoadUtils.LiveVideoDownLoadFile liveVideoDownLoadFile = builder.build();
-
-//                    DownLoadInfo downLoadInfo =
-//                            DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName + ".temp", "");
-//                    PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(
-//                            downLoadInfo,
-//                            new CoursewarePreload.NoZipDownloadListener(
-//                                    mPublicCacheout,
-//                                    mPublicCacheout,
-//                                    fileName,
-//                                    ips,
-//                                    cdns,
-//                                    url,
-//                                    fileName,
-//                                    new AtomicInteger(0),
-//                                    "3"),
-//                            "");
                     if (!isPrecise) {
                         FileDownLoadManager.addToAutoDownloadPool(downLoadFile);
                     } else {
@@ -645,27 +628,4 @@ public class CoursewareHelper {
         }
 
     }
-
-//    public File getStorageFile() {
-//
-//    }
-
-
-    //判断文件是否存在
-    public boolean fileIsExists(String strFile) {
-//        logger.i(strFile);
-        try {
-            File f = new File(strFile);
-//            logger.i(strFile + "" + f.getName() + " " + f.isFile() + " " + f.exists());
-            if (!f.exists()) {
-                return false;
-            }
-        } catch (Exception e) {
-            LiveCrashReport.postCatchedException(TAG, e);
-            return false;
-        }
-
-        return true;
-    }
-
 }
