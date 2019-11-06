@@ -98,7 +98,9 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     questionEntity.setUrl(questionJson.optString("url"));
                     questionEntity.setName(questionJson.optString("type"));
                     questionEntity.setvQuestionType(questionJson.optString("type"));
-
+                    questionEntity.setPackageId(questionJson.optInt("packageId"));
+                    questionEntity.setCourseWareId(questionJson.optInt("courseWareId"));
+                    questionEntity.setPackageAttr(questionJson.optString("packageAttr"));
 
                     questionEntity.setSrcType(questionJson.optString("srcType"));
                     questionEntity.setQuestionNum(questionJson.optInt("num", 1));
@@ -116,6 +118,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                             infos.setEstimatedTime(infoJson.optString("estimatedTime"));
                             infos.setAssess_ref(infoJson.optString("assess_ref"));
                             infos.setIsVoice(infoJson.optString("isVoice"));
+                            infos.setPageId(infoJson.optInt("pageId"));
                             infos.setTotalScore(infoJson.optString("totalScore"));
                             // 人为的划分H5Bll和QuestionBll: type为{"4", "0", "1", "2", "8", "5", "6"}的题型走QuestionBll,
                             // 将他们的category置为1001
