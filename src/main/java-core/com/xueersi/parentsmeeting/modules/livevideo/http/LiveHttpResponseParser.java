@@ -29,6 +29,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubGroupEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -2831,7 +2833,19 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    public void parse1V2VirtualStuData(ResponseEntity entity){
-
+    public SubGroupEntity parse1V2VirtualStuData(ResponseEntity entity) throws Exception{
+        JSONObject jsonObject = (JSONObject) entity.getJsonObject();
+        if(jsonObject==null) {
+            return null;
+        }
+        SubGroupEntity subGroupEntity = new SubGroupEntity();
+        JSONObject virtuJson = jsonObject.optJSONObject("virStuInfo");
+        SubMemberEntity memberEntity = new SubMemberEntity();
+        memberEntity.setStuId(virtuJson.optInt("id"));
+        memberEntity.setGender(virtuJson.optInt("sex"));
+        memberEntity.setEnglishName(virtuJson.optString("englishName"));
+        memberEntity.setIconUrl(virtuJson.optString("avatar"));
+        subGroupEntity.setVirStuInfo(memberEntity);
+        return subGroupEntity;
     }
 }

@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubGroupEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -551,6 +552,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             grayBusinessControl();
         } else {
             initLiveRoom(getInfo);
+        }
+        if (mGetInfo.getPattern() == 8) {
+            get1V2VirtualStuData();
         }
     }
 
@@ -1759,10 +1763,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
 
     public void get1V2VirtualStuData(){
-        if(mGetInfo==null || mGetInfo.getPattern()==8) {
+        if(mGetInfo==null || mGetInfo.getPattern()!=8) {
             return;
         }
-        LivePostEntity entity = new LivePostEntity();
+        final LivePostEntity entity = new LivePostEntity();
         entity.bizId = 3;
         if(!TextUtils.isEmpty(mGetInfo.getId())) {
             entity.planId = Integer.valueOf(mGetInfo.getId());
@@ -1772,7 +1776,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 
-
+                SubGroupEntity entity1 = mHttpResponseParser.parse1V2VirtualStuData(responseEntity);
+                if(entity1!=null) {
+                    mGetInfo.setSubGroupEntity(entity1);
+                }
             }
         });
     }

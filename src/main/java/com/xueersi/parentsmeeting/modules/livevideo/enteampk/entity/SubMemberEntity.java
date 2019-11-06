@@ -20,6 +20,8 @@ public class SubMemberEntity {
     /** 是否是自己 */
     boolean isMy;
 
+    private int index;
+
     public int getGender() {
         return gender;
     }
@@ -58,5 +60,21 @@ public class SubMemberEntity {
 
     public void setMy(boolean my) {
         isMy = my;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }
