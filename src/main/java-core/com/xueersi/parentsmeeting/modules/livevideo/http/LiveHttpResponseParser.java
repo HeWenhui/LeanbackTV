@@ -797,9 +797,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 mainStatusEntity.getClassmateEntities().clear();
             }
             if(status.has("chat_interact")){
-                JSONObject jsonObject = status.getJSONObject("chat_interact");
-                mainStatusEntity.setOnChatInteract(jsonObject.optString("open"));
-                mainStatusEntity.setChatInteractionId(jsonObject.optString("interactionId"));
+                JSONObject jsonObject = status.optJSONObject("chat_interact");
+                if (jsonObject != null){
+                    mainStatusEntity.setOnChatInteract(jsonObject.optString("open"));
+                    mainStatusEntity.setChatInteractionId(jsonObject.optString("interactionId"));
+                }
             }
             mainStatusEntity.setOpenDbEnergy(status.optBoolean("openDbEnergy", false));
             mainStatusEntity.setOpenVoiceBarrage(status.optBoolean("openVoiceBarrage", false));
