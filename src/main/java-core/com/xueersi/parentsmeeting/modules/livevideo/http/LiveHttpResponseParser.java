@@ -799,7 +799,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 mainStatusEntity.setOpenhands("off");
                 mainStatusEntity.getClassmateEntities().clear();
             }
-            if(status.has("chat_interact")){
+            if (status.has("chat_interact")) {
                 JSONObject jsonObject = status.getJSONObject("chat_interact");
                 mainStatusEntity.setOnChatInteract(jsonObject.optString("open"));
                 mainStatusEntity.setChatInteractionId(jsonObject.optString("interactionId"));
@@ -2081,7 +2081,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         info.setSummerCourseWareSize(data.optString("summerCourseWareSize"));
         info.setBolockChinese(data.optInt("blockChinese", 2));
         info.setEvenDriveRightEvenNumUrl(data.optInt("getContinueRightNum"));
-        info.setIsGroupGameCourseWare(data.optInt("isOpenStimulation"));
+        info.setIsOpenStimulation(data.optInt("isOpenStimulation"));
+//        info.setIsGroupGameCourseWare(data.optInt("isOpenStimulation"));
         UmsAgentTrayPreference.getInstance().put(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, info.getSummerCourseWareSize());
         return info;
     }
