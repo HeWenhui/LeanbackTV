@@ -776,7 +776,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             totalQuestion = data.optInt("totalQuestion", -1);
             optionTitle = data.optJSONArray("optionTitle");
         } catch (JSONException e) {
-            LiveCrashReport.postCatchedException(TAG,e);
+            LiveCrashReport.postCatchedException(TAG, e);
         }
     }
 
@@ -1347,7 +1347,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             }
             EventBus.getDefault().post(artsAnswerResultEvent);
         } catch (JSONException e) {
-            LiveCrashReport.postCatchedException(TAG,e);
+            LiveCrashReport.postCatchedException(TAG, e);
         }
     }
 
@@ -1592,7 +1592,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
              */
             private void setTimeEn(NewCourseSec newCourseSec) {
                 //英语倒计时
-                final long releaseTime = newCourseSec.getReleaseTime() * 60;
+                final long releaseTime;
+                if (detailInfo.isExper()) {
+                    releaseTime = newCourseSec.getOperateTimeStamp() * 60;
+                } else {
+                    releaseTime = newCourseSec.getReleaseTime() * 60;
+                }
                 final long startTime = System.currentTimeMillis() / 1000;
                 tvCourseTimeText.setText(getTimeNegativeEn(releaseTime, startTime));
                 mainHandler.postDelayed(new Runnable() {
