@@ -766,11 +766,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     }, 5000);
                 } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
                     try {
-                        String test_id = object.getString("test_id");
-                        if (selfUploadRunnable == null) {
-                            selfUploadRunnable = new SelfUploadRunnable(mGetInfo, test_id);
-                        }
-                        postDelayedIfNotFinish(selfUploadRunnable, 6000);
+                        delayGetEvenDriveAnim(mGetInfo);
+//                        String test_id = object.getString("test_id");
+//                        if (selfUploadRunnable == null) {
+//                            selfUploadRunnable = new SelfUploadRunnable(mGetInfo, test_id);
+//                        }
+//                        postDelayedIfNotFinish(selfUploadRunnable, 6000);
                     } catch (Exception e) {
                         LiveCrashReport.postCatchedException(TAG, e);
                     }
