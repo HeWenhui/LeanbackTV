@@ -280,7 +280,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     String rights = "";
                     if (rightAnswers != null) {
                         for (int i = 0; i < rightAnswers.size(); i++) {
-                            rights += rightAnswers.get(i);
+                            String str = rightAnswers.get(i);
+                            if (StringUtils.isEmpty(str)) {
+                                str = " ";
+                            }
+                            rights += str;
                             if (i != rightAnswers.size() - 1) {
                                 rights += ",";
                             }
@@ -290,7 +294,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     if (answerArts.getTestType() == AnswerResultEntity.TEST_TYPE_2) {
                         List<String> choiceList = answerArts.getChoiceList();
                         for (int i = 0; i < choiceList.size(); i++) {
-                            myAnswer += choiceList.get(i);
+                            String str = choiceList.get(i);
+                            if (StringUtils.isEmpty(str)) {
+                                str = " ";
+                            }
+                            myAnswer += str;
                             if (i != choiceList.size() - 1) {
                                 myAnswer += ",";
                             }
@@ -298,7 +306,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     } else {
                         List<String> blankList = answerArts.getBlankList();
                         for (int i = 0; i < blankList.size(); i++) {
-                            myAnswer += blankList.get(i);
+                            String str = blankList.get(i);
+                            if (StringUtils.isEmpty(str)) {
+                                str = " ";
+                            }
+                            myAnswer += str;
                             if (i != blankList.size() - 1) {
                                 myAnswer += ",";
                             }

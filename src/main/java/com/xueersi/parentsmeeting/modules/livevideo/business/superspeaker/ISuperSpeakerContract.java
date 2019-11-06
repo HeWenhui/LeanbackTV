@@ -15,7 +15,7 @@ public interface ISuperSpeakerContract {
 //    }
 
     interface ICameraView {
-        View initView();
+//        View initView();
 
 //        void updateNum(String num);
 
@@ -46,6 +46,7 @@ public interface ISuperSpeakerContract {
 
         void stopRecord();
 
+        @Deprecated
         void uploadSucess(String videoUrl, String audioUrl, String averVocieDecibel);
 //        void updateNum(String num);
 
@@ -140,4 +141,10 @@ public interface ISuperSpeakerContract {
     String LAYOUT_SIZE = "layout_size";
     String CAMERA_INVISIBLE = "camera_invisible";
     String STOP_RECORD = "stop_record";
+
+    String IS_LIVE = "1";
+    String IS_PLAYBACK = "2";
+
+    int VIDEO_WIDTH = 1280;
+    int VIDEO_HEIGHT = 720;
 }

@@ -193,7 +193,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         boolean isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
         if (isBigLive) {
-            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId,false);
+            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId, false);
         } else {
             liveAndBackDebugIml = new LiveAndBackDebugIml(context, mLiveType, mLiveId, mCourseId);
         }
@@ -229,9 +229,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         boolean isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
-        Log.e("ckTrac","=====>LiveBll2_isBigLive="+isBigLive);
+        Log.e("ckTrac", "=====>LiveBll2_isBigLive=" + isBigLive);
         if (isBigLive) {
-            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId,false);
+            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId, false);
         } else {
             liveAndBackDebugIml = new LiveAndBackDebugIml(context, mLiveType, mLiveId, mCourseId);
         }
@@ -515,7 +515,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 e.printStackTrace();
             }
             mHttpManager.bigLiveEnter(iPlanId, LiveBusinessResponseParser.getBizIdFromLiveType(mLiveType),
-                    iStuCouId, BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION ,callBack);
+                    iStuCouId, BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION, callBack);
         } else {
             onGetInfoSuccess(getInfo);
         }
@@ -555,17 +555,17 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             mHttpManager.addHeaderParams("bizId", mLiveType + "");
             mHttpManager.addHeaderParams("SESSIONID", AppBll.getInstance().getLiveSessionId());
             //Log.e("ckTrac","====>LiveBll2_initBigLiveRoom:"+ AppBll.getInstance().getLiveSessionId());
-            String classId = getInfo.getStudentLiveInfo() != null?getInfo.getStudentLiveInfo().getClassId():"0";
+            String classId = getInfo.getStudentLiveInfo() != null ? getInfo.getStudentLiveInfo().getClassId() : "0";
             int iClassId = 0;
             try {
                 iClassId = Integer.parseInt(classId);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            String strStuCouId = TextUtils.isEmpty(mStuCouId)?"":mStuCouId;
-            mHttpManager.addBusinessParams("stuCouId",strStuCouId);
+            String strStuCouId = TextUtils.isEmpty(mStuCouId) ? "" : mStuCouId;
+            mHttpManager.addBusinessParams("stuCouId", strStuCouId);
             mHttpManager.addBusinessParams("classId", iClassId);
-            mHttpManager.addBusinessParams("isPlayback",0);
+            mHttpManager.addBusinessParams("isPlayback", 0);
         }
         if (liveLog != null) {
             liveLog.setGetInfo(mGetInfo);
@@ -861,7 +861,13 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
                     mGetInfo.setBlockChinese(info.getBolockChinese() == 1);
+
+                    LiveGetInfo.EvenDriveInfo evenDriveInfo = new LiveGetInfo.EvenDriveInfo();
+                    evenDriveInfo.setIsOpenStimulation(info.getIsOpenStimulation());
+//                    evenDriveInfo.setEvenNum(info.getEvenDriveRightEvenNumUrl());
+                    mGetInfo.setEvenDriveInfo(evenDriveInfo);
                     mGetInfo.setArtsExtLiveInfo(info);
+
                     List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
                     for (LiveBaseBll businessBll : businessBllTemps) {
                         try {
@@ -1178,7 +1184,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             }
         }
 
-    };
+    }
+
+    ;
 
 
     /**
@@ -1732,8 +1740,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
 
-    public void grayBusinessControl(){
-        if(grayControl !=null && mGetInfo !=null) {
+    public void grayBusinessControl() {
+        if (grayControl != null && mGetInfo != null) {
             LivePluginRequestParam param = new LivePluginRequestParam();
             param.bizId = mLiveType;
             if (!TextUtils.isEmpty(mGetInfo.getId())) {
@@ -1849,7 +1857,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         return false;
     }
 
-    public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl ){
+    public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl) {
         this.grayControl = grayControl;
+    }
+
+    public AllLiveBasePagerIml getAllLiveBasePagerIml() {
+        return allLiveBasePagerIml;
     }
 }

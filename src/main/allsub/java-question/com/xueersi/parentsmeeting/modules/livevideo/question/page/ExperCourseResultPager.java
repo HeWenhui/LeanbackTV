@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
+import android.graphics.Rect;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,18 +11,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
-import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.item.BigResultAdapter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.item.ExperCourseResultAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,27 +60,45 @@ public class ExperCourseResultPager extends LiveBasePager implements IArtsAnswer
         rvBigqueResultList = mView.findViewById(R.id.rv_livevideo_bigque_result_list);
         ivBigqueResultClose = mView.findViewById(R.id.iv_livevideo_bigque_result_close);
         ivResultTitleLight = mView.findViewById(R.id.iv_livevideo_bigque_result_title_light);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rvBigqueResultList.setLayoutManager(layoutManager);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+//        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+//        rvBigqueResultList.setLayoutManager(layoutManager);
+        rvBigqueResultList.setLayoutManager(new GridLayoutManager(mContext, 1, LinearLayoutManager.VERTICAL, false));
+        rvBigqueResultList.addItemDecoration(new SpacesItemDecoration(SizeUtils.Dp2Px(mContext, 12)));
         return mView;
+    }
+
+    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view,
+                                   RecyclerView parent, RecyclerView.State state) {
+            if (parent.getChildAdapterPosition(view) != 0)
+                outRect.top = space;
+        }
     }
 
     @Override
     public void initData() {
         super.initData();
         int isRight = entity.getType();
+        mLogtf.d("initData:isRight=" + isRight + ",gold=" + entity.getGold());
         if (isRight == PrimaryScienceAnswerResultEntity.ABSLUTELY_WRONG) {
             tvBigqueResultTitle.setText("很遗憾答错了");
-            ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_wrong_title);
+            ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_expercour_result_wrong_title);
             ivResultTitleLight.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title_light_grey);
         } else if (isRight == PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT) {
             tvBigqueResultTitle.setText("恭喜你答对了    金币+" + entity.getGold());
-            ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title);
+            ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_expercour_result_right_title);
             ivResultTitleLight.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title_light);
         } else if (isRight == PrimaryScienceAnswerResultEntity.PARTIALLY_RIGHT) {
             tvBigqueResultTitle.setText("部分正确    金币+" + entity.getGold());
-            ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_part_title);
+            ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_expercour_result_part_right_title);
             ivResultTitleLight.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title_light);
         }
         ExperCourseResultAdapter bigResultAdapter = new ExperCourseResultAdapter(answerList);
