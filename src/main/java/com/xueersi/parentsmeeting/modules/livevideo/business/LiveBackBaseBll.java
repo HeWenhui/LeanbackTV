@@ -133,6 +133,10 @@ public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
 
     }
 
+    protected void onPause(){
+
+    }
+
     /**
      * activity onDestroy
      */

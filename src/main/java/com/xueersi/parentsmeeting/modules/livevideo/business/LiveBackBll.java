@@ -1017,6 +1017,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         }
     }
 
+    public void onPause(){
+        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+            liveBackBaseBll.onPause();
+        }
+    }
+
     public void onNewIntent(Intent intent) {
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onNewIntent(intent);

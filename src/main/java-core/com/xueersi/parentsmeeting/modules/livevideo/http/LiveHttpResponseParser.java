@@ -2830,4 +2830,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         }
         return null;
     }
+
+    public void parse1V2VirtualStuData(ResponseEntity entity){
+
+    }
 }

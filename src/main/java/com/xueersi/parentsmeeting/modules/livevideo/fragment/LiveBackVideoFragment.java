@@ -664,6 +664,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     public void onPause() {
+        if (liveBackBll != null) {
+            liveBackBll.onPause();
+        }
+
         if (isInitialized()) {
             if (!onPauseNotStopVideo.get()) {
                 if (liveBackVideoBll != null) {
