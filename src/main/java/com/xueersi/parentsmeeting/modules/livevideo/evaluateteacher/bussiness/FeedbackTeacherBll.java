@@ -71,7 +71,7 @@ public class FeedbackTeacherBll extends LiveBaseBll {
                     logger.d("onLiveInited:showFeedBack:time=" + (System.currentTimeMillis() - before));
                 }
             };
-            postDelayed(mRunableHttp, 500);
+            postDelayed(mRunableHttp, 10000);
         }
     }
 
