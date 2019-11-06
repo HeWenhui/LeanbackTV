@@ -53,4 +53,6 @@ public class LogConfig {
     public static String LIVE_BUSINESS_TIME = "live_business_time";
     /** 直播x5log */
     public static String LIVE_X5_LOG = "live_x5_log";
+    /** 直播x5log 错误*/
+    public static String LIVE_X5_ERROR_LOG = "live_x5_error_log";
 }

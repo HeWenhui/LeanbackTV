@@ -9,12 +9,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
@@ -43,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
@@ -51,31 +49,15 @@ import com.xueersi.parentsmeeting.widget.expressionView.adapter.ExpressionListAd
 import com.xueersi.parentsmeeting.widget.expressionView.entity.ExpressionAllInfoEntity;
 import com.xueersi.ui.adapter.CommonAdapter;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import master.flame.danmaku.danmaku.controller.DrawHandler;
-import master.flame.danmaku.danmaku.controller.IDanmakuView;
-import master.flame.danmaku.danmaku.danmaku.loader.ILoader;
-import master.flame.danmaku.danmaku.danmaku.loader.IllegalDataException;
-import master.flame.danmaku.danmaku.danmaku.loader.android.DanmakuLoaderFactory;
 import master.flame.danmaku.danmaku.danmaku.model.BaseDanmaku;
-import master.flame.danmaku.danmaku.danmaku.model.DanmakuTimer;
-import master.flame.danmaku.danmaku.danmaku.model.IDanmakus;
-import master.flame.danmaku.danmaku.danmaku.model.IDisplayer;
-import master.flame.danmaku.danmaku.danmaku.model.android.BaseCacheStuffer;
-import master.flame.danmaku.danmaku.danmaku.model.android.DanmakuContext;
-import master.flame.danmaku.danmaku.danmaku.model.android.Danmakus;
-import master.flame.danmaku.danmaku.danmaku.model.android.SpannedCacheStuffer;
-import master.flame.danmaku.danmaku.danmaku.parser.BaseDanmakuParser;
-import master.flame.danmaku.danmaku.danmaku.parser.IDataSource;
-import master.flame.danmaku.danmaku.danmaku.parser.android.BiliDanmukuParser;
-import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
 
 /**
  * Created by linyuqiang on 2016/12/19.
@@ -181,13 +163,31 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
 
     }
 
-    public void setGetInfo(LiveGetInfo getInfo) {
+
+    public void setGetInfo(final LiveGetInfo getInfo) {
         this.getInfo = getInfo;
         if (getInfo != null) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = getInfo.getStudentLiveInfo();
             if (studentLiveInfo != null) {
                 getInfoGoldNum = studentLiveInfo.getGoldNum();
             }
+//            ViewModelProviders.of((FragmentActivity) mContext)
+            //接口在前面通知返回了
+//            if (getInfo.getIsOpenStimulation() == 1) {
+//
+//            } else {
+//                getInfo.addAObserver(new Observer() {
+//                    @Override
+//                    public void update(Observable o, Object arg) {
+//                        if (o instanceof LiveGetInfo.AObservable) {
+//                            if (getInfo.getIsOpenStimulation() == 1) {
+//                                EvenDriveAnimRepository animRepository = new EvenDriveAnimRepository(mContext, getInfo, new LiveHttpManager(mContext));
+//                            }
+//                            o.deleteObserver(this);
+//                        }
+//                    }
+//                });
+//            }
         }
     }
 

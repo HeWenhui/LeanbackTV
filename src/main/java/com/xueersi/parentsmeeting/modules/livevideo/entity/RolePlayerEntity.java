@@ -77,6 +77,8 @@ public class RolePlayerEntity {
     private int resultStar;
     private double selfSpeechTime;
     private JSONObject jsonObject;
+    /** 发题时间，暂时体验课用 */
+    private long rolePlayReleaseTime;
 
     public long getCountDownSecond() {
         return countDownSecond;
@@ -226,7 +228,7 @@ public class RolePlayerEntity {
 
         for (int i = 0; i < lstPM.size(); i++) {
             RolePlayerHead head = lstPM.get(i);
-            if (head.isSelfRole() && i>2) {
+            if (head.isSelfRole() && i > 2) {
                 //前3名中没有自己
                 lstPM.add(2, head);
                 break;
@@ -240,6 +242,7 @@ public class RolePlayerEntity {
 
     /**
      * 设置自己每一句的朗读有效时间
+     *
      * @param selfSpeechTime
      */
     public void setSelfValidSpeechTime(double selfSpeechTime) {
@@ -258,6 +261,13 @@ public class RolePlayerEntity {
         return jsonObject;
     }
 
+    public void setRolePlayReleaseTime(long rolePlayReleaseTime) {
+        this.rolePlayReleaseTime = rolePlayReleaseTime;
+    }
+
+    public long getRolePlayReleaseTime() {
+        return rolePlayReleaseTime;
+    }
 
     /**
      * 角色信息
@@ -394,7 +404,7 @@ public class RolePlayerEntity {
         }
 
         public void setResultStar(int resultStar) {
-            this.resultStar  = resultStar;
+            this.resultStar = resultStar;
         }
 
         public int getResultStar() {
@@ -425,17 +435,19 @@ public class RolePlayerEntity {
             this.star = star;
         }
     }
-    public class StuComparator implements Comparator<RolePlayerHead>{
+
+    public class StuComparator implements Comparator<RolePlayerHead> {
 
         @Override
         public int compare(RolePlayerHead o1, RolePlayerHead o2) {
-            if(o1.speechScore<o2.speechScore)
+            if (o1.speechScore < o2.speechScore)
                 return 1;
-            else if(o1.speechScore>o2.speechScore)
+            else if (o1.speechScore > o2.speechScore)
                 return -1;
             return 0;
         }
     }
+
     /**
      * 对话信息
      */
@@ -512,13 +524,12 @@ public class RolePlayerEntity {
 
 
         /**
-         *
          * @param head
          * @param msg
          * @param maxTime
-         * @param audio 对应的音频地址
+         * @param audio   对应的音频地址
          */
-        public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime,String audio) {
+        public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime, String audio) {
             this.rolePlayer = head;
             this.readMsg = msg;
             this.maxReadTime = maxTime;
@@ -678,6 +689,7 @@ public class RolePlayerEntity {
 
         /**
          * 对话信息也存入试题id
+         *
          * @param testId
          */
         public void setTestId(String testId) {
@@ -697,7 +709,7 @@ public class RolePlayerEntity {
         }
 
 
-        public String getAudio(){
+        public String getAudio() {
             return audio;
         }
 
@@ -705,7 +717,7 @@ public class RolePlayerEntity {
             this.selfValidSpeechTime = selfValidSpeechTime;
         }
 
-        public double getSelfValidSpeechTime(){
+        public double getSelfValidSpeechTime() {
             return this.selfValidSpeechTime;
         }
     }

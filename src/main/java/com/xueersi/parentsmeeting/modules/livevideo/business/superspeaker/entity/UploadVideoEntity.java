@@ -32,6 +32,8 @@ public class UploadVideoEntity implements Parcelable {
     /** 采样率，创建short数组大小用 */
     private int sampleRate;
 
+    private String uploadVideoSetKey;
+
     public UploadVideoEntity() {
     }
 
@@ -58,33 +60,6 @@ public class UploadVideoEntity implements Parcelable {
     public void setVideoLocalUrl(String videoLocalUrl) {
         this.videoLocalUrl = videoLocalUrl;
     }
-
-    protected UploadVideoEntity(Parcel in) {
-        liveId = in.readString();
-        stuCouId = in.readString();
-        stuId = in.readString();
-        isPlayBack = in.readString();
-        testId = in.readString();
-        srcType = in.readString();
-        video_url = in.readString();
-        voice_url = in.readString();
-        isUpload = in.readString();
-        averVocieDecibel = in.readString();
-        audioLocalUrl = in.readString();
-        videoLocalUrl = in.readString();
-    }
-
-    public static final Creator<UploadVideoEntity> CREATOR = new Creator<UploadVideoEntity>() {
-        @Override
-        public UploadVideoEntity createFromParcel(Parcel in) {
-            return new UploadVideoEntity(in);
-        }
-
-        @Override
-        public UploadVideoEntity[] newArray(int size) {
-            return new UploadVideoEntity[size];
-        }
-    };
 
     public String getLiveId() {
         return liveId;
@@ -166,6 +141,14 @@ public class UploadVideoEntity implements Parcelable {
         this.averVocieDecibel = averVocieDecibel;
     }
 
+    public String getUploadVideoSetKey() {
+        return uploadVideoSetKey;
+    }
+
+    public void setUploadVideoSetKey(String uploadVideoSetKey) {
+        this.uploadVideoSetKey = uploadVideoSetKey;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -173,17 +156,48 @@ public class UploadVideoEntity implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(liveId);
-        dest.writeString(stuCouId);
-        dest.writeString(stuId);
-        dest.writeString(isPlayBack);
-        dest.writeString(testId);
-        dest.writeString(srcType);
-        dest.writeString(video_url);
-        dest.writeString(voice_url);
-        dest.writeString(isUpload);
-        dest.writeString(averVocieDecibel);
-        dest.writeString(audioLocalUrl);
-        dest.writeString(videoLocalUrl);
+        dest.writeString(this.liveId);
+        dest.writeString(this.stuCouId);
+        dest.writeString(this.stuId);
+        dest.writeString(this.isPlayBack);
+        dest.writeString(this.testId);
+        dest.writeString(this.srcType);
+        dest.writeString(this.video_url);
+        dest.writeString(this.voice_url);
+        dest.writeString(this.isUpload);
+        dest.writeString(this.averVocieDecibel);
+        dest.writeString(this.audioLocalUrl);
+        dest.writeString(this.videoLocalUrl);
+        dest.writeInt(this.sampleRate);
+        dest.writeString(this.uploadVideoSetKey);
     }
+
+    protected UploadVideoEntity(Parcel in) {
+        this.liveId = in.readString();
+        this.stuCouId = in.readString();
+        this.stuId = in.readString();
+        this.isPlayBack = in.readString();
+        this.testId = in.readString();
+        this.srcType = in.readString();
+        this.video_url = in.readString();
+        this.voice_url = in.readString();
+        this.isUpload = in.readString();
+        this.averVocieDecibel = in.readString();
+        this.audioLocalUrl = in.readString();
+        this.videoLocalUrl = in.readString();
+        this.sampleRate = in.readInt();
+        this.uploadVideoSetKey = in.readString();
+    }
+
+    public static final Creator<UploadVideoEntity> CREATOR = new Creator<UploadVideoEntity>() {
+        @Override
+        public UploadVideoEntity createFromParcel(Parcel source) {
+            return new UploadVideoEntity(source);
+        }
+
+        @Override
+        public UploadVideoEntity[] newArray(int size) {
+            return new UploadVideoEntity[size];
+        }
+    };
 }

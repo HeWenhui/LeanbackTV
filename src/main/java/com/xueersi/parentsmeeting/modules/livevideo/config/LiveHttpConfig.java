@@ -222,10 +222,6 @@ public class LiveHttpConfig {
      */
     public static String URL_AUTO_LIVE_NOVIC_GUIDE = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitNoviceGuide";
     /**
-     * 中学激励系统获取当前连对和最高连对
-     */
-    public static final String EVEN_DRIVE_PAIR_INFO = LiveHttpConfig.LIVE_HOST_SCIENCE + "/Stimulation/getEvenPairInfo";
-    /**
      * 中学激励系统获取连对榜单
      */
     @Deprecated
@@ -295,7 +291,20 @@ public class LiveHttpConfig {
     @Deprecated
     public final static String URL_PUBLIC_LIVE_COURSE_GET_MESSAGE = LiveVideoConfig.HTTP_HOST +
             "/IrcMessage/getLiveLectureMsgs";
-
+    //英語获取连对数接口
+    public final static String UEL_ENGLISH_EVEN_DRIVE_MSG = "https://app.arts.xueersi.com/v2/stimulation/getRightNums";
+    //chs新课件获取连对数量
+    public final static String URL_CHINESE_NEW_ARTS_EVEN_DRIVE_MSG = "https://student.chs.xueersi.com/Stimulation/getEvenPairInfo";
+    //science新课件获取连对数量
+    public final static String URL_SCIENCE_NEW_ARTS_EVEN_DRIVE_MSG = "https://student.xueersi.com/science/Stimulation/getEvenPairInfo";
+    //chs新课件获取自传互动题连对数量
+    public final static String URL_CHINESE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "https://student.chs.xueersi.com/Stimulation/getTestRightNum";
+    //science新课件获取自传互动题连对数量
+    public final static String URL_SCIENCE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "https://student.xueersi.com/science/Stimulation/getTestRightNum";
+    /**
+     * 中学激励系统获取当前连对和最高连对
+     */
+    public static final String EVEN_DRIVE_PAIR_INFO = LiveHttpConfig.LIVE_HOST_SCIENCE + "/Stimulation/getEvenPairInfo";
     public static int HTTP_ERROR_ERROR = 1;
     public static int HTTP_ERROR_FAIL = 2;
     public static int HTTP_ERROR_NULL = 3;

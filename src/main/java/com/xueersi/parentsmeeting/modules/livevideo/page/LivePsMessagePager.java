@@ -34,7 +34,6 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.util.FontCache;
@@ -48,8 +47,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordPsItem;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -64,15 +63,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessage
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -88,7 +85,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  */
 
 public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
-    private static String TAG = "LivePsMessagePager";
+    protected static String TAG = "LivePsMessagePager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
     /** 聊天常用语 */
@@ -104,16 +101,16 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     /** 聊天IRC一下状态，正在连接，在线等 */
     private ImageView ivMessageOnline;
     /** 聊天消息 */
-    private ListView lvMessage;
+    protected ListView lvMessage;
     private View rlInfo;
     private View rlMessageContent;
     private Button btMessageSend;
     private Button btMessageExpress;
-    private CommonAdapter<LiveMessageEntity> messageAdapter;
-    private CommonAdapter<LiveMessageEntity> otherMessageAdapter;
-    private boolean isTouch = false;
+    protected CommonAdapter<LiveMessageEntity> messageAdapter;
+    protected CommonAdapter<LiveMessageEntity> otherMessageAdapter;
+    protected boolean isTouch = false;
     /** 聊天字体大小，最多13个汉字 */
-    private int messageSize = 0;
+    protected int messageSize = 0;
     /** 献花 */
     private PopupWindow mFlowerWindow;
     private View flowerContentView;
@@ -128,7 +125,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private ImageView ivExpressionCancle;
     private Activity liveVideoActivity;
     /** 竖屏的时候，也添加横屏的消息 */
-    private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
+    protected ArrayList<LiveMessageEntity> otherLiveMessageEntities;
     LiveAndBackDebug liveAndBackDebug;
     private String liveId;
     private String termId;
@@ -140,6 +137,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private ImageView mCup;
     private ImageView mHeart;
     private Boolean first = false;
+    boolean debugMsg = false;
 
     public LivePsMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -422,30 +420,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 //在控件上方显示
                 logger.i("onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
                 rlLivevideoCommonWord.setVisibility(View.VISIBLE);
-//                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word.getLayoutParams();
-//                int left = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                if (lp.leftMargin == left) {
-//                    return;
-//                }
-//                lp.leftMargin = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                rl_livevideo_common_word.setLayoutParams(lp);
-//                rl_livevideo_common_word.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//                    @Override
-//                    public boolean onPreDraw() {
-//                        rl_livevideo_common_word.getViewTreeObserver().removeOnPreDrawListener(this);
-//                        int[] location = new int[2];
-//                        v.getLocationOnScreen(location);
-//                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word.getLayoutParams();
-//                        int left = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                        if (lp.leftMargin == left) {
-//                            return false;
-//                        }
-//                        lp.leftMargin = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                        rl_livevideo_common_word.setLayoutParams(lp);
-//                        logger.i( "onClick2:Width=" + rl_livevideo_common_word.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
-//                        return true;
-//                    }
-//                });
+
             }
         });
         etMessageContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -525,7 +500,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     }
                     if (ircState.openchat()) {
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                            boolean send = ircState.sendMessage(msg, "");
+                            boolean send = sendEvenDriveMessage(msg, "");
                             if (send) {
                                 etMessageContent.setText("");
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
@@ -596,7 +571,6 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         }, 10);
     }
 
-    int c = 0;
 
     @Override
     public void initData() {
@@ -691,7 +665,19 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                             tvMessageItem.append(text);
                         } else {
                             tvMessageItem.setAutoLinkMask(0);
-                            tvMessageItem.setText(spanttt);
+                            if (isOpenStimulation()) {
+                                SpannableString itemSpan;
+                                SpannableString evenSpan = new SpannableString(EVEN_DRIVE_ICON);
+                                itemSpan = addEvenDriveMessageNum(evenSpan, entity.getEvenNum(), entity.getType());
+                                if (itemSpan != null) {
+                                    tvMessageItem.setText(itemSpan);
+                                    tvMessageItem.append(spanttt);
+                                } else {
+                                    tvMessageItem.setText(spanttt);
+                                }
+                            } else {
+                                tvMessageItem.setText(spanttt);
+                            }
                             tvMessageItem.append(entity.getText());
                         }
 
@@ -713,6 +699,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         logger.i("initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
+
 
     @Override
     public void setGetInfo(LiveGetInfo getInfo) {
@@ -899,7 +886,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 upLoadHotWordLog(msg);
                 if (ircState.openchat()) {
                     if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                        boolean send = ircState.sendMessage(msg, "");
+                        boolean send = sendEvenDriveMessage(msg, "");
                         if (send) {
                             etMessageContent.setText("");
                             addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
@@ -1346,8 +1333,9 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     JSONObject jsonObject = new JSONObject(message);
                     int type = jsonObject.getInt("type");
                     if (type == XESCODE.TEACHER_MESSAGE) {
-                        addMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
-                                .getString("msg"), "");
+                        addEvenDriveMessage(jsonObject.getString("name"), LiveMessageEntity.MESSAGE_CLASS, jsonObject
+                                        .getString("msg"), "",
+                                jsonObject.optString("evenexc"));
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
@@ -1357,6 +1345,62 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 }
             }
         });
+    }
+
+
+    private void addEvenDriveMessage(final String sender, final int type,
+                                     final String text, final String headUrl,
+                                     final String evenDriveNum) {
+        if (isOpenStimulation()) {
+            final Exception e = new Exception();
+            pool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    final SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
+                                    .chatSendContentDeal(text), mContext,
+                            messageSize);
+                    mView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (liveMessageEntities.size() > 29) {
+                                liveMessageEntities.remove(0);
+                            }
+                            LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
+                            entity.setEvenNum(evenDriveNum);
+                            liveMessageEntities.add(entity);
+                            if (otherLiveMessageEntities != null) {
+                                if (otherLiveMessageEntities.size() > 29) {
+                                    otherLiveMessageEntities.remove(0);
+                                }
+                                otherLiveMessageEntities.add(entity);
+                            }
+                            if (otherMessageAdapter != null) {
+                                otherMessageAdapter.notifyDataSetChanged();
+                            }
+                            if (messageAdapter != null) {
+                                messageAdapter.notifyDataSetChanged();
+                            } else {
+                                Loger.e(ContextManager.getContext(), TAG, "" + mContext + "," + sender + "," + type, e,
+                                        true);
+                            }
+                            if (!isTouch) {
+                                lvMessage.setSelection(lvMessage.getCount() - 1);
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            addMessage(sender, type, text, headUrl);
+        }
+        // 03.22 体验课播放器统计用户的发送信息
+//        if (debugMsg && type == LiveMessageEntity.MESSAGE_MINE) {
+//            StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayUserMsg");
+//            logHashMap.put("LiveFreePlayUserMsg", text);
+//            logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
+//            umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
+//        }
+//        Loger.e("Duncan", "sender:" + sender);
     }
 
     @Override
@@ -1673,6 +1717,9 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                             liveMessageEntities.remove(0);
                         }
                         LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
+                        if (type == LiveMessageEntity.MESSAGE_MINE) {
+                            entity.setEvenNum(myTest ? "35" : "" + getEvenNum());
+                        }
                         liveMessageEntities.add(entity);
                         if (otherLiveMessageEntities != null) {
                             if (otherLiveMessageEntities.size() > 29) {

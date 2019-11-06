@@ -34,7 +34,7 @@ public class LiveQueHttpConfig {
     /** 课件结果页-理科本地 */
     public static String LIVE_SUBMIT_COURSEWARE_RESULT_FILE = "file:///android_asset/newcourse_result/sec/middleSchoolCourseware/index.html";
     /** 课件结果页-文科本地 */
-    public static String LIVE_SUBMIT_COURSEWARE_RESULT_FILE_CN = "file:///android_asset/newcourse_result/chs/middleSchoolCourseware/index.html";
+//    public static String LIVE_SUBMIT_COURSEWARE_RESULT_FILE_CN = "file:///android_asset/newcourse_result/chs/middleSchoolCourseware/index.html";
     /** 课件结果页-理科线上 */
     @Deprecated
     public static String LIVE_SUBMIT_COURSEWARE_RESULT = LiveHttpConfig.LIVE_HOST + "/scistatic/middleSchoolCoursewareResultPage/app/dev/index.html";
@@ -67,4 +67,8 @@ public class LiveQueHttpConfig {
 
     /** 小组互动-上报答题信息 */
     public static String LIVE_GROUPGAME_REPORT = "/report/operate";
+
+    /** 理科新投票提交 */
+    public static String LIVE_SCIENCE_VOTE_SUBMIT = LiveHttpConfig.HTTP_HOST_SCIENCE + "/LiveCourse/commitVote";
+
 }

@@ -38,6 +38,8 @@ public class LiveMessageEntity {
     public static final int EVEN_DRIVE_LIKE = 5;
     //连对激励系统学报
     public static final int EVEN_DRIVE_REPORT = 6;
+    //f辅导教师
+    public static final int MESSAGE_COUN_TEACHER = 7;
 
     public LiveMessageEntity(String sender, int type, CharSequence text) {
         this.sender = sender;

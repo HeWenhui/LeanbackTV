@@ -6,8 +6,10 @@ import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ExperLiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.ExperLiveQueHttpConfig;
 
 public class LiveTransferHttpManager extends BaseHttpBusiness {
 
@@ -45,6 +47,20 @@ public class LiveTransferHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.setWriteAndreadTimeOut(20);
         sendPost(LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/playback/getEvent", params, requestCallBack);
+    }
+
+    /**
+     * 文科新课件平台回放事件的新接口
+     *
+     * @param termId
+     * @param requestCallBack
+     */
+    public void experartscoursewarenewpoint(String termId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("termId", termId);
+        params.setWriteAndreadTimeOut(20);
+        sendPost(ExperLiveQueHttpConfig.LIVE_GET_ENG_EVNET, params, requestCallBack);
     }
 
 }
