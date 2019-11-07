@@ -822,7 +822,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //        }
         animRepo.getDataSource(questionType, testId, new TasksDataSource.LoadAnimCallBack() {
             @Override
-            public void onDataNotAvailable() {
+            public void onDataNotAvailable(String msg) {
 
             }
 

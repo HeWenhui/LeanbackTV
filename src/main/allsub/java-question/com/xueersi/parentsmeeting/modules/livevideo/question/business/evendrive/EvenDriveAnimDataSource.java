@@ -5,13 +5,18 @@ import android.text.TextUtils;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EvenDriveAnimDataSource implements TasksDataSource {
     private LiveHttpManager liveHttpManager;
@@ -45,7 +50,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmError(ResponseEntity responseEntity) {
                                 super.onPmError(responseEntity);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(responseEntity.getErrorMsg());
                                 }
                             }
 
@@ -53,7 +58,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmFailure(Throwable error, String msg) {
                                 super.onPmFailure(error, msg);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(msg);
                                 }
                             }
                         });
@@ -72,7 +77,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmError(ResponseEntity responseEntity) {
                                 super.onPmError(responseEntity);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(responseEntity.getErrorMsg());
                                 }
                             }
 
@@ -80,7 +85,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmFailure(Throwable error, String msg) {
                                 super.onPmFailure(error, msg);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(msg);
                                 }
                             }
                         });
@@ -101,7 +106,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmError(ResponseEntity responseEntity) {
                                 super.onPmError(responseEntity);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(responseEntity.getErrorMsg());
                                 }
                             }
 
@@ -109,7 +114,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmFailure(Throwable error, String msg) {
                                 super.onPmFailure(error, msg);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(msg);
                                 }
                             }
                         });
@@ -130,7 +135,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                                 public void onPmError(ResponseEntity responseEntity) {
                                     super.onPmError(responseEntity);
                                     if (callBack != null) {
-                                        callBack.onDataNotAvailable();
+                                        callBack.onDataNotAvailable(responseEntity.getErrorMsg());
                                     }
                                 }
 
@@ -138,7 +143,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                                 public void onPmFailure(Throwable error, String msg) {
                                     super.onPmFailure(error, msg);
                                     if (callBack != null) {
-                                        callBack.onDataNotAvailable();
+                                        callBack.onDataNotAvailable(msg);
                                     }
                                 }
                             });
@@ -159,7 +164,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                                 public void onPmError(ResponseEntity responseEntity) {
                                     super.onPmError(responseEntity);
                                     if (callBack != null) {
-                                        callBack.onDataNotAvailable();
+                                        callBack.onDataNotAvailable(responseEntity.getErrorMsg());
                                     }
                                 }
 
@@ -167,7 +172,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                                 public void onPmFailure(Throwable error, String msg) {
                                     super.onPmFailure(error, msg);
                                     if (callBack != null) {
-                                        callBack.onDataNotAvailable();
+                                        callBack.onDataNotAvailable(msg);
                                     }
                                 }
                             });
