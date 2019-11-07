@@ -588,7 +588,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             if (recordStandLiveJson != null) {
                 RecordStandliveEntity recordStandliveEntity = new RecordStandliveEntity();
                 recordStandliveEntity.setDiffBegin(recordStandLiveJson.optInt("diffBegin"));
-                recordStandliveEntity.setDiffBegin(100);
+//                recordStandliveEntity.setDiffBegin(100);
                 recordStandliveEntity.setMetaDataUrl(recordStandLiveJson.optString("metaDataUrl"));
                 recordStandliveEntity.setRecordUrl(recordStandLiveJson.optString("recordUrl"));
                 recordStandliveEntity.setVideoPath(recordStandLiveJson.optString("videoPath"));
