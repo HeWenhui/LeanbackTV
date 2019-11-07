@@ -23,6 +23,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
@@ -34,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginGrayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
@@ -1773,6 +1775,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         mLiveModuleConfigInfo = (LiveModuleConfigInfo) JsonUtil.jsonToObject(jsonString,
                                 LiveModuleConfigInfo.class);
                         mGetInfo.setLiveModuleConfigInfo(mLiveModuleConfigInfo);
+                        String preloadUrl = mGetInfo.getProperties(LivePluginGrayConfig.MOUDLE_FUTURE_COURSEWARE, "preloadUrl");
+                        if(!TextUtils.isEmpty(preloadUrl)){
+                            String liveId = mGetInfo.getId();
+                            CoursewarePreload coursewarePreload = new CoursewarePreload(mContext, -1);
+                            coursewarePreload.setmHttpManager(mHttpManager);
+                            coursewarePreload.setBig(1,preloadUrl);
+                            coursewarePreload.getCoursewareInfo(liveId);
+                        }
                     }
                     if (!isEmpty(mLiveModuleConfigInfo)) {
                         callBack.onDataSucess(mLiveModuleConfigInfo);
