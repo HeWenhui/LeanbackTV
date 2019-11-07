@@ -1214,6 +1214,22 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
     }
 
     /**
+     * 大班预加载互动题
+     *
+     * @param liveId
+     * @param requestCallBack
+     */
+    public void getBigLiveCourewareInfo(String url, String liveId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        if (liveId != null && !"".equals(liveId)) {
+            params.addBodyParam("liveId", liveId);
+        }
+        requestCallBack.url = url;
+        params.setJson(JsonUtil.toJson(params.getBodyParams()));
+        sendJsonPost(requestCallBack.url, params, requestCallBack);
+    }
+
+    /**
      * 获得广告信息
      */
     public void getAdOnLL(String courseId, final HttpCallBack requestCallBack) {
