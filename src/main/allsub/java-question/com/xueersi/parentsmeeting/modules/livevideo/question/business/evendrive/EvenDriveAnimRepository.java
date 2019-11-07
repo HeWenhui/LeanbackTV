@@ -75,8 +75,8 @@ public class EvenDriveAnimRepository implements TasksDataSource {
                         @Override
                         public void onDataNotAvailable(String msg) {
                             if (loadAnimCallBack != null) {
-                                loadAnimCallBack.onDataNotAvailable(msg);
                                 parseNotCallBack(msg);
+                                loadAnimCallBack.onDataNotAvailable(msg);
                             }
                         }
 
