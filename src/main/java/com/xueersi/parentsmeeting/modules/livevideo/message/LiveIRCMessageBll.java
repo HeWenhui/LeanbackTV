@@ -1432,7 +1432,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.INIT_EVEN_NUM, "",
                     new TasksDataSource.LoadAnimCallBack() {
                         @Override
-                        public void onDataNotAvailable() {
+                        public void onDataNotAvailable(String msg) {
 
                         }
 
@@ -1462,7 +1462,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_SELF_UPLOAD, testId,
                     new TasksDataSource.LoadAnimCallBack() {
                         @Override
-                        public void onDataNotAvailable() {
+                        public void onDataNotAvailable(String msg) {
 
                         }
 

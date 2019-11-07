@@ -4,15 +4,19 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.view.QuestionResultMiddleEvenDrivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.view.QuestionResultPrimaryEvenDrivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.utils.RxjavaUtils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -69,9 +73,10 @@ public class EvenDriveAnimRepository implements TasksDataSource {
                     new LoadAnimCallBack() {
 
                         @Override
-                        public void onDataNotAvailable() {
+                        public void onDataNotAvailable(String msg) {
                             if (loadAnimCallBack != null) {
-                                loadAnimCallBack.onDataNotAvailable();
+                                parseNotCallBack(msg);
+                                loadAnimCallBack.onDataNotAvailable(msg);
                             }
                         }
 
@@ -79,6 +84,19 @@ public class EvenDriveAnimRepository implements TasksDataSource {
                         public void onDatasLoaded(String num, boolean numChange) {
                             if (question_type != EvenDriveQuestionType.INIT_EVEN_NUM && numChange) {
                                 showAnima(num);
+                                Map<String, String> map = new HashMap<>();
+                                map.put("logtype", "showEncourage");
+                                if (LiveVideoConfig.EDUCATION_STAGE_1.equals(getInfo.getEducationStage()) ||
+                                        LiveVideoConfig.EDUCATION_STAGE_2.equals(getInfo.getEducationStage())) {
+                                    map.put("isprimary", "true");
+                                } else {
+                                    map.put("isprimary", "false");
+                                }
+                                map.put("count", num);
+                                map.put("issuccess", "true");
+                                map.put("errmsg", "");
+                                map.put("sno", "1");
+                                UmsAgentManager.umsAgentDebug(context, "live_Encourage", map);
                             }
                             if (loadAnimCallBack != null) {
                                 loadAnimCallBack.onDatasLoaded(num, numChange);
@@ -88,6 +106,37 @@ public class EvenDriveAnimRepository implements TasksDataSource {
         }
     }
 
+    private void parseNotCallBack(String msg) {
+        Map<String, String> map = new HashMap<>();
+        map.put("logtype", "showEncourage");
+        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(getInfo.getEducationStage()) ||
+                LiveVideoConfig.EDUCATION_STAGE_2.equals(getInfo.getEducationStage())) {
+            map.put("isprimary", "true");
+        } else {
+            map.put("isprimary", "false");
+        }
+        map.put("count", "");
+        map.put("issuccess", "false");
+        map.put("errmsg", msg);
+        map.put("sno", "1");
+        UmsAgentManager.umsAgentDebug(context, "live_Encourage", map);
+    }
+
+    /**
+     * {
+     * "eventid":"live_Encourage",   //固定参数
+     * "logtype":"showEncourage",    //固定参数
+     * "isprimary":@"true",   //"ture"或"false"
+     * "count":"0",   //连对次数
+     * "issuccess":@"false",  //是否请求成功   "ture"或"false"
+     * "errmsg":"连对请求错误信息",    // 错误原因  成功传空
+     * "sno":"1"     //固定参数
+     * }
+     * <p>
+     * 连对日志数据修改一下，
+     * key只能为小写，不能用驼峰，
+     * value只有string类型
+     */
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private boolean isPrimarySchool() {
