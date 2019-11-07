@@ -50,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResult
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -790,9 +791,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      */
     private void endRolePlayer() {
         if (mEntity == null) {
+            mLogtf.d(SysLogLable.roleplayEndRoleplay, "endRolePlayer:entity=null");
             logger.i("roleplay界面的数据已经销毁，不再向下执行");
             return;
         }
+        mLogtf.d(SysLogLable.roleplayEndRoleplay, "endRolePlayer:entity=" + mEntity.isResult());
         if (!mEntity.isResult()) {
             logger.i("结束RolePlayer,结果还未提交，再次提交结果");
             if (mEntity.isNewArts()) {
@@ -802,7 +805,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             }
 
         } else {
-            new Handler().postDelayed(new Runnable() {
+            LiveMainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     showResult();//延迟2秒显示结果页
@@ -842,6 +845,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
         if (mEntity == null) {
             logger.i("需要显示结果弹窗，可是数据为空,不再往下执行，恢复滑动，取消点赞，离开频道");
+            mLogtf.d(SysLogLable.roleplayShowResult, "showResult:mEntity=null");
             recoverListScrollAndCancelDZ();
             //leaveChannel();
             return;
@@ -973,7 +977,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 //                rlResultRole3.setVisibility(View.INVISIBLE);
 //            }
             ViewGroup group = (ViewGroup) mView;
-            if (mLiveGetInfo.getSmallEnglish() ||videoQuestionLiveEntity.isExper()) {
+            if (mLiveGetInfo.getSmallEnglish()) {
                 //小学结果页
                 SpeechResultEntity speechResultEntity = new SpeechResultEntity();
                 speechResultEntity.score = head.getSpeechScore();
@@ -1002,7 +1006,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 resultPager = rolePlayResultPager;
             }
         }
-
+        mLogtf.d(SysLogLable.roleplayShowResult, "showResult:gold=" + mEntity.getGoldCount());
         //结果弹窗5秒后消失
         mView.postDelayed(new Runnable() {
             @Override
@@ -1088,13 +1092,10 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             @Override
             public void run() {
                 mEntity = mRolePlayBll.getRoleEntry();
+                mLogtf.d(SysLogLable.rolePlayGetTest, "getRoleEntry:mEntity=" + (mEntity == null));
                 if (mEntity != null) {
-
                     List<RolePlayerEntity.RolePlayerHead> rolePlayerHeads = mEntity.getLstRoleInfo();
                     List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages = mEntity.getLstRolePlayerMessage();
-                    if (rolePlayerHeads.size() == 0) {
-
-                    }
                     if (rolePlayerHeads != null && rolePlayerHeads.size() > 0 && rolePlayerMessages != null &&
                             rolePlayerMessages.size() > 0) {
                         logger.i("开始匹配");
@@ -1122,6 +1123,21 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
             }
         }, MATCH_WAIT_SECOND);
+    }
+
+    public void onPmFail(String msg) {
+        if (tvBeginTipMsg != null && mRolePlayBll != null) {
+            rlMatchPager.setVisibility(View.GONE);
+            tvBeginTipMsg.setText(msg + ",点击重试");
+            tvBeginTipMsg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    rlMatchPager.setVisibility(View.VISIBLE);
+                    tvBeginTipMsg.setOnClickListener(null);
+                    mRolePlayBll.reTry();
+                }
+            });
+        }
     }
 
     /**
@@ -1158,18 +1174,16 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         if (mEntity == null) {
             return;
         }
-
         RolePlayerEntity.RolePlayerMessage rolePlayerMessages = mEntity.getLstRolePlayerMessage().get(0);
         if (rolePlayerMessages == null) {
             return;
         }
-
         ///获取当前应该走的离线模型
 
         final int curSubModEva = ShareDataManager.getInstance().getInt(RolePlayConfig
                 .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
                 .SHAREDATA_NOT_CLEAR);
-
+        mLogtf.d(SysLogLable.rolePlayWait, "waitRolePlayer:curSubModEva=" + curSubModEva);
 
         rlMatchPager.setVisibility(View.GONE);
         rlRoleReadMain.setVisibility(View.VISIBLE);

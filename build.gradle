@@ -81,6 +81,7 @@ android {
             jniLibs.srcDirs = ['libs']
             java.srcDirs += ['src/main/java-core']
 //            assets.srcDirs += ['src/main/live_assets']
+            assets.srcDirs += ['src/main/live_assets_v2']
             getAllSource(this.android.sourceSets.main);
             getSecSource(this.android.sourceSets.main);
             getCnSource(this.android.sourceSets.main);

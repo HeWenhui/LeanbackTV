@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -512,6 +513,12 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                         }
                     } else if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_H5COURSE_WARE) {
                         questionEntity.setH5Play_url(questionJson.optString("play_url"));
+                    } else if(questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_SCIENCE_VOTE){
+                        try {
+                            questionEntity.setOrgDataStr(questionJson.toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                     questionLst.add(questionEntity);
                 } catch (Exception e) {
@@ -571,6 +578,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         resultEntity.setLiveType(jsonObject.optInt("liveType"));
         int isArts = jsonObject.optInt("isArts");
         resultEntity.setIsArts(isArts);
+        resultEntity.setIsNewCourseWare(jsonObject.optBoolean("isNewCourseWare",false));
         resultEntity.setClassId(jsonObject.optString("classId"));
         String videoPath = jsonObject.optString("videoPath");
         JSONArray pathArray = jsonObject.optJSONArray("hostPath");
@@ -1224,7 +1232,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
     }
 
     /**
-     * 直播灰度场次确认
+     * 大班整合-讲座灰度场次确认
      *
      * @param responseEntity
      * @return
@@ -1240,5 +1248,24 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         }
         return -1;
     }
+
+    /**
+     * 大班整合-直播 灰度场次确认
+     * @param responseEntity
+     * @return
+     */
+    public int parseBigLivePlanVersion(ResponseEntity responseEntity){
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        if (jsonObject != null) {
+            try {
+                return jsonObject.optInt("planVersion");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
+    }
+
+
 
 }

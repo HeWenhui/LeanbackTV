@@ -11,6 +11,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by linyuqiang on 2018/7/30.
@@ -20,6 +22,8 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private ArrayList<LiveBasePager> liveBasePagers = new ArrayList<>();
     Context context;
+
+    private volatile List<ViewRemoveObserver> unAttachViewObservers;
 
     public AllLiveBasePagerIml(Context context) {
         this.context = context;
@@ -57,11 +61,42 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     @Override
     public void removeLiveBasePager(LiveBasePager liveBasePager) {
         liveBasePagers.remove(liveBasePager);
+        notifyUnAttachPager(liveBasePager);
         if (liveBasePager.getLivePagerBack() != null) {
             LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
             if (showQuestion != null) {
                 showQuestion.onHide(liveBasePager.getBaseVideoQuestionEntity());
             }
+        }
+    }
+
+    private synchronized void notifyUnAttachPager(LiveBasePager liveBasePager) {
+        if (unAttachViewObservers != null) {
+
+            Iterator<ViewRemoveObserver> iterator = unAttachViewObservers.iterator();
+            while (iterator.hasNext()) {
+                ViewRemoveObserver viewRemoveObserver = iterator.next();
+                if (viewRemoveObserver.removeViewCallBack(liveBasePager)) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    @Override
+    public synchronized void addViewRemoveObserver(ViewRemoveObserver viewRemoveObserver) {
+        if (unAttachViewObservers == null) {
+            unAttachViewObservers = new ArrayList<>();
+        }
+        if (!unAttachViewObservers.contains(viewRemoveObserver)) {
+            unAttachViewObservers.add(viewRemoveObserver);
+        }
+    }
+
+    @Override
+    public synchronized void removeViewRemoveObserver(ViewRemoveObserver viewRemoveObserver) {
+        if (unAttachViewObservers != null) {
+            unAttachViewObservers.remove(viewRemoveObserver);
         }
     }
 

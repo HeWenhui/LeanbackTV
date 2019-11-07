@@ -14,17 +14,17 @@ import com.czt.mp3recorder.util.LameUtil;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.AudioMediaCodecUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.UploadAliUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import java.io.File;
@@ -34,12 +34,19 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
@@ -49,8 +56,10 @@ import io.reactivex.schedulers.Schedulers;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class UploadVideoService extends Service {
 
-//    private Set<String> courseWeareList = new ConcurrentSkipListSet<>();
+    //    private Set<String> courseWeareList = new ConcurrentSkipListSet<>();
+    private Map<String, String> map = new ConcurrentHashMap<>();
 
+    private static List<String> listUploading = new CopyOnWriteArrayList<>();
     private String videoUrl, audioUrl = "";
     Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
@@ -60,35 +69,52 @@ public class UploadVideoService extends Service {
     private AtomicInteger uploadVideoNum = new AtomicInteger(3);
     private XesStsUploadListener videoUploadListener;
 
-//    private String uploadVideoSetKey;
+    private String uploadVideoSetKey = "";
+    /**
+     * 上传进度数目
+     */
+    private static final int uploadVideoProcessLogNum = 2;
 
     private class VideoUploadListener implements XesStsUploadListener {
         String videoLocalUrl;
+        private int logUploadNum = 2;
+        private boolean percent_5 = false;
+        private boolean percent_90 = false;
 
         public VideoUploadListener(String videoLocalUrl) {
             this.videoLocalUrl = videoLocalUrl;
-//            courseWeareList.add(uploadVideoSetKey);
+//            map.put(uploadVideoSetKey, );
+            if (!listUploading.contains(uploadVideoSetKey)) {
+                listUploading.add(uploadVideoSetKey);
+            }
         }
 
         @Override
         public void onProgress(XesCloudResult result, int percent) {
+            if (percent > 5 && !percent_5 && logUploadNum > 0) {
+                Map<String, String> map = new HashMap<>();
+                map.put(UploadAliUtils.SUPER_SPEAKER_VIDEO_PERCENT, String.valueOf(percent));
+                UmsAgentManager.umsAgentDebug(UploadVideoService.this, UploadAliUtils.SUPER_SPEAKER_LOG, map);
+                logUploadNum--;
+                percent_5 = true;
+                logger.i("video upload percent:" + percent);
+            }
+            if (percent > 90 && !percent_90 && logUploadNum > 0) {
+                Map<String, String> map = new HashMap<>();
+                map.put(UploadAliUtils.SUPER_SPEAKER_VIDEO_PERCENT, String.valueOf(percent));
+                UmsAgentManager.umsAgentDebug(UploadVideoService.this, UploadAliUtils.SUPER_SPEAKER_LOG, map);
+                logUploadNum--;
+                percent_90 = true;
+                logger.i("video upload percent:" + percent);
+            }
 
-            logger.i("video upload percent:" + percent);
         }
 
         @Override
         public void onSuccess(XesCloudResult result) {
             videoUrl = result.getHttpPath();
             logger.i("video upload succes " + videoUrl);
-//            XESToastUtils.showToast(UploadVideoService.this, "视频上传成功");
-//            uploadSuccess();
-
-            ShareDataManager.getInstance().put(
-                    ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
-                    2,
-                    ShareDataManager.SHAREDATA_NOT_CLEAR,
-                    false);
-//            uploadSuccess();
+            StorageUtils.setStorageSPKey(liveId, courseWareId, 2);
             latch.countDown();
             try {
                 latch.await();
@@ -109,19 +135,14 @@ public class UploadVideoService extends Service {
             if (uploadVideoNum.get() > 0) {
                 uploadVideoNum.getAndDecrement();
                 uploadVideo(videoLocalUrl);
+            } else {
+                if (!listUploading.contains(uploadVideoSetKey)) {
+                    listUploading.remove(uploadVideoSetKey);
+                }
             }
         }
     }
 
-//    private short[] convertShort(byte[] b) {
-//        int len = b.length;
-//        int shortL = b.length % 2 == 0 ? b.length / 2 : b.length / 2 + 1;
-//        short[] aShort = new short[shortL];
-//        for (int i = 0; i < aShort.length; i++) {
-//            shortL[i] = b[i * 2] + b[i * 2 + 1] << 8;
-//
-//        }
-//}
     /**
      * 录音文件输出
      */
@@ -161,91 +182,154 @@ public class UploadVideoService extends Service {
     private void decodeAudio() {
         try {
             mFileOutputStream = new FileOutputStream(new File(uploadVideoEntity.getAudioLocalUrl()));
+            performRxUploadAudio();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        final AudioMediaCodecUtils codecUtils = new AudioMediaCodecUtils(new AudioMediaCodecUtils.PCMDataListener() {
-            @Override
-            public void pcmData(byte[] bytes, int size) {
-//                short[] shorts = convertShort(bytes);
-                short[] shorts;
-                ByteBuffer byteBuffer = ByteBuffer.wrap(bytes, 0, size);
-                ShortBuffer shortBuffer = byteBuffer.order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
-                shorts = new short[size / 2];
-                shortBuffer.get(shorts, 0, size / 2);
-                byte[] mp3Buffer = new byte[16000 / 20 + 7200];
-                sampleTotal = new byte[16000 / 20 + 7200];
-                int sampleSize = LameUtil.encode(shorts, shorts, size / 2, mp3Buffer);
-                logger.i((num++) + " start decode audio to mp3 " + "buffer = " + sampleSize + " lenth = " + mp3Buffer.length);
-                if (sampleSize > 0) {
-                    System.arraycopy(mp3Buffer, 0, sampleTotal, 0, sampleSize);
-                    try {
-                        mFileOutputStream.write(sampleTotal, 0, sampleSize);
-                        logger.i("decode success");
-                    } catch (FileNotFoundException e) {
-                        logger.e(e);
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        logger.e(e);
-                        e.printStackTrace();
-                    }
-                }
-            }
 
-            @Override
-            public void pcmComplete(boolean success) {
-                uploadAudio(uploadVideoEntity.getAudioLocalUrl());
-            }
-        });
-        Observable.
-                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
-                subscribeOn(Schedulers.io()).
-                subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        logger.i("初始化 " + aBoolean);
-                        if (aBoolean) {
-                            logger.i("aac to pcm");
-                            codecUtils.aacToPCM();
-                        }
-                    }
-                });
+//        final AudioMediaCodecUtils codecUtils = new AudioMediaCodecUtils(new AudioMediaCodecUtils.PCMDataListener() {
+//            @Override
+//            public void pcmData(byte[] bytes, int size) {
+////                short[] shorts = convertShort(bytes);
+//                short[] shorts;
+//                ByteBuffer byteBuffer = ByteBuffer.wrap(bytes, 0, size);
+//                ShortBuffer shortBuffer = byteBuffer.order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
+//                shorts = new short[size / 2];
+//                shortBuffer.get(shorts, 0, size / 2);
+//                byte[] mp3Buffer = new byte[16000 / 20 + 7200];
+//                sampleTotal = new byte[16000 / 20 + 7200];
+//                int sampleSize = LameUtil.encode(shorts, shorts, size / 2, mp3Buffer);
+//                logger.i((num++) + " start decode audio to mp3 " + "buffer = " + sampleSize + " lenth = " + mp3Buffer.length);
+//                if (sampleSize > 0) {
+//                    System.arraycopy(mp3Buffer, 0, sampleTotal, 0, sampleSize);
+//                    try {
+//                        mFileOutputStream.write(sampleTotal, 0, sampleSize);
+//                        logger.i("decode success");
+//                    } catch (FileNotFoundException e) {
+//                        logger.e(e);
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        logger.e(e);
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void pcmComplete(boolean success) {
+//                uploadAudio(uploadVideoEntity.getAudioLocalUrl());
+//            }
+//        });
+//        compositeDisposable.add(Observable.
+//                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
+//                subscribeOn(Schedulers.io()).
+//                subscribe(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//                        logger.i("初始化 " + aBoolean);
+//                        if (aBoolean) {
+//                            logger.i("aac to pcm");
+//                            codecUtils.aacToPCM();
+//                        }
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        logger.e(Log.getStackTraceString(throwable));
+//                        UmsAgentManager.umsAgentException(UploadVideoService.this, throwable);
+//                    }
+//                }));
 
     }
 
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+//    private ArrayCompositeSubscription
+
     /**
      * 使用rxjava方式解决pcm编码问题
-     *
-     * @param codecUtils
      */
-    private void performRxUploadAudio(final AudioMediaCodecUtils codecUtils) {
-        Flowable.
-                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
-                subscribeOn(Schedulers.io()).
-                filter(new Predicate<Boolean>() {
+    private void performRxUploadAudio() {
+        final AudioMediaCodecUtils codecUtils = new AudioMediaCodecUtils();
+        Observable.
+                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl()))
+                .subscribeOn(Schedulers.computation())
+                .filter(new Predicate<Boolean>() {
                     @Override
                     public boolean test(Boolean aBoolean) throws Exception {
                         return aBoolean;
                     }
-                }).
-                flatMap(new Function<Boolean, Flowable<AudioMediaCodecUtils.PCMEntity>>() {
+                })
+                .flatMap(new Function<Boolean, ObservableSource<AudioMediaCodecUtils.PCMEntity>>() {
+
                     @Override
-                    public Flowable<AudioMediaCodecUtils.PCMEntity> apply(Boolean aBoolean) throws Exception {
-                        return codecUtils.rxAACToPCM();
+                    public ObservableSource<AudioMediaCodecUtils.PCMEntity> apply(Boolean aBoolean) throws Exception {
+                        return codecUtils.rxObservableAACToPCM();
                     }
                 }).
-                doOnNext(new Consumer<AudioMediaCodecUtils.PCMEntity>() {
+                subscribe(new Observer<AudioMediaCodecUtils.PCMEntity>() {
+                    private Disposable disposable;
+
                     @Override
-                    public void accept(AudioMediaCodecUtils.PCMEntity pcmEntity) throws Exception {
+                    public void onSubscribe(Disposable d) {
+                        this.disposable = d;
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(AudioMediaCodecUtils.PCMEntity pcmEntity) {
                         handlePCM(pcmEntity);
                     }
-                }).
-                subscribe(new Consumer<AudioMediaCodecUtils.PCMEntity>() {
+
                     @Override
-                    public void accept(AudioMediaCodecUtils.PCMEntity pcmEntity) throws Exception {
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        disposable.dispose();
                         uploadAudio(uploadVideoEntity.getAudioLocalUrl());
                     }
                 });
+//        compositeDisposable.add(
+//        Flowable.
+//                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
+//                subscribeOn(Schedulers.io()).
+//                filter(new Predicate<Boolean>() {
+//                    @Override
+//                    public boolean test(Boolean aBoolean) throws Exception {
+//                        return aBoolean;
+//                    }
+//                }).
+//                flatMap(new Function<Boolean, Flowable<AudioMediaCodecUtils.PCMEntity>>() {
+//                    @Override
+//                    public Flowable<AudioMediaCodecUtils.PCMEntity> apply(Boolean aBoolean) throws Exception {
+//                        return codecUtils.rxAACToPCM();
+//                    }
+//                }).
+//                subscribe(new Subscriber<AudioMediaCodecUtils.PCMEntity>() {
+//                    @Override
+//                    public void onSubscribe(Subscription s) {
+//                        compositeDisposable.add(s);
+//                    }
+//
+//                    @Override
+//                    public void onNext(AudioMediaCodecUtils.PCMEntity pcmEntity) {
+//                        handlePCM(pcmEntity);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        uploadAudio(uploadVideoEntity.getAudioLocalUrl());
+//                    }
+//                });
+//        );
 
     }
 
@@ -323,6 +407,7 @@ public class UploadVideoService extends Service {
 
     private XesStsUploadListener audioUploadListener;
 
+    @Deprecated
     public interface uploadCallback {
         void uploadSuccess(String videoUrl, String audioUrl);
     }
@@ -359,7 +444,6 @@ public class UploadVideoService extends Service {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         logger.i("upload success");
-//                        XESToastUtils.showToast(mContext, "通知接口成功");
                         stopSelf();
                     }
 
@@ -376,11 +460,8 @@ public class UploadVideoService extends Service {
                         logger.i("upload pmfail " + msg);
                         stopSelf();
                     }
-
                 }
         );
-
-//        }
     }
 
     private void uploadVideo(String videoLocalUrl) {
@@ -444,6 +525,8 @@ public class UploadVideoService extends Service {
 //        String videoLocalUrl = intent.getStringExtra("videoRemoteUrl");
         String audioLocalUrl = uploadVideoEntity.getAudioLocalUrl();
         String videoLocalUrl = uploadVideoEntity.getVideoLocalUrl();
+        uploadVideoSetKey = uploadVideoEntity.getUploadVideoSetKey();
+//        uploadVideoSetKey = StorageUtils.getVideoPath();
 //        uploadVideoSetKey = ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + uploadVideoEntity.getLiveId() + "_" + courseWareId;
         audioUploadListener = new AudioUploadListener(audioLocalUrl);
         videoUploadListener = new VideoUploadListener(videoLocalUrl);
@@ -463,6 +546,9 @@ public class UploadVideoService extends Service {
 
     }
 
+    public static List<String> getUploadingList() {
+        return listUploading;
+    }
 //    public Set<String> getUploadingVideo() {
 //        return courseWeareList;
 //    }

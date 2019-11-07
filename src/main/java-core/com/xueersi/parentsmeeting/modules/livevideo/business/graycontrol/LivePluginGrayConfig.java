@@ -24,5 +24,16 @@ public class LivePluginGrayConfig {
     /** 弹幕 */
     public static final int MOUDLE_BARRAYAGE = 7;
     /**用户在线时长**/
-    public static final int MOUDLE_LECTUREDURATION = 8;
+    public static final int MOUDLE_LECTUREDURATION = 11;
+    /**本场成就**/
+    public static final int MODULE_HONOUR = 55;
+    /**成就排行榜**/
+    public static final int MODULE_HONOUR_RANK = 56;
+    /**大题互动**/
+    public static final int MOUDLE_BIG_QUESTION = 62;
+    /**未来课件互动题**/
+    public static final int MOUDLE_FUTURE_COURSEWARE = 59;
+    /**视频标记点**/
+    public static final int MODULE_VIDEO_MARK = 57;
+
 }

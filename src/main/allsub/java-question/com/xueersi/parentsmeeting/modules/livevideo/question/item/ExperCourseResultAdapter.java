@@ -106,11 +106,14 @@ public class ExperCourseResultAdapter extends RecyclerView.Adapter {
             tv_livevideo_bigque_result_stand.setText(answer.getRightAnswer());
             tv_livevideo_bigque_result_your.setText(answer.getMyAnswer());
             if (answer.getRight() == PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT) {
-                iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_bigque_result_right);
+                iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_expcour_result_right);
+                tv_livevideo_bigque_result_your.setTextColor(0Xff6CBF4C);
             } else if (answer.getRight() == PrimaryScienceAnswerResultEntity.PARTIALLY_RIGHT) {
-                iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_bigque_result_part_right);
+                iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_expcour_result_part_right);
+                tv_livevideo_bigque_result_your.setTextColor(0XffFF5E50);
             } else {
-                iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_bigque_result_wrong);
+                iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_expcour_result_wrong);
+                tv_livevideo_bigque_result_your.setTextColor(0XffFF5E50);
             }
         }
     }

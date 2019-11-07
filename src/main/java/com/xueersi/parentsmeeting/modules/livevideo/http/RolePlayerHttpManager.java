@@ -164,7 +164,7 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
      * @param type
      * @param requestCallBack
      */
-    public void requestExperNewArtsResult(String stuCouId, String liveId, String testId, String roler, String answer, int type, HttpCallBack requestCallBack) {
+    public void requestExperNewArtsResult(String stuCouId, String liveId, String testId, String roler, String answer, int type, long releaseTime,HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("liveId", liveId);
@@ -172,6 +172,7 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.addBodyParam("roler", roler);
         params.addBodyParam("type", "" + type);
         params.addBodyParam("data", answer);
+        params.addBodyParam("releaseTime", ""+releaseTime);
         params.setWriteAndreadTimeOut(5);
         if (liveHttpAction != null) {
             liveHttpAction.sendPostDefault(ExperLiveQueHttpConfig.URL_ROLEPLAY_NEWARTS_RESULT, params, requestCallBack);

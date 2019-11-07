@@ -21,12 +21,14 @@ import com.xueersi.common.util.XrsBroswer;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.dispatcher.DispatcherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
@@ -148,7 +150,7 @@ public class LiveVideoEnter {
      * @param from       入口
      */
     public static boolean intentToLiveVideoActivity(final Activity context, final String vStuCourseID, final String
-            courseId, final String vSectionID, final int from) {
+            courseId, final String vSectionID, final int from, boolean isBigLive) {
 
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
@@ -162,6 +164,7 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putBoolean("loadAsserts", false);
+        bundle.putBoolean("isBigLive", isBigLive);
         bundle.putInt(ENTER_ROOM_FROM, from);
         LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
 
@@ -237,7 +240,7 @@ public class LiveVideoEnter {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("vSectionID", vSectionID);
-                bundle.putBoolean("isBigLive",isBiglive);
+                bundle.putBoolean("isBigLive", isBiglive);
                 bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
                 bundle.putBoolean("loadAsserts", true);
                 bundle.putInt(ENTER_ROOM_FROM, from);
@@ -464,7 +467,7 @@ public class LiveVideoEnter {
 
             @Override
             public void success() {
-                android5X5Check(context,bundle,where);
+                android5X5Check(context, bundle, where);
             }
 
             @Override
@@ -483,51 +486,51 @@ public class LiveVideoEnter {
 
     }
 
-    private static void android5X5Check(final Activity context, final Bundle bundle, final String where){
-        final DataLoadEntity mDataLoadEntity= new DataLoadEntity(context);
+    private static void android5X5Check(final Activity context, final Bundle bundle, final String where) {
+        final DataLoadEntity mDataLoadEntity = new DataLoadEntity(context);
 
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            boolean init = XrsBroswer.init(context, new TbsListener() {
-                @Override
-                public void onDownloadFinish(int i) {
+                boolean init = XrsBroswer.init(context, new TbsListener() {
+                    @Override
+                    public void onDownloadFinish(int i) {
 
-                }
+                    }
 
-                @Override
-                public void onInstallFinish(int i) {
-                    StableLogHashMap logHashMap = new StableLogHashMap("onInstallFinish_back");
-                    logHashMap.put("code", "" + i);
-                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
-                    EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(mDataLoadEntity.webDataSuccess()));
-                    intentToPlayback(context,bundle,where);
-                }
+                    @Override
+                    public void onInstallFinish(int i) {
+                        StableLogHashMap logHashMap = new StableLogHashMap("onInstallFinish_back");
+                        logHashMap.put("code", "" + i);
+                        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+                        EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(mDataLoadEntity.webDataSuccess()));
+                        intentToPlayback(context, bundle, where);
+                    }
 
-                @Override
-                public void onDownloadProgress(int i) {
-                    mDataLoadEntity.setProgressTip("下载中" + (i * 100 / 120) + "%");
-                    mDataLoadEntity.beginLoading();
-                    DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
-                    BaseBll.postDataLoadEvent(mDataLoadEntity);
+                    @Override
+                    public void onDownloadProgress(int i) {
+                        mDataLoadEntity.setProgressTip("下载中" + (i * 100 / 120) + "%");
+                        mDataLoadEntity.beginLoading();
+                        DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
+                        BaseBll.postDataLoadEvent(mDataLoadEntity);
+                    }
+                });
+                StableLogHashMap logHashMap = new StableLogHashMap("init_back");
+                logHashMap.put("status", "" + init);
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+                if (!init) {
+                    return;
                 }
-            });
-            StableLogHashMap logHashMap = new StableLogHashMap("init_back");
-            logHashMap.put("status", "" + init);
-            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
-            if (!init) {
-                return;
             }
-        }
 
         } catch (Exception e) {
             e.printStackTrace();
             EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(mDataLoadEntity.webDataSuccess()));
         }
-       intentToPlayback(context,bundle,where);
+        intentToPlayback(context, bundle, where);
 
     }
 
-    private static void intentToPlayback( Activity context,  Bundle bundle,  String where){
+    private static void intentToPlayback(Activity context, Bundle bundle, String where) {
         com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
                 where, VIDEO_REQUEST);
     }
@@ -647,5 +650,14 @@ public class LiveVideoEnter {
 //
 //            }
 //        });
+    }
+
+    /** xesmall进体验课 */
+    public static void intentToExper(Context context, String chapterName, String liveId, final String termId) {
+        VideoSectionEntity sectionEntity = new VideoSectionEntity();
+        sectionEntity.setvSectionName(chapterName);
+        sectionEntity.setvChapterName(chapterName);
+        DispatcherBll dispatcherBll = new DispatcherBll(context);
+        dispatcherBll.deductStuGolds(sectionEntity, liveId, termId);
     }
 }

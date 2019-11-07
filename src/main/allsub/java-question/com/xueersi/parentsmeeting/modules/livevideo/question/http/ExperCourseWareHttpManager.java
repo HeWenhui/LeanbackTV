@@ -59,6 +59,7 @@ public class ExperCourseWareHttpManager {
         httpRequestParams.addBodyParam("testInfos", "" + testInfos);
         httpRequestParams.addBodyParam("entranceTime", "" + entranceTime);
         httpRequestParams.addBodyParam("isForce", "" + isforce);
+        httpRequestParams.addBodyParam("releaseTime", "" + detailInfo.getReleaseTime());
         String url;
         if (detailInfo.isTUtor()) {
 //            httpRequestParams.addBodyParam("stuCouId", "9649079");
@@ -268,11 +269,12 @@ public class ExperCourseWareHttpManager {
         });
     }
 
-    public void submitMultiTest(String answers, int isPlayBack, int isForce, final AbstractBusinessDataCallBack callBack) {
+    public void submitMultiTest(VideoQuestionLiveEntity detailInfo, String answers, int isPlayBack, int isForce, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.addBodyParam("answers", answers);
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("isForce", "" + isForce);
+        httpRequestParams.addBodyParam("releaseTime", "" + detailInfo.getReleaseTime());
         liveHttpManager.sendPostDefault(ExperLiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_EN, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -294,7 +296,7 @@ public class ExperCourseWareHttpManager {
         });
     }
 
-    public void submitH5(String testAnswer, int testNum, String testId, String type, String stu_id, int isPlayBack, int isSubmit, final AbstractBusinessDataCallBack callBack) {
+    public void submitH5(VideoQuestionLiveEntity detailInfo, String testAnswer, int testNum, String testId, String type, String stu_id, int isPlayBack, int isSubmit, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.addBodyParam("testAnswer", testAnswer);
         httpRequestParams.addBodyParam("testNum", "" + testNum);
@@ -303,6 +305,7 @@ public class ExperCourseWareHttpManager {
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("isSubmit", "" + isSubmit);
         httpRequestParams.addBodyParam("stuId", "" + stu_id);
+        httpRequestParams.addBodyParam("releaseTime", "" + detailInfo.getReleaseTime());
         liveHttpManager.sendPostDefault(ExperLiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_H5_EN, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -548,7 +551,7 @@ public class ExperCourseWareHttpManager {
         });
     }
 
-    public void sumitCourseWareH5(String testId, String testResult, String testDay,
+    public void sumitCourseWareH5(VideoQuestionLiveEntity detailInfo, String testId, String testResult, String testDay,
                                   String classId, String type, String isSubmit,
                                   double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
         if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(type) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(type)) {
@@ -566,6 +569,7 @@ public class ExperCourseWareHttpManager {
             params.addBodyParam("imageUrl", "");
             params.addBodyParam("userAnswer", LiveVideoConfig.userAnswer);
             params.addBodyParam("answer", LiveVideoConfig.answer);
+            params.addBodyParam("releaseTime", "" + detailInfo.getReleaseTime());
             liveHttpManager.sendPostDefault(url, params, requestCallBack);
         } else {
             //类型18 19

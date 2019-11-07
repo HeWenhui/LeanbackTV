@@ -30,6 +30,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.XesActivity;
@@ -60,9 +62,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveProvide;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -219,6 +223,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     private ScreenReceiver mScreenReceiver;
     private UserPresentReceiver mUserPresentReceiver;
 
+    private PauseNotStopVideoIml pauseNotStopVideoIml;
+    protected AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(false);
     /** 播放器请求 */
     public static final int VIDEO_REQUEST = 210;
     /** 播放器用户返回 */
@@ -623,6 +629,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         //showDialog(savedInstanceState);
         video = "ijk";
         onSelect(savedInstanceState, video);
+        pauseNotStopVideoIml = new PauseNotStopVideoIml(this, onPauseNotStopVideo);
     }
 
     private void showDialog(final Bundle savedInstanceState) {
@@ -829,7 +836,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         if (!mCreated)
             return;
         if (isInitialized()) {
-            if (vPlayer != null && vPlayer.isPlaying()) {
+            if (vPlayer != null && vPlayer.isPlaying() && !onPauseNotStopVideo.get()) {
                 // 暂停播放
                 stopPlayer();
             }
@@ -1000,6 +1007,10 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     protected void setVideoLayout() {
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, vPlayer.getVideoWidth(),
                 vPlayer.getVideoHeight(), vPlayer.getVideoAspectRatio());
+        if (mIsLand) {
+            ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+            LiveVideoPoint.initLiveVideoPoint(this, LiveVideoPoint.getInstance(), lp);
+        }
     }
 
     /** 加载缓冲进度动画 */
@@ -1685,8 +1696,11 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                 vPlayer.setState(PlayerService.STATE_NEED_RESUME);
             }
             vPlayer.releaseSurface();
-            if (mIsPlayerEnable && vPlayer.needResume())
-                vPlayer.start();
+            PauseNotStopVideoInter onPauseNotStopVideo = ProxUtil.getProxUtil().get(this, PauseNotStopVideoInter.class);
+            if (onPauseNotStopVideo == null || onPauseNotStopVideo.getPause()) {
+                if (mIsPlayerEnable && vPlayer.needResume())
+                    vPlayer.start();
+            }
         }
     }
 

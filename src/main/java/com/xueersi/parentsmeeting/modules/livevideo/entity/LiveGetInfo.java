@@ -7,8 +7,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEn
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +46,9 @@ public class LiveGetInfo {
      * 用户Id
      */
     private String stuId;
-    /** 用户购课Id */
+    /**
+     * 用户购课Id
+     */
     private String stuCouId;
     /**
      * 用户拼音，现阶段取用户名
@@ -203,13 +203,30 @@ public class LiveGetInfo {
      * 聊天中老师连接是否可以点击
      */
 
-    /**直播入口接口 返回session ID**/
+    /**
+     * 直播入口接口 返回session ID
+     **/
     public String sessionId;
+
+    public int getBizId() {
+        return bizId;
+    }
+
+    public void setBizId(int bizId) {
+        this.bizId = bizId;
+    }
+
+    /**
+     * 大班整合新增 业务id
+     **/
+    public int bizId;
 
 
     private int urlClick;
     private boolean allowLinkMic;
-    /** 2018新接麦 */
+    /**
+     * 2018新接麦
+     */
     private int allowLinkMicNew;
     private int stuLinkMicNum;
     private int stuPutUpHandsNum;
@@ -257,10 +274,14 @@ public class LiveGetInfo {
      * 1-普通直播，2-全身直播,6半身直播
      */
     private int pattern = 1;
-    /** 全身直播语音答题和评测小组排名请求时间 */
+    /**
+     * 全身直播语音答题和评测小组排名请求时间
+     */
     private String requestTime;
 
-    /** 语文，英语是否使用皮肤 **/
+    /**
+     * 语文，英语是否使用皮肤
+     **/
     private int useSkin;
 
     /**
@@ -269,18 +290,28 @@ public class LiveGetInfo {
      */
     private String isAllowTeamPk;
 
-    /** 是否是AI 伴侣直播间 */
+    /**
+     * 是否是AI 伴侣直播间
+     */
     private int isAIPartner;
     private String[] subjectIds;//所有学科id
-    /** 学科，都是2 的倍数 */
+    /**
+     * 学科，都是2 的倍数
+     */
     private String subject_digits;
-    /** 小学理科改版，教育阶段，区分献花 */
+    /**
+     * 小学理科改版，教育阶段，区分献花
+     */
     private String educationStage;
-    /** 直播课年级 */
+    /**
+     * 直播课年级
+     */
     private int grade;
     private String gradeIds;
 
-    /** 一发多题的动态接口 */
+    /**
+     * 一发多题的动态接口
+     */
     private String mulpreload;
     private String mulh5url;
     private String getCourseWareHtmlNew;
@@ -289,11 +320,17 @@ public class LiveGetInfo {
      * 是否是高三理科
      */
     private int isSeniorOfHighSchool;
-    /** 是否显示文科表扬榜信息 */
+    /**
+     * 是否显示文科表扬榜信息
+     */
     private int showArtsPraise;
-    /** 是否是小学理科 */
+    /**
+     * 是否是小学理科
+     */
     private int isPrimarySchool;
-    /** 是否是幼教 */
+    /**
+     * 是否是幼教
+     */
     private int isYouJiao;
     /**
      * 是否开启集语音互动功能 1,开启，0 不开启
@@ -315,17 +352,25 @@ public class LiveGetInfo {
 
     //暂停点赞多长时间弹出礼物
     private int praiseAutoBarrageTime = 1;
-    /** 走新课件预加载 */
+    /**
+     * 走新课件预加载
+     */
     private boolean newCourse = false;
-    /** 走新课件预加载,接口返回 */
+    /**
+     * 走新课件预加载,接口返回
+     */
     private int isNewProject = 0;
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
-    /** 语文AI主观题AI接口 */
+    /**
+     * 语文AI主观题AI接口
+     */
     private String subjectiveItem2AIUrl;
 
-    /** 直播key */
+    /**
+     * 直播key
+     */
     private String livePluginKey;
     /**
      * 是否是幼教
@@ -333,14 +378,108 @@ public class LiveGetInfo {
     private boolean preschool;
 
 
-    /**大班整合灰控接口**/
+    /**
+     * 大班整合灰控接口
+     **/
     private String initModuleUrl;
 
-    /**聊天信息接口**/
+    /**
+     * 聊天信息接口
+     **/
     private String getChatRecordUrl;
-    /**扫点信息接口**/
+    /**
+     * 扫点信息接口
+     **/
     private String getMetadataUrl;
 
+    public LiveStatus getLiveStatus() {
+        return liveStatus;
+    }
+
+    public void setLiveStatus(LiveStatus liveStatus) {
+        this.liveStatus = liveStatus;
+    }
+
+    /**大班整合 直播间状态**/
+    private LiveStatus liveStatus = new LiveStatus();
+
+    private EvenDriveInfo evenDriveInfo;
+
+    public static class EvenDriveInfo {
+        private int isOpenStimulation;
+        private int evenNum;
+        private int highestNum;
+
+        public int getIsOpenStimulation() {
+            return isOpenStimulation;
+        }
+
+        public int getHighestNum() {
+            return highestNum;
+        }
+
+        public void setHighestNum(int highestNum) {
+            this.highestNum = highestNum;
+        }
+
+        public void setIsOpenStimulation(int isOpenStimulation) {
+            this.isOpenStimulation = isOpenStimulation;
+        }
+
+        public int getEvenNum() {
+            return evenNum;
+        }
+
+        public void setEvenNum(int evenNum) {
+            this.evenNum = evenNum;
+        }
+    }
+
+    public EvenDriveInfo getEvenDriveInfo() {
+        return evenDriveInfo;
+    }
+
+    public void setEvenDriveInfo(EvenDriveInfo evenDriveEntity) {
+        this.evenDriveInfo = evenDriveEntity;
+    }
+
+    //    private int isOpenStimulation;
+
+//    public int getIsOpenStimulation() {
+//        return isOpenStimulation;
+//    }
+
+
+//    private AObservable aObservable = new AObservable();
+
+
+//    public static class AObservable extends Observable {
+//        private int isOpenStimulation;
+//
+//        public void setIsOpenStimulation(int isOpenStimulation) {
+//            this.isOpenStimulation = isOpenStimulation;
+//            setChanged();
+//        }
+//
+//        public int getIsOpenStimulation() {
+//            return isOpenStimulation;
+//        }
+//    }
+
+//    public void addAObserver(Observer ab) {
+//        if (aObservable != null && ab != null) {
+//            aObservable.addObserver(ab);
+//        }
+//    }
+
+//    public void setIsOpenStimulation(int isOpenStimulation) {
+//        this.isOpenStimulation = isOpenStimulation;
+//        if (aObservable != null) {
+//            aObservable.setIsOpenStimulation(isOpenStimulation);
+//            aObservable.notifyObservers();
+//            aObservable.deleteObservers();
+//        }
+//    }
 
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
@@ -350,11 +489,17 @@ public class LiveGetInfo {
         this.subjectiveItem2AIUrl = subjectiveItem2AIUrl;
     }
 
-    /** 是否支持连对激励 0：关闭 1：打开 */
+    /**
+     * 是否支持连对激励 0：关闭 1：打开
+     */
     private int isOpenNewCourseWare;
-    /** 连对榜接口地址 */
+    /**
+     * 连对榜接口地址
+     */
     private String getEvenPairListUrl;
-    /** 点赞接口地址 */
+    /**
+     * 点赞接口地址
+     */
     private String getThumbsUpUrl;
 
     private String getJournalUrl;
@@ -363,9 +508,10 @@ public class LiveGetInfo {
 
     private boolean showHightFeedback;
 
-    /** 灰度控制开关控制*/
+    /**
+     * 灰度控制开关控制
+     */
     LiveModuleConfigInfo liveModuleConfigInfo;
-
 
 
     public VideoConfigEntity getVideoConfigEntity() {
@@ -1548,7 +1694,9 @@ public class LiveGetInfo {
         this.getCourseWareHtmlZhongXueUrl = getCourseWareHtmlZhongXueUrl;
     }
 
-    /** 直播间额外参数信息 */
+    /**
+     * 直播间额外参数信息
+     */
     private ArtsExtLiveInfo artsExtLiveInfo;
 
     public void setArtsExtLiveInfo(ArtsExtLiveInfo artsExtLiveInfo) {
@@ -1645,36 +1793,59 @@ public class LiveGetInfo {
     public void setShowHightFeedback(boolean showHightFeedback) {
         this.showHightFeedback = showHightFeedback;
     }
-    /*************************************************大班整合新增相关字段****************************************************************/
+    /*************************************************大班整合新增相关字段
+     * ****************************************************************/
 
-    /**磐石id**/
+    /**
+     * 磐石id
+     **/
     private String psId;
-    /**磐石密码**/
+    /**
+     * 磐石密码
+     **/
     private String psPwd;
 
 
-    /**主讲流名称**/
+    /**
+     * 主讲流名称
+     **/
     private String mainTeacherVieo;
 
-    /**辅导流名称**/
+    /**
+     * 辅导流名称
+     **/
     private String counselorTeacherVideo;
 
-    /**irc 昵称**/
+    /**
+     * irc 昵称
+     **/
     private String ircNick;
-    /**irc 房间**/
+    /**
+     * irc 房间
+     **/
     private List<String> ircRoomList;
-    /**irc 房间JsonArray**/
+    /**
+     * irc 房间JsonArray
+     **/
     private String ircRoomsJson;
 
-    /**业务接口配置**/
-    private HashMap<String,String> urlMap;
+    /**
+     * 业务接口配置
+     **/
+    private HashMap<String, String> urlMap;
 
-    /**云平台appId**/
+    /**
+     * 云平台appId
+     **/
     private String psAppId;
-    /**云平台 appkey**/
+    /**
+     * 云平台 appkey
+     **/
     private String psAppKey;
 
-    /**是否是大班整合直播**/
+    /**
+     * 是否是大班整合直播
+     **/
     private boolean bigLive;
 
 
@@ -1776,6 +1947,24 @@ public class LiveGetInfo {
         this.liveModuleConfigInfo = liveModuleConfigInfo;
     }
 
+    /**
+     * 大班整合直播状态
+     **/
+    public static class LiveStatus {
+        /**
+         * 老师是否点击了上课
+         **/
+        private boolean startClass;
+
+        public boolean isStartClass() {
+            return startClass;
+        }
+
+        public void setStartClass(boolean startClass) {
+            this.startClass = startClass;
+        }
+    }
+
 
     /**
      * 根据moduleId 查找 Plugin
@@ -1823,17 +2012,17 @@ public class LiveGetInfo {
 
 
     /**
-     *
      * 根据moudlid key 返回属性
+     *
      * @param moudleId
      * @param key
      * @return
      */
-    public String getProperties(int moudleId,String key){
+    public String getProperties(int moudleId, String key) {
         LivePlugin plugin = getLivePluginByModuleId(moudleId);
-        if(plugin!=null) {
-            Map<String,String > maplist = plugin.properties;
-            if(maplist!=null) {
+        if (plugin != null) {
+            Map<String, String> maplist = plugin.properties;
+            if (maplist != null) {
                 return maplist.get(key);
             }
         }
@@ -1841,17 +2030,16 @@ public class LiveGetInfo {
     }
 
 
-
     /**
-     *
      * 根据moudlid 功能是否打开
+     *
      * @param moudleId
      * @param key
      * @return
      */
-    public boolean isMoudleAllowed(int moudleId){
-        LivePlugin plugin =  getLivePluginByModuleId(moudleId);
-        if(plugin!=null) {
+    public boolean isMoudleAllowed(int moudleId) {
+        LivePlugin plugin = getLivePluginByModuleId(moudleId);
+        if (plugin != null) {
             return plugin.isAllowed;
         }
         return false;

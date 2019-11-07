@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,16 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.czt.mp3recorder.util.LameUtil;
-import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 
 import java.io.IOException;
 
@@ -43,7 +44,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 
     private String courseWareId;
     /** 直播或者回放 1代表直播，2代表回放 */
-    private int livevideo;
+    private String livevideo;
 
     private UploadVideoEntity uploadVideoEntity;
 
@@ -52,7 +53,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
                               ViewGroup viewGroup,
                               String liveId,
                               String courseWareId,
-                              int back,
+                              String back,
                               UploadVideoEntity uploadVideoEntity) {
         this.mContext = context;
         this.iCameraPresenter = iCameraPresenter;
@@ -110,19 +111,20 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     public void submitSpeechShow(String isForce, String averVocieDecibel) {
         long videoDuration = getVideoDuration() / 1000l + 1;
         logger.i("averVocieDecibel = " + averVocieDecibel + "videoDuration =" + videoDuration);
-
-        ShareDataManager.getInstance().put(
-                ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
-                1,
-                ShareDataManager.SHAREDATA_NOT_CLEAR,
-                false);
+        StorageUtils.setStorageSPKey(liveId, courseWareId, 1);
+//        ShareDataManager.getInstance().put(
+//                ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
+//                1,
+//                ShareDataManager.SHAREDATA_NOT_CLEAR,
+//                false);
 //        latch = new CountDownLatch(2);
         this.voiceDecibel = averVocieDecibel;
 
         serViceIntent = new Intent(mContext, UploadVideoService.class);
-        uploadVideoEntity.setAudioLocalUrl(StorageUtils.audioUrl);
-        uploadVideoEntity.setVideoLocalUrl(StorageUtils.videoUrl);
+        uploadVideoEntity.setAudioLocalUrl(StorageUtils.getAudioUrl());
+        uploadVideoEntity.setVideoLocalUrl(StorageUtils.getVideoPath());
         uploadVideoEntity.setAverVocieDecibel(averVocieDecibel);
+        uploadVideoEntity.setUploadVideoSetKey(StorageUtils.getVideoPath());
         uploadVideoEntity.setSampleRate(16000);
 //        uploadVideoEntity.setTestId(courseWareId);
 //        uploadVideoEntity.setLiveId(liveId);
@@ -134,8 +136,8 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 //        serViceIntent.putExtra("audioRemoteUrl", StorageUtils.audioUrl);
 //        mContext.startService(intent);
         mContext.startService(serViceIntent);
-        serviceConnection = new UploadServiceConnction();
-        mContext.bindService(serViceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+//        serviceConnection = new UploadServiceConnction();
+//        mContext.bindService(serViceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
         logger.i("bindService success");
         if (iCameraPresenter != null) {
             iCameraPresenter.submitSpeechShow(isForce, String.valueOf(videoDuration));
@@ -206,7 +208,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     private long getVideoDuration() {
         MediaPlayer mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource(StorageUtils.videoUrl);
+            mediaPlayer.setDataSource(StorageUtils.getVideoPath());
             mediaPlayer.prepare();
         } catch (IOException e) {
             e.printStackTrace();
@@ -347,6 +349,23 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
             redPackageView.getView().setVisibility(View.VISIBLE);
         }
         redPackageView.updateNum(num);
+//        UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+//        if (updateAchievement != null) {
+//            logger.i("super speaker请求增加金币的网络接口");
+//            updateAchievement.getStuGoldCount("upDateGold", UpdateAchievement.GET_TYPE_INTELLIGENT_RECOGNITION);
+//        }
+        //增加Pk金币数量
+        try {
+            TeamPkStateLayout teamPKStateLayout = ((Activity) mContext).findViewById(R.id.tpkL_teampk_pkstate_root);
+            if (teamPKStateLayout == null) {
+                return;
+            }
+            teamPKStateLayout.updateData(0, 0, Integer.valueOf(num));
+        } catch (Exception e) {
+            logger.e(e.getStackTrace());
+            e.printStackTrace();
+        }
+
 //        if (iView != null) {
 //            iView.updateNum(num);
 //        }

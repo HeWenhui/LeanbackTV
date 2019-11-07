@@ -164,6 +164,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 LiveVideoConfig.LIVEPLAYBACKCLASSID = mVideoEntity.getClassId();
                 LiveVideoConfig.LIVEPLAYBACKTEAMID = mVideoEntity.getTeamId();
                 LiveVideoConfig.LIVEPLAYBACKSTAGE = mVideoEntity.getEdustage();
+                LiveVideoConfig.LIVEPLAYBACKTYPE = questionEntity.getName();
                 VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
                 EnglishH5Entity englishH5Entity =
                         videoQuestionLiveEntity.englishH5Entity;
@@ -409,11 +410,11 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
 //                    }
 //                }
                 if (LiveQueConfig.getSubmitMultiTestTypes().contains(detailInfo.getArtType())) {
-                    getCourseWareHttpManager().submitMultiTest("" + testInfos, 0, isforce, callBack);
+                    getCourseWareHttpManager().submitMultiTest(detailInfo, "" + testInfos, 0, isforce, callBack);
                 } else if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
                     getCourseWareHttpManager().isSubmitH5Vote("" + testInfos, detailInfo.id, liveGetInfo.getStudentLiveInfo().getClassId(), liveGetInfo.getStuId(), 0, isforce, callBack);
                 } else {
-                    getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.getArtType(), liveGetInfo.getStuId(), 0, isforce, callBack);
+                    getCourseWareHttpManager().submitH5(detailInfo, "" + testInfos, detailInfo.num, detailInfo.id, detailInfo.getArtType(), liveGetInfo.getStuId(), 0, isforce, callBack);
                 }
             } else {
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
@@ -526,7 +527,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 }
             };
             if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
-                getCourseWareHttpManager().sumitCourseWareH5(
+                getCourseWareHttpManager().sumitCourseWareH5(videoQuestionLiveEntity,
                         videoQuestionLiveEntity.id,
                         testAnswer,
                         videoQuestionLiveEntity.getAnswerDay(),

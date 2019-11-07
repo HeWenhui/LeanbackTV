@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.dispatcher;
 
 
 /**
- * 大班灰度
+ * 大班讲座灰度
  *
  */
 public class PublicLiveGrayEntity {

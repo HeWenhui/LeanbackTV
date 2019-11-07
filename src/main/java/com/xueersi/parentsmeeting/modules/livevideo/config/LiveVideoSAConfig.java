@@ -210,6 +210,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_SUBMIT_BIG_TEST = HTTP_HOST + "/LiveExam/submitBigTestInteraction";
         /** 学生端获取结果页  http://wiki.xesv5.com/pages/viewpage.action?pageId=17725779 */
         public String URL_LIVE_GET_BIG_TEST_RESULT = HTTP_HOST + "/LiveExam/getStuInteractionResult";
+        /** 理科讨论区互动接口 */
+        public String URL_LIVE_FORUM_INTERACTION = HTTP_HOST + "/LiveCourse/stuSendMessage";
     }
 
 }
