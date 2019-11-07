@@ -74,29 +74,17 @@ public class EvenDriveAnimRepository implements TasksDataSource {
 
                         @Override
                         public void onDataNotAvailable(String msg) {
+                            parseNotCallBack(msg);
                             if (loadAnimCallBack != null) {
-                                parseNotCallBack(msg);
                                 loadAnimCallBack.onDataNotAvailable(msg);
                             }
                         }
 
                         @Override
                         public void onDatasLoaded(String num, boolean numChange) {
+                            parseCallBack(num);
                             if (question_type != EvenDriveQuestionType.INIT_EVEN_NUM && numChange) {
                                 showAnima(num);
-                                Map<String, String> map = new HashMap<>();
-                                map.put("logtype", "showEncourage");
-                                if (LiveVideoConfig.EDUCATION_STAGE_1.equals(getInfo.getEducationStage()) ||
-                                        LiveVideoConfig.EDUCATION_STAGE_2.equals(getInfo.getEducationStage())) {
-                                    map.put("isprimary", "true");
-                                } else {
-                                    map.put("isprimary", "false");
-                                }
-                                map.put("count", num);
-                                map.put("issuccess", "true");
-                                map.put("errmsg", "");
-                                map.put("sno", "1");
-                                UmsAgentManager.umsAgentDebug(context, "live_Encourage", map);
                             }
                             if (loadAnimCallBack != null) {
                                 loadAnimCallBack.onDatasLoaded(num, numChange);
@@ -106,20 +94,44 @@ public class EvenDriveAnimRepository implements TasksDataSource {
         }
     }
 
-    private void parseNotCallBack(String msg) {
-        Map<String, String> map = new HashMap<>();
-        map.put("logtype", "showEncourage");
-        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(getInfo.getEducationStage()) ||
-                LiveVideoConfig.EDUCATION_STAGE_2.equals(getInfo.getEducationStage())) {
-            map.put("isprimary", "true");
-        } else {
-            map.put("isprimary", "false");
+    private void parseCallBack(String num) {
+        try {
+            Map<String, String> map = new HashMap<>();
+            map.put("logtype", "showEncourage");
+            if (LiveVideoConfig.EDUCATION_STAGE_1.equals(getInfo.getEducationStage()) ||
+                    LiveVideoConfig.EDUCATION_STAGE_2.equals(getInfo.getEducationStage())) {
+                map.put("isprimary", "true");
+            } else {
+                map.put("isprimary", "false");
+            }
+            map.put("count", num);
+            map.put("issuccess", "true");
+            map.put("errmsg", "");
+            map.put("sno", "1");
+            UmsAgentManager.umsAgentDebug(context, "live_Encourage", map);
+        } catch (Exception e) {
+
         }
-        map.put("count", "");
-        map.put("issuccess", "false");
-        map.put("errmsg", msg);
-        map.put("sno", "1");
-        UmsAgentManager.umsAgentDebug(context, "live_Encourage", map);
+    }
+
+    private void parseNotCallBack(String msg) {
+        try {
+            Map<String, String> map = new HashMap<>();
+            map.put("logtype", "showEncourage");
+            if (LiveVideoConfig.EDUCATION_STAGE_1.equals(getInfo.getEducationStage()) ||
+                    LiveVideoConfig.EDUCATION_STAGE_2.equals(getInfo.getEducationStage())) {
+                map.put("isprimary", "true");
+            } else {
+                map.put("isprimary", "false");
+            }
+            map.put("count", "");
+            map.put("issuccess", "false");
+            map.put("errmsg", msg);
+            map.put("sno", "1");
+            UmsAgentManager.umsAgentDebug(context, "live_Encourage", map);
+        } catch (Exception e) {
+
+        }
     }
 
     /**
