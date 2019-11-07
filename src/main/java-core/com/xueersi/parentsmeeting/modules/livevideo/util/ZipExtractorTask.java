@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
+import org.apache.tools.zip.ZipLong;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -23,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.util.Enumeration;
 import java.util.zip.ZipException;
 
@@ -195,6 +197,15 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
             logHashMap.put("inputlength", "" + mInput.length());
             logHashMap.put("output", "" + mOutput);
             logHashMap.put("exception", "" + Log.getStackTraceString(exception));
+            try {
+                ZipTest zipTest = new ZipTest(mInput);
+                StringBuilder stringBuilder = new StringBuilder();
+                boolean test = zipTest.test(stringBuilder);
+                logHashMap.put("teststatue", "" + test);
+                logHashMap.put("stringBuilder", "" + stringBuilder);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_ERROR, logHashMap.getData());
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
@@ -266,4 +277,65 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
 
     }
 
+
+    static class ZipTest {
+
+        protected static final byte[] EOCD_SIG = ZipLong.getBytes(101010256L);
+        private RandomAccessFile archive;
+
+        ZipTest(File f) throws IOException {
+            this.archive = new RandomAccessFile(f, "r");
+        }
+
+        public boolean test(StringBuilder stringBuilder) {
+            try {
+                positionAtCentralDirectory(stringBuilder);
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        private void positionAtCentralDirectory(StringBuilder stringBuilder) throws IOException {
+            boolean found = false;
+            long off = this.archive.length() - 22L;
+            byte[] sig;
+            if (off >= 0L) {
+                this.archive.seek(off);
+                sig = EOCD_SIG;
+
+                for (int curr = this.archive.read(); curr != -1; curr = this.archive.read()) {
+                    stringBuilder.append(curr).append(",");
+                    if (curr == sig[0]) {
+                        curr = this.archive.read();
+                        stringBuilder.append(curr).append(",");
+                        if (curr == sig[1]) {
+                            curr = this.archive.read();
+                            stringBuilder.append(curr).append(",");
+                            if (curr == sig[2]) {
+                                curr = this.archive.read();
+                                stringBuilder.append(curr);
+                                if (curr == sig[3]) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    this.archive.seek(--off);
+                }
+            }
+
+            if (!found) {
+                throw new ZipException("archive is not a ZIP archive");
+            } else {
+                this.archive.seek(off + 16L);
+                sig = new byte[4];
+                this.archive.readFully(sig);
+                this.archive.seek(ZipLong.getValue(sig));
+            }
+        }
+    }
 }
