@@ -23,6 +23,10 @@ public class RecordStandliveEntity {
      * 录播课的打点数据
      */
     private String metaDataUrl;
+    /*
+     * 1为真流2为假流
+     */
+    private int partnerType;
 
     public int getDiffBegin() {
         return diffBegin;
@@ -54,5 +58,13 @@ public class RecordStandliveEntity {
 
     public void setMetaDataUrl(String metaDataUrl) {
         this.metaDataUrl = metaDataUrl;
+    }
+
+    public int getPartnerType() {
+        return partnerType;
+    }
+
+    public void setPartnerType(int partnerType) {
+        this.partnerType = partnerType;
     }
 }
