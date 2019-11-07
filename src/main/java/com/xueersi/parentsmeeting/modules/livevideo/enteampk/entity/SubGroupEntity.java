@@ -13,8 +13,8 @@ public class SubGroupEntity {
     private int groupId;
     /** 声网token */
     private String token;
-
-    LiveAppUserInfo virStuInfo;
+    /** 机器人信息 */
+    SubMemberEntity virStuInfo;
 
     /** 分组信息 */
     private List<SubMemberEntity> groupList = new ArrayList<>();
@@ -41,5 +41,13 @@ public class SubGroupEntity {
 
     public void setGroupList(List<SubMemberEntity> groupList) {
         this.groupList = groupList;
+    }
+
+    public SubMemberEntity getVirStuInfo() {
+        return virStuInfo;
+    }
+
+    public void setVirStuInfo(SubMemberEntity virStuInfo) {
+        this.virStuInfo = virStuInfo;
     }
 }
