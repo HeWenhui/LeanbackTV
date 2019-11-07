@@ -63,13 +63,15 @@ public class WrapQuestionSwitch implements QuestionSwitch {
         LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
         showQuestion.onHide(baseVideoQuestionEntity);
         BackMediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, BackMediaPlayerControl.class);
-        if (mediaPlayerControl == null){
+        if (mediaPlayerControl == null) {
             //体验课
             LiveVideoActivityBase mediaPlayerControl1;
             mediaPlayerControl1 = ProxUtil.getProxUtil().get(context, LiveVideoActivityBase.class);
 //            mediaPlayerControl1.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
-            mediaPlayerControl1.start();
-        }else {
+            if (mediaPlayerControl1 != null) {
+                mediaPlayerControl1.start();
+            }
+        } else {
             mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
             mediaPlayerControl.start();
         }

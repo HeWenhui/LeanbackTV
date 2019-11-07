@@ -103,6 +103,11 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
         post(new Runnable() {
             @Override
             public void run() {
+                if (scienceVotePager != null) {
+                    scienceVotePager.destroyView();
+                    removeView(scienceVotePager.getRootView());
+                    scienceVotePager = null;
+                }
                 scienceVotePager = new ScienceVotePager(mContext, jsonArray, new ScienceVoteBll.ScienceVoteBllBack() {
                     @Override
                     public void submit() {
@@ -161,6 +166,7 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
                     rightAnswer = "";
                     scienceVotePager.destroyView();
                     removeView(scienceVotePager.getRootView());
+                    scienceVotePager = null;
                 }
             }
         });

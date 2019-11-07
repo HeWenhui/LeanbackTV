@@ -9,6 +9,7 @@ public class NewCourseSec {
     private int isAnswer;
     private int isGame;
     private long releaseTime;//1552621945
+    private long operateTimeStamp;
     private long endTime;//1552622125
     private ArrayList<Test> tests = new ArrayList<>();
 
@@ -46,6 +47,14 @@ public class NewCourseSec {
 
     public void setEndTime(long endTime) {
         this.endTime = endTime;
+    }
+
+    public void setOperateTimeStamp(long operateTimeStamp) {
+        this.operateTimeStamp = operateTimeStamp;
+    }
+
+    public long getOperateTimeStamp() {
+        return operateTimeStamp;
     }
 
     public static class Test {
