@@ -90,7 +90,13 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
 
     @Override
     public View initView() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_live_video_feed_back_second, null);
+        View view;
+        try {
+            view = LayoutInflater.from(mContext).inflate(R.layout.layout_live_video_feed_back_second, null);
+        } catch (Throwable e) {
+            return null;
+        }
+
         webView = view.findViewById(R.id.wv_livevideo_feedback_second);
         svSubjectWeb = view.findViewById(R.id.sv_livevideo_web);
         webViewConfig();
@@ -299,8 +305,9 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         if (!isShow) {
 
             isShow = feedBackTeacherInterface.showPager();
-            webView.loadUrl(mUrl);
-            isShow = true;
+            if (isShow) {
+                webView.loadUrl(mUrl);
+            }
 
         } else {
 

@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -189,7 +190,12 @@ public class FeedbackTeacherBll extends LiveBaseBll {
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             // addView(pager.getRootView(), params);
-            addView(pagerNew.getRootView(), params);
+
+            View view = pagerNew.getRootView();
+            if (view == null) {
+                return false;
+            }
+            addView(view, params);
             pagerNew.startLoading();
             return true;
         } else {
