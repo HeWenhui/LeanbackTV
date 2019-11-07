@@ -95,6 +95,9 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void run() {
                 if (scienceVotePager != null) {
+                    isAnswer = false;
+                    scienceVotePager.destroyView();
+                    removeView(scienceVotePager.getRootView());
                     scienceVotePager = null;
                 }
                 if (liveMediaControllerBottom.getController() != null &&

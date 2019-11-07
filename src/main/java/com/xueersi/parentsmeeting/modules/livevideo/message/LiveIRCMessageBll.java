@@ -764,13 +764,19 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             );
                         }
                     }, 5000);
-                } else if (EvenDriveUtils.getIsChsAndSci(mGetInfo)) {
+                } else if (EvenDriveUtils.isOpenStimulation(mGetInfo)) {
+
                     try {
-                        String test_id = object.getString("test_id");
-                        if (selfUploadRunnable == null) {
-                            selfUploadRunnable = new SelfUploadRunnable(mGetInfo, test_id);
+                        if (EvenDriveUtils.getIsArts(mGetInfo)) {
+                            delayGetEvenDriveAnim(mGetInfo);
+                        } else {
+                            String test_id = object.getString("test_id");
+                            if (selfUploadRunnable == null) {
+                                selfUploadRunnable = new SelfUploadRunnable(mGetInfo, test_id);
+                            }
+                            postDelayedIfNotFinish(selfUploadRunnable, 6000);
                         }
-                        postDelayedIfNotFinish(selfUploadRunnable, 6000);
+
                     } catch (Exception e) {
                         LiveCrashReport.postCatchedException(TAG, e);
                     }
@@ -1426,7 +1432,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.INIT_EVEN_NUM, "",
                     new TasksDataSource.LoadAnimCallBack() {
                         @Override
-                        public void onDataNotAvailable() {
+                        public void onDataNotAvailable(String msg) {
 
                         }
 
@@ -1456,7 +1462,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             animRepositor.getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_SELF_UPLOAD, testId,
                     new TasksDataSource.LoadAnimCallBack() {
                         @Override
-                        public void onDataNotAvailable() {
+                        public void onDataNotAvailable(String msg) {
 
                         }
 

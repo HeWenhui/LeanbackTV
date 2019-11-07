@@ -45,7 +45,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmError(ResponseEntity responseEntity) {
                                 super.onPmError(responseEntity);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(responseEntity.getErrorMsg());
                                 }
                             }
 
@@ -53,7 +53,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmFailure(Throwable error, String msg) {
                                 super.onPmFailure(error, msg);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(msg);
                                 }
                             }
                         });
@@ -72,7 +72,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmError(ResponseEntity responseEntity) {
                                 super.onPmError(responseEntity);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(responseEntity.getErrorMsg());
                                 }
                             }
 
@@ -80,7 +80,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmFailure(Throwable error, String msg) {
                                 super.onPmFailure(error, msg);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(msg);
                                 }
                             }
                         });
@@ -101,7 +101,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmError(ResponseEntity responseEntity) {
                                 super.onPmError(responseEntity);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(responseEntity.getErrorMsg());
                                 }
                             }
 
@@ -109,7 +109,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                             public void onPmFailure(Throwable error, String msg) {
                                 super.onPmFailure(error, msg);
                                 if (callBack != null) {
-                                    callBack.onDataNotAvailable();
+                                    callBack.onDataNotAvailable(msg);
                                 }
                             }
                         });
@@ -130,7 +130,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                                 public void onPmError(ResponseEntity responseEntity) {
                                     super.onPmError(responseEntity);
                                     if (callBack != null) {
-                                        callBack.onDataNotAvailable();
+                                        callBack.onDataNotAvailable(responseEntity.getErrorMsg());
                                     }
                                 }
 
@@ -138,7 +138,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                                 public void onPmFailure(Throwable error, String msg) {
                                     super.onPmFailure(error, msg);
                                     if (callBack != null) {
-                                        callBack.onDataNotAvailable();
+                                        callBack.onDataNotAvailable(msg);
                                     }
                                 }
                             });
@@ -159,7 +159,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                                 public void onPmError(ResponseEntity responseEntity) {
                                     super.onPmError(responseEntity);
                                     if (callBack != null) {
-                                        callBack.onDataNotAvailable();
+                                        callBack.onDataNotAvailable(responseEntity.getErrorMsg());
                                     }
                                 }
 
@@ -167,7 +167,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
                                 public void onPmFailure(Throwable error, String msg) {
                                     super.onPmFailure(error, msg);
                                     if (callBack != null) {
-                                        callBack.onDataNotAvailable();
+                                        callBack.onDataNotAvailable(msg);
                                     }
                                 }
                             });
@@ -223,7 +223,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
 
         if (callBack != null) {
             if (getTest()) {
-                callBack.onDatasLoaded("" + mNum, newNum != oldNum);
+                callBack.onDatasLoaded("" + mNum, (newNum != oldNum));
             } else {
                 callBack.onDatasLoaded(num, newNum != oldNum);
             }

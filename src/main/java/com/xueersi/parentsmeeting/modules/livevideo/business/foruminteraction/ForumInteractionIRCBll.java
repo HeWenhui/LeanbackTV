@@ -18,6 +18,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -26,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessageReg;
@@ -53,9 +55,11 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
     private LiveScienceHttpManager httpManager;
     private HttpRequestParams params;
     /** 互动id*/
-    private String interactionId;
+    private String interactionId = "";
     private boolean isOpenInteraction;
     private boolean onShow;
+    private  String eventid = LiveVideoConfig.LIVE_FORUM_INTERACTION;
+    private boolean isFirstTopic = true;
 
 
     public ForumInteractionIRCBll(Activity context, LiveBll2 liveBll) {
@@ -87,12 +91,30 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
                 if ("open".equals(open)){
                     isOpenInteraction = true;
                     setDefaultParams();
+                    StableLogHashMap logHashMap = new StableLogHashMap("discussOn");
+                    logHashMap.addSno("1.11");
+                    logHashMap.addExY().addStable("2");
+                    logHashMap.put("liveId",mLiveId);
+                    logHashMap.put("interactionId",interactionId);
+                    umsAgentDebugInter(eventid,logHashMap.getData());
                 }else {
                     isOpenInteraction = false;
+                    StableLogHashMap logHashMap = new StableLogHashMap("discussOff");
+                    logHashMap.addSno("1.31");
+                    logHashMap.addExY().addStable("2");
+                    logHashMap.put("liveId",mLiveId);
+                    logHashMap.put("interactionId",interactionId);
+                    umsAgentDebugInter(eventid,logHashMap.getData());
                 }
                 break;
             }
             case XESCODE.FORUM_INTERACTION_PRAISE:{
+                StableLogHashMap logHashMap = new StableLogHashMap("discussPraise");
+                logHashMap.addSno("2.11");
+                logHashMap.addExY().addStable("2");
+                logHashMap.put("liveId",mLiveId);
+                logHashMap.put("interactionId",interactionId);
+                umsAgentDebugInter(eventid,logHashMap.getData());
                 post(new Runnable() {
                     @Override
                     public void run() {
@@ -123,6 +145,13 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
             return;
         }
         if (isOpenInteraction){
+            StableLogHashMap logHashMap = new StableLogHashMap("discussUpload");
+            logHashMap.addSno("1.12");
+            logHashMap.addExY().addStable("2");
+            logHashMap.put("liveId",mLiveId);
+            logHashMap.put("interactionId",interactionId);
+            umsAgentDebugInter(eventid,logHashMap.getData());
+
             params.addBodyParam("interactionId",interactionId);
             params.addBodyParam("message",msg);
             logger.d(params.getBodyParams().toString());
@@ -161,10 +190,19 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
             if ("open".equals(open)){
                 isOpenInteraction = true;
                 setDefaultParams();
+                if (isFirstTopic){
+                    StableLogHashMap logHashMap = new StableLogHashMap("discussOn");
+                    logHashMap.addSno("1.11");
+                    logHashMap.addExY().addStable("2");
+                    logHashMap.put("liveId",mLiveId);
+                    logHashMap.put("interactionId",interactionId);
+                    umsAgentDebugInter(eventid,logHashMap.getData());
+                }
             }else {
                 isOpenInteraction = false;
             }
         }
+        isFirstTopic = false;
     }
 
 }

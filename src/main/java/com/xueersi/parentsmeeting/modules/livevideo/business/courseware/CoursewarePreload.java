@@ -975,7 +975,7 @@ public class CoursewarePreload {
             } else {
                 isIP = true;
             }
-            sendUms(LogConfig.PRE_LOAD_START,
+            InfoUtils.sendUms(LogConfig.PRE_LOAD_START,
                     "endPreload",
                     md5,
                     isIP ? "true" : "false",
@@ -1069,7 +1069,7 @@ public class CoursewarePreload {
                     sb.append("," + ips.get(i) + url);
                 }
                 long downLoadTime = System.currentTimeMillis() - startDownLoadTime;
-                sendUms(LogConfig.PRE_LOAD_START,
+                InfoUtils.sendUms(LogConfig.PRE_LOAD_START,
                         "endPreload",
                         md5,
                         isIP ? "true" : "false",
@@ -1139,36 +1139,6 @@ public class CoursewarePreload {
             unZipMap.put("ip", IpAddressUtil.USER_IP);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
         }
-    }
-
-    private void sendUms(String eventId,
-                         String logtype,
-                         String preloadid,
-                         String isuseip,
-                         String loadurl,
-                         String isresume,
-                         String loadtime,
-                         String sno,
-                         String status,
-                         String errorcode,
-                         String resourcetype,
-                         String failurl,
-                         String liveid) {
-        StableLogHashMap hashMap = new StableLogHashMap();
-        hashMap.put("logtype", logtype);
-        hashMap.put("preloadid", preloadid);
-        hashMap.put("isuseip", isuseip);
-        hashMap.put("loadurl", loadurl);
-        hashMap.put("isresume", isresume);
-        hashMap.put("loadtime", loadtime);
-        hashMap.put("sno", sno);
-        hashMap.put("status", status);
-        hashMap.put("errorcode", errorcode);
-        hashMap.put("resourcetype", resourcetype);
-        hashMap.put("failurl", failurl);
-        hashMap.put("liveid", liveid);
-        hashMap.put("ip", IpAddressUtil.USER_IP);
-        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, eventId, hashMap.getData());
     }
 
     class NoZipDownloadListener implements DownloadListener {
@@ -1270,7 +1240,7 @@ public class CoursewarePreload {
                 } else {
                     isIP = true;
                 }
-                sendUms(LogConfig.PRE_LOAD_START,
+                InfoUtils.sendUms(LogConfig.PRE_LOAD_START,
                         "startPreload",
                         md5,
                         isIP ? "true" : "false",
@@ -1368,7 +1338,7 @@ public class CoursewarePreload {
 
                 if (!NbCourseWareConfig.RESOURSE_TYPE_NB.equals(resourcetype)) {
                     long downLoadTime = System.currentTimeMillis() - startDonwLoadTime;
-                    sendUms(LogConfig.PRE_LOAD_START,
+                    InfoUtils.sendUms(LogConfig.PRE_LOAD_START,
                             "endPreload",
                             md5,
                             isIP ? "true" : "false",
