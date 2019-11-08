@@ -58,7 +58,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
+import com.xueersi.parentsmeeting.modules.livevideo.video.SampleLiveVPlayerListener;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
+import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -1026,6 +1028,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         break;
                 }
                 //////////////////////
+                long currentSeiTimetamp = liveVideoBll.getCurrentSeiTimetamp();
+                logger.i("onNotice:getCurrentSeiTimetamp:time=" + currentSeiTimetamp);
                 List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
                 if (noticeActions != null && noticeActions.size() > 0) {
                     for (NoticeAction noticeAction : noticeActions) {
@@ -1776,11 +1780,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                                 LiveModuleConfigInfo.class);
                         mGetInfo.setLiveModuleConfigInfo(mLiveModuleConfigInfo);
                         String preloadUrl = mGetInfo.getProperties(LivePluginGrayConfig.MOUDLE_FUTURE_COURSEWARE, "preloadUrl");
-                        if(!TextUtils.isEmpty(preloadUrl)){
+                        if (!TextUtils.isEmpty(preloadUrl)) {
                             String liveId = mGetInfo.getId();
                             CoursewarePreload coursewarePreload = new CoursewarePreload(mContext, -1);
                             coursewarePreload.setmHttpManager(mHttpManager);
-                            coursewarePreload.setBig(1,preloadUrl);
+                            coursewarePreload.setBig(1, preloadUrl);
                             coursewarePreload.getCoursewareInfo(liveId);
                         }
                     }

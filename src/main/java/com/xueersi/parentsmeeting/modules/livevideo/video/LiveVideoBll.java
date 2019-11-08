@@ -52,6 +52,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     /** 直播服务器 */
     private PlayServerEntity mServer;
     private LiveGetInfo mGetInfo;
+    private int isFlatfish = 0;
     private int lastIndex;
     /** 直播服务器选择 */
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
@@ -154,6 +155,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     /** 在{@link LiveBll2}获取getInfo成功而之后,{@link LiveBll2#onGetInfoSuccess(LiveGetInfo)} */
     public void onLiveInit(LiveGetInfo getInfo, LiveTopic liveTopic) {
         this.mGetInfo = getInfo;
+        isFlatfish = getInfo.getIsFlatfish();
         this.mLiveTopic = liveTopic;
         liveGetPlayServer = new LiveGetPlayServer(activity, new TeacherIsPresent() {
 
@@ -414,6 +416,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
             mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
+            if (isFlatfish == 1) {
+                mHandler.removeCallbacks(getCurrentSeiTimetamp);
+                mHandler.postDelayed(getCurrentSeiTimetamp, 10000);
+            }
         }
 
         @Override
@@ -575,6 +581,27 @@ public class LiveVideoBll implements VPlayerListenerReg {
                     }
                 });
                 //logger.i( "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
+            }
+        }
+    };
+
+    private long currentSeiTimetamp = -2;
+
+    public long getCurrentSeiTimetamp() {
+        return currentSeiTimetamp;
+    }
+
+    /**
+     * 得到Video播放时间戳
+     */
+    private Runnable getCurrentSeiTimetamp = new Runnable() {
+        @Override
+        public void run() {
+            mHandler.removeCallbacks(this);
+            if (isPlay && !activity.isFinishing()) {
+                currentSeiTimetamp = vPlayer.getCurrentSeiTimetamp();
+                logger.i("getCurrentSeiTimetamp:time=" + currentSeiTimetamp);
+                mHandler.postDelayed(getCurrentSeiTimetamp, 500);
             }
         }
     };

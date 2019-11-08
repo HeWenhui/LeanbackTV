@@ -580,6 +580,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveGetInfo.EvenDriveInfo evenDriveInfo = new LiveGetInfo.EvenDriveInfo();
             evenDriveInfo.setIsOpenStimulation(data.optInt("isOpenStimulation"));
             getInfo.setEvenDriveInfo(evenDriveInfo);
+            getInfo.setIsFlatfish(data.optInt("isFlatfish", 1));
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);
@@ -799,9 +800,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 mainStatusEntity.setOpenhands("off");
                 mainStatusEntity.getClassmateEntities().clear();
             }
-            if(status.has("chat_interact")){
+            if (status.has("chat_interact")) {
                 JSONObject jsonObject = status.optJSONObject("chat_interact");
-                if (jsonObject != null){
+                if (jsonObject != null) {
                     mainStatusEntity.setOnChatInteract(jsonObject.optString("open"));
                     mainStatusEntity.setChatInteractionId(jsonObject.optString("interactionId"));
                 }
