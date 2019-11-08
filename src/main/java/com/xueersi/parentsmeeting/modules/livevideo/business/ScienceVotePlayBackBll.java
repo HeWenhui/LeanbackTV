@@ -132,7 +132,7 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
     }
 
     private void submitResult() {
-        getmHttpManager().ScienceVoteCommit(liveId, liveGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(), nickname, liveGetInfo.getStuName(), new HttpCallBack(true) {
+        getmHttpManager().ScienceVoteCommit(liveId, liveGetInfo.getLiveType(), liveGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(), nickname, liveGetInfo.getStuName(), new HttpCallBack(true) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("ScienceVoteCommit:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
