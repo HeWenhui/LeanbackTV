@@ -67,4 +67,8 @@ public class LiveQueHttpConfig {
 
     /** 小组互动-上报答题信息 */
     public static String LIVE_GROUPGAME_REPORT = "/report/operate";
+
+    /** 理科新投票提交 */
+    public static String LIVE_SCIENCE_VOTE_SUBMIT = LiveHttpConfig.HTTP_HOST_SCIENCE + "/LiveCourse/commitVote";
+
 }

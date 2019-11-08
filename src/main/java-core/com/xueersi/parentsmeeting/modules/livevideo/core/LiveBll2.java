@@ -23,6 +23,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
@@ -34,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginGrayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
@@ -193,7 +195,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         boolean isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
         if (isBigLive) {
-            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId,false);
+            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId, false);
         } else {
             liveAndBackDebugIml = new LiveAndBackDebugIml(context, mLiveType, mLiveId, mCourseId);
         }
@@ -229,9 +231,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         boolean isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
-        Log.e("ckTrac","=====>LiveBll2_isBigLive="+isBigLive);
+        Log.e("ckTrac", "=====>LiveBll2_isBigLive=" + isBigLive);
         if (isBigLive) {
-            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId,false);
+            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId, false);
         } else {
             liveAndBackDebugIml = new LiveAndBackDebugIml(context, mLiveType, mLiveId, mCourseId);
         }
@@ -515,7 +517,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 e.printStackTrace();
             }
             mHttpManager.bigLiveEnter(iPlanId, LiveBusinessResponseParser.getBizIdFromLiveType(mLiveType),
-                    iStuCouId, BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION ,callBack);
+                    iStuCouId, BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION, callBack);
         } else {
             onGetInfoSuccess(getInfo);
         }
@@ -555,17 +557,17 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             mHttpManager.addHeaderParams("bizId", mLiveType + "");
             mHttpManager.addHeaderParams("SESSIONID", AppBll.getInstance().getLiveSessionId());
             //Log.e("ckTrac","====>LiveBll2_initBigLiveRoom:"+ AppBll.getInstance().getLiveSessionId());
-            String classId = getInfo.getStudentLiveInfo() != null?getInfo.getStudentLiveInfo().getClassId():"0";
+            String classId = getInfo.getStudentLiveInfo() != null ? getInfo.getStudentLiveInfo().getClassId() : "0";
             int iClassId = 0;
             try {
                 iClassId = Integer.parseInt(classId);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            String strStuCouId = TextUtils.isEmpty(mStuCouId)?"":mStuCouId;
-            mHttpManager.addBusinessParams("stuCouId",strStuCouId);
+            String strStuCouId = TextUtils.isEmpty(mStuCouId) ? "" : mStuCouId;
+            mHttpManager.addBusinessParams("stuCouId", strStuCouId);
             mHttpManager.addBusinessParams("classId", iClassId);
-            mHttpManager.addBusinessParams("isPlayback",0);
+            mHttpManager.addBusinessParams("isPlayback", 0);
         }
         if (liveLog != null) {
             liveLog.setGetInfo(mGetInfo);
@@ -863,8 +865,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     mGetInfo.setBlockChinese(info.getBolockChinese() == 1);
 
                     LiveGetInfo.EvenDriveInfo evenDriveInfo = new LiveGetInfo.EvenDriveInfo();
-                    evenDriveInfo.setIsOpenStimulation(info.getIsGroupGameCourseWare());
-                    evenDriveInfo.setEvenNum(info.getEvenDriveRightEvenNumUrl());
+                    evenDriveInfo.setIsOpenStimulation(info.getIsOpenStimulation());
+//                    evenDriveInfo.setEvenNum(info.getEvenDriveRightEvenNumUrl());
                     mGetInfo.setEvenDriveInfo(evenDriveInfo);
                     mGetInfo.setArtsExtLiveInfo(info);
 
@@ -1773,6 +1775,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         mLiveModuleConfigInfo = (LiveModuleConfigInfo) JsonUtil.jsonToObject(jsonString,
                                 LiveModuleConfigInfo.class);
                         mGetInfo.setLiveModuleConfigInfo(mLiveModuleConfigInfo);
+                        String preloadUrl = mGetInfo.getProperties(LivePluginGrayConfig.MOUDLE_FUTURE_COURSEWARE, "preloadUrl");
+                        if(!TextUtils.isEmpty(preloadUrl)){
+                            String liveId = mGetInfo.getId();
+                            CoursewarePreload coursewarePreload = new CoursewarePreload(mContext, -1);
+                            coursewarePreload.setmHttpManager(mHttpManager);
+                            coursewarePreload.setBig(1,preloadUrl);
+                            coursewarePreload.getCoursewareInfo(liveId);
+                        }
                     }
                     if (!isEmpty(mLiveModuleConfigInfo)) {
                         callBack.onDataSucess(mLiveModuleConfigInfo);

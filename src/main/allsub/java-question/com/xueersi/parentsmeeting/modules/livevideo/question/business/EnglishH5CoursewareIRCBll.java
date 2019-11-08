@@ -913,7 +913,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 //        }
         animRepo.getDataSource(questionType, testId, new TasksDataSource.LoadAnimCallBack() {
             @Override
-            public void onDataNotAvailable() {
+            public void onDataNotAvailable(String msg) {
 
             }
 
