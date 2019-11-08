@@ -992,12 +992,15 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             onTopic(channel, topic, "", 0, true, channel);
         }
 
+        long delayMillis = -1;
+
         @Override
-        public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
+        public void onNotice(final String sourceNick, String sourceLogin, String sourceHostname, final String target, String
                 notice, String channelId) {
             try {
-                JSONObject object = new JSONObject(notice);
-                int mtype = object.getInt("type");
+                final JSONObject object = new JSONObject(notice);
+                final int mtype = object.getInt("type");
+                long seiTimetamp = object.optLong("seiTimetamp", -1);
                 com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
                 ///////播放器相关/////////
                 switch (mtype) {
@@ -1029,15 +1032,28 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 }
                 //////////////////////
                 long currentSeiTimetamp = liveVideoBll.getCurrentSeiTimetamp();
-                logger.i("onNotice:getCurrentSeiTimetamp:time=" + currentSeiTimetamp);
-                List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
+                if (seiTimetamp > 0 && currentSeiTimetamp > 0) {
+
+                }
+                logger.i("onNotice:getCurrentSeiTimetamp:time=" + seiTimetamp + "," + currentSeiTimetamp + ",delayMillis=" + delayMillis);
+                final List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
                 if (noticeActions != null && noticeActions.size() > 0) {
-                    for (NoticeAction noticeAction : noticeActions) {
-                        try {
-                            noticeAction.onNotice(sourceNick, target, object, mtype);
-                        } catch (Exception e) {
-                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            for (NoticeAction noticeAction : noticeActions) {
+                                try {
+                                    noticeAction.onNotice(sourceNick, target, object, mtype);
+                                } catch (Exception e) {
+                                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                                }
+                            }
                         }
+                    };
+                    if (delayMillis > 0) {
+                        LiveMainHandler.postDelayed(runnable, delayMillis);
+                    } else {
+                        runnable.run();
                     }
                 } else {
                     if (UselessNotice.isUsed(mtype)) {
@@ -1075,9 +1091,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             JSONTokener jsonTokener = null;
             try {
                 jsonTokener = new JSONTokener(topicstr);
-                JSONObject jsonObject = new JSONObject(jsonTokener);
-                LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
-                boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
+                final JSONObject jsonObject = new JSONObject(jsonTokener);
+                final LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
+                final boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
                 ////直播相关//////
                 if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     //模式切换
@@ -1117,13 +1133,24 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     mGetInfo.setMode(liveTopic.getMode());
                 }
                 if (mTopicActions != null && mTopicActions.size() > 0) {
-                    for (TopicAction mTopicAction : mTopicActions) {
-                        try {
-                            mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
-                        } catch (Exception e) {
-                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            for (TopicAction mTopicAction : mTopicActions) {
+                                try {
+                                    mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
+                                } catch (Exception e) {
+                                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                                }
+                            }
                         }
-
+                    };
+                    logger.i("onTopic:delayMillis=" + delayMillis);
+                    if (delayMillis > 0) {
+                        LiveMainHandler.postDelayed(runnable, delayMillis);
+                        delayMillis = -1;
+                    } else {
+                        runnable.run();
                     }
                 }
                 mLiveTopic.copy(liveTopic);

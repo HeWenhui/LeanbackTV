@@ -417,6 +417,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
             if (isFlatfish == 1) {
+                currentSeiTimetamp = -1;
                 mHandler.removeCallbacks(getCurrentSeiTimetamp);
                 mHandler.postDelayed(getCurrentSeiTimetamp, 10000);
             }
@@ -546,6 +547,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
 //    };
     public void stopPlayDuration() {
         mHandler.removeCallbacks(mPlayDuration);
+        currentSeiTimetamp = -1;
+        mHandler.removeCallbacks(getCurrentSeiTimetamp);
         playTime += (System.currentTimeMillis() - lastPlayTime);
         logger.d("onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
     }
@@ -585,6 +588,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
     };
 
+    /** 视频时间 */
     private long currentSeiTimetamp = -2;
 
     public long getCurrentSeiTimetamp() {
