@@ -91,29 +91,23 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
                 if ("open".equals(open)){
                     isOpenInteraction = true;
                     setDefaultParams();
-                    StableLogHashMap logHashMap = new StableLogHashMap("discussOn");
+                    StableLogHashMap logHashMap = defaultLogMap("discussOn");
                     logHashMap.addSno("1.11");
-                    logHashMap.addExY().addStable("2");
-                    logHashMap.put("liveId",mLiveId);
-                    logHashMap.put("interactionId",interactionId);
+                    logHashMap.addExY().addNonce(interactionId);
                     umsAgentDebugInter(eventid,logHashMap.getData());
                 }else {
                     isOpenInteraction = false;
-                    StableLogHashMap logHashMap = new StableLogHashMap("discussOff");
+                    StableLogHashMap logHashMap = defaultLogMap("discussOff");
                     logHashMap.addSno("1.31");
-                    logHashMap.addExY().addStable("2");
-                    logHashMap.put("liveId",mLiveId);
-                    logHashMap.put("interactionId",interactionId);
+                    logHashMap.addExY().addNonce(interactionId);
                     umsAgentDebugInter(eventid,logHashMap.getData());
                 }
                 break;
             }
             case XESCODE.FORUM_INTERACTION_PRAISE:{
-                StableLogHashMap logHashMap = new StableLogHashMap("discussPraise");
+                StableLogHashMap logHashMap = defaultLogMap("discussPraise");
                 logHashMap.addSno("2.11");
-                logHashMap.addExY().addStable("2");
-                logHashMap.put("liveId",mLiveId);
-                logHashMap.put("interactionId",interactionId);
+                logHashMap.addExY();
                 umsAgentDebugInter(eventid,logHashMap.getData());
                 post(new Runnable() {
                     @Override
@@ -145,22 +139,37 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
             return;
         }
         if (isOpenInteraction){
-            StableLogHashMap logHashMap = new StableLogHashMap("discussUpload");
-            logHashMap.addSno("1.12");
-            logHashMap.addExY().addStable("2");
-            logHashMap.put("liveId",mLiveId);
-            logHashMap.put("interactionId",interactionId);
-            umsAgentDebugInter(eventid,logHashMap.getData());
-
             params.addBodyParam("interactionId",interactionId);
             params.addBodyParam("message",msg);
             logger.d(params.getBodyParams().toString());
             httpManager.sendMessageToTeacher(params, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    StableLogHashMap logHashMap = defaultLogMap("discussUpload");
+                    logHashMap.addSno("1.12");
+                    logHashMap.addExY();
+                    umsAgentDebugInter(eventid,logHashMap.getData());
+                }
 
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    super.onPmFailure(error, msg);
+                    StableLogHashMap logHashMap = defaultLogMap("discussUpload");
+                    logHashMap.addSno("1.12");
+                    logHashMap.addExN();
+                    umsAgentDebugInter(eventid,logHashMap.getData());
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+                    StableLogHashMap logHashMap = defaultLogMap("discussUpload");
+                    logHashMap.addSno("1.12");
+                    logHashMap.addExN();
+                    umsAgentDebugInter(eventid,logHashMap.getData());
                 }
             });
+
         }
     }
 
@@ -191,11 +200,9 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
                 isOpenInteraction = true;
                 setDefaultParams();
                 if (isFirstTopic){
-                    StableLogHashMap logHashMap = new StableLogHashMap("discussOn");
+                    StableLogHashMap logHashMap = defaultLogMap("discussOn");
                     logHashMap.addSno("1.11");
-                    logHashMap.addExY().addStable("2");
-                    logHashMap.put("liveId",mLiveId);
-                    logHashMap.put("interactionId",interactionId);
+                    logHashMap.addExY().addNonce("");
                     umsAgentDebugInter(eventid,logHashMap.getData());
                 }
             }else {
@@ -203,6 +210,29 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
             }
         }
         isFirstTopic = false;
+    }
+
+    private StableLogHashMap defaultLogMap(String type){
+        StableLogHashMap logHashMap = new StableLogHashMap(type);
+        logHashMap.addStable("2");
+        logHashMap.put("liveid",mLiveId);
+        logHashMap.put("interactionid",interactionId);
+        logHashMap.put("gradeid",""+mGetInfo.getGrade());
+        logHashMap.put("courseid",mLiveBll.getCourseId());
+        logHashMap.put("userid",userInfo.getStuId());
+        String subjects = "";
+        if (mGetInfo.getSubjectIds() != null){
+            String subjectIds[] = mGetInfo.getSubjectIds();
+            for (int i = 0; i < subjectIds.length; i++) {
+                subjects += subjectIds[i];
+                if (i == subjectIds.length-1){
+                    break;
+                }
+                subjects +=",";
+            }
+        }
+        logHashMap.put("subjectid",subjects);
+        return logHashMap;
     }
 
 }
