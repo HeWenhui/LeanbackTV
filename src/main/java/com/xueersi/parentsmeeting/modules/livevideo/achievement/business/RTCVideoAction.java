@@ -9,8 +9,6 @@ public interface RTCVideoAction {
     void initTeamInfo(String token,String userId, String userName, String userLogo,String teamId, String teamName, String teamLogo, boolean
             haveTeamUser);
 
-    void show();
-
     void show(boolean falseVideo);
 
     void close();
