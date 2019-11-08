@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,9 @@ public class SubGroupEntity {
 
     /** 分组信息 */
     private List<SubMemberEntity> groupList = new ArrayList<>();
+
+    /** 假流视频 */
+    private JSONObject videoList;
 
     public int getGroupId() {
         return groupId;
@@ -49,5 +54,13 @@ public class SubGroupEntity {
 
     public void setVirStuInfo(SubMemberEntity virStuInfo) {
         this.virStuInfo = virStuInfo;
+    }
+
+    public JSONObject getVideoList() {
+        return videoList;
+    }
+
+    public void setVideoList(JSONObject videoList) {
+        this.videoList = videoList;
     }
 }
