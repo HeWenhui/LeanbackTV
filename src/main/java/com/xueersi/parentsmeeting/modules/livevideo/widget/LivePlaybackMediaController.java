@@ -321,6 +321,18 @@ public class LivePlaybackMediaController extends MediaController2 {
                 }
 
             }
+        }else if(LocalCourseConfig.CATEGORY_GROUP_CLASS==videoQuestionEntity.getvCategory()){
+            String packageAttr = videoQuestionEntity.getPackageAttr();
+            switch (packageAttr) {
+                case "7":
+                    textView.setText("语音评测");
+                    break;
+                case "29":
+                case "30":
+                    textView.setText("上台");
+                    break;
+
+            }
         }
         final ImageView ivPlay = (ImageView) contentView.findViewById(R.id.iv_liveplayback_point_play);
         final int insretTime = videoQuestionEntity.getvQuestionInsretTime();
